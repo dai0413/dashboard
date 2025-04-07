@@ -61,5 +61,3 @@ JWT_REFRESH_EXPIRATION="30d"
 ```bash
 
 ```
-
-[def]: #目次
