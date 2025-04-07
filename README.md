@@ -43,8 +43,4 @@ project/
 
 [バックエンドの詳細](server/README.md)  
 [フロントエンドの詳細](client/README.md)
-[API](./docs/api/index.md)
-[認証](./docs/auth.md)
-[データベース](./docs/db-schema.md)
-[エラーハンドリング](./docs/error-handling.md)
-[今後](./docs/future.md)
+[その他ドキュメント](./docs/index.md)
