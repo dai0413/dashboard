@@ -9,6 +9,12 @@
     npm install -D nodemon
 ```
 
+※ TypeScript のために Node.js の型が定義されたファイルをインストール
+
+```bash
+    npm i -D @types/node
+```
+
 ### 1.1 本番環境パッケージ(dependencies)
 
 | パッケージ           | 用途                      |
