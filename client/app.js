@@ -9,7 +9,9 @@ const connectDB = require("./db/connect");
 
 // routes
 const player = require("./routes/player");
+const transfer = require("./routes/transfer");
 app.use("/api/v1/player", player);
+app.use("/api/v1/transfer", transfer);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

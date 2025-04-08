@@ -97,8 +97,8 @@
 // 必須フィールド dob, player, form, from_date
 {
   "dob": "",
-  "from_team"? : "",
-  "to_team" ?: "",
+  "from_team"? : "", //abbr
+  "to_team" ?: "", //abbr
   "player": "",
   "position"? : "",
   "form": "",
@@ -164,6 +164,7 @@
   ```json
   {
     "form": ""
+    // "from_team": "", teamのときは _idまたはabbr
   }
   ```
 
