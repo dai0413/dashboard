@@ -71,9 +71,13 @@
 | dos          | 日付     | true  | 手術日             |                         |
 | injured_part | 文字列   | true  | 負傷箇所・診断結果 | 複数可                  |
 | is_injured   | 真偽値   | true  | 負傷中             | デフォルト true         |
-| ttp          | 文字列   | true  | 全治期間           | 数字 + d or w or m or y |
-| erd          | 日付     | true  | 復帰予測           | 負傷日・手術日より後    |
+| ttp          | 文字列   | true  | 全治期間※1           | 数字 + d or w or m or y |
+| erd          | 日付     | true  | 復帰予測※2           | 負傷日・手術日より後    |
 | URL          | URL      | true  |                    | 複数可                  |
+
+※1 例） 1d , 1w, 10w-15w, 2m-3m, 10w-5m
+
+※2 erdの値がnullかつttpの値がnullでないときは,doiまたはdosを基準にttp用いて計算。
 
 ※doa, team, player, doi, dos の組み合わせユニーク
 
