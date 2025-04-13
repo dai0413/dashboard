@@ -100,8 +100,8 @@
   // 必須フィールド doa, player,
   "doa": "",
   "team"?: "",
-  "now_team"?: "",
-  "player": "",
+  // "now_team"?: "", バックエンドで処理される
+  "player": "", // _id　または name
   "doi"?: "",
   "dos"?: "",
   "injured_part"? : "",
@@ -168,6 +168,8 @@
 
 ```json
 {
+  // "player": "", // _id　または name
+  // "team": "", // _id　または abbr
   "is_injured": ""
 }
 ```
