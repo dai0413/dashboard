@@ -20,6 +20,7 @@
 | dotenv               | 環境変数の管理            |
 | http-status-codes    | HTTP ステータスコード定数 |
 | express-async-errors | async 関数内エラーの補足  |
+| cookie-parser        | クッキーを解析            |
 
 ### 1.2 開発環境パッケージ(devDependencies)
 
