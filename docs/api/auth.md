@@ -73,8 +73,7 @@
   ```json
   {
     "message": "新規登録しました。",
-    "accessToken": "",
-    "refreshToken": ""
+    "accessToken": ""
   }
   ```
 
@@ -96,8 +95,7 @@
   ```json
   {
     "message": "ログインしました。",
-    "accessToken": "",
-    "refreshToken": ""
+    "accessToken": ""
   }
   ```
 
