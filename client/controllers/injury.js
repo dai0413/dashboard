@@ -6,8 +6,27 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllInjury = async (req, res) => {
-  const injuries = await Injury.find({});
-  res.status(StatusCodes.OK).json({ data: injuries });
+  const injuries = await Injury.find().populate("player team");
+
+  const enrichedInjuries = await Promise.all(
+    injuries.map(async (injury) => {
+      const latestTransfer = await Transfer.findOne({
+        player: injury.player._id,
+        to_team: { $ne: null },
+      })
+        .sort({ from_date: -1 })
+        .limit(1);
+
+      const now_team = latestTransfer ? latestTransfer.to_team : null;
+
+      return {
+        ...injury.toObject(),
+        now_team,
+      };
+    })
+  );
+
+  res.status(StatusCodes.OK).json({ data: enrichedInjuries });
 };
 
 const createInjury = async (req, res) => {
@@ -53,12 +72,26 @@ const getInjury = async (req, res) => {
   const {
     params: { id: injuryId },
   } = req;
-  const injury = await Injury.findById(injuryId);
+  const injury = await Injury.findById(injuryId).populate("player team");
   if (!injury) {
     throw new NotFoundError();
   }
 
-  res.status(StatusCodes.OK).json({ data: injury });
+  const latestTransfer = await Transfer.findOne({
+    player: injury.player._id,
+    to_team: { $ne: null },
+  })
+    .sort({ from_date: -1 })
+    .limit(1);
+
+  const now_team = latestTransfer ? latestTransfer.to_team : null;
+
+  res.status(StatusCodes.OK).json({
+    data: {
+      ...injury.toObject(),
+      now_team,
+    },
+  });
 };
 
 const updateInjury = async (req, res) => {
