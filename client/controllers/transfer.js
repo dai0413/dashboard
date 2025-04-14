@@ -2,22 +2,25 @@ const Transfer = require("../models/transfer");
 const Team = require("../models/team");
 const Player = require("../models/player");
 const mongoose = require("mongoose");
+const { StatusCodes } = require("http-status-codes");
+const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllTransfer = async (req, res) => {
   const transfers = await Transfer.find({});
-  res.status(200).json({ data: transfers });
+  res.status(StatusCodes.OK).json({ data: transfers });
 };
 
 const createTransfer = async (req, res) => {
+  if (!req.body.from_team || !req.body.to_team) {
+    throw new BadRequestError();
+  }
   const { from_team, to_team } = req.body;
 
   const fromTeamObj = await Team.findOne({ abbr: from_team });
   const toTeamObj = await Team.findOne({ abbr: to_team });
 
   if (!fromTeamObj || !toTeamObj) {
-    return res
-      .status(404)
-      .json({ message: "登録されていないチームが選択されています" });
+    throw new NotFoundError();
   }
 
   const transferData = {
@@ -27,18 +30,32 @@ const createTransfer = async (req, res) => {
   };
 
   const transfer = await Transfer.create(transferData);
-  res.status(200).json({ message: "追加しました", data: transfer });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ message: "追加しました", data: transfer });
 };
 
 const getTransfer = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
+
   const {
     params: { id: transferId },
   } = req;
   const transfer = await Transfer.findById(transferId);
-  res.status(200).json({ data: transfer });
+  if (!transfer) {
+    throw new NotFoundError();
+  }
+
+  res.status(StatusCodes.OK).json({ data: transfer });
 };
 
 const updateTransfer = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
+
   const {
     params: { id: transferId },
     body,
@@ -50,7 +67,7 @@ const updateTransfer = async (req, res) => {
   if (body.from_team && !mongoose.Types.ObjectId.isValid(body.from_team)) {
     const fromTeamObj = await Team.findOne({ abbr: body.from_team });
     if (!fromTeamObj) {
-      return res.status(404).json({ message: "from_team が見つかりません" });
+      throw new BadRequestError("from_team が見つかりません。");
     }
     updatedData.from_team = fromTeamObj._id;
   }
@@ -59,7 +76,7 @@ const updateTransfer = async (req, res) => {
   if (body.to_team && !mongoose.Types.ObjectId.isValid(body.to_team)) {
     const toTeamObj = await Team.findOne({ abbr: body.to_team });
     if (!toTeamObj) {
-      return res.status(404).json({ message: "to_team が見つかりません" });
+      throw new BadRequestError("to_team が見つかりません。");
     }
     updatedData.to_team = toTeamObj._id;
   }
@@ -68,7 +85,7 @@ const updateTransfer = async (req, res) => {
   if (body.player && !mongoose.Types.ObjectId.isValid(body.player)) {
     const playerObj = await Player.findOne({ abbr: body.player });
     if (!playerObj) {
-      return res.status(404).json({ message: "player が見つかりません" });
+      throw new BadRequestError("player が見つかりません。");
     }
     updatedData.player = playerObj._id;
   }
@@ -81,18 +98,26 @@ const updateTransfer = async (req, res) => {
       runValidators: true,
     }
   );
-
-  res.status(200).json({ message: "編集しました" });
+  if (!transfer) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({ message: "編集しました" });
 };
 
 const deleteTransfer = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
+
   const {
     params: { id: transferId },
   } = req;
 
   const transfer = await Transfer.findOneAndDelete({ _id: transferId });
-
-  res.status(200).json({ message: "削除しました" });
+  if (!transfer) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
 module.exports = {

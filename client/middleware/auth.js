@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
+const { UnauthenticatedError } = require("../errors");
 
 const auth = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) {
-    return res.status(401).json({ error: "Token is missing" });
+    throw new UnauthenticatedError();
   }
 
   try {
@@ -17,7 +18,7 @@ const auth = (req, res, next) => {
     };
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid token" });
+    throw new UnauthenticatedError();
   }
 };
 

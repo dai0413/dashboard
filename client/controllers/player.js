@@ -1,13 +1,17 @@
 const Player = require("../models/player");
+const { StatusCodes } = require("http-status-codes");
+const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllPlayers = async (req, res) => {
   const players = await Player.find({});
-  res.status(200).json({ data: players });
+  res.status(StatusCodes.OK).json({ data: players });
 };
 
 const checkSimilarPlayers = async (req, res) => {
+  if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
+    throw new BadRequestError();
+  }
   const { name, en_name, dob, pob } = req.body;
-
   // 類似選手検索
   const similarPlayers = await Player.find({
     $or: [{ name: name }, { en_name: en_name }, { dob: dob }],
@@ -21,7 +25,7 @@ const checkSimilarPlayers = async (req, res) => {
       en_name: p.en_name || "",
       dob: p.dob ? p.dob.toISOString().split("T")[0] : "",
     }));
-    return res.status(200).json({
+    return res.status(StatusCodes.OK).json({
       message: "類似する選手が存在します。追加しますか？",
       existing_players: existing_players,
     });
@@ -31,39 +35,62 @@ const checkSimilarPlayers = async (req, res) => {
 };
 
 const createPlayer = async (req, res) => {
+  if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
+    throw new BadRequestError();
+  }
+  const { name, en_name, dob, pob } = req.body;
   const player = await Player.create(req.body);
-  res.status(200).json({ message: "追加しました", data: player });
+  if (!player) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({ message: "追加しました", data: player });
 };
 
 const getPlayer = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
   const {
     params: { id: playerId },
   } = req;
   const player = await Player.findById(playerId);
-  res.status(200).json({ data: player });
+  if (!player) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({ data: player });
 };
 
 const updatePlayer = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
   const {
     params: { id: playerId },
   } = req;
 
-  const player = await Player.findByIdAndUpdate({ _id: playerId }, req.body, {
+  const player = await Player.findByIdAndUpdate(playerId, req.body, {
     new: true,
     runValidators: true,
   });
-
-  res.status(200).json({ message: "編集しました" });
+  if (!player) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({ message: "編集しました" });
 };
 
 const deletePlayer = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
   const {
     params: { id: playerId },
   } = req;
 
   const player = await Player.findOneAndDelete({ _id: playerId });
-
-  res.status(200).json({ message: "削除しました" });
+  if (!player) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
 module.exports = {

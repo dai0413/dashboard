@@ -1,4 +1,6 @@
 require("dotenv").config();
+require("express-async-errors");
+
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const app = express();
@@ -30,6 +32,10 @@ app.get("/", (req, res) => {
 // not found
 
 // error handle
+const notFoundMiddleware = require("./middleware/not-found");
+const errorHandlerMiddleware = require("./middleware/error");
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = 3000;
 

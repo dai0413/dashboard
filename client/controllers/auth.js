@@ -1,8 +1,18 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const { StatusCodes } = require("http-status-codes");
+const {
+  BadRequestError,
+  UnauthenticatedError,
+  NotFoundError,
+} = require("../errors");
 
 const register = async (req, res) => {
-  console.log("register page");
+  const { user_name, email, password } = req.body;
+  if (!user_name || !email || !password) {
+    throw new BadRequestError();
+  }
+
   const user = await User.create(req.body);
 
   const token = user.createJWT();
@@ -14,7 +24,7 @@ const register = async (req, res) => {
     maxAge: 30 * 24 * 60 * 60 * 1000, // リフレッシュトークンの有効期限（30日）
   });
 
-  res.status(200).json({
+  res.status(StatusCodes.CREATED).json({
     message: "新規登録しました。",
     accessToken: token,
   });
@@ -22,15 +32,18 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    throw new BadRequestError();
+  }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new Error((message = "this is error. shloud be refactaring."));
+    throw new NotFoundError();
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
-    throw new Error((message = "this is error. shloud be refactaring."));
+    throw new UnauthenticatedError();
   }
 
   const token = user.createJWT();
@@ -42,7 +55,7 @@ const login = async (req, res) => {
     maxAge: 30 * 24 * 60 * 60 * 1000, // リフレッシュトークンの有効期限（30日）
   });
 
-  res.status(200).json({
+  res.status(StatusCodes.OK).json({
     message: "ログインしました。",
     accessToken: token,
   });
@@ -51,20 +64,20 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   res.clearCookie("refreshToken");
   delete req.user;
-  res.status(200).json({
+  res.status(StatusCodes.OK).json({
     message: "ログアウトしました。",
   });
 };
 
 const me = async (req, res) => {
-  const { userId } = req.user;
-
-  if (!userId) {
-    throw new Error((message = "this is error. shloud be refactaring."));
+  if (!req.user || !req.user.userId) {
+    throw new UnauthenticatedError();
   }
-
-  const user = await User.findById(userId);
-  res.status(200).json({
+  const user = await User.findById(req.user.userId);
+  if (!user) {
+    throw new NotFoundError();
+  }
+  res.status(StatusCodes.OK).json({
     user_name: user.name,
     email: user.email,
     is_staff: user.is_staff,
@@ -75,26 +88,31 @@ const refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
-    throw new Error((message = "this is error. shloud be refactaring."));
+    throw new UnauthenticatedError();
   }
 
+  let decoded;
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-
-    const user = await User.findById(decoded.userId);
-    if (!user) {
-      throw new Error((message = "this is error. shloud be refactaring."));
-    }
-
-    const accessToken = user.createJWT();
-
-    res.status(200).json({
-      message: "アクセストークンを再発行しました。",
-      accessToken: accessToken,
-    });
+    decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
   } catch (error) {
-    throw new Error((message = "this is error. shloud be refactaring."));
+    throw new UnauthenticatedError();
   }
+
+  if (!decoded || !decoded.userId) {
+    throw new UnauthenticatedError();
+  }
+
+  const user = await User.findById(decoded.userId);
+  if (!user) {
+    throw new NotFoundError();
+  }
+
+  const accessToken = user.createJWT();
+
+  res.status(StatusCodes.OK).json({
+    message: "アクセストークンを再発行しました。",
+    accessToken: accessToken,
+  });
 };
 
 module.exports = { register, login, logout, me, refresh };
