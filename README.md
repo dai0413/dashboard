@@ -43,4 +43,4 @@ project/
 
 [バックエンドの詳細](server/README.md)  
 [フロントエンドの詳細](client/README.md)
-[その他ドキュメント](./docs/index.md)
+[その他ドキュメント](/docs/README.md)
