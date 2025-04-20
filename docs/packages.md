@@ -2,8 +2,6 @@
 
 ## 1. サーバー（バックエンド）
 
-### コマンド
-
 ```bash
     npm install express mongoose bcryptjs jsonwebtoken dotenv http-status-codes express-async-errors
     npm install -D nodemon
@@ -32,4 +30,25 @@
 
 ## 2. クライアント（フロントエンド）
 
-未着手
+```bash
+    npm install react-router-dom axios
+    npm install -D tailwindcss postcss autoprefixer
+    npx tailwindcss init -p
+```
+
+### 2.1 本番環境パッケージ（dependencies）
+
+| パッケージ       | 用途                                     |
+| ---------------- | ---------------------------------------- |
+| react            | UI 構築ライブラリ                        |
+| react-dom        | React を HTML に描画するためのライブラリ |
+| react-router-dom | ページ遷移・ルーティング機能を提供       |
+| axios            | バックエンド接続                         |
+
+### 2.2 開発環境パッケージ（devDependencies）
+
+| パッケージ   | 用途                                      |
+| ------------ | ----------------------------------------- |
+| tailwindcss  | ユーティリティベースの CSS フレームワーク |
+| postcss      | CSS 変換ツール（Tailwind と連携）         |
+| autoprefixer | ベンダープレフィックス自動付加ツール      |

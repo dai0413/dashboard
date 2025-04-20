@@ -9,6 +9,7 @@
   - [1. 構成](#1-構成)
   - [2. ルーティング](#2-ルーティング)
     - [2.1 ページ](#21-ページ)
+  - [3.セットアップ](#3セットアップ)
 
 ## 1. 構成
 
@@ -39,3 +40,11 @@ project/
 | `/injury`   | 怪我情報一覧（テーブル）                  |
 | `/login`    | ログインページ                            |
 | `/register` | 新規登録ページ                            |
+
+## 3.セットアップ
+
+```bash
+npm create vite@latest client -- --template react-ts
+cd client
+npm install
+```
