@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
-import { LinkButtonGroup } from "../components/index";
-import { useFilter } from "../context/filter-context";
+import { LinkButtonGroup } from "../buttons/index";
+import { useFilter } from "../../context/filter-context";
 
 const Filter = () => {
   const { filterValue, backFilter, searchValue, handleFilterValueChange } =

@@ -1,13 +1,15 @@
-import { TableHeader } from "../types";
+import { TableHeader } from "../../types/types";
 
 export type TableProps<T> = {
   data: T[];
   headers: TableHeader[];
+  detail?: boolean;
 };
 
 const Table = <T extends Record<string, any>>({
   data,
   headers,
+  detail = false,
 }: TableProps<T>) => {
   return (
     <table className="min-w-full table-auto border">
@@ -18,6 +20,7 @@ const Table = <T extends Record<string, any>>({
               {header.label}
             </th>
           ))}
+          {detail && <th className="bg-gray-200">詳細</th>}
         </tr>
       </thead>
       <tbody>
@@ -28,6 +31,11 @@ const Table = <T extends Record<string, any>>({
                 {row[header.field]}
               </td>
             ))}
+            {detail && (
+              <td className="px-4 py-2 border">
+                <a href={`/transfer/${row._id}`}>詳細</a>
+              </td>
+            )}
           </tr>
         ))}
       </tbody>

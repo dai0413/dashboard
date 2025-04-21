@@ -1,7 +1,7 @@
 import Table from "./Table";
 import Filter from "./Filter";
-import { TableHeader } from "../types";
-import { useFilter } from "../context/filter-context";
+import { TableHeader } from "../../types/types";
+import { useFilter } from "../../context/filter-context";
 
 type TableWithFilterProps<T> = {
   headers: TableHeader[];
@@ -26,7 +26,7 @@ const TableWithFilter = <T extends Record<string, any>>({
         </button>
       </div>
 
-      <Table headers={headers} data={data} />
+      <Table headers={headers} data={data} detail={true} />
     </>
   );
 };

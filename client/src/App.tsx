@@ -4,7 +4,8 @@ import { APP_ROUTES } from "./lib/appRoutes";
 import { AuthProvider } from "./context/auth-context";
 import { AlertProvider } from "./context/alert-context";
 import { FilterProvider } from "./context/filter-context";
-import { Layout, PrivateRoute } from "./components/index";
+import { Layout } from "./components/layout";
+import { PrivateRoute } from "./components/routes";
 
 import Top from "./pages/Top";
 import Transfer from "./pages/Transfer";
