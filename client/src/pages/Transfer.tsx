@@ -1,5 +1,5 @@
 import data from "../../test_data/players.json";
-import { TableContainer, TableWithFilter } from "../components/index";
+import { TableWithFilter, TableContainer } from "../components/table";
 import { useFilter } from "../context/filter-context";
 
 const Transfer = () => {

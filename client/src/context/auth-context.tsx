@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import axios from "axios";
 import { useAlert } from "./alert-context";
-import { APIError } from "../types";
+import { APIError } from "../types/types";
 import { API_ROUTES } from "../lib/apiRoutes";
 
 type AuthState = {

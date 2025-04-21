@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { APIError } from "../types";
+import { APIError } from "../types/types";
 
 type AlertState = {
   message: string | null;

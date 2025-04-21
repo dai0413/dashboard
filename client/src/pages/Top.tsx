@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { Table, TableContainer, LinkButton, Arrow } from "../components/index";
+import { Table, TableContainer } from "../components/table";
+import { LinkButton } from "../components/buttons";
+import { Arrow } from "../components/ui";
+
 import data from "../../test_data/players.json";
 
 const Main = () => {
