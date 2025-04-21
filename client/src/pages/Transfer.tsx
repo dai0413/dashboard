@@ -1,5 +1,26 @@
+import data from "../../test_data/players.json";
+import { TableContainer, TableWithFilter } from "../components/index";
+import { useFilter } from "../context/filter-context";
+
 const Transfer = () => {
-  return <h1>THIS IS Transfer PAGE</h1>;
+  const { filter } = useFilter();
+
+  const filteredData = data.filter((item) => {
+    // 名前がフィルター条件に含まれるかどうかでフィルタリング
+    return item.name.toLowerCase().includes(filter.toLowerCase());
+  });
+
+  return (
+    <TableContainer title={"移籍情報"}>
+      <TableWithFilter
+        data={filteredData}
+        headers={[
+          { label: "名前", field: "name" },
+          { label: "生年月日", field: "dob" },
+        ]}
+      />
+    </TableContainer>
+  );
 };
 
 export default Transfer;
