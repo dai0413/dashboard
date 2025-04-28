@@ -1,13 +1,14 @@
-import data from "../../test_data/players.json";
 import { TableWithFilter, TableContainer } from "../components/table";
 import { useFilter } from "../context/filter-context";
+import { useTransfer } from "../context/transfer-context";
 
 const Transfer = () => {
   const { filter } = useFilter();
+  const { transfers } = useTransfer();
 
-  const filteredData = data.filter((item) => {
+  const filteredData = transfers.filter((item) => {
     // 名前がフィルター条件に含まれるかどうかでフィルタリング
-    return item.name.toLowerCase().includes(filter.toLowerCase());
+    return item.player.toLowerCase().includes(filter.toLowerCase());
   });
 
   return (
@@ -15,8 +16,10 @@ const Transfer = () => {
       <TableWithFilter
         data={filteredData}
         headers={[
-          { label: "名前", field: "name" },
-          { label: "生年月日", field: "dob" },
+          { label: "移籍日", field: "from_date" },
+          { label: "移籍元", field: "from_team" },
+          { label: "移籍先", field: "to_team" },
+          { label: "名前", field: "player" },
         ]}
       />
     </TableContainer>

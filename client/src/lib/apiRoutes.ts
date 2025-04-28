@@ -18,12 +18,14 @@ export const API_ROUTES = {
   },
   TRANSFER: {
     GET_ALL: `${API_BASE_URL}/transfer`,
+    CREATE: `${API_BASE_URL}/transfer`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
   },
   INJURY: {
     GET_ALL: `${API_BASE_URL}/injury`,
+    CREATE: `${API_BASE_URL}/injury`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
