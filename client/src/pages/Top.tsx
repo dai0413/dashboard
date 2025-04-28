@@ -5,8 +5,17 @@ import { LinkButton } from "../components/buttons";
 import { Arrow } from "../components/ui";
 
 import data from "../../test_data/players.json";
+import { useTransfer } from "../context/transfer-context";
+import { useEffect } from "react";
 
 const Main = () => {
+  const { transfers, readAllTransfer } = useTransfer();
+  console.log("transfers in main is ", transfers);
+  // useEffect(() => {
+  //   readAllTransfer();
+  //   console.log("transfers in main is ", transfers);
+  // }, [readAllTransfer]);
+
   return (
     <section className="h-[50rem] text-gray-600 body-font flex items-center">
       <div className="container px-5 mx-auto">
@@ -16,10 +25,12 @@ const Main = () => {
             <TableContainer title="移籍情報">
               <>
                 <Table
-                  data={data}
+                  data={transfers}
                   headers={[
-                    { label: "名前", field: "name" },
-                    { label: "生年月日", field: "dob" },
+                    { label: "移籍日", field: "from_date" },
+                    { label: "移籍元", field: "from_team" },
+                    { label: "移籍先", field: "to_team" },
+                    { label: "名前", field: "player" },
                   ]}
                 />
                 <LinkButton to={APP_ROUTES.TRANSFER} color={"green"}>
