@@ -6,19 +6,22 @@ const UserSchema = new mongoose.Schema(
   {
     user_name: {
       type: String,
-      minlength: 3,
-      required: true,
+      minlength: [3, "ユーザー名は3文字以上で入力してください。"],
+      required: [true, "ユーザー名は必須です。"],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "メールアドレスは必須です。"],
       unique: true,
-      match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+      match: [
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+        "有効なメールアドレス(@を含め)を入力してください。",
+      ],
     },
     password: {
       type: String,
-      minlength: 8,
-      required: true,
+      minlength: [8, "パスワードは8文字以上で入力してください。"],
+      required: [true, "パスワードは必須です。"],
     },
     admin: {
       type: Boolean,
