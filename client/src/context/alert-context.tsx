@@ -4,15 +4,13 @@ import { APIError } from "../types/types";
 type AlertState = {
   message: string | null;
   error: APIError;
-  setMessage: (mes: string) => void;
-  setErrors: (error: APIError) => void;
+  handleSetAlert: (value: string | null | APIError) => void;
 };
 
 const defaultValue: AlertState = {
   message: null,
   error: {},
-  setMessage: () => {},
-  setErrors: () => {},
+  handleSetAlert: () => {},
 };
 
 const AlertContext = createContext<AlertState>(defaultValue);
@@ -21,11 +19,20 @@ const AlertProvider = ({ children }: { children: ReactNode }) => {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setErrors] = useState<APIError>(defaultValue.error);
 
+  const handleSetAlert = (value: string | null | APIError) => {
+    if (value && typeof value === "object") {
+      setMessage(null);
+      setErrors(value as APIError);
+    } else {
+      setMessage(value as string | null);
+      setErrors(defaultValue.error);
+    }
+  };
+
   const value = {
     message,
     error,
-    setMessage,
-    setErrors,
+    handleSetAlert,
   };
 
   return (

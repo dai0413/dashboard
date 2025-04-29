@@ -24,8 +24,18 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // 未認証ユーザー
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // login, register, refresh自体にはリフレッシュ試みない
+    const skipRetryUrls = [
+      API_ROUTES.AUTH.LOGIN,
+      API_ROUTES.AUTH.REGISTER,
+      API_ROUTES.AUTH.REFRESH,
+    ];
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !skipRetryUrls.includes(originalRequest.url)
+    ) {
       originalRequest._retry = true;
 
       try {
@@ -37,10 +47,18 @@ api.interceptors.response.use(
 
         const newAccessToken = refreshResponse.data.accessToken;
 
+        // api共通ヘッダーも更新
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+
+        // 失敗したリクエストをリトライ
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // エラー時はログインページに飛ばす
+        console.error("Refresh Token failed", refreshError);
+
+        // リフレッシュトークンすら失敗したらログアウトさせる
         window.location.href = APP_ROUTES.LOGIN;
         return Promise.reject(refreshError);
       }

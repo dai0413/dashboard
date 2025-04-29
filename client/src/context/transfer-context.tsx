@@ -52,7 +52,7 @@ const defaultValue = {
 const TransferContext = createContext<TransferState>(defaultValue);
 
 const TransferProvider = ({ children }: { children: ReactNode }) => {
-  const { setErrors, setMessage } = useAlert();
+  const { handleSetAlert } = useAlert();
   const [transfers, setTransfers] = useState<Transfer[]>(data);
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(
     null
@@ -60,43 +60,50 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const [newTransfer, setNewTransfer] = useState<Transfer>(initialNewTransfer);
 
   const createTransfer = async () => {
+    let alertData: string | APIError | null = null;
     try {
       const res = await api.get(API_ROUTES.TRANSFER.CREATE);
       const transfer = res.data.data as Transfer;
       setTransfers((prev) => [...prev, transfer]);
-      setMessage(res.data.message);
       setNewTransfer(initialNewTransfer);
+      alertData = res.data?.message;
     } catch (err: any) {
-      const data: APIError = err.response?.data;
-      setErrors(data);
+      alertData = err.response?.data as APIError;
+    } finally {
+      handleSetAlert(alertData);
     }
   };
 
   const readAllTransfer = async () => {
+    let alertData: string | APIError | null = null;
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL);
       const transfers = res.data.data as Transfer[];
       setTransfers(transfers);
-      setMessage(res.data.message);
+      alertData = res.data?.message;
     } catch (err: any) {
-      const data: APIError = err.response?.data;
-      setErrors(data);
+      alertData = err.response?.data as APIError;
+    } finally {
+      handleSetAlert(alertData);
     }
   };
 
   const readTransfer = async (id: string) => {
+    let alertData: string | APIError | null = null;
     try {
       const res = await api.get(API_ROUTES.TRANSFER.DETAIL(id));
       const transfer = res.data.data as Transfer;
       setSelectedTransfer(transfer);
-      setMessage(res.data.message);
+      alertData = res.data?.message;
     } catch (err: any) {
-      const data: APIError = err.response?.data;
-      setErrors(data);
+      alertData = err.response?.data as APIError;
+    } finally {
+      handleSetAlert(alertData);
     }
   };
 
   const updateTransfer = async (id: string) => {
+    let alertData: string | APIError | null = null;
     try {
       const res = await api.post(
         API_ROUTES.TRANSFER.UPDATE(id),
@@ -105,21 +112,24 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       setTransfers((prev) =>
         prev.map((t) => (t._id === id ? res.data.data : t))
       );
-      setMessage(res.data.message);
+      alertData = res.data?.message;
     } catch (err: any) {
-      const data: APIError = err.response?.data;
-      setErrors(data);
+      alertData = err.response?.data as APIError;
+    } finally {
+      handleSetAlert(alertData);
     }
   };
 
   const deleteTransfer = async (id: string) => {
+    let alertData: string | APIError | null = null;
     try {
       const res = await api.post(API_ROUTES.TRANSFER.DELETE(id));
       setTransfers((prev) => prev.filter((t) => t._id !== id));
-      setMessage(res.data.message);
+      alertData = res.data?.message;
     } catch (err: any) {
-      const data: APIError = err.response?.data;
-      setErrors(data);
+      alertData = err.response?.data as APIError;
+    } finally {
+      handleSetAlert(alertData);
     }
   };
 

@@ -10,7 +10,9 @@ const {
 const register = async (req, res) => {
   const { user_name, email, password } = req.body;
   if (!user_name || !email || !password) {
-    throw new BadRequestError();
+    new BadRequestError(
+      "ユーザー名・メールアドレス・パスワードを入力してください。"
+    );
   }
 
   const user = await User.create(req.body);
@@ -30,21 +32,26 @@ const register = async (req, res) => {
   });
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
+  console.log("login start");
   const { email, password } = req.body;
   if (!email || !password) {
-    throw new BadRequestError();
+    return next(
+      new BadRequestError("メールアドレス・パスワードを入力してください。")
+    );
   }
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw new NotFoundError();
+    return next(new UnauthenticatedError("メールアドレスが間違っています。"));
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
-    throw new UnauthenticatedError();
+    return next(new UnauthenticatedError("パスワードが間違っています。"));
   }
+
+  console.log("login middle");
 
   const token = user.createJWT();
   const refreshToken = user.createRefreshToken();
@@ -59,6 +66,7 @@ const login = async (req, res) => {
     message: "ログインしました。",
     accessToken: token,
   });
+  console.log("login end");
 };
 
 const logout = async (req, res) => {

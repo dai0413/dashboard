@@ -27,37 +27,45 @@ const Header = () => {
           <span className="ml-3 text-xl">DASHBOARD</span>
         </Link>
 
-        <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
-          <Link to={APP_ROUTES.TRANSFER} className="mr-5 hover:text-gray-900">
+        <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center gap-4">
+          <Link to={APP_ROUTES.TRANSFER} className="hover:text-gray-900">
             移籍
           </Link>
-          <Link to={APP_ROUTES.INJURY} className="mr-5 hover:text-gray-900">
+          <Link to={APP_ROUTES.INJURY} className="hover:text-gray-900">
             怪我
           </Link>
-        </nav>
-        {!accessToken ? (
-          <Link
-            to={APP_ROUTES.LOGIN}
-            className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
-          >
-            ログイン
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="w-4 h-4 ml-1"
-              viewBox="0 0 24 24"
+          {accessToken ? (
+            <>
+              <Link to={APP_ROUTES.ME} className="hover:text-gray-900">
+                マイページ
+              </Link>
+              <button
+                onClick={logout}
+                className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded"
+              >
+                ログアウト
+              </button>
+            </>
+          ) : (
+            <Link
+              to={APP_ROUTES.LOGIN}
+              className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded"
             >
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
-          </Link>
-        ) : (
-          <button onClick={logout} className="hover:underline">
-            ログアウト
-          </button>
-        )}
+              ログイン
+              <svg
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                className="w-4 h-4 ml-1"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </Link>
+          )}
+        </nav>
       </div>
     </header>
   );

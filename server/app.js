@@ -1,10 +1,20 @@
 require("dotenv").config();
 require("express-async-errors");
+require("dotenv");
 
 const express = require("express");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const app = express();
 
+const CLIENT_URL = process.env.CLIENT_URL;
+
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
