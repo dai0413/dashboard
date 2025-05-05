@@ -3,5 +3,5 @@ export const APP_ROUTES = {
   TRANSFER: "/transfer",
   INJURY: "/injury",
   LOGIN: "/login",
-  REGISTER: "/register",
+  ME: "/me",
 };
