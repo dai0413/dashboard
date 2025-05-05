@@ -12,83 +12,82 @@ import Top from "./pages/Top";
 import Transfer from "./pages/Transfer";
 import Injury from "./pages/Injury";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Me from "./pages/Me";
 import TransferDetail from "./pages/TransferDetail";
+import { SortProvider } from "./context/sort-context";
 
 const App: React.FC = () => {
   return (
     <AlertProvider>
       <AuthProvider>
         <FilterProvider>
-          <TransferProvider>
-            <Router>
-              {/* ルーティング設定 */}
-              <div className="App">
-                {/* ナビゲーションバー を後で追加*/}
-                <Routes>
-                  <Route
-                    path={APP_ROUTES.HOME}
-                    element={
-                      <Layout>
-                        <Top />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path={APP_ROUTES.LOGIN}
-                    element={
-                      <Layout>
-                        <Login />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path={APP_ROUTES.REGISTER}
-                    element={
-                      <Layout>
-                        <Register />
-                      </Layout>
-                    }
-                  />
+          <SortProvider>
+            <TransferProvider>
+              <Router>
+                {/* ルーティング設定 */}
+                <div className="App">
+                  {/* ナビゲーションバー を後で追加*/}
+                  <Routes>
+                    <Route
+                      path={APP_ROUTES.HOME}
+                      element={
+                        <Layout>
+                          <Top />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path={APP_ROUTES.LOGIN}
+                      element={
+                        <Layout>
+                          <Login />
+                        </Layout>
+                      }
+                    />
 
-                  <Route
-                    path={APP_ROUTES.TRANSFER}
-                    element={
-                      <Layout>
-                        <Transfer />
-                      </Layout>
-                      // <PrivateRoute>
-                      //   <Layout>
-                      //   <Transfer />
-                      // </Layout>
-                      // </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path={`${APP_ROUTES.TRANSFER}/:id`}
-                    element={
-                      <Layout>
-                        <TransferDetail />
-                      </Layout>
-                    }
-                  />
-                  <Route
-                    path={APP_ROUTES.INJURY}
-                    element={
-                      <Layout>
-                        <Injury />
-                      </Layout>
-                      // <PrivateRoute>
-                      //   <Layout>
-                      //   <Injury />
-                      // </Layout>
-                      // </PrivateRoute>
-                    }
-                  />
-                </Routes>
-              </div>
-            </Router>
-          </TransferProvider>
+                    <Route
+                      path={APP_ROUTES.TRANSFER}
+                      element={
+                        // <PrivateRoute>
+                        <Layout>
+                          <Transfer />
+                        </Layout>
+                        // </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path={`${APP_ROUTES.TRANSFER}/:id`}
+                      element={
+                        <Layout>
+                          <TransferDetail />
+                        </Layout>
+                      }
+                    />
+                    <Route
+                      path={APP_ROUTES.INJURY}
+                      element={
+                        <PrivateRoute>
+                          <Layout>
+                            <Injury />
+                          </Layout>
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path={APP_ROUTES.ME}
+                      element={
+                        <PrivateRoute>
+                          <Layout>
+                            <Me />
+                          </Layout>
+                        </PrivateRoute>
+                      }
+                    />
+                  </Routes>
+                </div>
+              </Router>
+            </TransferProvider>
+          </SortProvider>
         </FilterProvider>
       </AuthProvider>
     </AlertProvider>

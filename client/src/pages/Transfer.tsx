@@ -1,4 +1,4 @@
-import { TableWithFilter, TableContainer } from "../components/table";
+import { TableContainer } from "../components/table";
 import { useFilter } from "../context/filter-context";
 import { useTransfer } from "../context/transfer-context";
 
@@ -12,17 +12,16 @@ const Transfer = () => {
   });
 
   return (
-    <TableContainer title={"移籍情報"}>
-      <TableWithFilter
-        data={filteredData}
-        headers={[
-          { label: "移籍日", field: "from_date" },
-          { label: "移籍元", field: "from_team" },
-          { label: "移籍先", field: "to_team" },
-          { label: "名前", field: "player" },
-        ]}
-      />
-    </TableContainer>
+    <TableContainer
+      title={"移籍情報"}
+      headers={[
+        { label: "移籍日", field: "from_date" },
+        { label: "移籍元", field: "from_team" },
+        { label: "移籍先", field: "to_team" },
+        { label: "名前", field: "player" },
+      ]}
+      data={filteredData}
+    />
   );
 };
 

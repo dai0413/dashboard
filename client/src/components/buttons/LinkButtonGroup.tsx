@@ -4,13 +4,14 @@ import LinkButton from "./LinkButton";
 type LinkButtonProps = {
   text: string;
   color: string;
-  onClick?: () => void;
+  onClick?: (data?: any[]) => void;
   to?: string;
 };
 
 type LinkButtonGroupProps = {
   approve: LinkButtonProps;
   deny: LinkButtonProps;
+  reset?: LinkButtonProps;
 };
 
 const renderLinkButton = (args: LinkButtonProps) => {
@@ -21,11 +22,16 @@ const renderLinkButton = (args: LinkButtonProps) => {
   );
 };
 
-const LinkButtonGroup: React.FC<LinkButtonGroupProps> = ({ approve, deny }) => {
+const LinkButtonGroup: React.FC<LinkButtonGroupProps> = ({
+  approve,
+  deny,
+  reset,
+}) => {
   return (
     <div className="flex space-x-4">
-      {renderLinkButton(approve)}
       {renderLinkButton(deny)}
+      {reset && renderLinkButton(reset)}
+      {renderLinkButton(approve)}
     </div>
   );
 };
