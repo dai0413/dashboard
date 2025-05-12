@@ -8,6 +8,7 @@ type FilterState = {
   searchValue: () => void;
   backFilter: () => void;
   openFilter: () => void;
+  closeFilter: () => void;
 };
 
 const defaultValue: FilterState = {
@@ -18,6 +19,7 @@ const defaultValue: FilterState = {
   searchValue: () => {},
   backFilter: () => {},
   openFilter: () => {},
+  closeFilter: () => {},
 };
 
 const FilterContext = createContext<FilterState>(defaultValue);
@@ -49,6 +51,10 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setFilterOpen(true);
   };
 
+  const closeFilter = () => {
+    setFilterOpen(false);
+  };
+
   const value = {
     filterOpen,
     filterValue,
@@ -57,6 +63,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     searchValue,
     backFilter,
     openFilter,
+    closeFilter,
   };
 
   return (

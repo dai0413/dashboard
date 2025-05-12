@@ -1,27 +1,33 @@
 import { TableContainer } from "../components/table";
 import { useFilter } from "../context/filter-context";
-import { useTransfer } from "../context/transfer-context";
+import { useTransfer, TransferProvider } from "../context/transfer-context";
+
+import { useEffect } from "react";
 
 const Transfer = () => {
   const { filter } = useFilter();
-  const { transfers } = useTransfer();
+  const { transfers, newTransfer } = useTransfer();
 
-  const filteredData = transfers.filter((item) => {
-    // 名前がフィルター条件に含まれるかどうかでフィルタリング
-    return item.player.toLowerCase().includes(filter.toLowerCase());
-  });
+  const filteredData = transfers;
+
+  useEffect(() => {
+    console.log("data in Transfer", filteredData.length, filteredData);
+  }, [filteredData]);
 
   return (
-    <TableContainer
-      title={"移籍情報"}
-      headers={[
-        { label: "移籍日", field: "from_date" },
-        { label: "移籍元", field: "from_team" },
-        { label: "移籍先", field: "to_team" },
-        { label: "名前", field: "player" },
-      ]}
-      data={filteredData}
-    />
+    <TransferProvider>
+      <TableContainer
+        title={"移籍情報"}
+        headers={[
+          { label: "移籍日", field: "doa" },
+          { label: "移籍元", field: "from_team" },
+          { label: "移籍先", field: "to_team" },
+          { label: "名前", field: "player" },
+        ]}
+        data={filteredData}
+        formData={newTransfer}
+      />
+    </TransferProvider>
   );
 };
 
