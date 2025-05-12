@@ -1,32 +1,38 @@
-import { createContext, ReactNode, useContext, useState } from "react";
-import { Transfer } from "../types/models";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Transfer, TransferForm } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
 import { useAlert } from "./alert-context";
 import { APIError } from "../types/types";
 
 import data from "../../test_data/transfers.json";
+import { transformTransfers } from "../../test_data/parseDates";
 
-const initialNewTransfer: Transfer = {
-  _id: "",
-  dob: "",
-  from_team: "",
-  to_team: "",
-  player: "",
-  position: "",
-  form: "",
-  number: "",
-  from_date: "",
-  to_date: "",
-  URL: "",
+const initialNewTransfer: TransferForm = {
+  doa: null,
+  from_team: null,
+  to_team: null,
+  player: null,
+  position: null,
+  form: null,
+  number: null,
+  from_date: null,
+  to_date: null,
+  URL: null,
 };
 
 type TransferState = {
   transfers: Transfer[];
   selectedTransfer: Transfer | null;
-  newTransfer: Transfer;
+  newTransfer: TransferForm;
   handleChoseTransferId: (id: string) => void;
-  handleNewTransfer: (key: keyof Transfer, value: string) => void;
+  handleNewTransfer: (key: keyof TransferForm, value: string) => void;
 
   createTransfer: () => Promise<void>;
   readTransfer: (id: string) => Promise<void>;
@@ -36,7 +42,7 @@ type TransferState = {
 };
 
 const defaultValue = {
-  transfers: data as Transfer[],
+  transfers: transformTransfers(data) as Transfer[],
   selectedTransfer: null,
   newTransfer: initialNewTransfer,
   handleChoseTransferId: () => {},
@@ -53,16 +59,24 @@ const TransferContext = createContext<TransferState>(defaultValue);
 
 const TransferProvider = ({ children }: { children: ReactNode }) => {
   const { handleSetAlert } = useAlert();
-  const [transfers, setTransfers] = useState<Transfer[]>(data);
+  const [transfers, setTransfers] = useState<Transfer[]>(
+    transformTransfers(data)
+  );
+
+  useEffect(() => {
+    setTransfers(transformTransfers(data));
+  }, [data]);
+
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(
     null
   );
-  const [newTransfer, setNewTransfer] = useState<Transfer>(initialNewTransfer);
+  const [newTransfer, setNewTransfer] =
+    useState<TransferForm>(initialNewTransfer);
 
   const createTransfer = async () => {
     let alertData: string | APIError | null = null;
     try {
-      const res = await api.get(API_ROUTES.TRANSFER.CREATE);
+      const res = await api.post(API_ROUTES.TRANSFER.CREATE, newTransfer);
       const transfer = res.data.data as Transfer;
       setTransfers((prev) => [...prev, transfer]);
       setNewTransfer(initialNewTransfer);
@@ -105,7 +119,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const updateTransfer = async (id: string) => {
     let alertData: string | APIError | null = null;
     try {
-      const res = await api.post(
+      const res = await api.patch(
         API_ROUTES.TRANSFER.UPDATE(id),
         selectedTransfer
       );
@@ -123,7 +137,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const deleteTransfer = async (id: string) => {
     let alertData: string | APIError | null = null;
     try {
-      const res = await api.post(API_ROUTES.TRANSFER.DELETE(id));
+      const res = await api.delete(API_ROUTES.TRANSFER.DELETE(id));
       setTransfers((prev) => prev.filter((t) => t._id !== id));
       alertData = res.data?.message;
     } catch (err: any) {

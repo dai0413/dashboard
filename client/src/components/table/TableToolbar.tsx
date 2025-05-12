@@ -4,65 +4,85 @@ import {
   Bars3Icon,
   AdjustmentsVerticalIcon,
 } from "@heroicons/react/24/outline";
+
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
+
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 
 type TableToolbarProps = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
+  setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const TableToolbar = ({ rowSpacing, setRowSpacing }: TableToolbarProps) => {
+const TableToolbar = ({
+  rowSpacing,
+  setRowSpacing,
+  setFormOpen,
+}: TableToolbarProps) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
 
   return (
-    <div className="flex items-center gap-x-4 bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
-      {/* フィルターを開くボタン */}
-      <button
-        className="cursor-pointer flex items-center gap-x-2"
-        onClick={() => openFilter()}
-      >
-        <FunnelIcon className="w-6 h-6" />
-        <span className="hidden md:inline">フィルター</span>
-      </button>
+    <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
+      {/* 左側：フィルター・行間・ソート */}
+      <div className="flex items-center gap-x-4">
+        {/* 行間操作ボタン */}
+        <div className="flex">
+          <button
+            onClick={() => setRowSpacing("wide")}
+            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+              rowSpacing === "wide"
+                ? "bg-blue-500 text-white"
+                : "border-gray-400 text-gray-700"
+            }`}
+          >
+            <Bars2Icon className="w-6 h-6" />
+            <span className="hidden md:inline">広い</span>
+          </button>
+          <button
+            onClick={() => setRowSpacing("narrow")}
+            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+              rowSpacing === "narrow"
+                ? "bg-blue-500 text-white"
+                : "border-gray-400 text-gray-700"
+            }`}
+          >
+            <Bars3Icon className="w-6 h-6" />
+            <span className="hidden md:inline">狭い</span>
+          </button>
+        </div>
 
-      {/* 行間操作ボタン */}
-      <div className="flex">
+        {/* フィルターを開くボタン */}
         <button
-          onClick={() => setRowSpacing("wide")}
-          className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-            rowSpacing === "wide"
-              ? "bg-blue-500 text-white"
-              : "border-gray-400 text-gray-700"
-          }`}
+          className="cursor-pointer flex items-center gap-x-2"
+          onClick={() => openFilter()}
         >
-          <Bars2Icon className="w-6 h-6" />
-          <span className="hidden md:inline">広い</span>
+          <FunnelIcon className="w-6 h-6" />
+          <span className="hidden md:inline">フィルター</span>
         </button>
+
+        {/* ソートを開くボタン */}
         <button
-          onClick={() => {
-            console.log("clicked");
-            setRowSpacing("narrow");
-          }}
-          className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-            rowSpacing === "narrow"
-              ? "bg-blue-500 text-white"
-              : "border-gray-400 text-gray-700"
-          }`}
+          className="cursor-pointer flex items-center gap-x-2"
+          onClick={() => openSort()}
         >
-          <Bars3Icon className="w-6 h-6" />
-          <span className="hidden md:inline">狭い</span>
+          <AdjustmentsVerticalIcon className="w-6 h-6" />
+          <span className="hidden md:inline">ソート</span>
         </button>
       </div>
 
-      {/* ソートを開くボタン */}
+      {/* 右側：新規追加ボタン */}
       <button
-        className="cursor-pointer flex items-center gap-x-2"
-        onClick={() => openSort()}
+        onClick={() => {
+          setFormOpen(true);
+          console.log("open form");
+        }}
+        className="cursor-pointer flex items-center gap-x-2 text-blue-500"
       >
-        <AdjustmentsVerticalIcon className="w-6 h-6" />
-        <span className="hidden md:inline">ソート</span>
+        <PlusCircleIcon className="w-8 h-8" />
+        <span className="hidden md:inline">新規追加</span>
       </button>
     </div>
   );

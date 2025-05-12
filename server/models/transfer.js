@@ -8,12 +8,12 @@ const TransferSchema = new mongoose.Schema({
   from_team: {
     type: mongoose.ObjectId,
     ref: "Team",
-    required: true,
+    // required: true,
   },
   to_team: {
     type: mongoose.ObjectId,
     ref: "Team",
-    required: true,
+    // required: true,
   },
   player: {
     type: mongoose.ObjectId,

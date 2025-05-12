@@ -8,8 +8,8 @@ export type TableProps<T> = {
 };
 
 const Table = <T extends Record<string, any>>({
-  data,
-  headers,
+  data = [],
+  headers = [],
   detail = false,
   rowSpacing,
 }: TableProps<T>) => {
@@ -28,16 +28,33 @@ const Table = <T extends Record<string, any>>({
       <tbody>
         {data.map((row, i) => (
           <tr key={i} className="border-t">
-            {headers.map((header) => (
-              <td
-                key={header.field}
-                className={`${
-                  rowSpacing === "wide" ? "h-16" : "h-8"
-                } px-4 py-2 border`}
-              >
-                {row[header.field]}
-              </td>
-            ))}
+            {headers.map((header) => {
+              const cellContent = row[header.field];
+
+              const isObject =
+                typeof cellContent === "object" && cellContent !== null;
+
+              return (
+                <td
+                  key={header.field}
+                  className={`${
+                    rowSpacing === "wide" ? "h-16" : "h-8"
+                  } px-4 py-2 border`}
+                >
+                  {cellContent instanceof Date ? (
+                    cellContent.toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })
+                  ) : isObject ? (
+                    <a href={cellContent._id}>{cellContent.label}</a>
+                  ) : (
+                    cellContent
+                  )}
+                </td>
+              );
+            })}
             {detail && (
               <td className="px-4 py-2 border">
                 <a href={`/transfer/${row._id}`}>詳細</a>
