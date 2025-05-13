@@ -8,7 +8,7 @@ import {
 import { Transfer, TransferForm, TransferPost } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
-import { useAlert } from "./alert-context";
+import { useModalAlert } from "./modal-alert-context";
 import { APIError } from "../types/types";
 import { FormStep } from "../types/form";
 
@@ -63,7 +63,7 @@ const defaultValue = {
 const TransferContext = createContext<TransferState>(defaultValue);
 
 const TransferProvider = ({ children }: { children: ReactNode }) => {
-  const { handleSetAlert } = useAlert();
+  const { handleSetAlert } = useModalAlert();
   const { teams } = useTeam();
 
   const [transfers, setTransfers] = useState<Transfer[]>(

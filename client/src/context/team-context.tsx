@@ -9,7 +9,7 @@ import { Team } from "../types/models";
 import { APIError } from "../types/types";
 import api from "../lib/axios";
 import { API_ROUTES } from "../lib/apiRoutes";
-import { useAlert } from "./alert-context";
+import { useModalAlert } from "./modal-alert-context";
 
 type TeamState = {
   teams: Team[];
@@ -18,7 +18,7 @@ type TeamState = {
 const TeamContext = createContext<TeamState>({ teams: [] });
 
 const TeamProvider = ({ children }: { children: ReactNode }) => {
-  const { handleSetAlert } = useAlert();
+  const { handleSetAlert } = useModalAlert();
   const [teams, setTeams] = useState<Team[]>([]);
 
   const readAllTeam = async () => {

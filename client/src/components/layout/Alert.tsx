@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { useAlert } from "../../context/alert-context";
+import { APIError } from "../../types/types";
 
-const Alert = () => {
-  const { message, error } = useAlert();
+type AlertProps = {
+  message: string | null;
+  error: APIError;
+};
 
+const Alert = ({ message, error }: AlertProps) => {
   const [errMesDisplay, setErrMesDisplay] = useState<boolean>(false);
   const [sucMesDisplay, setSucMesDisplay] = useState<boolean>(false);
 
@@ -27,12 +30,11 @@ const Alert = () => {
     }
   }, [error.error]);
 
-  const renderMessage = (error: boolean, message: string) => {
-    const color = error ? "red" : "green";
-    const bgColor = `bg-${color}-100`;
-    const borderColor = `border-${color}-400`;
-    const textColor = `text-${color}-700`;
-    const iconColor = `text-${color}-500`;
+  const renderMessage = (isError: boolean, message: string) => {
+    const bgColor = isError ? "bg-red-100" : "bg-green-100";
+    const borderColor = isError ? "border-red-400" : "border-green-400";
+    const textColor = isError ? "text-red-700" : "text-green-700";
+    const iconColor = isError ? "text-red-500" : "text-green-500";
 
     return (
       <div
@@ -41,7 +43,7 @@ const Alert = () => {
       >
         <strong className="font-bold">{message}</strong>
         <span
-          className="absolute top-0 bottom-0 right-0 px-4 py-3"
+          className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
           onClick={() => setErrMesDisplay(false)}
         >
           <svg
