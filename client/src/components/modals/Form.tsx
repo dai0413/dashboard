@@ -4,6 +4,7 @@ import { Modal } from "../ui/index";
 import { FieldDefinition } from "../../types/form";
 import Alert from "../layout/Alert";
 import { TransferState } from "../../context/transfer-context";
+import { useModalAlert } from "../../context/modal-alert-context";
 
 const renderField = <T extends Record<string, any>>(
   field: FieldDefinition<T>,
@@ -81,7 +82,7 @@ type FormProps = {
   contextHook: () => TransferState;
 };
 
-function Form({ formOpen, setFormOpen, contextHook }: FormProps) {
+const Form = ({ formOpen, setFormOpen, contextHook }: FormProps) => {
   const {
     formData,
     formSteps,
@@ -94,12 +95,13 @@ function Form({ formOpen, setFormOpen, contextHook }: FormProps) {
   const nextStep = () =>
     setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+  const { message, error } = useModalAlert();
 
   if (!formSteps || formSteps.length === 0) return null;
 
   return (
     <Modal isOpen={formOpen} onClose={() => setFormOpen(false)}>
-      <Alert />
+      <Alert message={message} error={error} />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
         {"新規データ作成"}
       </h3>
@@ -157,81 +159,6 @@ function Form({ formOpen, setFormOpen, contextHook }: FormProps) {
       />
     </Modal>
   );
-}
+};
 
 export default Form;
-
-// {Object.entries(formData).map(([key, value]) => {
-//   const inputType = getInputType(value);
-
-//   return (
-//     <div key={key} className="mb-4">
-//       <label className="block text-gray-600 text-sm font-medium mb-1">
-//         {key}
-//       </label>
-
-//       {selectFields[key] ? (
-//         <select
-//           className="w-full border border-gray-300 rounded px-3 py-2"
-//           value={value ?? ""}
-//           onChange={(e) => {
-//             if (e.target.value === "") return;
-//             const selectedValue =
-//               e.target.value === "" ? null : e.target.value;
-//             console.log(selectedValue);
-//             handleFormData(key, e.target.value);
-//           }}
-//         >
-//           <option value="">未選択</option>
-//           {selectFields[key].map((option) =>
-//             option === null ? null : (
-//               <option key={option.key} value={option.key}>
-//                 {option.label}
-//               </option>
-//             )
-//           )}
-//         </select>
-//       ) : (
-//         <input
-//           type={inputType}
-//           className="w-full border border-gray-300 rounded px-3 py-2"
-//           value={
-//             inputType === "date"
-//               ? value instanceof Date
-//                 ? value.toISOString().split("T")[0]
-//                 : value
-//               : value
-//           }
-//           onChange={(e) => {
-//             const newValue =
-//               inputType === "number"
-//                 ? Number(e.target.value)
-//                 : inputType === "date"
-//                 ? new Date(e.target.value)
-//                 : e.target.value;
-//             console.log(newValue);
-//           }}
-//         />
-//       )}
-//     </div>
-//   );
-// })}
-{
-  /* <LinkButtonGroup
-        approve={{
-          text: "戻る",
-          color: "red",
-          onClick: () => setFormOpen(false),
-        }}
-        deny={{
-          text: "送信",
-          color: "green",
-          onClick: onSubmit,
-        }}
-        reset={{
-          text: "リセット",
-          color: "blue",
-          onClick: resetFormData,
-        }}
-      /> */
-}
