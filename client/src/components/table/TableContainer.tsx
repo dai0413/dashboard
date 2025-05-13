@@ -6,55 +6,35 @@ import { Sort, Filter, Form } from "../modals/index";
 
 import { TableHeader } from "../../types/types";
 import { useSort } from "../../context/sort-context";
-import { FormStep } from "../../types/form";
+import { TransferState } from "../../context/transfer-context";
 
-type TableContainerProps<
-  T extends Record<string, any>,
-  E extends Record<string, any>
-> = {
+type TableContainerProps = {
   title: string;
   headers: TableHeader[];
-  data: T[];
-  formData: Partial<E>;
-  formSteps: FormStep<Partial<E>>[];
-  handleFormData: (key: keyof E, value: string) => void;
-  resetFormData: () => void;
-  onSubmit: () => Promise<void>;
+  contextHook: () => TransferState;
 };
 
-const TableContainer = <
-  T extends Record<string, any>,
-  E extends Record<string, any>
->({
+const TableContainer = ({
   title,
   headers,
-  data,
-  formData,
-  formSteps,
-  handleFormData,
-  resetFormData,
-  onSubmit,
-}: TableContainerProps<T, E>) => {
+  contextHook,
+}: TableContainerProps) => {
   const { data: sortedData } = useSort();
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("wide");
   const [formOpen, setFormOpen] = useState<boolean>(false);
 
-  console.log("data in table container ", data.length, data);
+  const { transfers } = contextHook();
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
 
       <Filter />
-      <Sort data={data} />
+      <Sort data={transfers} />
       <Form
         formOpen={formOpen}
         setFormOpen={setFormOpen}
-        formData={formData}
-        formSteps={formSteps}
-        handleFormData={handleFormData}
-        resetFormData={resetFormData}
-        onSubmit={onSubmit}
+        contextHook={contextHook}
       />
       <TableToolbar
         rowSpacing={rowSpacing}

@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Transfer, TransferForm } from "../types/models";
+import { Transfer, TransferForm, TransferPost } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
 import { useAlert } from "./alert-context";
@@ -22,13 +22,16 @@ import {
 
 const initialFormData: TransferForm = {};
 
-type TransferState = {
+export type TransferState = {
   transfers: Transfer[];
   selectedTransfer: Transfer | null;
   formData: TransferForm;
   handleFormData: (key: keyof TransferForm, value: any) => void;
   resetFormData: () => void;
   formSteps: FormStep<TransferForm>[];
+  setFormSteps: React.Dispatch<
+    React.SetStateAction<FormStep<Partial<TransferPost>>[]>
+  >;
 
   handleChoseTransferId: (id: string) => void;
 
@@ -46,6 +49,7 @@ const defaultValue = {
   handleFormData: () => {},
   resetFormData: () => {},
   formSteps: [],
+  setFormSteps: () => {},
 
   handleChoseTransferId: () => {},
 
@@ -75,10 +79,15 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   );
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
 
-  const formSteps: FormStep<TransferForm>[] = [
-    ...createTransferFormSteps([], teams),
-    createConfirmationStep<TransferForm>(),
-  ];
+  const [formSteps, setFormSteps] = useState<FormStep<TransferForm>[]>([]);
+
+  useEffect(() => {
+    const steps = [
+      ...createTransferFormSteps([], teams),
+      createConfirmationStep<TransferForm>(),
+    ];
+    setFormSteps(steps);
+  }, [teams]);
 
   const createTransfer = async () => {
     let alertData: string | APIError | null = null;
@@ -178,6 +187,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     handleFormData,
     resetFormData,
     formSteps,
+    setFormSteps,
 
     handleChoseTransferId,
 
