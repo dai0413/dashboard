@@ -1,86 +1,240 @@
+import { useState } from "react";
+import { useTeam } from "../../context/team-context";
+import { FormOptions, PositionOptions } from "../../types/models";
+import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui/index";
-import { selectFields } from "../../types/models";
+import { FieldDefinition, FormStep } from "../../types/form";
+import Alert from "../layout/Alert";
 
-function getInputType(value: any): "text" | "date" | "number" {
-  if (typeof value === "number") return "number";
-  if (value instanceof Date) return "date";
-  return "text";
-}
+const renderField = <T extends Record<string, any>>(
+  field: FieldDefinition<T>,
+  formData: any,
+  handleFormData: (key: keyof T, value: any) => void
+) => {
+  const { key, label, type, options } = field;
 
-type FormProps<T extends Record<string, any>> = {
+  const inputType =
+    type === "number" ? "number" : type === "date" ? "date" : "text";
+
+  return (
+    <div key={key as string} className="mb-4">
+      <label className="block text-gray-600 text-sm font-medium mb-1">
+        {label}
+      </label>
+
+      {type === "select" ? (
+        <select
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={formData[key] ?? ""}
+          onChange={(e) => {
+            const selectedValue = e.target.value || null;
+            handleFormData(key, selectedValue);
+          }}
+        >
+          <option value="">未選択</option>
+          {options?.map((option) => (
+            <option key={option.key} value={option.key}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      ) : type === "multiurl" ? (
+        <textarea
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={(formData[key] ?? []).join("\n")}
+          onChange={(e) => {
+            const urls = e.target.value
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean);
+            handleFormData(key, urls);
+          }}
+        />
+      ) : (
+        <input
+          type={inputType}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={
+            inputType === "date"
+              ? formData[key] instanceof Date
+                ? formData[key].toISOString().split("T")[0]
+                : formData[key]
+              : formData[key] ?? ""
+          }
+          onChange={(e) => {
+            let newValue: any = e.target.value;
+            if (inputType === "number") {
+              newValue = Number(newValue);
+            } else if (inputType === "date") {
+              newValue = new Date(newValue);
+            }
+            handleFormData(key, newValue);
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+type FormProps<T extends Record<string, any>, E extends Record<string, any>> = {
   formOpen: boolean;
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
   formData: T;
+  formSteps: FormStep<Partial<E>>[];
+  handleFormData: (key: keyof E, value: string) => void;
+  resetFormData: () => void;
+  onSubmit: () => Promise<void>;
 };
 
-function Form<T extends Record<string, any>>({
+function Form<T extends Record<string, any>, E extends Record<string, any>>({
   formOpen,
   setFormOpen,
   formData,
-}: FormProps<T>) {
+  formSteps,
+  handleFormData,
+  resetFormData,
+  onSubmit,
+}: FormProps<T, E>) {
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const nextStep = () =>
+    setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+
   return (
     <Modal isOpen={formOpen} onClose={() => setFormOpen(false)}>
+      <Alert />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
         {"新規データ作成"}
       </h3>
-      <a className="text font-semibold text-gray-700 mb-4">
-        {"追加するデータを入力してください。"}
-      </a>
-      {Object.entries(formData).map(([key, value]) => {
-        const inputType = getInputType(value);
 
-        return (
-          <div key={key} className="mb-4">
-            <label className="block text-gray-600 text-sm font-medium mb-1">
-              {key}
-            </label>
+      <div className="mb-4 text-sm text-gray-500">
+        ステップ {currentStep + 1} / {formSteps.length}：
+        {formSteps[currentStep].stepLabel}
+      </div>
 
-            {selectFields[key] ? (
-              <select
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                value={value ?? ""}
-                onChange={(e) => {
-                  const selectedValue =
-                    e.target.value === "" ? null : e.target.value;
-                  console.log(selectedValue);
-                }}
-              >
-                <option value="">未選択</option>
-                {selectFields[key].map((option) =>
-                  option === null ? null : (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  )
-                )}
-              </select>
-            ) : (
-              <input
-                type={inputType}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                value={
-                  inputType === "date"
-                    ? value instanceof Date
-                      ? value.toISOString().split("T")[0]
-                      : value
-                    : value
-                }
-                onChange={(e) => {
-                  const newValue =
-                    inputType === "number"
-                      ? Number(e.target.value)
-                      : inputType === "date"
-                      ? new Date(e.target.value)
-                      : e.target.value;
-                  console.log(newValue);
-                }}
-              />
-            )}
-          </div>
-        );
-      })}
+      <div className="flex space-x-2 mb-4">
+        {formSteps.map((_, index) => (
+          <div
+            key={index}
+            className={`flex-1 h-2 rounded-full ${
+              index <= currentStep ? "bg-green-500" : "bg-gray-300"
+            }`}
+          ></div>
+        ))}
+      </div>
+
+      {formSteps[currentStep].type === "form" &&
+      formSteps[currentStep].fields ? (
+        formSteps[currentStep].fields.map((field) =>
+          renderField(field, formData, handleFormData)
+        )
+      ) : (
+        <div className="space-y-2 text-sm text-gray-700">
+          {Object.entries(formData).map(([key, value]) => (
+            <div key={key} className="flex justify-between border-b py-1">
+              <span className="font-semibold">{key}</span>
+              <span>{String(value)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <LinkButtonGroup
+        approve={{
+          text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
+          color: "green",
+          disabled: currentStep === formSteps.length,
+          onClick: currentStep === formSteps.length - 1 ? onSubmit : nextStep,
+        }}
+        deny={{
+          text: "戻る",
+          color: "red",
+          onClick: prevStep,
+          disabled: currentStep === 0,
+        }}
+        reset={{
+          text: "リセット",
+          color: "gray",
+          onClick: resetFormData,
+        }}
+      />
     </Modal>
   );
 }
 
 export default Form;
+
+// {Object.entries(formData).map(([key, value]) => {
+//   const inputType = getInputType(value);
+
+//   return (
+//     <div key={key} className="mb-4">
+//       <label className="block text-gray-600 text-sm font-medium mb-1">
+//         {key}
+//       </label>
+
+//       {selectFields[key] ? (
+//         <select
+//           className="w-full border border-gray-300 rounded px-3 py-2"
+//           value={value ?? ""}
+//           onChange={(e) => {
+//             if (e.target.value === "") return;
+//             const selectedValue =
+//               e.target.value === "" ? null : e.target.value;
+//             console.log(selectedValue);
+//             handleFormData(key, e.target.value);
+//           }}
+//         >
+//           <option value="">未選択</option>
+//           {selectFields[key].map((option) =>
+//             option === null ? null : (
+//               <option key={option.key} value={option.key}>
+//                 {option.label}
+//               </option>
+//             )
+//           )}
+//         </select>
+//       ) : (
+//         <input
+//           type={inputType}
+//           className="w-full border border-gray-300 rounded px-3 py-2"
+//           value={
+//             inputType === "date"
+//               ? value instanceof Date
+//                 ? value.toISOString().split("T")[0]
+//                 : value
+//               : value
+//           }
+//           onChange={(e) => {
+//             const newValue =
+//               inputType === "number"
+//                 ? Number(e.target.value)
+//                 : inputType === "date"
+//                 ? new Date(e.target.value)
+//                 : e.target.value;
+//             console.log(newValue);
+//           }}
+//         />
+//       )}
+//     </div>
+//   );
+// })}
+{
+  /* <LinkButtonGroup
+        approve={{
+          text: "戻る",
+          color: "red",
+          onClick: () => setFormOpen(false),
+        }}
+        deny={{
+          text: "送信",
+          color: "green",
+          onClick: onSubmit,
+        }}
+        reset={{
+          text: "リセット",
+          color: "blue",
+          onClick: resetFormData,
+        }}
+      /> */
+}

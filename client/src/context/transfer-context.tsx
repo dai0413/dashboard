@@ -10,29 +10,27 @@ import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
 import { useAlert } from "./alert-context";
 import { APIError } from "../types/types";
+import { FormStep } from "../types/form";
 
 import data from "../../test_data/transfers.json";
-import { transformTransfers } from "../../test_data/parseDates";
+import { transformTransfers } from "../lib/parseDates";
+import { useTeam } from "./team-context";
+import {
+  createConfirmationStep,
+  createTransferFormSteps,
+} from "../lib/form-steps";
 
-const initialNewTransfer: TransferForm = {
-  doa: null,
-  from_team: null,
-  to_team: null,
-  player: null,
-  position: null,
-  form: null,
-  number: null,
-  from_date: null,
-  to_date: null,
-  URL: null,
-};
+const initialFormData: TransferForm = {};
 
 type TransferState = {
   transfers: Transfer[];
   selectedTransfer: Transfer | null;
-  newTransfer: TransferForm;
+  formData: TransferForm;
+  handleFormData: (key: keyof TransferForm, value: any) => void;
+  resetFormData: () => void;
+  formSteps: FormStep<TransferForm>[];
+
   handleChoseTransferId: (id: string) => void;
-  handleNewTransfer: (key: keyof TransferForm, value: string) => void;
 
   createTransfer: () => Promise<void>;
   readTransfer: (id: string) => Promise<void>;
@@ -44,9 +42,12 @@ type TransferState = {
 const defaultValue = {
   transfers: transformTransfers(data) as Transfer[],
   selectedTransfer: null,
-  newTransfer: initialNewTransfer,
+  formData: initialFormData,
+  handleFormData: () => {},
+  resetFormData: () => {},
+  formSteps: [],
+
   handleChoseTransferId: () => {},
-  handleNewTransfer: () => {},
 
   createTransfer: async () => {},
   readTransfer: async () => {},
@@ -59,6 +60,8 @@ const TransferContext = createContext<TransferState>(defaultValue);
 
 const TransferProvider = ({ children }: { children: ReactNode }) => {
   const { handleSetAlert } = useAlert();
+  const { teams } = useTeam();
+
   const [transfers, setTransfers] = useState<Transfer[]>(
     transformTransfers(data)
   );
@@ -70,16 +73,20 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(
     null
   );
-  const [newTransfer, setNewTransfer] =
-    useState<TransferForm>(initialNewTransfer);
+  const [formData, setFormData] = useState<TransferForm>(initialFormData);
+
+  const formSteps: FormStep<TransferForm>[] = [
+    ...createTransferFormSteps([], teams),
+    createConfirmationStep<TransferForm>(),
+  ];
 
   const createTransfer = async () => {
     let alertData: string | APIError | null = null;
     try {
-      const res = await api.post(API_ROUTES.TRANSFER.CREATE, newTransfer);
+      const res = await api.post(API_ROUTES.TRANSFER.CREATE, formData);
       const transfer = res.data.data as Transfer;
       setTransfers((prev) => [...prev, transfer]);
-      setNewTransfer(initialNewTransfer);
+      setFormData(initialFormData);
       alertData = res.data?.message;
     } catch (err: any) {
       alertData = err.response?.data as APIError;
@@ -152,19 +159,27 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     setSelectedTransfer(selectedTransfer || null);
   };
 
-  const handleNewTransfer = (key: keyof Transfer, value: string) => {
-    setNewTransfer((prev) => ({
+  const handleFormData = (key: keyof Transfer, value: string) => {
+    setFormData((prev) => ({
       ...prev,
       [key]: value,
     }));
   };
 
+  const resetFormData = () => {
+    console.log("reseting");
+    setFormData(initialFormData);
+  };
+
   const value = {
     transfers,
     selectedTransfer,
-    newTransfer,
+    formData,
+    handleFormData,
+    resetFormData,
+    formSteps,
+
     handleChoseTransferId,
-    handleNewTransfer,
 
     createTransfer,
     readTransfer,
@@ -183,7 +198,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
 const useTransfer = () => {
   const context = useContext(TransferContext);
   if (!context) {
-    throw new Error("useFilter must be used within a TransferProvider");
+    throw new Error("useTransfer must be used within a TransferProvider");
   }
   return context;
 };

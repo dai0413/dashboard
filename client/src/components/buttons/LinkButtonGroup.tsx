@@ -3,9 +3,10 @@ import LinkButton from "./LinkButton";
 
 type LinkButtonProps = {
   text: string;
-  color: string;
+  color: "green" | "red" | "gray";
   onClick?: (data?: any[]) => void;
   to?: string;
+  disabled?: boolean;
 };
 
 type LinkButtonGroupProps = {
@@ -16,7 +17,12 @@ type LinkButtonGroupProps = {
 
 const renderLinkButton = (args: LinkButtonProps) => {
   return (
-    <LinkButton color={args.color} onClick={args.onClick} to={args.to}>
+    <LinkButton
+      color={args.color}
+      onClick={args.onClick}
+      to={args.to}
+      disabled={args.disabled}
+    >
       {args.text}
     </LinkButton>
   );

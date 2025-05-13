@@ -1,4 +1,4 @@
-import { Transfer } from "../src/types/models";
+import { Transfer } from "../types/models";
 
 export const transformTransfers = (rawTransfers: any[]): Transfer[] =>
   rawTransfers.map((t) => ({
