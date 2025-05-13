@@ -107,7 +107,7 @@ const Sort = <T extends Record<string, any>>({ data = [] }: SortProps<T>) => {
         }}
         reset={{
           text: "リセット",
-          color: "blue",
+          color: "gray",
           onClick: resetSort,
         }}
       />

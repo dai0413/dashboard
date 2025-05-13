@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useTeam } from "../../context/team-context";
-import { FormOptions, PositionOptions } from "../../types/models";
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui/index";
-import { FieldDefinition, FormStep } from "../../types/form";
+import { FieldDefinition } from "../../types/form";
 import Alert from "../layout/Alert";
+import { TransferState } from "../../context/transfer-context";
 
 const renderField = <T extends Record<string, any>>(
   field: FieldDefinition<T>,
@@ -76,29 +75,27 @@ const renderField = <T extends Record<string, any>>(
   );
 };
 
-type FormProps<T extends Record<string, any>, E extends Record<string, any>> = {
+type FormProps = {
   formOpen: boolean;
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  formData: T;
-  formSteps: FormStep<Partial<E>>[];
-  handleFormData: (key: keyof E, value: string) => void;
-  resetFormData: () => void;
-  onSubmit: () => Promise<void>;
+  contextHook: () => TransferState;
 };
 
-function Form<T extends Record<string, any>, E extends Record<string, any>>({
-  formOpen,
-  setFormOpen,
-  formData,
-  formSteps,
-  handleFormData,
-  resetFormData,
-  onSubmit,
-}: FormProps<T, E>) {
+function Form({ formOpen, setFormOpen, contextHook }: FormProps) {
+  const {
+    formData,
+    formSteps,
+    handleFormData,
+    resetFormData,
+    createTransfer: onSubmit,
+  } = contextHook();
+
   const [currentStep, setCurrentStep] = useState<number>(0);
   const nextStep = () =>
     setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+
+  if (!formSteps || formSteps.length === 0) return null;
 
   return (
     <Modal isOpen={formOpen} onClose={() => setFormOpen(false)}>
