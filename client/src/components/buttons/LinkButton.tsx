@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
+import { colorMap } from "../../styles/colors";
 
 type LinkButtonProps = {
   children: React.ReactNode;
-  color: string;
+  color: "green" | "red" | "gray";
   to?: string;
   onClick?: () => void;
+  disabled?: boolean;
 };
 
 const LinkButton: React.FC<LinkButtonProps> = ({
@@ -12,26 +14,29 @@ const LinkButton: React.FC<LinkButtonProps> = ({
   color,
   to,
   onClick,
+  disabled,
 }) => {
-  return (
-    <>
-      {to ? (
-        <Link
-          to={to}
-          className={`mt-4 inline-flex items-center text-${color}-500 border-2 border-${color}-500 hover:bg-${color}-500 hover:text-white px-4 py-2 rounded-lg transition`}
-        >
-          {children}
-        </Link>
-      ) : (
-        <button
-          className={`mt-4 inline-flex items-center text-${color}-500 border-2 border-${color}-500 hover:bg-${color}-500 hover:text-white px-4 py-2 rounded-lg transition`}
-          onClick={onClick}
-        >
-          {children}
-        </button>
-      )}
-    </>
-  );
+  const baseClass =
+    "mt-4 inline-flex items-center px-4 py-2 rounded-lg transition border-2";
+  const classes = `${baseClass} ${colorMap[color].base} ${
+    disabled ? "opacity-50 cursor-not-allowed" : colorMap[color].hover
+  }`;
+
+  if (to && !disabled) {
+    return (
+      <Link to={to} className={classes}>
+        {children}
+      </Link>
+    );
+  } else if (to && disabled) {
+    return <span className={classes}>{children}</span>;
+  } else {
+    return (
+      <button onClick={onClick} className={classes} disabled={disabled}>
+        {children}
+      </button>
+    );
+  }
 };
 
 export default LinkButton;

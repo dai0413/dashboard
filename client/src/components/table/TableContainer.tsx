@@ -6,6 +6,7 @@ import { Sort, Filter, Form } from "../modals/index";
 
 import { TableHeader } from "../../types/types";
 import { useSort } from "../../context/sort-context";
+import { FormStep } from "../../types/form";
 
 type TableContainerProps<
   T extends Record<string, any>,
@@ -14,7 +15,11 @@ type TableContainerProps<
   title: string;
   headers: TableHeader[];
   data: T[];
-  formData: E;
+  formData: Partial<E>;
+  formSteps: FormStep<Partial<E>>[];
+  handleFormData: (key: keyof E, value: string) => void;
+  resetFormData: () => void;
+  onSubmit: () => Promise<void>;
 };
 
 const TableContainer = <
@@ -25,6 +30,10 @@ const TableContainer = <
   headers,
   data,
   formData,
+  formSteps,
+  handleFormData,
+  resetFormData,
+  onSubmit,
 }: TableContainerProps<T, E>) => {
   const { data: sortedData } = useSort();
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("wide");
@@ -38,7 +47,15 @@ const TableContainer = <
 
       <Filter />
       <Sort data={data} />
-      <Form formOpen={formOpen} setFormOpen={setFormOpen} formData={formData} />
+      <Form
+        formOpen={formOpen}
+        setFormOpen={setFormOpen}
+        formData={formData}
+        formSteps={formSteps}
+        handleFormData={handleFormData}
+        resetFormData={resetFormData}
+        onSubmit={onSubmit}
+      />
       <TableToolbar
         rowSpacing={rowSpacing}
         setRowSpacing={setRowSpacing}

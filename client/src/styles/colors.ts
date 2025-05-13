@@ -10,6 +10,25 @@ const colors = {
 };
 
 export default colors;
+
+export const colorMap = {
+  green: {
+    base: "text-green-500 border-green-500",
+    hover: "hover:bg-green-500 hover:text-white",
+    bg: "bg-green-500 text-white",
+  },
+  red: {
+    base: "text-red-500 border-red-500",
+    hover: "hover:bg-red-500 hover:text-white",
+    bg: "bg-red-500 text-white",
+  },
+  gray: {
+    base: "text-gray-500 border-gray-500",
+    hover: "hover:bg-gray-500 hover:text-white",
+    bg: "bg-gray-500 text-white",
+  },
+};
+
 // // client/src/styles/colors.ts
 // const colors = {
 //   // ブランドカラー

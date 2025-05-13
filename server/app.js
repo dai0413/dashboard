@@ -30,10 +30,12 @@ const auth = require("./routes/auth");
 const player = require("./routes/player");
 const transfer = require("./routes/transfer");
 const injury = require("./routes/injury");
+const team = require("./routes/team");
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/player", authmiddleware, player);
 app.use("/api/v1/transfer", authmiddleware, transfer);
 app.use("/api/v1/injury", authmiddleware, injury);
+app.use("/api/v1/team", authmiddleware, team);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

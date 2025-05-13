@@ -30,4 +30,7 @@ export const API_ROUTES = {
     UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
   },
+  TEAM: {
+    GET_ALL: `${API_BASE_URL}/team`,
+  },
 };

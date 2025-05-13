@@ -43,11 +43,6 @@ export const FormOptions = [
 
 type Form = (typeof FormOptions)[number] | null;
 
-export const selectFields: Record<string, (string | null)[]> = {
-  form: FormOptions,
-  position: PositionOptions,
-};
-
 export type Player = {
   _id: string;
   name: string | null;
@@ -79,18 +74,7 @@ export type TransferPost = Omit<
   to_team: Team["_id"] | null;
 };
 
-export type TransferForm = {
-  doa: Date | null;
-  from_team: string | null;
-  to_team: string | null;
-  player: string | null;
-  position: Position | null;
-  form: Form | null;
-  number: number | null;
-  from_date: Date | null;
-  to_date: Date | null;
-  URL: string[] | null;
-};
+export type TransferForm = Partial<TransferPost>;
 
 export type TransferGet = Omit<
   TransferPost,
