@@ -4,7 +4,7 @@ import { Modal } from "../ui/index";
 import { FieldDefinition } from "../../types/form";
 import Alert from "../layout/Alert";
 import { TransferState } from "../../context/transfer-context";
-import { useModalAlert } from "../../context/modal-alert-context";
+import { useAlert } from "../../context/alert-context";
 
 const renderField = <T extends Record<string, any>>(
   field: FieldDefinition<T>,
@@ -79,29 +79,57 @@ const renderField = <T extends Record<string, any>>(
 type FormProps = {
   formOpen: boolean;
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  contextHook: () => TransferState;
+  contextState: TransferState;
 };
 
-const Form = ({ formOpen, setFormOpen, contextHook }: FormProps) => {
+const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
   const {
     formData,
     formSteps,
     handleFormData,
-    resetFormData,
     createTransfer: onSubmit,
-  } = contextHook();
+  } = contextState;
+  const {
+    modal: { alert, handleSetAlert, resetAlert },
+  } = useAlert();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const nextStep = () =>
+  const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+    resetAlert();
+  };
+
+  const nextStepWithValidation = () => {
+    const current = formSteps[currentStep];
+
+    if (current.validate) {
+      const valid = current.validate(formData);
+      if (!valid.success) return handleSetAlert(valid);
+      return nextStep();
+    }
+
+    const missing = current.fields?.filter(
+      (f) => f.required && !formData[f.key]
+    );
+
+    if (missing && missing?.length > 0) {
+      const payload = {
+        success: false,
+        message: `${missing[0].label}は必須項目です。`,
+      };
+      return handleSetAlert(payload);
+    }
+
+    return nextStep();
+  };
+
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
-  const { message, error } = useModalAlert();
 
   if (!formSteps || formSteps.length === 0) return null;
 
   return (
     <Modal isOpen={formOpen} onClose={() => setFormOpen(false)}>
-      <Alert message={message} error={error} />
+      <Alert success={alert?.success || false} message={alert?.message} />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
         {"新規データ作成"}
       </h3>
@@ -143,18 +171,16 @@ const Form = ({ formOpen, setFormOpen, contextHook }: FormProps) => {
           text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
           color: "green",
           disabled: currentStep === formSteps.length,
-          onClick: currentStep === formSteps.length - 1 ? onSubmit : nextStep,
+          onClick:
+            currentStep === formSteps.length - 1
+              ? onSubmit
+              : nextStepWithValidation,
         }}
         deny={{
           text: "戻る",
           color: "red",
           onClick: prevStep,
           disabled: currentStep === 0,
-        }}
-        reset={{
-          text: "リセット",
-          color: "gray",
-          onClick: resetFormData,
         }}
       />
     </Modal>
