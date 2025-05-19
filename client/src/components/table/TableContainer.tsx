@@ -11,19 +11,19 @@ import { TransferState } from "../../context/transfer-context";
 type TableContainerProps = {
   title: string;
   headers: TableHeader[];
-  contextHook: () => TransferState;
+  contextState: TransferState;
 };
 
 const TableContainer = ({
   title,
   headers,
-  contextHook,
+  contextState,
 }: TableContainerProps) => {
   const { data: sortedData } = useSort();
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("wide");
   const [formOpen, setFormOpen] = useState<boolean>(false);
 
-  const { transfers } = contextHook();
+  const { transfers } = contextState;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
@@ -34,7 +34,7 @@ const TableContainer = ({
       <Form
         formOpen={formOpen}
         setFormOpen={setFormOpen}
-        contextHook={contextHook}
+        contextState={contextState}
       />
       <TableToolbar
         rowSpacing={rowSpacing}
