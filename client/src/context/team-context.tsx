@@ -6,10 +6,10 @@ import {
   useState,
 } from "react";
 import { Team } from "../types/models";
-import { APIError } from "../types/types";
+import { APIError, ResponseStatus } from "../types/types";
 import api from "../lib/axios";
 import { API_ROUTES } from "../lib/apiRoutes";
-import { useModalAlert } from "./modal-alert-context";
+import { useAlert } from "./alert-context";
 
 type TeamState = {
   teams: Team[];
@@ -18,20 +18,28 @@ type TeamState = {
 const TeamContext = createContext<TeamState>({ teams: [] });
 
 const TeamProvider = ({ children }: { children: ReactNode }) => {
-  const { handleSetAlert } = useModalAlert();
+  const {
+    modal: { handleSetAlert },
+  } = useAlert();
   const [teams, setTeams] = useState<Team[]>([]);
 
   const readAllTeam = async () => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TEAM.GET_ALL);
       const teams = res.data.data as Team[];
       setTeams(teams);
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 

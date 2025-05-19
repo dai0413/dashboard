@@ -1,38 +1,64 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { APIError } from "../types/types";
+import { ResponseStatus } from "../types/types";
 
 type AlertState = {
-  message: string | null;
-  error: APIError;
-  handleSetAlert: (value: string | null | APIError) => void;
+  main: {
+    alert: ResponseStatus;
+    handleSetAlert: (value: ResponseStatus) => void;
+    resetAlert: () => void;
+  };
+  modal: {
+    alert: ResponseStatus;
+    handleSetAlert: (value: ResponseStatus) => void;
+    resetAlert: () => void;
+  };
 };
 
 const defaultValue: AlertState = {
-  message: null,
-  error: {},
-  handleSetAlert: () => {},
+  main: {
+    alert: { success: null },
+    handleSetAlert: () => {},
+    resetAlert: () => {},
+  },
+  modal: {
+    alert: { success: null },
+    handleSetAlert: () => {},
+    resetAlert: () => {},
+  },
 };
 
 const AlertContext = createContext<AlertState>(defaultValue);
 
 const AlertProvider = ({ children }: { children: ReactNode }) => {
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setErrors] = useState<APIError>(defaultValue.error);
+  const [mainAlert, setMainAlert] = useState<ResponseStatus>(
+    defaultValue.main.alert
+  );
 
-  const handleSetAlert = (value: string | null | APIError) => {
-    if (value && typeof value === "object") {
-      setMessage(null);
-      setErrors(value as APIError);
-    } else {
-      setMessage(value as string | null);
-      setErrors(defaultValue.error);
-    }
+  const MainHandleSetAlert = (value: ResponseStatus) => {
+    setMainAlert(value);
   };
+  const MainResetAlert = () => MainHandleSetAlert(defaultValue.modal.alert);
+
+  const [modalAlert, setModalAlert] = useState<ResponseStatus>(
+    defaultValue.modal.alert
+  );
+
+  const ModalHandleSetAlert = (value: ResponseStatus) => {
+    setModalAlert(value);
+  };
+  const ModalResetAlert = () => ModalHandleSetAlert(defaultValue.modal.alert);
 
   const value = {
-    message,
-    error,
-    handleSetAlert,
+    main: {
+      alert: mainAlert,
+      handleSetAlert: MainHandleSetAlert,
+      resetAlert: MainResetAlert,
+    },
+    modal: {
+      alert: modalAlert,
+      handleSetAlert: ModalHandleSetAlert,
+      resetAlert: ModalResetAlert,
+    },
   };
 
   return (

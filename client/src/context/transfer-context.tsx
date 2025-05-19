@@ -8,8 +8,8 @@ import {
 import { Transfer, TransferForm, TransferPost } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
-import { useModalAlert } from "./modal-alert-context";
-import { APIError } from "../types/types";
+import { useAlert } from "./alert-context";
+import { APIError, ResponseStatus } from "../types/types";
 import { FormStep } from "../types/form";
 
 import data from "../../test_data/transfers.json";
@@ -63,7 +63,9 @@ const defaultValue = {
 const TransferContext = createContext<TransferState>(defaultValue);
 
 const TransferProvider = ({ children }: { children: ReactNode }) => {
-  const { handleSetAlert } = useModalAlert();
+  const {
+    modal: { handleSetAlert },
+  } = useAlert();
   const { teams } = useTeam();
 
   const [transfers, setTransfers] = useState<Transfer[]>(
@@ -90,50 +92,69 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   }, [teams]);
 
   const createTransfer = async () => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.post(API_ROUTES.TRANSFER.CREATE, formData);
       const transfer = res.data.data as Transfer;
       setTransfers((prev) => [...prev, transfer]);
       setFormData(initialFormData);
-      alertData = res.data?.message;
+
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 
   const readAllTransfer = async () => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL);
       const transfers = res.data.data as Transfer[];
       setTransfers(transfers);
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 
   const readTransfer = async (id: string) => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TRANSFER.DETAIL(id));
       const transfer = res.data.data as Transfer;
       setSelectedTransfer(transfer);
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 
   const updateTransfer = async (id: string) => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.patch(
         API_ROUTES.TRANSFER.UPDATE(id),
@@ -142,24 +163,36 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       setTransfers((prev) =>
         prev.map((t) => (t._id === id ? res.data.data : t))
       );
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 
   const deleteTransfer = async (id: string) => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.delete(API_ROUTES.TRANSFER.DELETE(id));
       setTransfers((prev) => prev.filter((t) => t._id !== id));
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 

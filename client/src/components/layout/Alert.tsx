@@ -1,40 +1,18 @@
 import { useEffect, useState } from "react";
-import { APIError } from "../../types/types";
+import { ResponseStatus } from "../../types/types";
 
-type AlertProps = {
-  message: string | null;
-  error: APIError;
-};
-
-const Alert = ({ message, error }: AlertProps) => {
-  const [errMesDisplay, setErrMesDisplay] = useState<boolean>(false);
-  const [sucMesDisplay, setSucMesDisplay] = useState<boolean>(false);
+const Alert = ({ success, message }: ResponseStatus) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log(message);
-    if (message) {
-      setSucMesDisplay(true);
+    setIsOpen(true);
+  }, [success]);
 
-      const timer = setTimeout(() => {
-        setSucMesDisplay(false);
-      }, 5000); // 10秒後に消える
-
-      return () => clearTimeout(timer); // クリーンアップ
-    }
-  }, [message]);
-
-  useEffect(() => {
-    console.log(error);
-    if (error.error?.message) {
-      setErrMesDisplay(true);
-    }
-  }, [error.error]);
-
-  const renderMessage = (isError: boolean, message: string) => {
-    const bgColor = isError ? "bg-red-100" : "bg-green-100";
-    const borderColor = isError ? "border-red-400" : "border-green-400";
-    const textColor = isError ? "text-red-700" : "text-green-700";
-    const iconColor = isError ? "text-red-500" : "text-green-500";
+  const renderMessage = (success: boolean, message: string) => {
+    const bgColor = success ? "bg-green-100" : "bg-red-100";
+    const borderColor = success ? "border-green-400" : "border-red-400";
+    const textColor = success ? "text-green-700" : "text-red-700";
+    const iconColor = success ? "text-green-500" : "text-red-500";
 
     return (
       <div
@@ -44,7 +22,7 @@ const Alert = ({ message, error }: AlertProps) => {
         <strong className="font-bold">{message}</strong>
         <span
           className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
-          onClick={() => setErrMesDisplay(false)}
+          onClick={() => setIsOpen(false)}
         >
           <svg
             className={`fill-current h-6 w-6 ${iconColor}`}
@@ -60,10 +38,8 @@ const Alert = ({ message, error }: AlertProps) => {
     );
   };
 
-  if (error.error?.message && errMesDisplay)
-    return renderMessage(true, error.error?.message);
-
-  if (message && sucMesDisplay) return renderMessage(false, message);
+  if (isOpen && success && message) return renderMessage(true, message);
+  if (isOpen && !success && message) return renderMessage(false, message);
 
   return <></>;
 };

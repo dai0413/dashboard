@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import api from "../lib/axios";
 import { useAlert } from "./alert-context";
-import { APIError } from "../types/types";
+import { APIError, ResponseStatus } from "../types/types";
 import { API_ROUTES } from "../lib/apiRoutes";
 
 type AuthState = {
@@ -30,14 +30,16 @@ let accessTokenRef: string | null = null;
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const { handleSetAlert } = useAlert();
+  const {
+    main: { handleSetAlert },
+  } = useAlert();
 
   const register = async (
     user_name: string,
     email: string,
     password: string
-  ) => {
-    let alertData: string | APIError | null = null;
+  ): Promise<boolean> => {
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.post(API_ROUTES.AUTH.REGISTER, {
         user_name,
@@ -46,45 +48,61 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       setAccessToken(res.data?.accessToken);
       accessTokenRef = res.data?.accessToken;
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
+      handleSetAlert(alert);
       return true;
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
+      handleSetAlert(alert);
       return false;
-    } finally {
-      console.log("alert is ", alertData);
-      handleSetAlert(alertData);
     }
   };
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.post(API_ROUTES.AUTH.LOGIN, { email, password });
       setAccessToken(res.data?.accessToken);
       accessTokenRef = res.data?.accessToken;
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
+      handleSetAlert(alert);
       return true;
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
-      console.log("login false");
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
+      handleSetAlert(alert);
       return false;
-    } finally {
-      handleSetAlert(alertData);
     }
   };
 
   const logout = async () => {
-    let alertData: string | APIError | null = null;
+    let alert: ResponseStatus = { success: false };
     try {
       const res = await api.post(API_ROUTES.AUTH.LOGOUT, {});
       setAccessToken(null);
       accessTokenRef = null;
-      alertData = res.data?.message;
+      alert = { success: true, message: res.data?.message };
     } catch (err: any) {
-      alertData = err.response?.data as APIError;
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
     } finally {
-      handleSetAlert(alertData);
+      handleSetAlert(alert);
     }
   };
 
