@@ -4,9 +4,6 @@ import { useTransfer, TransferProvider } from "../context/transfer-context";
 const Transfer = () => {
   const transferContext = useTransfer();
 
-  const { formSteps } = transferContext;
-
-  console.log("form steps in Transfer component", formSteps.length);
   return (
     <TransferProvider>
       <TableContainer

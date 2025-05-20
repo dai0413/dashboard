@@ -6,6 +6,7 @@ import Alert from "../layout/Alert";
 import { TransferState } from "../../context/transfer-context";
 import { useAlert } from "../../context/alert-context";
 import { useOptions } from "../../context/options-provider";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const renderField = <T extends Record<string, any>>(
   field: FieldDefinition<T>,
@@ -41,17 +42,100 @@ const renderField = <T extends Record<string, any>>(
           ))}
         </select>
       ) : type === "multiurl" ? (
-        <textarea
-          className="w-full border border-gray-300 rounded px-3 py-2"
-          value={(formData[key] ?? []).join("\n")}
-          onChange={(e) => {
-            const urls = e.target.value
-              .split("\n")
-              .map((s) => s.trim())
-              .filter(Boolean);
-            handleFormData(key, urls);
-          }}
-        />
+        <>
+          {(formData[key] ?? [""]).map((item: string, index: number) => (
+            <div key={index} className="flex items-center space-x-2 mb-2">
+              <textarea
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                value={item}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const newValue = [...(formData[key] ?? [])];
+                  newValue[index] = value;
+
+                  // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
+                  if (
+                    index === newValue.length - 1 &&
+                    value.trim() !== "" &&
+                    !newValue.includes("")
+                  ) {
+                    newValue.push("");
+                  }
+
+                  handleFormData(key, newValue);
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={() => {
+                  const newValue = [...formData[key]];
+                  newValue.splice(index, 1);
+                  handleFormData(key, newValue);
+                }}
+                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+          ))}
+        </>
+      ) : type === "multiselect" ? (
+        <>
+          {(formData[key] ?? []).map((item: string, index: number) => (
+            <div key={index} className="flex items-center space-x-2 mb-2">
+              <select
+                className="flex-1 border border-gray-300 rounded px-3 py-2"
+                value={item}
+                onChange={(e) => {
+                  const newValue = [...formData[key]];
+                  newValue[index] = e.target.value;
+                  handleFormData(key, newValue);
+                }}
+              >
+                <option value="">未選択</option>
+                {getOptions(field.key as string)?.map((option) => (
+                  <option key={option.key} value={option.key}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const newValue = [...formData[key]];
+                  newValue.splice(index, 1);
+                  handleFormData(key, newValue);
+                }}
+                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+          ))}
+
+          <select
+            className="w-full border border-gray-300 rounded px-3 py-2"
+            value=""
+            onChange={(e) => {
+              const selected = e.target.value;
+              if (selected) {
+                const current = formData[key] ?? [];
+                handleFormData(key, [...current, selected]);
+              }
+            }}
+          >
+            <option value="">未選択</option>
+            {getOptions(field.key as string)
+              ?.filter((option) => !(formData[key] ?? []).includes(option.key))
+              .map((option) => (
+                <option key={option.key} value={option.key}>
+                  {option.label}
+                </option>
+              ))}
+          </select>
+        </>
       ) : (
         <input
           type={inputType}
@@ -111,18 +195,26 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
       return nextStep();
     }
 
-    const missing = current.fields?.filter(
-      (f) => f.required && !formData[f.key]
-    );
+    const missing = current.fields?.filter((f) => {
+      const value = formData[f.key];
 
-    if (missing && missing?.length > 0) {
+      if (!f.required) return false;
+
+      if (Array.isArray(value)) {
+        return value.filter((v) => v && v.trim() !== "").length === 0;
+      }
+
+      return !value || (typeof value === "string" && value.trim() === "");
+    });
+
+    if (missing && missing.length > 0) {
       const payload = {
         success: false,
         message: `${missing[0].label}は必須項目です。`,
       };
       return handleSetAlert(payload);
     }
-
+    console.log(formData);
     return nextStep();
   };
 
@@ -184,6 +276,11 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
                   } catch {
                     // 無効な日付ならそのまま表示
                   }
+                }
+
+                if (field?.type === "multiurl" && value) {
+                  const urls = value as string[];
+                  displayValue = urls.filter((u) => u.trim() !== "").length;
                 }
 
                 return (
