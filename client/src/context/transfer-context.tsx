@@ -14,11 +14,7 @@ import { FormStep } from "../types/form";
 
 import data from "../../test_data/transfers.json";
 import { transformTransfers } from "../lib/parseDates";
-import { useTeam } from "./team-context";
-import {
-  createConfirmationStep,
-  createTransferFormSteps,
-} from "../lib/form-steps";
+import { createConfirmationStep, steps } from "../lib/form-steps";
 
 const initialFormData: TransferForm = {};
 
@@ -66,7 +62,6 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const {
     modal: { handleSetAlert },
   } = useAlert();
-  const { teams } = useTeam();
 
   const [transfers, setTransfers] = useState<Transfer[]>(
     transformTransfers(data)
@@ -82,14 +77,6 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
 
   const [formSteps, setFormSteps] = useState<FormStep<TransferForm>[]>([]);
-
-  useEffect(() => {
-    const steps = [
-      ...createTransferFormSteps([], teams),
-      createConfirmationStep<TransferForm>(),
-    ];
-    setFormSteps(steps);
-  }, [teams]);
 
   const createTransfer = async () => {
     let alert: ResponseStatus = { success: false };
@@ -212,6 +199,10 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     console.log("reseting");
     setFormData(initialFormData);
   };
+
+  useEffect(() => {
+    setFormSteps([...steps, createConfirmationStep<TransferForm>()]);
+  }, []);
 
   const value = {
     transfers,

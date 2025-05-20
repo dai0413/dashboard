@@ -5,13 +5,15 @@ import { FieldDefinition } from "../../types/form";
 import Alert from "../layout/Alert";
 import { TransferState } from "../../context/transfer-context";
 import { useAlert } from "../../context/alert-context";
+import { useOptions } from "../../context/options-provider";
 
 const renderField = <T extends Record<string, any>>(
   field: FieldDefinition<T>,
   formData: any,
   handleFormData: (key: keyof T, value: any) => void
 ) => {
-  const { key, label, type, options } = field;
+  const { key, label, type } = field;
+  const { getOptions } = useOptions();
 
   const inputType =
     type === "number" ? "number" : type === "date" ? "date" : "text";
@@ -32,7 +34,7 @@ const renderField = <T extends Record<string, any>>(
           }}
         >
           <option value="">未選択</option>
-          {options?.map((option) => (
+          {getOptions(field.key as string)?.map((option) => (
             <option key={option.key} value={option.key}>
               {option.label}
             </option>
@@ -92,6 +94,7 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
   const {
     modal: { alert, handleSetAlert, resetAlert },
   } = useAlert();
+  const { getOptions } = useOptions();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
   const nextStep = () => {
@@ -125,8 +128,6 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
-  if (!formSteps || formSteps.length === 0) return null;
-
   return (
     <Modal isOpen={formOpen} onClose={() => setFormOpen(false)}>
       <Alert success={alert?.success || false} message={alert?.message} />
@@ -134,55 +135,86 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
         {"新規データ作成"}
       </h3>
 
-      <div className="mb-4 text-sm text-gray-500">
-        ステップ {currentStep + 1} / {formSteps.length}：
-        {formSteps[currentStep].stepLabel}
-      </div>
+      {!formSteps || formSteps.length === 0 ? null : (
+        <>
+          <div className="mb-4 text-sm text-gray-500">
+            ステップ {currentStep + 1} / {formSteps.length}：
+            {formSteps[currentStep].stepLabel}
+          </div>
 
-      <div className="flex space-x-2 mb-4">
-        {formSteps.map((_, index) => (
-          <div
-            key={index}
-            className={`flex-1 h-2 rounded-full ${
-              index <= currentStep ? "bg-green-500" : "bg-gray-300"
-            }`}
-          ></div>
-        ))}
-      </div>
+          <div className="flex space-x-2 mb-4">
+            {formSteps.map((_, index) => (
+              <div
+                key={index}
+                className={`flex-1 h-2 rounded-full ${
+                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                }`}
+              ></div>
+            ))}
+          </div>
 
-      {formSteps[currentStep].type === "form" &&
-      formSteps[currentStep].fields ? (
-        formSteps[currentStep].fields.map((field) =>
-          renderField(field, formData, handleFormData)
-        )
-      ) : (
-        <div className="space-y-2 text-sm text-gray-700">
-          {Object.entries(formData).map(([key, value]) => (
-            <div key={key} className="flex justify-between border-b py-1">
-              <span className="font-semibold">{key}</span>
-              <span>{String(value)}</span>
+          {formSteps[currentStep].type === "form" &&
+          formSteps[currentStep].fields ? (
+            formSteps[currentStep].fields.map((field) =>
+              renderField(field, formData, handleFormData)
+            )
+          ) : (
+            <div className="space-y-2 text-sm text-gray-700">
+              {Object.entries(formData).map(([key, value]) => {
+                const field = formSteps
+                  .flatMap((step) => step.fields || [])
+                  .find((f) => f.key === key);
+
+                let displayValue = value;
+
+                if (field?.type === "select") {
+                  const options = getOptions(key);
+                  const selected = options?.find((opt) => opt.key === value);
+                  displayValue = selected?.label || "未選択";
+                }
+
+                if (field?.type === "date" && value) {
+                  try {
+                    const date = new Date(value as string);
+                    displayValue = new Intl.DateTimeFormat("ja-JP", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }).format(date);
+                  } catch {
+                    // 無効な日付ならそのまま表示
+                  }
+                }
+
+                return (
+                  <div key={key} className="flex justify-between border-b py-1">
+                    <span className="font-semibold">{field?.label ?? key}</span>
+                    <span>{String(displayValue)}</span>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
-      <LinkButtonGroup
-        approve={{
-          text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
-          color: "green",
-          disabled: currentStep === formSteps.length,
-          onClick:
-            currentStep === formSteps.length - 1
-              ? onSubmit
-              : nextStepWithValidation,
-        }}
-        deny={{
-          text: "戻る",
-          color: "red",
-          onClick: prevStep,
-          disabled: currentStep === 0,
-        }}
-      />
+          <LinkButtonGroup
+            approve={{
+              text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
+              color: "green",
+              disabled: currentStep === formSteps.length,
+              onClick:
+                currentStep === formSteps.length - 1
+                  ? onSubmit
+                  : nextStepWithValidation,
+            }}
+            deny={{
+              text: "戻る",
+              color: "red",
+              onClick: prevStep,
+              disabled: currentStep === 0,
+            }}
+          />
+        </>
+      )}
     </Modal>
   );
 };
