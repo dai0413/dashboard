@@ -78,10 +78,27 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
 
   const [formSteps, setFormSteps] = useState<FormStep<TransferForm>[]>([]);
 
+  const cleanData = (data: typeof formData) => {
+    const cleanedData: any = {};
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        cleanedData[key] = value.filter((v) => v && v.trim() !== "");
+      } else {
+        cleanedData[key] = value;
+      }
+    });
+
+    return cleanedData;
+  };
+
   const createTransfer = async () => {
     let alert: ResponseStatus = { success: false };
+    const cleanedData = cleanData(formData);
+    console.log(cleanedData);
+
     try {
-      const res = await api.post(API_ROUTES.TRANSFER.CREATE, formData);
+      const res = await api.post(API_ROUTES.TRANSFER.CREATE, cleanedData);
       const transfer = res.data.data as Transfer;
       setTransfers((prev) => [...prev, transfer]);
       setFormData(initialFormData);
@@ -188,7 +205,10 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     setSelectedTransfer(selectedTransfer || null);
   };
 
-  const handleFormData = (key: keyof Transfer, value: string) => {
+  const handleFormData = <K extends keyof Transfer>(
+    key: K,
+    value: Transfer[K]
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [key]: value,

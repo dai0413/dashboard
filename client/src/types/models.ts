@@ -57,7 +57,7 @@ export type Transfer = {
   from_team: Team | null;
   to_team: Team | null;
   player: Player;
-  position: Position | null;
+  position: Position[] | null;
   form: Form | null;
   number: number | null;
   from_date: Date;

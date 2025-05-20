@@ -1,6 +1,12 @@
 import { ResponseStatus } from "./types";
 
-type FieldType = "select" | "input" | "date" | "number" | "multiurl";
+type FieldType =
+  | "input" // <input type = "text">
+  | "date" // <input type = "date">
+  | "number" // <input type = "number">
+  | "select" // <select>
+  | "multiurl" // .map {<input type = "text">}
+  | "multiselect"; // .map {<select>}
 type StepType = "form" | "confirm";
 
 export interface FieldDefinition<T extends Record<string, any>> {

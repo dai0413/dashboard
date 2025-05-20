@@ -63,20 +63,18 @@ export const steps: FormStep<TransferForm>[] = [
         key: "form",
         label: "移籍形態",
         type: "select",
-        // options: FormOptions.map((op) => ({ label: op, key: op })),
       },
       { key: "number", label: "背番号", type: "number" },
       {
         key: "position",
         label: "ポジション",
-        type: "select",
-        // options: PositionOptions.map((op) => ({ label: op, key: op })),
+        type: "multiselect",
       },
     ],
   },
   {
     stepLabel: "公式発表のURLを入力",
     type: "form",
-    fields: [{ key: "URL", label: "URL", type: "input" }],
+    fields: [{ key: "URL", label: "URL", type: "multiurl" }],
   },
 ];
