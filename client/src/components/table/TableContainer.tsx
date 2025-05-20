@@ -7,6 +7,7 @@ import { Sort, Filter, Form } from "../modals/index";
 import { TableHeader } from "../../types/types";
 import { useSort } from "../../context/sort-context";
 import { TransferState } from "../../context/transfer-context";
+import { OptionsWrapper } from "../../context/options-provider";
 
 type TableContainerProps = {
   title: string;
@@ -31,11 +32,13 @@ const TableContainer = ({
 
       <Filter />
       <Sort data={transfers} />
-      <Form
-        formOpen={formOpen}
-        setFormOpen={setFormOpen}
-        contextState={contextState}
-      />
+      <OptionsWrapper>
+        <Form
+          formOpen={formOpen}
+          setFormOpen={setFormOpen}
+          contextState={contextState}
+        />
+      </OptionsWrapper>
       <TableToolbar
         rowSpacing={rowSpacing}
         setRowSpacing={setRowSpacing}
