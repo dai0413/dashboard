@@ -6,7 +6,8 @@ type FieldType =
   | "number" // <input type = "number">
   | "select" // <select>
   | "multiurl" // .map {<input type = "text">}
-  | "multiselect"; // .map {<select>}
+  | "multiselect" // .map {<select>}
+  | "table"; // <table>
 type StepType = "form" | "confirm";
 
 export interface FieldDefinition<T extends Record<string, any>> {

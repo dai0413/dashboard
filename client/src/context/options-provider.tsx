@@ -1,19 +1,34 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { PlayerProvider, usePlayer } from "./player-context";
 import { TeamProvider, useTeam } from "./team-context";
 import { FormOptions, PositionOptions } from "../types/models";
 
 type OptionsState = {
   getOptions: (key: string) => { key: string; label: string }[];
+  updateFilter: (key: string, value: string) => void;
+  filters: { [key: string]: { value: string } };
 };
 
 const OptionContext = createContext<OptionsState>({
   getOptions: () => [],
+  updateFilter: () => {},
+  filters: {},
 });
 
 type Props = { children: React.ReactNode };
 
 const OptionProvider = ({ children }: Props) => {
+  const [filters, setFilters] = useState<{ [key: string]: { value: string } }>(
+    {}
+  );
+
+  const updateFilter = (key: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: { value },
+    }));
+  };
+
   const { players } = usePlayer();
   const { teams } = useTeam();
 
@@ -23,7 +38,7 @@ const OptionProvider = ({ children }: Props) => {
   }));
 
   const teamOptions = teams.map((t) => ({
-    label: t.abbr,
+    label: t.abbr || t.team,
     key: t._id,
   }));
 
@@ -31,27 +46,34 @@ const OptionProvider = ({ children }: Props) => {
   const positionOptions = PositionOptions.map((p) => ({ label: p, key: p }));
 
   const getOptions = (key: string) => {
+    let options: { key: string; label: string }[] = [];
+
     switch (key) {
       case "player":
-        return playerOptions;
+        options = playerOptions;
+        break;
       case "from_team":
       case "to_team":
-        return teamOptions;
+        options = teamOptions;
+        break;
       case "form":
-        return formOptions;
+        options = formOptions;
+        break;
       case "position":
-        return positionOptions;
+        options = positionOptions;
+        break;
       default:
         return [];
     }
+
+    const filterValue = filters[key]?.value?.toLowerCase() ?? "";
+    return options.filter((opt) =>
+      opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
+    );
   };
 
   return (
-    <OptionContext.Provider
-      value={{
-        getOptions,
-      }}
-    >
+    <OptionContext.Provider value={{ getOptions, updateFilter, filters }}>
       {children}
     </OptionContext.Provider>
   );
