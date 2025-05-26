@@ -7,6 +7,7 @@ import { TransferState } from "../../context/transfer-context";
 import { useAlert } from "../../context/alert-context";
 import { useOptions } from "../../context/options-provider";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Table } from "../table";
 
 const renderField = <T extends Record<string, any>>(
   field: FieldDefinition<T>,
@@ -14,7 +15,7 @@ const renderField = <T extends Record<string, any>>(
   handleFormData: (key: keyof T, value: any) => void
 ) => {
   const { key, label, type } = field;
-  const { getOptions } = useOptions();
+  const { getOptions, updateFilter, filters } = useOptions();
 
   const inputType =
     type === "number" ? "number" : type === "date" ? "date" : "text";
@@ -25,7 +26,37 @@ const renderField = <T extends Record<string, any>>(
         {label}
       </label>
 
-      {type === "select" ? (
+      {type === "table" ? (
+        <>
+          <div className="mb-2 text-gray-700">
+            選択中:{" "}
+            {getOptions(field.key as string).find(
+              (f) => f.key === formData[key]
+            )?.label || "未選択"}
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              value={filters[field.key as string]?.value || ""}
+              onChange={(e) =>
+                updateFilter(field.key as string, e.target.value)
+              }
+              placeholder="フィルター..."
+              className="px-4 py-2 border rounded-md w-full"
+            />
+          </div>
+          <Table
+            data={getOptions(field.key as string)}
+            headers={[{ label: "名前", field: "label" }]}
+            form={true}
+            onClick={(row) => {
+              handleFormData(key, row.key);
+            }}
+            selectedKey={formData[key]}
+            itemsPerPage={10}
+          />
+        </>
+      ) : type === "select" ? (
         <select
           className="w-full border border-gray-300 rounded px-3 py-2"
           value={formData[key] ?? ""}
@@ -173,6 +204,7 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
     formData,
     formSteps,
     handleFormData,
+    resetFormData,
     createTransfer: onSubmit,
   } = contextState;
   const {
@@ -181,6 +213,12 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
   const { getOptions } = useOptions();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
+
+  const sendData = () => {
+    onSubmit();
+    setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
+  };
+
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
     resetAlert();
@@ -220,8 +258,21 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
+  const closeForm = () => {
+    resetFormData();
+    setCurrentStep(0);
+    setFormOpen(false);
+    resetAlert();
+  };
+
+  const nextData = () => {
+    setCurrentStep(0);
+    resetFormData();
+    resetAlert();
+  };
+
   return (
-    <Modal isOpen={formOpen} onClose={() => setFormOpen(false)}>
+    <Modal isOpen={formOpen} onClose={closeForm}>
       <Alert success={alert?.success || false} message={alert?.message} />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
         {"新規データ作成"}
@@ -259,7 +310,7 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
 
                 let displayValue = value;
 
-                if (field?.type === "select") {
+                if (field?.type === "select" || field?.type === "table") {
                   const options = getOptions(key);
                   const selected = options?.find((opt) => opt.key === value);
                   displayValue = selected?.label || "未選択";
@@ -293,23 +344,37 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
             </div>
           )}
 
-          <LinkButtonGroup
-            approve={{
-              text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
-              color: "green",
-              disabled: currentStep === formSteps.length,
-              onClick:
-                currentStep === formSteps.length - 1
-                  ? onSubmit
-                  : nextStepWithValidation,
-            }}
-            deny={{
-              text: "戻る",
-              color: "red",
-              onClick: prevStep,
-              disabled: currentStep === 0,
-            }}
-          />
+          {currentStep === formSteps.length - 1 && alert.success ? (
+            <LinkButtonGroup
+              approve={{
+                text: "次のデータへ",
+                color: "green",
+                onClick: nextData,
+              }}
+              deny={{
+                text: "入力終了",
+                color: "red",
+                onClick: closeForm,
+              }}
+            />
+          ) : (
+            <LinkButtonGroup
+              approve={{
+                text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
+                color: "green",
+                onClick:
+                  currentStep === formSteps.length - 1
+                    ? sendData
+                    : nextStepWithValidation,
+              }}
+              deny={{
+                text: "戻る",
+                color: "red",
+                onClick: prevStep,
+                disabled: currentStep === 0,
+              }}
+            />
+          )}
         </>
       )}
     </Modal>

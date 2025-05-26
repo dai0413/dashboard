@@ -12,8 +12,7 @@ import { useAlert } from "./alert-context";
 import { APIError, ResponseStatus } from "../types/types";
 import { FormStep } from "../types/form";
 
-import data from "../../test_data/transfers.json";
-import { transformTransfers } from "../lib/parseDates";
+import { transformTransfer, transformTransfers } from "../lib/parseDates";
 import { createConfirmationStep, steps } from "../lib/form-steps";
 
 const initialFormData: TransferForm = {};
@@ -39,7 +38,7 @@ export type TransferState = {
 };
 
 const defaultValue = {
-  transfers: transformTransfers(data) as Transfer[],
+  transfers: [],
   selectedTransfer: null,
   formData: initialFormData,
   handleFormData: () => {},
@@ -63,13 +62,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
-  const [transfers, setTransfers] = useState<Transfer[]>(
-    transformTransfers(data)
-  );
+  const [transfers, setTransfers] = useState<Transfer[]>([]);
 
   useEffect(() => {
-    setTransfers(transformTransfers(data));
-  }, [data]);
+    // setTransfers(transformTransfers(data));
+    readAllTransfer();
+  }, []);
 
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(
     null
@@ -100,7 +98,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.post(API_ROUTES.TRANSFER.CREATE, cleanedData);
       const transfer = res.data.data as Transfer;
-      setTransfers((prev) => [...prev, transfer]);
+      setTransfers((prev) => [...prev, transformTransfer(transfer)]);
       setFormData(initialFormData);
 
       alert = { success: true, message: res.data?.message };
@@ -122,7 +120,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL);
       const transfers = res.data.data as Transfer[];
-      setTransfers(transfers);
+      setTransfers(transformTransfers(transfers));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -165,7 +163,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
         selectedTransfer
       );
       setTransfers((prev) =>
-        prev.map((t) => (t._id === id ? res.data.data : t))
+        prev.map((t) => (t._id === id ? transformTransfer(res.data.data) : t))
       );
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
@@ -205,14 +203,25 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     setSelectedTransfer(selectedTransfer || null);
   };
 
-  const handleFormData = <K extends keyof Transfer>(
+  const handleFormData = <K extends keyof TransferForm>(
     key: K,
-    value: Transfer[K]
+    value: TransferForm[K]
   ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setFormData((prev) => {
+      // 同じ値をもう一度クリック → 選択解除
+      if (prev[key] === value) {
+        return {
+          ...prev,
+          [key]: undefined,
+        };
+      }
+
+      // 違う値なら選択更新
+      return {
+        ...prev,
+        [key]: value,
+      };
+    });
   };
 
   const resetFormData = () => {

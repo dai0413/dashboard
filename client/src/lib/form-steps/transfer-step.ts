@@ -9,24 +9,30 @@ export const steps: FormStep<TransferForm>[] = [
       {
         key: "player",
         label: "選手",
-        type: "select",
+        type: "table",
         required: true,
       },
     ],
   },
   {
-    stepLabel: "移籍元・先を選択",
+    stepLabel: "移籍元を選択",
     type: "form",
     fields: [
       {
         key: "from_team",
         label: "移籍元",
-        type: "select",
+        type: "table",
       },
+    ],
+  },
+  {
+    stepLabel: "移籍先を選択",
+    type: "form",
+    fields: [
       {
         key: "to_team",
         label: "移籍先",
-        type: "select",
+        type: "table",
       },
     ],
     validate: (formData) => {
