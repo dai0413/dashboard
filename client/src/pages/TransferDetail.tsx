@@ -12,30 +12,29 @@ const TransferDetail = () => {
   const closeLink = "/transfer";
   const navigate = useNavigate();
   const { id } = useParams();
-  const { readTransfer, selectedTransfer, updateTransfer, deleteTransfer } =
-    useTransfer();
+  const { readItem, selected, updateItem, deleteItem } = useTransfer();
   const {
     modal: { alert },
   } = useAlert();
 
   useEffect(() => {
     if (id) {
-      readTransfer(id);
+      readItem(id);
     }
   }, [id]);
 
-  const editOnClick = () => (id ? updateTransfer(id) : undefined);
+  const editOnClick = () => (id ? updateItem(id) : undefined);
 
   const deleteOnClick = () => {
     if (!id) return;
 
     const confirmDelete = window.confirm("本当に削除しますか？");
     if (confirmDelete) {
-      deleteTransfer(id);
+      deleteItem(id);
     }
   };
 
-  return !selectedTransfer ? (
+  return !selected ? (
     <Modal isOpen={true} onClose={() => navigate(closeLink)}>
       {alert.success ? (
         <Alert success={alert?.success || false} message={alert?.message} />
@@ -51,7 +50,7 @@ const TransferDetail = () => {
       </h3>
 
       <div className="space-y-2 text-sm text-gray-700">
-        {Object.entries(selectedTransfer)
+        {Object.entries(selected)
           .filter(([key]) => key !== "_id" && key !== "__v")
           .map(([key, value]) => {
             const field = steps

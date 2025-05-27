@@ -9,20 +9,23 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import { useForm } from "../../context/form-context";
+import { ModelType } from "../../types/models";
 
 type TableToolbarProps = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
-  setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  modelType?: ModelType | null;
 };
 
 const TableToolbar = ({
   rowSpacing,
   setRowSpacing,
-  setFormOpen,
+  modelType,
 }: TableToolbarProps) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
+  const { openForm } = useForm();
 
   return (
     <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
@@ -75,10 +78,7 @@ const TableToolbar = ({
 
       {/* 右側：新規追加ボタン */}
       <button
-        onClick={() => {
-          setFormOpen(true);
-          console.log("open form");
-        }}
+        onClick={() => openForm(modelType || null)}
         className="cursor-pointer flex items-center gap-x-2 text-blue-500"
       >
         <PlusCircleIcon className="w-8 h-8" />

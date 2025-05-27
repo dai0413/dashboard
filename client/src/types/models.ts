@@ -44,6 +44,8 @@ export const FormOptions = [
 
 type Form = (typeof FormOptions)[number] | null;
 
+export type ModelType = `transfer` | `player` | "injury";
+
 export type Label = {
   label: string;
   id: string;
@@ -94,8 +96,6 @@ export type TransferGet = Omit<
   to_team: Label;
 };
 
-export type TransferPatch = Partial<TransferPost>;
-
 export type Injury = {
   _id: string;
   doa: Date;
@@ -110,6 +110,17 @@ export type Injury = {
   erd: Date | null;
   URL: string[] | null;
 };
+
+export type InjuryPost = Omit<
+  Injury,
+  "_id" | "player" | "team" | "now_team"
+> & {
+  player: Player["_id"];
+  from_team: Team["_id"] | null;
+  to_team: Team["_id"] | null;
+};
+
+export type InjuryForm = Partial<InjuryPost>;
 
 export type Team = {
   _id: string;
