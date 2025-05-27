@@ -331,7 +331,9 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
 
                 if (field?.type === "multiurl" && value) {
                   const urls = value as string[];
-                  displayValue = urls.filter((u) => u.trim() !== "").length;
+                  displayValue = `${
+                    urls.filter((u) => u.trim() !== "").length
+                  }件`;
                 }
 
                 return (
