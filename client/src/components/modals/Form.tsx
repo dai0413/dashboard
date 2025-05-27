@@ -1,27 +1,36 @@
-import { useState } from "react";
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui/index";
 import { FieldDefinition } from "../../types/form";
 import Alert from "../layout/Alert";
-import { TransferState } from "../../context/transfer-context";
 import { useAlert } from "../../context/alert-context";
 import { useOptions } from "../../context/options-provider";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Table } from "../table";
+import { useForm } from "../../context/form-context";
+import { TransferForm } from "../../types/models";
 
-const renderField = <T extends Record<string, any>>(
-  field: FieldDefinition<T>,
-  formData: any,
-  handleFormData: (key: keyof T, value: any) => void
-) => {
+type RenderFieldProps<T extends Record<string, any>> = {
+  field: FieldDefinition<T>;
+  formData: T;
+  handleFormData: <K extends keyof T>(key: K, value: T[K]) => void;
+};
+
+const RenderField = <T extends Record<string, any>>({
+  field,
+  formData,
+  handleFormData,
+}: RenderFieldProps<T>) => {
   const { key, label, type } = field;
   const { getOptions, updateFilter, filters } = useOptions();
 
   const inputType =
     type === "number" ? "number" : type === "date" ? "date" : "text";
 
+  console.log(formData, key, formData[key]);
+  const stringKey = key as string;
+
   return (
-    <div key={key as string} className="mb-4">
+    <div key={stringKey} className="mb-4">
       <label className="block text-gray-600 text-sm font-medium mb-1">
         {label}
       </label>
@@ -50,7 +59,7 @@ const renderField = <T extends Record<string, any>>(
             headers={[{ label: "名前", field: "label" }]}
             form={true}
             onClick={(row) => {
-              handleFormData(key, row.key);
+              handleFormData(stringKey, row.key as T[keyof T]);
             }}
             selectedKey={formData[key]}
             itemsPerPage={10}
@@ -62,7 +71,7 @@ const renderField = <T extends Record<string, any>>(
           value={formData[key] ?? ""}
           onChange={(e) => {
             const selectedValue = e.target.value || null;
-            handleFormData(key, selectedValue);
+            handleFormData(stringKey, selectedValue as T[keyof T]);
           }}
         >
           <option value="">未選択</option>
@@ -93,7 +102,7 @@ const renderField = <T extends Record<string, any>>(
                     newValue.push("");
                   }
 
-                  handleFormData(key, newValue);
+                  handleFormData(stringKey, newValue as T[keyof T]);
                 }}
               />
 
@@ -102,7 +111,7 @@ const renderField = <T extends Record<string, any>>(
                 onClick={() => {
                   const newValue = [...formData[key]];
                   newValue.splice(index, 1);
-                  handleFormData(key, newValue);
+                  handleFormData(stringKey, newValue as T[keyof T]);
                 }}
                 className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
               >
@@ -121,7 +130,7 @@ const renderField = <T extends Record<string, any>>(
                 onChange={(e) => {
                   const newValue = [...formData[key]];
                   newValue[index] = e.target.value;
-                  handleFormData(key, newValue);
+                  handleFormData(stringKey, newValue as T[keyof T]);
                 }}
               >
                 <option value="">未選択</option>
@@ -137,7 +146,7 @@ const renderField = <T extends Record<string, any>>(
                 onClick={() => {
                   const newValue = [...formData[key]];
                   newValue.splice(index, 1);
-                  handleFormData(key, newValue);
+                  handleFormData(stringKey, newValue as T[keyof T]);
                 }}
                 className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
               >
@@ -153,7 +162,7 @@ const renderField = <T extends Record<string, any>>(
               const selected = e.target.value;
               if (selected) {
                 const current = formData[key] ?? [];
-                handleFormData(key, [...current, selected]);
+                handleFormData(stringKey, [...current, selected] as T[keyof T]);
               }
             }}
           >
@@ -185,7 +194,7 @@ const renderField = <T extends Record<string, any>>(
             } else if (inputType === "date") {
               newValue = new Date(newValue);
             }
-            handleFormData(key, newValue);
+            handleFormData(stringKey, newValue);
           }}
         />
       )}
@@ -193,86 +202,29 @@ const renderField = <T extends Record<string, any>>(
   );
 };
 
-type FormProps = {
-  formOpen: boolean;
-  setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  contextState: TransferState;
-};
-
-const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
+const Form = () => {
   const {
+    isOpen,
+    closeForm,
+
+    prevStep,
+    nextStep,
+    nextData,
+    sendData,
+
+    currentStep,
     formData,
     formSteps,
     handleFormData,
-    resetFormData,
-    createTransfer: onSubmit,
-  } = contextState;
+  } = useForm<TransferForm>();
+
   const {
-    modal: { alert, handleSetAlert, resetAlert },
+    modal: { alert },
   } = useAlert();
   const { getOptions } = useOptions();
 
-  const [currentStep, setCurrentStep] = useState<number>(0);
-
-  const sendData = () => {
-    onSubmit();
-    setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
-  };
-
-  const nextStep = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, formSteps.length - 1));
-    resetAlert();
-  };
-
-  const nextStepWithValidation = () => {
-    const current = formSteps[currentStep];
-
-    if (current.validate) {
-      const valid = current.validate(formData);
-      if (!valid.success) return handleSetAlert(valid);
-      return nextStep();
-    }
-
-    const missing = current.fields?.filter((f) => {
-      const value = formData[f.key];
-
-      if (!f.required) return false;
-
-      if (Array.isArray(value)) {
-        return value.filter((v) => v && v.trim() !== "").length === 0;
-      }
-
-      return !value || (typeof value === "string" && value.trim() === "");
-    });
-
-    if (missing && missing.length > 0) {
-      const payload = {
-        success: false,
-        message: `${missing[0].label}は必須項目です。`,
-      };
-      return handleSetAlert(payload);
-    }
-    console.log(formData);
-    return nextStep();
-  };
-
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
-
-  const closeForm = () => {
-    resetFormData();
-    setCurrentStep(0);
-    setFormOpen(false);
-    resetAlert();
-  };
-
-  const nextData = () => {
-    setCurrentStep(0);
-    resetFormData();
-    resetAlert();
-  };
-
   return (
-    <Modal isOpen={formOpen} onClose={closeForm}>
+    <Modal isOpen={isOpen} onClose={closeForm}>
       <Alert success={alert?.success || false} message={alert?.message} />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
         {"新規データ作成"}
@@ -298,9 +250,17 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
 
           {formSteps[currentStep].type === "form" &&
           formSteps[currentStep].fields ? (
-            formSteps[currentStep].fields.map((field) =>
-              renderField(field, formData, handleFormData)
-            )
+            formSteps[currentStep].fields.map((field) => {
+              console.log(formData, field.key, formData[field.key]);
+              return (
+                <RenderField
+                  key={field.key}
+                  field={field}
+                  formData={formData}
+                  handleFormData={handleFormData}
+                />
+              );
+            })
           ) : (
             <div className="space-y-2 text-sm text-gray-700">
               {Object.entries(formData).map(([key, value]) => {
@@ -365,9 +325,7 @@ const Form = ({ formOpen, setFormOpen, contextState }: FormProps) => {
                 text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
                 color: "green",
                 onClick:
-                  currentStep === formSteps.length - 1
-                    ? sendData
-                    : nextStepWithValidation,
+                  currentStep === formSteps.length - 1 ? sendData : nextStep,
               }}
               deny={{
                 text: "戻る",
