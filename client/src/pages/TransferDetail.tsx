@@ -1,30 +1,137 @@
-import { useParams } from "react-router-dom";
-import { useTransfer } from "../context/transfer-context";
 import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useTransfer } from "../context/transfer-context";
+import { steps } from "../lib/form-steps/index";
+import { Label } from "../types/models";
+import { Modal, Loading } from "../components/ui";
+import { LinkButtonGroup } from "../components/buttons";
+import Alert from "../components/layout/Alert";
+import { useAlert } from "../context/alert-context";
 
 const TransferDetail = () => {
+  const closeLink = "/transfer";
+  const navigate = useNavigate();
   const { id } = useParams();
-  const { readTransfer, selectedTransfer } = useTransfer();
+  const { readTransfer, selectedTransfer, updateTransfer, deleteTransfer } =
+    useTransfer();
+  const {
+    modal: { alert },
+  } = useAlert();
 
   useEffect(() => {
     if (id) {
       readTransfer(id);
     }
-  }, [id, readTransfer]);
+  }, [id]);
 
-  if (!selectedTransfer) {
-    return <div>Loading...</div>; // データがロードされるまでの表示
-  }
+  const editOnClick = () => (id ? updateTransfer(id) : undefined);
 
-  return (
-    <div>
-      <h2>移籍情報詳細</h2>
-      <p>移籍日: {selectedTransfer.from_date}</p>
-      <p>移籍元: {selectedTransfer.from_team}</p>
-      <p>移籍先: {selectedTransfer.to_team}</p>
-      <p>名前: {selectedTransfer.player}</p>
-      {/* 他の詳細情報 */}
-    </div>
+  const deleteOnClick = () => {
+    if (!id) return;
+
+    const confirmDelete = window.confirm("本当に削除しますか？");
+    if (confirmDelete) {
+      deleteTransfer(id);
+    }
+  };
+
+  return !selectedTransfer ? (
+    <Modal isOpen={true} onClose={() => navigate(closeLink)}>
+      {alert.success ? (
+        <Alert success={alert?.success || false} message={alert?.message} />
+      ) : (
+        <Loading />
+      )}
+    </Modal>
+  ) : (
+    <Modal isOpen={true} onClose={() => navigate(-1)}>
+      <Alert success={alert?.success || false} message={alert?.message} />
+      <h3 className="text-xl font-semibold text-gray-700 mb-4">
+        {"データ詳細"}
+      </h3>
+
+      <div className="space-y-2 text-sm text-gray-700">
+        {Object.entries(selectedTransfer)
+          .filter(([key]) => key !== "_id" && key !== "__v")
+          .map(([key, value]) => {
+            const field = steps
+              .flatMap((step) => step.fields || [])
+              .find((f) => f.key === key);
+
+            let displayValue = value || "";
+
+            if (field?.type === "select" || field?.type === "table") {
+              if (
+                typeof value === "object" &&
+                value !== null &&
+                "label" in value
+              ) {
+                const withLabel = value as Label;
+                displayValue = withLabel.label;
+              }
+            }
+
+            if (field?.type === "date" && value) {
+              try {
+                const date = new Date(value as string);
+                displayValue = new Intl.DateTimeFormat("ja-JP", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }).format(date);
+              } catch {
+                // 無効な日付ならそのまま表示
+              }
+            }
+
+            if (field?.type === "multiselect" && value) {
+              const urls = value as string[];
+              displayValue = urls.filter((u) => u.trim() !== "").join(", ");
+            }
+
+            if (field?.type === "multiurl" && value) {
+              const urls = value as string[];
+              const validUrls = urls.filter((u) => u.trim() !== "");
+
+              return (
+                <div key={key} className="flex justify-between border-b py-1">
+                  <span className="font-semibold">{field?.label ?? key}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {validUrls.map((url, index) => (
+                      <a
+                        key={index}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        link-{index + 1}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div key={key} className="flex justify-between border-b py-1">
+                <span className="font-semibold">{field?.label ?? key}</span>
+                <span>{String(displayValue)}</span>
+              </div>
+            );
+          })}
+        <LinkButtonGroup
+          reset={{
+            text: "編集",
+            onClick: () => editOnClick(),
+          }}
+          deny={{
+            text: "削除",
+            onClick: () => deleteOnClick(),
+          }}
+        />
+      </div>
+    </Modal>
   );
 };
 

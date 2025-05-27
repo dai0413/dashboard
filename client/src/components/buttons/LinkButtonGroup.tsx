@@ -3,15 +3,15 @@ import LinkButton from "./LinkButton";
 
 type LinkButtonProps = {
   text: string;
-  color: "green" | "red" | "gray";
-  onClick?: (data?: any[]) => void;
+  color?: "green" | "red" | "gray";
+  onClick?: (data?: any[] | string) => void;
   to?: string;
   disabled?: boolean;
 };
 
 type LinkButtonGroupProps = {
-  approve: LinkButtonProps;
-  deny: LinkButtonProps;
+  approve?: LinkButtonProps;
+  deny?: LinkButtonProps;
   reset?: LinkButtonProps;
 };
 
@@ -33,11 +33,29 @@ const LinkButtonGroup: React.FC<LinkButtonGroupProps> = ({
   deny,
   reset,
 }) => {
+  const defaultColors = {
+    approve: "green",
+    deny: "red",
+    reset: "gray",
+  } as const;
+
   return (
     <div className="flex space-x-4">
-      {renderLinkButton(deny)}
-      {reset && renderLinkButton(reset)}
-      {renderLinkButton(approve)}
+      {deny &&
+        renderLinkButton({
+          ...deny,
+          color: deny.color || defaultColors["deny"],
+        })}
+      {reset &&
+        renderLinkButton({
+          ...reset,
+          color: reset.color || defaultColors["reset"],
+        })}
+      {approve &&
+        renderLinkButton({
+          ...approve,
+          color: approve.color || defaultColors["approve"],
+        })}
     </div>
   );
 };

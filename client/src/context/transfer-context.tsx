@@ -5,7 +5,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Transfer, TransferForm, TransferPost } from "../types/models";
+import {
+  Transfer,
+  TransferForm,
+  TransferPost,
+  TransferGet,
+} from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
 import { useAlert } from "./alert-context";
@@ -18,8 +23,8 @@ import { createConfirmationStep, steps } from "../lib/form-steps";
 const initialFormData: TransferForm = {};
 
 export type TransferState = {
-  transfers: Transfer[];
-  selectedTransfer: Transfer | null;
+  transfers: TransferGet[];
+  selectedTransfer: TransferGet | null;
   formData: TransferForm;
   handleFormData: (key: keyof TransferForm, value: any) => void;
   resetFormData: () => void;
@@ -62,14 +67,14 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
-  const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [transfers, setTransfers] = useState<TransferGet[]>([]);
 
   useEffect(() => {
     // setTransfers(transformTransfers(data));
     readAllTransfer();
   }, []);
 
-  const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(
+  const [selectedTransfer, setSelectedTransfer] = useState<TransferGet | null>(
     null
   );
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
@@ -120,6 +125,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL);
       const transfers = res.data.data as Transfer[];
+      console.log(transfers);
       setTransfers(transformTransfers(transfers));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
@@ -140,7 +146,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.get(API_ROUTES.TRANSFER.DETAIL(id));
       const transfer = res.data.data as Transfer;
-      setSelectedTransfer(transfer);
+      setSelectedTransfer(transformTransfer(transfer));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -184,10 +190,10 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.delete(API_ROUTES.TRANSFER.DELETE(id));
       setTransfers((prev) => prev.filter((t) => t._id !== id));
+      handleChoseTransferId();
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
-
       alert = {
         success: false,
         errors: apiError.error?.errors,
@@ -198,9 +204,10 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleChoseTransferId = (id: string) => {
-    const selectedTransfer = transfers.find((t) => t._id === id);
-    setSelectedTransfer(selectedTransfer || null);
+  const handleChoseTransferId = (id?: string) => {
+    const finded = transfers.find((t) => t._id === id);
+    const selectedTransfer = finded ? transformTransfer(finded) : null;
+    setSelectedTransfer(selectedTransfer);
   };
 
   const handleFormData = <K extends keyof TransferForm>(

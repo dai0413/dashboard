@@ -26,15 +26,16 @@ type Position = (typeof PositionOptions)[number] | null;
 export const FormOptions = [
   "完全",
   "期限付き",
+  "期限付き延長",
   "期限付き満了",
   "期限付き解除",
   "育成型期限付き",
+  "育成型期限付き延長",
   "育成型期限付き満了",
   "育成型期限付き解除",
   "満了",
   "退団",
   "引退",
-  "延長",
   "契約解除",
   "復帰",
   "離脱",
@@ -42,6 +43,11 @@ export const FormOptions = [
 ];
 
 type Form = (typeof FormOptions)[number] | null;
+
+export type Label = {
+  label: string;
+  id: string;
+};
 
 export type Player = {
   _id: string;
@@ -77,15 +83,15 @@ export type TransferPost = Omit<
 export type TransferForm = Partial<TransferPost>;
 
 export type TransferGet = Omit<
-  TransferPost,
-  "doa" | "from_date" | "to_date"
+  Transfer,
+  "player" | "from_team" | "to_team" | "doa" | "from_date" | "to_date"
 > & {
   doa: string;
   from_date: string;
   to_date: string | null;
-  player: Player;
-  from_team: Team;
-  to_team: Team;
+  player: Label;
+  from_team: Label;
+  to_team: Label;
 };
 
 export type TransferPatch = Partial<TransferPost>;
