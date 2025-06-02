@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Player } from "../types/models";
+import { Player } from "../types/models/player";
 import { APIError, ResponseStatus } from "../types/types";
 import api from "../lib/axios";
 import { API_ROUTES } from "../lib/apiRoutes";

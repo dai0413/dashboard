@@ -1,5 +1,5 @@
 import { FormStep } from "../../types/form";
-import { TransferForm } from "../../types/models";
+import { TransferForm } from "../../types/models/transfer";
 
 export const steps: FormStep<TransferForm>[] = [
   {

@@ -1,4 +1,4 @@
-import { TransferGet } from "../types/models";
+import { TransferGet } from "../types/models/transfer";
 
 export const transformTransfer = (t: any): TransferGet => ({
   ...t,

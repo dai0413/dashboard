@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTransfer } from "../context/transfer-context";
 import { steps } from "../lib/form-steps/index";
-import { Label } from "../types/models";
+import { Label } from "../types/types";
 import { Modal, Loading } from "../components/ui";
 import { LinkButtonGroup } from "../components/buttons";
 import Alert from "../components/layout/Alert";

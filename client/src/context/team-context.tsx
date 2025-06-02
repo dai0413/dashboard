@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Team } from "../types/models";
+import { Team } from "../types/models/team";
 import { APIError, ResponseStatus } from "../types/types";
 import api from "../lib/axios";
 import { API_ROUTES } from "../lib/apiRoutes";

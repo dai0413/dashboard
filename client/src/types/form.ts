@@ -1,3 +1,6 @@
+import { ModelType } from "./models";
+import { TransferForm } from "./models/transfer";
+import { InjuryForm } from "./models/injury";
 import { ResponseStatus } from "./types";
 
 type FieldType =
@@ -26,3 +29,8 @@ export interface FormStep<T extends Record<string, any>> {
   fields?: FieldDefinition<T>[];
   validate?: ValidationFunction<T>;
 }
+
+export type FormTypeMap = {
+  [ModelType.INJURY]: InjuryForm;
+  [ModelType.TRANSFER]: TransferForm;
+};
