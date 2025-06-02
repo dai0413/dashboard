@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Transfer, TransferForm, TransferGet } from "../types/models";
+import { Transfer, TransferForm, TransferGet } from "../types/models/transfer";
 import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
 import { useAlert } from "./alert-context";

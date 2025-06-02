@@ -7,7 +7,7 @@ import { useOptions } from "../../context/options-provider";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Table } from "../table";
 import { useForm } from "../../context/form-context";
-import { TransferForm } from "../../types/models";
+import { TransferForm } from "../../types/models/transfer";
 
 type RenderFieldProps<T extends Record<string, any>> = {
   field: FieldDefinition<T>;
