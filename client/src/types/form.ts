@@ -3,34 +3,72 @@ import { TransferForm } from "./models/transfer";
 import { InjuryForm } from "./models/injury";
 import { ResponseStatus } from "./types";
 
-type FieldType =
-  | "input" // <input type = "text">
-  | "date" // <input type = "date">
-  | "number" // <input type = "number">
-  | "select" // <select>
-  | "multiurl" // .map {<input type = "text">}
-  | "multiselect" // .map {<select>}
-  | "table"; // <table>
 type StepType = "form" | "confirm";
 
-export interface FieldDefinition<T extends Record<string, any>> {
-  key: keyof T;
+// export interface FieldDefinition<T> {
+//   key: keyof T;
+//   label: string;
+//   type: FieldType;
+//   options?: { key: string; label: string }[];
+//   required?: boolean;
+// }
+
+type FieldDefinitionBase<T extends keyof FormTypeMap> = {
+  key: keyof FormTypeMap[T];
   label: string;
-  type: FieldType;
-  options?: { key: string; label: string }[];
   required?: boolean;
-}
+};
 
-export type ValidationFunction<T> = (data: T) => ResponseStatus;
+// <input type = "text">
+type InputField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "input";
+};
+// <input type = "date">
+type DateField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "date";
+};
+// <input type = "number">
+type NumberField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "number";
+};
+// <select>
+type SelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "select";
+  options?: { key: string; label: string }[];
+};
+// .map {<input type = "text">}
+type MultiInputField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "multiurl";
+};
+// .map {<select>}
+type MultiSelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "multiselect";
+  options?: { key: string; label: string }[];
+};
+// <table>
+type TableField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "table";
+  options?: { key: string; label: string }[];
+};
 
-export interface FormStep<T extends Record<string, any>> {
+export type FieldDefinition<T extends keyof FormTypeMap> =
+  | InputField<T>
+  | DateField<T>
+  | NumberField<T>
+  | SelectField<T>
+  | MultiInputField<T>
+  | MultiSelectField<T>
+  | TableField<T>;
+
+export interface FormStep<K extends keyof FormTypeMap> {
   stepLabel: string;
   type: StepType;
-  fields?: FieldDefinition<T>[];
-  validate?: ValidationFunction<T>;
+  fields?: FieldDefinition<K>[];
+  validate?: (data: FormTypeMap[K]) => ResponseStatus;
 }
 
 export type FormTypeMap = {
   [ModelType.INJURY]: InjuryForm;
   [ModelType.TRANSFER]: TransferForm;
+  [ModelType.PLAYER]: any;
 };

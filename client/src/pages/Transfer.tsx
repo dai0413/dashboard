@@ -1,5 +1,6 @@
 import { TableContainer } from "../components/table";
 import { useTransfer } from "../context/transfer-context";
+import { ModelType } from "../types/models";
 
 const Transfer = () => {
   const transferContext = useTransfer();
@@ -14,7 +15,7 @@ const Transfer = () => {
         { label: "名前", field: "player" },
       ]}
       contextState={transferContext}
-      modelType={"transfer"}
+      modelType={ModelType.TRANSFER}
     />
   );
 };

@@ -1,13 +1,12 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import { useTransfer } from "./transfer-context";
 import { useAlert } from "./alert-context";
-import { FormStep } from "../types/form";
-import { ModelType } from "../types/models";
+import { FormStep, FormTypeMap } from "../types/form";
 
-type FormContextValue<T extends Record<string, any>> = {
+type FormContextValue<T extends keyof FormTypeMap> = {
   isOpen: boolean;
-  modelType: ModelType | null;
-  openForm: (model: ModelType | null) => void;
+  modelType: T | null;
+  openForm: (model: T | null) => void;
   closeForm: () => void;
 
   nextStep: () => void;
@@ -16,22 +15,25 @@ type FormContextValue<T extends Record<string, any>> = {
   sendData: () => Promise<void>;
 
   currentStep: number;
-  formData: T;
+  formData: FormTypeMap[T];
   formSteps: FormStep<T>[];
-  handleFormData: (key: keyof T, value: T[keyof T]) => void;
+  handleFormData: <K extends keyof FormTypeMap[T]>(
+    key: K,
+    value: FormTypeMap[T][K]
+  ) => void;
 };
 
 export const FormModalContext = createContext<
   FormContextValue<any> | undefined
 >(undefined);
 
-export const FormProvider = <T extends Record<string, any>>({
+export const FormProvider = <T extends keyof FormTypeMap>({
   children,
 }: {
   children: React.ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [modelType, setModelType] = useState<ModelType | null>(null);
+  const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
   //   console.log("modeltype in context", modelType);
@@ -67,15 +69,15 @@ export const FormProvider = <T extends Record<string, any>>({
     [modelType, transfer.formData]
   );
 
-  const openForm = (model: ModelType | null) => {
+  const openForm = (model: T | null) => {
     setIsOpen(true);
     setModelType(model);
   };
 
   const closeForm = () => {
+    modelContext?.resetFormData();
     setIsOpen(false);
     setModelType(null);
-    modelContext?.resetFormData();
     setCurrentStep(0);
     resetAlert();
   };
@@ -87,7 +89,8 @@ export const FormProvider = <T extends Record<string, any>>({
   };
 
   const sendData = async () => {
-    modelContext?.onSubmit();
+    if (!modelContext) return;
+    await modelContext?.onSubmit();
     setCurrentStep((prev) =>
       Math.min(
         prev + 1,
@@ -123,10 +126,16 @@ export const FormProvider = <T extends Record<string, any>>({
       if (!f.required) return false;
 
       if (Array.isArray(value)) {
-        return value.filter((v) => v && v.trim() !== "").length === 0;
+        const arr = value as string[];
+        return arr.every((v) => v.trim() === "");
       }
 
-      return !value || (typeof value === "string" && value.trim() === "");
+      if (typeof value === "string") {
+        const arr = value as string;
+        return arr.trim() === "";
+      }
+
+      return !value;
     });
 
     if (missing && missing.length > 0) {
@@ -154,8 +163,8 @@ export const FormProvider = <T extends Record<string, any>>({
     sendData,
 
     currentStep,
-    formData: (modelContext?.formData as T) ?? {},
-    formSteps: modelContext?.formSteps ?? [],
+    formData: (modelContext?.formData as FormTypeMap[T]) ?? {},
+    formSteps: (modelContext?.formSteps as FormStep<T>[]) ?? [],
     handleFormData:
       (modelContext?.handleFormData as FormContextValue<T>["handleFormData"]) ??
       (() => {}),
@@ -168,7 +177,7 @@ export const FormProvider = <T extends Record<string, any>>({
   );
 };
 
-export const useForm = <T extends Record<string, any>>() => {
+export const useForm = <T extends keyof FormTypeMap>() => {
   const context = useContext(FormModalContext) as
     | FormContextValue<T>
     | undefined;

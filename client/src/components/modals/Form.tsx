@@ -1,21 +1,23 @@
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui/index";
-import { FieldDefinition } from "../../types/form";
+import { FieldDefinition, FormTypeMap } from "../../types/form";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useOptions } from "../../context/options-provider";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Table } from "../table";
 import { useForm } from "../../context/form-context";
-import { TransferForm } from "../../types/models/transfer";
 
-type RenderFieldProps<T extends Record<string, any>> = {
+type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FieldDefinition<T>;
-  formData: T;
-  handleFormData: <K extends keyof T>(key: K, value: T[K]) => void;
+  formData: FormTypeMap[T];
+  handleFormData: <K extends keyof FormTypeMap[T]>(
+    key: K,
+    value: FormTypeMap[T][K]
+  ) => void;
 };
 
-const RenderField = <T extends Record<string, any>>({
+const RenderField = <T extends keyof FormTypeMap>({
   field,
   formData,
   handleFormData,
@@ -27,10 +29,9 @@ const RenderField = <T extends Record<string, any>>({
     type === "number" ? "number" : type === "date" ? "date" : "text";
 
   console.log(formData, key, formData[key]);
-  const stringKey = key as string;
 
   return (
-    <div key={stringKey} className="mb-4">
+    <div key={key as string} className="mb-4">
       <label className="block text-gray-600 text-sm font-medium mb-1">
         {label}
       </label>
@@ -39,27 +40,24 @@ const RenderField = <T extends Record<string, any>>({
         <>
           <div className="mb-2 text-gray-700">
             選択中:{" "}
-            {getOptions(field.key as string).find(
-              (f) => f.key === formData[key]
-            )?.label || "未選択"}
+            {getOptions(key as string).find((f) => f.key === formData[key])
+              ?.label || "未選択"}
           </div>
           <div className="mb-4">
             <input
               type="text"
-              value={filters[field.key as string]?.value || ""}
-              onChange={(e) =>
-                updateFilter(field.key as string, e.target.value)
-              }
+              value={filters[key as string]?.value || ""}
+              onChange={(e) => updateFilter(key as string, e.target.value)}
               placeholder="フィルター..."
               className="px-4 py-2 border rounded-md w-full"
             />
           </div>
           <Table
-            data={getOptions(field.key as string)}
+            data={getOptions(key as string)}
             headers={[{ label: "名前", field: "label" }]}
             form={true}
             onClick={(row) => {
-              handleFormData(stringKey, row.key as T[keyof T]);
+              handleFormData(key, row.key as FormTypeMap[T][typeof key]);
             }}
             selectedKey={formData[key]}
             itemsPerPage={10}
@@ -68,10 +66,10 @@ const RenderField = <T extends Record<string, any>>({
       ) : type === "select" ? (
         <select
           className="w-full border border-gray-300 rounded px-3 py-2"
-          value={formData[key] ?? ""}
+          value={(formData[key] ?? "") as string}
           onChange={(e) => {
-            const selectedValue = e.target.value || null;
-            handleFormData(stringKey, selectedValue as T[keyof T]);
+            const selectedValue = e.target.value as FormTypeMap[T][typeof key];
+            handleFormData(key, selectedValue);
           }}
         >
           <option value="">未選択</option>
@@ -83,77 +81,83 @@ const RenderField = <T extends Record<string, any>>({
         </select>
       ) : type === "multiurl" ? (
         <>
-          {(formData[key] ?? [""]).map((item: string, index: number) => (
-            <div key={index} className="flex items-center space-x-2 mb-2">
-              <textarea
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                value={item}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const newValue = [...(formData[key] ?? [])];
-                  newValue[index] = value;
+          {[...((formData[key] ?? []) as FormTypeMap[T][typeof key])].map(
+            (item: string, index: number) => (
+              <div key={index} className="flex items-center space-x-2 mb-2">
+                <textarea
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  value={item}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const newValue = [
+                      ...(formData[key] ?? ([] as FormTypeMap[T][typeof key])),
+                    ];
+                    newValue[index] = value;
 
-                  // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
-                  if (
-                    index === newValue.length - 1 &&
-                    value.trim() !== "" &&
-                    !newValue.includes("")
-                  ) {
-                    newValue.push("");
-                  }
+                    // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
+                    if (
+                      index === newValue.length - 1 &&
+                      value.trim() !== "" &&
+                      !newValue.includes("")
+                    ) {
+                      newValue.push("");
+                    }
 
-                  handleFormData(stringKey, newValue as T[keyof T]);
-                }}
-              />
+                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                  }}
+                />
 
-              <button
-                type="button"
-                onClick={() => {
-                  const newValue = [...formData[key]];
-                  newValue.splice(index, 1);
-                  handleFormData(stringKey, newValue as T[keyof T]);
-                }}
-                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-          ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newValue = [...formData[key]];
+                    newValue.splice(index, 1);
+                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                  }}
+                  className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+            )
+          )}
         </>
       ) : type === "multiselect" ? (
         <>
-          {(formData[key] ?? []).map((item: string, index: number) => (
-            <div key={index} className="flex items-center space-x-2 mb-2">
-              <select
-                className="flex-1 border border-gray-300 rounded px-3 py-2"
-                value={item}
-                onChange={(e) => {
-                  const newValue = [...formData[key]];
-                  newValue[index] = e.target.value;
-                  handleFormData(stringKey, newValue as T[keyof T]);
-                }}
-              >
-                <option value="">未選択</option>
-                {getOptions(field.key as string)?.map((option) => (
-                  <option key={option.key} value={option.key}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+          {[...((formData[key] ?? []) as FormTypeMap[T][typeof key])].map(
+            (item: string, index: number) => (
+              <div key={index} className="flex items-center space-x-2 mb-2">
+                <select
+                  className="flex-1 border border-gray-300 rounded px-3 py-2"
+                  value={item}
+                  onChange={(e) => {
+                    const newValue = [...formData[key]];
+                    newValue[index] = e.target.value;
+                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                  }}
+                >
+                  <option value="">未選択</option>
+                  {getOptions(field.key as string)?.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
 
-              <button
-                type="button"
-                onClick={() => {
-                  const newValue = [...formData[key]];
-                  newValue.splice(index, 1);
-                  handleFormData(stringKey, newValue as T[keyof T]);
-                }}
-                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-          ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newValue = [...formData[key]];
+                    newValue.splice(index, 1);
+                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                  }}
+                  className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  <XMarkIcon className="w-6 h-6" />
+                </button>
+              </div>
+            )
+          )}
 
           <select
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -162,13 +166,18 @@ const RenderField = <T extends Record<string, any>>({
               const selected = e.target.value;
               if (selected) {
                 const current = formData[key] ?? [];
-                handleFormData(stringKey, [...current, selected] as T[keyof T]);
+                handleFormData(key, [...current, selected] as T[keyof T]);
               }
             }}
           >
             <option value="">未選択</option>
             {getOptions(field.key as string)
-              ?.filter((option) => !(formData[key] ?? []).includes(option.key))
+              ?.filter(
+                (option) =>
+                  !(
+                    formData[key] ?? ([] as FormTypeMap[T][typeof key])
+                  ).includes(option.key)
+              )
               .map((option) => (
                 <option key={option.key} value={option.key}>
                   {option.label}
@@ -182,9 +191,11 @@ const RenderField = <T extends Record<string, any>>({
           className="w-full border border-gray-300 rounded px-3 py-2"
           value={
             inputType === "date"
-              ? formData[key] instanceof Date
-                ? formData[key].toISOString().split("T")[0]
-                : formData[key]
+              ? formData[key]
+                ? new Date(formData[key] as string | Date)
+                    .toISOString()
+                    .split("T")[0]
+                : ""
               : formData[key] ?? ""
           }
           onChange={(e) => {
@@ -194,7 +205,7 @@ const RenderField = <T extends Record<string, any>>({
             } else if (inputType === "date") {
               newValue = new Date(newValue);
             }
-            handleFormData(stringKey, newValue);
+            handleFormData(key, newValue);
           }}
         />
       )}
@@ -202,7 +213,7 @@ const RenderField = <T extends Record<string, any>>({
   );
 };
 
-const Form = () => {
+const Form = <T extends keyof FormTypeMap>() => {
   const {
     isOpen,
     closeForm,
@@ -216,7 +227,7 @@ const Form = () => {
     formData,
     formSteps,
     handleFormData,
-  } = useForm<TransferForm>();
+  } = useForm<T>();
 
   const {
     modal: { alert },
@@ -254,7 +265,7 @@ const Form = () => {
               console.log(formData, field.key, formData[field.key]);
               return (
                 <RenderField
-                  key={field.key}
+                  key={field.key as string}
                   field={field}
                   formData={formData}
                   handleFormData={handleFormData}

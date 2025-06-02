@@ -20,7 +20,7 @@ export type Transfer = {
   URL: string[] | null;
 };
 
-export type TransferPost = Omit<
+type TransferPost = Omit<
   Transfer,
   "_id" | "player" | "from_team" | "to_team"
 > & {

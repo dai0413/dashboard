@@ -14,6 +14,7 @@ import { FormStep } from "../types/form";
 
 import { transformTransfer, transformTransfers } from "../lib/parseDates";
 import { createConfirmationStep, steps } from "../lib/form-steps";
+import { ModelType } from "../types/models";
 
 const initialFormData: TransferForm = {};
 
@@ -29,7 +30,7 @@ export type TransferState = {
   ) => void;
   resetFormData: () => void;
 
-  formSteps: FormStep<TransferForm>[];
+  formSteps: FormStep<ModelType.TRANSFER>[];
 
   createItem: () => Promise<void>;
   readItem: (id: string) => Promise<void>;
@@ -77,7 +78,9 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     console.log("now form ", formData);
   }, [formData]);
 
-  const [formSteps, setFormSteps] = useState<FormStep<TransferForm>[]>([]);
+  const [formSteps, setFormSteps] = useState<FormStep<ModelType.TRANSFER>[]>(
+    []
+  );
 
   const cleanData = (data: typeof formData) => {
     const cleanedData: any = {};
@@ -232,7 +235,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    setFormSteps([...steps, createConfirmationStep<TransferForm>()]);
+    setFormSteps([...steps, createConfirmationStep<ModelType.TRANSFER>()]);
   }, []);
 
   const value = {
