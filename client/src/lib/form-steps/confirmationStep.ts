@@ -1,7 +1,7 @@
-import { FormStep } from "../../types/form";
+import { FormStep, FormTypeMap } from "../../types/form";
 
 export function createConfirmationStep<
-  T extends Record<string, any>
+  T extends keyof FormTypeMap
 >(): FormStep<T> {
   return {
     stepLabel: "最終確認",
