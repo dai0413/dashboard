@@ -31,13 +31,10 @@ type TransferPost = Omit<
 
 export type TransferForm = Partial<TransferPost>;
 
-export type TransferGet = Omit<
-  Transfer,
-  "player" | "from_team" | "to_team" | "doa" | "from_date" | "to_date"
-> & {
-  doa: string;
-  from_date: string;
-  to_date: string | null;
+export type TransferGet = Omit<Transfer, "player" | "from_team" | "to_team"> & {
+  // doa: string;
+  // from_date: string;
+  // to_date: string | null;
   player: Label;
   from_team: Label;
   to_team: Label;
