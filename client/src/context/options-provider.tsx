@@ -70,7 +70,7 @@ const OptionProvider = ({ children }: Props) => {
     }));
   };
 
-  const { players } = usePlayer();
+  const { items: players } = usePlayer();
   const { teams } = useTeam();
 
   const playerOptions = players.map((p) => ({
@@ -95,6 +95,7 @@ const OptionProvider = ({ children }: Props) => {
         break;
       case "from_team":
       case "to_team":
+      case "team":
         options = teamOptions;
         break;
       case "form":

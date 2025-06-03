@@ -1,6 +1,7 @@
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui/index";
-import { FieldDefinition, FormTypeMap } from "../../types/form";
+import { FieldDefinition } from "../../types/form";
+import { FormTypeMap } from "../../types/models";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useOptions } from "../../context/options-provider";
@@ -59,7 +60,9 @@ const RenderField = <T extends keyof FormTypeMap>({
             onClick={(row) => {
               handleFormData(key, row.key as FormTypeMap[T][typeof key]);
             }}
-            selectedKey={formData[key]}
+            selectedKey={
+              typeof formData[key] === "string" ? formData[key] : undefined
+            }
             itemsPerPage={10}
           />
         </>
@@ -81,57 +84,57 @@ const RenderField = <T extends keyof FormTypeMap>({
         </select>
       ) : type === "multiurl" ? (
         <>
-          {[...((formData[key] ?? []) as FormTypeMap[T][typeof key])].map(
-            (item: string, index: number) => (
-              <div key={index} className="flex items-center space-x-2 mb-2">
-                <textarea
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                  value={item}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    const newValue = [
-                      ...(formData[key] ?? ([] as FormTypeMap[T][typeof key])),
-                    ];
-                    newValue[index] = value;
+          {[
+            ...(formData[key] && (formData[key] as string[]).length > 0
+              ? (formData[key] as string[])
+              : [""]), // 空配列なら1つだけ空の入力欄を出す
+          ].map((item: string, index: number) => (
+            <div key={index} className="flex items-center space-x-2 mb-2">
+              <textarea
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                value={item}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const newValue = [...((formData[key] ?? []) as string[])];
+                  newValue[index] = value;
 
-                    // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
-                    if (
-                      index === newValue.length - 1 &&
-                      value.trim() !== "" &&
-                      !newValue.includes("")
-                    ) {
-                      newValue.push("");
-                    }
+                  // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
+                  if (
+                    index === newValue.length - 1 &&
+                    value.trim() !== "" &&
+                    !newValue.includes("")
+                  ) {
+                    newValue.push("");
+                  }
 
-                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
-                  }}
-                />
+                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                }}
+              />
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    const newValue = [...formData[key]];
-                    newValue.splice(index, 1);
-                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
-                  }}
-                  className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-                >
-                  <XMarkIcon className="w-6 h-6" />
-                </button>
-              </div>
-            )
-          )}
+              <button
+                type="button"
+                onClick={() => {
+                  const newValue = [...(formData[key] as string[])];
+                  newValue.splice(index, 1);
+                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                }}
+                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+          ))}
         </>
       ) : type === "multiselect" ? (
         <>
-          {[...((formData[key] ?? []) as FormTypeMap[T][typeof key])].map(
+          {[...((formData[key] as string[]) ?? [])].map(
             (item: string, index: number) => (
               <div key={index} className="flex items-center space-x-2 mb-2">
                 <select
                   className="flex-1 border border-gray-300 rounded px-3 py-2"
                   value={item}
                   onChange={(e) => {
-                    const newValue = [...formData[key]];
+                    const newValue = [...(formData[key] as string[])];
                     newValue[index] = e.target.value;
                     handleFormData(key, newValue as FormTypeMap[T][typeof key]);
                   }}
@@ -147,7 +150,7 @@ const RenderField = <T extends keyof FormTypeMap>({
                 <button
                   type="button"
                   onClick={() => {
-                    const newValue = [...formData[key]];
+                    const newValue = [...(formData[key] as string[])];
                     newValue.splice(index, 1);
                     handleFormData(key, newValue as FormTypeMap[T][typeof key]);
                   }}
@@ -165,8 +168,11 @@ const RenderField = <T extends keyof FormTypeMap>({
             onChange={(e) => {
               const selected = e.target.value;
               if (selected) {
-                const current = formData[key] ?? [];
-                handleFormData(key, [...current, selected] as T[keyof T]);
+                const current = (formData[key] as string[]) ?? [];
+                handleFormData(key, [
+                  ...current,
+                  selected,
+                ] as FormTypeMap[T][typeof key]);
               }
             }}
           >
@@ -175,7 +181,8 @@ const RenderField = <T extends keyof FormTypeMap>({
               ?.filter(
                 (option) =>
                   !(
-                    formData[key] ?? ([] as FormTypeMap[T][typeof key])
+                    (formData[key] as string[]) ??
+                    ([] as FormTypeMap[T][typeof key])
                   ).includes(option.key)
               )
               .map((option) => (
@@ -184,6 +191,48 @@ const RenderField = <T extends keyof FormTypeMap>({
                 </option>
               ))}
           </select>
+        </>
+      ) : type === "multiInput" ? (
+        <>
+          {[
+            ...(formData[key] && (formData[key] as string[]).length > 0
+              ? (formData[key] as string[])
+              : [""]), // 空配列なら1つだけ空の入力欄を出す
+          ].map((item: string, index: number) => (
+            <div key={index} className="flex items-center space-x-2 mb-2">
+              <input
+                type={inputType}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                value={item}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const newValue = [...((formData[key] ?? []) as string[])];
+                  newValue[index] = value;
+
+                  if (
+                    index === newValue.length - 1 &&
+                    value.trim() !== "" &&
+                    !newValue.includes("")
+                  ) {
+                    newValue.push("");
+                  }
+
+                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const newValue = [...(formData[key] as string[])];
+                  newValue.splice(index, 1);
+                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                }}
+                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+          ))}
         </>
       ) : (
         <input
@@ -196,7 +245,7 @@ const RenderField = <T extends keyof FormTypeMap>({
                     .toISOString()
                     .split("T")[0]
                 : ""
-              : formData[key] ?? ""
+              : (formData[key] as string) ?? ""
           }
           onChange={(e) => {
             let newValue: any = e.target.value;
@@ -273,6 +322,7 @@ const Form = <T extends keyof FormTypeMap>() => {
               );
             })
           ) : (
+            // 確認ステップ
             <div className="space-y-2 text-sm text-gray-700">
               {Object.entries(formData).map(([key, value]) => {
                 const field = formSteps
@@ -305,6 +355,11 @@ const Form = <T extends keyof FormTypeMap>() => {
                   displayValue = `${
                     urls.filter((u) => u.trim() !== "").length
                   }件`;
+                }
+
+                if (field?.type === "multiInput" && value) {
+                  const inputs = value as string[];
+                  displayValue = inputs.join(",");
                 }
 
                 return (
