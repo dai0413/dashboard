@@ -5,73 +5,38 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Transfer, TransferForm, TransferGet } from "../types/models/transfer";
-import { API_ROUTES } from "../lib/apiRoutes";
-import api from "../lib/axios";
 import { useAlert } from "./alert-context";
+import { getDefaultValue } from "../context/initialValue.tsx/model-context";
+import { Transfer, TransferForm, TransferGet } from "../types/models/transfer";
 import { APIError, ResponseStatus } from "../types/types";
 import { FormStep } from "../types/form";
-
-import { transformTransfer, transformTransfers } from "../lib/parseDates";
-import { createConfirmationStep, steps } from "../lib/form-steps";
 import { ModelType } from "../types/models";
+
+import { API_ROUTES } from "../lib/apiRoutes";
+import api from "../lib/axios";
+import { convert } from "../lib/convertGetData";
+import { steps } from "../lib/form-steps";
+import { ModelContext } from "./form-context";
 
 const initialFormData: TransferForm = {};
 
-export type TransferState = {
-  items: TransferGet[];
-  selected: TransferGet | null;
-  setSelected: (id: string) => void;
+const defaultContext = getDefaultValue(initialFormData);
 
-  formData: TransferForm;
-  handleFormData: <K extends keyof TransferForm>(
-    key: K,
-    value: TransferForm[K]
-  ) => void;
-  resetFormData: () => void;
-
-  formSteps: FormStep<ModelType.TRANSFER>[];
-
-  createItem: () => Promise<void>;
-  readItem: (id: string) => Promise<void>;
-  readItems: () => Promise<void>;
-  updateItem: (id: string) => Promise<void>;
-  deleteItem: (id: string) => Promise<void>;
-};
-
-const defaultValue = {
-  items: [],
-  selected: null,
-  setSelected: () => {},
-
-  formData: initialFormData,
-  handleFormData: () => {},
-  resetFormData: () => {},
-
-  formSteps: [],
-  // setFormSteps: () => {},
-
-  createItem: async () => {},
-  readItem: async () => {},
-  readItems: async () => {},
-  updateItem: async () => {},
-  deleteItem: async () => {},
-};
-
-const TransferContext = createContext<TransferState>(defaultValue);
+const TransferContext =
+  createContext<ModelContext<ModelType.TRANSFER>>(defaultContext);
 
 const TransferProvider = ({ children }: { children: ReactNode }) => {
   const {
     modal: { handleSetAlert },
   } = useAlert();
 
-  const [items, setTransfers] = useState<TransferGet[]>([]);
+  const [items, setItems] = useState<TransferGet[]>([]);
 
   useEffect(() => {
     readItems();
   }, []);
 
-  const [selected, setSelectedTransfer] = useState<TransferGet | null>(null);
+  const [selected, setSelectedItem] = useState<TransferGet | null>(null);
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
 
   useEffect(() => {
@@ -103,8 +68,8 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const res = await api.post(API_ROUTES.TRANSFER.CREATE, cleanedData);
-      const transfer = res.data.data as Transfer;
-      setTransfers((prev) => [...prev, transformTransfer(transfer)]);
+      const item = res.data.data as Transfer;
+      setItems((prev) => [...prev, convert(ModelType.TRANSFER, item)]);
       setFormData(initialFormData);
 
       alert = { success: true, message: res.data?.message };
@@ -126,8 +91,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL);
       const items = res.data.data as Transfer[];
-      console.log(items);
-      setTransfers(transformTransfers(items));
+      setItems(convert(ModelType.TRANSFER, items));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -147,7 +111,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     try {
       const res = await api.get(API_ROUTES.TRANSFER.DETAIL(id));
       const transfer = res.data.data as Transfer;
-      setSelectedTransfer(transformTransfer(transfer));
+      setSelectedItem(convert(ModelType.TRANSFER, transfer));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -166,8 +130,10 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.patch(API_ROUTES.TRANSFER.UPDATE(id), selected);
-      setTransfers((prev) =>
-        prev.map((t) => (t._id === id ? transformTransfer(res.data.data) : t))
+      setItems((prev) =>
+        prev.map((t) =>
+          t._id === id ? convert(ModelType.TRANSFER, res.data.data) : t
+        )
       );
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
@@ -187,7 +153,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.delete(API_ROUTES.TRANSFER.DELETE(id));
-      setTransfers((prev) => prev.filter((t) => t._id !== id));
+      setItems((prev) => prev.filter((t) => t._id !== id));
       setSelected();
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
@@ -204,8 +170,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
 
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);
-    const selected = finded ? transformTransfer(finded) : null;
-    setSelectedTransfer(selected);
+    setSelectedItem(finded ? finded : null);
   };
 
   const handleFormData = <K extends keyof TransferForm>(
@@ -235,7 +200,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    setFormSteps([...steps, createConfirmationStep<ModelType.TRANSFER>()]);
+    setFormSteps(steps[ModelType.TRANSFER]);
   }, []);
 
   const value = {
