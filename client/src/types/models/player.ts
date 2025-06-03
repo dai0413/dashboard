@@ -5,3 +5,9 @@ export type Player = {
   dob: Date | null;
   pob: string | null;
 };
+
+type PlayerPost = Omit<Player, "_id">;
+
+export type PlayerForm = Partial<PlayerPost>;
+
+export type PlayerGet = Player;
