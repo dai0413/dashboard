@@ -2,6 +2,7 @@ const Injury = require("../models/injury");
 const Transfer = require("../models/transfer");
 const Player = require("../models/player");
 const Team = require("../models/team");
+const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 
@@ -30,23 +31,39 @@ const getAllInjury = async (req, res) => {
 };
 
 const createInjury = async (req, res) => {
+  console.log("create injury");
   if (!req.body.team || !req.body.player) {
     throw new BadRequestError();
   }
   const { team, player } = req.body;
 
-  const playerObj = await Player.findOne({ abbr: player });
-  if (!playerObj) {
-    throw new NotFoundError();
+  let teamId = null;
+  if (team) {
+    if (!mongoose.Types.ObjectId.isValid(team)) {
+      throw new BadRequestError("team の ID が不正です。");
+    }
+    const teamObj = await Team.findById(team);
+    if (!teamObj) {
+      throw new BadRequestError("team が見つかりません。");
+    }
+    teamId = teamObj._id;
   }
 
-  const teamObj = await Team.findOne({ abbr: team });
-  if (!teamObj) {
-    throw new NotFoundError();
+  let playerId = null;
+  console.log("player id ", player);
+  if (player) {
+    if (!mongoose.Types.ObjectId.isValid(player)) {
+      throw new BadRequestError("player の ID が不正です。");
+    }
+    const playerObj = await Player.findById(player);
+    if (!playerObj) {
+      throw new BadRequestError("player が見つかりません。");
+    }
+    playerId = playerObj._id;
   }
 
   const now_teamObj = await Transfer.findOne({
-    player: playerObj._id,
+    player: playerId,
     to_team: { $ne: null }, // to_team が null でない
   })
     .sort({ from_date: -1 }) // 最新
@@ -54,9 +71,9 @@ const createInjury = async (req, res) => {
 
   const injuryData = {
     ...req.body,
-    team: teamObj._id,
+    team: teamId,
     now_team: now_teamObj ? now_teamObj.to_team : null,
-    player: playerObj._id,
+    player: playerId,
   };
 
   const injury = await Injury.create(injuryData);
