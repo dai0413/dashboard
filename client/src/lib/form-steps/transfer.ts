@@ -1,7 +1,7 @@
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
-export const steps: FormStep<ModelType.TRANSFER>[] = [
+export const transfer: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "選手を選択",
     type: "form",

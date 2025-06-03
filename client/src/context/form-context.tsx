@@ -1,7 +1,10 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useTransfer } from "./transfer-context";
 import { useAlert } from "./alert-context";
-import { FormStep, FormTypeMap } from "../types/form";
+import { FormStep } from "../types/form";
+import { useInjury } from "./injury-context";
+import { usePlayer } from "./player-context";
+import { ConvertedDataMap, FormTypeMap, ModelType } from "../types/models";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   isOpen: boolean;
@@ -23,6 +26,24 @@ type FormContextValue<T extends keyof FormTypeMap> = {
   ) => void;
 };
 
+export type ModelContext<K extends keyof FormTypeMap> = {
+  items: ConvertedDataMap[K][];
+  selected: ConvertedDataMap[K] | null;
+  setSelected: (id: string) => void;
+
+  formData: FormTypeMap[K];
+  handleFormData: (key: keyof FormTypeMap[K], value: any) => void;
+  resetFormData: () => void;
+
+  formSteps: FormStep<K>[];
+
+  createItem: () => void;
+  readItem: (id: string) => Promise<void>;
+  readItems: () => Promise<void>;
+  updateItem: (id: string) => Promise<void>;
+  deleteItem: (id: string) => Promise<void>;
+};
+
 export const FormModalContext = createContext<
   FormContextValue<any> | undefined
 >(undefined);
@@ -36,38 +57,34 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-  //   console.log("modeltype in context", modelType);
+  // console.log("modeltype in context", modelType);
 
   const {
     modal: { handleSetAlert, resetAlert },
   } = useAlert();
 
-  // 各モデル用 hook を呼ぶ（安全！hook外で切り分けない）
-  const transfer = useTransfer();
-  // const injury = useInjury();
-
-  const getModelContext = () => {
-    switch (modelType) {
-      case "transfer":
-        return {
-          formData: transfer.formData,
-          formSteps: transfer.formSteps,
-          handleFormData: transfer.handleFormData,
-          resetFormData: transfer.resetFormData,
-          onSubmit: transfer.createItem,
-        };
-      case "injury":
-        // return {...injury related things}
-        return null;
-      default:
-        return null;
-    }
+  const modelContextMap: {
+    [K in keyof FormTypeMap]: ModelContext<K>;
+  } = {
+    [ModelType.PLAYER]: usePlayer(),
+    [ModelType.TRANSFER]: useTransfer(),
+    [ModelType.INJURY]: useInjury(),
   };
 
-  const modelContext = useMemo(
-    () => getModelContext(),
-    [modelType, transfer.formData]
-  );
+  const modelContext = useMemo(() => {
+    console.log(modelType);
+    return modelType ? modelContextMap[modelType] : null;
+  }, [
+    modelType,
+    modelContextMap[ModelType.PLAYER].formData,
+    modelContextMap[ModelType.TRANSFER].formData,
+    modelContextMap[ModelType.INJURY].formData,
+  ]);
+
+  useEffect(() => {
+    console.log(modelType);
+    console.log(modelContext?.formSteps);
+  }, [modelType]);
 
   const openForm = (model: T | null) => {
     setIsOpen(true);
@@ -90,7 +107,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const sendData = async () => {
     if (!modelContext) return;
-    await modelContext?.onSubmit();
+    modelContext?.createItem();
     setCurrentStep((prev) =>
       Math.min(
         prev + 1,

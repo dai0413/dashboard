@@ -8,12 +8,11 @@ import { TableHeader } from "../../types/types";
 import { ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
-import { TransferState } from "../../context/transfer-context";
 
 type TableContainerProps = {
   title: string;
   headers: TableHeader[];
-  contextState: TransferState;
+  contextState: { items: any[] };
   modelType?: ModelType | null;
 };
 
@@ -24,7 +23,7 @@ const TableContainer = ({
   modelType,
 }: TableContainerProps) => {
   const { data: sortedData } = useSort();
-  const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("wide");
+  const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
   const { items } = contextState;
 
@@ -44,6 +43,7 @@ const TableContainer = ({
         data={sortedData}
         detail={true}
         rowSpacing={rowSpacing}
+        itemsPerPage={20}
       />
     </div>
   );

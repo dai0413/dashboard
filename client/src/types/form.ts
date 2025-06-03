@@ -1,6 +1,4 @@
-import { ModelType } from "./models";
-import { TransferForm } from "./models/transfer";
-import { InjuryForm } from "./models/injury";
+import { FormTypeMap } from "./models";
 import { ResponseStatus } from "./types";
 
 type StepType = "form" | "confirm";
@@ -36,10 +34,15 @@ type SelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
   type: "select";
   options?: { key: string; label: string }[];
 };
-// .map {<input type = "text">}
+// .map{<input type = "text">}
 type MultiInputField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "multiurl";
+  type: "multiInput";
 };
+// .map {<textarea>}
+type MultiTextareaField<T extends keyof FormTypeMap> =
+  FieldDefinitionBase<T> & {
+    type: "multiurl";
+  };
 // .map {<select>}
 type MultiSelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
   type: "multiselect";
@@ -57,6 +60,7 @@ export type FieldDefinition<T extends keyof FormTypeMap> =
   | NumberField<T>
   | SelectField<T>
   | MultiInputField<T>
+  | MultiTextareaField<T>
   | MultiSelectField<T>
   | TableField<T>;
 
@@ -66,9 +70,3 @@ export interface FormStep<K extends keyof FormTypeMap> {
   fields?: FieldDefinition<K>[];
   validate?: (data: FormTypeMap[K]) => ResponseStatus;
 }
-
-export type FormTypeMap = {
-  [ModelType.INJURY]: InjuryForm;
-  [ModelType.TRANSFER]: TransferForm;
-  [ModelType.PLAYER]: any;
-};
