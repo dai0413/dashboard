@@ -1,18 +1,30 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { ModelContext } from "../../types/context";
+import { FormTypeMap } from "../../types/models";
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useTransfer } from "../context/transfer-context";
-import { steps } from "../lib/form-steps/index";
-import { Label } from "../types/types";
-import { Modal, Loading } from "../components/ui";
-import { LinkButtonGroup } from "../components/buttons";
-import Alert from "../components/layout/Alert";
-import { useAlert } from "../context/alert-context";
+import { LinkButtonGroup } from "../buttons";
+import { Loading, Modal } from "../ui";
+import Alert from "../layout/Alert";
+import { useAlert } from "../../context/alert-context";
+import { Label } from "../../types/types";
 
-const TransferDetail = () => {
-  const closeLink = "/transfer";
+type DetailModalProps<K extends keyof FormTypeMap> = {
+  closeLink: string;
+  modelContext: ModelContext<K>;
+  title: string;
+};
+
+const DetailModal = <K extends keyof FormTypeMap>({
+  closeLink,
+  modelContext,
+  title,
+}: DetailModalProps<K>) => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { readItem, selected, updateItem, deleteItem } = useTransfer();
+
+  const { selected, readItem, updateItem, deleteItem, formSteps } =
+    modelContext;
+
   const {
     modal: { alert },
   } = useAlert();
@@ -45,19 +57,24 @@ const TransferDetail = () => {
   ) : (
     <Modal isOpen={true} onClose={() => navigate(-1)}>
       <Alert success={alert?.success || false} message={alert?.message} />
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">
-        {"データ詳細"}
-      </h3>
+      <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
 
       <div className="space-y-2 text-sm text-gray-700">
         {Object.entries(selected)
-          .filter(([key]) => key !== "_id" && key !== "__v")
+          .filter(([key, value]) => key !== "_id" && key !== "__v" && value)
           .map(([key, value]) => {
-            const field = steps
-              .flatMap((step) => step.fields || [])
-              .find((f) => f.key === key);
+            const inputFields = formSteps.flatMap((step) => step.fields || []);
+            const field = inputFields.find((f) => f.key === key);
 
-            let displayValue = value || "";
+            console.log("field", field, key);
+
+            let displayValue =
+              typeof value === "object"
+                ? Object.entries(value)[0]
+                : value || "";
+
+            if (typeof value === "object" && "label" in value && "id" in value)
+              displayValue = value.label;
 
             if (field?.type === "select" || field?.type === "table") {
               if (
@@ -71,19 +88,19 @@ const TransferDetail = () => {
             }
 
             if (field?.type === "date" && value) {
-              try {
-                const date = new Date(value as string);
-                displayValue = new Intl.DateTimeFormat("ja-JP", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                }).format(date);
-              } catch {
-                // 無効な日付ならそのまま表示
-              }
+              console.log(field, key, value);
+              const date = new Date(value as string);
+              displayValue = new Intl.DateTimeFormat("ja-JP", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }).format(date);
             }
 
-            if (field?.type === "multiselect" && value) {
+            if (
+              (field?.type === "multiselect" || field?.type === "multiInput") &&
+              value
+            ) {
               const urls = value as string[];
               displayValue = urls.filter((u) => u.trim() !== "").join(", ");
             }
@@ -134,4 +151,4 @@ const TransferDetail = () => {
   );
 };
 
-export default TransferDetail;
+export default DetailModal;

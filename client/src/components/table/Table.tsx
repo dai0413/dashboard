@@ -2,11 +2,13 @@ import { useState } from "react";
 import { TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 
 export type TableProps<T> = {
   data: T[];
   headers: TableHeader[];
   detail?: boolean;
+  detailLink?: string;
   rowSpacing?: "wide" | "narrow";
   form?: boolean;
   onClick?: (row: T) => void;
@@ -18,6 +20,7 @@ const Table = <T extends Record<string, any>>({
   data = [],
   headers = [],
   detail = false,
+  detailLink = "",
   rowSpacing = "narrow",
   form = false,
   onClick = () => {},
@@ -108,7 +111,12 @@ const Table = <T extends Record<string, any>>({
               })}
               {detail && (
                 <td className="cursor-pointer px-4 py-2 border">
-                  <a href={`/transfer/${row._id}`}>詳細</a>
+                  <Link
+                    to={`${detailLink}/${row._id}`}
+                    className="text-blue-600 underline"
+                  >
+                    詳細
+                  </Link>
                 </td>
               )}
               {form && (

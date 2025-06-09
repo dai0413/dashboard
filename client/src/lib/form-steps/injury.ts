@@ -20,7 +20,7 @@ export const injury: FormStep<ModelType.INJURY>[] = [
     fields: [
       {
         key: "team",
-        label: "移籍元",
+        label: "所属",
         type: "table",
       },
     ],
@@ -53,5 +53,10 @@ export const injury: FormStep<ModelType.INJURY>[] = [
         type: "multiInput",
       },
     ],
+  },
+  {
+    stepLabel: "公式発表のURLを入力",
+    type: "form",
+    fields: [{ key: "URL", label: "URL", type: "multiurl" }],
   },
 ];
