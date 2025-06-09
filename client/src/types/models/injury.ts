@@ -25,13 +25,10 @@ type InjuryPost = Omit<Injury, "_id" | "player" | "team" | "now_team"> & {
 
 export type InjuryForm = Partial<InjuryPost>;
 
-export type InjuryGet = Omit<
-  Injury,
-  "player" | "team" | "now_team" | "injured_part" | "ttp"
-> & {
+export type InjuryGet = Omit<Injury, "player" | "team" | "now_team"> & {
   player: Label;
   team: Label;
   now_team: Label;
-  injured_part: string | null;
-  ttp: string | null;
+  // injured_part: string | null;
+  // ttp: string | null;
 };

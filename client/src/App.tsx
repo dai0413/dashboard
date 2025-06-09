@@ -14,13 +14,15 @@ import Transfer from "./pages/Transfer";
 import Injury from "./pages/Injury";
 import Login from "./pages/Login";
 import Me from "./pages/Me";
-import TransferDetail from "./pages/TransferDetail";
 import { SortProvider } from "./context/sort-context";
 import { FormProvider } from "./context/form-context";
 import { Form } from "./components/modals/";
 import { OptionsWrapper } from "./context/options-provider";
 import { PlayerProvider } from "./context/player-context";
 import { InjuryProvider } from "./context/injury-context";
+import TransferDetail from "./pages/Detail/TransferDetail";
+import InjuryDetail from "./pages/Detail/InjuryDetail";
+import PlayerDetail from "./pages/Detail/PlayerDetail";
 
 const App: React.FC = () => {
   return (
@@ -60,7 +62,15 @@ const App: React.FC = () => {
                                 <Player />
                               </Layout>
                             }
-                          ></Route>
+                          />
+                          <Route
+                            path={`${APP_ROUTES.PLAYER}/:id`}
+                            element={
+                              <Layout>
+                                <PlayerDetail />
+                              </Layout>
+                            }
+                          />
 
                           <Route
                             path={APP_ROUTES.TRANSFER}
@@ -88,6 +98,14 @@ const App: React.FC = () => {
                                 <Injury />
                               </Layout>
                               // </PrivateRoute>
+                            }
+                          />
+                          <Route
+                            path={`${APP_ROUTES.INJURY}/:id`}
+                            element={
+                              <Layout>
+                                <InjuryDetail />
+                              </Layout>
                             }
                           />
                           <Route

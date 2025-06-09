@@ -15,13 +15,13 @@ export const transformInjury = (p: Injury): InjuryGet => ({
     label: p.team ? p.team.abbr || p.team.team : "不明",
     id: p.team?._id ?? "不明",
   },
-  injured_part: p.injured_part ? p.injured_part?.join(",") : p.injured_part,
   ttp: p.ttp
-    ? p.ttp
-        ?.join(",")
-        .replace("m", "ヶ月")
-        .replace("d", "日")
-        .replace("w", "週間")
-        .replace("y", "年")
+    ? p.ttp.map((tt) =>
+        tt
+          .replace("m", "ヶ月")
+          .replace("d", "日")
+          .replace("w", "週間")
+          .replace("y", "年")
+      )
     : p.ttp,
 });

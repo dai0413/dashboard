@@ -4,7 +4,8 @@ import { useAlert } from "./alert-context";
 import { FormStep } from "../types/form";
 import { useInjury } from "./injury-context";
 import { usePlayer } from "./player-context";
-import { ConvertedDataMap, FormTypeMap, ModelType } from "../types/models";
+import { FormTypeMap, ModelType } from "../types/models";
+import { ModelContext } from "../types/context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   isOpen: boolean;
@@ -24,24 +25,6 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     key: K,
     value: FormTypeMap[T][K]
   ) => void;
-};
-
-export type ModelContext<K extends keyof FormTypeMap> = {
-  items: ConvertedDataMap[K][];
-  selected: ConvertedDataMap[K] | null;
-  setSelected: (id: string) => void;
-
-  formData: FormTypeMap[K];
-  handleFormData: (key: keyof FormTypeMap[K], value: any) => void;
-  resetFormData: () => void;
-
-  formSteps: FormStep<K>[];
-
-  createItem: () => void;
-  readItem: (id: string) => Promise<void>;
-  readItems: () => Promise<void>;
-  updateItem: (id: string) => Promise<void>;
-  deleteItem: (id: string) => Promise<void>;
 };
 
 export const FormModalContext = createContext<

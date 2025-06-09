@@ -8,6 +8,7 @@ import { TableHeader } from "../../types/types";
 import { ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
+import { ModelRouteMap } from "../../types/models";
 
 type TableContainerProps = {
   title: string;
@@ -42,6 +43,7 @@ const TableContainer = ({
         headers={headers}
         data={sortedData}
         detail={true}
+        detailLink={modelType ? ModelRouteMap[modelType] : ""}
         rowSpacing={rowSpacing}
         itemsPerPage={20}
       />

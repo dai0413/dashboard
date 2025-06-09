@@ -1,6 +1,6 @@
 export const APP_ROUTES = {
   HOME: "/",
-  PLAYER: "player",
+  PLAYER: "/player",
   TRANSFER: "/transfer",
   INJURY: "/injury",
   LOGIN: "/login",

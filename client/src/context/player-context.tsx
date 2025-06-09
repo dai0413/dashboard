@@ -16,7 +16,7 @@ import { API_ROUTES } from "../lib/apiRoutes";
 import api from "../lib/axios";
 import { convert } from "../lib/convertGetData";
 import { steps } from "../lib/form-steps";
-import { ModelContext } from "./form-context";
+import { ModelContext } from "../types/context";
 
 const initialFormData: PlayerForm = {};
 
