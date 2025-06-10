@@ -29,7 +29,8 @@ const RenderField = <T extends keyof FormTypeMap>({
   const inputType =
     type === "number" ? "number" : type === "date" ? "date" : "text";
 
-  console.log("formData[key]", key, formData[key]);
+  // console.log("formData[key]", key, formData[key]);
+  console.log(getOptions(key as string));
 
   return (
     <div key={key as string} className="mb-4">
@@ -54,8 +55,8 @@ const RenderField = <T extends keyof FormTypeMap>({
             />
           </div>
           <Table
-            data={getOptions(key as string)}
-            headers={[{ label: "名前", field: "label" }]}
+            data={getOptions(key as string, true).data}
+            headers={getOptions(key as string, true).header}
             form={true}
             onClick={(row) => {
               handleFormData(key, row.key as FormTypeMap[T][typeof key]);
@@ -338,13 +339,13 @@ const Form = <T extends keyof FormTypeMap>() => {
           ) : (
             // 確認ステップ
             <div className="space-y-2 text-sm text-gray-700">
-              {alert.success && diffKeys.length > 0 && (
+              {!newData && alert.success && diffKeys.length > 0 && (
                 <span className="text-sm text-red-600 font-medium">
                   ※ 赤文字の値に変更しました
                 </span>
               )}
 
-              {!alert.success && diffKeys.length > 0 && (
+              {!newData && !alert.success && diffKeys.length > 0 && (
                 <span className="text-sm text-red-600 font-medium">
                   ※ 赤文字の値に変更します
                 </span>
@@ -395,7 +396,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                     <span className="font-semibold">{field?.label ?? key}</span>
                     <span
                       className={
-                        diffKeys.includes(key)
+                        !newData && diffKeys.includes(key)
                           ? "text-red-500 font-semibold bg-red-50 px-1 rounded"
                           : ""
                       }
