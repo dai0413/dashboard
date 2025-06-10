@@ -80,8 +80,20 @@ const Table = <T extends Record<string, any>>({
               {headers.map((header) => {
                 const cellContent = row[header.field];
 
+                let displayValue = cellContent;
+
                 const isObject =
-                  typeof cellContent === "object" && cellContent !== null;
+                  typeof cellContent === "object" && "id" in cellContent;
+
+                if (Array.isArray(cellContent)) {
+                  displayValue = cellContent.join(", ");
+                } else if (cellContent instanceof Date) {
+                  displayValue = cellContent.toLocaleDateString("ja-JP", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  });
+                }
 
                 return (
                   <td
@@ -95,16 +107,10 @@ const Table = <T extends Record<string, any>>({
                     }
                   `}
                   >
-                    {cellContent instanceof Date ? (
-                      cellContent.toLocaleDateString("ja-JP", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })
-                    ) : isObject ? (
+                    {isObject ? (
                       <a href={cellContent._id}>{cellContent.label}</a>
                     ) : (
-                      cellContent
+                      displayValue
                     )}
                   </td>
                 );

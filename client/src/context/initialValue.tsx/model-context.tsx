@@ -8,6 +8,7 @@ export const getDefaultValue = (initialFormData: any) => ({
   resetFormData: () => {},
 
   formSteps: [],
+  startEdit: () => {},
   // setFormSteps: () => {},
 
   createItem: async () => {},
@@ -15,4 +16,6 @@ export const getDefaultValue = (initialFormData: any) => ({
   readItems: async () => {},
   updateItem: async () => {},
   deleteItem: async () => {},
+
+  getDiffKeys: () => [],
 });

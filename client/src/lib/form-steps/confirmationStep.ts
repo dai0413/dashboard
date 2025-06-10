@@ -1,4 +1,5 @@
-import { FormStep, FormTypeMap } from "../../types/form";
+import { FormStep } from "../../types/form";
+import { FormTypeMap } from "../../types/models";
 
 export function createConfirmationStep<
   T extends keyof FormTypeMap

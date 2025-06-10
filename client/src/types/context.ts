@@ -12,9 +12,13 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   formSteps: FormStep<K>[];
 
+  startEdit: () => void;
+
   createItem: () => void;
   readItem: (id: string) => Promise<void>;
   readItems: () => Promise<void>;
-  updateItem: (id: string) => Promise<void>;
+  updateItem: (data: FormTypeMap[K]) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
+
+  getDiffKeys: () => string[];
 };

@@ -29,7 +29,7 @@ const RenderField = <T extends keyof FormTypeMap>({
   const inputType =
     type === "number" ? "number" : type === "date" ? "date" : "text";
 
-  console.log(formData, key, formData[key]);
+  console.log("formData[key]", key, formData[key]);
 
   return (
     <div key={key as string} className="mb-4">
@@ -240,12 +240,21 @@ const RenderField = <T extends keyof FormTypeMap>({
           className="w-full border border-gray-300 rounded px-3 py-2"
           value={
             inputType === "date"
-              ? formData[key]
-                ? new Date(formData[key] as string | Date)
-                    .toISOString()
-                    .split("T")[0]
-                : ""
-              : (formData[key] as string) ?? ""
+              ? (() => {
+                  const val = formData[key];
+                  if (!val) return "";
+                  const date =
+                    val instanceof Date
+                      ? val
+                      : typeof val === "string"
+                      ? new Date(val)
+                      : null;
+
+                  return date && !isNaN(date.getTime())
+                    ? date.toISOString().split("T")[0]
+                    : "";
+                })()
+              : (formData[key] ?? "").toString()
           }
           onChange={(e) => {
             let newValue: any = e.target.value;
@@ -264,6 +273,7 @@ const RenderField = <T extends keyof FormTypeMap>({
 
 const Form = <T extends keyof FormTypeMap>() => {
   const {
+    newData,
     isOpen,
     closeForm,
 
@@ -276,6 +286,8 @@ const Form = <T extends keyof FormTypeMap>() => {
     formData,
     formSteps,
     handleFormData,
+
+    getDiffKeys,
   } = useForm<T>();
 
   const {
@@ -283,11 +295,13 @@ const Form = <T extends keyof FormTypeMap>() => {
   } = useAlert();
   const { getOptions } = useOptions();
 
+  const diffKeys = getDiffKeys ? getDiffKeys() : [];
+
   return (
     <Modal isOpen={isOpen} onClose={closeForm}>
       <Alert success={alert?.success || false} message={alert?.message} />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
-        {"新規データ作成"}
+        {newData ? "新規データ作成" : "既存データ編集"}
       </h3>
 
       {!formSteps || formSteps.length === 0 ? null : (
@@ -324,7 +338,21 @@ const Form = <T extends keyof FormTypeMap>() => {
           ) : (
             // 確認ステップ
             <div className="space-y-2 text-sm text-gray-700">
+              {alert.success && diffKeys.length > 0 && (
+                <span className="text-sm text-red-600 font-medium">
+                  ※ 赤文字の値に変更しました
+                </span>
+              )}
+
+              {!alert.success && diffKeys.length > 0 && (
+                <span className="text-sm text-red-600 font-medium">
+                  ※ 赤文字の値に変更します
+                </span>
+              )}
+
               {Object.entries(formData).map(([key, value]) => {
+                if (key === "_id" || key === "__v") return;
+
                 const field = formSteps
                   .flatMap((step) => step.fields || [])
                   .find((f) => f.key === key);
@@ -365,7 +393,15 @@ const Form = <T extends keyof FormTypeMap>() => {
                 return (
                   <div key={key} className="flex justify-between border-b py-1">
                     <span className="font-semibold">{field?.label ?? key}</span>
-                    <span>{String(displayValue)}</span>
+                    <span
+                      className={
+                        diffKeys.includes(key)
+                          ? "text-red-500 font-semibold bg-red-50 px-1 rounded"
+                          : ""
+                      }
+                    >
+                      {String(displayValue)}
+                    </span>
                   </div>
                 );
               })}
@@ -373,22 +409,37 @@ const Form = <T extends keyof FormTypeMap>() => {
           )}
 
           {currentStep === formSteps.length - 1 && alert.success ? (
-            <LinkButtonGroup
-              approve={{
-                text: "次のデータへ",
-                color: "green",
-                onClick: nextData,
-              }}
-              deny={{
-                text: "入力終了",
-                color: "red",
-                onClick: closeForm,
-              }}
-            />
+            newData ? (
+              <LinkButtonGroup
+                approve={{
+                  text: "次のデータへ",
+                  color: "green",
+                  onClick: nextData,
+                }}
+                deny={{
+                  text: "入力終了",
+                  color: "red",
+                  onClick: closeForm,
+                }}
+              />
+            ) : (
+              <LinkButtonGroup
+                deny={{
+                  text: "入力終了",
+                  color: "red",
+                  onClick: closeForm,
+                }}
+              />
+            )
           ) : (
             <LinkButtonGroup
               approve={{
-                text: currentStep === formSteps.length - 1 ? "追加" : "次へ",
+                text:
+                  currentStep === formSteps.length - 1
+                    ? newData
+                      ? "追加"
+                      : "変更"
+                    : "次へ",
                 color: "green",
                 onClick:
                   currentStep === formSteps.length - 1 ? sendData : nextStep,

@@ -8,9 +8,10 @@ import { FormTypeMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
+  newData: boolean;
   isOpen: boolean;
   modelType: T | null;
-  openForm: (model: T | null) => void;
+  openForm: (newData: boolean, model: T | null) => void;
   closeForm: () => void;
 
   nextStep: () => void;
@@ -25,6 +26,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     key: K,
     value: FormTypeMap[T][K]
   ) => void;
+  getDiffKeys: (() => string[]) | undefined;
 };
 
 export const FormModalContext = createContext<
@@ -41,6 +43,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [currentStep, setCurrentStep] = useState<number>(0);
 
   // console.log("modeltype in context", modelType);
+
+  const [newData, setNewData] = useState<boolean>(true);
 
   const {
     modal: { handleSetAlert, resetAlert },
@@ -64,12 +68,20 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelContextMap[ModelType.INJURY].formData,
   ]);
 
+  const getDiffKeys = modelContext?.getDiffKeys;
+
   useEffect(() => {
     console.log(modelType);
     console.log(modelContext?.formSteps);
   }, [modelType]);
 
-  const openForm = (model: T | null) => {
+  const openForm = (newData: boolean, model: T | null) => {
+    if (newData) {
+      setNewData(true);
+    } else {
+      setNewData(false);
+      model ? modelContextMap[model].startEdit() : () => {};
+    }
     setIsOpen(true);
     setModelType(model);
   };
@@ -90,7 +102,21 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const sendData = async () => {
     if (!modelContext) return;
-    modelContext?.createItem();
+    const difKeys = getDiffKeys && getDiffKeys();
+    if (!difKeys || difKeys?.length === 0)
+      return handleSetAlert({
+        success: false,
+        message: "変更点がありません",
+      });
+
+    console.log(modelContext.formData);
+    const updated: FormTypeMap[T] = Object.fromEntries(
+      Object.entries(modelContext.formData).filter(([key]) =>
+        difKeys.includes(key)
+      )
+    );
+
+    newData ? modelContext?.createItem() : modelContext?.updateItem(updated);
     setCurrentStep((prev) =>
       Math.min(
         prev + 1,
@@ -152,6 +178,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   const value: FormContextValue<T> = {
+    newData,
     isOpen,
     modelType,
     openForm,
@@ -168,6 +195,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     handleFormData:
       (modelContext?.handleFormData as FormContextValue<T>["handleFormData"]) ??
       (() => {}),
+    getDiffKeys,
   };
 
   return (
