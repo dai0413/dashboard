@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
-import { PlayerProvider, usePlayer } from "./player-context";
-import { TeamProvider, useTeam } from "./team-context";
+import { PlayerProvider, usePlayer } from "./models/player-context";
+import { TeamProvider, useTeam } from "./models/team-context";
+import { TableHeader } from "../types/types";
 
 export const PositionOptions = [
   "GK",
@@ -44,21 +45,38 @@ export const FormOptions = [
   "更新",
 ];
 
+type OptionArray = Array<{ key: string; label: string } & Record<string, any>>;
+type OptionTable = {
+  header: TableHeader[];
+  data: OptionArray;
+};
+
+interface GetOptions {
+  (key: string, table: true): OptionTable;
+  (key: string, table?: false): OptionArray;
+}
+
 type OptionsState = {
-  getOptions: (key: string) => { key: string; label: string }[];
+  getOptions: GetOptions;
   updateFilter: (key: string, value: string) => void;
   filters: { [key: string]: { value: string } };
 };
 
+const dummyGetOptions = ((key: string, table?: boolean) => {
+  if (table) {
+    return { header: [], data: [] };
+  } else {
+    return [];
+  }
+}) as GetOptions;
+
 const OptionContext = createContext<OptionsState>({
-  getOptions: () => [],
+  getOptions: dummyGetOptions,
   updateFilter: () => {},
   filters: {},
 });
 
-type Props = { children: React.ReactNode };
-
-const OptionProvider = ({ children }: Props) => {
+const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const [filters, setFilters] = useState<{ [key: string]: { value: string } }>(
     {}
   );
@@ -76,6 +94,7 @@ const OptionProvider = ({ children }: Props) => {
   const playerOptions = players.map((p) => ({
     label: p.name || p.en_name || "不明",
     key: p._id,
+    dob: p.dob,
   }));
 
   const teamOptions = teams.map((t) => ({
@@ -86,33 +105,54 @@ const OptionProvider = ({ children }: Props) => {
   const formOptions = FormOptions.map((f) => ({ label: f, key: f }));
   const positionOptions = PositionOptions.map((p) => ({ label: p, key: p }));
 
-  const getOptions = (key: string) => {
-    let options: { key: string; label: string }[] = [];
+  function getOptions(key: string, table?: false): OptionArray;
+  function getOptions(key: string, table: true): OptionTable;
 
-    switch (key) {
-      case "player":
-        options = playerOptions;
-        break;
-      case "from_team":
-      case "to_team":
-      case "team":
-        options = teamOptions;
-        break;
-      case "form":
-        options = formOptions;
-        break;
-      case "position":
-        options = positionOptions;
-        break;
-      default:
-        return [];
+  function getOptions(key: string, table?: boolean): OptionArray | OptionTable {
+    if (table === true) {
+      switch (key) {
+        case "player":
+          return {
+            header: [
+              { label: "名前", field: "label" },
+              { label: "生年月日", field: "dob" },
+            ],
+            data: playerOptions,
+          };
+        default:
+          return {
+            header: [],
+            data: [],
+          };
+      }
+    } else {
+      let options: OptionArray;
+
+      switch (key) {
+        case "player":
+          options = playerOptions;
+          break;
+        case "from_team":
+        case "to_team":
+        case "team":
+          options = teamOptions;
+          break;
+        case "form":
+          options = formOptions;
+          break;
+        case "position":
+          options = positionOptions;
+          break;
+        default:
+          return [];
+      }
+
+      const filterValue = filters[key]?.value?.toLowerCase() ?? "";
+      return options.filter((opt) =>
+        opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
+      );
     }
-
-    const filterValue = filters[key]?.value?.toLowerCase() ?? "";
-    return options.filter((opt) =>
-      opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
-    );
-  };
+  }
 
   return (
     <OptionContext.Provider value={{ getOptions, updateFilter, filters }}>
@@ -121,7 +161,7 @@ const OptionProvider = ({ children }: Props) => {
   );
 };
 
-const OptionsWrapper = ({ children }: Props) => {
+const OptionsWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <PlayerProvider>
       <TeamProvider>
