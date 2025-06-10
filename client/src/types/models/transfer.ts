@@ -22,11 +22,14 @@ export type Transfer = {
 
 type TransferPost = Omit<
   Transfer,
-  "_id" | "player" | "from_team" | "to_team"
+  "_id" | "player" | "from_team" | "to_team" | "from_date" | "to_date" | "doa"
 > & {
   player: Player["_id"];
   from_team: Team["_id"] | null;
   to_team: Team["_id"] | null;
+  from_date: string;
+  to_date: string;
+  doa: string;
 };
 
 export type TransferForm = Partial<TransferPost>;

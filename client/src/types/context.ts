@@ -1,9 +1,9 @@
-import { ConvertedDataMap, FormTypeMap } from "../types/models";
+import { GettedModelDataMap, FormTypeMap } from "../types/models";
 import { FormStep } from "./form";
 
 export type ModelContext<K extends keyof FormTypeMap> = {
-  items: ConvertedDataMap[K][];
-  selected: ConvertedDataMap[K] | null;
+  items: GettedModelDataMap[K][];
+  selected: GettedModelDataMap[K] | null;
   setSelected: (id: string) => void;
 
   formData: FormTypeMap[K];

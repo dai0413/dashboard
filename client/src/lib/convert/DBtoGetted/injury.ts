@@ -1,6 +1,12 @@
-import { Injury, InjuryGet } from "../../types/models/injury";
+import { Injury, InjuryGet } from "../../../types/models/injury";
 
-export const transformInjury = (p: Injury): InjuryGet => ({
+function getInjuryStatus(isInjured: boolean | null | undefined): string | null {
+  if (isInjured === true) return "負傷中";
+  if (isInjured === false) return "復帰済み";
+  return null;
+}
+
+export const injury = (p: Injury): InjuryGet => ({
   ...p,
   doa: typeof p.doa === "string" ? new Date(p.doa) : p.doa,
   player: {
@@ -24,4 +30,8 @@ export const transformInjury = (p: Injury): InjuryGet => ({
           .replace("y", "年")
       )
     : p.ttp,
+  is_injured: getInjuryStatus(p.is_injured),
+  doi: typeof p.doi === "string" ? new Date(p.doi) : p.doi,
+  dos: typeof p.dos === "string" ? new Date(p.dos) : p.dos,
+  erd: typeof p.erd === "string" ? new Date(p.erd) : p.erd,
 });

@@ -6,7 +6,9 @@ export type Player = {
   pob: string | null;
 };
 
-type PlayerPost = Omit<Player, "_id">;
+type PlayerPost = Omit<Player, "_id" | "dob"> & {
+  dob: string;
+};
 
 export type PlayerForm = Partial<PlayerPost>;
 

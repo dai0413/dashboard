@@ -1,10 +1,6 @@
-import {
-  Transfer,
-  TransferForm,
-  TransferGet,
-} from "../../types/models/transfer";
+import { Transfer, TransferGet } from "../../../types/models/transfer";
 
-export const transformTransfer = (t: Transfer): TransferGet => ({
+export const transfer = (t: Transfer): TransferGet => ({
   ...t,
   doa: typeof t.doa === "string" ? new Date(t.doa) : t.doa,
   from_date:
@@ -22,14 +18,4 @@ export const transformTransfer = (t: Transfer): TransferGet => ({
     label: t.to_team ? t.to_team.abbr || t.to_team.team : "不明",
     id: t.to_team?._id ?? "不明",
   },
-});
-
-export const convertGetToForm = (t: TransferGet): TransferForm => ({
-  ...t,
-  doa: t.doa.toISOString(),
-  from_date: t.from_date.toISOString(),
-  to_date: t.to_date?.toDateString(),
-  player: t.player.id,
-  from_team: t.from_team.id,
-  to_team: t.to_team.id,
 });

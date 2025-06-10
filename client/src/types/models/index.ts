@@ -9,13 +9,13 @@ export enum ModelType {
   INJURY = "injury",
 }
 
-export type RawDataMap = {
+export type ModelDataMap = {
   [ModelType.PLAYER]: Player;
   [ModelType.TRANSFER]: Transfer;
   [ModelType.INJURY]: Injury;
 };
 
-export type ConvertedDataMap = {
+export type GettedModelDataMap = {
   [ModelType.PLAYER]: PlayerGet;
   [ModelType.TRANSFER]: TransferGet;
   [ModelType.INJURY]: InjuryGet;
