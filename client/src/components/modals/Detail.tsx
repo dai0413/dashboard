@@ -1,33 +1,37 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ModelContext } from "../../types/context";
-import { FormTypeMap } from "../../types/models";
+import { FormTypeMap, ModelType } from "../../types/models";
 import { useEffect } from "react";
 import { LinkButtonGroup } from "../buttons";
 import { Loading, Modal } from "../ui";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { Label } from "../../types/types";
+import { useForm } from "../../context/form-context";
 
 type DetailModalProps<K extends keyof FormTypeMap> = {
   closeLink: string;
+  modelType: ModelType | null;
   modelContext: ModelContext<K>;
   title: string;
 };
 
 const DetailModal = <K extends keyof FormTypeMap>({
   closeLink,
+  modelType,
   modelContext,
   title,
 }: DetailModalProps<K>) => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { selected, readItem, updateItem, deleteItem, formSteps } =
-    modelContext;
+  const { selected, readItem, deleteItem, formSteps } = modelContext;
 
   const {
     modal: { alert },
   } = useAlert();
+
+  const { openForm } = useForm();
 
   useEffect(() => {
     if (id) {
@@ -35,7 +39,8 @@ const DetailModal = <K extends keyof FormTypeMap>({
     }
   }, [id]);
 
-  const editOnClick = () => (id ? updateItem(id) : undefined);
+  const editOnClick = () =>
+    id ? openForm(false, modelType || null) : undefined;
 
   const deleteOnClick = () => {
     if (!id) return;
@@ -45,6 +50,8 @@ const DetailModal = <K extends keyof FormTypeMap>({
       deleteItem(id);
     }
   };
+
+  // console.log(selected);
 
   return !selected ? (
     <Modal isOpen={true} onClose={() => navigate(closeLink)}>
@@ -66,14 +73,16 @@ const DetailModal = <K extends keyof FormTypeMap>({
             const inputFields = formSteps.flatMap((step) => step.fields || []);
             const field = inputFields.find((f) => f.key === key);
 
-            console.log("field", field, key);
+            // console.log("field", field, key, value);
 
-            let displayValue =
-              typeof value === "object"
-                ? Object.entries(value)[0]
-                : value || "";
+            let displayValue = value || "";
 
-            if (typeof value === "object" && "label" in value && "id" in value)
+            if (
+              value &&
+              typeof value === "object" &&
+              "label" in value &&
+              "id" in value
+            )
               displayValue = value.label;
 
             if (field?.type === "select" || field?.type === "table") {
@@ -88,7 +97,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
             }
 
             if (field?.type === "date" && value) {
-              console.log(field, key, value);
+              // console.log(field, key, value);
               const date = new Date(value as string);
               displayValue = new Intl.DateTimeFormat("ja-JP", {
                 year: "numeric",

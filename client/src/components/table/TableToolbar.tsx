@@ -78,7 +78,7 @@ const TableToolbar = ({
 
       {/* 右側：新規追加ボタン */}
       <button
-        onClick={() => openForm(modelType || null)}
+        onClick={() => openForm(true, modelType || null)}
         className="cursor-pointer flex items-center gap-x-2 text-blue-500"
       >
         <PlusCircleIcon className="w-8 h-8" />
