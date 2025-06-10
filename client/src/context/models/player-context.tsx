@@ -5,18 +5,19 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useAlert } from "./alert-context";
-import { getDefaultValue } from "../context/initialValue.tsx/model-context";
-import { Player, PlayerForm, PlayerGet } from "../types/models/player";
-import { APIError, ResponseStatus } from "../types/types";
-import { FormStep } from "../types/form";
-import { ModelType } from "../types/models";
+import { useAlert } from "../alert-context";
+import { getDefaultValue } from "./initialValue.tsx/model-context";
+import { Player, PlayerForm, PlayerGet } from "../../types/models/player";
+import { APIError, ResponseStatus } from "../../types/types";
+import { FormStep } from "../../types/form";
+import { ModelType } from "../../types/models";
 
-import { API_ROUTES } from "../lib/apiRoutes";
-import api from "../lib/axios";
-import { convert } from "../lib/convertGetData";
-import { steps } from "../lib/form-steps";
-import { ModelContext } from "../types/context";
+import { API_ROUTES } from "../../lib/apiRoutes";
+import api from "../../lib/axios";
+import { convert } from "../../lib/convert/DBtoGetted";
+import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
+import { steps } from "../../lib/form-steps";
+import { ModelContext } from "../../types/context";
 
 const initialFormData: PlayerForm = {};
 
@@ -57,6 +58,11 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return cleanedData;
+  };
+
+  const startEdit = () => {
+    console.log(selected);
+    if (selected) setFormData(convertGettedToForm(ModelType.PLAYER, selected));
   };
 
   const createItem = async () => {
@@ -124,15 +130,19 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateItem = async (id: string) => {
+  const updateItem = async (updated: PlayerForm) => {
+    if (!selected) return;
+    const id = selected._id;
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.patch(API_ROUTES.PLAYER.UPDATE(id), selected);
+      const res = await api.patch(API_ROUTES.PLAYER.UPDATE(id), updated);
+      const updatedItem = res.data.data as Player;
       setItems((prev) =>
         prev.map((t) =>
-          t._id === id ? convert(ModelType.PLAYER, res.data.data) : t
+          t._id === id ? convert(ModelType.PLAYER, updatedItem) : t
         )
       );
+      setSelectedItem(convert(ModelType.PLAYER, updatedItem));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -202,6 +212,37 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     setFormSteps(steps[ModelType.PLAYER]);
   }, []);
 
+  const getDiffKeys = () => {
+    if (!selected) return [];
+
+    const diff: string[] = [];
+    for (const [key, value] of Object.entries(formData)) {
+      const typedKey = key as keyof typeof formData;
+      const selectedValue = convertGettedToForm(ModelType.PLAYER, selected)[
+        typedKey
+      ];
+
+      if (
+        value &&
+        typeof value === "object" &&
+        "id" in value &&
+        "label" in value &&
+        selectedValue &&
+        typeof selectedValue === "object" &&
+        "id" in selectedValue
+      ) {
+        if ((value as any).id !== (selectedValue as any).id) {
+          diff.push(key);
+        }
+      } else {
+        if (value !== selectedValue) {
+          diff.push(key);
+        }
+      }
+    }
+
+    return diff;
+  };
   const value = {
     items,
     selected,
@@ -211,12 +252,15 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     formSteps,
 
     setSelected,
+    startEdit,
 
     createItem,
     readItem,
     readItems,
     updateItem,
     deleteItem,
+
+    getDiffKeys,
   };
 
   return (

@@ -1,5 +1,5 @@
 import { TableContainer } from "../components/table";
-import { useInjury } from "../context/injury-context";
+import { useInjury } from "../context/models/injury-context";
 import { ModelType } from "../types/models";
 
 const Injury = () => {
