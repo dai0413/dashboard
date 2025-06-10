@@ -1,5 +1,5 @@
 import { TableContainer } from "../components/table";
-import { useTransfer } from "../context/transfer-context";
+import { useTransfer } from "../context/models/transfer-context";
 import { ModelType } from "../types/models";
 
 const Transfer = () => {

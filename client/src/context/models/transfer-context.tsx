@@ -5,18 +5,23 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useAlert } from "./alert-context";
-import { getDefaultValue } from "../context/initialValue.tsx/model-context";
-import { Transfer, TransferForm, TransferGet } from "../types/models/transfer";
-import { APIError, ResponseStatus } from "../types/types";
-import { FormStep } from "../types/form";
-import { ModelType } from "../types/models";
+import { useAlert } from "../alert-context";
+import { getDefaultValue } from "./initialValue.tsx/model-context";
+import {
+  Transfer,
+  TransferForm,
+  TransferGet,
+} from "../../types/models/transfer";
+import { APIError, ResponseStatus } from "../../types/types";
+import { FormStep } from "../../types/form";
+import { ModelType } from "../../types/models";
 
-import { API_ROUTES } from "../lib/apiRoutes";
-import api from "../lib/axios";
-import { convert } from "../lib/convertGetData";
-import { steps } from "../lib/form-steps";
-import { ModelContext } from "../types/context";
+import { API_ROUTES } from "../../lib/apiRoutes";
+import api from "../../lib/axios";
+import { convert } from "../../lib/convert/DBtoGetted";
+import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
+import { steps } from "../../lib/form-steps";
+import { ModelContext } from "../../types/context";
 
 const initialFormData: TransferForm = {};
 
@@ -40,8 +45,8 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
 
   useEffect(() => {
-    console.log("now form ", formData);
-  }, [formData]);
+    console.log("now selected", selected);
+  }, [selected]);
 
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.TRANSFER>[]>(
     []
@@ -59,6 +64,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return cleanedData;
+  };
+
+  const startEdit = () => {
+    console.log(selected);
+    if (selected)
+      setFormData(convertGettedToForm(ModelType.TRANSFER, selected));
   };
 
   const createItem = async () => {
@@ -126,15 +137,19 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateItem = async (id: string) => {
+  const updateItem = async (updated: TransferForm) => {
+    if (!selected) return;
+    const id = selected._id;
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.patch(API_ROUTES.TRANSFER.UPDATE(id), selected);
+      const res = await api.patch(API_ROUTES.TRANSFER.UPDATE(id), updated);
+      const updatedItem = res.data.data as Transfer;
       setItems((prev) =>
         prev.map((t) =>
-          t._id === id ? convert(ModelType.TRANSFER, res.data.data) : t
+          t._id === id ? convert(ModelType.TRANSFER, updatedItem) : t
         )
       );
+      setSelectedItem(convert(ModelType.TRANSFER, updatedItem));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -203,6 +218,38 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     setFormSteps(steps[ModelType.TRANSFER]);
   }, []);
 
+  const getDiffKeys = () => {
+    if (!selected) return [];
+
+    const diff: string[] = [];
+    for (const [key, value] of Object.entries(formData)) {
+      const typedKey = key as keyof typeof formData;
+      const selectedValue = convertGettedToForm(ModelType.TRANSFER, selected)[
+        typedKey
+      ];
+
+      if (
+        value &&
+        typeof value === "object" &&
+        "id" in value &&
+        "label" in value &&
+        selectedValue &&
+        typeof selectedValue === "object" &&
+        "id" in selectedValue
+      ) {
+        if ((value as any).id !== (selectedValue as any).id) {
+          diff.push(key);
+        }
+      } else {
+        if (value !== selectedValue) {
+          diff.push(key);
+        }
+      }
+    }
+
+    return diff;
+  };
+
   const value = {
     items,
     selected,
@@ -212,12 +259,15 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     formSteps,
 
     setSelected,
+    startEdit,
 
     createItem,
     readItem,
     readItems,
     updateItem,
     deleteItem,
+
+    getDiffKeys,
   };
 
   return (

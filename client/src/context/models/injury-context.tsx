@@ -5,18 +5,43 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useAlert } from "./alert-context";
-import { getDefaultValue } from "../context/initialValue.tsx/model-context";
-import { Injury, InjuryForm, InjuryGet } from "../types/models/injury";
-import { APIError, ResponseStatus } from "../types/types";
-import { FormStep } from "../types/form";
-import { ModelType } from "../types/models";
+import { useAlert } from "../alert-context";
+import { getDefaultValue } from "./initialValue.tsx/model-context";
+import { Injury, InjuryForm, InjuryGet } from "../../types/models/injury";
+import { APIError, Label, ResponseStatus } from "../../types/types";
+import { FormStep } from "../../types/form";
+import { ModelType } from "../../types/models";
 
-import { API_ROUTES } from "../lib/apiRoutes";
-import api from "../lib/axios";
-import { convert } from "../lib/convertGetData";
-import { steps } from "../lib/form-steps";
-import { ModelContext } from "../types/context";
+import { API_ROUTES } from "../../lib/apiRoutes";
+import api from "../../lib/axios";
+import { convert } from "../../lib/convert/DBtoGetted";
+import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
+import { steps } from "../../lib/form-steps";
+import { ModelContext } from "../../types/context";
+
+const getComparison = (value: any): string | number | (string | number)[] => {
+  if (Array.isArray(value)) {
+    // 配列: 各要素が Label 型なら id を抽出、その他はそのまま
+    return value.map((item) =>
+      item && typeof item === "object" && "id" in item ? item.id : item
+    );
+  }
+
+  if (value && typeof value === "object" && "id" in value) {
+    return value.id;
+  }
+
+  return value ?? ""; // null や undefined は空として扱う
+};
+
+const isEqual = (a: any, b: any): boolean => {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    return [...a].sort().join() === [...b].sort().join();
+  }
+
+  return a === b;
+};
 
 const initialFormData: InjuryForm = {};
 
@@ -40,7 +65,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<InjuryForm>(initialFormData);
 
   useEffect(() => {
-    console.log("now form ", formData);
+    // console.log("now form ", formData);
   }, [formData]);
 
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.INJURY>[]>([]);
@@ -57,6 +82,10 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return cleanedData;
+  };
+
+  const startEdit = () => {
+    if (selected) setFormData(convertGettedToForm(ModelType.INJURY, selected));
   };
 
   const createItem = async () => {
@@ -125,15 +154,19 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updateItem = async (id: string) => {
+  const updateItem = async (updated: InjuryForm) => {
+    if (!selected) return;
+    const id = selected._id;
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.patch(API_ROUTES.INJURY.UPDATE(id), selected);
+      const res = await api.patch(API_ROUTES.INJURY.UPDATE(id), updated);
+      const updatedItem = res.data.data as Injury;
       setItems((prev) =>
         prev.map((t) =>
-          t._id === id ? convert(ModelType.INJURY, res.data.data) : t
+          t._id === id ? convert(ModelType.INJURY, updatedItem) : t
         )
       );
+      setSelectedItem(convert(ModelType.INJURY, updatedItem));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -202,6 +235,27 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     setFormSteps(steps[ModelType.INJURY]);
   }, []);
 
+  const getDiffKeys = () => {
+    if (!selected) return [];
+
+    const diff: string[] = [];
+    for (const [key, formValue] of Object.entries(formData)) {
+      const typedKey = key as keyof typeof formData;
+      const selectedValue = convertGettedToForm(ModelType.INJURY, selected)[
+        typedKey
+      ];
+
+      const formComparison = getComparison(formValue);
+      const selectedComparison = getComparison(selectedValue);
+
+      if (!isEqual(formComparison, selectedComparison)) {
+        diff.push(key);
+      }
+    }
+
+    return diff;
+  };
+
   const value = {
     items,
     selected,
@@ -211,12 +265,15 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     formSteps,
 
     setSelected,
+    startEdit,
 
     createItem,
     readItem,
     readItems,
     updateItem,
     deleteItem,
+
+    getDiffKeys,
   };
 
   return (

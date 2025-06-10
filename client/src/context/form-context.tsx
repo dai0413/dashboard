@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useTransfer } from "./transfer-context";
+import { useTransfer } from "./models/transfer-context";
+import { useInjury } from "./models/injury-context";
+import { usePlayer } from "./models/player-context";
 import { useAlert } from "./alert-context";
 import { FormStep } from "../types/form";
-import { useInjury } from "./injury-context";
-import { usePlayer } from "./player-context";
 import { FormTypeMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 
