@@ -75,12 +75,13 @@ const TransferSchema = new mongoose.Schema({
   },
   to_date: {
     type: Date,
-    validate: {
-      validator: function (value) {
-        return !value || value > this.from_date;
-      },
-      message: "to_date は from_dateより後でなければなりません。",
-    },
+    // validate: {
+    //   validator: function (value) {
+    //     console.log("to_date:", value, "from_date:", this.from_date);
+    //     return !value || value > this.from_date;
+    //   },
+    //   message: "to_date は from_dateより後でなければなりません。",
+    // },
   },
   URL: {
     type: [String],

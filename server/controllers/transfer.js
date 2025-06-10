@@ -5,6 +5,47 @@ const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 
+const validateNewTransferDates = (data) => {
+  const from = data.from_date ? new Date(data.from_date) : null;
+  const to = data.to_date ? new Date(data.to_date) : null;
+
+  if (!from || isNaN(from.getTime())) {
+    throw new BadRequestError("from_date が正しく設定されていません。");
+  }
+
+  if (to && isNaN(to.getTime())) {
+    throw new BadRequestError("to_date が正しく設定されていません。");
+  }
+
+  if (to && from && to <= from) {
+    throw new BadRequestError(
+      "to_date は from_date より後でなければなりません。"
+    );
+  }
+};
+
+const dateValidation = async (id, newData) => {
+  const transfer = await Transfer.findById(id);
+  if (!transfer) throw new NotFoundError();
+
+  const currentFrom = transfer.from_date;
+  const currentTo = transfer.to_date;
+
+  const newFrom =
+    "from_date" in newData ? new Date(newData.from_date) : currentFrom;
+  const newTo = "to_date" in newData ? new Date(newData.to_date) : currentTo;
+
+  if (isNaN(newFrom.getTime()) || isNaN(newTo.getTime())) {
+    throw new BadRequestError("日付の形式が正しくありません。");
+  }
+
+  if (newTo && newFrom && newTo <= newFrom) {
+    throw new BadRequestError(
+      "to_date は from_date より後でなければなりません。"
+    );
+  }
+};
+
 const getAllTransfer = async (req, res) => {
   const transfers = await Transfer.find({})
     .populate("from_team")
@@ -52,6 +93,7 @@ const createTransfer = async (req, res) => {
     to_team: toTeamId,
   };
 
+  validateNewTransferDates(transferData);
   const transfer = await Transfer.create(transferData);
 
   const populatedTransfer = await Transfer.findById(transfer._id)
@@ -96,7 +138,7 @@ const updateTransfer = async (req, res) => {
   const updatedData = { ...body };
 
   // from_team
-  if (body.from_team && !mongoose.Types.ObjectId.isValid(body.from_team)) {
+  if ("from_team" in body && !mongoose.Types.ObjectId.isValid(body.from_team)) {
     const fromTeamObj = await Team.findById(body.from_team);
     if (!fromTeamObj) {
       throw new BadRequestError("from_team が見つかりません。");
@@ -105,7 +147,7 @@ const updateTransfer = async (req, res) => {
   }
 
   // to_team
-  if (body.to_team && !mongoose.Types.ObjectId.isValid(body.to_team)) {
+  if ("to_team" in body && !mongoose.Types.ObjectId.isValid(body.to_team)) {
     const toTeamObj = await Team.findById(body.to_team);
     if (!toTeamObj) {
       throw new BadRequestError("to_team が見つかりません。");
@@ -114,7 +156,7 @@ const updateTransfer = async (req, res) => {
   }
 
   // player
-  if (body.player && !mongoose.Types.ObjectId.isValid(body.player)) {
+  if ("player" in body && !mongoose.Types.ObjectId.isValid(body.player)) {
     const playerObj = await Player.findById(body.player);
     if (!playerObj) {
       throw new BadRequestError("player が見つかりません。");
@@ -122,7 +164,10 @@ const updateTransfer = async (req, res) => {
     updatedData.player = playerObj._id;
   }
 
-  const transfer = await Transfer.findByIdAndUpdate(
+  await dateValidation(transferId, updatedData);
+
+  // update
+  const updatedTransfer = await Transfer.findByIdAndUpdate(
     { _id: transferId },
     updatedData,
     {
@@ -130,10 +175,14 @@ const updateTransfer = async (req, res) => {
       runValidators: true,
     }
   );
-  if (!transfer) {
+  if (!updatedTransfer) {
     throw new NotFoundError();
   }
-  res.status(StatusCodes.OK).json({ message: "編集しました" });
+  const populated = await Transfer.findById(updatedTransfer._id)
+    .populate("from_team")
+    .populate("to_team")
+    .populate("player");
+  res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
 const deleteTransfer = async (req, res) => {
