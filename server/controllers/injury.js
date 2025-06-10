@@ -112,9 +112,9 @@ const getInjury = async (req, res) => {
 };
 
 const updateInjury = async (req, res) => {
-  if (!req.params.id || !req.body.team || !req.body.player) {
-    throw new BadRequestError();
-  }
+  // if (!req.params.id || !req.body.team || !req.body.player) {
+  //   throw new BadRequestError();
+  // }
   const {
     params: { id: injuryId },
     body,
@@ -123,7 +123,7 @@ const updateInjury = async (req, res) => {
   const updatedData = { ...body };
 
   // team
-  if (body.team && !mongoose.Types.ObjectId.isValid(body.team)) {
+  if ("team" in body && !mongoose.Types.ObjectId.isValid(body.team)) {
     const teamObj = await Team.findOne({ abbr: body.team });
     if (!teamObj) {
       throw new BadRequestError("team が見つかりません。");
@@ -132,7 +132,7 @@ const updateInjury = async (req, res) => {
   }
 
   // player
-  if (body.player && !mongoose.Types.ObjectId.isValid(body.player)) {
+  if ("player" in body && !mongoose.Types.ObjectId.isValid(body.player)) {
     const playerObj = await Player.findOne({ abbr: body.player });
     if (!playerObj) {
       throw new BadRequestError("player が見つかりません。");
@@ -140,7 +140,7 @@ const updateInjury = async (req, res) => {
     updatedData.player = playerObj._id;
   }
 
-  const injury = await Injury.findByIdAndUpdate(
+  const updated = await Injury.findByIdAndUpdate(
     { _id: injuryId },
     updatedData,
     {
@@ -148,11 +148,16 @@ const updateInjury = async (req, res) => {
       runValidators: true,
     }
   );
-  if (!injury) {
+  if (!updated) {
     throw new NotFoundError();
   }
 
-  res.status(StatusCodes.OK).json({ message: "編集しました" });
+  // update
+  const populated = await Injury.findById(updated._id)
+    .populate("player")
+    .populate("team")
+    .populate("now_team");
+  res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
 const deleteInjury = async (req, res) => {

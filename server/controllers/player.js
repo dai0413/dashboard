@@ -68,14 +68,16 @@ const updatePlayer = async (req, res) => {
     params: { id: playerId },
   } = req;
 
-  const player = await Player.findByIdAndUpdate(playerId, req.body, {
+  const updated = await Player.findByIdAndUpdate(playerId, req.body, {
     new: true,
     runValidators: true,
   });
   if (!player) {
     throw new NotFoundError();
   }
-  res.status(StatusCodes.OK).json({ message: "編集しました" });
+
+  const populated = await Player.findById(updated._id);
+  res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
 const deletePlayer = async (req, res) => {
