@@ -109,22 +109,42 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   function getOptions(key: string, table: true): OptionTable;
 
   function getOptions(key: string, table?: boolean): OptionArray | OptionTable {
+    let options: OptionTable;
+
     if (table === true) {
       switch (key) {
         case "player":
-          return {
+          options = {
             header: [
               { label: "名前", field: "label" },
               { label: "生年月日", field: "dob" },
             ],
             data: playerOptions,
           };
+          break;
+        case "from_team":
+        case "to_team":
+        case "team":
+          options = {
+            header: [{ label: "チーム", field: "label" }],
+            data: teamOptions,
+          };
+          break;
         default:
-          return {
+          options = {
             header: [],
             data: [],
           };
+          break;
       }
+
+      const filterValue = filters[key]?.value?.toLowerCase() ?? "";
+
+      options.data = options.data.filter((opt) =>
+        opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
+      );
+
+      return options;
     } else {
       let options: OptionArray;
 
