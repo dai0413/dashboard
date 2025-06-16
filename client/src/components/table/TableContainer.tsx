@@ -5,28 +5,29 @@ import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import { TableHeader } from "../../types/types";
-import { ModelType } from "../../types/models";
+import { FormTypeMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
+import { ModelContext } from "../../types/context";
 
-type TableContainerProps = {
+type TableContainerProps<K extends keyof FormTypeMap> = {
   title: string;
   headers: TableHeader[];
-  contextState: { items: any[] };
+  contextState: ModelContext<K>;
   modelType?: ModelType | null;
 };
 
-const TableContainer = ({
+const TableContainer = <K extends keyof FormTypeMap>({
   title,
   headers,
   contextState,
   modelType,
-}: TableContainerProps) => {
+}: TableContainerProps<K>) => {
   const { data: sortedData } = useSort();
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const { items } = contextState;
+  const { items, uploadFile } = contextState;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
@@ -38,6 +39,7 @@ const TableContainer = ({
         rowSpacing={rowSpacing}
         setRowSpacing={setRowSpacing}
         modelType={modelType}
+        uploadFile={uploadFile}
       />
       <Table
         headers={headers}

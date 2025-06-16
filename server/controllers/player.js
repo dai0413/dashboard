@@ -1,6 +1,7 @@
 const Player = require("../models/player");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const csv = require("csv-parser");
 
 const getAllPlayers = async (req, res) => {
   const players = await Player.find({});
@@ -95,6 +96,46 @@ const deletePlayer = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
+const uploadPlayer = async (req, res) => {
+  const existingCount = await Player.countDocuments();
+  const rows = [];
+
+  req.decodedStream
+    .pipe(csv())
+    .on("data", (row) => {
+      rows.push(row);
+    })
+    .on("end", async () => {
+      if (existingCount >= rows.length) {
+        return res.status(StatusCodes.OK).json({
+          message: "追加する選手データはありません（すでに全件登録済み）",
+          data: [],
+        });
+      }
+
+      const newRows = rows.slice(existingCount); // 追加分だけ
+      const playersToAdd = newRows.map((row) => ({
+        name: row.name,
+        en_name: row.en_name,
+        dob: row.dob,
+        pob: row.pob,
+      }));
+
+      try {
+        const addedPlayers = await Player.insertMany(playersToAdd);
+        res.status(StatusCodes.OK).json({
+          message: `${addedPlayers.length}件の選手を追加しました`,
+          data: addedPlayers,
+        });
+      } catch (err) {
+        console.error("保存エラー:", err);
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ message: "保存中にエラーが発生しました" });
+      }
+    });
+};
+
 module.exports = {
   getAllPlayers,
   createPlayer,
@@ -102,4 +143,5 @@ module.exports = {
   getPlayer,
   updatePlayer,
   deletePlayer,
+  uploadPlayer,
 };

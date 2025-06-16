@@ -19,6 +19,7 @@ export type ModelContext<K extends keyof FormTypeMap> = {
   readItems: () => Promise<void>;
   updateItem: (data: FormTypeMap[K]) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
+  uploadFile?: (file: File) => Promise<void>;
 
   getDiffKeys: () => string[];
 };

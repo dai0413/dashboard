@@ -28,6 +28,7 @@ const PlayerContext =
 
 const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const {
+    main: { handleSetAlert: mainHandleSetAlert },
     modal: { handleSetAlert },
   } = useAlert();
 
@@ -176,6 +177,38 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const uploadFile = async (file: File) => {
+    console.log("sending in uploadFile");
+    let alert: ResponseStatus = { success: false };
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await api.post(API_ROUTES.PLAYER.UPLOAD, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const item = res.data.data as Player[];
+      setItems((prev) => [...prev, ...convert(ModelType.PLAYER, item)]);
+
+      alert = { success: true, message: res.data?.message };
+    } catch (err: any) {
+      const apiError = err.response?.data as APIError;
+
+      alert = {
+        success: false,
+        errors: apiError.error?.errors,
+        message: apiError.error?.message,
+      };
+    } finally {
+      mainHandleSetAlert(alert);
+    }
+  };
+
+  const outPut = async () => {};
+
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);
     setSelectedItem(finded ? finded : null);
@@ -259,6 +292,7 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     readItems,
     updateItem,
     deleteItem,
+    uploadFile,
 
     getDiffKeys,
   };
