@@ -27,7 +27,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
   const { data: sortedData } = useSort();
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const { items, uploadFile } = contextState;
+  const { items, uploadFile, downloadFile } = contextState;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
@@ -40,6 +40,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
         setRowSpacing={setRowSpacing}
         modelType={modelType}
         uploadFile={uploadFile}
+        downloadFile={downloadFile}
       />
       <Table
         headers={headers}

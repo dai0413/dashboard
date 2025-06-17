@@ -12,12 +12,14 @@ import { useSort } from "../../context/sort-context";
 import { useForm } from "../../context/form-context";
 import { ModelType } from "../../types/models";
 import { useEffect, useRef, useState } from "react";
+import { useAlert } from "../../context/alert-context";
 
 type TableToolbarProps = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<void>;
+  downloadFile?: () => Promise<void>;
 };
 
 const TableToolbar = ({
@@ -25,10 +27,14 @@ const TableToolbar = ({
   setRowSpacing,
   modelType,
   uploadFile,
+  downloadFile,
 }: TableToolbarProps) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
   const { openForm } = useForm();
+  const {
+    main: { handleSetAlert },
+  } = useAlert();
 
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -48,15 +54,26 @@ const TableToolbar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(uploadFile);
     if (!uploadFile) {
-      return window.console.error("未対応のモデルです");
+      handleSetAlert({ success: false, message: "未対応のモデルです" });
+      return SetIsFolderOpen(false);
     }
     const file = e.target.files?.[0];
     if (file) {
-      SetIsFolderOpen(false);
       await uploadFile(file);
+      SetIsFolderOpen(false);
     }
+  };
+
+  const handleDownload = async () => {
+    if (!downloadFile) {
+      handleSetAlert({ success: false, message: "未対応のモデルです" });
+      return SetIsFolderOpen(false);
+    }
+    await downloadFile();
+    SetIsFolderOpen(false);
   };
 
   return (
@@ -119,45 +136,44 @@ const TableToolbar = ({
         </button>
 
         {/* 右側：フォルダーボタン */}
-        <div ref={dropdownRef} className="relative inline-block text-left">
-          <button
-            onClick={() => SetIsFolderOpen(!isFolderOpen)}
-            className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-            type="button"
-          >
-            <FolderPlusIcon className="w-8 h-8" />
-            <span className="hidden md:inline">CSV</span>
-          </button>
+        {(uploadFile || downloadFile) && (
+          <div ref={dropdownRef} className="relative inline-block text-left">
+            <button
+              onClick={() => SetIsFolderOpen(!isFolderOpen)}
+              className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+              type="button"
+            >
+              <FolderPlusIcon className="w-8 h-8" />
+              <span className="hidden md:inline">CSV</span>
+            </button>
 
-          {isFolderOpen && (
-            <div className="absolute right-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-              <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                <li>
-                  <label className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
-                    Input CSV
-                    <input
-                      type="file"
-                      accept=".csv"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      SetIsFolderOpen(false);
-                      console.log("Output selected");
-                    }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >
-                    Output
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
+            {isFolderOpen && (
+              <div className="absolute right-0 mt-2 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
+                  <li>
+                    <label className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
+                      Upload
+                      <input
+                        type="file"
+                        accept=".csv"
+                        className="hidden"
+                        onChange={handleUpload}
+                      />
+                    </label>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleDownload}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      Download
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

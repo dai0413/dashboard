@@ -13,18 +13,20 @@
     - [3.5 `PUT` | `/api/v1/player/:id`](#35-put--apiv1playerid)
     - [3.5 `DELETE` | `/api/v1/player/:id`](#35-delete--apiv1playerid)
     - [3.6 `POST` | `/api/v1/player/upload`](#36-post--apiv1playerupload)
+    - [3.7 `GET` | `/api/v1/player/download`](#37-get--apiv1playerdownload)
 
 ## 1. 概要
 
-| メソッド | エンドポイント          | 説明             | バリデーション        | フロント |
-| -------- | ----------------------- | ---------------- | --------------------- | -------- |
-| `GET`    | `/api/v1/player`        | 一覧取得         | なし                  | /player  |
-| `POST`   | `/api/v1/player/check`  | 類似確認         | 必須:                 |
-| `POST`   | `/api/v1/player`        | 新規追加         | 必須:                 |
-| `GET`    | `/api/v1/player/:id`    | 取得             | id のフォーマット検証 |
-| `PUT`    | `/api/v1/player/:id`    | 更新             | id のフォーマット検証 |
-| `DELETE` | `/api/v1/player/:id`    | 削除             | id のフォーマット検証 |
-| `POST`   | `/api/v1/player/upload` | ファイルから追加 | ファイル整形          |
+| メソッド | エンドポイント           | 説明             | バリデーション        | フロント |
+| -------- | ------------------------ | ---------------- | --------------------- | -------- |
+| `GET`    | `/api/v1/player`         | 一覧取得         | なし                  | /player  |
+| `POST`   | `/api/v1/player/check`   | 類似確認         | 必須:                 |
+| `POST`   | `/api/v1/player`         | 新規追加         | 必須:                 |
+| `GET`    | `/api/v1/player/:id`     | 取得             | id のフォーマット検証 |
+| `PUT`    | `/api/v1/player/:id`     | 更新             | id のフォーマット検証 |
+| `DELETE` | `/api/v1/player/:id`     | 削除             | id のフォーマット検証 |
+| `POST`   | `/api/v1/player/upload`  | ファイルから追加 | ファイル整形          |
+| `GET`    | `api/v1/player/download` | ダウンロード     |                       |
 
 ※新規追加は手順
 
@@ -264,3 +266,5 @@
     }
 
     ```
+
+### 3.7 `GET` | `/api/v1/player/download`

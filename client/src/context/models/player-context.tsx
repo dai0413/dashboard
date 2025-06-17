@@ -207,7 +207,26 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const outPut = async () => {};
+  const downloadFile = async () => {
+    try {
+      const res = await api.get(API_ROUTES.PLAYER.DOWNLOAD, {
+        responseType: "blob",
+      });
+
+      const blob = new Blob([res.data], { type: "text/csv;charset=utf-8;" });
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "players.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("ファイルのダウンロードに失敗しました", error);
+    }
+  };
 
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);
@@ -293,6 +312,7 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     updateItem,
     deleteItem,
     uploadFile,
+    downloadFile,
 
     getDiffKeys,
   };

@@ -136,6 +136,37 @@ const uploadPlayer = async (req, res) => {
     });
 };
 
+const moment = require("moment");
+
+const downloadPlayer = async (req, res) => {
+  try {
+    const players = await Player.find();
+    if (players.length === 0) {
+      return res.status(404).json({ message: "データがありません" });
+    }
+
+    const header = `"player_id","name","en_name","dob","pob"\n`;
+
+    const csvContent = players
+      .map((player, index) => {
+        const dob = player.dob ? moment(player.dob).format("YYYY/MM/DD") : ""; // 空でも対応
+        return `"${index + 1}","${player.name}","${player.en_name}","${dob}","${
+          player.pob
+        }"`;
+      })
+      .join("\n");
+
+    res.header("Content-Type", "text/csv; charset=utf-8");
+    res.attachment("players.csv");
+    res.status(StatusCodes.OK).send("\uFEFF" + header + csvContent); // 先頭にBOMをつけてExcel文字化け防止
+  } catch (err) {
+    console.error("CSV出力エラー:", err);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "CSV出力に失敗しました" });
+  }
+};
+
 module.exports = {
   getAllPlayers,
   createPlayer,
@@ -144,4 +175,5 @@ module.exports = {
   updatePlayer,
   deletePlayer,
   uploadPlayer,
+  downloadPlayer,
 };
