@@ -12,10 +12,11 @@ export const API_ROUTES = {
     GET_ALL: `${API_BASE_URL}/player`,
     CREATE: `${API_BASE_URL}/player`,
     CHECK: `${API_BASE_URL}/player/check`,
+    UPLOAD: `${API_BASE_URL}/player/upload`,
+    DOWNLOAD: `${API_BASE_URL}/player/download`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/player/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
-    UPLOAD: `${API_BASE_URL}/player/upload`,
   },
   TRANSFER: {
     GET_ALL: `${API_BASE_URL}/transfer`,

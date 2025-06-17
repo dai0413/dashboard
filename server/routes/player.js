@@ -9,6 +9,7 @@ const {
   updatePlayer,
   deletePlayer,
   uploadPlayer,
+  downloadPlayer,
 } = require("../controllers/player");
 
 const upload = require("../middleware/upload");
@@ -17,9 +18,10 @@ const checkFileExists = require("../middleware/checkFileExists");
 
 router.route("/").get(getAllPlayers).post(createPlayer);
 router.route("/check").post(checkSimilarPlayers);
-router.route("/:id").patch(updatePlayer).delete(deletePlayer).get(getPlayer);
 router
   .route("/upload")
   .post(upload.single("file"), checkFileExists, detectEncoding, uploadPlayer);
+router.route("/download").get(downloadPlayer);
+router.route("/:id").patch(updatePlayer).delete(deletePlayer).get(getPlayer);
 
 module.exports = router;
