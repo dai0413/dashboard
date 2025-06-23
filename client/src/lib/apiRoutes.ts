@@ -34,5 +34,10 @@ export const API_ROUTES = {
   },
   TEAM: {
     GET_ALL: `${API_BASE_URL}/team`,
+    CREATE: `${API_BASE_URL}/team`,
+    DOWNLOAD: `${API_BASE_URL}/team/download`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/team/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
   },
 };
