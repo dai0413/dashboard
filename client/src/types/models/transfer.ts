@@ -30,6 +30,8 @@ type TransferPost = Omit<
   from_date: string;
   to_date: string;
   doa: string;
+  from_team_name: string | null;
+  to_team_name: string | null;
 };
 
 export type TransferForm = Partial<TransferPost>;

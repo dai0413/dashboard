@@ -23,6 +23,11 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         label: "移籍元",
         type: "table",
       },
+      {
+        key: "from_team_name",
+        label: "移籍元（登録外チーム）",
+        type: "input",
+      },
     ],
   },
   {
@@ -34,12 +39,32 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         label: "移籍先",
         type: "table",
       },
+      {
+        key: "to_team_name",
+        label: "移籍先（登録外チーム）",
+        type: "input",
+      },
     ],
     validate: (formData) => {
-      const hasFrom = Boolean(formData.from_team);
-      const hasTo = Boolean(formData.to_team);
+      if (Boolean(formData.from_team) && Boolean(formData.from_team_name)) {
+        return {
+          success: false,
+          message: "移籍元はチームを選択、または入力してください",
+        };
+      }
 
-      const isValid = hasFrom || hasTo;
+      if (Boolean(formData.to_team) && Boolean(formData.to_team_name)) {
+        return {
+          success: false,
+          message: "移籍先はチームを選択、または入力してください",
+        };
+      }
+
+      const isValid =
+        Boolean(formData.from_team) ||
+        Boolean(formData.from_team_name) ||
+        Boolean(formData.to_team) ||
+        Boolean(formData.to_team_name);
 
       return {
         success: isValid,
