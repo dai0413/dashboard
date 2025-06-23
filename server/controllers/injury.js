@@ -7,7 +7,10 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllInjury = async (req, res) => {
-  const injuries = await Injury.find().populate("player team");
+  const injuries = await Injury.find()
+    .populate("player")
+    .populate("team")
+    .populate("now_team");
 
   const enrichedInjuries = await Promise.all(
     injuries.map(async (injury) => {
@@ -89,7 +92,10 @@ const getInjury = async (req, res) => {
   const {
     params: { id: injuryId },
   } = req;
-  const injury = await Injury.findById(injuryId).populate("player team");
+  const injury = await Injury.findById(injuryId)
+    .populate("player")
+    .populate("team")
+    .populate("now_team");
   if (!injury) {
     throw new NotFoundError();
   }
