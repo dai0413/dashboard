@@ -45,6 +45,8 @@ export const FormOptions = [
   "更新",
 ];
 
+export const ProOptions = ["プロ", "高校", "大学", "アマ", "ユース"];
+
 type OptionArray = Array<{ key: string; label: string } & Record<string, any>>;
 type OptionTable = {
   header: TableHeader[];
@@ -89,7 +91,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const { items: players } = usePlayer();
-  const { teams } = useTeam();
+  const { items: teams } = useTeam();
 
   const playerOptions = players.map((p) => ({
     label: p.name || p.en_name || "不明",
@@ -104,6 +106,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   const formOptions = FormOptions.map((f) => ({ label: f, key: f }));
   const positionOptions = PositionOptions.map((p) => ({ label: p, key: p }));
+  const proOptions = ProOptions.map((p) => ({ label: p, key: p }));
 
   function getOptions(key: string, table?: false): OptionArray;
   function getOptions(key: string, table: true): OptionTable;
@@ -162,6 +165,9 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
           break;
         case "position":
           options = positionOptions;
+          break;
+        case "pro":
+          options = proOptions;
           break;
         default:
           return [];

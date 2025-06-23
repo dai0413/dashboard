@@ -6,6 +6,7 @@ import {
 import { injury } from "./injury";
 import { player } from "./player";
 import { transfer } from "./transfer";
+import { team } from "./team";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -26,6 +27,10 @@ const convertMap: {
   [ModelType.INJURY]: {
     single: injury,
     multiple: (data) => data.map(injury),
+  },
+  [ModelType.TEAM]: {
+    single: team,
+    multiple: (data) => data.map(team),
   },
 };
 
