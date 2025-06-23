@@ -40,23 +40,26 @@
 
 ## 4. 移籍
 
-| フィールド | 型       | null  | 注釈       | バリデーション  |
-| ---------- | -------- | ----- | ---------- | --------------- |
-| doa        | 日付     | false | 発表日     |                 |
-| from_team  | 外部キー | true  | 所属元     | チーム外部キー  |
-| to_team    | 外部キー | true  | 移籍先     | チーム外部キー  |
-| player     | 外部キー | false | 選手       | 選手外部キー    |
-| position   | 文字列   | true  | ポジション | 複数可, ※1 ENUM |
-| form       | 文字列   | false | 形態       | ※2 ENUM         |
-| number     | 数字     | true  | 背番号     |                 |
-| from_date  | 日付     | false | 移籍日     |                 |
-| to_date    | 日付     | true  |            | 移籍日より後    |
-| URL        | URL      | true  |            | 複数可          |
+| フィールド     | 型       | null  | 注釈       | バリデーション  |
+| -------------- | -------- | ----- | ---------- | --------------- |
+| doa            | 日付     | false | 発表日     |                 |
+| from_team      | 外部キー | true  | 所属元     | チーム外部キー  |
+| from_team_name | 文字列   | true  | 所属元     | ※3              |
+| to_team        | 外部キー | true  | 移籍先     | チーム外部キー  |
+| to_team_name   | 文字列   | true  | 移籍先     | ※3              |
+| player         | 外部キー | false | 選手       | 選手外部キー    |
+| position       | 文字列   | true  | ポジション | 複数可, ※1 ENUM |
+| form           | 文字列   | false | 形態       | ※2 ENUM         |
+| number         | 数字     | true  | 背番号     |                 |
+| from_date      | 日付     | false | 移籍日     |                 |
+| to_date        | 日付     | true  |            | 移籍日より後    |
+| URL            | URL      | true  |            | 複数可          |
 
 ※1 GK | DF | CB | RCB | LCB | SB | RSB | LSB | WB | RWB | LWB | MF | CM | DM | OM | WG | RWG | LWG | CF | FW
 
-※2 完全 | 期限付き | 期限付き満了 | 期限付き解除 | 育成型期限付き | 育成型期限付き満了 | 育成型期限付き解除 | 満了 | 退団 | 引退 | 延長 | 契約解除 | 復帰 | 離脱 | 更新
+※2 完全 | 期限付き | 期限付き満了 | 期限付き解除 | 育成型期限付き | 育成型期限付き満了 | 育成型期限付き解除 | 満了 | 退団 | 引退 | 期限付き延長 | 育成型期限付き延長 | 契約解除 | 復帰 | 離脱 | 更新
 
+※3from_team or from_team_name , to_team or to_team_name を入力
 ※doa, from_team , to_team , player, form の組み合わせユニーク
 
 ## 5. 怪我
@@ -71,13 +74,13 @@
 | dos          | 日付     | true  | 手術日             |                         |
 | injured_part | 文字列   | true  | 負傷箇所・診断結果 | 複数可                  |
 | is_injured   | 真偽値   | true  | 負傷中             | デフォルト true         |
-| ttp          | 文字列   | true  | 全治期間※1           | 数字 + d or w or m or y |
-| erd          | 日付     | true  | 復帰予測※2           | 負傷日・手術日より後    |
+| ttp          | 文字列   | true  | 全治期間※1         | 数字 + d or w or m or y |
+| erd          | 日付     | true  | 復帰予測※2         | 負傷日・手術日より後    |
 | URL          | URL      | true  |                    | 複数可                  |
 
 ※1 例） 1d , 1w, 10w-15w, 2m-3m, 10w-5m
 
-※2 erdの値がnullかつttpの値がnullでないときは,doiまたはdosを基準にttp用いて計算。
+※2 erd の値が null かつ ttp の値が null でないときは,doi または dos を基準に ttp 用いて計算。
 
 ※doa, team, player, doi, dos の組み合わせユニーク
 

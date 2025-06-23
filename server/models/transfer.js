@@ -10,10 +10,16 @@ const TransferSchema = new mongoose.Schema({
     ref: "Team",
     // required: true,
   },
+  from_team_name: {
+    type: String,
+  },
   to_team: {
     type: mongoose.ObjectId,
     ref: "Team",
     // required: true,
+  },
+  to_team_name: {
+    type: String,
   },
   player: {
     type: mongoose.ObjectId,
