@@ -3,6 +3,7 @@ import { createConfirmationStep } from "./confirmationStep";
 import { transfer } from "./transfer";
 import { player } from "./player";
 import { injury } from "./injury";
+import { team } from "./team";
 
 export const steps = {
   [ModelType.TRANSFER]: [
@@ -11,4 +12,5 @@ export const steps = {
   ],
   [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
   [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
+  [ModelType.TEAM]: [...team, createConfirmationStep<ModelType.TEAM>()],
 };

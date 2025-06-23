@@ -6,6 +6,7 @@ import { useAlert } from "./alert-context";
 import { FormStep } from "../types/form";
 import { FormTypeMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
+import { useTeam } from "./models/team-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
@@ -56,6 +57,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.PLAYER]: usePlayer(),
     [ModelType.TRANSFER]: useTransfer(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.TEAM]: useTeam(),
   };
 
   const modelContext = useMemo(() => {
@@ -66,6 +68,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelContextMap[ModelType.PLAYER].formData,
     modelContextMap[ModelType.TRANSFER].formData,
     modelContextMap[ModelType.INJURY].formData,
+    modelContextMap[ModelType.TEAM].formData,
   ]);
 
   const getDiffKeys = modelContext?.getDiffKeys;

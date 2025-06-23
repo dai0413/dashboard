@@ -27,6 +27,10 @@ const convertMap: {
     single: injury,
     multiple: (data) => data.map(injury),
   },
+  [ModelType.TEAM]: {
+    single: (data) => data,
+    multiple: (data) => data,
+  },
 };
 
 export function convert<T extends ModelType>(
