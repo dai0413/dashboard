@@ -36,10 +36,10 @@ const checkSimilarPlayers = async (req, res) => {
 };
 
 const createPlayer = async (req, res) => {
-  if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
+  if (!req.body.name || !req.body.dob || !req.body.pob) {
     throw new BadRequestError();
   }
-  const { name, en_name, dob, pob } = req.body;
+
   const player = await Player.create(req.body);
   if (!player) {
     throw new NotFoundError();
