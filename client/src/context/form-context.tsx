@@ -105,21 +105,27 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const sendData = async () => {
     if (!modelContext) return;
-    const difKeys = getDiffKeys && getDiffKeys();
-    if (!difKeys || difKeys?.length === 0)
-      return handleSetAlert({
-        success: false,
-        message: "変更点がありません",
-      });
 
-    console.log(modelContext.formData);
-    const updated: FormTypeMap[T] = Object.fromEntries(
-      Object.entries(modelContext.formData).filter(([key]) =>
-        difKeys.includes(key)
-      )
-    );
+    if (newData) {
+      modelContext?.createItem();
+    } else {
+      const difKeys = getDiffKeys && getDiffKeys();
+      if (!difKeys || difKeys?.length === 0)
+        return handleSetAlert({
+          success: false,
+          message: "変更点がありません",
+        });
 
-    newData ? modelContext?.createItem() : modelContext?.updateItem(updated);
+      console.log(modelContext.formData);
+      const updated: FormTypeMap[T] = Object.fromEntries(
+        Object.entries(modelContext.formData).filter(([key]) =>
+          difKeys.includes(key)
+        )
+      );
+
+      modelContext?.updateItem(updated);
+    }
+
     setCurrentStep((prev) =>
       Math.min(
         prev + 1,

@@ -16,7 +16,6 @@ export const player: FormStep<ModelType.PLAYER>[] = [
         key: "en_name",
         label: "英名",
         type: "input",
-        required: true,
       },
     ],
   },
