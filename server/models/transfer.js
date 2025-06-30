@@ -42,9 +42,16 @@ const TransferSchema = new mongoose.Schema({
       "LWB",
       "MF",
       "CM",
+      "LCM",
+      "RCM",
       "DM",
       "OM",
+      "SH",
       "WG",
+      "RIH",
+      "LIH",
+      "RSH",
+      "LSH",
       "RWG",
       "LWG",
       "CF",
@@ -95,7 +102,15 @@ const TransferSchema = new mongoose.Schema({
 });
 
 TransferSchema.index(
-  { doa: 1, from_team: 1, to_team: 1, player: 1, form: 1 },
+  {
+    from_team: 1,
+    from_team_name: 1,
+    to_team_name: 1,
+    player: 1,
+    form: 1,
+    from_date: 1,
+    to_date: 1,
+  },
   { unique: true }
 );
 

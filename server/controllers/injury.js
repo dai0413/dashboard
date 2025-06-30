@@ -8,6 +8,7 @@ const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllInjury = async (req, res) => {
   const injuries = await Injury.find()
+    .sort({ doa: -1 })
     .populate("player")
     .populate("team")
     .populate("now_team");

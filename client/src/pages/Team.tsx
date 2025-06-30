@@ -11,7 +11,7 @@ const Team = () => {
       headers={[
         { label: "チーム名", field: "team" },
         { label: "略称", field: "abbr" },
-        { label: "pro", field: "pro" },
+        { label: "ジャンル", field: "genre" },
       ]}
       contextState={teamContext}
       modelType={ModelType.TEAM}
