@@ -21,11 +21,19 @@
 
 ## 2. チーム
 
-| フィールド | 型     | null  | 注釈       | バリデーション                                 |
-| ---------- | ------ | ----- | ---------- | ---------------------------------------------- |
-| team       | 文字列 | false | チーム名   |                                                |
-| abbr       | 文字列 | false | 略称       | ユニーク                                       |
-| pro        | 文字列 | false | チーム形態 | ENUM('プロ', '高校', '大学', 'アマ', 'ユース') |
+| フィールド  | 型     | null  | 注釈      | バリデーション |
+| ----------- | ------ | ----- | --------- | -------------- |
+| team        | 文字列 | false | チーム名  |                |
+| abbr        | 文字列 | true  | 略称      |                |
+| enTeam      | 文字列 | true  | 英名      |                |
+| country     | 文字列 | true  | 国名      |                |
+| genre       | 文字列 | true  | ジャンル  | ※1             |
+| jdataid     | 数字   | true  | j.data.id |                |
+| labalph     | 文字列 | true  | lab.alph  |                |
+| transferurl | 文字列 | true  | transfer  |                |
+| sofaurl     | 文字列 | true  | sofa      |                |
+
+※1 ENUM('academy', 'club', 'college', 'high_school', 'second_team', 'third_team', 'youth')
 
 ## 3. 選手
 
@@ -55,12 +63,12 @@
 | to_date        | 日付     | true  |            | 移籍日より後    |
 | URL            | URL      | true  |            | 複数可          |
 
-※1 GK | DF | CB | RCB | LCB | SB | RSB | LSB | WB | RWB | LWB | MF | CM | DM | OM | WG | RWG | LWG | CF | FW
+※1 GK | DF | CB | RCB | LCB | SB | RSB | LSB | WB | RWB | LWB | MF | CM | DM | OM | WG | RSH | LSH | RWG | LWG | CF | FW
 
 ※2 完全 | 期限付き | 期限付き満了 | 期限付き解除 | 育成型期限付き | 育成型期限付き満了 | 育成型期限付き解除 | 満了 | 退団 | 引退 | 期限付き延長 | 育成型期限付き延長 | 契約解除 | 復帰 | 離脱 | 更新
 
 ※3from_team or from_team_name , to_team or to_team_name を入力
-※doa, from_team , to_team , player, form の組み合わせユニーク
+※from_team , from_team_name, to_team_name , player, form, from_date, to_date の組み合わせユニーク
 
 ## 5. 怪我
 

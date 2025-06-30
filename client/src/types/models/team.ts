@@ -1,8 +1,18 @@
+import { GenreOptions } from "../../context/options-provider";
+
+type Genre = (typeof GenreOptions)[number] | null;
+
 export type Team = {
   _id: string;
   team: string;
   abbr: string;
-  pro: string;
+  enTeam: string;
+  country: string;
+  genre: Genre;
+  jdataid: number;
+  labalph: string;
+  transferurl: string;
+  sofaurl: string;
 };
 
 type TeamPost = Omit<Team, "_id">;

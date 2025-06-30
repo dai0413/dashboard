@@ -50,6 +50,7 @@ const dateValidation = async (id, newData) => {
 
 const getAllTransfer = async (req, res) => {
   const transfers = await Transfer.find({})
+    .sort({ doa: -1 })
     .populate("from_team")
     .populate("to_team")
     .populate("player");

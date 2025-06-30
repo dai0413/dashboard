@@ -83,11 +83,11 @@ const downloadTeam = async (req, res) => {
       return res.status(404).json({ message: "データがありません" });
     }
 
-    const header = `"id","team","abbr","pro"\n`;
+    const header = `"id","team","abbr","enTeam","country","genre","jdataid","labalph","transferurl","sofaurl"\n`;
 
     const csvContent = teams
       .map((team) => {
-        return `"${team._id}","${team.team}","${team.abbr}","${team.pro}"`;
+        return `"${team._id}","${team.team}","${team.abbr}","${team.enTeam}","${team.country}","${team.genre}","${team.jdataid}","${team.labalph}","${team.transferurl},"${team.sofaurl}""`;
       })
       .join("\n");
 

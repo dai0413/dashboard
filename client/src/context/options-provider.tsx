@@ -17,9 +17,16 @@ export const PositionOptions = [
   "LWB",
   "MF",
   "CM",
+  "LCM",
+  "RCM",
   "DM",
   "OM",
+  "SH",
   "WG",
+  "RIH",
+  "LIH",
+  "RSH",
+  "LSH",
   "RWG",
   "LWG",
   "CF",
@@ -45,7 +52,15 @@ export const FormOptions = [
   "更新",
 ];
 
-export const ProOptions = ["プロ", "高校", "大学", "アマ", "ユース"];
+export const GenreOptions = [
+  "academy",
+  "club",
+  "college",
+  "high_school",
+  "second_team",
+  "third_team",
+  "youth",
+];
 
 type OptionArray = Array<{ key: string; label: string } & Record<string, any>>;
 type OptionTable = {
@@ -106,7 +121,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   const formOptions = FormOptions.map((f) => ({ label: f, key: f }));
   const positionOptions = PositionOptions.map((p) => ({ label: p, key: p }));
-  const proOptions = ProOptions.map((p) => ({ label: p, key: p }));
+  const genreOptions = GenreOptions.map((p) => ({ label: p, key: p }));
 
   function getOptions(key: string, table?: false): OptionArray;
   function getOptions(key: string, table: true): OptionTable;
@@ -166,8 +181,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         case "position":
           options = positionOptions;
           break;
-        case "pro":
-          options = proOptions;
+        case "genre":
+          options = genreOptions;
           break;
         default:
           return [];
