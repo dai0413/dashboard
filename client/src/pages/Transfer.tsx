@@ -9,10 +9,11 @@ const Transfer = () => {
     <TableContainer
       title={"移籍情報"}
       headers={[
-        { label: "移籍日", field: "doa" },
+        { label: "発表日", field: "doa" },
+        { label: "名前", field: "player" },
         { label: "移籍元", field: "from_team" },
         { label: "移籍先", field: "to_team" },
-        { label: "名前", field: "player" },
+        { label: "形態", field: "form" },
       ]}
       contextState={transferContext}
       modelType={ModelType.TRANSFER}

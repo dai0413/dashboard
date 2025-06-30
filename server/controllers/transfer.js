@@ -37,10 +37,6 @@ const dateValidation = async (id, newData) => {
     "from_date" in newData ? new Date(newData.from_date) : currentFrom;
   const newTo = "to_date" in newData ? new Date(newData.to_date) : currentTo;
 
-  if (isNaN(newFrom.getTime()) || isNaN(newTo.getTime())) {
-    throw new BadRequestError("日付の形式が正しくありません。");
-  }
-
   if (newTo && newFrom && newTo <= newFrom) {
     throw new BadRequestError(
       "満了予定日 は 新チーム加入日 より後でなければなりません。"
@@ -61,11 +57,10 @@ const getAllTransfer = async (req, res) => {
 
 const createTransfer = async (req, res) => {
   const { from_team_name, to_team_name, from_team, to_team, player } = req.body;
+  let transferData = { ...req.body };
 
   if (!from_team_name && !from_team && !to_team_name && !to_team)
     throw new BadRequestError("移籍元または移籍先のチームを選択してください");
-
-  let transferData = { ...req.body };
 
   if (from_team && from_team_name)
     throw new BadRequestError("移籍先チームを選択または入力してください");
@@ -154,14 +149,15 @@ const updateTransfer = async (req, res) => {
 
   const {
     params: { id: transferId },
-    body,
   } = req;
-
-  const updatedData = { ...body };
+  const { from_team_name, to_team_name, from_team, to_team, player } = req.body;
+  let updatedData = { ...req.body };
 
   // from_team
-  if ("from_team" in body && !mongoose.Types.ObjectId.isValid(body.from_team)) {
-    const fromTeamObj = await Team.findById(body.from_team);
+  if (from_team && from_team_name)
+    throw new BadRequestError("移籍先チームを選択または入力してください");
+  if (from_team && !mongoose.Types.ObjectId.isValid(from_team)) {
+    const fromTeamObj = await Team.findById(from_team);
     if (!fromTeamObj) {
       throw new BadRequestError("移籍元 が見つかりません。");
     }
@@ -169,8 +165,10 @@ const updateTransfer = async (req, res) => {
   }
 
   // to_team
-  if ("to_team" in body && !mongoose.Types.ObjectId.isValid(body.to_team)) {
-    const toTeamObj = await Team.findById(body.to_team);
+  if (to_team && to_team_name)
+    throw new BadRequestError("移籍先チームを選択または入力してください");
+  if (to_team && !mongoose.Types.ObjectId.isValid(to_team)) {
+    const toTeamObj = await Team.findById(to_team);
     if (!toTeamObj) {
       throw new BadRequestError("移籍先 が見つかりません。");
     }
@@ -178,14 +176,15 @@ const updateTransfer = async (req, res) => {
   }
 
   // player
-  if ("player" in body && !mongoose.Types.ObjectId.isValid(body.player)) {
-    const playerObj = await Player.findById(body.player);
+  if (player && !mongoose.Types.ObjectId.isValid(player)) {
+    const playerObj = await Player.findById(player);
     if (!playerObj) {
       throw new BadRequestError("player が見つかりません。");
     }
     updatedData.player = playerObj._id;
   }
 
+  // date validation
   await dateValidation(transferId, updatedData);
 
   // update
