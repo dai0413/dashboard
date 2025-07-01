@@ -5,43 +5,60 @@ const Team = require("../models/team");
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const { formatInjury } = require("../utils/formatInjury");
 
 const getAllInjury = async (req, res) => {
-  const injuries = await Injury.find()
-    .sort({ doa: -1 })
-    .populate("player")
-    .populate("team")
-    .populate("now_team");
+  let limit = parseInt(req.query.limit, 10);
 
-  const enrichedInjuries = await Promise.all(
-    injuries.map(async (injury) => {
-      const latestTransfer = await Transfer.findOne({
-        player: injury.player._id,
-        to_team: { $ne: null },
-      })
-        .sort({ from_date: -1 })
-        .limit(1);
+  if (isNaN(limit) || limit <= 0) {
+    limit = undefined;
+  }
 
-      const now_team = latestTransfer ? latestTransfer.to_team : null;
+  let query = Injury.find({}).sort({ doa: -1 });
 
-      return {
-        ...injury.toObject(),
-        now_team,
-      };
+  if (limit !== undefined) {
+    query = query.limit(limit);
+  }
+
+  const injuries = await query.populate("player").populate("team");
+
+  const enrichedDocs = await Promise.all(
+    injuries.map(async (injuryDoc) => {
+      const latest = injuryDoc.player
+        ? await Transfer.findOne({
+            player: injuryDoc.player._id,
+            to_team: { $ne: null },
+          })
+            .sort({ from_date: -1 })
+            .exec() // ← クエリを実行
+        : null;
+
+      injuryDoc.now_team = latest ? latest.to_team : null;
+      return injuryDoc;
     })
   );
 
-  res.status(StatusCodes.OK).json({ data: enrichedInjuries });
+  const formatted = enrichedDocs.map(formatInjury);
+
+  res.status(StatusCodes.OK).json({ data: formatted });
 };
 
 const createInjury = async (req, res) => {
   console.log("create injury");
-  if (!req.body.team || !req.body.player) {
-    throw new BadRequestError();
-  }
-  const { team, player } = req.body;
+  const { team, team_name, player } = req.body;
+  let injuryData = { ...req.body };
 
-  let teamId = null;
+  if (!team && !team_name) {
+    throw new BadRequestError("チームを選択または入力してください");
+  }
+
+  if (!player) {
+    throw new BadRequestError("選手を選択してください");
+  }
+
+  if (team && team_name)
+    throw new BadRequestError("チームを選択または入力してください");
+
   if (team) {
     if (!mongoose.Types.ObjectId.isValid(team)) {
       throw new BadRequestError("team の ID が不正です。");
@@ -50,11 +67,11 @@ const createInjury = async (req, res) => {
     if (!teamObj) {
       throw new BadRequestError("team が見つかりません。");
     }
-    teamId = teamObj._id;
+    injuryData.team = teamObj._id;
+  } else if (team_name) {
+    injuryData.team_name = team_name;
   }
 
-  let playerId = null;
-  console.log("player id ", player);
   if (player) {
     if (!mongoose.Types.ObjectId.isValid(player)) {
       throw new BadRequestError("player の ID が不正です。");
@@ -63,27 +80,27 @@ const createInjury = async (req, res) => {
     if (!playerObj) {
       throw new BadRequestError("player が見つかりません。");
     }
-    playerId = playerObj._id;
+    injuryData.player = playerObj._id;
   }
 
   const now_teamObj = await Transfer.findOne({
-    player: playerId,
+    player: injuryData.player,
     to_team: { $ne: null }, // to_team が null でない
   })
     .sort({ from_date: -1 }) // 最新
     .limit(1);
 
-  const injuryData = {
-    ...req.body,
-    team: teamId,
-    now_team: now_teamObj ? now_teamObj.to_team : null,
-    player: playerId,
-  };
+  injuryData.now_team = now_teamObj ? now_teamObj.to_team : null;
 
   const injury = await Injury.create(injuryData);
+
+  const populatedInjury = await Injury.findById(injury._id)
+    .populate("player")
+    .populate("team")
+    .populate("now_team");
   res
     .status(StatusCodes.CREATED)
-    .json({ message: "追加しました", data: injury });
+    .json({ message: "追加しました", data: formatInjury(populatedInjury) });
 };
 
 const getInjury = async (req, res) => {
@@ -95,20 +112,23 @@ const getInjury = async (req, res) => {
   } = req;
   const injury = await Injury.findById(injuryId)
     .populate("player")
-    .populate("team")
-    .populate("now_team");
+    .populate("team");
   if (!injury) {
     throw new NotFoundError();
   }
 
-  const latestTransfer = await Transfer.findOne({
-    player: injury.player._id,
-    to_team: { $ne: null },
-  })
-    .sort({ from_date: -1 })
-    .limit(1);
+  const latest = injury.player
+    ? await Transfer.find({
+        player: injury.player._id,
+        to_team: { $ne: null },
+      }).sort({ from_date: -1 })
+    : // .limit(1)
+      null;
 
-  const now_team = latestTransfer ? latestTransfer.to_team : null;
+  console.log("latest transfers", latest);
+  const now_team = latest.to_team ? await Team.findById(latest.to_team) : null;
+
+  // console.log(now_team);
 
   res.status(StatusCodes.OK).json({
     data: {
@@ -119,19 +139,20 @@ const getInjury = async (req, res) => {
 };
 
 const updateInjury = async (req, res) => {
-  // if (!req.params.id || !req.body.team || !req.body.player) {
-  //   throw new BadRequestError();
-  // }
   const {
     params: { id: injuryId },
-    body,
   } = req;
 
-  const updatedData = { ...body };
+  const updatedData = { ...req.body };
+
+  const { team, team_name, player } = req.body;
+
+  if (team && team_name)
+    throw new BadRequestError("チームを選択または入力してください");
 
   // team
-  if ("team" in body && !mongoose.Types.ObjectId.isValid(body.team)) {
-    const teamObj = await Team.findOne({ abbr: body.team });
+  if (team && !mongoose.Types.ObjectId.isValid(team)) {
+    const teamObj = await Team.findOne({ abbr: team });
     if (!teamObj) {
       throw new BadRequestError("team が見つかりません。");
     }
@@ -139,8 +160,8 @@ const updateInjury = async (req, res) => {
   }
 
   // player
-  if ("player" in body && !mongoose.Types.ObjectId.isValid(body.player)) {
-    const playerObj = await Player.findOne({ abbr: body.player });
+  if (player && !mongoose.Types.ObjectId.isValid(player)) {
+    const playerObj = await Player.findOne({ abbr: player });
     if (!playerObj) {
       throw new BadRequestError("player が見つかりません。");
     }

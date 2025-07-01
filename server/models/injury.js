@@ -9,6 +9,9 @@ const InjurySchema = new mongoose.Schema({
     type: mongoose.ObjectId,
     ref: "Team",
   },
+  team_name: {
+    type: String,
+  },
   now_team: {
     type: mongoose.ObjectId,
     ref: "Team",
@@ -119,5 +122,17 @@ InjurySchema.pre("save", function (next) {
 
   next();
 });
+
+InjurySchema.index(
+  {
+    team: 1,
+    team_name: 1,
+    player: 1,
+    doi: 1,
+    dos: 1,
+    injured_part: 1,
+  },
+  { unique: true }
+);
 
 module.exports = mongoose.model("Injury", InjurySchema);
