@@ -76,6 +76,7 @@
 | ------------ | -------- | ----- | ------------------ | ----------------------- |
 | doa          | 日付     | false | 公式発表           |                         |
 | team         | 外部キー | true  | チーム             | チーム外部キー          |
+| team_name    | 文字列   | true  | チーム             | ※3                      |
 | now_team     | 外部キー | true  | 現所属             | チーム外部キー          |
 | player       | 外部キー | false | 選手               | 選手外部キー            |
 | doi          | 日付     | true  | 負傷日             |                         |
@@ -89,6 +90,8 @@
 ※1 例） 1d , 1w, 10w-15w, 2m-3m, 10w-5m
 
 ※2 erd の値が null かつ ttp の値が null でないときは,doi または dos を基準に ttp 用いて計算。
+
+※3 team or team_name を入力
 
 ※doa, team, player, doi, dos の組み合わせユニーク
 
