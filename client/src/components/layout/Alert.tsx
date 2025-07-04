@@ -5,8 +5,20 @@ const Alert = ({ success, message }: ResponseStatus) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsOpen(true);
-  }, [success]);
+    if (success && message) {
+      setIsOpen(true);
+
+      const timer = setTimeout(() => {
+        setIsOpen(false);
+      }, 3000); // 3秒後に閉じる
+
+      return () => clearTimeout(timer); // クリーンアップ
+    }
+
+    if (!success && message) {
+      setIsOpen(true); // エラーは自動で閉じずにユーザーが手動で閉じる
+    }
+  }, [success, message]);
 
   const renderMessage = (success: boolean, message: string) => {
     const bgColor = success ? "bg-green-100" : "bg-red-100";

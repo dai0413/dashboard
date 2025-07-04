@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { PlayerProvider, usePlayer } from "./models/player-context";
 import { TeamProvider, useTeam } from "./models/team-context";
 import { TableHeader } from "../types/types";

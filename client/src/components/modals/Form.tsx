@@ -8,6 +8,10 @@ import { useOptions } from "../../context/options-provider";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Table } from "../table";
 import { useForm } from "../../context/form-context";
+import { useEffect } from "react";
+import { usePlayer } from "../../context/models/player-context";
+import { useTeam } from "../../context/models/team-context";
+import { useAuth } from "../../context/auth-context";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FieldDefinition<T>;
@@ -30,7 +34,8 @@ const RenderField = <T extends keyof FormTypeMap>({
     type === "number" ? "number" : type === "date" ? "date" : "text";
 
   // console.log("formData[key]", key, formData[key]);
-  console.log(getOptions(key as string));
+  // 後で追加フィルタリング
+  console.log(getOptions(key as string, true).header);
 
   return (
     <div key={key as string} className="mb-4">
@@ -294,6 +299,18 @@ const Form = <T extends keyof FormTypeMap>() => {
   const {
     modal: { alert },
   } = useAlert();
+
+  const { accessToken } = useAuth();
+
+  const { readItems: readPlayers } = usePlayer();
+  const { readItems: readTeams } = useTeam();
+
+  useEffect(() => {
+    if (!accessToken) return;
+    readPlayers();
+    readTeams();
+  }, [accessToken]);
+
   const { getOptions } = useOptions();
 
   const diffKeys = getDiffKeys ? getDiffKeys() : [];

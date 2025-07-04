@@ -13,11 +13,11 @@ import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
-import api from "../../lib/axios";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
+import { useApi } from "../api-context";
 
 const initialFormData: PlayerForm = {};
 
@@ -32,11 +32,9 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
-  const [items, setItems] = useState<PlayerGet[]>([]);
+  const api = useApi();
 
-  useEffect(() => {
-    readItems();
-  }, []);
+  const [items, setItems] = useState<PlayerGet[]>([]);
 
   const [selected, setSelectedItem] = useState<PlayerGet | null>(null);
   const [formData, setFormData] = useState<PlayerForm>(initialFormData);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Table from "./Table";
 import TableToolbar from "./TableToolbar";
@@ -27,7 +27,11 @@ const TableContainer = <K extends keyof FormTypeMap>({
   const { data: sortedData } = useSort();
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const { items, uploadFile, downloadFile } = contextState;
+  const { items, readItems, uploadFile, downloadFile } = contextState;
+
+  useEffect(() => {
+    readItems();
+  }, []);
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
@@ -48,7 +52,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
         detail={true}
         detailLink={modelType ? ModelRouteMap[modelType] : ""}
         rowSpacing={rowSpacing}
-        itemsPerPage={20}
+        itemsPerPage={10}
       />
     </div>
   );

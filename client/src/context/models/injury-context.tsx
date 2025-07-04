@@ -13,11 +13,11 @@ import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
-import api from "../../lib/axios";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
+import { useApi } from "../api-context";
 
 const getComparison = (value: any): string | number | (string | number)[] => {
   if (Array.isArray(value)) {
@@ -55,12 +55,9 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
+  const api = useApi();
+
   const [items, setItems] = useState<InjuryGet[]>([]);
-
-  useEffect(() => {
-    readItems();
-  }, []);
-
   const [selected, setSelectedItem] = useState<InjuryGet | null>(null);
   const [formData, setFormData] = useState<InjuryForm>(initialFormData);
 
@@ -113,10 +110,12 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const readItems = async () => {
+  const readItems = async (limit?: number) => {
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.get(API_ROUTES.INJURY.GET_ALL);
+      const res = await api.get(API_ROUTES.INJURY.GET_ALL, {
+        params: { limit: 5 },
+      });
       const items = res.data.data as Injury[];
       console.log(convert(ModelType.INJURY, items));
       setItems(convert(ModelType.INJURY, items));

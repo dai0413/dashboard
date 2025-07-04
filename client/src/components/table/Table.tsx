@@ -61,9 +61,9 @@ const Table = <T extends Record<string, any>>({
   const pages = getPageNumbers(currentPage, totalPages);
 
   return (
-    <>
+    <div className="max-h-[50rem] overflow-y-auto">
       <table className="min-w-full table-auto border">
-        <thead>
+        <thead className="sticky top-0 bg-gray-200 z-10">
           <tr className="bg-gray-200">
             {headers.map((header) => (
               <th key={header.field} className="px-4 py-2 border">
@@ -148,26 +148,28 @@ const Table = <T extends Record<string, any>>({
           ))}
         </tbody>
       </table>
-      <div className="flex justify-center mt-2 space-x-2">
-        {pages.map((page, index) =>
-          page === "..." ? (
-            <span key={index} className="px-2">
-              ...
-            </span>
-          ) : (
-            <button
-              key={index}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 border rounded ${
-                currentPage === page ? "bg-blue-500 text-white" : "bg-white"
-              }`}
-            >
-              {page}
-            </button>
-          )
-        )}
-      </div>
-    </>
+      {pages.length > 1 && (
+        <div className="flex justify-center mt-2 space-x-2">
+          {pages.map((page, index) =>
+            page === "..." ? (
+              <span key={index} className="px-2">
+                ...
+              </span>
+            ) : (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(page)}
+                className={`px-3 py-1 border rounded ${
+                  currentPage === page ? "bg-blue-500 text-white" : "bg-white"
+                }`}
+              >
+                {page}
+              </button>
+            )
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

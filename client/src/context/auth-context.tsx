@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import api from "../lib/axios";
+import axios from "axios";
 import { useAlert } from "./alert-context";
 import { APIError, ResponseStatus } from "../types/types";
 import { API_ROUTES } from "../lib/apiRoutes";
@@ -26,8 +26,6 @@ const defaultValue: AuthState = {
 
 const AuthContext = createContext<AuthState>(defaultValue);
 
-let accessTokenRef: string | null = null;
-
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const {
@@ -41,13 +39,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   ): Promise<boolean> => {
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.post(API_ROUTES.AUTH.REGISTER, {
+      const res = await axios.post(API_ROUTES.AUTH.REGISTER, {
         user_name,
         email,
         password,
       });
       setAccessToken(res.data?.accessToken);
-      accessTokenRef = res.data?.accessToken;
+
       alert = { success: true, message: res.data?.message };
       handleSetAlert(alert);
       return true;
@@ -67,9 +65,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.post(API_ROUTES.AUTH.LOGIN, { email, password });
+      console.log("login start");
+      const res = await axios.post(API_ROUTES.AUTH.LOGIN, { email, password });
       setAccessToken(res.data?.accessToken);
-      accessTokenRef = res.data?.accessToken;
+      console.log("login function", res.data.accessToken);
+
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${res.data.accessToken}`;
+
       alert = { success: true, message: res.data?.message };
       handleSetAlert(alert);
       return true;
@@ -89,9 +93,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.post(API_ROUTES.AUTH.LOGOUT, {});
+      const res = await axios.post(API_ROUTES.AUTH.LOGOUT, {});
+      console.log(res);
+      axios.defaults.headers.common["Authorization"] = "";
       setAccessToken(null);
-      accessTokenRef = null;
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
       const apiError = err.response?.data as APIError;
@@ -108,7 +113,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const refresh = async (token: string) => {
     setAccessToken(token);
-    accessTokenRef = token;
   };
 
   const value: AuthState = {
@@ -122,8 +126,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-const getAccessToken = () => accessTokenRef;
-
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -132,4 +134,4 @@ const useAuth = () => {
   return context;
 };
 
-export { AuthProvider, useAuth, getAccessToken };
+export { AuthProvider, useAuth };
