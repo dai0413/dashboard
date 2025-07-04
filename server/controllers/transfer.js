@@ -45,8 +45,19 @@ const dateValidation = async (id, newData) => {
 };
 
 const getAllTransfer = async (req, res) => {
-  const transfers = await Transfer.find({})
-    .sort({ doa: -1 })
+  let limit = parseInt(req.query.limit, 10);
+
+  if (isNaN(limit) || limit <= 0) {
+    limit = undefined;
+  }
+
+  let query = Transfer.find({}).sort({ doa: -1 });
+
+  if (limit !== undefined) {
+    query = query.limit(limit);
+  }
+
+  const transfers = await query
     .populate("from_team")
     .populate("to_team")
     .populate("player");

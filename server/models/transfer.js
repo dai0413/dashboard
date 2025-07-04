@@ -105,6 +105,7 @@ TransferSchema.index(
   {
     from_team: 1,
     from_team_name: 1,
+    to_team: 1,
     to_team_name: 1,
     player: 1,
     form: 1,
