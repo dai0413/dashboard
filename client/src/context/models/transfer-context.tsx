@@ -17,11 +17,11 @@ import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
-import api from "../../lib/axios";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
+import { useApi } from "../api-context";
 
 const initialFormData: TransferForm = {};
 
@@ -35,12 +35,9 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
+  const api = useApi();
+
   const [items, setItems] = useState<TransferGet[]>([]);
-
-  useEffect(() => {
-    readItems();
-  }, []);
-
   const [selected, setSelectedItem] = useState<TransferGet | null>(null);
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
 
@@ -97,10 +94,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const readItems = async () => {
+  const readItems = async (limit?: number) => {
     let alert: ResponseStatus = { success: false };
     try {
-      const res = await api.get(API_ROUTES.TRANSFER.GET_ALL);
+      const res = await api.get(API_ROUTES.TRANSFER.GET_ALL, {
+        params: { limit },
+      });
       const items = res.data.data as Transfer[];
       setItems(convert(ModelType.TRANSFER, items));
       alert = { success: true, message: res.data?.message };

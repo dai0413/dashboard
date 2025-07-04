@@ -13,11 +13,11 @@ import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
-import api from "../../lib/axios";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
+import { useApi } from "../api-context";
 
 const initialFormData: TeamForm = {};
 
@@ -30,15 +30,9 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
+  const api = useApi();
+
   const [items, setItems] = useState<TeamGet[]>([]);
-
-  useEffect(() => {
-    readItems();
-  }, []);
-
-  useEffect(() => {
-    console.log("updated", items);
-  }, [items]);
 
   const [selected, setSelectedItem] = useState<TeamGet | null>(null);
   const [formData, setFormData] = useState<TeamForm>(initialFormData);
