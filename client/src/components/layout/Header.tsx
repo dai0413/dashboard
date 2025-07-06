@@ -3,7 +3,7 @@ import { useAuth } from "../../context/auth-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Header = () => {
-  const { accessToken, logout } = useAuth();
+  const { accessToken, profile, logout } = useAuth();
 
   return (
     <header className="text-gray-600 body-font">
@@ -28,9 +28,16 @@ const Header = () => {
         </Link>
 
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center gap-4">
-          <Link to={APP_ROUTES.PLAYER} className="hover:text-gray-900">
-            選手
-          </Link>
+          {profile.admin && (
+            <>
+              <Link to={APP_ROUTES.PLAYER} className="hover:text-gray-900">
+                選手
+              </Link>
+              <Link to={APP_ROUTES.TEAM} className="hover:text-gray-900">
+                チーム
+              </Link>
+            </>
+          )}
           <Link to={APP_ROUTES.TRANSFER} className="hover:text-gray-900">
             移籍
           </Link>

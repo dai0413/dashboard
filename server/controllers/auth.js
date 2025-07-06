@@ -65,6 +65,8 @@ const login = async (req, res, next) => {
   res.status(StatusCodes.OK).json({
     message: "ログインしました。",
     accessToken: token,
+    is_staff: user.is_staff,
+    admin: user.admin,
   });
   console.log("login end");
 };
