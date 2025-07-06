@@ -95,7 +95,9 @@
   ```json
   {
     "message": "ログインしました。",
-    "accessToken": ""
+    "accessToken": "",
+    "is_staff": "",
+    "admin": ""
   }
   ```
 
