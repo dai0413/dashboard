@@ -22,21 +22,23 @@ const getAllInjury = async (req, res) => {
 
   const injuries = await query.populate("player").populate("team");
 
-  const enrichedDocs = await Promise.all(
-    injuries.map(async (injuryDoc) => {
-      const latest = injuryDoc.player
-        ? await Transfer.findOne({
-            player: injuryDoc.player._id,
-            to_team: { $ne: null },
-          })
-            .sort({ from_date: -1 })
-            .exec() // ← クエリを実行
-        : null;
+  const enrichedDocs = req.query.latest
+    ? await Promise.all(
+        injuries.map(async (injuryDoc) => {
+          const latest = injuryDoc.player
+            ? await Transfer.findOne({
+                player: injuryDoc.player._id,
+                to_team: { $ne: null },
+              })
+                .sort({ from_date: -1 })
+                .exec() // ← クエリを実行
+            : null;
 
-      injuryDoc.now_team = latest ? latest.to_team : null;
-      return injuryDoc;
-    })
-  );
+          injuryDoc.now_team = latest ? latest.to_team : null;
+          return injuryDoc;
+        })
+      )
+    : injuries;
 
   const formatted = enrichedDocs.map(formatInjury);
 
@@ -117,23 +119,30 @@ const getInjury = async (req, res) => {
     throw new NotFoundError();
   }
 
-  const latest = injury.player
-    ? await Transfer.find({
-        player: injury.player._id,
-        to_team: { $ne: null },
-      }).sort({ from_date: -1 })
-    : // .limit(1)
-      null;
+  if (req.query.latest) {
+    const latest = injury.player
+      ? await Transfer.find({
+          player: injury.player._id,
+          to_team: { $ne: null },
+        }).sort({ from_date: -1 })
+      : // .limit(1)
+        null;
+    console.log("latest transfers", latest);
+    const now_team = latest.to_team
+      ? await Team.findById(latest.to_team)
+      : null;
 
-  console.log("latest transfers", latest);
-  const now_team = latest.to_team ? await Team.findById(latest.to_team) : null;
-
-  // console.log(now_team);
+    res.status(StatusCodes.OK).json({
+      data: {
+        ...injury.toObject(),
+        now_team: now_team,
+      },
+    });
+  }
 
   res.status(StatusCodes.OK).json({
     data: {
       ...injury.toObject(),
-      now_team,
     },
   });
 };

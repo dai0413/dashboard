@@ -37,7 +37,7 @@ const TableToolbar = ({
     main: { handleSetAlert },
   } = useAlert();
 
-  const { profile } = useAuth();
+  const { staffState } = useAuth();
 
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -128,7 +128,7 @@ const TableToolbar = ({
         </button>
       </div>
 
-      {profile.admin && (
+      {staffState.admin && (
         <div className="flex items-center gap-x-4">
           {/* 右側：新規追加ボタン */}
           <button

@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { PlayerProvider, usePlayer } from "./models/player-context";
 import { TeamProvider, useTeam } from "./models/team-context";
 import { TableHeader } from "../types/types";
+import { TransferProvider } from "./models/transfer-context";
+import { InjuryProvider } from "./models/injury-context";
 
 export const PositionOptions = [
   "GK",
@@ -204,11 +206,15 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
 const OptionsWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
-    <PlayerProvider>
-      <TeamProvider>
-        <OptionProvider>{children}</OptionProvider>
-      </TeamProvider>
-    </PlayerProvider>
+    <TransferProvider>
+      <InjuryProvider>
+        <PlayerProvider>
+          <TeamProvider>
+            <OptionProvider>{children}</OptionProvider>
+          </TeamProvider>
+        </PlayerProvider>
+      </InjuryProvider>
+    </TransferProvider>
   );
 };
 
