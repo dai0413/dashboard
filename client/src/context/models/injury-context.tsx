@@ -114,7 +114,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.INJURY.GET_ALL, {
-        params: { limit: 5 },
+        params: { limit: limit },
       });
       const items = res.data.data as Injury[];
       console.log(convert(ModelType.INJURY, items));

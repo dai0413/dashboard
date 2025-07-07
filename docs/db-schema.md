@@ -93,7 +93,7 @@
 
 ※3 team or team_name を入力
 
-※doa, team, player, doi, dos の組み合わせユニーク
+※team, team_name, player, doi, dos , injured_part の組み合わせユニーク
 
 ```
 
