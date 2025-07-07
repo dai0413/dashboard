@@ -8,6 +8,9 @@ export const API_ROUTES = {
     ME: `${API_BASE_URL}/auth/me`,
     REFRESH: `${API_BASE_URL}/auth/refresh`,
   },
+  TOP_PAGE: {
+    GET: `${API_BASE_URL}/top-page`,
+  },
   PLAYER: {
     GET_ALL: `${API_BASE_URL}/player`,
     CREATE: `${API_BASE_URL}/player`,
