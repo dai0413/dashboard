@@ -3,7 +3,7 @@ import { useAuth } from "../../context/auth-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Header = () => {
-  const { accessToken, profile, logout } = useAuth();
+  const { accessToken, staffState, logout } = useAuth();
 
   return (
     <header className="text-gray-600 body-font">
@@ -28,7 +28,7 @@ const Header = () => {
         </Link>
 
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center gap-4">
-          {profile.admin && (
+          {staffState.admin && (
             <>
               <Link to={APP_ROUTES.PLAYER} className="hover:text-gray-900">
                 選手
