@@ -6,7 +6,7 @@ import { API_ROUTES } from "../lib/apiRoutes";
 
 type AuthState = {
   accessToken: string | null;
-  profile: Profile;
+  staffState: StaffState;
   register: (
     user_name: string,
     email: string,
@@ -19,14 +19,14 @@ type AuthState = {
 
 const defaultValue: AuthState = {
   accessToken: null,
-  profile: { admin: false, is_staff: false },
+  staffState: { admin: false, is_staff: false },
   register: async () => true,
   login: async () => true,
   logout: async () => {},
   refresh: async () => {},
 };
 
-type Profile = {
+type StaffState = {
   admin: boolean;
   is_staff: boolean;
 };
@@ -35,7 +35,9 @@ const AuthContext = createContext<AuthState>(defaultValue);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [profile, setProfile] = useState<Profile>(defaultValue.profile);
+  const [staffState, setStaffState] = useState<StaffState>(
+    defaultValue.staffState
+  );
   const {
     main: { handleSetAlert },
   } = useAlert();
@@ -76,7 +78,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("login start");
       const res = await axios.post(API_ROUTES.AUTH.LOGIN, { email, password });
       setAccessToken(res.data?.accessToken);
-      setProfile({ admin: res.data?.admin, is_staff: res.data?.is_staff });
+      setStaffState({ admin: res.data?.admin, is_staff: res.data?.is_staff });
       console.log("login function", res.data.accessToken);
 
       axios.defaults.headers.common[
@@ -126,7 +128,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value: AuthState = {
     accessToken,
-    profile,
+    staffState,
     register,
     login,
     logout,
