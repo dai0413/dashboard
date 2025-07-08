@@ -1,10 +1,18 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { FilterCondition } from "../types/types";
 
 type FilterState = {
   filterOpen: boolean;
-  filterValue: string;
-  filter: string;
-  handleFilterValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  filterConditions: FilterCondition[];
+  handleAddCondition: (filterCondition: FilterCondition) => void;
+  handleEdit: (index: number) => void;
+  handleDelete: (index: number) => void;
   searchValue: () => void;
   backFilter: () => void;
   openFilter: () => void;
@@ -13,9 +21,10 @@ type FilterState = {
 
 const defaultValue: FilterState = {
   filterOpen: false,
-  filterValue: "",
-  filter: "",
-  handleFilterValueChange: () => {},
+  filterConditions: [],
+  handleAddCondition: () => {},
+  handleEdit: () => {},
+  handleDelete: () => {},
   searchValue: () => {},
   backFilter: () => {},
   openFilter: () => {},
@@ -25,24 +34,68 @@ const defaultValue: FilterState = {
 const FilterContext = createContext<FilterState>(defaultValue);
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
-  const [filterValue, setFilterValue] = useState<string>("");
-  const [filter, setFilter] = useState<string>("");
+  const [filterConditions, setFilterConditions] = useState<FilterCondition[]>([
+    {
+      key: "doa",
+      label: "移籍発表日",
+      value: "2025/07/07",
+      type: "Date",
+      operator: "equals",
+    },
+  ]);
+
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
 
-  const handleFilterValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setFilterValue(value);
+  useEffect(() => {
+    console.log("new filterConditions", filterConditions);
+  }, [filterConditions]);
+
+  // add filter contition
+  const handleAddCondition = (filterCondition: FilterCondition) => {
+    const { key, value, label, type, operator } = filterCondition;
+    if (!key || value == "") return;
+
+    setFilterConditions((prev) => [
+      ...prev,
+      {
+        key: key,
+        label: label,
+        value: value,
+        type: type,
+        operator: operator,
+        logic: prev.length === 0 ? "AND" : "AND",
+      },
+    ]);
+
+    // setFieldKey("");
+    // setFieldValue("");
+    // setSelectedKey("string");
+  };
+
+  const handleEdit = () => {};
+
+  const handleDelete = (index: number) => {
+    setFilterConditions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // ---------- add filter ----------
+  const handleFilter = (data: any[]): any[] => {
+    // filterConditions.map((filCod) => {
+    //   if (filCod.key in data)
+    // })
+
+    return data;
   };
 
   //   検索
   const searchValue = () => {
-    setFilter(filterValue);
+    // setFilter(fieldValue);
     setFilterOpen(false);
   };
 
   //   戻るボタン
   const backFilter = () => {
-    setFilterValue(filter);
+    // setFieldValue(filter);
     setFilterOpen(false);
   };
 
@@ -56,10 +109,12 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
+    ...defaultValue,
     filterOpen,
-    filterValue,
-    filter,
-    handleFilterValueChange,
+    filterConditions,
+    handleAddCondition,
+    handleDelete,
+
     searchValue,
     backFilter,
     openFilter,
