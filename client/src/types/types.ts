@@ -21,3 +21,16 @@ export type Label = {
   label: string;
   id: string;
 };
+
+export type FilterableField = {
+  key: string;
+  label: string;
+  type: "string" | "number" | "Date" | "select";
+};
+
+type FilterOperator = "equals" | "contains" | "gte" | "lte";
+export type FilterCondition = FilterableField & {
+  value: string | number | Date;
+  operator: FilterOperator;
+  logic?: "AND" | "OR";
+};

@@ -205,17 +205,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 const OptionsWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <TransferProvider>
-      <InjuryProvider>
-        <PlayerProvider>
-          <TeamProvider>
-            <OptionProvider>{children}</OptionProvider>
-          </TeamProvider>
-        </PlayerProvider>
-      </InjuryProvider>
-    </TransferProvider>
-  );
+  return <OptionProvider>{children}</OptionProvider>;
 };
 
 const useOptions = () => {
