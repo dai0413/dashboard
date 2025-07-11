@@ -4,9 +4,18 @@ import { Modal } from "../ui";
 import { FilterableField, FilterCondition } from "../../types/types";
 import { useState } from "react";
 import { useOptions } from "../../context/options-provider";
+import { InputField, SelectField } from "../field";
 
 type FilterProps = {
   filterableField: FilterableField[];
+};
+
+const defaultFilterCondition: FilterCondition = {
+  key: "",
+  label: "",
+  type: "string",
+  value: "",
+  operator: "equals",
 };
 
 const Filter = ({ filterableField }: FilterProps) => {
@@ -24,13 +33,11 @@ const Filter = ({ filterableField }: FilterProps) => {
   const { getOptions } = useOptions();
 
   const [isAdding, setIsAdding] = useState(false);
-  const [filterCondition, setFilterCondition] = useState<FilterCondition>({
-    key: "",
-    label: "",
-    type: "string",
-    value: "",
-    operator: "equals",
-  });
+  const [filterCondition, setFilterCondition] = useState<FilterCondition>(
+    defaultFilterCondition
+  );
+
+  const resetFilterCondition = () => setFilterCondition(defaultFilterCondition);
 
   const handleFieldSelect = (field: FilterableField) =>
     setFilterCondition({
@@ -100,53 +107,48 @@ const Filter = ({ filterableField }: FilterProps) => {
                 switch (filterCondition.type) {
                   case "string":
                     return (
-                      <input
+                      <InputField
                         type="text"
                         value={filterCondition.value as string}
-                        onChange={(e) => handleFieldValue(e.target.value)}
-                        className="px-4 py-2 border rounded-md w-full"
+                        onChange={handleFieldValue}
                       />
                     );
                   case "number":
                     return (
-                      <input
+                      <InputField
                         type="number"
                         value={filterCondition.value as number}
-                        onChange={(e) =>
-                          handleFieldValue(Number(e.target.value))
-                        }
-                        className="px-4 py-2 border rounded-md w-full"
+                        onChange={handleFieldValue}
                       />
                     );
                   case "Date":
                     return (
-                      <input
+                      <InputField
                         type="date"
                         value={filterCondition.value as string}
-                        onChange={(e) => handleFieldValue(e.target.value)}
-                        className="px-4 py-2 border rounded-md w-full"
+                        onChange={handleFieldValue}
                       />
                     );
                   case "select":
                     return (
-                      <select
+                      <SelectField
+                        type={"text"}
                         value={filterCondition.value as string}
-                        onChange={(e) => handleFieldValue(e.target.value)}
-                        className="px-4 py-2 border rounded-md w-full"
-                      >
-                        <option value="">-- 選択 --</option>
-                        {getOptions(filterCondition.key)?.map((opt) => (
-                          <option key={opt.key} value={opt.label}>
-                            {opt.label}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={handleFieldValue}
+                        options={getOptions(filterCondition.key)}
+                      />
                     );
                   default:
                     return null;
                 }
               })()}
-              <button onClick={() => handleAddCondition(filterCondition)}>
+              <button
+                onClick={() => {
+                  handleAddCondition(filterCondition);
+                  setIsAdding(false);
+                  resetFilterCondition();
+                }}
+              >
                 条件を追加
               </button>
             </div>
