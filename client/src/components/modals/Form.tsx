@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { usePlayer } from "../../context/models/player-context";
 import { useTeam } from "../../context/models/team-context";
 import { useAuth } from "../../context/auth-context";
+import { InputField, SelectField } from "../field";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FieldDefinition<T>;
@@ -37,6 +38,49 @@ const RenderField = <T extends keyof FormTypeMap>({
   // 後で追加フィルタリング
   console.log(getOptions(key as string, true).header);
 
+  const inputFieldOnChange = (value: string | number | Date) => {
+    updateFilter(key as string, value as string);
+  };
+
+  const inputHandleFormData = (value: string | number | Date) => {
+    handleFormData(key, value as any);
+  };
+
+  const multhInputHandleFormData = (
+    index: number,
+    value: string | number | Date
+  ) => {
+    const newValue = [...((formData[key] ?? []) as string[])];
+    newValue[index] = value.toString();
+
+    if (
+      index === newValue.length - 1 &&
+      value.toString().trim() !== "" &&
+      !newValue.includes("")
+    ) {
+      newValue.push("");
+    }
+
+    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+  };
+
+  const filteredOptions = getOptions(field.key as string)?.filter(
+    (option) =>
+      !(
+        (formData[key] as string[]) ?? ([] as FormTypeMap[T][typeof key])
+      ).includes(option.key)
+  );
+
+  const value = formData[key] as string | number | Date;
+
+  const multiInputHandleFormData = (value: string | number | Date) => {
+    const selected = value;
+    if (selected) {
+      const current = (formData[key] as string[]) ?? [];
+      handleFormData(key, [...current, selected] as FormTypeMap[T][typeof key]);
+    }
+  };
+
   return (
     <div key={key as string} className="mb-4">
       <label className="block text-gray-600 text-sm font-medium mb-1">
@@ -51,12 +95,11 @@ const RenderField = <T extends keyof FormTypeMap>({
               ?.label || "未選択"}
           </div>
           <div className="mb-4">
-            <input
+            <InputField
               type="text"
               value={filters[key as string]?.value || ""}
-              onChange={(e) => updateFilter(key as string, e.target.value)}
-              placeholder="フィルター..."
-              className="px-4 py-2 border rounded-md w-full"
+              onChange={inputFieldOnChange}
+              placeholder="検索"
             />
           </div>
           <Table
@@ -73,21 +116,13 @@ const RenderField = <T extends keyof FormTypeMap>({
           />
         </>
       ) : type === "select" ? (
-        <select
-          className="w-full border border-gray-300 rounded px-3 py-2"
-          value={(formData[key] ?? "") as string}
-          onChange={(e) => {
-            const selectedValue = e.target.value as FormTypeMap[T][typeof key];
-            handleFormData(key, selectedValue);
-          }}
-        >
-          <option value="">未選択</option>
-          {getOptions(field.key as string)?.map((option) => (
-            <option key={option.key} value={option.key}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <SelectField
+          type={inputType}
+          value={value}
+          onChange={inputHandleFormData}
+          options={getOptions(field.key as string)}
+          defaultOption="--- 未選択 ---"
+        />
       ) : type === "multiurl" ? (
         <>
           {[
@@ -134,24 +169,70 @@ const RenderField = <T extends keyof FormTypeMap>({
       ) : type === "multiselect" ? (
         <>
           {[...((formData[key] as string[]) ?? [])].map(
-            (item: string, index: number) => (
+            (item: string, index: number) => {
+              const inputArrayHandleFormData = (
+                value: string | number | Date
+              ) => {
+                const newValue = [...(formData[key] as string[])];
+                newValue[index] = String(value);
+                handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+              };
+
+              return (
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <SelectField
+                    type={inputType}
+                    value={item}
+                    onChange={inputArrayHandleFormData}
+                    options={getOptions(field.key as string)}
+                    defaultOption="--- 未選択 ---"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newValue = [...(formData[key] as string[])];
+                      newValue.splice(index, 1);
+                      handleFormData(
+                        key,
+                        newValue as FormTypeMap[T][typeof key]
+                      );
+                    }}
+                    className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+                  >
+                    <XMarkIcon className="w-6 h-6" />
+                  </button>
+                </div>
+              );
+            }
+          )}
+
+          <SelectField
+            type={inputType}
+            value={""}
+            onChange={multiInputHandleFormData}
+            options={filteredOptions}
+            defaultOption="--- 未選択 ---"
+          />
+        </>
+      ) : type === "multiInput" ? (
+        <>
+          {[
+            ...(formData[key] && (formData[key] as string[]).length > 0
+              ? (formData[key] as string[])
+              : [""]), // 空配列なら1つだけ空の入力欄を出す
+          ].map((item: string, index: number) => {
+            const onChange = (value: string | number | Date) =>
+              multhInputHandleFormData(index, value);
+
+            return (
               <div key={index} className="flex items-center space-x-2 mb-2">
-                <select
-                  className="flex-1 border border-gray-300 rounded px-3 py-2"
+                <InputField
+                  type={inputType}
                   value={item}
-                  onChange={(e) => {
-                    const newValue = [...(formData[key] as string[])];
-                    newValue[index] = e.target.value;
-                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
-                  }}
-                >
-                  <option value="">未選択</option>
-                  {getOptions(field.key as string)?.map((option) => (
-                    <option key={option.key} value={option.key}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={onChange}
+                  placeholder="検索"
+                />
 
                 <button
                   type="button"
@@ -165,112 +246,15 @@ const RenderField = <T extends keyof FormTypeMap>({
                   <XMarkIcon className="w-6 h-6" />
                 </button>
               </div>
-            )
-          )}
-
-          <select
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            value=""
-            onChange={(e) => {
-              const selected = e.target.value;
-              if (selected) {
-                const current = (formData[key] as string[]) ?? [];
-                handleFormData(key, [
-                  ...current,
-                  selected,
-                ] as FormTypeMap[T][typeof key]);
-              }
-            }}
-          >
-            <option value="">未選択</option>
-            {getOptions(field.key as string)
-              ?.filter(
-                (option) =>
-                  !(
-                    (formData[key] as string[]) ??
-                    ([] as FormTypeMap[T][typeof key])
-                  ).includes(option.key)
-              )
-              .map((option) => (
-                <option key={option.key} value={option.key}>
-                  {option.label}
-                </option>
-              ))}
-          </select>
-        </>
-      ) : type === "multiInput" ? (
-        <>
-          {[
-            ...(formData[key] && (formData[key] as string[]).length > 0
-              ? (formData[key] as string[])
-              : [""]), // 空配列なら1つだけ空の入力欄を出す
-          ].map((item: string, index: number) => (
-            <div key={index} className="flex items-center space-x-2 mb-2">
-              <input
-                type={inputType}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-                value={item}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const newValue = [...((formData[key] ?? []) as string[])];
-                  newValue[index] = value;
-
-                  if (
-                    index === newValue.length - 1 &&
-                    value.trim() !== "" &&
-                    !newValue.includes("")
-                  ) {
-                    newValue.push("");
-                  }
-
-                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  const newValue = [...(formData[key] as string[])];
-                  newValue.splice(index, 1);
-                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
-                }}
-                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </>
       ) : (
-        <input
+        <InputField
           type={inputType}
-          className="w-full border border-gray-300 rounded px-3 py-2"
-          value={
-            inputType === "date"
-              ? (() => {
-                  const val = formData[key];
-                  if (!val) return "";
-                  const date =
-                    val instanceof Date
-                      ? val
-                      : typeof val === "string"
-                      ? new Date(val)
-                      : null;
-
-                  return date && !isNaN(date.getTime())
-                    ? date.toISOString().split("T")[0]
-                    : "";
-                })()
-              : (formData[key] ?? "").toString()
-          }
-          onChange={(e) => {
-            let newValue: any = e.target.value;
-            if (inputType === "number") {
-              newValue = Number(newValue);
-            } else if (inputType === "date") {
-              newValue = new Date(newValue);
-            }
-            handleFormData(key, newValue);
-          }}
+          value={value}
+          onChange={inputHandleFormData}
+          placeholder="検索"
         />
       )}
     </div>
