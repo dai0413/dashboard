@@ -34,3 +34,7 @@ export type FilterCondition = FilterableField & {
   operator: FilterOperator;
   logic?: "AND" | "OR";
 };
+
+export type SortCondition = FilterableField & {
+  asc: boolean | null;
+};

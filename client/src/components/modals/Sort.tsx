@@ -1,114 +1,149 @@
-import { LinkButtonGroup } from "../buttons/index";
+import { IconButton, LinkButtonGroup } from "../buttons/index";
 import { useSort } from "../../context/sort-context";
 import { useEffect } from "react";
 import { Modal } from "../ui/index";
+import { FilterableField } from "../../types/types";
 
-type SortProps<T> = {
-  data: T[];
+type ToggleButtonAndLabelProps = {
+  ascColor: boolean;
+  dascColor: boolean;
+  label: string;
+  ascOnClick: () => void;
+  dascOnClick: () => void;
 };
 
-const Sort = <T extends Record<string, any>>({ data = [] }: SortProps<T>) => {
+const ToggleButtonAndLabel = ({
+  ascColor,
+  dascColor,
+  label,
+  ascOnClick,
+  dascOnClick,
+}: ToggleButtonAndLabelProps) => {
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        <button
+          className={`cursor-pointer px-2 py-1 rounded ${
+            ascColor ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={ascOnClick}
+        >
+          昇順
+        </button>
+        <button
+          className={`cursor-pointer px-2 py-1 rounded ${
+            dascColor ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+          onClick={dascOnClick}
+        >
+          降順
+        </button>
+      </div>
+      <span>{label}</span>
+    </>
+  );
+};
+
+type SortProps = {
+  sortableField: FilterableField[];
+  onApply: () => void;
+};
+
+const Sort = ({ sortableField, onApply }: SortProps) => {
   const {
     sortOpen,
     sortConditions,
-    initializeSort,
     moveSortConditionUp,
     moveSortConditionDown,
     toggleAsc,
-    handleSort,
     closeSort,
     resetSort,
+    initializeSort,
   } = useSort();
 
   useEffect(() => {
-    if (data.length === 0) return;
-    initializeSort(data);
-  }, [data]);
+    initializeSort(sortableField);
+  }, [sortableField]);
+
+  const selectingSortConditions = sortConditions.filter(
+    (cond) => cond.asc !== null
+  );
+
+  const notSelectingSortConditions = sortConditions.filter(
+    (cond) => cond.asc === null
+  );
 
   return (
     <Modal isOpen={sortOpen} onClose={closeSort}>
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">{"並び替え"}</h3>
-      <a className="text font-semibold text-gray-700 mb-4">
-        {"並び替えたいキーを選択、並び替えてください。"}
-      </a>
-      <h2 className="text-xl font-semibold text-gray-700 mb-4">{"選択中"}</h2>
-      <div>
-        {sortConditions
-          .filter((cond) => cond.asc !== null)
-          .map((cond, index) => (
+      <h3 className="text-xl font-semibold text-gray-700 mb-4">並び替え</h3>
+
+      <section>
+        <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
+          選択中
+        </h4>
+        <div className="mb-4 space-y-1">
+          {selectingSortConditions.map((cond, index) => {
+            const actualIndex = sortConditions.findIndex(
+              (c) => c.key === cond.key
+            );
+
+            return (
+              <>
+                <div key={cond.key} className="flex items-center gap-2">
+                  <span className="w-5 text-right">{index + 1}</span>
+
+                  <IconButton
+                    icon="arrow-up"
+                    onClick={() => moveSortConditionUp(actualIndex)}
+                  />
+                  <IconButton
+                    icon="arrow-down"
+                    onClick={() => moveSortConditionDown(actualIndex)}
+                  />
+
+                  <ToggleButtonAndLabel
+                    ascColor={cond.asc === true}
+                    dascColor={cond.asc === false}
+                    label={cond.label}
+                    ascOnClick={() => toggleAsc(cond.key, true)}
+                    dascOnClick={() => toggleAsc(cond.key, false)}
+                  />
+                </div>
+              </>
+            );
+          })}
+        </div>
+      </section>
+
+      <section>
+        <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
+          未選択
+        </h4>
+        <div className="mb-4 space-y-1">
+          {notSelectingSortConditions.map((cond) => (
             <div key={cond.key} className="flex items-center gap-2">
-              <span className="w-5 text-right">{index + 1}</span>
-              <button onClick={() => moveSortConditionUp(index)}>↑</button>
-              <button onClick={() => moveSortConditionDown(index)}>↓</button>
-              <div className="flex items-center gap-2">
-                <label className="flex items-center gap-1">
-                  <input
-                    type="radio"
-                    name={`order-${cond.key}`}
-                    checked={cond.asc === true}
-                    onClick={() => toggleAsc(cond.key, true)}
-                    readOnly
-                  />
-                  昇順
-                </label>
-                <label className="flex items-center gap-1">
-                  <input
-                    type="radio"
-                    name={`order-${cond.key}`}
-                    checked={cond.asc === false}
-                    onClick={() => toggleAsc(cond.key, false)}
-                    readOnly
-                  />
-                  降順
-                </label>
-              </div>
-              <span>{cond.key}</span>
+              <ToggleButtonAndLabel
+                ascColor={false}
+                dascColor={false}
+                label={cond.label}
+                ascOnClick={() => toggleAsc(cond.key, true)}
+                dascOnClick={() => toggleAsc(cond.key, false)}
+              />
             </div>
           ))}
-      </div>
-      <h2 className="text-xl font-semibold text-gray-700 mb-4">{"未選択"}</h2>
-      <div>
-        {sortConditions
-          .filter((cond) => cond.asc === null)
-          .map((cond) => (
-            <div key={cond.key} className="flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <label className="flex items-center gap-1">
-                  <input
-                    type="radio"
-                    name={`order-${cond.key}`}
-                    onChange={() => toggleAsc(cond.key, true)}
-                  />
-                  昇順
-                </label>
-                <label className="flex items-center gap-1">
-                  <input
-                    type="radio"
-                    name={`order-${cond.key}`}
-                    onChange={() => toggleAsc(cond.key, false)}
-                  />
-                  降順
-                </label>
-              </div>
-              <span>{cond.key}</span>
-            </div>
-          ))}
-      </div>
+        </div>
+      </section>
+
       <LinkButtonGroup
-        approve={{
-          text: "戻る",
-          color: "red",
-          onClick: closeSort,
-        }}
         deny={{
           text: "並び替える",
           color: "green",
-          onClick: handleSort,
+          onClick: onApply,
         }}
         reset={{
           text: "リセット",
           color: "gray",
-          onClick: resetSort,
+          onClick: () => resetSort(sortableField),
         }}
       />
     </Modal>
