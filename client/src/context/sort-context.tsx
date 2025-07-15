@@ -1,9 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-
-type SortCondition = {
-  key: string;
-  asc: boolean | null;
-};
+import { FilterableField, SortCondition } from "../types/types";
+import { isLabelObject } from "../utils";
 
 type SortState = {
   sortConditions: SortCondition[];
@@ -16,8 +13,8 @@ type SortState = {
   moveSortConditionDown: (index: number) => void;
   toggleAsc: (key: string, asc: boolean) => void;
 
-  handleSort: () => void;
-  resetSort: () => void;
+  handleSort: (data: any) => any;
+  resetSort: (sortableField: FilterableField[]) => void;
 
   sortOpen: boolean;
   closeSort: () => void;
@@ -50,30 +47,30 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
     defaultValue.sortConditions
   );
   const [sortOpen, setSortOpen] = useState<boolean>(false);
-  const [data, setData] = useState<any[]>([]);
 
-  const initializeSort = (data: any[], force = false) => {
-    setData(data);
+  const initializeSort = (
+    sortableField: FilterableField[],
+    force = false
+  ): void => {
+    const sortConditions = sortableField.map((fie) => ({ ...fie, asc: null }));
 
     setSortConditions((prev: SortCondition[]) => {
       if (!force && prev.length > 0) return prev;
-      return Object.keys(data[0]).map((field) => ({
-        key: field,
-        asc: null,
-      }));
+
+      return sortConditions;
     });
   };
 
   // ソート
-  const handleSort = (): void => {
+  const handleSort = (data: any): any => {
     console.log("sort condition", sortConditions);
     console.log("table data is ", data);
     const sorted = [...data].sort((a, b) => {
       for (const { key, asc } of sortConditions) {
         if (asc === null) continue;
 
-        const aValue = a[key];
-        const bValue = b[key];
+        const aValue = isLabelObject(a[key]) ? a[key].label : a[key];
+        const bValue = isLabelObject(b[key]) ? b[key].label : b[key];
 
         if (aValue === undefined) return 1;
         if (bValue === undefined) return -1;
@@ -105,14 +102,13 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
       return 0;
     });
 
-    setData(sorted); // ソート後のデータを更新
-    closeSort();
+    return sorted;
   };
 
   // リセット
-  const resetSort = () => {
+  const resetSort = (sortableField: FilterableField[]): void => {
     console.log("reset start");
-    initializeSort(data, true);
+    initializeSort(sortableField, true);
     // setData(data);
   };
 
@@ -168,10 +164,9 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
+    ...defaultValue,
     sortConditions,
     setSortConditions,
-    data,
-    setData,
     initializeSort,
 
     moveSortConditionUp,

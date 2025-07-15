@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Table from "./Table";
 import TableToolbar from "./TableToolbar";
@@ -62,12 +62,16 @@ const TableContainer = <K extends keyof FormTypeMap>({
     ? filterableFields[modelType]
     : [];
 
+  const sortableField: FilterableField[] = modelType
+    ? filterableFields[modelType]
+    : [];
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
 
       <Filter filterableField={filterableField} onApply={handleApplyFilter} />
-      <Sort data={items} />
+      <Sort sortableField={sortableField} onApply={handleApplyFilter} />
       <TableToolbar
         rowSpacing={rowSpacing}
         setRowSpacing={setRowSpacing}
