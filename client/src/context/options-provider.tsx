@@ -1,9 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { PlayerProvider, usePlayer } from "./models/player-context";
-import { TeamProvider, useTeam } from "./models/team-context";
+import { createContext, useContext, useState } from "react";
+import { usePlayer } from "./models/player-context";
+import { useTeam } from "./models/team-context";
 import { TableHeader } from "../types/types";
-import { TransferProvider } from "./models/transfer-context";
-import { InjuryProvider } from "./models/injury-context";
 
 export const PositionOptions = [
   "GK",
@@ -64,7 +62,16 @@ export const GenreOptions = [
   "youth",
 ];
 
-type OptionArray = Array<{ key: string; label: string } & Record<string, any>>;
+export const operatorOptions: OptionArray = [
+  { key: "equals", label: "と等しい" },
+  { key: "contains", label: "を含む" },
+  { key: "gte", label: "以上" },
+  { key: "lte", label: "以下" },
+];
+
+export type OptionArray = Array<
+  { key: string; label: string } & Record<string, any>
+>;
 type OptionTable = {
   header: TableHeader[];
   data: OptionArray;
@@ -185,6 +192,9 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
           break;
         case "genre":
           options = genreOptions;
+          break;
+        case "operator":
+          options = operatorOptions;
           break;
         default:
           return [];

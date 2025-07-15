@@ -5,98 +5,188 @@ import {
   useEffect,
   useState,
 } from "react";
-import { FilterCondition } from "../types/types";
+import {
+  FilterableField,
+  FilterCondition,
+  FilterOperator,
+} from "../types/types";
+
+const toDateKey = (value: string | number | Date): string => {
+  const date = value instanceof Date ? value : new Date(value);
+  // タイムゾーン補正つきのローカル時間で日付を生成
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+};
+
+const isLabelObject = (obj: any): obj is { label: string; id: string } => {
+  return (
+    typeof obj === "object" && obj !== null && "label" in obj && "id" in obj
+  );
+};
 
 type FilterState = {
   filterOpen: boolean;
+  handleFilter: (data: any) => any;
+
   filterConditions: FilterCondition[];
-  handleAddCondition: (filterCondition: FilterCondition) => void;
+  handleAddCondition: (index?: number) => void;
+
+  filterCondition: FilterCondition;
+  handleFieldSelect: (field: FilterableField) => void;
+  handleFieldValue: (value: string | number | Date) => void;
+  handleFieldOperator: (value: string | number | Date) => void;
+
   handleEdit: (index: number) => void;
   handleDelete: (index: number) => void;
-  searchValue: () => void;
-  backFilter: () => void;
+
   openFilter: () => void;
   closeFilter: () => void;
+
+  editingIndex: number | null;
+  isAdding: boolean;
+  toggleAdding: () => void;
+};
+
+const defaultFilterCondition: FilterCondition = {
+  key: "",
+  label: "",
+  type: "string",
+  value: "",
+  operator: "equals",
 };
 
 const defaultValue: FilterState = {
   filterOpen: false,
+  handleFilter: () => {},
+
   filterConditions: [],
   handleAddCondition: () => {},
+
+  filterCondition: defaultFilterCondition,
+  handleFieldSelect: () => {},
+  handleFieldValue: () => {},
+  handleFieldOperator: () => {},
+
   handleEdit: () => {},
   handleDelete: () => {},
-  searchValue: () => {},
-  backFilter: () => {},
+
   openFilter: () => {},
   closeFilter: () => {},
+
+  editingIndex: null,
+  isAdding: false,
+  toggleAdding: () => {},
 };
 
 const FilterContext = createContext<FilterState>(defaultValue);
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
-  const [filterConditions, setFilterConditions] = useState<FilterCondition[]>([
-    {
-      key: "doa",
-      label: "移籍発表日",
-      value: "2025/07/07",
-      type: "Date",
-      operator: "equals",
-    },
-  ]);
-
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
+  const [filterConditions, setFilterConditions] = useState<FilterCondition[]>(
+    []
+  );
+  const [editingIndex, setEditingIndex] = useState<null | number>(null);
+  const [filterCondition, setFilterCondition] = useState<FilterCondition>(
+    defaultFilterCondition
+  );
+  const [isAdding, setIsAdding] = useState<boolean>(false);
 
   useEffect(() => {
     console.log("new filterConditions", filterConditions);
   }, [filterConditions]);
 
+  const toggleAdding = () => setIsAdding((prev) => !prev);
+
   // add filter contition
-  const handleAddCondition = (filterCondition: FilterCondition) => {
+  const handleAddCondition = (index?: number) => {
     const { key, value, label, type, operator } = filterCondition;
+    console.log("handleAddcondition", filterCondition);
+
     if (!key || value == "") return;
 
-    setFilterConditions((prev) => [
-      ...prev,
-      {
-        key: key,
-        label: label,
-        value: value,
-        type: type,
-        operator: operator,
-        logic: prev.length === 0 ? "AND" : "AND",
-      },
-    ]);
+    const newCondition: FilterCondition = {
+      key,
+      label,
+      value,
+      type,
+      operator,
+      logic: "AND",
+    };
 
-    // setFieldKey("");
-    // setFieldValue("");
-    // setSelectedKey("string");
+    // 編集モード（index 指定あり）
+    if (typeof index === "number") {
+      setFilterConditions((prev) =>
+        prev.map((cond, i) => (i === index ? newCondition : cond))
+      );
+    } else {
+      // 新規追加モード
+      setFilterConditions((prev) => [...prev, newCondition]);
+    }
+
+    // 入力フィールド初期化
+    setFilterCondition(defaultFilterCondition);
+    setEditingIndex(null);
+    setIsAdding(false);
   };
 
-  const handleEdit = () => {};
+  const handleEdit = (index: number) => {
+    setFilterCondition(filterConditions[index]);
+    setEditingIndex(index);
+    setIsAdding(false);
+  };
 
   const handleDelete = (index: number) => {
     setFilterConditions((prev) => prev.filter((_, i) => i !== index));
+    setIsAdding(false);
   };
 
   // ---------- add filter ----------
   const handleFilter = (data: any[]): any[] => {
-    // filterConditions.map((filCod) => {
-    //   if (filCod.key in data)
-    // })
+    return data.filter((item) =>
+      filterConditions.every((cond) => {
+        const itemValue = item[cond.key];
 
-    return data;
-  };
+        const compareValue = isLabelObject(itemValue)
+          ? itemValue.label
+          : itemValue;
 
-  //   検索
-  const searchValue = () => {
-    // setFilter(fieldValue);
-    setFilterOpen(false);
-  };
+        const condVal = cond.value;
 
-  //   戻るボタン
-  const backFilter = () => {
-    // setFieldValue(filter);
-    setFilterOpen(false);
+        switch (cond.operator) {
+          case "equals":
+            if (cond.type === "Date") {
+              return toDateKey(compareValue) === toDateKey(condVal);
+            }
+            return compareValue == condVal;
+
+          case "contains":
+            if (
+              typeof compareValue === "string" &&
+              typeof condVal === "string"
+            ) {
+              return compareValue.includes(condVal);
+            }
+            return false;
+
+          case "gte":
+            if (cond.type === "Date") {
+              return new Date(compareValue) >= new Date(condVal);
+            }
+            return Number(compareValue) >= Number(condVal);
+
+          case "lte":
+            if (cond.type === "Date") {
+              return new Date(compareValue) >= new Date(condVal);
+            }
+            return Number(compareValue) <= Number(condVal);
+
+          default:
+            return true;
+        }
+      })
+    );
   };
 
   // フィルターオープン
@@ -108,17 +198,53 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setFilterOpen(false);
   };
 
+  const handleFieldSelect = (field: FilterableField) => {
+    const value =
+      field.key === "position" ? "GK" : field.key === "form" ? "完全" : "";
+
+    setFilterCondition({
+      key: field.key,
+      label: field.label,
+      type: field.type,
+      value: value,
+      operator: "equals",
+    });
+  };
+
+  const handleFieldValue = (value: string | number | Date) =>
+    setFilterCondition((prev) => ({
+      ...prev,
+      value: value,
+    }));
+
+  const handleFieldOperator = (value: string | number | Date) => {
+    setFilterCondition((prev) => ({
+      ...prev,
+      operator: value as FilterOperator,
+    }));
+  };
+
   const value = {
-    ...defaultValue,
     filterOpen,
+    handleFilter,
+
     filterConditions,
     handleAddCondition,
+
+    filterCondition,
+    handleFieldSelect,
+    handleFieldValue,
+    handleFieldOperator,
+
+    handleEdit,
     handleDelete,
 
-    searchValue,
-    backFilter,
     openFilter,
     closeFilter,
+
+    editingIndex,
+    isAdding,
+    toggleAdding,
   };
 
   return (

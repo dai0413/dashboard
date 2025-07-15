@@ -28,7 +28,7 @@ export type FilterableField = {
   type: "string" | "number" | "Date" | "select";
 };
 
-type FilterOperator = "equals" | "contains" | "gte" | "lte";
+export type FilterOperator = "equals" | "contains" | "gte" | "lte";
 export type FilterCondition = FilterableField & {
   value: string | number | Date;
   operator: FilterOperator;

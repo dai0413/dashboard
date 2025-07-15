@@ -27,6 +27,11 @@ export const colorMap = {
     hover: "hover:bg-gray-500 hover:text-white",
     bg: "bg-gray-500 text-white",
   },
+  blue: {
+    base: "text-blue-500 border-blue-500",
+    hover: "hover:bg-blue-500 hover:text-white",
+    bg: "bg-blue-500 text-white",
+  },
 };
 
 // // client/src/styles/colors.ts
