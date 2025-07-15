@@ -54,8 +54,11 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
     <Modal isOpen={filterOpen} onClose={closeFilter}>
       <h3 className="text-xl font-semibold text-gray-700 mb-4">フィルター</h3>
 
-      <div className="mb-4 space-y-2">
-        <label className="block text-gray-700 font-semibold">条件</label>
+      <section>
+        <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
+          条件
+        </h4>
+
         {filterConditions.length === 0 && (
           <div className="bg-gray-50 border px-4 py-2 text-sm text-gray-500 rounded">
             条件は設定されていません
@@ -109,12 +112,14 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             </div>
           );
         })}
+      </section>
 
+      <section className="mt-4 mb-4 space-y-1">
         {isAdding ? (
           <>
-            <label className="block text-gray-700 font-semibold">
+            <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
               追加する条件を編集
-            </label>
+            </h4>
 
             <FieldRow
               filterCondition={filterCondition}
@@ -142,7 +147,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             条件を追加
           </IconTextButton>
         )}
-      </div>
+      </section>
 
       <LinkButtonGroup
         deny={{

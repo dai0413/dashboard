@@ -115,23 +115,21 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
         </div>
       </section>
 
-      <section>
+      <section className="mb-4 space-y-1">
         <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
           未選択
         </h4>
-        <div className="mb-4 space-y-1">
-          {notSelectingSortConditions.map((cond) => (
-            <div key={cond.key} className="flex items-center gap-2">
-              <ToggleButtonAndLabel
-                ascColor={false}
-                dascColor={false}
-                label={cond.label}
-                ascOnClick={() => toggleAsc(cond.key, true)}
-                dascOnClick={() => toggleAsc(cond.key, false)}
-              />
-            </div>
-          ))}
-        </div>
+        {notSelectingSortConditions.map((cond) => (
+          <div key={cond.key} className="flex items-center gap-2">
+            <ToggleButtonAndLabel
+              ascColor={false}
+              dascColor={false}
+              label={cond.label}
+              ascOnClick={() => toggleAsc(cond.key, true)}
+              dascOnClick={() => toggleAsc(cond.key, false)}
+            />
+          </div>
+        ))}
       </section>
 
       <LinkButtonGroup
