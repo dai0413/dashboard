@@ -1,7 +1,9 @@
+import { OptionArray } from "../../context/options-provider";
+
 type SelectFieldProps = {
   type: "text" | "number" | "date";
   value: string | number | Date;
-  options: any[];
+  options: OptionArray;
   onChange: (value: string | number | Date) => void;
   defaultOption?: string;
 };
@@ -33,7 +35,7 @@ const SelectField = ({
     >
       {defaultOption && <option value="">{defaultOption}</option>}
       {options.map((opt) => (
-        <option key={opt.key} value={opt.label}>
+        <option key={opt.key} value={opt.key}>
           {opt.label}
         </option>
       ))}
