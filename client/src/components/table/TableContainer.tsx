@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Table from "./Table";
 import TableToolbar from "./TableToolbar";
@@ -33,16 +33,30 @@ const TableContainer = <K extends keyof FormTypeMap>({
   contextState,
   modelType,
 }: TableContainerProps<K>) => {
-  const { data: sortedData, handleSort, sortConditions } = useSort();
-  const { handleFilter, filterConditions } = useFilter();
+  const { handleSort, closeSort } = useSort();
+  const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
   const { items, readItems, uploadFile, downloadFile } = contextState;
 
+  const [tableData, setTableData] = useState<any[]>(items);
+
+  const handleApplyFilter = () => {
+    const filterd = handleFilter(items);
+    const sorted = handleSort(filterd);
+    setTableData(sorted);
+    closeFilter();
+    closeSort();
+  };
+
   useEffect(() => {
     readItems();
   }, []);
+
+  useEffect(() => {
+    setTableData(items);
+  }, [items]);
 
   const filterableField: FilterableField[] = modelType
     ? filterableFields[modelType]
@@ -52,7 +66,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
     <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
 
-      <Filter filterableField={filterableField} />
+      <Filter filterableField={filterableField} onApply={handleApplyFilter} />
       <Sort data={items} />
       <TableToolbar
         rowSpacing={rowSpacing}
@@ -63,7 +77,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
       />
       <Table
         headers={headers}
-        data={sortedData}
+        data={tableData}
         detail={true}
         detailLink={modelType ? ModelRouteMap[modelType] : ""}
         rowSpacing={rowSpacing}
