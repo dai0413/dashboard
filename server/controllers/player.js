@@ -73,7 +73,7 @@ const updatePlayer = async (req, res) => {
     new: true,
     runValidators: true,
   });
-  if (!player) {
+  if (!updated) {
     throw new NotFoundError();
   }
 

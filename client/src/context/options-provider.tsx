@@ -50,6 +50,7 @@ export const FormOptions = [
   "復帰",
   "離脱",
   "更新",
+  "内定解除",
 ];
 
 export const GenreOptions = [

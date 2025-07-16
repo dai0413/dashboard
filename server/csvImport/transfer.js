@@ -19,9 +19,11 @@ mongoose.connect(mongoUri, {
   useUnifiedTopology: true,
 });
 
+fs.writeFileSync(outputPath, "\uFEFF"); // BOM
+
 const transfers = [];
 
-fs.createReadStream(path.resolve(inputPath))
+fs.createReadStream(path.resolve(inputPath), { encoding: "utf8" })
   .pipe(
     csv({
       trim: true,
@@ -54,6 +56,8 @@ fs.createReadStream(path.resolve(inputPath))
       URL: row.URL ? row.URL.split(";") : [],
     }));
 
+    console.log("add data is ", transfersToAdd);
+
     try {
       const added = await Transfer.insertMany(transfersToAdd, {
         ordered: false,
@@ -82,7 +86,11 @@ fs.createReadStream(path.resolve(inputPath))
           }
           return {
             ...original,
-            err: e.errmsg || e.message || e.reason?.message || "unknown error",
+            err:
+              e.err?.errmsg ||
+              e.err?.message ||
+              e.err?.reason?.message ||
+              "unknown error",
           };
         })
         .filter(Boolean);
@@ -92,6 +100,7 @@ fs.createReadStream(path.resolve(inputPath))
         const csvWriter = createCsvWriter({
           path: outputPath,
           header: Object.keys(failedRows[0]).map((k) => ({ id: k, title: k })),
+          append: false,
         });
         await csvWriter.writeRecords(failedRows);
         console.log(`❌ ${failedRows.length} 件を書き出しました`);
