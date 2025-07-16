@@ -77,6 +77,7 @@ const TransferSchema = new mongoose.Schema({
       "復帰",
       "離脱",
       "更新",
+      "内定解除",
     ],
   },
   number: {
