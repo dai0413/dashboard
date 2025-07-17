@@ -5,13 +5,16 @@ import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import { TableHeader } from "../../types/types";
-import { FilterableFieldDefinition, FieldDefinition } from "../../types/field";
+import {
+  FilterableFieldDefinition,
+  FieldDefinition,
+  SortableFieldDefinition,
+} from "../../types/field";
 import { FormTypeMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
-import { filterableFields } from "../../lib/filter-fields";
 import { fieldDefinition } from "../../lib/model-fields";
 import { useFilter } from "../../context/filter-context";
 import { useForm } from "../../context/form-context";
@@ -21,13 +24,6 @@ type TableContainerProps<K extends keyof FormTypeMap> = {
   headers: TableHeader[];
   contextState: ModelContext<K>;
   modelType?: ModelType | null;
-};
-
-type FilterableField = {
-  key: string;
-  label: string;
-  type: "string" | "number" | "Date" | "select";
-  options?: string[];
 };
 
 const TableContainer = <K extends keyof FormTypeMap>({
@@ -62,12 +58,12 @@ const TableContainer = <K extends keyof FormTypeMap>({
     setTableData(items);
   }, [items]);
 
-  // const filterableField: FilterableField[] = modelType
-  //   ? filterableFields[modelType]
-  //   : [];
-
   function isFilterable(f: FieldDefinition): f is FilterableFieldDefinition {
     return f.filterable === true && f.filterType !== undefined;
+  }
+
+  function isSortable(f: FieldDefinition): f is SortableFieldDefinition {
+    return f.sortable === true;
   }
 
   const filterableField = modelType
@@ -76,8 +72,10 @@ const TableContainer = <K extends keyof FormTypeMap>({
       ) as FilterableFieldDefinition[])
     : [];
 
-  const sortableField: FilterableField[] = modelType
-    ? filterableFields[modelType]
+  const sortableField = modelType
+    ? (fieldDefinition[modelType].filter(
+        isSortable
+      ) as SortableFieldDefinition[])
     : [];
 
   return (

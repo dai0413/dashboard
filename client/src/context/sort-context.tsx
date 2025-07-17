@@ -1,10 +1,10 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { FilterableField, SortCondition } from "../types/types";
+import { SortableFieldDefinition } from "../types/field";
 import { isLabelObject } from "../utils";
 
 type SortState = {
-  sortConditions: SortCondition[];
-  setSortConditions: (conditions: SortCondition[]) => void;
+  sortConditions: SortableFieldDefinition[];
+  setSortConditions: (conditions: SortableFieldDefinition[]) => void;
   data: any[];
   setData: (data: any[]) => void;
   initializeSort: (data: any[]) => void;
@@ -14,7 +14,7 @@ type SortState = {
   toggleAsc: (key: string, asc: boolean) => void;
 
   handleSort: (data: any) => any;
-  resetSort: (sortableField: FilterableField[]) => void;
+  resetSort: (sortableField: SortableFieldDefinition[]) => void;
 
   sortOpen: boolean;
   closeSort: () => void;
@@ -43,18 +43,18 @@ const defaultValue: SortState = {
 const SortContext = createContext<SortState>(defaultValue);
 
 const SortProvider = ({ children }: { children: ReactNode }) => {
-  const [sortConditions, setSortConditions] = useState<SortCondition[]>(
-    defaultValue.sortConditions
-  );
+  const [sortConditions, setSortConditions] = useState<
+    SortableFieldDefinition[]
+  >(defaultValue.sortConditions);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
 
   const initializeSort = (
-    sortableField: FilterableField[],
+    sortableField: SortableFieldDefinition[],
     force = false
   ): void => {
     const sortConditions = sortableField.map((fie) => ({ ...fie, asc: null }));
 
-    setSortConditions((prev: SortCondition[]) => {
+    setSortConditions((prev: SortableFieldDefinition[]) => {
       if (!force && prev.length > 0) return prev;
 
       return sortConditions;
@@ -106,7 +106,7 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // リセット
-  const resetSort = (sortableField: FilterableField[]): void => {
+  const resetSort = (sortableField: SortableFieldDefinition[]): void => {
     console.log("reset start");
     initializeSort(sortableField, true);
     // setData(data);

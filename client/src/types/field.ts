@@ -1,7 +1,5 @@
 export type FilterOperator = "equals" | "contains" | "gte" | "lte";
 
-///////////////////////////////////////
-
 // 共通の基本型
 type BaseField = {
   key: string;
@@ -20,7 +18,7 @@ type FilterField = {
 // ソート用
 type SortField = {
   sortable: boolean;
-  asc?: boolean;
+  asc?: boolean | null;
 };
 
 // 詳細画面用
@@ -29,6 +27,7 @@ type DetailField = {
 };
 
 export type FilterableFieldDefinition = BaseField & FilterField;
+export type SortableFieldDefinition = BaseField & SortField;
 
 // 統合型（UIでよく使う）
 export type FieldDefinition = BaseField &

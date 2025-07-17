@@ -2,7 +2,7 @@ import { IconButton, LinkButtonGroup } from "../buttons/index";
 import { useSort } from "../../context/sort-context";
 import { useEffect } from "react";
 import { Modal } from "../ui/index";
-import { FilterableField } from "../../types/types";
+import { SortableFieldDefinition } from "../../types/field";
 
 type ToggleButtonAndLabelProps = {
   ascColor: boolean;
@@ -45,7 +45,7 @@ const ToggleButtonAndLabel = ({
 };
 
 type SortProps = {
-  sortableField: FilterableField[];
+  sortableField: SortableFieldDefinition[];
   onApply: () => void;
 };
 
@@ -88,28 +88,29 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
             );
 
             return (
-              <>
-                <div key={cond.key} className="flex items-center gap-2">
-                  <span className="w-5 text-right">{index + 1}</span>
+              <div
+                key={`${index}-${cond.key}`}
+                className="flex items-center gap-2"
+              >
+                <span className="w-5 text-right">{index + 1}</span>
 
-                  <IconButton
-                    icon="arrow-up"
-                    onClick={() => moveSortConditionUp(actualIndex)}
-                  />
-                  <IconButton
-                    icon="arrow-down"
-                    onClick={() => moveSortConditionDown(actualIndex)}
-                  />
+                <IconButton
+                  icon="arrow-up"
+                  onClick={() => moveSortConditionUp(actualIndex)}
+                />
+                <IconButton
+                  icon="arrow-down"
+                  onClick={() => moveSortConditionDown(actualIndex)}
+                />
 
-                  <ToggleButtonAndLabel
-                    ascColor={cond.asc === true}
-                    dascColor={cond.asc === false}
-                    label={cond.label}
-                    ascOnClick={() => toggleAsc(cond.key, true)}
-                    dascOnClick={() => toggleAsc(cond.key, false)}
-                  />
-                </div>
-              </>
+                <ToggleButtonAndLabel
+                  ascColor={cond.asc === true}
+                  dascColor={cond.asc === false}
+                  label={cond.label}
+                  ascOnClick={() => toggleAsc(cond.key, true)}
+                  dascOnClick={() => toggleAsc(cond.key, false)}
+                />
+              </div>
             );
           })}
         </div>
