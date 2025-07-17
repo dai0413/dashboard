@@ -12,7 +12,7 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   formSteps: FormStep<K>[];
 
-  startEdit: () => void;
+  startEdit: (item?: GettedModelDataMap[K]) => void;
 
   createItem: () => void;
   readItem: (id: string) => Promise<void>;

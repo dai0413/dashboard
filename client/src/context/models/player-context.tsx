@@ -39,9 +39,9 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [selected, setSelectedItem] = useState<PlayerGet | null>(null);
   const [formData, setFormData] = useState<PlayerForm>(initialFormData);
 
-  useEffect(() => {
-    console.log("now form ", formData);
-  }, [formData]);
+  // useEffect(() => {
+  //   console.log("now form ", formData);
+  // }, [formData]);
 
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.PLAYER>[]>([]);
 
@@ -59,15 +59,17 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
-  const startEdit = () => {
-    console.log(selected);
-    if (selected) setFormData(convertGettedToForm(ModelType.PLAYER, selected));
+  const startEdit = (item?: PlayerGet) => {
+    if (item) {
+      setFormData(convertGettedToForm(ModelType.PLAYER, item));
+      setSelectedItem(item);
+    }
   };
 
   const createItem = async () => {
     let alert: ResponseStatus = { success: false };
     const cleanedData = cleanData(formData);
-    console.log(cleanedData);
+    // console.log(cleanedData);
 
     try {
       const res = await api.post(API_ROUTES.PLAYER.CREATE, cleanedData);
@@ -176,7 +178,7 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const uploadFile = async (file: File) => {
-    console.log("sending in uploadFile");
+    // console.log("sending in uploadFile");
     let alert: ResponseStatus = { success: false };
 
     const formData = new FormData();
@@ -235,13 +237,13 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     key: K,
     value: PlayerForm[K]
   ) => {
-    console.log("handleing", key, value);
+    // console.log("handleing", key, value);
     setFormData((prev) => {
       // 同じ値をもう一度クリック → 選択解除
       if (prev[key] === value) {
         return {
           ...prev,
-          [key]: undefined,
+          [key]: null,
         };
       }
 
@@ -258,7 +260,7 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log(steps);
+    // console.log(steps);
     setFormSteps(steps[ModelType.PLAYER]);
   }, []);
 

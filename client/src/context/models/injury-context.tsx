@@ -8,7 +8,7 @@ import {
 import { useAlert } from "../alert-context";
 import { getDefaultValue } from "./initialValue.tsx/model-context";
 import { Injury, InjuryForm, InjuryGet } from "../../types/models/injury";
-import { APIError, Label, ResponseStatus } from "../../types/types";
+import { APIError, ResponseStatus } from "../../types/types";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
@@ -81,8 +81,11 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
-  const startEdit = () => {
-    if (selected) setFormData(convertGettedToForm(ModelType.INJURY, selected));
+  const startEdit = (item?: InjuryGet) => {
+    if (item) {
+      setFormData(convertGettedToForm(ModelType.INJURY, item));
+      setSelectedItem(item);
+    }
   };
 
   const createItem = async () => {
@@ -157,8 +160,11 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     if (!selected) return;
     const id = selected._id;
     let alert: ResponseStatus = { success: false };
+
+    const cleanedData = cleanData(updated);
+
     try {
-      const res = await api.patch(API_ROUTES.INJURY.UPDATE(id), updated);
+      const res = await api.patch(API_ROUTES.INJURY.UPDATE(id), cleanedData);
       const updatedItem = res.data.data as Injury;
       setItems((prev) =>
         prev.map((t) =>
@@ -214,7 +220,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
       if (prev[key] === value) {
         return {
           ...prev,
-          [key]: undefined,
+          [key]: null,
         };
       }
 

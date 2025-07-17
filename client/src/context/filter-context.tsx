@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import {
   FilterableField,
   FilterCondition,
@@ -79,16 +73,11 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   );
   const [isAdding, setIsAdding] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log("new filterConditions", filterConditions);
-  }, [filterConditions]);
-
   const toggleAdding = () => setIsAdding((prev) => !prev);
 
   // add filter contition
   const handleAddCondition = (index?: number) => {
     const { key, value, label, type, operator } = filterCondition;
-    console.log("handleAddcondition", filterCondition);
 
     if (!key || value == "") return;
 

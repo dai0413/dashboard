@@ -52,9 +52,11 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
-  const startEdit = () => {
-    console.log(selected);
-    if (selected) setFormData(convertGettedToForm(ModelType.TEAM, selected));
+  const startEdit = (item?: TeamGet) => {
+    if (item) {
+      setFormData(convertGettedToForm(ModelType.TEAM, item));
+      setSelectedItem(item);
+    }
   };
 
   const createItem = async () => {
@@ -205,7 +207,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
       if (prev[key] === value) {
         return {
           ...prev,
-          [key]: undefined,
+          [key]: null,
         };
       }
 
