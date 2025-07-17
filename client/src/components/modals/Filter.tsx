@@ -1,16 +1,16 @@
 import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
-import { FilterableField, FilterCondition } from "../../types/types";
+import { FilterableFieldDefinition } from "../../types/field";
 import { OptionArray, useOptions } from "../../context/options-provider";
 import FieldRow from "./Filter/FieldRow";
 
 type FilterProps = {
-  filterableField: FilterableField[];
+  filterableField: FilterableFieldDefinition[];
   onApply: () => void;
 };
 const createNowFilterString = (
-  cond: FilterCondition,
+  cond: FilterableFieldDefinition,
   operatorOptions: OptionArray
 ): string => {
   const nowOperator = operatorOptions.find(
@@ -18,7 +18,7 @@ const createNowFilterString = (
   )?.label;
 
   const nowValue =
-    cond.type === "Date" && cond.value instanceof Date
+    cond.filterType === "Date" && cond.value instanceof Date
       ? cond.value.toISOString().slice(0, 10)
       : String(cond.value);
 

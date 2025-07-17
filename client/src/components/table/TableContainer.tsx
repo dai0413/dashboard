@@ -5,13 +5,16 @@ import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import { TableHeader } from "../../types/types";
+import { FilterableFieldDefinition, FieldDefinition } from "../../types/field";
 import { FormTypeMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { filterableFields } from "../../lib/filter-fields";
+import { fieldDefinition } from "../../lib/model-fields";
 import { useFilter } from "../../context/filter-context";
+import { useForm } from "../../context/form-context";
 
 type TableContainerProps<K extends keyof FormTypeMap> = {
   title: string;
@@ -35,6 +38,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
 }: TableContainerProps<K>) => {
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
+  const { isOpen } = useForm();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
@@ -52,14 +56,24 @@ const TableContainer = <K extends keyof FormTypeMap>({
 
   useEffect(() => {
     readItems();
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     setTableData(items);
   }, [items]);
 
-  const filterableField: FilterableField[] = modelType
-    ? filterableFields[modelType]
+  // const filterableField: FilterableField[] = modelType
+  //   ? filterableFields[modelType]
+  //   : [];
+
+  function isFilterable(f: FieldDefinition): f is FilterableFieldDefinition {
+    return f.filterable === true && f.filterType !== undefined;
+  }
+
+  const filterableField = modelType
+    ? (fieldDefinition[modelType].filter(
+        isFilterable
+      ) as FilterableFieldDefinition[])
     : [];
 
   const sortableField: FilterableField[] = modelType
