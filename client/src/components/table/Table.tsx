@@ -3,6 +3,7 @@ import { TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { isLabelObject } from "../../utils";
 
 export type TableProps<T> = {
   data: T[];
@@ -82,8 +83,7 @@ const Table = <T extends Record<string, any>>({
 
                 let displayValue = cellContent;
 
-                const isObject =
-                  typeof cellContent === "object" && "id" in cellContent;
+                const isObject = isLabelObject(cellContent);
 
                 if (Array.isArray(cellContent)) {
                   displayValue = cellContent.join(", ");
@@ -107,11 +107,10 @@ const Table = <T extends Record<string, any>>({
                     }
                   `}
                   >
-                    {isObject ? (
-                      <a href={cellContent._id}>{cellContent.label}</a>
-                    ) : (
-                      displayValue
-                    )}
+                    {isObject
+                      ? // <a href={""}>{cellContent.label}</a>
+                        cellContent.label
+                      : displayValue}
                   </td>
                 );
               })}

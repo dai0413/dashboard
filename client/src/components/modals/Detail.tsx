@@ -6,8 +6,8 @@ import { LinkButtonGroup } from "../buttons";
 import { Loading, Modal } from "../ui";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
-import { Label } from "../../types/types";
 import { useForm } from "../../context/form-context";
+import { isLabelObject } from "../../utils";
 
 type DetailModalProps<K extends keyof FormTypeMap> = {
   closeLink: string;
@@ -25,7 +25,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { selected, formData, readItem, deleteItem, formSteps } = modelContext;
+  const { selected, readItem, deleteItem, formSteps } = modelContext;
 
   const {
     modal: { alert },
@@ -74,24 +74,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
             let displayValue = value || "";
 
-            if (
-              value &&
-              typeof value === "object" &&
-              "label" in value &&
-              "id" in value
-            )
-              displayValue = value.label;
-
-            if (field?.type === "select" || field?.type === "table") {
-              if (
-                typeof value === "object" &&
-                value !== null &&
-                "label" in value
-              ) {
-                const withLabel = value as Label;
-                displayValue = withLabel.label;
-              }
-            }
+            if (isLabelObject(value)) displayValue = value.label;
 
             if (field?.type === "date" && value) {
               // console.log(field, key, value);
