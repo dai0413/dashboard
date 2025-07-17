@@ -7,8 +7,9 @@ import { Sort, Filter } from "../modals/index";
 import { TableHeader } from "../../types/types";
 import {
   FilterableFieldDefinition,
-  FieldDefinition,
   SortableFieldDefinition,
+  isFilterable,
+  isSortable,
 } from "../../types/field";
 import { FormTypeMap, ModelType } from "../../types/models";
 
@@ -57,14 +58,6 @@ const TableContainer = <K extends keyof FormTypeMap>({
   useEffect(() => {
     setTableData(items);
   }, [items]);
-
-  function isFilterable(f: FieldDefinition): f is FilterableFieldDefinition {
-    return f.filterable === true && f.filterType !== undefined;
-  }
-
-  function isSortable(f: FieldDefinition): f is SortableFieldDefinition {
-    return f.sortable === true;
-  }
 
   const filterableField = modelType
     ? (fieldDefinition[modelType].filter(

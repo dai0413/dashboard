@@ -4,11 +4,11 @@ export type FilterOperator = "equals" | "contains" | "gte" | "lte";
 type BaseField = {
   key: string;
   label: string;
+  type: "string" | "number" | "Date" | "select";
 };
 
 // フィルター用
 type FilterField = {
-  filterType: "string" | "number" | "Date" | "select";
   filterable?: boolean;
   value?: string | number | Date;
   operator?: FilterOperator;
@@ -28,9 +28,26 @@ type DetailField = {
 
 export type FilterableFieldDefinition = BaseField & FilterField;
 export type SortableFieldDefinition = BaseField & SortField;
+export type DetailFieldDefinition = BaseField & DetailField;
 
 // 統合型（UIでよく使う）
 export type FieldDefinition = BaseField &
   Partial<FilterField> &
   Partial<SortField> &
   Partial<DetailField>;
+
+export function isFilterable(
+  f: FieldDefinition
+): f is FilterableFieldDefinition {
+  return f.filterable === true && f.type !== undefined;
+}
+
+export function isSortable(f: FieldDefinition): f is SortableFieldDefinition {
+  return f.sortable === true;
+}
+
+export function isDisplayOnDetail(
+  f: FieldDefinition
+): f is DetailFieldDefinition {
+  return f.displayOnDetail === true;
+}
