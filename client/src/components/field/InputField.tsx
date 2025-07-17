@@ -12,8 +12,12 @@ const InputField = ({
   placeholder,
 }: InputFieldProps) => {
   const formattedValue =
-    type === "date" && value instanceof Date
-      ? value.toISOString().slice(0, 10)
+    type === "date"
+      ? typeof value === "string"
+        ? value.slice(0, 10)
+        : value instanceof Date
+        ? value.toISOString().slice(0, 10)
+        : ""
       : value;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

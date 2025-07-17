@@ -31,6 +31,7 @@ const Main = () => {
                   { label: "名前", field: "player" },
                 ]}
               />
+              <div className="mb-4"></div>
               <LinkButton to={APP_ROUTES.TRANSFER} color={"green"}>
                 <>
                   詳細へ
@@ -54,6 +55,7 @@ const Main = () => {
                   { label: "負傷箇所", field: "injured_part" },
                 ]}
               />
+              <div className="mb-4"></div>
               <LinkButton to={APP_ROUTES.INJURY} color={"green"}>
                 <>
                   詳細へ
