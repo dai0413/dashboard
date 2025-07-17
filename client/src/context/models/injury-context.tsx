@@ -18,30 +18,7 @@ import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
-
-const getComparison = (value: any): string | number | (string | number)[] => {
-  if (Array.isArray(value)) {
-    // 配列: 各要素が Label 型なら id を抽出、その他はそのまま
-    return value.map((item) =>
-      item && typeof item === "object" && "id" in item ? item.id : item
-    );
-  }
-
-  if (value && typeof value === "object" && "id" in value) {
-    return value.id;
-  }
-
-  return value ?? ""; // null や undefined は空として扱う
-};
-
-const isEqual = (a: any, b: any): boolean => {
-  if (Array.isArray(a) && Array.isArray(b)) {
-    if (a.length !== b.length) return false;
-    return [...a].sort().join() === [...b].sort().join();
-  }
-
-  return a === b;
-};
+import { objectIsEqual } from "../../utils/isEqual";
 
 const initialFormData: InjuryForm = {};
 
@@ -250,12 +227,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
         typedKey
       ];
 
-      const formComparison = getComparison(formValue);
-      const selectedComparison = getComparison(selectedValue);
-
-      if (!isEqual(formComparison, selectedComparison)) {
-        diff.push(key);
-      }
+      !objectIsEqual(formValue, selectedValue) && diff.push(key);
     }
 
     return diff;

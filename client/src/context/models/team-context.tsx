@@ -18,6 +18,7 @@ import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
+import { objectIsEqual } from "../../utils/isEqual";
 
 const initialFormData: TeamForm = {};
 
@@ -232,29 +233,13 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     if (!selected) return [];
 
     const diff: string[] = [];
-    for (const [key, value] of Object.entries(formData)) {
+    for (const [key, formValue] of Object.entries(formData)) {
       const typedKey = key as keyof typeof formData;
       const selectedValue = convertGettedToForm(ModelType.TEAM, selected)[
         typedKey
       ];
 
-      if (
-        value &&
-        typeof value === "object" &&
-        "id" in value &&
-        "label" in value &&
-        selectedValue &&
-        typeof selectedValue === "object" &&
-        "id" in selectedValue
-      ) {
-        if ((value as any).id !== (selectedValue as any).id) {
-          diff.push(key);
-        }
-      } else {
-        if (value !== selectedValue) {
-          diff.push(key);
-        }
-      }
+      !objectIsEqual(formValue, selectedValue) && diff.push(key);
     }
 
     return diff;
