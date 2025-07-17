@@ -1,20 +1,17 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import {
-  FilterableField,
-  FilterCondition,
-  FilterOperator,
-} from "../types/types";
+import { FilterOperator } from "../types/types";
+import { FilterableFieldDefinition } from "../types/field";
 import { isLabelObject, toDateKey } from "../utils";
 
 type FilterState = {
   filterOpen: boolean;
   handleFilter: (data: any) => any;
 
-  filterConditions: FilterCondition[];
+  filterConditions: FilterableFieldDefinition[];
   handleAddCondition: (index?: number) => void;
 
-  filterCondition: FilterCondition;
-  handleFieldSelect: (field: FilterableField) => void;
+  filterCondition: FilterableFieldDefinition;
+  handleFieldSelect: (field: FilterableFieldDefinition) => void;
   handleFieldValue: (value: string | number | Date) => void;
   handleFieldOperator: (value: string | number | Date) => void;
 
@@ -29,10 +26,10 @@ type FilterState = {
   toggleAdding: () => void;
 };
 
-const defaultFilterCondition: FilterCondition = {
+const defaultFilterCondition: FilterableFieldDefinition = {
   key: "",
   label: "",
-  type: "string",
+  filterType: "string",
   value: "",
   operator: "equals",
 };
@@ -64,28 +61,27 @@ const FilterContext = createContext<FilterState>(defaultValue);
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const [filterConditions, setFilterConditions] = useState<FilterCondition[]>(
-    []
-  );
+  const [filterConditions, setFilterConditions] = useState<
+    FilterableFieldDefinition[]
+  >([]);
   const [editingIndex, setEditingIndex] = useState<null | number>(null);
-  const [filterCondition, setFilterCondition] = useState<FilterCondition>(
-    defaultFilterCondition
-  );
+  const [filterCondition, setFilterCondition] =
+    useState<FilterableFieldDefinition>(defaultFilterCondition);
   const [isAdding, setIsAdding] = useState<boolean>(false);
 
   const toggleAdding = () => setIsAdding((prev) => !prev);
 
   // add filter contition
   const handleAddCondition = (index?: number) => {
-    const { key, value, label, type, operator } = filterCondition;
+    const { key, value, label, filterType, operator } = filterCondition;
 
     if (!key || value == "") return;
 
-    const newCondition: FilterCondition = {
+    const newCondition: FilterableFieldDefinition = {
       key,
       label,
       value,
-      type,
+      filterType,
       operator,
       logic: "AND",
     };
@@ -129,9 +125,11 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
         const condVal = cond.value;
 
+        if (condVal === undefined || condVal === null) return true;
+
         switch (cond.operator) {
           case "equals":
-            if (cond.type === "Date") {
+            if (cond.filterType === "Date") {
               return toDateKey(compareValue) === toDateKey(condVal);
             }
             return compareValue == condVal;
@@ -146,13 +144,13 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
             return false;
 
           case "gte":
-            if (cond.type === "Date") {
+            if (cond.filterType === "Date") {
               return new Date(compareValue) >= new Date(condVal);
             }
             return Number(compareValue) >= Number(condVal);
 
           case "lte":
-            if (cond.type === "Date") {
+            if (cond.filterType === "Date") {
               return new Date(compareValue) >= new Date(condVal);
             }
             return Number(compareValue) <= Number(condVal);
@@ -173,14 +171,14 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setFilterOpen(false);
   };
 
-  const handleFieldSelect = (field: FilterableField) => {
+  const handleFieldSelect = (field: FilterableFieldDefinition) => {
     const value =
       field.key === "position" ? "GK" : field.key === "form" ? "完全" : "";
 
     setFilterCondition({
       key: field.key,
       label: field.label,
-      type: field.type,
+      filterType: field.filterType,
       value: value,
       operator: "equals",
     });

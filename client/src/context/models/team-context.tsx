@@ -225,7 +225,6 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log(steps);
     setFormSteps(steps[ModelType.TEAM]);
   }, []);
 

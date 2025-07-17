@@ -1,7 +1,7 @@
 import { IconButton } from "../../buttons/index";
 import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
-import { FilterCondition } from "../../../types/types";
+import { FilterableFieldDefinition } from "../../../types/field";
 import { OptionArray } from "../../../context/options-provider";
 
 type OptionsProps = {
@@ -22,7 +22,7 @@ type OnApplyProps = {
 };
 
 type FieldRowProps = {
-  filterCondition: FilterCondition;
+  filterCondition: FilterableFieldDefinition;
   options: OptionsProps;
   onChange: OnchangeProps;
   onApply: OnApplyProps;
@@ -49,8 +49,8 @@ const FieldRow = ({
       />
 
       <FilterFields
-        type={filterCondition.type}
-        value={filterCondition.value}
+        type={filterCondition.filterType}
+        value={filterCondition.value ? filterCondition.value : ""}
         onChange={handleFieldValue}
         options={valueOptions}
       />
