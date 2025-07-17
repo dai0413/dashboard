@@ -25,22 +25,23 @@ const DetailModal = <K extends keyof FormTypeMap>({
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { selected, readItem, deleteItem, formSteps } = modelContext;
+  const { selected, formData, readItem, deleteItem, formSteps } = modelContext;
 
   const {
     modal: { alert },
   } = useAlert();
 
-  const { openForm } = useForm();
+  const { isOpen, openForm } = useForm();
 
   useEffect(() => {
     if (id) {
       readItem(id);
     }
-  }, [id]);
+  }, [id, isOpen]);
 
-  const editOnClick = () =>
-    id ? openForm(false, modelType || null) : undefined;
+  const editOnClick = () => {
+    selected ? openForm(false, modelType || null, selected) : undefined;
+  };
 
   const deleteOnClick = () => {
     if (!id) return;
@@ -50,8 +51,6 @@ const DetailModal = <K extends keyof FormTypeMap>({
       deleteItem(id);
     }
   };
-
-  // console.log(selected);
 
   return !selected ? (
     <Modal isOpen={true} onClose={() => navigate(closeLink)}>
@@ -72,8 +71,6 @@ const DetailModal = <K extends keyof FormTypeMap>({
           .map(([key, value]) => {
             const inputFields = formSteps.flatMap((step) => step.fields || []);
             const field = inputFields.find((f) => f.key === key);
-
-            // console.log("field", field, key, value);
 
             let displayValue = value || "";
 

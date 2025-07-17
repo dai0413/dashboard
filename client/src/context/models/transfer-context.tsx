@@ -41,10 +41,6 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const [selected, setSelectedItem] = useState<TransferGet | null>(null);
   const [formData, setFormData] = useState<TransferForm>(initialFormData);
 
-  useEffect(() => {
-    console.log("now selected", selected);
-  }, [selected]);
-
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.TRANSFER>[]>(
     []
   );
@@ -63,10 +59,11 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
-  const startEdit = () => {
-    console.log(selected);
-    if (selected)
-      setFormData(convertGettedToForm(ModelType.TRANSFER, selected));
+  const startEdit = (item?: TransferGet) => {
+    if (item) {
+      setFormData(convertGettedToForm(ModelType.TRANSFER, item));
+      setSelectedItem(item);
+    }
   };
 
   const createItem = async () => {
@@ -197,7 +194,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       if (prev[key] === value) {
         return {
           ...prev,
-          [key]: undefined,
+          [key]: null,
         };
       }
 

@@ -4,7 +4,7 @@ import { useInjury } from "./models/injury-context";
 import { usePlayer } from "./models/player-context";
 import { useAlert } from "./alert-context";
 import { FormStep } from "../types/form";
-import { FormTypeMap, ModelType } from "../types/models";
+import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { useTeam } from "./models/team-context";
 
@@ -12,7 +12,11 @@ type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
   isOpen: boolean;
   modelType: T | null;
-  openForm: (newData: boolean, model: T | null) => void;
+  openForm: (
+    newData: boolean,
+    model: T | null,
+    item?: GettedModelDataMap[T]
+  ) => void;
   closeForm: () => void;
 
   nextStep: () => void;
@@ -61,7 +65,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const modelContext = useMemo(() => {
-    console.log(modelType);
     return modelType ? modelContextMap[modelType] : null;
   }, [
     modelType,
@@ -73,17 +76,16 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const getDiffKeys = modelContext?.getDiffKeys;
 
-  useEffect(() => {
-    console.log(modelType);
-    console.log(modelContext?.formSteps);
-  }, [modelType]);
-
-  const openForm = (newData: boolean, model: T | null) => {
+  const openForm = (
+    newData: boolean,
+    model: T | null,
+    item?: GettedModelDataMap[T]
+  ) => {
     if (newData) {
       setNewData(true);
     } else {
       setNewData(false);
-      model ? modelContextMap[model].startEdit() : () => {};
+      model ? modelContextMap[model].startEdit(item) : () => {};
     }
     setIsOpen(true);
     setModelType(model);
@@ -180,7 +182,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       };
       return handleSetAlert(payload);
     }
-    console.log(modelContext?.formData);
     return nextStep();
   };
 
