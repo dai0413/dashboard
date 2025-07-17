@@ -18,7 +18,7 @@ const createNowFilterString = (
   )?.label;
 
   const nowValue =
-    cond.filterType === "Date" && cond.value instanceof Date
+    cond.type === "Date" && cond.value instanceof Date
       ? cond.value.toISOString().slice(0, 10)
       : String(cond.value);
 

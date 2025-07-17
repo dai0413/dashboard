@@ -49,7 +49,7 @@ const FieldRow = ({
       />
 
       <FilterFields
-        type={filterCondition.filterType}
+        type={filterCondition.type}
         value={filterCondition.value ? filterCondition.value : ""}
         onChange={handleFieldValue}
         options={valueOptions}

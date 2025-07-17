@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { FilterOperator } from "../types/types";
-import { FilterableFieldDefinition } from "../types/field";
+import { FilterOperator, FilterableFieldDefinition } from "../types/field";
 import { isLabelObject, toDateKey } from "../utils";
 
 type FilterState = {
@@ -29,7 +28,7 @@ type FilterState = {
 const defaultFilterCondition: FilterableFieldDefinition = {
   key: "",
   label: "",
-  filterType: "string",
+  type: "string",
   value: "",
   operator: "equals",
 };
@@ -73,7 +72,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   // add filter contition
   const handleAddCondition = (index?: number) => {
-    const { key, value, label, filterType, operator } = filterCondition;
+    const { key, value, label, type, operator } = filterCondition;
 
     if (!key || value == "") return;
 
@@ -81,7 +80,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       key,
       label,
       value,
-      filterType,
+      type,
       operator,
       logic: "AND",
     };
@@ -129,7 +128,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
         switch (cond.operator) {
           case "equals":
-            if (cond.filterType === "Date") {
+            if (cond.type === "Date") {
               return toDateKey(compareValue) === toDateKey(condVal);
             }
             return compareValue == condVal;
@@ -144,13 +143,13 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
             return false;
 
           case "gte":
-            if (cond.filterType === "Date") {
+            if (cond.type === "Date") {
               return new Date(compareValue) >= new Date(condVal);
             }
             return Number(compareValue) >= Number(condVal);
 
           case "lte":
-            if (cond.filterType === "Date") {
+            if (cond.type === "Date") {
               return new Date(compareValue) >= new Date(condVal);
             }
             return Number(compareValue) <= Number(condVal);
@@ -178,7 +177,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setFilterCondition({
       key: field.key,
       label: field.label,
-      filterType: field.filterType,
+      type: field.type,
       value: value,
       operator: "equals",
     });

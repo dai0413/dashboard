@@ -7,7 +7,10 @@ import { Loading, Modal } from "../ui";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useForm } from "../../context/form-context";
-import { isLabelObject } from "../../utils";
+import { isLabelObject, toDateKey } from "../../utils";
+
+import { fieldDefinition } from "../../lib/model-fields";
+import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
 
 type DetailModalProps<K extends keyof FormTypeMap> = {
   closeLink: string;
@@ -25,7 +28,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { selected, readItem, deleteItem, formSteps } = modelContext;
+  const { selected, readItem, deleteItem } = modelContext;
 
   const {
     modal: { alert },
@@ -38,6 +41,12 @@ const DetailModal = <K extends keyof FormTypeMap>({
       readItem(id);
     }
   }, [id, isOpen]);
+
+  const displayableField = modelType
+    ? (fieldDefinition[modelType].filter(
+        isDisplayOnDetail
+      ) as DetailFieldDefinition[])
+    : [];
 
   const editOnClick = () => {
     selected ? openForm(false, modelType || null, selected) : undefined;
@@ -66,65 +75,64 @@ const DetailModal = <K extends keyof FormTypeMap>({
       <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
 
       <div className="space-y-2 text-sm text-gray-700">
-        {Object.entries(selected)
-          .filter(([key, value]) => key !== "_id" && key !== "__v" && value)
-          .map(([key, value]) => {
-            const inputFields = formSteps.flatMap((step) => step.fields || []);
-            const field = inputFields.find((f) => f.key === key);
+        {displayableField.map((field) => {
+          const value = selected[field.key as keyof typeof selected];
 
-            let displayValue = value || "";
+          let displayValue = value || "";
 
-            if (isLabelObject(value)) displayValue = value.label;
+          if (isLabelObject(value)) displayValue = value.label;
 
-            if (field?.type === "date" && value) {
-              // console.log(field, key, value);
-              const date = new Date(value as string);
-              displayValue = new Intl.DateTimeFormat("ja-JP", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }).format(date);
-            }
+          displayValue =
+            field.type === "Date" && value
+              ? (displayValue = toDateKey(value as string | number | Date))
+              : displayValue;
 
-            if (
-              (field?.type === "multiselect" || field?.type === "multiInput") &&
-              value
-            ) {
-              const urls = value as string[];
-              displayValue = urls.filter((u) => u.trim() !== "").join(", ");
-            }
+          displayValue =
+            Array.isArray(value) && value
+              ? value.filter((u) => u.trim() !== "").join(", ")
+              : displayValue;
 
-            if (field?.type === "multiurl" && value) {
-              const urls = value as string[];
-              const validUrls = urls.filter((u) => u.trim() !== "");
-
-              return (
-                <div key={key} className="flex justify-between border-b py-1">
-                  <span className="font-semibold">{field?.label ?? key}</span>
-                  <div className="flex flex-wrap gap-2">
-                    {validUrls.map((url, index) => (
-                      <a
-                        key={index}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline"
-                      >
-                        link-{index + 1}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            }
+          if (field.label === "URL") {
+            const urls = Array.isArray(value) ? value : [value];
+            const validUrls = urls.filter((u) => u.trim() !== "");
 
             return (
-              <div key={key} className="flex justify-between border-b py-1">
-                <span className="font-semibold">{field?.label ?? key}</span>
+              <div
+                key={field.key}
+                className="flex justify-between border-b py-1"
+              >
+                <span className="font-semibold">
+                  {field?.label ?? field.key}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {validUrls.map((url, index) => (
+                    <a
+                      key={index}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline"
+                    >
+                      link-{index + 1}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          } else {
+            return (
+              <div
+                key={field.key}
+                className="flex justify-between border-b py-1"
+              >
+                <span className="font-semibold">
+                  {field?.label ?? field.key}
+                </span>
                 <span>{String(displayValue)}</span>
               </div>
             );
-          })}
+          }
+        })}
         <LinkButtonGroup
           reset={{
             text: "編集",
