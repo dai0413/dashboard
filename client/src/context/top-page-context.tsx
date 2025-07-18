@@ -1,11 +1,4 @@
-import {
-  Children,
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { GettedModelDataMap, ModelType } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
 import { APIError, ResponseStatus } from "../types/types";
@@ -35,7 +28,7 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
     modal: { handleSetAlert },
   } = useAlert();
 
-  const [isLoading, SetIsloading] = useState<boolean>(false);
+  const [isLoading, _SetIsloading] = useState<boolean>(false);
   const [transfers, setTransfers] = useState<TransferGet[]>([]);
   const [injuries, setInjuries] = useState<InjuryGet[]>([]);
 

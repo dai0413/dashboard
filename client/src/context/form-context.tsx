@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import { useTransfer } from "./models/transfer-context";
 import { useInjury } from "./models/injury-context";
 import { usePlayer } from "./models/player-context";
