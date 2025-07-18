@@ -9,7 +9,7 @@ const TeamDetail = () => {
       closeLink={APP_ROUTES.TEAM}
       modelType={ModelType.TEAM}
       modelContext={useTeam()}
-      title="怪我詳細"
+      title="チーム詳細"
     />
   );
 };
