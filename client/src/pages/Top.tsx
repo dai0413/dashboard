@@ -15,7 +15,7 @@ const Main = () => {
 
   return (
     <section className="h-[50rem] text-gray-600 body-font flex items-center">
-      <div className="container px-5 mx-auto">
+      <div className="container px-5 mx-auto mt-20">
         <div className="flex flex-wrap -mx-4">
           <div className="w-full lg:w-1/2 px-4">
             <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
