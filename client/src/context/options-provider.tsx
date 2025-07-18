@@ -89,7 +89,7 @@ type OptionsState = {
   filters: { [key: string]: { value: string } };
 };
 
-const dummyGetOptions = ((key: string, table?: boolean) => {
+const dummyGetOptions = ((_key: string, table?: boolean) => {
   if (table) {
     return { header: [], data: [] };
   } else {

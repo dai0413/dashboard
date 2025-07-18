@@ -7,11 +7,17 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const app = express();
 
-const CLIENT_URL = process.env.CLIENT_URL;
+const CLIENT_URLS = process.env.CLIENT_URL?.split(",");
 
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: function (origin, callback) {
+      if (!origin || CLIENT_URLS.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );

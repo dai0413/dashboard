@@ -33,12 +33,12 @@ const Login = () => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const nav = async (fn: () => Promise<boolean>, to: string) => {
-    const result = await fn();
-    if (result) {
-      navigate(to);
-    }
-  };
+  // const nav = async (fn: () => Promise<boolean>, to: string) => {
+  //   const result = await fn();
+  //   if (result) {
+  //     navigate(to);
+  //   }
+  // };
 
   const handleLogin = async () => {
     try {
