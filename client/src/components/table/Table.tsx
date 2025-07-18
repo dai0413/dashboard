@@ -98,14 +98,16 @@ const Table = <T extends Record<string, any>>({
                 return (
                   <td
                     key={header.field}
+                    title={isObject ? cellContent.label : displayValue}
                     className={`border px-4 py-2 
-                    ${rowSpacing === "wide" ? "h-16" : "h-8"} 
-                    ${
-                      selectedKey && row.key === selectedKey
-                        ? "bg-blue-100"
-                        : ""
-                    }
-                  `}
+                      ${rowSpacing === "wide" ? "h-16" : "h-8"} 
+                      ${
+                        selectedKey && row.key === selectedKey
+                          ? "bg-blue-100"
+                          : ""
+                      }
+                      overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]
+                      `}
                   >
                     {isObject
                       ? // <a href={""}>{cellContent.label}</a>

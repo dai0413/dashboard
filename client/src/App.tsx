@@ -38,143 +38,143 @@ const App: React.FC = () => {
               <PlayerProvider>
                 <InjuryProvider>
                   <TransferProvider>
-                    <FormProvider>
-                      <Router>
-                        {/* ルーティング設定 */}
-                        <div className="App">
-                          {/* ナビゲーションバー を後で追加*/}
-                          <Routes>
-                            <Route
-                              path={APP_ROUTES.HOME}
-                              element={
-                                <Layout>
-                                  <TopPageProvider>
-                                    <Top />
-                                  </TopPageProvider>
-                                </Layout>
-                              }
-                            />
-                            <Route
-                              path={APP_ROUTES.LOGIN}
-                              element={
-                                <Layout>
-                                  <Login />
-                                </Layout>
-                              }
-                            />
-                            <Route
-                              path={APP_ROUTES.PLAYER}
-                              element={
-                                <PrivateRoute>
+                    <OptionsWrapper>
+                      <FormProvider>
+                        <Router>
+                          {/* ルーティング設定 */}
+                          <div className="App">
+                            {/* ナビゲーションバー を後で追加*/}
+                            <Routes>
+                              <Route
+                                path={APP_ROUTES.HOME}
+                                element={
                                   <Layout>
-                                    <PlayerProvider>
-                                      <Player />
-                                    </PlayerProvider>
+                                    <TopPageProvider>
+                                      <Top />
+                                    </TopPageProvider>
                                   </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={`${APP_ROUTES.PLAYER}/:id`}
-                              element={
-                                <PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={APP_ROUTES.LOGIN}
+                                element={
                                   <Layout>
-                                    <PlayerProvider>
-                                      <PlayerDetail />
-                                    </PlayerProvider>
+                                    <Login />
                                   </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={APP_ROUTES.TRANSFER}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <TransferProvider>
-                                      <Transfer />
-                                    </TransferProvider>
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={`${APP_ROUTES.TRANSFER}/:id`}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <TransferProvider>
-                                      <TransferDetail />
-                                    </TransferProvider>
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={APP_ROUTES.INJURY}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <InjuryProvider>
-                                      <Injury />
-                                    </InjuryProvider>
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={`${APP_ROUTES.INJURY}/:id`}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <InjuryProvider>
-                                      <InjuryDetail />
-                                    </InjuryProvider>
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={APP_ROUTES.TEAM}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <TeamProvider>
-                                      <Team />
-                                    </TeamProvider>
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={`${APP_ROUTES.TEAM}/:id`}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <TeamProvider>
-                                      <TeamDetail />
-                                    </TeamProvider>
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                            <Route
-                              path={APP_ROUTES.ME}
-                              element={
-                                <PrivateRoute>
-                                  <Layout>
-                                    <Me />
-                                  </Layout>
-                                </PrivateRoute>
-                              }
-                            />
-                          </Routes>
-                        </div>
-                        <OptionsWrapper>
+                                }
+                              />
+                              <Route
+                                path={APP_ROUTES.PLAYER}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <PlayerProvider>
+                                        <Player />
+                                      </PlayerProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={`${APP_ROUTES.PLAYER}/:id`}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <PlayerProvider>
+                                        <PlayerDetail />
+                                      </PlayerProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={APP_ROUTES.TRANSFER}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <TransferProvider>
+                                        <Transfer />
+                                      </TransferProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={`${APP_ROUTES.TRANSFER}/:id`}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <TransferProvider>
+                                        <TransferDetail />
+                                      </TransferProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={APP_ROUTES.INJURY}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <InjuryProvider>
+                                        <Injury />
+                                      </InjuryProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={`${APP_ROUTES.INJURY}/:id`}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <InjuryProvider>
+                                        <InjuryDetail />
+                                      </InjuryProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={APP_ROUTES.TEAM}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <TeamProvider>
+                                        <Team />
+                                      </TeamProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={`${APP_ROUTES.TEAM}/:id`}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <TeamProvider>
+                                        <TeamDetail />
+                                      </TeamProvider>
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                              <Route
+                                path={APP_ROUTES.ME}
+                                element={
+                                  <PrivateRoute>
+                                    <Layout>
+                                      <Me />
+                                    </Layout>
+                                  </PrivateRoute>
+                                }
+                              />
+                            </Routes>
+                          </div>
                           <Form />
-                        </OptionsWrapper>
-                      </Router>
-                    </FormProvider>
+                        </Router>
+                      </FormProvider>
+                    </OptionsWrapper>
                   </TransferProvider>
                 </InjuryProvider>
               </PlayerProvider>

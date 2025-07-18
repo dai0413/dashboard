@@ -36,7 +36,6 @@ const RenderField = <T extends keyof FormTypeMap>({
 
   // console.log("formData[key]", key, formData[key]);
   // 後で追加フィルタリング
-  console.log(getOptions(key as string, true).header);
 
   const inputFieldOnChange = (value: string | number | Date) => {
     updateFilter(key as string, value as string);
@@ -327,7 +326,7 @@ const Form = <T extends keyof FormTypeMap>() => {
           {formSteps[currentStep].type === "form" &&
           formSteps[currentStep].fields ? (
             formSteps[currentStep].fields.map((field) => {
-              console.log(formData, field.key, formData[field.key]);
+              // console.log(formData, field.key, formData[field.key]);
               return (
                 <RenderField
                   key={field.key as string}
@@ -410,50 +409,52 @@ const Form = <T extends keyof FormTypeMap>() => {
             </div>
           )}
 
-          {currentStep === formSteps.length - 1 && alert.success ? (
-            newData ? (
-              <LinkButtonGroup
-                approve={{
-                  text: "次のデータへ",
-                  color: "green",
-                  onClick: nextData,
-                }}
-                deny={{
-                  text: "入力終了",
-                  color: "red",
-                  onClick: closeForm,
-                }}
-              />
+          <div className="mt-4">
+            {currentStep === formSteps.length - 1 && alert.success ? (
+              newData ? (
+                <LinkButtonGroup
+                  approve={{
+                    text: "次のデータへ",
+                    color: "green",
+                    onClick: nextData,
+                  }}
+                  deny={{
+                    text: "入力終了",
+                    color: "red",
+                    onClick: closeForm,
+                  }}
+                />
+              ) : (
+                <LinkButtonGroup
+                  deny={{
+                    text: "入力終了",
+                    color: "red",
+                    onClick: closeForm,
+                  }}
+                />
+              )
             ) : (
               <LinkButtonGroup
+                approve={{
+                  text:
+                    currentStep === formSteps.length - 1
+                      ? newData
+                        ? "追加"
+                        : "変更"
+                      : "次へ",
+                  color: "green",
+                  onClick:
+                    currentStep === formSteps.length - 1 ? sendData : nextStep,
+                }}
                 deny={{
-                  text: "入力終了",
+                  text: "戻る",
                   color: "red",
-                  onClick: closeForm,
+                  onClick: prevStep,
+                  disabled: currentStep === 0,
                 }}
               />
-            )
-          ) : (
-            <LinkButtonGroup
-              approve={{
-                text:
-                  currentStep === formSteps.length - 1
-                    ? newData
-                      ? "追加"
-                      : "変更"
-                    : "次へ",
-                color: "green",
-                onClick:
-                  currentStep === formSteps.length - 1 ? sendData : nextStep,
-              }}
-              deny={{
-                text: "戻る",
-                color: "red",
-                onClick: prevStep,
-                disabled: currentStep === 0,
-              }}
-            />
-          )}
+            )}
+          </div>
         </>
       )}
     </Modal>
