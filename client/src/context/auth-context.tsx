@@ -75,11 +75,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string): Promise<boolean> => {
     let alert: ResponseStatus = { success: false };
     try {
-      console.log("login start");
       const res = await axios.post(API_ROUTES.AUTH.LOGIN, { email, password });
       setAccessToken(res.data?.accessToken);
       setStaffState({ admin: res.data?.admin, is_staff: res.data?.is_staff });
-      console.log("login function", res.data.accessToken);
 
       axios.defaults.headers.common[
         "Authorization"
