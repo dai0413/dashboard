@@ -2,53 +2,121 @@
 
 ## 1. サーバー（バックエンド）
 
-```bash
-    npm install express mongoose bcryptjs jsonwebtoken dotenv http-status-codes express-async-errors
-    npm install -D nodemon
-```
+### 1.1 サーバー・フレームワーク関連
 
-### 1.1 本番環境パッケージ(dependencies)
+| パッケージ           | 用途                                           | 種別            |
+| -------------------- | ---------------------------------------------- | --------------- |
+| express              | Node.js の Web アプリケーションフレームワーク  | dependencies    |
+| express-async-errors | 非同期関数内の例外処理を簡単にするミドルウェア | dependencies    |
+| http-status-codes    | HTTP ステータスコードを定数で扱えるライブラリ  | dependencies    |
+| cookie-parser        | リクエストクッキーを簡単に扱うミドルウェア     | dependencies    |
+| cors                 | クロスオリジンリクエストを許可するミドルウェア | dependencies    |
+| dotenv               | `.env` による環境変数の読み込み                | dependencies    |
+| nodemon              | サーバーコード変更時に自動で再起動             | devDependencies |
 
-| パッケージ           | 用途                      |
-| -------------------- | ------------------------- |
-| express              | Web フレームワーク        |
-| mongoose             | MongoDB ODM               |
-| bcryptjs             | パスワードのハッシュ化    |
-| jsonwebtoken         | JWT によるトークン認証    |
-| dotenv               | 環境変数の管理            |
-| http-status-codes    | HTTP ステータスコード定数 |
-| express-async-errors | async 関数内エラーの補足  |
-| cookie-parser        | クッキーを解析            |
+---
 
-### 1.2 開発環境パッケージ(devDependencies)
+### 1.2 データベース関連（MongoDB）
 
-## 開発環境パッケージ（devDependencies）
+| パッケージ | 用途                           | 種別         |
+| ---------- | ------------------------------ | ------------ |
+| mongoose   | MongoDB 用 ODM（データ操作層） | dependencies |
 
-| パッケージ | 用途                 |
-| ---------- | -------------------- |
-| nodemon    | サーバーの自動再起動 |
+---
+
+### 1.3 認証・セキュリティ関連
+
+| パッケージ   | 用途                         | 種別         |
+| ------------ | ---------------------------- | ------------ |
+| bcryptjs     | パスワードのハッシュ化       | dependencies |
+| jsonwebtoken | JWT によるトークンベース認証 | dependencies |
+
+---
+
+### 1.4 CSV・文字コード処理関連
+
+| パッケージ | 用途                                                | 種別         |
+| ---------- | --------------------------------------------------- | ------------ |
+| csv-parser | CSV ファイルの読み込み                              | dependencies |
+| csv-writer | CSV ファイルの書き出し                              | dependencies |
+| json2csv   | JSON から CSV への変換                              | dependencies |
+| iconv-lite | 文字コード変換（Shift-JIS や UTF-8 などの相互変換） | dependencies |
+| jschardet  | 文字コード自動判定ライブラリ                        | dependencies |
+
+---
+
+### 1.5 日付・時間処理
+
+| パッケージ | 用途                     | 種別         |
+| ---------- | ------------------------ | ------------ |
+| moment     | 日付・時間のフォーマット | dependencies |
+
+---
+
+### 1.6 ファイルアップロード
+
+| パッケージ | 用途                       | 種別         |
+| ---------- | -------------------------- | ------------ |
+| multer     | multipart/form-data の処理 | dependencies |
+
+---
 
 ## 2. クライアント（フロントエンド）
 
-```bash
-    npm install react-router-dom axios
-    npm install -D tailwindcss postcss autoprefixer
-    npx tailwindcss init -p
-```
+### 2.1 React・ルーティング関連
 
-### 2.1 本番環境パッケージ（dependencies）
+| パッケージ       | 用途                                      | 種別            |
+| ---------------- | ----------------------------------------- | --------------- |
+| react            | UI 構築ライブラリ                         | dependencies    |
+| react-dom        | React を HTML に描画するためのライブラリ  | dependencies    |
+| react-router-dom | ページ遷移・ルーティング機能を提供        | dependencies    |
+| @types/react     | React の型定義ファイル（TypeScript 向け） | devDependencies |
+| @types/react-dom | ReactDOM の型定義ファイル                 | devDependencies |
 
-| パッケージ       | 用途                                     |
-| ---------------- | ---------------------------------------- |
-| react            | UI 構築ライブラリ                        |
-| react-dom        | React を HTML に描画するためのライブラリ |
-| react-router-dom | ページ遷移・ルーティング機能を提供       |
-| axios            | バックエンド接続                         |
+---
 
-### 2.2 開発環境パッケージ（devDependencies）
+### 2.2 スタイリング関連（Tailwind / PostCSS）
 
-| パッケージ   | 用途                                      |
-| ------------ | ----------------------------------------- |
-| tailwindcss  | ユーティリティベースの CSS フレームワーク |
-| postcss      | CSS 変換ツール（Tailwind と連携）         |
-| autoprefixer | ベンダープレフィックス自動付加ツール      |
+| パッケージ           | 用途                                          | 種別            |
+| -------------------- | --------------------------------------------- | --------------- |
+| tailwindcss          | ユーティリティファーストの CSS フレームワーク | 両方に存在      |
+| postcss              | CSS 処理ツール（Tailwind などと連携）         | devDependencies |
+| autoprefixer         | ベンダープレフィックス自動付加ツール          | devDependencies |
+| @tailwindcss/postcss | TailwindCSS の PostCSS プラグイン             | dependencies    |
+| @tailwindcss/vite    | TailwindCSS を Vite に統合する公式プラグイン  | dependencies    |
+| @heroicons/react     | Tailwind UI 向けのアイコンコンポーネント      | dependencies    |
+| csstype              | CSS プロパティの型定義ライブラリ              | devDependencies |
+
+---
+
+### 2.3 ビルド・実行ツール（Vite / Babel）
+
+| パッケージ           | 用途                                                      | 種別            |
+| -------------------- | --------------------------------------------------------- | --------------- |
+| vite                 | 高速なモダンフロントエンド開発ビルドツール                | devDependencies |
+| serve                | 本番ビルドをローカルでホスティングするサーバー            | devDependencies |
+| @vitejs/plugin-react | Vite に React 機能を統合する公式プラグイン                | devDependencies |
+| @babel/parser        | JavaScript/TypeScript のコードをパースする Babel パーサー | devDependencies |
+| @babel/types         | Babel の AST ノード型定義                                 | devDependencies |
+
+---
+
+### 2.4 型チェック・Lint 関連
+
+| パッケージ                  | 用途                                                            | 種別            |
+| --------------------------- | --------------------------------------------------------------- | --------------- |
+| typescript                  | TypeScript 言語本体                                             | devDependencies |
+| eslint                      | コード品質・構文チェックツール                                  | devDependencies |
+| @eslint/js                  | ESLint の公式ルールセット                                       | devDependencies |
+| eslint-plugin-react-hooks   | React Hooks のルールチェック                                    | devDependencies |
+| eslint-plugin-react-refresh | React Fast Refresh（HMR）に関する ESLint プラグイン             | devDependencies |
+| globals                     | グローバル変数定義サポート（ESLint 用）                         | devDependencies |
+| typescript-eslint           | ESLint で TypeScript を使うための統合ツール（パーサ・ルール等） | devDependencies |
+
+---
+
+### 2.5 通信関連
+
+| パッケージ | 用途                              | 種別         |
+| ---------- | --------------------------------- | ------------ |
+| axios      | HTTP 通信ライブラリ（API 連携用） | dependencies |
