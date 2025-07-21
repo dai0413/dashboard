@@ -1,0 +1,17 @@
+blank_issues_enabled: false # true にすると「Blank issue」ボタンが表示される
+
+contact_links: # オプション: リンクボタンを追加
+  - name: 質問・サポートはこちら
+    url: https://example.com/support
+    about: 質問・雑談などはディスカッションでどうぞ。
+
+issue_templates:
+  - name: 機能追加リクエスト
+    description: 新しい機能の提案用テンプレート
+    file: feature_request.md
+    labels: ["enhancement"]
+
+  - name: バグ報告
+    description: バグ発見時のテンプレート
+    file: bug_report.md
+    labels: ["bug"]
