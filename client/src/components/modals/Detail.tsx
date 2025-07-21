@@ -11,6 +11,7 @@ import { isLabelObject, toDateKey } from "../../utils";
 
 import { fieldDefinition } from "../../lib/model-fields";
 import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
+import { useAuth } from "../../context/auth-context";
 
 type DetailModalProps<K extends keyof FormTypeMap> = {
   closeLink: string;
@@ -35,6 +36,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   } = useAlert();
 
   const { isOpen, openForm } = useForm();
+  const { staffState } = useAuth();
 
   useEffect(() => {
     if (id) {
@@ -133,16 +135,18 @@ const DetailModal = <K extends keyof FormTypeMap>({
             );
           }
         })}
-        <LinkButtonGroup
-          reset={{
-            text: "編集",
-            onClick: () => editOnClick(),
-          }}
-          deny={{
-            text: "削除",
-            onClick: () => deleteOnClick(),
-          }}
-        />
+        {staffState.admin && (
+          <LinkButtonGroup
+            reset={{
+              text: "編集",
+              onClick: () => editOnClick(),
+            }}
+            deny={{
+              text: "削除",
+              onClick: () => deleteOnClick(),
+            }}
+          />
+        )}
       </div>
     </Modal>
   );
