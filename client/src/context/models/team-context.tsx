@@ -38,6 +38,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
   const [selected, setSelectedItem] = useState<TeamGet | null>(null);
   const [formData, setFormData] = useState<TeamForm>(initialFormData);
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.TEAM>[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const cleanData = (data: typeof formData) => {
     const cleanedData: any = {};
@@ -61,6 +62,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const createItem = async () => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     const cleanedData = cleanData(formData);
     console.log(cleanedData);
@@ -82,10 +84,12 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const readItems = async () => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TEAM.GET_ALL);
@@ -103,10 +107,12 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const readItem = async (id: string) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TEAM.DETAIL(id));
@@ -123,10 +129,12 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const updateItem = async (updated: TeamForm) => {
+    setIsLoading(true);
     if (!selected) return;
     const id = selected._id;
     let alert: ResponseStatus = { success: false };
@@ -150,6 +158,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
@@ -263,6 +272,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     downloadFile,
 
     getDiffKeys,
+    isLoading,
   };
 
   return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;

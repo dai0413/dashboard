@@ -23,4 +23,5 @@ export type ModelContext<K extends keyof FormTypeMap> = {
   downloadFile?: () => Promise<void>;
 
   getDiffKeys: () => string[];
+  isLoading: boolean;
 };
