@@ -87,6 +87,7 @@ type OptionsState = {
   getOptions: GetOptions;
   updateFilter: (key: string, value: string) => void;
   filters: { [key: string]: { value: string } };
+  resetFilter: () => void;
 };
 
 const dummyGetOptions = ((_key: string, table?: boolean) => {
@@ -101,6 +102,7 @@ const OptionContext = createContext<OptionsState>({
   getOptions: dummyGetOptions,
   updateFilter: () => {},
   filters: {},
+  resetFilter: () => {},
 });
 
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
@@ -114,6 +116,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       [key]: { value },
     }));
   };
+
+  const resetFilter = () => setFilters({});
 
   const { items: players } = usePlayer();
   const { items: teams } = useTeam();
@@ -209,7 +213,9 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <OptionContext.Provider value={{ getOptions, updateFilter, filters }}>
+    <OptionContext.Provider
+      value={{ getOptions, updateFilter, filters, resetFilter }}
+    >
       {children}
     </OptionContext.Provider>
   );
