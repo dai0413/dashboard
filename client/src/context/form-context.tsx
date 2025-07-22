@@ -7,6 +7,7 @@ import { FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { useTeam } from "./models/team-context";
+import { useOptions } from "./options-provider";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
@@ -91,8 +92,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setModelType(model);
   };
 
+  const { resetFilter } = useOptions();
+
   const closeForm = () => {
     modelContext?.resetFormData();
+    resetFilter();
     setIsOpen(false);
     setModelType(null);
     setCurrentStep(0);
@@ -101,6 +105,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const nextData = () => {
     setCurrentStep(0);
+    resetFilter();
     modelContext?.resetFormData();
     resetAlert();
   };
