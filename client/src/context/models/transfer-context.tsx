@@ -45,6 +45,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.TRANSFER>[]>(
     []
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const cleanData = (data: typeof formData) => {
     const cleanedData: any = {};
@@ -68,6 +69,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const createItem = async () => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     const cleanedData = cleanData(formData);
     console.log(cleanedData);
@@ -89,10 +91,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const readItems = async (limit?: number) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL, {
@@ -111,10 +115,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const readItem = async (id: string) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TRANSFER.DETAIL(id));
@@ -131,10 +137,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const updateItem = async (updated: TransferForm) => {
+    setIsLoading(true);
     if (!selected) return;
     const id = selected._id;
     let alert: ResponseStatus = { success: false };
@@ -158,10 +166,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const deleteItem = async (id: string) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.delete(API_ROUTES.TRANSFER.DELETE(id));
@@ -177,6 +187,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
@@ -249,6 +260,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     deleteItem,
 
     getDiffKeys,
+    isLoading,
   };
 
   return (

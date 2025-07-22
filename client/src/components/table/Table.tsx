@@ -15,6 +15,7 @@ export type TableProps<T> = {
   onClick?: (row: T) => void;
   selectedKey?: string;
   itemsPerPage?: number;
+  isLoading?: boolean;
 };
 
 const Table = <T extends Record<string, any>>({
@@ -27,6 +28,7 @@ const Table = <T extends Record<string, any>>({
   onClick = () => {},
   selectedKey = "",
   itemsPerPage,
+  isLoading,
 }: TableProps<T>) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -76,30 +78,51 @@ const Table = <T extends Record<string, any>>({
           </tr>
         </thead>
         <tbody>
-          {paginatedData.map((row, i) => (
-            <tr key={i} className="border-t">
-              {headers.map((header) => {
-                const cellContent = row[header.field];
+          {isLoading
+            ? // 読み込み中のスケルトン行（5行分を仮で表示）
+              [...Array(itemsPerPage)].map((_, i) => (
+                <tr key={i} className="animate-pulse border-t">
+                  {headers.map((_, j) => (
+                    <td key={j} className="px-4 py-2 border">
+                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    </td>
+                  ))}
+                  {detail && (
+                    <td className="px-4 py-2 border">
+                      <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                    </td>
+                  )}
+                  {form && (
+                    <td className="px-4 py-2 border">
+                      <div className="h-6 w-6 bg-gray-200 rounded-full mx-auto"></div>
+                    </td>
+                  )}
+                </tr>
+              ))
+            : paginatedData.map((row, i) => (
+                <tr key={i} className="border-t">
+                  {headers.map((header) => {
+                    const cellContent = row[header.field];
 
-                let displayValue = cellContent;
+                    let displayValue = cellContent;
 
-                const isObject = isLabelObject(cellContent);
+                    const isObject = isLabelObject(cellContent);
 
-                if (Array.isArray(cellContent)) {
-                  displayValue = cellContent.join(", ");
-                } else if (cellContent instanceof Date) {
-                  displayValue = cellContent.toLocaleDateString("ja-JP", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                  });
-                }
+                    if (Array.isArray(cellContent)) {
+                      displayValue = cellContent.join(", ");
+                    } else if (cellContent instanceof Date) {
+                      displayValue = cellContent.toLocaleDateString("ja-JP", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      });
+                    }
 
-                return (
-                  <td
-                    key={header.field}
-                    title={isObject ? cellContent.label : displayValue}
-                    className={`border px-4 py-2 
+                    return (
+                      <td
+                        key={header.field}
+                        title={isObject ? cellContent.label : displayValue}
+                        className={`border px-4 py-2 
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${
                         selectedKey && row.key === selectedKey
@@ -108,45 +131,47 @@ const Table = <T extends Record<string, any>>({
                       }
                       overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]
                       `}
-                  >
-                    {isObject
-                      ? // <a href={""}>{cellContent.label}</a>
-                        cellContent.label
-                      : displayValue}
-                  </td>
-                );
-              })}
-              {detail && (
-                <td className="cursor-pointer px-4 py-2 border">
-                  <Link
-                    to={`${detailLink}/${row._id}`}
-                    className="text-blue-600 underline"
-                  >
-                    詳細
-                  </Link>
-                </td>
-              )}
-              {form && (
-                <td
-                  className={`px-4 py-2 border ${
-                    selectedKey && row.key === selectedKey ? "bg-blue-100" : ""
-                  }`}
-                >
-                  <button
-                    type="button"
-                    className="cursor-pointer  text-gray-500 hover:text-gray-700 text-2xl"
-                    onClick={() => onClick?.(row)}
-                  >
-                    {selectedKey && row.key === selectedKey ? (
-                      <XMarkIcon className="w-6 h-6" />
-                    ) : (
-                      <PlusCircleIcon className="w-6 h-6" />
-                    )}
-                  </button>
-                </td>
-              )}
-            </tr>
-          ))}
+                      >
+                        {isObject
+                          ? // <a href={""}>{cellContent.label}</a>
+                            cellContent.label
+                          : displayValue}
+                      </td>
+                    );
+                  })}
+                  {detail && (
+                    <td className="cursor-pointer px-4 py-2 border">
+                      <Link
+                        to={`${detailLink}/${row._id}`}
+                        className="text-blue-600 underline"
+                      >
+                        詳細
+                      </Link>
+                    </td>
+                  )}
+                  {form && (
+                    <td
+                      className={`px-4 py-2 border ${
+                        selectedKey && row.key === selectedKey
+                          ? "bg-blue-100"
+                          : ""
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        className="cursor-pointer  text-gray-500 hover:text-gray-700 text-2xl"
+                        onClick={() => onClick?.(row)}
+                      >
+                        {selectedKey && row.key === selectedKey ? (
+                          <XMarkIcon className="w-6 h-6" />
+                        ) : (
+                          <PlusCircleIcon className="w-6 h-6" />
+                        )}
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
         </tbody>
       </table>
       {pages.length > 1 && (

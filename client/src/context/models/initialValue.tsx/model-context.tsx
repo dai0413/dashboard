@@ -18,4 +18,5 @@ export const getDefaultValue = (initialFormData: any) => ({
   deleteItem: async () => {},
 
   getDiffKeys: () => [],
+  isLoading: false,
 });

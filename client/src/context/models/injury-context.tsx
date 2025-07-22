@@ -43,6 +43,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
   }, [formData]);
 
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.INJURY>[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const cleanData = (data: typeof formData) => {
     const cleanedData: any = {};
@@ -66,6 +67,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const createItem = async () => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     const cleanedData = cleanData(formData);
     console.log(cleanedData);
@@ -87,10 +89,12 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const readItems = async (limit?: number) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.INJURY.GET_ALL, {
@@ -110,10 +114,12 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const readItem = async (id: string) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.INJURY.DETAIL(id));
@@ -130,10 +136,12 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const updateItem = async (updated: InjuryForm) => {
+    setIsLoading(true);
     if (!selected) return;
     const id = selected._id;
     let alert: ResponseStatus = { success: false };
@@ -160,10 +168,12 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
   const deleteItem = async (id: string) => {
+    setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.delete(API_ROUTES.INJURY.DELETE(id));
@@ -179,6 +189,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
       };
     } finally {
       handleSetAlert(alert);
+      setIsLoading(false);
     }
   };
 
@@ -251,6 +262,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     deleteItem,
 
     getDiffKeys,
+    isLoading,
   };
 
   return (

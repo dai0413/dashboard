@@ -3,7 +3,7 @@ import { ModelContext } from "../../types/context";
 import { FormTypeMap, ModelType } from "../../types/models";
 import { useEffect } from "react";
 import { LinkButtonGroup } from "../buttons";
-import { Loading, Modal } from "../ui";
+import { Modal } from "../ui";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useForm } from "../../context/form-context";
@@ -12,6 +12,17 @@ import { isLabelObject, toDateKey } from "../../utils";
 import { fieldDefinition } from "../../lib/model-fields";
 import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
 import { useAuth } from "../../context/auth-context";
+
+const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
+  <div className="space-y-2 text-sm text-gray-700 animate-pulse">
+    {[...Array(rows)].map((_, i) => (
+      <div key={i} className="flex justify-between border-b py-1 items-center">
+        <div className="w-1/3 h-4 bg-gray-200 rounded"></div>
+        <div className="w-1/2 h-4 bg-gray-200 rounded"></div>
+      </div>
+    ))}
+  </div>
+);
 
 type DetailModalProps<K extends keyof FormTypeMap> = {
   closeLink: string;
@@ -29,7 +40,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { selected, readItem, deleteItem } = modelContext;
+  const { isLoading, selected, readItem, deleteItem } = modelContext;
 
   const {
     modal: { alert },
@@ -63,91 +74,86 @@ const DetailModal = <K extends keyof FormTypeMap>({
     }
   };
 
-  return !selected ? (
+  return (
     <Modal isOpen={true} onClose={() => navigate(closeLink)}>
-      {alert.success ? (
-        <Alert success={alert?.success || false} message={alert?.message} />
-      ) : (
-        <Loading />
-      )}
-    </Modal>
-  ) : (
-    <Modal isOpen={true} onClose={() => navigate(-1)}>
       <Alert success={alert?.success || false} message={alert?.message} />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
+      {isLoading || !selected ? (
+        <SkeletonFieldList rows={displayableField.length} />
+      ) : (
+        <div className="space-y-2 text-sm text-gray-700">
+          {displayableField.map((field) => {
+            const value = selected[field.key as keyof typeof selected];
 
-      <div className="space-y-2 text-sm text-gray-700">
-        {displayableField.map((field) => {
-          const value = selected[field.key as keyof typeof selected];
+            let displayValue = value || "";
 
-          let displayValue = value || "";
+            if (isLabelObject(value)) displayValue = value.label;
 
-          if (isLabelObject(value)) displayValue = value.label;
+            displayValue =
+              field.type === "Date" && value
+                ? (displayValue = toDateKey(value as string | number | Date))
+                : displayValue;
 
-          displayValue =
-            field.type === "Date" && value
-              ? (displayValue = toDateKey(value as string | number | Date))
-              : displayValue;
+            displayValue =
+              Array.isArray(value) && value
+                ? value.filter((u) => u.trim() !== "").join(", ")
+                : displayValue;
 
-          displayValue =
-            Array.isArray(value) && value
-              ? value.filter((u) => u.trim() !== "").join(", ")
-              : displayValue;
+            if (field.label === "URL") {
+              const urls = Array.isArray(value) ? value : [value];
+              const validUrls = urls.filter((u) => u.trim() !== "");
 
-          if (field.label === "URL") {
-            const urls = Array.isArray(value) ? value : [value];
-            const validUrls = urls.filter((u) => u.trim() !== "");
-
-            return (
-              <div
-                key={field.key}
-                className="flex justify-between border-b py-1"
-              >
-                <span className="font-semibold">
-                  {field?.label ?? field.key}
-                </span>
-                <div className="flex flex-wrap gap-2">
-                  {validUrls.map((url, index) => (
-                    <a
-                      key={index}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 underline"
-                    >
-                      link-{index + 1}
-                    </a>
-                  ))}
+              return (
+                <div
+                  key={field.key}
+                  className="flex justify-between border-b py-1"
+                >
+                  <span className="font-semibold">
+                    {field?.label ?? field.key}
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {validUrls.map((url, index) => (
+                      <a
+                        key={index}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        link-{index + 1}
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          } else {
-            return (
-              <div
-                key={field.key}
-                className="flex justify-between border-b py-1"
-              >
-                <span className="font-semibold">
-                  {field?.label ?? field.key}
-                </span>
-                <span>{String(displayValue)}</span>
-              </div>
-            );
-          }
-        })}
-        {staffState.admin && (
-          <LinkButtonGroup
-            reset={{
-              text: "編集",
-              onClick: () => editOnClick(),
-            }}
-            deny={{
-              text: "削除",
-              onClick: () => deleteOnClick(),
-            }}
-          />
-        )}
-      </div>
+              );
+            } else {
+              return (
+                <div
+                  key={field.key}
+                  className="flex justify-between border-b py-1"
+                >
+                  <span className="font-semibold">
+                    {field?.label ?? field.key}
+                  </span>
+                  <span>{String(displayValue)}</span>
+                </div>
+              );
+            }
+          })}
+          {staffState.admin && (
+            <LinkButtonGroup
+              reset={{
+                text: "編集",
+                onClick: () => editOnClick(),
+              }}
+              deny={{
+                text: "削除",
+                onClick: () => deleteOnClick(),
+              }}
+            />
+          )}
+        </div>
+      )}
     </Modal>
   );
 };

@@ -39,7 +39,8 @@ const TableContainer = <K extends keyof FormTypeMap>({
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const { items, readItems, uploadFile, downloadFile } = contextState;
+  const { items, readItems, uploadFile, downloadFile, isLoading } =
+    contextState;
 
   const [tableData, setTableData] = useState<any[]>(items);
 
@@ -91,6 +92,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
         detailLink={modelType ? ModelRouteMap[modelType] : ""}
         rowSpacing={rowSpacing}
         itemsPerPage={10}
+        isLoading={isLoading}
       />
     </div>
   );
