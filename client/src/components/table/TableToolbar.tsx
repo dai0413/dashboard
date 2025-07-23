@@ -14,6 +14,7 @@ import { ModelType } from "../../types/models";
 import { useEffect, useRef, useState } from "react";
 import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
+import { DropDownMenu } from "../ui";
 
 type TableToolbarProps = {
   rowSpacing: "wide" | "narrow";
@@ -78,6 +79,19 @@ const TableToolbar = ({
     await downloadFile();
     SetIsFolderOpen(false);
   };
+
+  const menu = [
+    <label>
+      Upload
+      <input
+        type="file"
+        accept=".csv"
+        className="hidden"
+        onChange={handleUpload}
+      />
+    </label>,
+    <button onClick={handleDownload}>Download</button>,
+  ];
 
   return (
     <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
@@ -151,31 +165,7 @@ const TableToolbar = ({
                 <span className="hidden md:inline">CSV</span>
               </button>
 
-              {isFolderOpen && (
-                <div className="absolute right-0 mt-2 z-15 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                  <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-                    <li>
-                      <label className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer">
-                        Upload
-                        <input
-                          type="file"
-                          accept=".csv"
-                          className="hidden"
-                          onChange={handleUpload}
-                        />
-                      </label>
-                    </li>
-                    <li>
-                      <button
-                        onClick={handleDownload}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                      >
-                        Download
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
+              {isFolderOpen && <DropDownMenu menuItems={menu} />}
             </div>
           )}
         </div>
