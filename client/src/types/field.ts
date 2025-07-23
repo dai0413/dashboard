@@ -1,4 +1,6 @@
-export type FilterOperator = "equals" | "contains" | "gte" | "lte";
+import { operatorOptions } from "../context/options-provider";
+
+export type FilterOperator = (typeof operatorOptions)[number]["key"];
 
 // 共通の基本型
 type BaseField = {

@@ -48,12 +48,15 @@ const FieldRow = ({
         defaultOption="-- 項目を選択 --"
       />
 
-      <FilterFields
-        type={filterCondition.type}
-        value={filterCondition.value ? filterCondition.value : ""}
-        onChange={handleFieldValue}
-        options={valueOptions}
-      />
+      {filterCondition.operator !== "is-empty" &&
+        filterCondition.operator !== "is-not-empty" && (
+          <FilterFields
+            type={filterCondition.type}
+            value={filterCondition.value ? filterCondition.value : ""}
+            onChange={handleFieldValue}
+            options={valueOptions}
+          />
+        )}
 
       <SelectField
         type={"text"}
