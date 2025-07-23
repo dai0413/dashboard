@@ -46,12 +46,14 @@ const dateValidation = async (id, newData) => {
 
 const getAllTransfer = async (req, res) => {
   let limit = parseInt(req.query.limit, 10);
+  const player = req.query.player ? req.query.player : null;
 
   if (isNaN(limit) || limit <= 0) {
     limit = undefined;
   }
 
-  let query = Transfer.find({}).sort({ doa: -1 });
+  const condition = player ? { player: player } : {};
+  let query = Transfer.find(condition).sort({ doa: -1 });
 
   if (limit !== undefined) {
     query = query.limit(limit);
