@@ -7,12 +7,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const {
     main: {
       alert: { success, message },
+      resetAlert,
     },
   } = useAlert();
   return (
     <div className="h-screen flex flex-col">
       <Header />
-      <Alert success={success} message={message || ""} />
+      <Alert
+        success={success}
+        message={message || ""}
+        resetAlert={resetAlert}
+      />
       <main className="flex-1 overflow-y-auto">{children}</main>
       <Footer />
     </div>

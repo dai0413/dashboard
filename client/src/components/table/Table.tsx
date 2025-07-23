@@ -69,7 +69,7 @@ const Table = <T extends Record<string, any>>({
         <thead className="sticky top-0 bg-gray-200 z-10">
           <tr className="bg-gray-200">
             {headers.map((header) => (
-              <th key={header.field} className="px-4 py-2 border">
+              <th scope="col" key={header.field} className="px-4 py-2 border">
                 {header.label}
               </th>
             ))}
@@ -77,7 +77,7 @@ const Table = <T extends Record<string, any>>({
             {form && <th className="bg-gray-200">追加</th>}
           </tr>
         </thead>
-        <tbody>
+        <tbody aria-busy={isLoading}>
           {isLoading
             ? // 読み込み中のスケルトン行（5行分を仮で表示）
               [...Array(itemsPerPage)].map((_, i) => (
@@ -140,7 +140,7 @@ const Table = <T extends Record<string, any>>({
                     );
                   })}
                   {detail && (
-                    <td className="cursor-pointer px-4 py-2 border">
+                    <td className="cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
                       <Link
                         to={`${detailLink}/${row._id}`}
                         className="text-blue-600 underline"
