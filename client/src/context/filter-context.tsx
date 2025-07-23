@@ -74,7 +74,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   const handleAddCondition = (index?: number) => {
     const { key, value, label, type, operator } = filterCondition;
 
-    if (!key || value == "") return;
+    if (!key) return;
 
     const newCondition: FilterableFieldDefinition = {
       key,
@@ -118,20 +118,33 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       filterConditions.every((cond) => {
         const itemValue = item[cond.key];
 
-        const compareValue = isLabelObject(itemValue)
-          ? itemValue.label
-          : itemValue;
+        let compareValue: string | null = "";
+
+        if (typeof itemValue === "object") {
+          if (isLabelObject(itemValue)) {
+            compareValue = itemValue.label;
+          } else {
+            compareValue = null;
+          }
+        } else {
+          compareValue = itemValue;
+        }
 
         const condVal = cond.value;
-
-        if (condVal === undefined || condVal === null) return true;
 
         switch (cond.operator) {
           case "equals":
             if (cond.type === "Date") {
-              return toDateKey(compareValue) === toDateKey(condVal);
+              if (compareValue && condVal)
+                return toDateKey(compareValue) === toDateKey(condVal);
             }
             return compareValue == condVal;
+          case "not-equal":
+            if (cond.type === "Date") {
+              if (compareValue && condVal)
+                return toDateKey(compareValue) !== toDateKey(condVal);
+            }
+            return compareValue != condVal;
 
           case "contains":
             if (
@@ -144,15 +157,37 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
           case "gte":
             if (cond.type === "Date") {
-              return new Date(compareValue) >= new Date(condVal);
+              if (compareValue && condVal)
+                return new Date(compareValue) >= new Date(condVal);
             }
             return Number(compareValue) >= Number(condVal);
 
           case "lte":
             if (cond.type === "Date") {
-              return new Date(compareValue) >= new Date(condVal);
+              if (compareValue && condVal)
+                return new Date(compareValue) <= new Date(condVal);
             }
             return Number(compareValue) <= Number(condVal);
+
+          case "greater":
+            return Number(compareValue) > Number(condVal);
+
+          case "less":
+            return Number(compareValue) < Number(condVal);
+
+          case "is-empty":
+            return (
+              compareValue === null ||
+              compareValue === undefined ||
+              compareValue === ""
+            );
+
+          case "is-not-empty":
+            return (
+              compareValue !== null &&
+              compareValue !== undefined &&
+              compareValue !== ""
+            );
 
           default:
             return true;
