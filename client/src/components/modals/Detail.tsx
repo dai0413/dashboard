@@ -43,7 +43,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   const { isLoading, selected, readItem, deleteItem } = modelContext;
 
   const {
-    modal: { alert },
+    modal: { alert, resetAlert },
   } = useAlert();
 
   const { isOpen, openForm } = useForm();
@@ -76,7 +76,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
   return (
     <Modal isOpen={true} onClose={() => navigate(closeLink)}>
-      <Alert success={alert?.success || false} message={alert?.message} />
+      <Alert
+        success={alert?.success || false}
+        message={alert?.message}
+        resetAlert={resetAlert}
+      />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
       {isLoading || !selected ? (
         <SkeletonFieldList rows={displayableField.length} />

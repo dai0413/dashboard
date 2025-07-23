@@ -280,7 +280,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   } = useForm<T>();
 
   const {
-    modal: { alert },
+    modal: { alert, resetAlert },
   } = useAlert();
 
   const { accessToken } = useAuth();
@@ -300,7 +300,11 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   return (
     <Modal isOpen={isOpen} onClose={closeForm}>
-      <Alert success={alert?.success || false} message={alert?.message} />
+      <Alert
+        success={alert?.success || false}
+        message={alert?.message}
+        resetAlert={resetAlert}
+      />
       <h3 className="text-xl font-semibold text-gray-700 mb-4">
         {newData ? "新規データ作成" : "既存データ編集"}
       </h3>

@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
-import { ResponseStatus } from "../../types/types";
 
-const Alert = ({ success, message }: ResponseStatus) => {
+type AlertProps = {
+  success: boolean | null;
+  message?: string;
+  errors?: Record<string, string[]>;
+  resetAlert: () => void;
+};
+
+const Alert = ({ success, message, resetAlert }: AlertProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -10,6 +16,7 @@ const Alert = ({ success, message }: ResponseStatus) => {
 
       const timer = setTimeout(() => {
         setIsOpen(false);
+        resetAlert();
       }, 3000); // 3秒後に閉じる
 
       return () => clearTimeout(timer); // クリーンアップ
@@ -34,7 +41,10 @@ const Alert = ({ success, message }: ResponseStatus) => {
         <strong className="font-bold">{message}</strong>
         <span
           className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            resetAlert();
+          }}
         >
           <svg
             className={`fill-current h-6 w-6 ${iconColor}`}
