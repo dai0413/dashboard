@@ -1,6 +1,6 @@
-import { TableContainer } from "../components/table";
-import { useInjury } from "../context/models/injury-context";
-import { ModelType } from "../types/models";
+import { TableContainer } from "../../components/table";
+import { useInjury } from "../../context/models/injury-context";
+import { ModelType } from "../../types/models";
 
 const Injury = () => {
   const injuryContext = useInjury();

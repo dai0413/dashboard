@@ -9,10 +9,10 @@ import { Layout } from "./components/layout";
 import { PrivateRoute } from "./components/routes";
 
 import Top from "./pages/Top";
-import Player from "./pages/Player";
-import Transfer from "./pages/Transfer";
-import Injury from "./pages/Injury";
-import Team from "./pages/Team";
+import Player from "./pages/ModelTable/Player";
+import Transfer from "./pages/ModelTable/Transfer";
+import Injury from "./pages/ModelTable/Injury";
+import Team from "./pages/ModelTable/Team";
 import Login from "./pages/Login";
 import Me from "./pages/Me";
 import { SortProvider } from "./context/sort-context";

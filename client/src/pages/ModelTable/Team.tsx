@@ -1,6 +1,6 @@
-import { TableContainer } from "../components/table";
-import { useTeam } from "../context/models/team-context";
-import { ModelType } from "../types/models";
+import { TableContainer } from "../../components/table";
+import { useTeam } from "../../context/models/team-context";
+import { ModelType } from "../../types/models";
 
 const Team = () => {
   const teamContext = useTeam();

@@ -1,6 +1,6 @@
-import { TableContainer } from "../components/table";
-import { usePlayer } from "../context/models/player-context";
-import { ModelType } from "../types/models";
+import { TableContainer } from "../../components/table";
+import { usePlayer } from "../../context/models/player-context";
+import { ModelType } from "../../types/models";
 
 const Player = () => {
   const playerContext = usePlayer();
