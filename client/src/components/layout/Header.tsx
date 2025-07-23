@@ -133,9 +133,6 @@ const Header = () => {
         </div>
       </header>
 
-      {/* ヘッダー分だけスペース確保 */}
-      <div className="h-16 sm:h-auto" />
-
       {isOpen && (
         <div className="fixed top-16 left-0 right-0 bottom-0 bg-white z-40 flex flex-col items-center justify-center">
           {DropDownMenuItems.filter((item) => item).map((item, index, arr) => (
