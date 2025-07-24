@@ -3,6 +3,8 @@ import { useAuth } from "../../context/auth-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { IconButton } from "../buttons";
+import { SPMenuItems } from "../../constants/menuItems";
 
 const Header = () => {
   const { accessToken, staffState, logout } = useAuth();
@@ -10,40 +12,6 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
-
-  const DropDownMenuItems = [
-    staffState.admin ? (
-      <Link to={APP_ROUTES.PLAYER} onClick={() => setIsOpen(false)}>
-        選手
-      </Link>
-    ) : null,
-    staffState.admin ? (
-      <Link to={APP_ROUTES.TEAM} onClick={() => setIsOpen(false)}>
-        チーム
-      </Link>
-    ) : null,
-    <Link to={APP_ROUTES.TRANSFER} onClick={() => setIsOpen(false)}>
-      移籍
-    </Link>,
-    <Link to={APP_ROUTES.INJURY} onClick={() => setIsOpen(false)}>
-      怪我
-    </Link>,
-    accessToken ? (
-      <Link to={APP_ROUTES.ME} onClick={() => setIsOpen(false)}>
-        マイページ
-      </Link>
-    ) : null,
-    accessToken ? (
-      <button onClick={logout} className="cursor-pointer">
-        ログアウト
-      </button>
-    ) : null,
-    !accessToken ? (
-      <Link to={APP_ROUTES.LOGIN} onClick={() => setIsOpen(false)}>
-        ログイン
-      </Link>
-    ) : null,
-  ];
 
   return (
     <>
@@ -138,15 +106,19 @@ const Header = () => {
 
       {isOpen && (
         <div className="fixed top-16 left-0 right-0 bottom-0 bg-white z-40 flex flex-col items-center justify-center">
-          {DropDownMenuItems.filter((item) => item).map((item, index, arr) => (
-            <div
+          {SPMenuItems.map(({ icon, text, to }, index, arr) => (
+            <IconButton
               key={index}
-              className={`text-xl text-gray-800 w-full text-center py-4 ${
+              icon={icon}
+              text={text}
+              to={to}
+              color="gray"
+              onClick={() => setIsOpen(false)}
+              direction="horizontal"
+              className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 ${
                 index !== arr.length - 1 ? "border-b border-gray-300" : ""
               }`}
-            >
-              {item}
-            </div>
+            />
           ))}
         </div>
       )}
