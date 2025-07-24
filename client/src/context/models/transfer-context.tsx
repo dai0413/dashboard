@@ -72,7 +72,6 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     const cleanedData = cleanData(formData);
-    console.log(cleanedData);
 
     try {
       const res = await api.post(API_ROUTES.TRANSFER.CREATE, cleanedData);
@@ -95,12 +94,12 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const readItems = async (limit?: number) => {
+  const readItems = async (limit?: number, player?: string) => {
     setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.TRANSFER.GET_ALL, {
-        params: { limit },
+        params: { limit, player: player },
       });
       const items = res.data.data as Transfer[];
       setItems(convert(ModelType.TRANSFER, items));
@@ -200,7 +199,6 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     key: K,
     value: TransferForm[K]
   ) => {
-    console.log("handleing", key, value);
     setFormData((prev) => {
       // 同じ値をもう一度クリック → 選択解除
       if (prev[key] === value) {
