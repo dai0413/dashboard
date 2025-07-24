@@ -2,58 +2,110 @@ import {
   PlusCircleIcon,
   ArrowUpIcon,
   ArrowDownIcon,
+  HomeIcon,
+  UserCircleIcon,
+  QueueListIcon,
+  TableCellsIcon,
+  FlagIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
+import { useNavigate } from "react-router-dom";
 
-type IconButtonProps = {
-  icon: "add" | "delete" | "edit" | "arrow-up" | "arrow-down";
+type Icon =
+  | "add"
+  | "delete"
+  | "edit"
+  | "arrow-up"
+  | "arrow-down"
+  | "home"
+  | "my-page"
+  | "transfer"
+  | "injury"
+  | "nationality";
+
+export type IconButtonProps = {
+  icon?: Icon;
+  text?: string;
   color?: keyof typeof colorMap;
   onClick?: () => void;
+  to?: string;
+  direction?: "horizontal" | "vertical";
+  className?: string;
 };
 
-const IconButton: React.FC<IconButtonProps> = ({ icon, color, onClick }) => {
+const IconButton: React.FC<IconButtonProps> = ({
+  icon,
+  text,
+  color,
+  onClick,
+  to,
+  direction = "horizontal",
+  className = "",
+}) => {
+  const navigate = useNavigate();
   const buttonColor = color ? colorMap[color].base : "primary";
-
-  const baseClass = "cursor-pointer flex items-center text-2xl";
-  const classes = `${baseClass} ${buttonColor} `;
-
   const iconClass = "w-6 h-6";
 
-  switch (icon) {
-    case "add":
-      return (
-        <button type="button" className={classes} onClick={onClick}>
-          <PlusCircleIcon className={iconClass} />
-        </button>
-      );
-    case "delete":
-      return (
-        <button type="button" className={classes} onClick={onClick}>
-          <XMarkIcon className={iconClass} />
-        </button>
-      );
-    case "edit":
-      return (
-        <button type="button" className={classes} onClick={onClick}>
-          <PencilSquareIcon className={iconClass} />
-        </button>
-      );
-    case "arrow-up":
-      return (
-        <button type="button" className={classes} onClick={onClick}>
-          <ArrowUpIcon className={iconClass} />
-        </button>
-      );
-    case "arrow-down":
-      return (
-        <button type="button" className={classes} onClick={onClick}>
-          <ArrowDownIcon className={iconClass} />
-        </button>
-      );
-    default:
-      return <></>;
-  }
+  const layoutClass =
+    direction === "vertical"
+      ? "flex flex-col items-center justify-center"
+      : "flex flex-row items-center gap-1";
+
+  const isDisabled = className.includes("cursor-not-allowed");
+
+  const finalClassName = [
+    !isDisabled && "cursor-pointer",
+    layoutClass,
+    buttonColor,
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const textClass = className.includes("text") ? "" : "text-sm";
+
+  const IconComponent = (() => {
+    switch (icon) {
+      case "add":
+        return <PlusCircleIcon className={iconClass} />;
+      case "delete":
+        return <XMarkIcon className={iconClass} />;
+      case "edit":
+        return <PencilSquareIcon className={iconClass} />;
+      case "arrow-up":
+        return <ArrowUpIcon className={iconClass} />;
+      case "arrow-down":
+        return <ArrowDownIcon className={iconClass} />;
+      case "home":
+        return <HomeIcon className={iconClass} />;
+      case "transfer":
+        return <QueueListIcon className={iconClass} />;
+      case "injury":
+        return <TableCellsIcon className={iconClass} />;
+      case "my-page":
+        return <UserCircleIcon className={iconClass} />;
+      case "nationality":
+        return <FlagIcon className={iconClass} />;
+      default:
+        return null;
+    }
+  })();
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        onClick && onClick();
+        to && navigate(to);
+      }}
+      className={finalClassName}
+      disabled={className?.includes("cursor-not-allowed")}
+    >
+      {IconComponent}
+      {text && <span className={textClass}>{text}</span>}
+    </button>
+  );
 };
 
 export default IconButton;
