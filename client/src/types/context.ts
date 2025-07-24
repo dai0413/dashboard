@@ -16,7 +16,7 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   createItem: () => void;
   readItem: (id: string) => Promise<void>;
-  readItems: (limit?: number) => Promise<void>;
+  readItems: (limit?: number, player?: string) => Promise<void>;
   updateItem: (data: FormTypeMap[K]) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
   uploadFile?: (file: File) => Promise<void>;

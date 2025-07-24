@@ -37,11 +37,6 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<InjuryGet[]>([]);
   const [selected, setSelectedItem] = useState<InjuryGet | null>(null);
   const [formData, setFormData] = useState<InjuryForm>(initialFormData);
-
-  useEffect(() => {
-    // console.log("now form ", formData);
-  }, [formData]);
-
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.INJURY>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -70,7 +65,6 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     const cleanedData = cleanData(formData);
-    console.log(cleanedData);
 
     try {
       const res = await api.post(API_ROUTES.INJURY.CREATE, cleanedData);
@@ -93,15 +87,14 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const readItems = async (limit?: number) => {
+  const readItems = async (limit?: number, player?: string) => {
     setIsLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await api.get(API_ROUTES.INJURY.GET_ALL, {
-        params: { limit: limit },
+        params: { limit, player: player },
       });
       const items = res.data.data as Injury[];
-      console.log(convert(ModelType.INJURY, items));
       setItems(convert(ModelType.INJURY, items));
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {
@@ -202,7 +195,6 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     key: K,
     value: InjuryForm[K]
   ) => {
-    console.log("handleing", key, value);
     setFormData((prev) => {
       // 同じ値をもう一度クリック → 選択解除
       if (prev[key] === value) {
