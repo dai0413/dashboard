@@ -48,17 +48,10 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
   >(defaultValue.sortConditions);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
 
-  const initializeSort = (
-    sortableField: SortableFieldDefinition[],
-    force = false
-  ): void => {
+  const initializeSort = (sortableField: SortableFieldDefinition[]): void => {
     const sortConditions = sortableField.map((fie) => ({ ...fie, asc: null }));
 
-    setSortConditions((prev: SortableFieldDefinition[]) => {
-      if (!force && prev.length > 0) return prev;
-
-      return sortConditions;
-    });
+    setSortConditions(sortConditions);
   };
 
   // ソート
@@ -107,9 +100,7 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
 
   // リセット
   const resetSort = (sortableField: SortableFieldDefinition[]): void => {
-    console.log("reset start");
-    initializeSort(sortableField, true);
-    // setData(data);
+    initializeSort(sortableField);
   };
 
   const openSort = () => setSortOpen(true);

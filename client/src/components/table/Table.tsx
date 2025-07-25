@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { isLabelObject } from "../../utils";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 export type TableProps<T> = {
   data: T[];
@@ -118,6 +119,31 @@ const Table = <T extends Record<string, any>>({
                       });
                     }
 
+                    if (header.field === "player")
+                      return (
+                        <td
+                          key={header.field}
+                          title={isObject ? cellContent.label : displayValue}
+                          className={`border px-4 py-2 
+                            ${rowSpacing === "wide" ? "h-16" : "h-8"} 
+                            ${
+                              selectedKey && row.key === selectedKey
+                                ? "bg-blue-100"
+                                : ""
+                            }
+                            overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]
+                            hover:border-blue-500 hover:bg-blue-50 transition duration-150
+                          `}
+                        >
+                          <Link
+                            to={`${APP_ROUTES.PLAYER_SUMMARY}/${cellContent.id}`}
+                            className="hover:text-blue-600 hover:underline"
+                          >
+                            {isObject ? cellContent.label : displayValue}
+                          </Link>
+                        </td>
+                      );
+
                     return (
                       <td
                         key={header.field}
@@ -132,10 +158,7 @@ const Table = <T extends Record<string, any>>({
                       overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]
                       `}
                       >
-                        {isObject
-                          ? // <a href={""}>{cellContent.label}</a>
-                            cellContent.label
-                          : displayValue}
+                        {isObject ? cellContent.label : displayValue}
                       </td>
                     );
                   })}
