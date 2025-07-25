@@ -18,13 +18,14 @@ import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { fieldDefinition } from "../../lib/model-fields";
 import { useFilter } from "../../context/filter-context";
-import { useForm } from "../../context/form-context";
 
 type TableContainerProps<K extends keyof FormTypeMap> = {
-  title: string;
+  title?: string;
   headers: TableHeader[];
   contextState: ModelContext<K>;
   modelType?: ModelType | null;
+  filterField?: FilterableFieldDefinition[];
+  sortField?: SortableFieldDefinition[];
 };
 
 const TableContainer = <K extends keyof FormTypeMap>({
@@ -32,15 +33,15 @@ const TableContainer = <K extends keyof FormTypeMap>({
   headers,
   contextState,
   modelType,
+  filterField,
+  sortField,
 }: TableContainerProps<K>) => {
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
-  const { isOpen } = useForm();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const { items, readItems, uploadFile, downloadFile, isLoading } =
-    contextState;
+  const { items, uploadFile, downloadFile, isLoading } = contextState;
 
   const [tableData, setTableData] = useState<any[]>(items);
 
@@ -53,28 +54,30 @@ const TableContainer = <K extends keyof FormTypeMap>({
   };
 
   useEffect(() => {
-    readItems();
-  }, [isOpen]);
-
-  useEffect(() => {
     setTableData(items);
   }, [items]);
 
-  const filterableField = modelType
+  const filterableField = filterField
+    ? filterField
+    : modelType
     ? (fieldDefinition[modelType].filter(
         isFilterable
       ) as FilterableFieldDefinition[])
     : [];
 
-  const sortableField = modelType
+  const sortableField = sortField
+    ? sortField
+    : modelType
     ? (fieldDefinition[modelType].filter(
         isSortable
       ) as SortableFieldDefinition[])
     : [];
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 max-w-7xl w-full mx-auto">
-      <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
+    <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
+      {title && (
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
+      )}
 
       <Filter filterableField={filterableField} onApply={handleApplyFilter} />
       <Sort sortableField={sortableField} onApply={handleApplyFilter} />
