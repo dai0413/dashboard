@@ -20,7 +20,7 @@ import { InjuryProvider } from "./context/models/injury-context";
 import { TeamProvider } from "./context/models/team-context";
 import { TopPageProvider } from "./context/top-page-context";
 
-import { ModelTable, ModelDetail } from "./routes";
+import { ModelTable, ModelDetail, Summary } from "./routes";
 
 const App: React.FC = () => {
   return (
@@ -39,6 +39,7 @@ const App: React.FC = () => {
                             <Routes>
                               {ModelTable}
                               {ModelDetail}
+                              {Summary}
                               <Route
                                 path={APP_ROUTES.HOME}
                                 element={
