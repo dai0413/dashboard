@@ -6,4 +6,6 @@ export const APP_ROUTES = {
   TEAM: "/team",
   LOGIN: "/login",
   ME: "/me",
+
+  PLAYER_SUMMARY: "/player-summary",
 };
