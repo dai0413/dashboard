@@ -63,7 +63,7 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
 
   useEffect(() => {
     initializeSort(sortableField);
-  }, [sortOpen]);
+  }, [sortableField]);
 
   const selectingSortConditions = sortConditions.filter(
     (cond) => cond.asc !== null
