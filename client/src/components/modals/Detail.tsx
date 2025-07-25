@@ -32,7 +32,7 @@ type DetailModalProps<K extends keyof FormTypeMap> = {
 };
 
 const DetailModal = <K extends keyof FormTypeMap>({
-  closeLink,
+  // closeLink,
   modelType,
   modelContext,
   title,
@@ -75,7 +75,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   };
 
   return (
-    <Modal isOpen={true} onClose={() => navigate(closeLink)}>
+    <Modal isOpen={true} onClose={() => navigate(-1)}>
       <Alert
         success={alert?.success || false}
         message={alert?.message}
