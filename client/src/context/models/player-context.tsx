@@ -61,6 +61,10 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
+  const startNewData = (item?: Partial<PlayerForm>) => {
+    item ? setFormData(item) : setFormData({});
+  };
+
   const startEdit = (item?: PlayerGet) => {
     if (item) {
       setFormData(convertGettedToForm(ModelType.PLAYER, item));
@@ -301,6 +305,7 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
     setSelected,
     startEdit,
+    startNewData,
 
     createItem,
     readItem,

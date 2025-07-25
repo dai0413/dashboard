@@ -10,27 +10,29 @@ import { PlusCircleIcon, FolderPlusIcon } from "@heroicons/react/24/solid";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 import { useForm } from "../../context/form-context";
-import { ModelType } from "../../types/models";
+import { FormTypeMap, ModelType } from "../../types/models";
 import { useEffect, useRef, useState } from "react";
 import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 
-type TableToolbarProps = {
+type TableToolbarProps<K extends keyof FormTypeMap> = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<void>;
   downloadFile?: () => Promise<void>;
+  formInitialData?: Partial<FormTypeMap[K]>;
 };
 
-const TableToolbar = ({
+const TableToolbar = <K extends keyof FormTypeMap>({
   rowSpacing,
   setRowSpacing,
   modelType,
   uploadFile,
   downloadFile,
-}: TableToolbarProps) => {
+  formInitialData,
+}: TableToolbarProps<K>) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
   const { openForm } = useForm();
@@ -146,7 +148,9 @@ const TableToolbar = ({
         <div className="flex items-center gap-x-4">
           {/* 右側：新規追加ボタン */}
           <button
-            onClick={() => openForm(true, modelType || null)}
+            onClick={() =>
+              openForm(true, modelType || null, undefined, formInitialData)
+            }
             className="cursor-pointer flex items-center gap-x-2 text-blue-500"
           >
             <PlusCircleIcon className="w-8 h-8" />
