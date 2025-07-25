@@ -16,7 +16,8 @@ type FormContextValue<T extends keyof FormTypeMap> = {
   openForm: (
     newData: boolean,
     model: T | null,
-    item?: GettedModelDataMap[T]
+    editItem?: GettedModelDataMap[T],
+    initialFormData?: Partial<FormTypeMap[T]>
   ) => void;
   closeForm: () => void;
 
@@ -80,13 +81,18 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const openForm = (
     newData: boolean,
     model: T | null,
-    item?: GettedModelDataMap[T]
+    editItem?: GettedModelDataMap[T],
+    initialFormData?: object
   ) => {
     if (newData) {
       setNewData(true);
+
+      model &&
+        initialFormData &&
+        modelContextMap[model].startNewData(initialFormData);
     } else {
       setNewData(false);
-      model ? modelContextMap[model].startEdit(item) : () => {};
+      model ? modelContextMap[model].startEdit(editItem) : () => {};
     }
     setIsOpen(true);
     setModelType(model);

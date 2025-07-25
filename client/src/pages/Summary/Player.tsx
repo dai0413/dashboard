@@ -32,20 +32,15 @@ const Player = () => {
   const [selectedTab, setSelectedTab] = useState("transfer");
 
   const { selected, readItem, isLoading } = usePlayer();
-  const { items, readItems: readTransfers } = useTransfer();
+  const { readItems: readTransfers } = useTransfer();
   const { readItems: readInjuries } = useInjury();
 
   useEffect(() => {
     if (!id) return;
-    console.log(id);
     readItem(id);
     readTransfers(undefined, id);
     readInjuries(undefined, id);
   }, [id]);
-
-  // useEffect(() => {
-  //   console.log("updated items", items);
-  // }, [items]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
@@ -154,6 +149,7 @@ const Player = () => {
             contextState={transferContext}
             filterField={filterableField}
             sortField={sortField}
+            formInitialData={{ player: id }}
           />
         )}
 
@@ -169,6 +165,7 @@ const Player = () => {
             contextState={injuryContext}
             filterField={injuryOptions.filterableField}
             sortField={injuryOptions.sortField}
+            formInitialData={{ player: id }}
           />
         )}
       </div>

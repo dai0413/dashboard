@@ -61,6 +61,10 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
+  const startNewData = (item?: Partial<TransferForm>) => {
+    item ? setFormData(item) : setFormData({});
+  };
+
   const startEdit = (item?: TransferGet) => {
     if (item) {
       setFormData(convertGettedToForm(ModelType.TRANSFER, item));
@@ -250,6 +254,7 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
 
     setSelected,
     startEdit,
+    startNewData,
 
     createItem,
     readItem,

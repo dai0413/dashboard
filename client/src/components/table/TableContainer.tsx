@@ -26,6 +26,7 @@ type TableContainerProps<K extends keyof FormTypeMap> = {
   modelType?: ModelType | null;
   filterField?: FilterableFieldDefinition[];
   sortField?: SortableFieldDefinition[];
+  formInitialData?: Partial<FormTypeMap[K]>;
 };
 
 const TableContainer = <K extends keyof FormTypeMap>({
@@ -35,6 +36,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
   modelType,
   filterField,
   sortField,
+  formInitialData,
 }: TableContainerProps<K>) => {
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
@@ -87,6 +89,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
         modelType={modelType}
         uploadFile={uploadFile}
         downloadFile={downloadFile}
+        formInitialData={formInitialData}
       />
       <Table
         headers={headers}

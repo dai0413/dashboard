@@ -8,6 +8,7 @@ export const getDefaultValue = (initialFormData: any) => ({
   resetFormData: () => {},
 
   formSteps: [],
+  startNewData: () => {},
   startEdit: () => {},
   // setFormSteps: () => {},
 

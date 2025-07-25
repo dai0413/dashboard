@@ -54,6 +54,10 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
+  const startNewData = (item?: Partial<InjuryForm>) => {
+    item ? setFormData(item) : setFormData({});
+  };
+
   const startEdit = (item?: InjuryGet) => {
     if (item) {
       setFormData(convertGettedToForm(ModelType.INJURY, item));
@@ -246,6 +250,7 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
 
     setSelected,
     startEdit,
+    startNewData,
 
     createItem,
     readItem,

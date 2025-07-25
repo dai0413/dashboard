@@ -54,6 +54,10 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     return cleanedData;
   };
 
+  const startNewData = (item?: Partial<TeamForm>) => {
+    item ? setFormData(item) : setFormData({});
+  };
+
   const startEdit = (item?: TeamGet) => {
     if (item) {
       setFormData(convertGettedToForm(ModelType.TEAM, item));
@@ -263,6 +267,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
 
     setSelected,
     startEdit,
+    startNewData,
 
     createItem,
     readItem,
