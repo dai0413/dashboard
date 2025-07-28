@@ -7,6 +7,11 @@ import {
   QueueListIcon,
   TableCellsIcon,
   FlagIcon,
+  UserIcon,
+  UserMinusIcon,
+  UserPlusIcon,
+  ArrowLeftStartOnRectangleIcon,
+  ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
@@ -22,7 +27,12 @@ type Icon =
   | "my-page"
   | "transfer"
   | "injury"
-  | "nationality";
+  | "nationality"
+  | "player"
+  | "transfer_in"
+  | "transfer_out"
+  | "future_in"
+  | "loan";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -87,6 +97,16 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <UserCircleIcon className={iconClass} />;
       case "nationality":
         return <FlagIcon className={iconClass} />;
+      case "transfer_in":
+        return <UserPlusIcon className={iconClass} />;
+      case "transfer_out":
+        return <UserMinusIcon className={iconClass} />;
+      case "player":
+        return <UserIcon className={iconClass} />;
+      case "loan":
+        return <ArrowLeftStartOnRectangleIcon className={iconClass} />;
+      case "future_in":
+        return <ArrowLeftEndOnRectangleIcon className={iconClass} />;
       default:
         return null;
     }
