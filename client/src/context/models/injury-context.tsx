@@ -8,7 +8,7 @@ import {
 import { useAlert } from "../alert-context";
 import { getDefaultValue } from "./initialValue.tsx/model-context";
 import { Injury, InjuryForm, InjuryGet } from "../../types/models/injury";
-import { APIError, ResponseStatus } from "../../types/types";
+import { ReadItemsParamsMap } from "../../types/api";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
@@ -19,6 +19,14 @@ import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
 import { objectIsEqual } from "../../utils/isEqual";
+import {
+  createItemBase,
+  deleteItemBase,
+  readItemBase,
+  readItemsBase,
+  updateItemBase,
+} from "../../lib/api";
+import { cleanData } from "../../utils/cleanData";
 
 const initialFormData: InjuryForm = {};
 
@@ -39,20 +47,8 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<InjuryForm>(initialFormData);
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.INJURY>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const cleanData = (data: typeof formData) => {
-    const cleanedData: any = {};
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        cleanedData[key] = value.filter((v) => v && v.trim() !== "");
-      } else {
-        cleanedData[key] = value;
-      }
-    });
-
-    return cleanedData;
-  };
+  const handleLoading = (time: "start" | "end") =>
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
 
   const startNewData = (item?: Partial<InjuryForm>) => {
     item ? setFormData(item) : setFormData({});
@@ -65,130 +61,74 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createItem = async () => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    const cleanedData = cleanData(formData);
+  const createItem = async () =>
+    createItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.INJURY.CREATE,
+      data: cleanData(formData),
+      onAfterCreate: (item: Injury) => {
+        setItems((prev) => [...prev, convert(ModelType.INJURY, item)]);
+        setFormData(initialFormData);
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-    try {
-      const res = await api.post(API_ROUTES.INJURY.CREATE, cleanedData);
-      const item = res.data.data as Injury;
-      setItems((prev) => [...prev, convert(ModelType.INJURY, item)]);
-      setFormData(initialFormData);
+  const readItems = async (params: ReadItemsParamsMap[ModelType.INJURY] = {}) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.INJURY.GET_ALL,
+      params,
+      onSuccess: (items: Injury[]) => {
+        setItems(convert(ModelType.INJURY, items));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const readItems = async (limit?: number, player?: string) => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.get(API_ROUTES.INJURY.GET_ALL, {
-        params: { limit, player: player },
-      });
-      const items = res.data.data as Injury[];
-      setItems(convert(ModelType.INJURY, items));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const readItem = async (id: string) => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.get(API_ROUTES.INJURY.DETAIL(id));
-      const transfer = res.data.data as Injury;
-      setSelectedItem(convert(ModelType.INJURY, transfer));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
+  const readItem = async (id: string) =>
+    readItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.INJURY.DETAIL(id),
+      onSuccess: (item: Injury) => {
+        setSelectedItem(convert(ModelType.INJURY, item));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
   const updateItem = async (updated: InjuryForm) => {
-    setIsLoading(true);
     if (!selected) return;
     const id = selected._id;
-    let alert: ResponseStatus = { success: false };
 
-    const cleanedData = cleanData(updated);
-
-    try {
-      const res = await api.patch(API_ROUTES.INJURY.UPDATE(id), cleanedData);
-      const updatedItem = res.data.data as Injury;
-      setItems((prev) =>
-        prev.map((t) =>
-          t._id === id ? convert(ModelType.INJURY, updatedItem) : t
-        )
-      );
-      setSelectedItem(convert(ModelType.INJURY, updatedItem));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
+    updateItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.INJURY.UPDATE(id),
+      data: updated,
+      onAfterUpdate: (updatedItem: Injury) => {
+        setItems((prev) =>
+          prev.map((t) =>
+            t._id === id ? convert(ModelType.INJURY, updatedItem) : t
+          )
+        );
+        setSelectedItem(convert(ModelType.INJURY, updatedItem));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
   };
 
-  const deleteItem = async (id: string) => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.delete(API_ROUTES.INJURY.DELETE(id));
-      setItems((prev) => prev.filter((t) => t._id !== id));
-      setSelected();
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
+  const deleteItem = async (id: string) =>
+    deleteItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.INJURY.DELETE(id),
+      onAfterDelete: () => {
+        setItems((prev) => prev.filter((t) => t._id !== id));
+        setSelected();
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);

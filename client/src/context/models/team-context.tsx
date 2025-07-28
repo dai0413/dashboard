@@ -8,7 +8,7 @@ import {
 import { useAlert } from "../alert-context";
 import { getDefaultValue } from "./initialValue.tsx/model-context";
 import { Team, TeamForm, TeamGet } from "../../types/models/team";
-import { APIError, ResponseStatus } from "../../types/types";
+import { ReadItemsParamsMap } from "../../types/api";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
@@ -19,6 +19,14 @@ import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
 import { objectIsEqual } from "../../utils/isEqual";
+import {
+  createItemBase,
+  deleteItemBase,
+  readItemBase,
+  readItemsBase,
+  updateItemBase,
+} from "../../lib/api";
+import { cleanData } from "../../utils/cleanData";
 
 const initialFormData: TeamForm = {};
 
@@ -39,20 +47,8 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<TeamForm>(initialFormData);
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.TEAM>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const cleanData = (data: typeof formData) => {
-    const cleanedData: any = {};
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        cleanedData[key] = value.filter((v) => v && v.trim() !== "");
-      } else {
-        cleanedData[key] = value;
-      }
-    });
-
-    return cleanedData;
-  };
+  const handleLoading = (time: "start" | "end") =>
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
 
   const startNewData = (item?: Partial<TeamForm>) => {
     item ? setFormData(item) : setFormData({});
@@ -65,124 +61,73 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createItem = async () => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    const cleanedData = cleanData(formData);
-    console.log(cleanedData);
+  const createItem = async () =>
+    createItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TEAM.CREATE,
+      data: cleanData(formData),
+      onAfterCreate: (item: Team) => {
+        setItems((prev) => [...prev, convert(ModelType.TEAM, item)]);
+        setFormData(initialFormData);
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-    try {
-      const res = await api.post(API_ROUTES.TEAM.CREATE, cleanedData);
-      const item = res.data.data as Team;
-      setItems((prev) => [...prev, convert(ModelType.TEAM, item)]);
-      setFormData(initialFormData);
+  const readItems = async (params: ReadItemsParamsMap[ModelType.TEAM] = {}) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TEAM.GET_ALL,
+      params,
+      onSuccess: (items: Team[]) => {
+        setItems(convert(ModelType.TEAM, items));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
+  const readItem = async (id: string) =>
+    readItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TEAM.DETAIL(id),
+      onSuccess: (item: Team) => {
+        setSelectedItem(convert(ModelType.TEAM, item));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const readItems = async () => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.get(API_ROUTES.TEAM.GET_ALL);
-      const items = res.data.data as Team[];
-      setItems(convert(ModelType.TEAM, items));
-
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const readItem = async (id: string) => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.get(API_ROUTES.TEAM.DETAIL(id));
-      const item = res.data.data as Team;
-      setSelectedItem(convert(ModelType.TEAM, item));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
+  const deleteItem = async (id: string) =>
+    deleteItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TEAM.DELETE(id),
+      onAfterDelete: () => {
+        setItems((prev) => prev.filter((t) => t._id !== id));
+        setSelected();
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
   const updateItem = async (updated: TeamForm) => {
-    setIsLoading(true);
     if (!selected) return;
     const id = selected._id;
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.patch(API_ROUTES.TEAM.UPDATE(id), updated);
-      const updatedItem = res.data.data as Team;
-      setItems((prev) =>
-        prev.map((t) =>
-          t._id === id ? convert(ModelType.TEAM, updatedItem) : t
-        )
-      );
-      setSelectedItem(convert(ModelType.TEAM, updatedItem));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
 
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const deleteItem = async (id: string) => {
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.delete(API_ROUTES.TEAM.DELETE(id));
-      setItems((prev) => prev.filter((t) => t._id !== id));
-      setSelected();
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-    }
+    updateItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TEAM.UPDATE(id),
+      data: updated,
+      onAfterUpdate: (updatedItem: Team) => {
+        setItems((prev) =>
+          prev.map((t) =>
+            t._id === id ? convert(ModelType.TEAM, updatedItem) : t
+          )
+        );
+        setSelectedItem(convert(ModelType.TEAM, updatedItem));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
   };
 
   const downloadFile = async () => {

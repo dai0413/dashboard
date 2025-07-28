@@ -1,5 +1,6 @@
 import { GettedModelDataMap, FormTypeMap } from "../types/models";
 import { FormStep } from "./form";
+import { ReadItemParams } from "./types";
 
 export type ModelContext<K extends keyof FormTypeMap> = {
   items: GettedModelDataMap[K][];
@@ -17,7 +18,7 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   createItem: () => void;
   readItem: (id: string) => Promise<void>;
-  readItems: (limit?: number, player?: string) => Promise<void>;
+  readItems: (params: ReadItemParams) => Promise<void>;
   updateItem: (data: FormTypeMap[K]) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
   uploadFile?: (file: File) => Promise<void>;

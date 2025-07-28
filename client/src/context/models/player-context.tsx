@@ -8,7 +8,7 @@ import {
 import { useAlert } from "../alert-context";
 import { getDefaultValue } from "./initialValue.tsx/model-context";
 import { Player, PlayerForm, PlayerGet } from "../../types/models/player";
-import { APIError, ResponseStatus } from "../../types/types";
+import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
@@ -19,6 +19,14 @@ import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
 import { objectIsEqual } from "../../utils/isEqual";
+import {
+  createItemBase,
+  deleteItemBase,
+  readItemBase,
+  readItemsBase,
+  updateItemBase,
+} from "../../lib/api";
+import { cleanData } from "../../utils/cleanData";
 
 const initialFormData: PlayerForm = {};
 
@@ -34,32 +42,13 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
   } = useAlert();
 
   const api = useApi();
-
   const [items, setItems] = useState<PlayerGet[]>([]);
-
   const [selected, setSelectedItem] = useState<PlayerGet | null>(null);
   const [formData, setFormData] = useState<PlayerForm>(initialFormData);
-
-  // useEffect(() => {
-  //   console.log("now form ", formData);
-  // }, [formData]);
-
   const [formSteps, setFormSteps] = useState<FormStep<ModelType.PLAYER>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const cleanData = (data: typeof formData) => {
-    const cleanedData: any = {};
-
-    Object.entries(data).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        cleanedData[key] = value.filter((v) => v && v.trim() !== "");
-      } else {
-        cleanedData[key] = value;
-      }
-    });
-
-    return cleanedData;
-  };
+  const handleLoading = (time: "start" | "end") =>
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
 
   const startNewData = (item?: Partial<PlayerForm>) => {
     item ? setFormData(item) : setFormData({});
@@ -72,126 +61,74 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createItem = async () => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    const cleanedData = cleanData(formData);
-    // console.log(cleanedData);
+  const createItem = async () =>
+    createItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.PLAYER.CREATE,
+      data: cleanData(formData),
+      onAfterCreate: (item: Player) => {
+        setItems((prev) => [...prev, convert(ModelType.PLAYER, item)]);
+        setFormData(initialFormData);
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-    try {
-      const res = await api.post(API_ROUTES.PLAYER.CREATE, cleanedData);
-      const item = res.data.data as Player;
-      setItems((prev) => [...prev, convert(ModelType.PLAYER, item)]);
-      setFormData(initialFormData);
+  const readItems = async (params: ReadItemsParamsMap[ModelType.PLAYER] = {}) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.PLAYER.GET_ALL,
+      params,
+      onSuccess: (items: Player[]) => {
+        setItems(convert(ModelType.PLAYER, items));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const readItems = async () => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.get(API_ROUTES.PLAYER.GET_ALL);
-      const items = res.data.data as Player[];
-      setItems(convert(ModelType.PLAYER, items));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
-
-  const readItem = async (id: string) => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.get(API_ROUTES.PLAYER.DETAIL(id));
-      const item = res.data.data as Player;
-      setSelectedItem(convert(ModelType.PLAYER, item));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
+  const readItem = async (id: string) =>
+    readItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.PLAYER.DETAIL(id),
+      onSuccess: (item: Player) => {
+        setSelectedItem(convert(ModelType.PLAYER, item));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
   const updateItem = async (updated: PlayerForm) => {
-    setIsLoading(true);
     if (!selected) return;
     const id = selected._id;
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.patch(API_ROUTES.PLAYER.UPDATE(id), updated);
-      const updatedItem = res.data.data as Player;
-      setItems((prev) =>
-        prev.map((t) =>
-          t._id === id ? convert(ModelType.PLAYER, updatedItem) : t
-        )
-      );
-      setSelectedItem(convert(ModelType.PLAYER, updatedItem));
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
 
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
+    updateItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.PLAYER.UPDATE(id),
+      data: updated,
+      onAfterUpdate: (updatedItem: Player) => {
+        setItems((prev) =>
+          prev.map((t) =>
+            t._id === id ? convert(ModelType.PLAYER, updatedItem) : t
+          )
+        );
+        setSelectedItem(convert(ModelType.PLAYER, updatedItem));
+      },
+      handleLoading,
+      handleSetAlert,
+    });
   };
 
-  const deleteItem = async (id: string) => {
-    setIsLoading(true);
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await api.delete(API_ROUTES.PLAYER.DELETE(id));
-      setItems((prev) => prev.filter((t) => t._id !== id));
-      setSelected();
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-      setIsLoading(false);
-    }
-  };
+  const deleteItem = async (id: string) =>
+    deleteItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.PLAYER.DELETE(id),
+      onAfterDelete: () => {
+        setItems((prev) => prev.filter((t) => t._id !== id));
+        setSelected();
+      },
+      handleLoading,
+      handleSetAlert,
+    });
 
   const uploadFile = async (file: File) => {
     // console.log("sending in uploadFile");

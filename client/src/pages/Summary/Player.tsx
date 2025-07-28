@@ -38,8 +38,8 @@ const Player = () => {
   useEffect(() => {
     if (!id) return;
     readItem(id);
-    readTransfers(undefined, id);
-    readInjuries(undefined, id);
+    readTransfers({ player: id });
+    readInjuries({ player: id });
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
