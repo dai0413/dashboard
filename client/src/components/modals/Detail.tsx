@@ -91,7 +91,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
             let displayValue = value || "";
 
-            if (isLabelObject(value)) displayValue = value.label;
+            if (isLabelObject(value)) displayValue = value.label || "";
 
             displayValue =
               field.type === "Date" && value
@@ -105,7 +105,9 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
             if (field.label === "URL") {
               const urls = Array.isArray(value) ? value : [value];
-              const validUrls = urls.filter((u) => u.trim() !== "");
+              const validUrls = urls.filter(
+                (u) => typeof u === "string" && u.trim() !== ""
+              );
 
               return (
                 <div
