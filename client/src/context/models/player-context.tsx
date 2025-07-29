@@ -26,6 +26,13 @@ import {
   updateItemBase,
 } from "../../lib/api";
 import { objectIsEqual, cleanData } from "../../utils";
+import { fieldDefinition } from "../../lib/model-fields";
+import {
+  FilterableFieldDefinition,
+  isFilterable,
+  isSortable,
+  SortableFieldDefinition,
+} from "../../types/field";
 
 const initialFormData: PlayerForm = {};
 
@@ -231,6 +238,15 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
     return diff;
   };
+
+  const filterableField = fieldDefinition[ModelType.PLAYER].filter(
+    isFilterable
+  ) as FilterableFieldDefinition[];
+
+  const sortableField = fieldDefinition[ModelType.PLAYER].filter(
+    isSortable
+  ) as SortableFieldDefinition[];
+
   const value = {
     items,
     selected,
@@ -248,11 +264,12 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     readItems,
     updateItem,
     deleteItem,
-    uploadFile,
-    downloadFile,
 
     getDiffKeys,
     isLoading,
+
+    filterableField,
+    sortableField,
   };
 
   return (
