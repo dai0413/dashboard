@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Table from "./Table";
 import TableToolbar from "./TableToolbar";
@@ -11,7 +11,7 @@ import {
   isFilterable,
   isSortable,
 } from "../../types/field";
-import { FormTypeMap, ModelType } from "../../types/models";
+import { FormTypeMap, GettedModelDataMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
@@ -21,34 +21,51 @@ import { useFilter } from "../../context/filter-context";
 
 type TableContainerProps<K extends keyof FormTypeMap> = {
   title?: string;
+  items?: GettedModelDataMap[K][];
   headers: TableHeader[];
   contextState: ModelContext<K>;
   modelType?: ModelType | null;
   filterField?: FilterableFieldDefinition[];
   sortField?: SortableFieldDefinition[];
   formInitialData?: Partial<FormTypeMap[K]>;
+  itemsLoading?: boolean;
 };
 
 const TableContainer = <K extends keyof FormTypeMap>({
   title,
+  items,
   headers,
   contextState,
   modelType,
   filterField,
   sortField,
   formInitialData,
+  itemsLoading,
 }: TableContainerProps<K>) => {
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const { items, uploadFile, downloadFile, isLoading } = contextState;
+  const {
+    items: modelItems,
+    uploadFile,
+    downloadFile,
+    isLoading,
+  } = contextState;
 
-  const [tableData, setTableData] = useState<any[]>(items);
+  const tableItems = useMemo(() => {
+    return items ?? modelItems;
+  }, [items, modelItems]);
+
+  const tableIsLoading = useMemo(() => {
+    return itemsLoading ?? isLoading;
+  }, [itemsLoading, isLoading]);
+
+  const [tableData, setTableData] = useState<any[]>(tableItems);
 
   const handleApplyFilter = () => {
-    const filterd = handleFilter(items);
+    const filterd = handleFilter(tableItems);
     const sorted = handleSort(filterd);
     setTableData(sorted);
     closeFilter();
@@ -56,8 +73,8 @@ const TableContainer = <K extends keyof FormTypeMap>({
   };
 
   useEffect(() => {
-    setTableData(items);
-  }, [items]);
+    setTableData(tableItems);
+  }, [tableItems]);
 
   const filterableField = filterField
     ? filterField
@@ -98,7 +115,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
         detailLink={modelType ? ModelRouteMap[modelType] : ""}
         rowSpacing={rowSpacing}
         itemsPerPage={10}
-        isLoading={isLoading}
+        isLoading={tableIsLoading}
       />
     </div>
   );
