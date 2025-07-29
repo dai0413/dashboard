@@ -30,6 +30,13 @@ import {
   updateItemBase,
 } from "../../lib/api";
 import { objectIsEqual, cleanData } from "../../utils";
+import { fieldDefinition } from "../../lib/model-fields";
+import {
+  FilterableFieldDefinition,
+  isFilterable,
+  isSortable,
+  SortableFieldDefinition,
+} from "../../types/field";
 
 const initialFormData: TransferForm = {};
 
@@ -189,6 +196,14 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
     return diff;
   };
 
+  const filterableField = fieldDefinition[ModelType.TRANSFER].filter(
+    isFilterable
+  ) as FilterableFieldDefinition[];
+
+  const sortableField = fieldDefinition[ModelType.TRANSFER].filter(
+    isSortable
+  ) as SortableFieldDefinition[];
+
   const value = {
     items,
     selected,
@@ -209,6 +224,9 @@ const TransferProvider = ({ children }: { children: ReactNode }) => {
 
     getDiffKeys,
     isLoading,
+
+    filterableField,
+    sortableField,
   };
 
   return (

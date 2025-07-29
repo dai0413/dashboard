@@ -26,6 +26,13 @@ import {
   readItemsBase,
   updateItemBase,
 } from "../../lib/api";
+import { fieldDefinition } from "../../lib/model-fields";
+import {
+  FilterableFieldDefinition,
+  isFilterable,
+  isSortable,
+  SortableFieldDefinition,
+} from "../../types/field";
 
 const initialFormData: InjuryForm = {};
 
@@ -179,6 +186,14 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
     return diff;
   };
 
+  const filterableField = fieldDefinition[ModelType.INJURY].filter(
+    isFilterable
+  ) as FilterableFieldDefinition[];
+
+  const sortableField = fieldDefinition[ModelType.INJURY].filter(
+    isSortable
+  ) as SortableFieldDefinition[];
+
   const value = {
     items,
     selected,
@@ -199,6 +214,9 @@ const InjuryProvider = ({ children }: { children: ReactNode }) => {
 
     getDiffKeys,
     isLoading,
+
+    filterableField,
+    sortableField,
   };
 
   return (

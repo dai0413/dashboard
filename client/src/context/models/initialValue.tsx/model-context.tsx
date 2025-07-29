@@ -20,4 +20,7 @@ export const getDefaultValue = (initialFormData: any) => ({
 
   getDiffKeys: () => [],
   isLoading: false,
+
+  filterableField: [],
+  sortableField: [],
 });

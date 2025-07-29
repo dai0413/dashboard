@@ -8,59 +8,75 @@ import { TableHeader } from "../../types/types";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
-  isFilterable,
-  isSortable,
 } from "../../types/field";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
-import { fieldDefinition } from "../../lib/model-fields";
 import { useFilter } from "../../context/filter-context";
 
-type TableContainerProps<K extends keyof FormTypeMap> = {
+type Base<K extends keyof FormTypeMap> = {
   title?: string;
-  items?: GettedModelDataMap[K][];
   headers: TableHeader[];
-  contextState: ModelContext<K>;
   modelType?: ModelType | null;
-  filterField?: FilterableFieldDefinition[];
-  sortField?: SortableFieldDefinition[];
   formInitialData?: Partial<FormTypeMap[K]>;
-  itemsLoading?: boolean;
 };
 
-const TableContainer = <K extends keyof FormTypeMap>({
-  title,
-  items,
-  headers,
-  contextState,
-  modelType,
-  filterField,
-  sortField,
-  formInitialData,
-  itemsLoading,
-}: TableContainerProps<K>) => {
+type Original<K extends keyof FormTypeMap> = Base<K> & {
+  items: GettedModelDataMap[K][];
+  itemsLoading?: boolean;
+  originalFilterField?: FilterableFieldDefinition[];
+  originalSortField?: SortableFieldDefinition[];
+};
+
+type ModelBase<K extends keyof FormTypeMap> = Base<K> & {
+  contextState: ModelContext<K>;
+};
+
+type TableContainerProps<K extends keyof FormTypeMap> =
+  | Original<K>
+  | ModelBase<K>;
+
+const TableContainer = <K extends keyof FormTypeMap>(
+  props: TableContainerProps<K>
+) => {
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const {
-    items: modelItems,
-    uploadFile,
-    downloadFile,
-    isLoading,
-  } = contextState;
-
   const tableItems = useMemo(() => {
-    return items ?? modelItems;
-  }, [items, modelItems]);
+    return "items" in props
+      ? props.items
+      : "contextState" in props
+      ? props.contextState.items
+      : [];
+  }, [props]);
 
   const tableIsLoading = useMemo(() => {
-    return itemsLoading ?? isLoading;
-  }, [itemsLoading, isLoading]);
+    return "itemsLoading" in props
+      ? props.itemsLoading
+      : "contextState" in props
+      ? props.contextState.isLoading
+      : true;
+  }, [props]);
+
+  const filterField = useMemo(() => {
+    return "originalFilterField" in props
+      ? props.originalFilterField ?? []
+      : "contextState" in props
+      ? props.contextState.filterableField
+      : [];
+  }, [props]);
+
+  const sortField = useMemo(() => {
+    return "originalSortField" in props
+      ? props.originalSortField ?? []
+      : "contextState" in props
+      ? props.contextState.sortableField
+      : [];
+  }, [props]);
 
   const [tableData, setTableData] = useState<any[]>(tableItems);
 
@@ -76,43 +92,33 @@ const TableContainer = <K extends keyof FormTypeMap>({
     setTableData(tableItems);
   }, [tableItems]);
 
-  const filterableField = filterField
-    ? filterField
-    : modelType
-    ? (fieldDefinition[modelType].filter(
-        isFilterable
-      ) as FilterableFieldDefinition[])
-    : [];
-
-  const sortableField = sortField
-    ? sortField
-    : modelType
-    ? (fieldDefinition[modelType].filter(
-        isSortable
-      ) as SortableFieldDefinition[])
-    : [];
-
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
-      {title && (
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
+      {props.title && (
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          {props.title}
+        </h2>
       )}
 
-      <Filter filterableField={filterableField} onApply={handleApplyFilter} />
-      <Sort sortableField={sortableField} onApply={handleApplyFilter} />
+      <Filter filterableField={filterField} onApply={handleApplyFilter} />
+      <Sort sortableField={sortField} onApply={handleApplyFilter} />
       <TableToolbar
         rowSpacing={rowSpacing}
         setRowSpacing={setRowSpacing}
-        modelType={modelType}
-        uploadFile={uploadFile}
-        downloadFile={downloadFile}
-        formInitialData={formInitialData}
+        modelType={props.modelType}
+        uploadFile={
+          "contextState" in props ? props.contextState.uploadFile : undefined
+        }
+        downloadFile={
+          "contextState" in props ? props.contextState.downloadFile : undefined
+        }
+        formInitialData={props.formInitialData}
       />
       <Table
-        headers={headers}
+        headers={props.headers}
         data={tableData}
         detail={true}
-        detailLink={modelType ? ModelRouteMap[modelType] : ""}
+        detailLink={props.modelType ? ModelRouteMap[props.modelType] : ""}
         rowSpacing={rowSpacing}
         itemsPerPage={10}
         isLoading={tableIsLoading}

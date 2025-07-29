@@ -1,5 +1,6 @@
 import { GettedModelDataMap, FormTypeMap, ModelDataMap } from "../types/models";
 import { ReadItemsParamsMap } from "./api";
+import { FilterableFieldDefinition, SortableFieldDefinition } from "./field";
 import { FormStep } from "./form";
 
 export type ModelContext<K extends keyof FormTypeMap> = {
@@ -29,4 +30,7 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   getDiffKeys: () => string[];
   isLoading: boolean;
+
+  filterableField: FilterableFieldDefinition[];
+  sortableField: SortableFieldDefinition[];
 };

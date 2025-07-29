@@ -26,6 +26,13 @@ import {
   updateItemBase,
 } from "../../lib/api";
 import { objectIsEqual, cleanData } from "../../utils";
+import { fieldDefinition } from "../../lib/model-fields";
+import {
+  FilterableFieldDefinition,
+  isFilterable,
+  isSortable,
+  SortableFieldDefinition,
+} from "../../types/field";
 
 const initialFormData: TeamForm = {};
 
@@ -201,6 +208,14 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     return diff;
   };
 
+  const filterableField = fieldDefinition[ModelType.TEAM].filter(
+    isFilterable
+  ) as FilterableFieldDefinition[];
+
+  const sortableField = fieldDefinition[ModelType.TEAM].filter(
+    isSortable
+  ) as SortableFieldDefinition[];
+
   const value = {
     items,
     selected,
@@ -218,12 +233,13 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     readItems,
     updateItem,
     deleteItem,
-    downloadFile,
 
     getDiffKeys,
     isLoading,
-  };
 
+    filterableField,
+    sortableField,
+  };
   return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;
 };
 
