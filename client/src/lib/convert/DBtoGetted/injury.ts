@@ -18,8 +18,8 @@ export const injury = (p: Injury): InjuryGet => ({
     id: p.team?._id ?? "不明",
   },
   now_team: {
-    label: p.team ? p.team.abbr || p.team.team : "不明",
-    id: p.team?._id ?? "不明",
+    label: p.now_team ? p.now_team.abbr || p.now_team.team : "不明",
+    id: p.now_team?._id ?? "不明",
   },
   ttp: p.ttp
     ? p.ttp.map((tt) =>
