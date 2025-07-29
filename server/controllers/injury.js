@@ -10,13 +10,17 @@ const { formatInjury } = require("../utils/formatInjury");
 const getAllInjury = async (req, res) => {
   let limit = parseInt(req.query.limit, 10);
   const player = req.query.player ? req.query.player : null;
+  const now_team = req.query.now_team ? req.query.now_team : null;
 
   if (isNaN(limit) || limit <= 0) {
     limit = undefined;
   }
 
-  const condition = player ? { player: player } : {};
-  let query = Injury.find(condition).sort({ doa: -1 });
+  const condition = {};
+  if (player) {
+    condition.player = player;
+  }
+  let query = Injury.find(condition).sort({ doa: -1, _id: -1 });
 
   if (limit !== undefined) {
     query = query.limit(limit);
@@ -24,25 +28,44 @@ const getAllInjury = async (req, res) => {
 
   const injuries = await query.populate("player").populate("team");
 
-  const enrichedDocs = req.query.latest
-    ? await Promise.all(
-        injuries.map(async (injuryDoc) => {
-          const latest = injuryDoc.player
-            ? await Transfer.findOne({
-                player: injuryDoc.player._id,
-                to_team: { $ne: null },
-              })
-                .sort({ from_date: -1 })
-                .exec() // ← クエリを実行
-            : null;
+  let enrichedDocs = injuries;
 
-          injuryDoc.now_team = latest ? latest.to_team : null;
-          return injuryDoc;
-        })
-      )
-    : injuries;
+  if (req.query.latest) {
+    enrichedDocs = await Promise.all(
+      injuries.map(async (injuryDoc) => {
+        const latest = injuryDoc.player
+          ? await Transfer.findOne({
+              player: injuryDoc.player._id,
+              $or: [
+                { to_team: { $ne: null } },
+                { to_team_name: { $ne: null } },
+              ],
+            })
+              .sort({ from_date: -1, _id: -1 })
+              .exec()
+          : null;
 
-  const formatted = enrichedDocs.map(formatInjury);
+        if (latest?.to_team) {
+          injuryDoc.now_team = latest.to_team;
+        } else if (latest?.to_team_name) {
+          injuryDoc.now_team = latest.to_team_name;
+        } else {
+          injuryDoc.now_team = null;
+        }
+
+        return injuryDoc;
+      })
+    );
+
+    // injuryDoc.now_team を populate
+    await Transfer.populate(enrichedDocs, { path: "now_team" });
+  }
+
+  const filteredDocs = now_team
+    ? enrichedDocs.filter((doc) => doc.now_team?._id?.toString() === now_team)
+    : enrichedDocs;
+
+  const formatted = filteredDocs.map(formatInjury);
 
   res.status(StatusCodes.OK).json({ data: formatted });
 };
@@ -91,7 +114,7 @@ const createInjury = async (req, res) => {
     player: injuryData.player,
     to_team: { $ne: null }, // to_team が null でない
   })
-    .sort({ from_date: -1 }) // 最新
+    .sort({ from_date: -1, _id: -1 }) // 最新
     .limit(1);
 
   injuryData.now_team = now_teamObj ? now_teamObj.to_team : null;
@@ -126,7 +149,7 @@ const getInjury = async (req, res) => {
       ? await Transfer.find({
           player: injury.player._id,
           to_team: { $ne: null },
-        }).sort({ from_date: -1 })
+        }).sort({ from_date: -1, _id: -1 })
       : // .limit(1)
         null;
     console.log("latest transfers", latest);

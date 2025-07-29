@@ -6,6 +6,10 @@ const { formatTransfer } = require("../utils/formatTransfer");
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const {
+  getCurrentPlayersByTeamService,
+  getCurrentLoanPlayersByTeamService,
+} = require("../services/transferService");
 
 const validateNewTransferDates = (data) => {
   const from = data.from_date ? new Date(data.from_date) : null;
@@ -47,13 +51,52 @@ const dateValidation = async (id, newData) => {
 const getAllTransfer = async (req, res) => {
   let limit = parseInt(req.query.limit, 10);
   const player = req.query.player ? req.query.player : null;
+  const team = req.query.team ? req.query.team : null;
+  const from_team = req.query.from_team ? req.query.from_team : null;
+  const to_team = req.query.to_team ? req.query.to_team : null;
+  const form = req.query.form ? req.query.form : null;
+  const fromDateAfter = req.query.from_date_after
+    ? new Date(req.query.from_date_after)
+    : null;
+  const toDateBefore = req.query.to_date_before
+    ? new Date(req.query.to_date_before)
+    : null;
 
   if (isNaN(limit) || limit <= 0) {
     limit = undefined;
   }
 
-  const condition = player ? { player: player } : {};
-  let query = Transfer.find(condition).sort({ doa: -1 });
+  const condition = {};
+  if (player) condition.player = player;
+  if (team) {
+    condition.$or = [{ from_team: team }, { to_team: team }];
+  } else {
+    if (from_team) {
+      condition.from_team = from_team;
+    }
+    if (to_team) {
+      condition.to_team = to_team;
+    }
+  }
+
+  if (form) {
+    const isNegated = form.startsWith("!");
+    const values = (isNegated ? form.slice(1) : form).split(",");
+
+    condition.form = isNegated ? { $nin: values } : { $in: values };
+  }
+
+  // from_date の下限指定
+  if (fromDateAfter) {
+    condition.from_date = { $gte: fromDateAfter };
+  }
+
+  // to_date の上限指定
+  if (toDateBefore) {
+    condition.to_date = { $lte: toDateBefore };
+  }
+
+  let query = Transfer.find(condition).sort({ doa: -1, _id: -1 });
 
   if (limit !== undefined) {
     query = query.limit(limit);
@@ -238,10 +281,31 @@ const deleteTransfer = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
+const getCurrentPlayersByTeam = async (req, res) => {
+  const teamId = req.params.teamId;
+  const from_date_from = req.query.from_date_from;
+  const from_date_to = req.query.from_date_to;
+
+  const result = await getCurrentPlayersByTeamService(
+    teamId,
+    from_date_from,
+    from_date_to
+  );
+  res.status(StatusCodes.OK).json({ data: result });
+};
+
+const getCurrentLoanPlayersByTeam = async (req, res) => {
+  const teamId = req.params.teamId;
+  const result = await getCurrentLoanPlayersByTeamService(teamId);
+  res.status(StatusCodes.OK).json({ data: result });
+};
+
 module.exports = {
   getAllTransfer,
   createTransfer,
   getTransfer,
   updateTransfer,
   deleteTransfer,
+  getCurrentPlayersByTeam,
+  getCurrentLoanPlayersByTeam,
 };
