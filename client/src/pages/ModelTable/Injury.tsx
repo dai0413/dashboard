@@ -9,7 +9,7 @@ const Injury = () => {
   const { isOpen } = useForm();
 
   useEffect(() => {
-    injuryContext.readItems();
+    injuryContext.readItems({});
   }, [isOpen]);
 
   return (

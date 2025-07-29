@@ -9,7 +9,7 @@ const Transfer = () => {
   const { isOpen } = useForm();
 
   useEffect(() => {
-    transferContext.readItems();
+    transferContext.readItems({});
   }, [isOpen]);
 
   return (
