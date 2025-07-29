@@ -18,7 +18,7 @@ import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
-import { objectIsEqual } from "../../utils/isEqual";
+import { objectIsEqual, cleanData } from "../../utils";
 import {
   createItemBase,
   deleteItemBase,
@@ -26,7 +26,6 @@ import {
   readItemsBase,
   updateItemBase,
 } from "../../lib/api";
-import { cleanData } from "../../utils/cleanData";
 
 const initialFormData: InjuryForm = {};
 

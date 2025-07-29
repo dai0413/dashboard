@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { ResponseStatus } from "../types/types";
+import { ResponseStatus } from "../types/api";
 
 type AlertState = {
   main: {
