@@ -6,8 +6,8 @@ type UpdateParams = {
   backendRoute: string;
   data: object;
   onAfterUpdate: (item: any) => void;
-  handleLoading: (time: "start" | "end") => void;
-  handleSetAlert: (value: ResponseStatus) => void;
+  handleLoading?: (time: "start" | "end") => void;
+  handleSetAlert?: (value: ResponseStatus) => void;
 };
 
 export const updateItemBase = async ({
@@ -18,7 +18,7 @@ export const updateItemBase = async ({
   handleLoading,
   handleSetAlert,
 }: UpdateParams) => {
-  handleLoading("start");
+  handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
     const res = await apiInstance.patch(backendRoute, data);
@@ -33,7 +33,7 @@ export const updateItemBase = async ({
       message: apiError.error?.message,
     };
   } finally {
-    handleSetAlert(alert);
-    handleLoading("end");
+    handleSetAlert && handleSetAlert(alert);
+    handleLoading && handleLoading("end");
   }
 };
