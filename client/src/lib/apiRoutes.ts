@@ -27,6 +27,10 @@ export const API_ROUTES = {
     DETAIL: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
+    CURRENT_PLAYERS_BY_TEAM: (teamId: string | number) =>
+      `${API_BASE_URL}/transfer/current-players/${teamId}`,
+    CURRENT_LOANS_BY_TEAM: (teamId: string | number) =>
+      `${API_BASE_URL}/transfer/current-loans/${teamId}`,
   },
   INJURY: {
     GET_ALL: `${API_BASE_URL}/injury`,

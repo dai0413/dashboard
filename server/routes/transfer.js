@@ -7,6 +7,8 @@ const {
   getTransfer,
   updateTransfer,
   deleteTransfer,
+  getCurrentPlayersByTeam,
+  getCurrentLoanPlayersByTeam,
 } = require("../controllers/transfer");
 
 router.route("/").get(getAllTransfer).post(createTransfer);
@@ -15,5 +17,7 @@ router
   .patch(updateTransfer)
   .delete(deleteTransfer)
   .get(getTransfer);
+router.route("/current-players/:teamId").get(getCurrentPlayersByTeam);
+router.route("/current-loans/:teamId").get(getCurrentLoanPlayersByTeam);
 
 module.exports = router;

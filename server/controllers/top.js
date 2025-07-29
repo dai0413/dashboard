@@ -11,8 +11,8 @@ const getTopPageData = async (req, res) => {
     limit = undefined;
   }
 
-  let transferQuery = Transfer.find({}).sort({ doa: -1 });
-  let injuryQuery = Injury.find({}).sort({ doa: -1 });
+  let transferQuery = Transfer.find({}).sort({ doa: -1, _id: -1 });
+  let injuryQuery = Injury.find({}).sort({ doa: -1, _id: -1 });
 
   if (limit !== undefined) {
     transferQuery = transferQuery.limit(limit);
