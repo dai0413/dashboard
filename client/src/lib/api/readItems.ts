@@ -7,8 +7,8 @@ type ReadItemsParams<K extends keyof ReadItemsParamsMap> = {
   params?: ReadItemsParamsMap[K];
   onSuccess: (data: any) => void;
 
-  handleLoading: (time: "start" | "end") => void;
-  handleSetAlert: (value: ResponseStatus) => void;
+  handleLoading?: (time: "start" | "end") => void;
+  handleSetAlert?: (value: ResponseStatus) => void;
 };
 
 export const readItemsBase = async <K extends keyof ReadItemsParamsMap>({
@@ -19,7 +19,7 @@ export const readItemsBase = async <K extends keyof ReadItemsParamsMap>({
   handleLoading,
   handleSetAlert,
 }: ReadItemsParams<K>) => {
-  handleLoading("start");
+  handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
     const res = await apiInstance.get(backendRoute, {
@@ -36,7 +36,7 @@ export const readItemsBase = async <K extends keyof ReadItemsParamsMap>({
       message: apiError.error?.message,
     };
   } finally {
-    handleSetAlert(alert);
-    handleLoading("end");
+    handleSetAlert && handleSetAlert(alert);
+    handleLoading && handleLoading("end");
   }
 };

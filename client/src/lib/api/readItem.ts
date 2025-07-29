@@ -6,8 +6,8 @@ type ReadItemParams = {
   backendRoute: string;
   onSuccess: (data: any) => void;
 
-  handleLoading: (time: "start" | "end") => void;
-  handleSetAlert: (value: ResponseStatus) => void;
+  handleLoading?: (time: "start" | "end") => void;
+  handleSetAlert?: (value: ResponseStatus) => void;
 };
 
 export const readItemBase = async ({
@@ -17,7 +17,7 @@ export const readItemBase = async ({
   handleLoading,
   handleSetAlert,
 }: ReadItemParams) => {
-  handleLoading("start");
+  handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
     const res = await apiInstance.get(backendRoute);
@@ -32,7 +32,7 @@ export const readItemBase = async ({
       message: apiError.error?.message,
     };
   } finally {
-    handleSetAlert(alert);
-    handleLoading("end");
+    handleSetAlert && handleSetAlert(alert);
+    handleLoading && handleLoading("end");
   }
 };

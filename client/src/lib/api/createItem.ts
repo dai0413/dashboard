@@ -6,8 +6,8 @@ type CreateParams = {
   backendRoute: string;
   data: object;
   onAfterCreate: (item: any) => void;
-  handleLoading: (time: "start" | "end") => void;
-  handleSetAlert: (value: ResponseStatus) => void;
+  handleLoading?: (time: "start" | "end") => void;
+  handleSetAlert?: (value: ResponseStatus) => void;
 };
 
 export const createItemBase = async ({
@@ -18,7 +18,7 @@ export const createItemBase = async ({
   handleLoading,
   handleSetAlert,
 }: CreateParams) => {
-  handleLoading("start");
+  handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
     const res = await apiInstance.post(backendRoute, data);
@@ -33,7 +33,7 @@ export const createItemBase = async ({
       message: apiError.error?.message,
     };
   } finally {
-    handleSetAlert(alert);
-    handleLoading("end");
+    handleSetAlert && handleSetAlert(alert);
+    handleLoading && handleLoading("end");
   }
 };

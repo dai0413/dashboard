@@ -6,8 +6,8 @@ type DeleteParams = {
   backendRoute: string;
   onAfterDelete: () => void;
 
-  handleLoading: (time: "start" | "end") => void;
-  handleSetAlert: (value: ResponseStatus) => void;
+  handleLoading?: (time: "start" | "end") => void;
+  handleSetAlert?: (value: ResponseStatus) => void;
 };
 
 export const deleteItemBase = async ({
@@ -17,7 +17,7 @@ export const deleteItemBase = async ({
   handleLoading,
   handleSetAlert,
 }: DeleteParams) => {
-  handleLoading("start");
+  handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
     const res = await apiInstance.delete(backendRoute);
@@ -32,7 +32,7 @@ export const deleteItemBase = async ({
       message: apiError.error?.message,
     };
   } finally {
-    handleSetAlert(alert);
-    handleLoading("end");
+    handleSetAlert && handleSetAlert(alert);
+    handleLoading && handleLoading("end");
   }
 };
