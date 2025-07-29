@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
-import { useTransfer } from "../../context/models/transfer-context";
-import { useInjury } from "../../context/models/injury-context";
 
 import { ModelType } from "../../types/models";
 import { TeamTabItems } from "../../constants/menuItems";
@@ -57,36 +55,20 @@ const Team = () => {
   const [injuries, setInjuries] = useState<InjuryGet[]>([]);
   const [injuriesIsLoading, setInjuriesIsLoading] = useState<boolean>(false);
 
-  const handleLoading = (
+  const isLoadingSetters = {
+    player: setPlayersIsLoading,
+    in: setInTransfersIsLoading,
+    out: setOutTransfersIsLoading,
+    loan: setOnLoanIsLoading,
+    future: setFuturePlayersIsLoading,
+    injury: setInjuriesIsLoading,
+  };
+
+  const setLoading = (
     time: "start" | "end",
-    data: "player" | "in" | "out" | "loan" | "future" | "injury"
+    data: keyof typeof isLoadingSetters
   ) => {
-    switch (data) {
-      case "player":
-        return time === "start"
-          ? setPlayersIsLoading(true)
-          : setPlayersIsLoading(false);
-      case "in":
-        return time === "start"
-          ? setInTransfersIsLoading(true)
-          : setInTransfersIsLoading(false);
-      case "out":
-        return time === "start"
-          ? setOutTransfersIsLoading(true)
-          : setOutTransfersIsLoading(false);
-      case "loan":
-        return time === "start"
-          ? setOnLoanIsLoading(true)
-          : setOnLoanIsLoading(false);
-      case "future":
-        return time === "start"
-          ? setFuturePlayersIsLoading(true)
-          : setFuturePlayersIsLoading(false);
-      case "injury":
-        return time === "start"
-          ? setInjuriesIsLoading(true)
-          : setInjuriesIsLoading(false);
-    }
+    isLoadingSetters[data](time === "start");
   };
 
   const readCurrentPlayers = (id: string) =>
@@ -97,7 +79,7 @@ const Team = () => {
       onSuccess: (items: Transfer[]) => {
         setPlayers(convert(ModelType.TRANSFER, items));
       },
-      handleLoading: (time) => handleLoading(time, "player"),
+      handleLoading: (time) => setLoading(time, "player"),
     });
 
   const readFuturePlayers = (id: string) =>
@@ -108,7 +90,7 @@ const Team = () => {
       onSuccess: (items: Transfer[]) => {
         setFuturePlayers(convert(ModelType.TRANSFER, items));
       },
-      handleLoading: (time) => handleLoading(time, "future"),
+      handleLoading: (time) => setLoading(time, "future"),
     });
 
   const readCurrentLoans = (id: string) =>
@@ -118,7 +100,7 @@ const Team = () => {
       onSuccess: (items: Transfer[]) => {
         setOnLoan(convert(ModelType.TRANSFER, items));
       },
-      handleLoading: (time) => handleLoading(time, "loan"),
+      handleLoading: (time) => setLoading(time, "loan"),
     });
 
   const readTransfers = (
@@ -131,7 +113,7 @@ const Team = () => {
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
       params,
       onSuccess,
-      handleLoading: (time) => handleLoading(time, type),
+      handleLoading: (time) => setLoading(time, type),
     });
 
   const readInjuries = (params: ReadItemsParamsMap[ModelType.INJURY]) =>
@@ -142,7 +124,7 @@ const Team = () => {
       onSuccess: (items: Injury[]) => {
         setInjuries(convert(ModelType.INJURY, items));
       },
-      handleLoading: (time) => handleLoading(time, "injury"),
+      handleLoading: (time) => setLoading(time, "injury"),
     });
 
   useEffect(() => {
@@ -165,23 +147,46 @@ const Team = () => {
     readInjuries({ latest: true, now_team: id });
   }, [id]);
 
+  useEffect(() => console.log(injuries), [injuries]);
+
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
   };
 
-  const transferContext = useTransfer();
-  const filterableField = ModelType.TRANSFER
-    ? (fieldDefinition[ModelType.TRANSFER]
-        .filter(isFilterable)
-        .filter((file) => file.key !== "player") as FilterableFieldDefinition[])
-    : [];
-  const sortField = ModelType.TRANSFER
-    ? (fieldDefinition[ModelType.TRANSFER]
-        .filter(isSortable)
-        .filter((file) => file.key !== "player") as SortableFieldDefinition[])
-    : [];
+  const inTransfersOptions = {
+    filterField: ModelType.TRANSFER
+      ? (fieldDefinition[ModelType.TRANSFER]
+          .filter(isFilterable)
+          .filter(
+            (file) => file.key !== "to_team"
+          ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.TRANSFER
+      ? (fieldDefinition[ModelType.TRANSFER]
+          .filter(isSortable)
+          .filter(
+            (file) => file.key !== "to_team"
+          ) as SortableFieldDefinition[])
+      : [],
+  };
 
-  const injuryContext = useInjury();
+  const outTransfersOptions = {
+    filterField: ModelType.TRANSFER
+      ? (fieldDefinition[ModelType.TRANSFER]
+          .filter(isFilterable)
+          .filter(
+            (file) => file.key !== "from_team"
+          ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.TRANSFER
+      ? (fieldDefinition[ModelType.TRANSFER]
+          .filter(isSortable)
+          .filter(
+            (file) => file.key !== "from_team"
+          ) as SortableFieldDefinition[])
+      : [],
+  };
+
   const injuryOptions = {
     filterableField: ModelType.INJURY
       ? (fieldDefinition[ModelType.INJURY]
@@ -269,9 +274,8 @@ const Team = () => {
             { label: "ポジション", field: "position" },
           ]}
           modelType={ModelType.TRANSFER}
-          contextState={transferContext}
-          filterField={filterableField}
-          sortField={sortField}
+          originalFilterField={inTransfersOptions.filterField}
+          originalSortField={inTransfersOptions.sortField}
           formInitialData={{ to_team: id }}
           itemsLoading={playersIsLoading}
         />
@@ -287,9 +291,8 @@ const Team = () => {
             { label: "ポジション", field: "position" },
           ]}
           modelType={ModelType.TRANSFER}
-          contextState={transferContext}
-          filterField={filterableField}
-          sortField={sortField}
+          originalFilterField={inTransfersOptions.filterField}
+          originalSortField={inTransfersOptions.sortField}
           formInitialData={{ to_team: id }}
           itemsLoading={futurePlayersIsLoading}
         />
@@ -305,9 +308,8 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           modelType={ModelType.TRANSFER}
-          contextState={transferContext}
-          filterField={filterableField}
-          sortField={sortField}
+          originalFilterField={inTransfersOptions.filterField}
+          originalSortField={inTransfersOptions.sortField}
           formInitialData={{ to_team: id }}
           itemsLoading={inTransfersIsLoading}
         />
@@ -323,9 +325,8 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           modelType={ModelType.TRANSFER}
-          contextState={transferContext}
-          filterField={filterableField}
-          sortField={sortField}
+          originalFilterField={outTransfersOptions.filterField}
+          originalSortField={outTransfersOptions.sortField}
           formInitialData={{ from_team: id }}
           itemsLoading={outTransfersIsLoading}
         />
@@ -341,9 +342,8 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           modelType={ModelType.TRANSFER}
-          contextState={transferContext}
-          filterField={filterableField}
-          sortField={sortField}
+          originalFilterField={outTransfersOptions.filterField}
+          originalSortField={outTransfersOptions.sortField}
           formInitialData={{ from_team: id }}
           itemsLoading={onLoanIsLoading}
         />
@@ -359,9 +359,8 @@ const Team = () => {
             { label: "全治", field: "ttp" },
           ]}
           modelType={ModelType.INJURY}
-          contextState={injuryContext}
-          filterField={injuryOptions.filterableField}
-          sortField={injuryOptions.sortField}
+          originalFilterField={injuryOptions.filterableField}
+          originalSortField={injuryOptions.sortField}
           formInitialData={{ team: id }}
           itemsLoading={injuriesIsLoading}
         />
