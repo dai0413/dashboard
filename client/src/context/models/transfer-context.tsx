@@ -22,7 +22,6 @@ import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
 import { steps } from "../../lib/form-steps";
 import { ModelContext } from "../../types/context";
 import { useApi } from "../api-context";
-import { objectIsEqual } from "../../utils/isEqual";
 import {
   createItemBase,
   deleteItemBase,
@@ -30,7 +29,7 @@ import {
   readItemsBase,
   updateItemBase,
 } from "../../lib/api";
-import { cleanData } from "../../utils/cleanData";
+import { objectIsEqual, cleanData } from "../../utils";
 
 const initialFormData: TransferForm = {};
 
