@@ -9,7 +9,7 @@ const Player = () => {
   const { isOpen } = useForm();
 
   useEffect(() => {
-    playerContext.readItems();
+    playerContext.readItems({});
   }, [isOpen]);
 
   return (

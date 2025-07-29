@@ -9,7 +9,7 @@ const Team = () => {
   const { isOpen } = useForm();
 
   useEffect(() => {
-    teamContext.readItems();
+    teamContext.readItems({});
   }, [isOpen]);
 
   return (
