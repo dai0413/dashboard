@@ -19,7 +19,20 @@ export type ReadItemsParamsMap = {
     limit?: number;
     player?: string;
     team?: string;
+    from_team?: string;
+    to_team?: string;
+    form?: string;
+    from_date_after?: string;
+    to_date_before?: string;
+
+    from_date_from?: string;
+    from_date_to?: string;
   };
-  [ModelType.INJURY]: { limit?: number; player?: string };
+  [ModelType.INJURY]: {
+    latest?: boolean;
+    limit?: number;
+    player?: string;
+    now_team?: string;
+  };
   [ModelType.TEAM]: {};
 };

@@ -57,3 +57,30 @@ export const PlayerTabItems: IconButtonProps[] = [
     className: "cursor-not-allowed",
   },
 ];
+
+export const TeamTabItems: IconButtonProps[] = [
+  {
+    icon: "player",
+    text: "選手",
+  },
+  {
+    icon: "future_in",
+    text: "内定",
+  },
+  {
+    icon: "transfer_in",
+    text: "加入",
+  },
+  {
+    icon: "transfer_out",
+    text: "退団",
+  },
+  {
+    icon: "loan",
+    text: "レンタル中",
+  },
+  {
+    icon: "injury",
+    text: "怪我",
+  },
+];

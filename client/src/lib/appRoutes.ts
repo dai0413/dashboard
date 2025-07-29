@@ -8,4 +8,5 @@ export const APP_ROUTES = {
   ME: "/me",
 
   PLAYER_SUMMARY: "/player-summary",
+  TEAM_SUMMARY: "/team-summary",
 };
