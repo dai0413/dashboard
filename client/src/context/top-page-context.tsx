@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { GettedModelDataMap, ModelType } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
-import { APIError, ResponseStatus } from "../types/types";
+import { APIError, ResponseStatus } from "../types/api";
 import axios from "axios";
 import { Transfer, TransferGet } from "../types/models/transfer";
 import { Injury, InjuryGet } from "../types/models/injury";

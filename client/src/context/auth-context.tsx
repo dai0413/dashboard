@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import axios from "axios";
 import { useAlert } from "./alert-context";
-import { APIError, ResponseStatus } from "../types/types";
 import { API_ROUTES } from "../lib/apiRoutes";
+import { APIError, ResponseStatus } from "../types/api";
 
 type AuthState = {
   accessToken: string | null;
