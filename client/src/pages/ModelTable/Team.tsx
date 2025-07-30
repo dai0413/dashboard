@@ -3,6 +3,7 @@ import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useTeam } from "../../context/models/team-context";
 import { ModelType } from "../../types/models";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Team = () => {
   const teamContext = useTeam();
@@ -23,6 +24,10 @@ const Team = () => {
         ]}
         contextState={teamContext}
         modelType={ModelType.TEAM}
+        summaryLinkField={{
+          field: "team",
+          to: APP_ROUTES.TEAM_SUMMARY,
+        }}
       />
     </div>
   );

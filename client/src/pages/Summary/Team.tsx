@@ -147,8 +147,6 @@ const Team = () => {
     readInjuries({ latest: true, now_team: id });
   }, [id]);
 
-  useEffect(() => console.log(injuries), [injuries]);
-
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
   };
