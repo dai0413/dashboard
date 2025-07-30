@@ -291,13 +291,17 @@ const getCurrentPlayersByTeam = async (req, res) => {
     from_date_from,
     from_date_to
   );
-  res.status(StatusCodes.OK).json({ data: result });
+
+  const formattedTransfers = result.map(formatTransfer);
+  res.status(StatusCodes.OK).json({ data: formattedTransfers });
 };
 
 const getCurrentLoanPlayersByTeam = async (req, res) => {
   const teamId = req.params.teamId;
   const result = await getCurrentLoanPlayersByTeamService(teamId);
-  res.status(StatusCodes.OK).json({ data: result });
+
+  const formattedTransfers = result.map(formatTransfer);
+  res.status(StatusCodes.OK).json({ data: formattedTransfers });
 };
 
 module.exports = {

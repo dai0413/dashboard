@@ -1,5 +1,8 @@
 const formatTransfer = (transferDoc) => {
-  const transfer = transferDoc.toObject();
+  const transfer =
+    typeof transferDoc.toObject === "function"
+      ? transferDoc.toObject()
+      : transferDoc;
 
   const { from_team_name, to_team_name, ...rest } = transfer;
 

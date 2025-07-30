@@ -46,10 +46,27 @@ const renderCell = (header: TableHeader, row: Record<string, any>) => {
     });
   }
 
-  if (header.field === "player" && isObject) {
+  if (header.field === "player" && isObject && raw.id !== "") {
     return (
       <Link
         to={`${APP_ROUTES.PLAYER_SUMMARY}/${raw.id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {raw.label}
+      </Link>
+    );
+  }
+
+  if (
+    (header.field === "from_team" ||
+      header.field === "to_team" ||
+      header.field === "team") &&
+    isObject &&
+    raw.id !== ""
+  ) {
+    return (
+      <Link
+        to={`${APP_ROUTES.TEAM_SUMMARY}/${raw.id}`}
         className="hover:text-blue-600 underline"
       >
         {raw.label}
