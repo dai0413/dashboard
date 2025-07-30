@@ -3,7 +3,7 @@ import { APP_ROUTES } from "../lib/appRoutes";
 import { Layout } from "../components/layout";
 import { PrivateRoute } from "../components/routes";
 
-import { Player } from "../pages/Summary";
+import { Player, Team } from "../pages/Summary";
 
 export const Summary = (
   <>
@@ -13,6 +13,16 @@ export const Summary = (
         <PrivateRoute>
           <Layout>
             <Player />
+          </Layout>
+        </PrivateRoute>
+      }
+    />
+    <Route
+      path={`${APP_ROUTES.TEAM_SUMMARY}/:id`}
+      element={
+        <PrivateRoute>
+          <Layout>
+            <Team />
           </Layout>
         </PrivateRoute>
       }
