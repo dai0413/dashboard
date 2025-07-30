@@ -268,6 +268,9 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     getDiffKeys,
     isLoading,
 
+    uploadFile,
+    downloadFile,
+
     filterableField,
     sortableField,
   };

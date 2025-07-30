@@ -1,5 +1,5 @@
 import { FormTypeMap } from "./models";
-import { ResponseStatus } from "./types";
+import { ResponseStatus } from "../types/api";
 
 type StepType = "form" | "confirm";
 

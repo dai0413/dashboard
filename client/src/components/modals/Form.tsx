@@ -290,8 +290,8 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   useEffect(() => {
     if (!accessToken) return;
-    readPlayers();
-    readTeams();
+    readPlayers({});
+    readTeams({});
   }, [accessToken]);
 
   const { getOptions } = useOptions();
