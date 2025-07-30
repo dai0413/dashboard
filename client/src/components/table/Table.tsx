@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TableHeader } from "../../types/types";
+import { SummaryLinkField, TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
@@ -31,7 +31,11 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
   return pages;
 }
 
-const renderCell = (header: TableHeader, row: Record<string, any>) => {
+const renderCell = (
+  header: TableHeader,
+  row: Record<string, any>,
+  summaryLinkField?: SummaryLinkField
+) => {
   const raw = row[header.field];
   const isObject = isLabelObject(raw);
   let content = raw;
@@ -44,6 +48,17 @@ const renderCell = (header: TableHeader, row: Record<string, any>) => {
       month: "2-digit",
       day: "2-digit",
     });
+  }
+
+  if (summaryLinkField && header.field === summaryLinkField.field) {
+    return (
+      <Link
+        to={`${summaryLinkField.to}/${row._id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {content}
+      </Link>
+    );
   }
 
   if (header.field === "player" && isObject && raw.id !== "") {
@@ -80,6 +95,7 @@ const renderCell = (header: TableHeader, row: Record<string, any>) => {
 export type TableProps<T> = {
   data: T[];
   headers: TableHeader[];
+  summaryLinkField?: SummaryLinkField;
   detail?: boolean;
   detailLink?: string;
   rowSpacing?: "wide" | "narrow";
@@ -93,6 +109,7 @@ export type TableProps<T> = {
 const Table = <T extends Record<string, any>>({
   data = [],
   headers = [],
+  summaryLinkField,
   detail = false,
   detailLink = "",
   rowSpacing = "narrow",
@@ -186,7 +203,7 @@ const Table = <T extends Record<string, any>>({
                       overflow-hidden text-ellipsis max-w-[200px]
                       `}
                   >
-                    {renderCell(header, row)}
+                    {renderCell(header, row, summaryLinkField)}
                   </td>
                 ))}
                 {detail && (

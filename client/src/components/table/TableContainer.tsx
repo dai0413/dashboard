@@ -4,7 +4,7 @@ import Table from "./Table";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { TableHeader } from "../../types/types";
+import { SummaryLinkField, TableHeader } from "../../types/types";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -21,6 +21,7 @@ type Base<K extends keyof FormTypeMap> = {
   headers: TableHeader[];
   modelType?: ModelType | null;
   formInitialData?: Partial<FormTypeMap[K]>;
+  summaryLinkField?: SummaryLinkField;
 };
 
 type Original<K extends keyof FormTypeMap> = Base<K> & {
@@ -122,6 +123,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         rowSpacing={rowSpacing}
         itemsPerPage={10}
         isLoading={tableIsLoading}
+        summaryLinkField={props.summaryLinkField}
       />
     </div>
   );

@@ -3,6 +3,7 @@ import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { usePlayer } from "../../context/models/player-context";
 import { ModelType } from "../../types/models";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Player = () => {
   const playerContext = usePlayer();
@@ -24,6 +25,10 @@ const Player = () => {
         ]}
         contextState={playerContext}
         modelType={ModelType.PLAYER}
+        summaryLinkField={{
+          field: "name",
+          to: APP_ROUTES.PLAYER_SUMMARY,
+        }}
       />
     </div>
   );
