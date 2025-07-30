@@ -237,6 +237,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     getDiffKeys,
     isLoading,
 
+    downloadFile,
     filterableField,
     sortableField,
   };
