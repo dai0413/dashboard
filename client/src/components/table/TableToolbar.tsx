@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
+import { isDev } from "../../utils/env";
 
 type TableToolbarProps<K extends keyof FormTypeMap> = {
   rowSpacing: "wide" | "narrow";
@@ -144,7 +145,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
         </button>
       </div>
 
-      {staffState.admin && (
+      {(staffState.admin || isDev) && (
         <div className="flex items-center gap-x-4">
           {/* 右側：新規追加ボタン */}
           <button

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "../buttons";
 import { SPMenuItems } from "../../constants/menuItems";
+import { isDev } from "../../utils/env";
 
 const Header = () => {
   const { accessToken, staffState, logout } = useAuth();
@@ -37,7 +38,7 @@ const Header = () => {
           </Link>
 
           <nav className="hidden sm:flex gap-4 items-center text-sm">
-            {staffState.admin && (
+            {(staffState.admin || isDev) && (
               <>
                 <Link to={APP_ROUTES.PLAYER} className="hover:text-gray-900">
                   選手

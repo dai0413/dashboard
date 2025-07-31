@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { Layout } from "../components/layout";
-import { PrivateRoute } from "../components/routes";
+import { wrapWithPrivateRoute } from "../components/routes";
 
 import Player from "../pages/ModelTable/Player";
 import Transfer from "../pages/ModelTable/Transfer";
@@ -12,44 +12,36 @@ export const ModelTable = (
   <>
     <Route
       path={APP_ROUTES.PLAYER}
-      element={
-        <PrivateRoute>
-          <Layout>
-            <Player />
-          </Layout>
-        </PrivateRoute>
-      }
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Player />
+        </Layout>
+      )}
     />
     <Route
       path={APP_ROUTES.TRANSFER}
-      element={
-        <PrivateRoute>
-          <Layout>
-            <Transfer />
-          </Layout>
-        </PrivateRoute>
-      }
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Transfer />
+        </Layout>
+      )}
     />
     <Route
       path={APP_ROUTES.INJURY}
-      element={
-        <PrivateRoute>
-          <Layout>
-            <Injury />
-          </Layout>
-        </PrivateRoute>
-      }
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Injury />
+        </Layout>
+      )}
     />
 
     <Route
       path={APP_ROUTES.TEAM}
-      element={
-        <PrivateRoute>
-          <Layout>
-            <Team />
-          </Layout>
-        </PrivateRoute>
-      }
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Team />
+        </Layout>
+      )}
     />
   </>
 );
