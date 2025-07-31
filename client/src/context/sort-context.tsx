@@ -56,8 +56,8 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
 
   // ソート
   const handleSort = (data: any): any => {
-    console.log("sort condition", sortConditions);
-    console.log("table data is ", data);
+    // console.log("sort condition", sortConditions);
+    // console.log("table data is ", data);
     const sorted = [...data].sort((a, b) => {
       for (const { key, asc } of sortConditions) {
         if (asc === null) continue;
