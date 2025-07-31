@@ -8,6 +8,7 @@
   - [5. 怪我(injury)](#5-怪我injury)
   - [6. 国(country)](#6-国country)
   - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
+    - [※1 team\_class の ENUM 値](#1-team_class-の-enum-値)
   - [8. 代表召集リスト(NationalCallUpList)](#8-代表召集リストnationalcalluplist)
 
 ## 1. ユーザー(user)
@@ -120,6 +121,8 @@
 ※3 AFC, UEFA, CAF, OFG, CONCACAF, CONMEBOL, FSMFA
 ※4 CAFA,UNAF,COSAFA,CFU,AFF,WAFF,SAFF,UNCAF,WAFU,CECAFA,UNIFFAC,NAFU,EAFF
 
+※iso3, name, の組み合わせユニーク
+
 ## 7. 代表試合シリーズ(NationalMatchSeries)
 
 | フィールド | 型       | null  | 注釈       | バリデーション      |
@@ -133,7 +136,17 @@
 | left_at    | 日付     | true  | 離脱日     |                     |
 | urls       | URL      | true  |            | 複数可              |
 
-※1 full,u, high school, University, youth
+### ※1 team_class の ENUM 値
+
+以下のような代表クラスを指定：
+
+- `full`（フル代表）
+- `u17` ～ `u24`（各年代別代表）
+- `high_school`（高校選抜）
+- `university`（大学選抜）
+- `youth`（ユース選抜）
+
+※country, team_class, joined_at, の組み合わせユニーク
 
 ## 8. 代表召集リスト(NationalCallUpList)
 
@@ -152,3 +165,5 @@
 | left_reason         | 文字列   | true  | 離脱理由       |                          |
 
 ※1 GK | DF | MF | FW | MF/FW
+
+※series, player, の組み合わせユニーク
