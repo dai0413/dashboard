@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { SummaryLinkField, TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
@@ -6,6 +5,7 @@ import { Link } from "react-router-dom";
 import { isLabelObject } from "../../utils";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { IconButton } from "../buttons";
+import { useEffect, useMemo, useState } from "react";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -104,6 +104,8 @@ export type TableProps<T> = {
   selectedKey?: string;
   itemsPerPage?: number;
   isLoading?: boolean;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 };
 
 const Table = <T extends Record<string, any>>({
@@ -118,15 +120,24 @@ const Table = <T extends Record<string, any>>({
   selectedKey = "",
   itemsPerPage,
   isLoading,
+  currentPage,
+  onPageChange,
 }: TableProps<T>) => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageNum, setPageNum] = useState<number>(1);
+
+  useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
+
+  const pageChange = useMemo(
+    () => (onPageChange ? onPageChange : setPageNum),
+    [onPageChange]
+  );
 
   const totalPages = itemsPerPage ? Math.ceil(data.length / itemsPerPage) : 1;
   const paginatedData = itemsPerPage
-    ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    ? data.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
     : data;
 
-  const pages = getPageNumbers(currentPage, totalPages);
+  const pages = getPageNumbers(pageNum, totalPages);
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
@@ -252,9 +263,9 @@ const Table = <T extends Record<string, any>>({
             ) : (
               <button
                 key={index}
-                onClick={() => setCurrentPage(page)}
+                onClick={() => pageChange(page)}
                 className={`px-3 py-1 border rounded ${
-                  currentPage === page ? "bg-blue-500 text-white" : "bg-white"
+                  pageNum === page ? "bg-blue-500 text-white" : "bg-white"
                 }`}
               >
                 {page}

@@ -16,6 +16,8 @@ import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { useFilter } from "../../context/filter-context";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 type Base<K extends keyof FormTypeMap> = {
   title?: string;
   headers: TableHeader[];
@@ -42,42 +44,54 @@ type TableContainerProps<K extends keyof FormTypeMap> =
 const TableContainer = <K extends keyof FormTypeMap>(
   props: TableContainerProps<K>
 ) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const query = new URLSearchParams(location.search);
+  const initialPage = Number(query.get("page")) || 1;
+
+  const [currentPage, setCurrentPage] = useState<number>(initialPage);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    navigate(`?page=${page}`, { replace: true });
+  };
+
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
 
-  const tableItems = useMemo(() => {
-    return "items" in props
-      ? props.items
-      : "contextState" in props
-      ? props.contextState.items
-      : [];
-  }, [props]);
+  let sourceItems: GettedModelDataMap[K][] = [];
+  if ("items" in props) {
+    sourceItems = props.items;
+  } else if ("contextState" in props) {
+    sourceItems = props.contextState.items;
+  }
+  const tableItems = useMemo(() => sourceItems, [sourceItems]);
 
-  const tableIsLoading = useMemo(() => {
-    return "itemsLoading" in props
-      ? props.itemsLoading
-      : "contextState" in props
-      ? props.contextState.isLoading
-      : true;
-  }, [props]);
+  let souceLoading: boolean = false;
+  if ("itemsLoading" in props) {
+    souceLoading = props.itemsLoading || false;
+  } else if ("contextState" in props) {
+    souceLoading = props.contextState.isLoading;
+  }
+  const tableIsLoading = useMemo(() => souceLoading, [souceLoading]);
 
-  const filterField = useMemo(() => {
-    return "originalFilterField" in props
-      ? props.originalFilterField ?? []
-      : "contextState" in props
-      ? props.contextState.filterableField
-      : [];
-  }, [props]);
+  let souceFilterField: FilterableFieldDefinition[] = [];
+  if ("originalFilterField" in props) {
+    souceFilterField = props.originalFilterField || [];
+  } else if ("contextState" in props) {
+    souceFilterField = props.contextState.filterableField;
+  }
+  const filterField = useMemo(() => souceFilterField, [souceFilterField]);
 
-  const sortField = useMemo(() => {
-    return "originalSortField" in props
-      ? props.originalSortField ?? []
-      : "contextState" in props
-      ? props.contextState.sortableField
-      : [];
-  }, [props]);
+  let souceSortField: SortableFieldDefinition[] = [];
+  if ("originalSortField" in props) {
+    souceSortField = props.originalSortField || [];
+  } else if ("contextState" in props) {
+    souceSortField = props.contextState.sortableField;
+  }
+  const sortField = useMemo(() => souceSortField, [souceSortField]);
 
   const [tableData, setTableData] = useState<any[]>(tableItems);
 
@@ -87,10 +101,14 @@ const TableContainer = <K extends keyof FormTypeMap>(
     setTableData(sorted);
     closeFilter();
     closeSort();
+    setCurrentPage(initialPage);
   };
 
   useEffect(() => {
-    setTableData(tableItems);
+    const filterd = handleFilter(tableItems);
+    const sorted = handleSort(filterd);
+    setTableData(sorted);
+    setCurrentPage(initialPage);
   }, [tableItems]);
 
   return (
@@ -124,6 +142,8 @@ const TableContainer = <K extends keyof FormTypeMap>(
         itemsPerPage={10}
         isLoading={tableIsLoading}
         summaryLinkField={props.summaryLinkField}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );
