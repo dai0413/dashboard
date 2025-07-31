@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { usePlayer } from "./models/player-context";
 import { useTeam } from "./models/team-context";
 import { TableHeader } from "../types/types";
@@ -124,8 +124,15 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetFilter = () => setFilters({});
 
-  const { items: players } = usePlayer();
-  const { items: teams } = useTeam();
+  const { items: players, readItems: readPlayers } = usePlayer();
+  const { items: teams, readItems: readTeams } = useTeam();
+
+  useEffect(() => {
+    (async () => {
+      await readPlayers({});
+      await readTeams({});
+    })();
+  }, []);
 
   const playerOptions = players.map((p) => ({
     label: p.name || p.en_name || "不明",

@@ -23,6 +23,8 @@ type FilterState = {
   editingIndex: number | null;
   isAdding: boolean;
   toggleAdding: () => void;
+
+  resetFilterCOnditions: () => void;
 };
 
 const defaultFilterCondition: FilterableFieldDefinition = {
@@ -54,6 +56,7 @@ const defaultValue: FilterState = {
   editingIndex: null,
   isAdding: false,
   toggleAdding: () => {},
+  resetFilterCOnditions: () => {},
 };
 
 const FilterContext = createContext<FilterState>(defaultValue);
@@ -112,6 +115,8 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setIsAdding(false);
   };
 
+  const resetFilterCOnditions = () => setFilterConditions([]);
+
   // ---------- add filter ----------
   const handleFilter = (data: any[]): any[] => {
     return data.filter((item) =>
@@ -124,7 +129,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
           if (isLabelObject(itemValue)) {
             compareValue = itemValue.label;
           } else {
-            compareValue = null;
+            compareValue = itemValue;
           }
         } else {
           compareValue = itemValue;
@@ -170,9 +175,17 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
             return Number(compareValue) <= Number(condVal);
 
           case "greater":
+            if (cond.type === "Date") {
+              if (compareValue && condVal)
+                return new Date(compareValue) > new Date(condVal);
+            }
             return Number(compareValue) > Number(condVal);
 
           case "less":
+            if (cond.type === "Date") {
+              if (compareValue && condVal)
+                return new Date(compareValue) < new Date(condVal);
+            }
             return Number(compareValue) < Number(condVal);
 
           case "is-empty":
@@ -252,6 +265,8 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     editingIndex,
     isAdding,
     toggleAdding,
+
+    resetFilterCOnditions,
   };
 
   return (
