@@ -8,7 +8,7 @@
   - [5. 怪我(injury)](#5-怪我injury)
   - [6. 国(country)](#6-国country)
   - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
-    - [※1 team\_class の ENUM 値](#1-team_class-の-enum-値)
+    - [※1 team_class の ENUM 値](#1-team_class-の-enum-値)
   - [8. 代表召集リスト(NationalCallUpList)](#8-代表召集リストnationalcalluplist)
 
 ## 1. ユーザー(user)
@@ -118,7 +118,7 @@
 
 ※1 アジア, ヨーロッパ, アフリカ, オセアニア, 北アメリカ, 南極, 南アメリカ, ミクロネシア
 ※2 中央アジア, 北ヨーロッパ, 南ヨーロッパ, 北アフリカ, ポリネシア, 南部アフリカ, カリブ海, 南極大陸, 南アメリカ大陸, 西アジア, オーストラリア大陸, 中央ヨーロッパ, 中東, 南アジア, 東ヨーロッパ, 西ヨーロッパ, 中央アメリカ, 西アフリカ, 北大西洋, 東南アジア, 東アフリカ, 中央アフリカ, 北アメリカ大陸, 中部アフリカ, 東アジア, 東部アフリカ, 南大西洋, メラネシア, インド洋および南極大陸, ミクロネシア, インド洋, 東南アフリカ, オセアニア大陸, 大西洋, 北部アフリカ
-※3 AFC, UEFA, CAF, OFG, CONCACAF, CONMEBOL, FSMFA
+※3 AFC, UEFA, CAF, OFC, CONCACAF, CONMEBOL, FSMFA
 ※4 CAFA,UNAF,COSAFA,CFU,AFF,WAFF,SAFF,UNCAF,WAFU,CECAFA,UNIFFAC,NAFU,EAFF
 
 ※iso3, name, の組み合わせユニーク
