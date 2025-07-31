@@ -1,13 +1,16 @@
 # データベース設計
 
 - [データベース設計](#データベース設計)
-  - [1. ユーザー](#1-ユーザー)
-  - [2. チーム](#2-チーム)
-  - [3. 選手](#3-選手)
-  - [4. 移籍](#4-移籍)
-  - [5. 怪我](#5-怪我)
+  - [1. ユーザー(user)](#1-ユーザーuser)
+  - [2. チーム(team)](#2-チームteam)
+  - [3. 選手(player)](#3-選手player)
+  - [4. 移籍(transfer)](#4-移籍transfer)
+  - [5. 怪我(injury)](#5-怪我injury)
+  - [6. 国(country)](#6-国country)
+  - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
+  - [8. 代表召集リスト(NationalCallUpList)](#8-代表召集リストnationalcalluplist)
 
-## 1. ユーザー
+## 1. ユーザー(user)
 
 | フィールド | 型     | null  | 注釈                       | バリデーション              |
 | ---------- | ------ | ----- | -------------------------- | --------------------------- |
@@ -19,7 +22,7 @@
 | admin      | 真偽値 | false | 管理者権限の有無           | デフォルト(false)           |
 | is_staff   | 真偽値 | false | スタッフ権限の有無         | デフォルト(false)           |
 
-## 2. チーム
+## 2. チーム(team)
 
 | フィールド  | 型     | null  | 注釈      | バリデーション |
 | ----------- | ------ | ----- | --------- | -------------- |
@@ -35,7 +38,7 @@
 
 ※1 ENUM('academy', 'club', 'college', 'high_school', 'second_team', 'third_team', 'youth')
 
-## 3. 選手
+## 3. 選手(player)
 
 | フィールド | 型     | null  | 注釈     | バリデーション |
 | ---------- | ------ | ----- | -------- | -------------- |
@@ -46,7 +49,7 @@
 
 ※name, en_name, dob いずれか一致してたら確認させる
 
-## 4. 移籍
+## 4. 移籍(transfer)
 
 | フィールド     | 型       | null  | 注釈       | バリデーション  |
 | -------------- | -------- | ----- | ---------- | --------------- |
@@ -70,7 +73,7 @@
 ※3from_team or from_team_name , to_team or to_team_name を入力
 ※from_team , from_team_name, to_team_name , player, form, from_date, to_date の組み合わせユニーク
 
-## 5. 怪我
+## 5. 怪我(injury)
 
 | フィールド   | 型       | null  | 注釈               | バリデーション          |
 | ------------ | -------- | ----- | ------------------ | ----------------------- |
@@ -95,6 +98,57 @@
 
 ※team, team_name, player, doi, dos , injured_part の組み合わせユニーク
 
-```
+## 6. 国(country)
 
-```
+| フィールド              | 型     | null  | 注釈               | バリデーション |
+| ----------------------- | ------ | ----- | ------------------ | -------------- |
+| name                    | 文字列 | false | 名前               |                |
+| en_name                 | 文字列 | true  | 英語名             |                |
+| iso3                    | 文字列 | true  | 英 3 文字コード    |                |
+| fifa_code               | 文字列 | true  | 英 3 文字コード    |                |
+| area                    | 文字列 | false | 地域               | ※1 ENUM        |
+| district                | 文字列 | false | 詳細地域           | ※2 ENUM        |
+| confederation           | 文字列 | false | 所属地域協会       | ※3 ENUM        |
+| sub_confederation       | 文字列 | false | 所属詳細地域協会   | ※4 ENUM        |
+| established_year        | 数字   | false | 協会成立年         |                |
+| fifa_member_year        | 数字   | false | FIFA 加入年        |                |
+| association_member_year | 数字   | false | 地域協会加入年     |                |
+| district_member_year    | 数字   | false | 詳細地域協会加入年 |                |
+
+※1 アジア, ヨーロッパ, アフリカ, オセアニア, 北アメリカ, 南極, 南アメリカ, ミクロネシア
+※2 中央アジア, 北ヨーロッパ, 南ヨーロッパ, 北アフリカ, ポリネシア, 南部アフリカ, カリブ海, 南極大陸, 南アメリカ大陸, 西アジア, オーストラリア大陸, 中央ヨーロッパ, 中東, 南アジア, 東ヨーロッパ, 西ヨーロッパ, 中央アメリカ, 西アフリカ, 北大西洋, 東南アジア, 東アフリカ, 中央アフリカ, 北アメリカ大陸, 中部アフリカ, 東アジア, 東部アフリカ, 南大西洋, メラネシア, インド洋および南極大陸, ミクロネシア, インド洋, 東南アフリカ, オセアニア大陸, 大西洋, 北部アフリカ
+※3 AFC, UEFA, CAF, OFG, CONCACAF, CONMEBOL, FSMFA
+※4 CAFA,UNAF,COSAFA,CFU,AFF,WAFF,SAFF,UNCAF,WAFU,CECAFA,UNIFFAC,NAFU,EAFF
+
+## 7. 代表試合シリーズ(NationalMatchSeries)
+
+| フィールド | 型       | null  | 注釈       | バリデーション      |
+| ---------- | -------- | ----- | ---------- | ------------------- |
+| name       | 文字列   | false | シリーズ名 |                     |
+| abbr       | 文字列   | true  | 略称       |                     |
+| country    | 外部キー | false | 国         | 国外部キー          |
+| team_class | 文字列   | false | 種類       | ※1 ENUM             |
+| matches    | 外部キー | false | 試合       | 試合外部キー 複数可 |
+| joined_at  | 日付     | true  | 合流日     |                     |
+| left_at    | 日付     | true  | 離脱日     |                     |
+| urls       | URL      | true  |            | 複数可              |
+
+※1 full,u, high school, University, youth
+
+## 8. 代表召集リスト(NationalCallUpList)
+
+| フィールド          | 型       | null  | 注釈           | バリデーション           |
+| ------------------- | -------- | ----- | -------------- | ------------------------ |
+| series              | 外部キー | false | 試合シリーズ   | 代表試合シリーズ外部キー |
+| player              | 外部キー | false | 選手           | 選手外部キー             |
+| team                | 外部キー | true  | チーム         | チーム外部キー           |
+| joined_at           | 日付     | true  | 合流日         |                          |
+| left_at             | 日付     | true  | 離脱日         |                          |
+| number              | 数字     | true  | 背番号         |                          |
+| position            | 文字列   | true  | ポジション     | ※1 ENUM                  |
+| is_overage          | 真偽値   | true  | オーバーエイジ |                          |
+| is_backup           | 真偽値   | true  | バックアップ   |                          |
+| is_training_partner | 真偽値   | true  | パートナー     |                          |
+| left_reason         | 文字列   | true  | 離脱理由       |                          |
+
+※1 GK | DF | MF | FW | MF/FW
