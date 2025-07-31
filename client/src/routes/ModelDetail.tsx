@@ -2,11 +2,7 @@ import { Route } from "react-router-dom";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { Layout } from "../components/layout";
 import { wrapWithPrivateRoute } from "../components/routes";
-
-import TransferDetail from "../pages/ModelDetail/TransferDetail";
-import InjuryDetail from "../pages/ModelDetail/InjuryDetail";
-import PlayerDetail from "../pages/ModelDetail/PlayerDetail";
-import TeamDetail from "../pages/ModelDetail/TeamDetail";
+import { Transfer, Injury, Player, Team } from "../pages/ModelDetail/";
 
 export const ModelDetail = (
   <>
@@ -14,7 +10,7 @@ export const ModelDetail = (
       path={`${APP_ROUTES.PLAYER}/:id`}
       element={wrapWithPrivateRoute(
         <Layout>
-          <PlayerDetail />
+          <Player />
         </Layout>
       )}
     />
@@ -23,7 +19,7 @@ export const ModelDetail = (
       path={`${APP_ROUTES.TRANSFER}/:id`}
       element={wrapWithPrivateRoute(
         <Layout>
-          <TransferDetail />
+          <Transfer />
         </Layout>
       )}
     />
@@ -32,7 +28,7 @@ export const ModelDetail = (
       path={`${APP_ROUTES.INJURY}/:id`}
       element={wrapWithPrivateRoute(
         <Layout>
-          <InjuryDetail />
+          <Injury />
         </Layout>
       )}
     />
@@ -41,7 +37,7 @@ export const ModelDetail = (
       path={`${APP_ROUTES.TEAM}/:id`}
       element={wrapWithPrivateRoute(
         <Layout>
-          <TeamDetail />
+          <Team />
         </Layout>
       )}
     />

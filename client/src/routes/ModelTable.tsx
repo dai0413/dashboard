@@ -2,11 +2,7 @@ import { Route } from "react-router-dom";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { Layout } from "../components/layout";
 import { wrapWithPrivateRoute } from "../components/routes";
-
-import Player from "../pages/ModelTable/Player";
-import Transfer from "../pages/ModelTable/Transfer";
-import Injury from "../pages/ModelTable/Injury";
-import Team from "../pages/ModelTable/Team";
+import { Transfer, Injury, Player, Team } from "../pages/ModelTable/";
 
 export const ModelTable = (
   <>
