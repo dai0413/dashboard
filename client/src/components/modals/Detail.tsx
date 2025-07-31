@@ -12,6 +12,7 @@ import { isLabelObject, toDateKey } from "../../utils";
 import { fieldDefinition } from "../../lib/model-fields";
 import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
 import { useAuth } from "../../context/auth-context";
+import { isDev } from "../../utils/env";
 
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
@@ -146,7 +147,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
               );
             }
           })}
-          {staffState.admin && (
+          {staffState.admin && isDev && (
             <LinkButtonGroup
               reset={{
                 text: "編集",
