@@ -23,6 +23,8 @@ import { Transfer, TransferGet } from "../../types/models/transfer";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { ReadItemsParamsMap } from "../../types/api";
 import { Injury, InjuryGet } from "../../types/models/injury";
+import { useForm } from "../../context/form-context";
+import { useFilter } from "../../context/filter-context";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -35,6 +37,12 @@ const Tabs = TeamTabItems.filter(
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
+
+  const { isOpen: formIsOpen } = useForm();
+  const { resetFilterCOnditions } = useFilter();
+
+  useEffect(() => resetFilterCOnditions(), []);
+
   const [selectedTab, setSelectedTab] = useState("player");
 
   const { selected, readItem, isLoading: teamIsLoading } = useTeam();
@@ -145,7 +153,7 @@ const Team = () => {
     );
     readCurrentLoans(id);
     readInjuries({ latest: true, now_team: id });
-  }, [id]);
+  }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
