@@ -20,11 +20,15 @@
 
 各エンドポイントごとの仕様は以下にまとめています。
 
-| エンドポイント          | 機能説明 | 詳細ドキュメント                 |
-| ----------------------- | -------- | -------------------------------- |
-| `POST /api/v1/auth`     | 認証     | [auth.md](./api/auth.md)         |
-| `GET  /api/v1/player`   | 選手     | [player.md](./api/player.md)     |
-| `GET  /api/v1/transfer` | 移籍     | [transfer.md](./api/transfer.md) |
+| エンドポイント          | 機能説明       | 詳細ドキュメント                 |
+| ----------------------- | -------------- | -------------------------------- |
+| `POST /api/v1/auth`     | 認証           | [auth.md](./api/auth.md)         |
+| `GET  /api/v1/country`  | 国             | [country.md](./api/country.md)   |
+| `GET  /api/v1/injury`   | 怪我           | [injury.md](./api/injury.md)     |
+| `GET  /api/v1/player`   | 選手           | [player.md](./api/player.md)     |
+| `GET  /api/v1/team`     | チーム         | [team.md](./api/team.md)         |
+| `GET  /api/v1/top-page` | トップページ用 | [top-page.md](./api/top-page.md) |
+| `GET  /api/v1/transfer` | 移籍           | [transfer.md](./api/transfer.md) |
 
 ---
 

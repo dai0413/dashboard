@@ -6,6 +6,7 @@
   - [3. 選手](#3-選手)
   - [4. 移籍](#4-移籍)
   - [5. 怪我](#5-怪我)
+  - [6. 国(country)](#6-国country)
 
 ## 1. ユーザー
 
@@ -95,6 +96,26 @@
 
 ※team, team_name, player, doi, dos , injured_part の組み合わせユニーク
 
-```
+## 6. 国(country)
 
-```
+| フィールド              | 型     | null  | 注釈               | バリデーション |
+| ----------------------- | ------ | ----- | ------------------ | -------------- |
+| name                    | 文字列 | false | 名前               |                |
+| en_name                 | 文字列 | true  | 英語名             |                |
+| iso3                    | 文字列 | true  | 英 3 文字コード    |                |
+| fifa_code               | 文字列 | true  | 英 3 文字コード    |                |
+| area                    | 文字列 | false | 地域               | ※1 ENUM        |
+| district                | 文字列 | false | 詳細地域           | ※2 ENUM        |
+| confederation           | 文字列 | false | 所属地域協会       | ※3 ENUM        |
+| sub_confederation       | 文字列 | false | 所属詳細地域協会   | ※4 ENUM        |
+| established_year        | 数字   | false | 協会成立年         |                |
+| fifa_member_year        | 数字   | false | FIFA 加入年        |                |
+| association_member_year | 数字   | false | 地域協会加入年     |                |
+| district_member_year    | 数字   | false | 詳細地域協会加入年 |                |
+
+※1 アジア, ヨーロッパ, アフリカ, オセアニア, 北アメリカ, 南極, 南アメリカ, ミクロネシア
+※2 中央アジア, 北ヨーロッパ, 南ヨーロッパ, 北アフリカ, ポリネシア, 南部アフリカ, カリブ海, 南極大陸, 南アメリカ大陸, 西アジア, オーストラリア大陸, 中央ヨーロッパ, 中東, 南アジア, 東ヨーロッパ, 西ヨーロッパ, 中央アメリカ, 西アフリカ, 北大西洋, 東南アジア, 東アフリカ, 中央アフリカ, 北アメリカ大陸, 中部アフリカ, 東アジア, 東部アフリカ, 南大西洋, メラネシア, インド洋および南極大陸, ミクロネシア, インド洋, 東南アフリカ, オセアニア大陸, 大西洋, 北部アフリカ
+※3 AFC, UEFA, CAF, OFC, CONCACAF, CONMEBOL, FSMFA
+※4 CAFA,UNAF,COSAFA,CFU,AFF,WAFF,SAFF,UNCAF,WAFU,CECAFA,UNIFFAC,NAFU,EAFF
+
+※iso3, name, の組み合わせユニーク

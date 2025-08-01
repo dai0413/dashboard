@@ -16,6 +16,7 @@
 | `/player`   | 選手   |
 | `/transfer` | 移籍   |
 | `/injury`   | 怪我   |
+| `/country`  | 国     |
 
 ### 1.3 モデルデータ詳細
 
@@ -25,6 +26,7 @@
 | `/team/:id`     | チーム |
 | `/transfer/:id` | 移籍   |
 | `/injury/:id`   | 怪我   |
+| `/country/:id`  | 国     |
 
 ### 1.4 まとめページ
 
