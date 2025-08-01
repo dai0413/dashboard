@@ -63,6 +63,8 @@ assignees: ""
 
 ## 5. 一覧ページ作成
 
+- `docs/route/index.md`にルートまとめ
+- `client/src/lib/appRoutes.ts`にルート定義
 - `client/src/pages/ModelTable/` に新しいモデル用の一覧ページを作成。
 
 ---
