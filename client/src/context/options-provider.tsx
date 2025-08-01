@@ -3,6 +3,81 @@ import { usePlayer } from "./models/player-context";
 import { useTeam } from "./models/team-context";
 import { TableHeader } from "../types/types";
 
+export const AreaOptions = [
+  "アジア",
+  "ヨーロッパ",
+  "アフリカ",
+  "オセアニア",
+  "北アメリカ",
+  "南極",
+  "南アメリカ",
+  "ミクロネシア",
+];
+
+export const DistrictOptions = [
+  "中央アジア",
+  "北ヨーロッパ",
+  "南ヨーロッパ",
+  "北アフリカ",
+  "ポリネシア",
+  "南部アフリカ",
+  "カリブ海",
+  "南極大陸",
+  "南アメリカ大陸",
+  "西アジア",
+  "オーストラリア大陸",
+  "中央ヨーロッパ",
+  "中東",
+  "南アジア",
+  "東ヨーロッパ",
+  "西ヨーロッパ",
+  "中央アメリカ",
+  "西アフリカ",
+  "北大西洋",
+  "東南アジア",
+  "東アフリカ",
+  "中央アフリカ",
+  "北アメリカ大陸",
+  "中部アフリカ",
+  "東アジア",
+  "東部アフリカ",
+  "南大西洋",
+  "メラネシア",
+  "インド洋および南極大陸",
+  "ミクロネシア",
+  "インド洋",
+  "東南アフリカ",
+  "オセアニア大陸",
+  "大西洋",
+  "北部アフリカ",
+];
+
+export const ConfederationOptions = [
+  "AFC",
+  "UEFA",
+  "CAF",
+  "OFC",
+  "CONCACAF",
+  "CONMEBOL",
+  "FSMFA",
+];
+
+export const SubConfederationOptions = [
+  "CAFA",
+  "UNAF",
+  "COSAFA",
+  "CFU",
+  "AFF",
+  "WAFF",
+  "SAFF",
+  "UNCAF",
+  "WAFU",
+  "CECAFA",
+  "UNIFFAC",
+  "NAFU",
+  "EAFF",
+];
+
 export const PositionOptions = [
   "GK",
   "DF",
@@ -141,6 +216,16 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const formOptions = FormOptions.map((f) => ({ label: f, key: f }));
   const positionOptions = PositionOptions.map((p) => ({ label: p, key: p }));
   const genreOptions = GenreOptions.map((p) => ({ label: p, key: p }));
+  const areaOptions = AreaOptions.map((p) => ({ label: p, key: p }));
+  const districtOptions = DistrictOptions.map((p) => ({ label: p, key: p }));
+  const confederationOptions = ConfederationOptions.map((p) => ({
+    label: p,
+    key: p,
+  }));
+  const subConfederationOptions = SubConfederationOptions.map((p) => ({
+    label: p,
+    key: p,
+  }));
 
   function getOptions(key: string, table?: false): OptionArray;
   function getOptions(key: string, table: true): OptionTable;
@@ -205,6 +290,18 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
           break;
         case "operator":
           options = operatorOptions;
+          break;
+        case "area":
+          options = areaOptions;
+          break;
+        case "district":
+          options = districtOptions;
+          break;
+        case "confederation":
+          options = confederationOptions;
+          break;
+        case "sub_confederation":
+          options = subConfederationOptions;
           break;
         default:
           return [];

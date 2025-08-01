@@ -7,6 +7,7 @@ import { injury } from "./injury";
 import { player } from "./player";
 import { transfer } from "./transfer";
 import { team } from "./team";
+import { country } from "./country";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -16,21 +17,25 @@ type Converter<T extends ModelType> = {
 const convertMap: {
   [K in ModelType]: Converter<K>;
 } = {
-  [ModelType.PLAYER]: {
-    single: player,
-    multiple: (data) => data.map(player),
-  },
-  [ModelType.TRANSFER]: {
-    single: transfer,
-    multiple: (data) => data.map(transfer),
+  [ModelType.COUNTRY]: {
+    single: country,
+    multiple: (data) => data.map(country),
   },
   [ModelType.INJURY]: {
     single: injury,
     multiple: (data) => data.map(injury),
   },
+  [ModelType.PLAYER]: {
+    single: player,
+    multiple: (data) => data.map(player),
+  },
   [ModelType.TEAM]: {
     single: team,
     multiple: (data) => data.map(team),
+  },
+  [ModelType.TRANSFER]: {
+    single: transfer,
+    multiple: (data) => data.map(transfer),
   },
 };
 
