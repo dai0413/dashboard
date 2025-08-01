@@ -1,11 +1,12 @@
 export const APP_ROUTES = {
   HOME: "/",
-  PLAYER: "/player",
-  TRANSFER: "/transfer",
-  INJURY: "/injury",
-  TEAM: "/team",
   LOGIN: "/login",
   ME: "/me",
+  COUNTRY: "/country",
+  INJURY: "/injury",
+  PLAYER: "/player",
+  TEAM: "/team",
+  TRANSFER: "/transfer",
 
   PLAYER_SUMMARY: "/player-summary",
   TEAM_SUMMARY: "/team-summary",

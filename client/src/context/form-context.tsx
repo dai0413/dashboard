@@ -8,6 +8,7 @@ import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { useTeam } from "./models/team-context";
 import { useOptions } from "./options-provider";
+import { useCountry } from "./models/country-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
@@ -60,20 +61,22 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const modelContextMap: {
     [K in keyof FormTypeMap]: ModelContext<K>;
   } = {
-    [ModelType.PLAYER]: usePlayer(),
-    [ModelType.TRANSFER]: useTransfer(),
+    [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.PLAYER]: usePlayer(),
     [ModelType.TEAM]: useTeam(),
+    [ModelType.TRANSFER]: useTransfer(),
   };
 
   const modelContext = useMemo(() => {
     return modelType ? modelContextMap[modelType] : null;
   }, [
     modelType,
-    modelContextMap[ModelType.PLAYER].formData,
-    modelContextMap[ModelType.TRANSFER].formData,
+    modelContextMap[ModelType.COUNTRY].formData,
     modelContextMap[ModelType.INJURY].formData,
+    modelContextMap[ModelType.PLAYER].formData,
     modelContextMap[ModelType.TEAM].formData,
+    modelContextMap[ModelType.TRANSFER].formData,
   ]);
 
   const getDiffKeys = modelContext?.getDiffKeys;
