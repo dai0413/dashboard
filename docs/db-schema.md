@@ -7,6 +7,8 @@
   - [4. 移籍](#4-移籍)
   - [5. 怪我](#5-怪我)
   - [6. 国(country)](#6-国country)
+  - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
+    - [※1 team_class の ENUM 値](#1-team_class-の-enum-値)
 
 ## 1. ユーザー
 
@@ -119,3 +121,28 @@
 ※4 CAFA,UNAF,COSAFA,CFU,AFF,WAFF,SAFF,UNCAF,WAFU,CECAFA,UNIFFAC,NAFU,EAFF
 
 ※iso3, name, の組み合わせユニーク
+
+## 7. 代表試合シリーズ(NationalMatchSeries)
+
+| フィールド | 型       | null  | 注釈       | バリデーション      |
+| ---------- | -------- | ----- | ---------- | ------------------- |
+| name       | 文字列   | false | シリーズ名 |                     |
+| abbr       | 文字列   | true  | 略称       |                     |
+| country    | 外部キー | false | 国         | 国外部キー          |
+| team_class | 文字列   | false | 種類       | ※1 ENUM             |
+| matches    | 外部キー | false | 試合       | 試合外部キー 複数可 |
+| joined_at  | 日付     | true  | 合流日     |                     |
+| left_at    | 日付     | true  | 離脱日     |                     |
+| urls       | URL      | true  |            | 複数可              |
+
+### ※1 team_class の ENUM 値
+
+以下のような代表クラスを指定：
+
+- `full`（フル代表）
+- `u17` ～ `u24`（各年代別代表）
+- `high_school`（高校選抜）
+- `university`（大学選抜）
+- `youth`（ユース選抜）
+
+※country, team_class, joined_at, の組み合わせユニーク
