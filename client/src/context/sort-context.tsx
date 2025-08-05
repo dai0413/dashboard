@@ -56,8 +56,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
 
   // ソート
   const handleSort = (data: any): any => {
-    console.log("sort condition", sortConditions);
-    console.log("table data is ", data);
     const sorted = [...data].sort((a, b) => {
       for (const { key, asc } of sortConditions) {
         if (asc === null) continue;
@@ -137,7 +135,7 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleAsc = (key: string, asc: boolean) => {
     setSortConditions((prev) => {
-      console.log(prev);
+      // console.log(prev);
       const existing = prev.find((c) => c.key === key);
 
       if (existing) {

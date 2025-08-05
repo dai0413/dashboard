@@ -1,6 +1,6 @@
-import { Country, CountryGet } from "../../../types/models/country";
+import { CountryForm, CountryGet } from "../../../types/models/country";
 
-export const country = (t: Country): CountryGet => {
+export const country = (t: CountryGet): CountryForm => {
   return {
     ...t,
   };

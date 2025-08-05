@@ -13,7 +13,7 @@ import Me from "./pages/Me";
 import { SortProvider } from "./context/sort-context";
 import { FormProvider } from "./context/form-context";
 import { Form } from "./components/modals/";
-import { OptionsWrapper } from "./context/options-provider";
+import { OptionProvider } from "./context/options-provider";
 import { TopPageProvider } from "./context/top-page-context";
 import { ModelWrapper } from "./context/models/model-wrapper";
 
@@ -23,10 +23,10 @@ const App: React.FC = () => {
   return (
     <AlertProvider>
       <AuthProvider>
-        <FilterProvider>
-          <SortProvider>
-            <ModelWrapper>
-              <OptionsWrapper>
+        <ModelWrapper>
+          <OptionProvider>
+            <FilterProvider>
+              <SortProvider>
                 <FormProvider>
                   <Router>
                     <div className="App">
@@ -68,10 +68,10 @@ const App: React.FC = () => {
                     <Form />
                   </Router>
                 </FormProvider>
-              </OptionsWrapper>
-            </ModelWrapper>
-          </SortProvider>
-        </FilterProvider>
+              </SortProvider>
+            </FilterProvider>
+          </OptionProvider>
+        </ModelWrapper>
       </AuthProvider>
     </AlertProvider>
   );

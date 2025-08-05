@@ -1,29 +1,13 @@
 import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
+import { useOptions } from "../../context/options-provider";
 import { Modal } from "../ui";
 import { FilterableFieldDefinition } from "../../types/field";
-import { OptionArray, useOptions } from "../../context/options-provider";
 import FieldRow from "./Filter/FieldRow";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];
   onApply: () => void;
-};
-const createNowFilterString = (
-  cond: FilterableFieldDefinition,
-  operatorOptions: OptionArray
-): string => {
-  const nowOperator = operatorOptions.find(
-    (op) => op.key === cond.operator
-  )?.label;
-
-  const nowValue =
-    cond.type === "Date" && cond.value instanceof Date
-      ? cond.value.toISOString().slice(0, 10)
-      : String(cond.value);
-
-  const now = `${cond.label} が ${nowValue} ${nowOperator}`;
-  return now;
 };
 
 const Filter = ({ filterableField, onApply }: FilterProps) => {
@@ -46,6 +30,8 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
     editingIndex,
     isAdding,
     toggleAdding,
+
+    getFilterConditions,
   } = useFilter();
 
   const { getOptions } = useOptions();
@@ -96,7 +82,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               key={index}
               className="flex justify-between items-center bg-green-100 px-3 py-2 rounded-md"
             >
-              <span>{createNowFilterString(cond, getOptions("operator"))}</span>
+              <span>{getFilterConditions(cond)}</span>
               <div className="space-x-2 flex">
                 <IconButton
                   icon="edit"
