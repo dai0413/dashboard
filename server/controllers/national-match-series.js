@@ -3,7 +3,9 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllNationalMatchSeries = async (req, res) => {
-  const nationalMatchSeries = await NationalMatchSeries.find({});
+  const nationalMatchSeries = await NationalMatchSeries.find({})
+    .populate("country")
+    .sort({ joined_at: -1, _id: -1 });
   res.status(StatusCodes.OK).json({ data: nationalMatchSeries });
 };
 
@@ -15,9 +17,14 @@ const createNationalMatchSeries = async (req, res) => {
   const nationalMatchSeries = await NationalMatchSeries.create(
     nationalMatchSeriesData
   );
+
+  const pupulatedData = await NationalMatchSeries.findById(
+    nationalMatchSeries._id
+  ).populate("country");
+
   res
     .status(StatusCodes.CREATED)
-    .json({ message: "追加しました", data: nationalMatchSeries });
+    .json({ message: "追加しました", data: pupulatedData });
 };
 
 const getNationalMatchSeries = async (req, res) => {
@@ -29,7 +36,7 @@ const getNationalMatchSeries = async (req, res) => {
   } = req;
   const nationalMatchSeries = await NationalMatchSeries.findById(
     nationalMatchSeriesId
-  );
+  ).populate("country");
   if (!nationalMatchSeries) {
     throw new NotFoundError();
   }
@@ -62,7 +69,9 @@ const updateNationalMatchSeries = async (req, res) => {
   }
 
   // update
-  const populated = await NationalMatchSeries.findById(updated._id);
+  const populated = await NationalMatchSeries.findById(updated._id).populate(
+    "country"
+  );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 

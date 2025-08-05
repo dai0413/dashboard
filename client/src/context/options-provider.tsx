@@ -1,7 +1,26 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { usePlayer } from "./models/player-context";
 import { useTeam } from "./models/team-context";
+import { useCountry } from "./models/country-context";
 import { TableHeader } from "../types/types";
+import { Player } from "../types/models/player";
+import { Team } from "../types/models/team";
+import { Country } from "../types/models/country";
+
+export const teamClassOptions: OptionArray = [
+  { key: "full", label: "A" },
+  { key: "u17", label: "u17" },
+  { key: "u18", label: "u18" },
+  { key: "u19", label: "u19" },
+  { key: "u20", label: "u20" },
+  { key: "u21", label: "u21" },
+  { key: "u22", label: "u22" },
+  { key: "u23", label: "u23" },
+  { key: "u24", label: "u24" },
+  { key: "high_school", label: "高校" },
+  { key: "youth", label: "ユース" },
+  { key: "university", label: "大学" },
+];
 
 export const AreaOptions = [
   "アジア",
@@ -128,14 +147,14 @@ export const FormOptions = [
   "内定解除",
 ];
 
-export const GenreOptions = [
-  "academy",
-  "club",
-  "college",
-  "high_school",
-  "second_team",
-  "third_team",
-  "youth",
+export const genreOptions: OptionArray = [
+  { key: "academy", label: "アカデミー" },
+  { key: "club", label: "クラブ" },
+  { key: "college", label: "大学" },
+  { key: "high_school", label: "高校" },
+  { key: "second_team", label: "セカンド" },
+  { key: "third_team", label: "サード" },
+  { key: "youth", label: "ユース" },
 ];
 
 export const operatorOptions: OptionArray = [
@@ -199,33 +218,73 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetFilter = () => setFilters({});
 
-  const { items: players } = usePlayer();
-  const { items: teams } = useTeam();
+  const { readItems: readPlayers, items: players } = usePlayer();
+  const { readItems: readTeams, items: teams } = useTeam();
+  const { readItems: readCountries, items: countries } = useCountry();
 
-  const playerOptions = players.map((p) => ({
-    label: p.name || p.en_name || "不明",
-    key: p._id,
-    dob: p.dob,
-  }));
+  useEffect(() => {
+    readPlayers({});
+    readTeams({});
+    readCountries({});
+  }, []);
 
-  const teamOptions = teams.map((t) => ({
-    label: t.abbr || t.team,
-    key: t._id,
-  }));
+  type Option = {
+    label: string;
+    key: string;
+    [key: string]: any; // 拡張用（dobなど）
+  };
+  type OptionArray = Option[];
 
-  const formOptions = FormOptions.map((f) => ({ label: f, key: f }));
-  const positionOptions = PositionOptions.map((p) => ({ label: p, key: p }));
-  const genreOptions = GenreOptions.map((p) => ({ label: p, key: p }));
-  const areaOptions = AreaOptions.map((p) => ({ label: p, key: p }));
-  const districtOptions = DistrictOptions.map((p) => ({ label: p, key: p }));
-  const confederationOptions = ConfederationOptions.map((p) => ({
-    label: p,
-    key: p,
-  }));
-  const subConfederationOptions = SubConfederationOptions.map((p) => ({
-    label: p,
-    key: p,
-  }));
+  // 型ガード
+  function isPlayerArray(data: any[]): data is Player[] {
+    return data.length > 0 && ("name" in data[0] || "en_name" in data[0]);
+  }
+  function isTeamArray(data: any[]): data is Team[] {
+    return data.length > 0 && ("abbr" in data[0] || "team" in data[0]);
+  }
+  function isCountryArray(data: any[]): data is Country[] {
+    return data.length > 0 && "name" in data[0];
+  }
+
+  function createOptions(
+    data: string[] | Player[] | Team[] | Country[]
+  ): OptionArray {
+    if (typeof data[0] === "string") {
+      return (data as string[]).map((item) => ({
+        label: item,
+        key: item,
+      }));
+    } else if (isPlayerArray(data)) {
+      return data.map((p) => ({
+        label: p.name || p.en_name || "不明",
+        key: p._id,
+        dob: p.dob,
+      }));
+    } else if (isTeamArray(data)) {
+      return data.map((t) => ({
+        label: t.abbr || t.team,
+        key: t._id,
+      }));
+    } else if (isCountryArray(data)) {
+      return data.map((c) => ({
+        label: c.name,
+        key: c._id,
+      }));
+    } else {
+      return [];
+    }
+  }
+
+  const playerOptions = useMemo(() => createOptions(players), [players]);
+  const teamOptions = useMemo(() => createOptions(teams), [teams]);
+  const countryOptions = useMemo(() => createOptions(countries), [countries]);
+
+  const formOptions = createOptions(FormOptions);
+  const positionOptions = createOptions(PositionOptions);
+  const areaOptions = createOptions(AreaOptions);
+  const districtOptions = createOptions(DistrictOptions);
+  const confederationOptions = createOptions(ConfederationOptions);
+  const subConfederationOptions = createOptions(SubConfederationOptions);
 
   function getOptions(key: string, table?: false): OptionArray;
   function getOptions(key: string, table: true): OptionTable;
@@ -250,6 +309,12 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
           options = {
             header: [{ label: "チーム", field: "label" }],
             data: teamOptions,
+          };
+          break;
+        case "country":
+          options = {
+            header: [{ label: "国名", field: "label" }],
+            data: countryOptions,
           };
           break;
         default:
@@ -303,6 +368,12 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         case "sub_confederation":
           options = subConfederationOptions;
           break;
+        case "team_class":
+          options = teamClassOptions;
+          break;
+        case "country":
+          options = countryOptions;
+          break;
         default:
           return [];
       }
@@ -323,10 +394,6 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const OptionsWrapper = ({ children }: { children: React.ReactNode }) => {
-  return <OptionProvider>{children}</OptionProvider>;
-};
-
 const useOptions = () => {
   const context = useContext(OptionContext);
   if (!context) {
@@ -335,4 +402,4 @@ const useOptions = () => {
   return context;
 };
 
-export { useOptions, OptionsWrapper };
+export { useOptions, OptionProvider };

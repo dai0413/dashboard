@@ -4,6 +4,7 @@ export const APP_ROUTES = {
   ME: "/me",
   COUNTRY: "/country",
   INJURY: "/injury",
+  NATIONAL_MATCH_SERIES: "/national-match-series",
   PLAYER: "/player",
   TEAM: "/team",
   TRANSFER: "/transfer",

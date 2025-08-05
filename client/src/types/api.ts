@@ -21,6 +21,7 @@ export type ReadItemsParamsMap = {
     player?: string;
     now_team?: string;
   };
+  [ModelType.NATIONAL_MATCH_SERIES]: {};
   [ModelType.PLAYER]: {};
   [ModelType.TEAM]: {};
   [ModelType.TRANSFER]: {
