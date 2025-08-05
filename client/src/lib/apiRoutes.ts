@@ -25,6 +25,16 @@ export const API_ROUTES = {
     UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
   },
+  NATIONAL_MATCH_SERIES: {
+    GET_ALL: `${API_BASE_URL}/national-match-series`,
+    CREATE: `${API_BASE_URL}/national-match-series`,
+    DETAIL: (id: string | number) =>
+      `${API_BASE_URL}/national-match-series/${id}`,
+    UPDATE: (id: string | number) =>
+      `${API_BASE_URL}/national-match-series/${id}`,
+    DELETE: (id: string | number) =>
+      `${API_BASE_URL}/national-match-series/${id}`,
+  },
   PLAYER: {
     GET_ALL: `${API_BASE_URL}/player`,
     CREATE: `${API_BASE_URL}/player`,

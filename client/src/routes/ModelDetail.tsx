@@ -2,7 +2,14 @@ import { Route } from "react-router-dom";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { Layout } from "../components/layout";
 import { wrapWithPrivateRoute } from "../components/routes";
-import { Transfer, Injury, Player, Team, Country } from "../pages/ModelDetail/";
+import {
+  Transfer,
+  Injury,
+  Player,
+  Team,
+  Country,
+  NationalMatchSeries,
+} from "../pages/ModelDetail/";
 
 export const ModelDetail = (
   <>
@@ -19,6 +26,14 @@ export const ModelDetail = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Player />
+        </Layout>
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.NATIONAL_MATCH_SERIES}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <NationalMatchSeries />
         </Layout>
       )}
     />
