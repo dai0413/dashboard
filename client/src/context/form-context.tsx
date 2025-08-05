@@ -9,10 +9,12 @@ import { ModelContext } from "../types/context";
 import { useTeam } from "./models/team-context";
 import { useOptions } from "./options-provider";
 import { useCountry } from "./models/country-context";
+import { useNationalMatchSeries } from "./models/national-match-series-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
   isOpen: boolean;
+  isEditing: boolean;
   modelType: T | null;
   openForm: (
     newData: boolean,
@@ -49,10 +51,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [isOpen, setIsOpen] = useState(false);
   const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
-
-  // console.log("modeltype in context", modelType);
-
   const [newData, setNewData] = useState<boolean>(true);
+  const [isEditing, setIsEditing] = useState<boolean>(true);
 
   const {
     modal: { handleSetAlert, resetAlert },
@@ -63,6 +63,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   } = {
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
     [ModelType.TEAM]: useTeam(),
     [ModelType.TRANSFER]: useTransfer(),
@@ -74,6 +75,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelType,
     modelContextMap[ModelType.COUNTRY].formData,
     modelContextMap[ModelType.INJURY].formData,
+    modelContextMap[ModelType.NATIONAL_MATCH_SERIES].formData,
     modelContextMap[ModelType.PLAYER].formData,
     modelContextMap[ModelType.TEAM].formData,
     modelContextMap[ModelType.TRANSFER].formData,
@@ -99,6 +101,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
     setIsOpen(true);
     setModelType(model);
+    setIsEditing(true);
   };
 
   const { resetFilter } = useOptions();
@@ -110,6 +113,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setModelType(null);
     setCurrentStep(0);
     resetAlert();
+    setIsEditing(false);
   };
 
   const nextData = () => {
@@ -117,6 +121,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     resetFilter();
     modelContext?.resetFormData();
     resetAlert();
+    setIsEditing(false);
   };
 
   const sendData = async () => {
@@ -148,6 +153,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
         modelContext?.formSteps ? modelContext?.formSteps.length - 1 : 0
       )
     );
+    setIsEditing(false);
   };
 
   const nextStep = () => {
@@ -204,6 +210,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const value: FormContextValue<T> = {
     newData,
     isOpen,
+    isEditing,
     modelType,
     openForm,
     closeForm,

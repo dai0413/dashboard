@@ -264,6 +264,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   const {
     newData,
     isOpen,
+    isEditing,
     closeForm,
 
     prevStep,
@@ -414,29 +415,19 @@ const Form = <T extends keyof FormTypeMap>() => {
           )}
 
           <div className="mt-4">
-            {currentStep === formSteps.length - 1 && alert.success ? (
-              newData ? (
-                <LinkButtonGroup
-                  approve={{
-                    text: "次のデータへ",
-                    color: "green",
-                    onClick: nextData,
-                  }}
-                  deny={{
-                    text: "入力終了",
-                    color: "red",
-                    onClick: closeForm,
-                  }}
-                />
-              ) : (
-                <LinkButtonGroup
-                  deny={{
-                    text: "入力終了",
-                    color: "red",
-                    onClick: closeForm,
-                  }}
-                />
-              )
+            {currentStep === formSteps.length - 1 && !isEditing ? (
+              <LinkButtonGroup
+                approve={{
+                  text: "次のデータへ",
+                  color: "green",
+                  onClick: nextData,
+                }}
+                deny={{
+                  text: "入力終了",
+                  color: "red",
+                  onClick: closeForm,
+                }}
+              />
             ) : (
               <LinkButtonGroup
                 approve={{
