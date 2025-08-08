@@ -8,7 +8,8 @@
   - [5. 怪我](#5-怪我)
   - [6. 国(country)](#6-国country)
   - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
-    - [※1 team_class の ENUM 値](#1-team_class-の-enum-値)
+    - [※1 team\_class の ENUM 値](#1-team_class-の-enum-値)
+  - [8. 代表召集リスト(NationalCallUp)](#8-代表召集リストnationalcallup)
 
 ## 1. ユーザー
 
@@ -146,3 +147,33 @@
 - `youth`（ユース選抜）
 
 ※country, team_class, joined_at, の組み合わせユニーク
+
+## 8. 代表召集リスト(NationalCallUp)
+
+| フィールド          | 型       | null  | 注釈           | バリデーション           |
+| ------------------- | -------- | ----- | -------------- | ------------------------ |
+| series              | 外部キー | false | 試合シリーズ   | 代表試合シリーズ外部キー |
+| player              | 外部キー | false | 選手           | 選手外部キー             |
+| team                | 外部キー | true  | 所属チーム     | チーム外部キー           |
+| team_name           | 文字列   | true  | 所属チーム     |                          |
+| joined_at           | 日付     | true  | 合流日         |                          |
+| left_at             | 日付     | true  | 離脱日         |                          |
+| number              | 数字     | true  | 背番号         |                          |
+| position            | 文字列   | true  | ポジション     | ※1 ENUM                  |
+| is_captain          | 真偽値   | true  | キャプテン     |                          |
+| is_overage          | 真偽値   | true  | オーバーエイジ |                          |
+| is_backup           | 真偽値   | true  | バックアップ   |                          |
+| is_training_partner | 真偽値   | true  | パートナー     |                          |
+| is_additional_call  | 真偽値   | true  | 追加招集       |                          |
+| status              | 文字列   | false | 招集状況　     | ※2 ENUM                  |
+| left_reason         | 文字列   | true  | 離脱理由       | ※3 ENUM                  |
+
+※1 GK | DF | MF | FW | MF/FW
+※2 called | joined | declined | withdrawn
+joined : 全期間参加
+declined : 事前辞退 joined_at, left_at は null
+withdrawn : 途中離脱
+※3 injury | personal | management | club | other | condition | suspension | transfer
+
+※ team or team_name を入力
+※series, player, の組み合わせユニーク
