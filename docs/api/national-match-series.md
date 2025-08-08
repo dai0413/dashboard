@@ -6,11 +6,11 @@
     - [2.1 :id が見つからないとき](#21-id-が見つからないとき)
     - [2.2 必須フィールドなし](#22-必須フィールドなし)
   - [3. リクエスト・レスポンス例](#3-リクエストレスポンス例)
-    - [3.1 `GET` | `/api/v1/country`](#31-get--apiv1country)
-    - [3.2 `POST` | `/api/v1/country`](#32-post--apiv1country)
-    - [3.3 `GET` | `/api/v1/country/:id`](#33-get--apiv1countryid)
-    - [3.4 `PUT` | `/api/v1/country/:id`](#34-put--apiv1countryid)
-    - [3.5 `DELETE` | `/api/v1/country/:id`](#35-delete--apiv1countryid)
+    - [3.1 `GET` | `/api/v1/national-match-series`](#31-get--apiv1national-match-series)
+    - [3.2 `POST` | `/api/v1/national-match-series`](#32-post--apiv1national-match-series)
+    - [3.3 `GET` | `/api/v1/national-match-series/:id`](#33-get--apiv1national-match-seriesid)
+    - [3.4 `PUT` | `/api/v1/national-match-series/:id`](#34-put--apiv1national-match-seriesid)
+    - [3.5 `DELETE` | `/api/v1/national-match-series/:id`](#35-delete--apiv1national-match-seriesid)
 
 ## 1. 概要- [代表試合シリーズ](#代表試合シリーズ)
 
@@ -52,7 +52,7 @@
 
 ## 3. リクエスト・レスポンス例
 
-### 3.1 `GET` | `/api/v1/country`
+### 3.1 `GET` | `/api/v1/national-match-series`
 
 - レスポンス
 
@@ -62,7 +62,7 @@
     "_id": "688ea475de505d913ce74ad7",
     "name": "親善試合14年11月",
     "abbr": null,
-    "country": "688b2c5fe7d7762ddaad1dfb",
+    "national-match-series": "688b2c5fe7d7762ddaad1dfb",
     "team_class": "full",
     "matchs": null,
     "joined_at": "2014-11-09T15:00:00.000Z",
@@ -75,7 +75,7 @@
 }
 ```
 
-### 3.2 `POST` | `/api/v1/country`
+### 3.2 `POST` | `/api/v1/national-match-series`
 
 - リクエストボディ
 
@@ -83,7 +83,7 @@
 {
   "name": "親善試合14年11月",
   "abbr": null,
-  "country": "688b2c5fe7d7762ddaad1dfb",
+  "national-match-series": "688b2c5fe7d7762ddaad1dfb",
   "team_class": "full",
   "matchs": null,
   "joined_at": "2014-11-09T15:00:00.000Z",
@@ -102,7 +102,7 @@
       "data": {
         "name": "親善試合 14 年 11 月",
         "abbr": null,
-        "country": "688b2c5fe7d7762ddaad1dfb",
+        "national-match-series": "688b2c5fe7d7762ddaad1dfb",
         "team_class": "full",
         "matchs": null,
         "joined_at": "2014-11-09T15:00:00.000Z",
@@ -116,7 +116,7 @@
     }
     ```
 
-### 3.3 `GET` | `/api/v1/country/:id`
+### 3.3 `GET` | `/api/v1/national-match-series/:id`
 
 - レスポンス
 
@@ -128,7 +128,7 @@
     "_id": "688ea1a826c9a7f800b7f6ad",
     "name": "親善試合14年10月",
     "abbr": null,
-    "country": "688b2c5fe7d7762ddaad1dfb",
+    "national-match-series": "688b2c5fe7d7762ddaad1dfb",
     "team_class": "full",
     "matchs": null,
     "joined_at": "2014-10-05T15:00:00.000Z",
@@ -139,7 +139,7 @@
 }
 ```
 
-### 3.4 `PUT` | `/api/v1/country/:id`
+### 3.4 `PUT` | `/api/v1/national-match-series/:id`
 
 - リクエストボディ
 
@@ -160,7 +160,7 @@
       "_id": "688ea1a826c9a7f800b7f6ac",
       "name": "親善試合14年11月updated",
       "abbr": null,
-      "country": "688b2c5fe7d7762ddaad1dfb",
+      "national-match-series": "688b2c5fe7d7762ddaad1dfb",
       "team_class": "full",
       "matchs": null,
       "joined_at": "2014-11-09T15:00:00.000Z",
@@ -172,7 +172,7 @@
   }
   ```
 
-### 3.5 `DELETE` | `/api/v1/country/:id`
+### 3.5 `DELETE` | `/api/v1/national-match-series/:id`
 
 - レスポンス
 
