@@ -7,6 +7,32 @@ import { Player } from "../types/models/player";
 import { Team } from "../types/models/team";
 import { Country } from "../types/models/country";
 
+export const callStatusOptions: OptionArray = [
+  { key: "joined", label: "全期間参加" },
+  { key: "declined", label: "事前辞退" },
+  { key: "withdrawn", label: "途中離脱" },
+];
+
+export const positionGroupOptions: OptionArray = [
+  { key: "GK", label: "GK" },
+  { key: "DF", label: "DF" },
+  { key: "MF", label: "MF" },
+  { key: "FW", label: "FW" },
+  { key: "MF/FW", label: "MF/FW" },
+  { key: "FP", label: "FP" },
+];
+
+export const leftReasonOptions: OptionArray = [
+  { key: "injury", label: "怪我" },
+  { key: "condition", label: "コンディション" },
+  { key: "club", label: "クラブ" },
+  { key: "transfer", label: "移籍" },
+  { key: "suspension", label: "出場停止" },
+  { key: "personal", label: "個人" },
+  { key: "management", label: "マネジメント" },
+  { key: "other", label: "その他" },
+];
+
 export const teamClassOptions: OptionArray = [
   { key: "full", label: "A" },
   { key: "u17", label: "u17" },
@@ -373,6 +399,15 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
           break;
         case "country":
           options = countryOptions;
+          break;
+        case "status":
+          options = callStatusOptions;
+          break;
+        case "positionGroup":
+          options = positionGroupOptions;
+          break;
+        case "left_reason":
+          options = leftReasonOptions;
           break;
         default:
           return [];

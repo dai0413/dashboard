@@ -10,6 +10,7 @@ import { useTeam } from "./models/team-context";
 import { useOptions } from "./options-provider";
 import { useCountry } from "./models/country-context";
 import { useNationalMatchSeries } from "./models/national-match-series-context";
+import { useNationalCallup } from "./models/national-callup";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
@@ -63,6 +64,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   } = {
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
     [ModelType.TEAM]: useTeam(),
@@ -75,6 +77,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelType,
     modelContextMap[ModelType.COUNTRY].formData,
     modelContextMap[ModelType.INJURY].formData,
+    modelContextMap[ModelType.NATIONAL_CALLUP].formData,
     modelContextMap[ModelType.NATIONAL_MATCH_SERIES].formData,
     modelContextMap[ModelType.PLAYER].formData,
     modelContextMap[ModelType.TEAM].formData,

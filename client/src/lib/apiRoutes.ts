@@ -25,6 +25,13 @@ export const API_ROUTES = {
     UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
   },
+  NATIONAL_CALLUP: {
+    GET_ALL: `${API_BASE_URL}/national-callup`,
+    CREATE: `${API_BASE_URL}/national-callup`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
+  },
   NATIONAL_MATCH_SERIES: {
     GET_ALL: `${API_BASE_URL}/national-match-series`,
     CREATE: `${API_BASE_URL}/national-match-series`,

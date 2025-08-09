@@ -9,6 +9,7 @@ import {
   Team,
   Country,
   NationalMatchSeries,
+  NationalCallup,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
@@ -42,6 +43,14 @@ export const ModelTable = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Injury />
+        </Layout>
+      )}
+    />
+    <Route
+      path={APP_ROUTES.NATIONAL_CALLUP}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <NationalCallup />
         </Layout>
       )}
     />

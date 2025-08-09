@@ -9,6 +9,7 @@ import { transfer } from "./transfer";
 import { team } from "./team";
 import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
+import { nationalCallup } from "./national-callup";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -25,6 +26,10 @@ const convertMap: {
   [ModelType.INJURY]: {
     single: injury,
     multiple: (data) => data.map(injury),
+  },
+  [ModelType.NATIONAL_CALLUP]: {
+    single: nationalCallup,
+    multiple: (data) => data.map(nationalCallup),
   },
   [ModelType.NATIONAL_MATCH_SERIES]: {
     single: nationalMatchSeries,
