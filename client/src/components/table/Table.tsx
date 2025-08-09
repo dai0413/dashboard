@@ -50,17 +50,6 @@ const renderCell = (
     });
   }
 
-  if (summaryLinkField && header.field === summaryLinkField.field) {
-    return (
-      <Link
-        to={`${summaryLinkField.to}/${row._id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {content}
-      </Link>
-    );
-  }
-
   if (header.field === "player" && isObject && raw.id !== "") {
     return (
       <Link
@@ -85,6 +74,17 @@ const renderCell = (
         className="hover:text-blue-600 underline"
       >
         {raw.label}
+      </Link>
+    );
+  }
+
+  if (summaryLinkField && header.field === summaryLinkField.field) {
+    return (
+      <Link
+        to={`${summaryLinkField.to}/${row._id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {isObject ? raw.label : content}
       </Link>
     );
   }

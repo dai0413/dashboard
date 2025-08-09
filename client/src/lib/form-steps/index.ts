@@ -6,6 +6,7 @@ import { injury } from "./injury";
 import { team } from "./team";
 import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
+import { nationalCallUp } from "./national-callup";
 
 export const steps = {
   [ModelType.COUNTRY]: [
@@ -13,6 +14,10 @@ export const steps = {
     createConfirmationStep<ModelType.COUNTRY>(),
   ],
   [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
+  [ModelType.NATIONAL_CALLUP]: [
+    ...nationalCallUp,
+    createConfirmationStep<ModelType.NATIONAL_CALLUP>(),
+  ],
   [ModelType.NATIONAL_MATCH_SERIES]: [
     ...nationalMatchSeries,
     createConfirmationStep<ModelType.NATIONAL_MATCH_SERIES>(),

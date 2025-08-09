@@ -5,6 +5,7 @@ import { PlayerProvider } from "./player-context";
 import { InjuryProvider } from "./injury-context";
 import { TransferProvider } from "./transfer-context";
 import { NationalMatchSeriesProvider } from "./national-match-series-context";
+import { NationalCallupProvider } from "./national-callup";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -12,9 +13,11 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
       <NationalMatchSeriesProvider>
         <TeamProvider>
           <PlayerProvider>
-            <InjuryProvider>
-              <TransferProvider>{children}</TransferProvider>
-            </InjuryProvider>
+            <NationalCallupProvider>
+              <InjuryProvider>
+                <TransferProvider>{children}</TransferProvider>
+              </InjuryProvider>
+            </NationalCallupProvider>
           </PlayerProvider>
         </TeamProvider>
       </NationalMatchSeriesProvider>

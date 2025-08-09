@@ -29,6 +29,10 @@ type DateField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
 type NumberField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
   type: "number";
 };
+// <input type = "checkbox">
+type CheckboxField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  type: "checkbox";
+};
 // <select>
 type SelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
   type: "select";
@@ -58,6 +62,7 @@ export type FieldDefinition<T extends keyof FormTypeMap> =
   | InputField<T>
   | DateField<T>
   | NumberField<T>
+  | CheckboxField<T>
   | SelectField<T>
   | MultiInputField<T>
   | MultiTextareaField<T>

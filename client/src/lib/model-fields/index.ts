@@ -5,10 +5,12 @@ import { player } from "./player";
 import { team } from "./team";
 import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
+import { nationalCallUp } from "./national-callup";
 
 export const fieldDefinition = {
   [ModelType.COUNTRY]: country,
   [ModelType.INJURY]: injury,
+  [ModelType.NATIONAL_CALLUP]: nationalCallUp,
   [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
   [ModelType.PLAYER]: player,
   [ModelType.TEAM]: team,
