@@ -1,13 +1,56 @@
 const NationalCallUp = require("../models/national-callup");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const mongoose = require("mongoose");
 
 const getAllNationalCallUp = async (req, res) => {
-  const nationalMatchSeries = await NationalCallUp.find({})
-    .populate("series")
-    .populate("player")
-    .populate("team")
-    .sort({ joined_at: -1, _id: -1 });
+  const country = req.query.country || null;
+
+  const matchStage = {};
+  if (country) {
+    matchStage["series.country"] = country;
+  }
+
+  const nationalMatchSeries = await NationalCallUp.aggregate([
+    {
+      $lookup: {
+        from: "nationalmatchseries",
+        localField: "series",
+        foreignField: "_id",
+        as: "series",
+      },
+    },
+    { $unwind: "$series" },
+    ...(country
+      ? [
+          {
+            $match: {
+              "series.country": new mongoose.Types.ObjectId(country),
+            },
+          },
+        ]
+      : []),
+    {
+      $lookup: {
+        from: "players",
+        localField: "player",
+        foreignField: "_id",
+        as: "player",
+      },
+    },
+    { $unwind: "$player" },
+    {
+      $lookup: {
+        from: "teams",
+        localField: "team",
+        foreignField: "_id",
+        as: "team",
+      },
+    },
+    { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
+    { $sort: { joined_at: -1, _id: -1 } },
+  ]);
+
   res.status(StatusCodes.OK).json({ data: nationalMatchSeries });
 };
 

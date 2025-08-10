@@ -12,4 +12,5 @@ export const APP_ROUTES = {
 
   PLAYER_SUMMARY: "/player-summary",
   TEAM_SUMMARY: "/team-summary",
+  NATIONAL_SUMMARY: "/national-summary",
 };

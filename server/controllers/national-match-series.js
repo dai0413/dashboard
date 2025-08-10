@@ -3,7 +3,13 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 
 const getAllNationalMatchSeries = async (req, res) => {
-  const nationalMatchSeries = await NationalMatchSeries.find({})
+  const country = req.query.country ? req.query.country : null;
+
+  const condition = {};
+
+  if (country) condition.country = country;
+
+  const nationalMatchSeries = await NationalMatchSeries.find(condition)
     .populate("country")
     .sort({ joined_at: -1, _id: -1 });
   res.status(StatusCodes.OK).json({ data: nationalMatchSeries });
