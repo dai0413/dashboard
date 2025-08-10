@@ -78,6 +78,17 @@ const renderCell = (
     );
   }
 
+  if (header.field === "country" && isObject && raw.id !== "") {
+    return (
+      <Link
+        to={`${APP_ROUTES.NATIONAL_SUMMARY}/${raw.id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {raw.label}
+      </Link>
+    );
+  }
+
   if (summaryLinkField && header.field === summaryLinkField.field) {
     return (
       <Link

@@ -84,3 +84,19 @@ export const TeamTabItems: IconButtonProps[] = [
     text: "怪我",
   },
 ];
+
+export const NationalTabItems: IconButtonProps[] = [
+  {
+    icon: "match",
+    text: "試合",
+    className: "cursor-not-allowed",
+  },
+  {
+    icon: "series",
+    text: "シリーズ",
+  },
+  {
+    icon: "player",
+    text: "招集選手",
+  },
+];
