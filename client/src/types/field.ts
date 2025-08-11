@@ -6,7 +6,7 @@ export type FilterOperator = (typeof operatorOptions)[number]["key"];
 type BaseField = {
   key: string;
   label: string;
-  type: "string" | "number" | "Date" | "select";
+  type: "string" | "number" | "Date" | "select" | "checkbox";
 };
 
 // フィルター用
