@@ -2,6 +2,8 @@ export const APP_ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   ME: "/me",
+  MODELS: "/models",
+
   // model
   COUNTRY: "/country",
   INJURY: "/injury",

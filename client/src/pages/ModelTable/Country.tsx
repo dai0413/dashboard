@@ -3,6 +3,7 @@ import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useCountry } from "../../context/models/country-context";
 import { ModelType } from "../../types/models";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Country = () => {
   const countryContext = useCountry();
@@ -23,6 +24,10 @@ const Country = () => {
         ]}
         contextState={countryContext}
         modelType={ModelType.COUNTRY}
+        summaryLinkField={{
+          field: "name",
+          to: APP_ROUTES.NATIONAL_SUMMARY,
+        }}
       />
     </div>
   );
