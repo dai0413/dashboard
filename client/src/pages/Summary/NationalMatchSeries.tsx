@@ -163,7 +163,7 @@ const National = () => {
             { label: "背番号", field: "number" },
             { label: "ポジション", field: "position" },
           ]}
-          modelType={ModelType.NATIONAL_MATCH_SERIES}
+          modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}
           originalSortField={callupOptions.sortField}
           formInitialData={{ series: id }}
