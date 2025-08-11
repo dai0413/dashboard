@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
-import { useCountry } from "../../context/models/country-context";
 import { ModelType } from "../../types/models";
-import { NationalTabItems } from "../../constants/menuItems";
+import { NationalMatchSeriesTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
 import { OptionArray } from "../../context/options-provider";
@@ -15,10 +14,6 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
-import {
-  NationalMatchSeries,
-  NationalMatchSeriesGet,
-} from "../../types/models/national-match-series";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
@@ -27,9 +22,10 @@ import {
   NationalCallup,
   NationalCallupGet,
 } from "../../types/models/national-callup";
-import { APP_ROUTES } from "../../lib/appRoutes";
+import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
+import { toDateKey } from "../../utils";
 
-const Tabs = NationalTabItems.filter(
+const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
     item.icon && item.text && !item.className?.includes("cursor-not-allowed")
 ).map((item) => ({
@@ -40,17 +36,14 @@ const Tabs = NationalTabItems.filter(
 const National = () => {
   const api = useApi();
   const { id } = useParams();
-  const [selectedTab, setSelectedTab] = useState("series");
+  const [selectedTab, setSelectedTab] = useState("player");
 
-  const { selected, readItem, isLoading } = useCountry();
+  const { selected, readItem, isLoading } = useNationalMatchSeries();
 
-  const [series, setSeries] = useState<NationalMatchSeriesGet[]>([]);
-  const [seriesIsLoading, setSeriesIsLoading] = useState<boolean>(false);
   const [callup, setCallup] = useState<NationalCallupGet[]>([]);
   const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);
 
   const isLoadingSetters = {
-    series: setSeriesIsLoading,
     callup: setCallupIsLoading,
   };
 
@@ -61,22 +54,11 @@ const National = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const readSeries = (countryId: string) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
-      params: { country: countryId },
-      onSuccess: (items: NationalMatchSeries[]) => {
-        setSeries(convert(ModelType.NATIONAL_MATCH_SERIES, items));
-      },
-      handleLoading: (time) => setLoading(time, "series"),
-    });
-
-  const readCallup = (countryId: string) =>
+  const readCallup = (seriesId: string) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params: { country: countryId },
+      params: { series: seriesId },
       onSuccess: (items: NationalCallup[]) => {
         setCallup(convert(ModelType.NATIONAL_CALLUP, items));
       },
@@ -86,27 +68,11 @@ const National = () => {
   useEffect(() => {
     if (!id) return;
     readItem(id);
-    readSeries(id);
     readCallup(id);
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
-  };
-
-  const seriesOptions = {
-    filterField: ModelType.NATIONAL_MATCH_SERIES
-      ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-          .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
-      : [],
-    sortField: ModelType.NATIONAL_MATCH_SERIES
-      ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
-      : [],
   };
 
   const callupOptions = {
@@ -131,8 +97,13 @@ const National = () => {
         <div className="border-b pb-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
             <div className="font-bold text-lg">{selected.name}</div>
-            <div className="text-gray-600">{selected.en_name}</div>
-            <div className="text-sm text-gray-500">{selected.area}</div>
+            <div className="text-gray-600">{selected.country.label}</div>
+            <div className="text-sm text-gray-500">{selected.team_class}</div>
+            <div className="text-sm text-gray-500">
+              {`${selected.joined_at && toDateKey(selected.joined_at)}~~~${
+                selected.left_at && toDateKey(selected.left_at)
+              }`}
+            </div>
           </div>
         </div>
       ) : (
@@ -154,7 +125,7 @@ const National = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {NationalTabItems.map(({ icon, text, className }) => {
+            {NationalMatchSeriesTabItems.map(({ icon, text, className }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -182,41 +153,20 @@ const National = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "series" && (
-        <TableContainer
-          items={series}
-          headers={[
-            { label: "名称", field: "name" },
-            { label: "年代", field: "team_class" },
-            { label: "招集日", field: "joined_at" },
-            { label: "解散日", field: "left_at" },
-          ]}
-          modelType={ModelType.NATIONAL_MATCH_SERIES}
-          originalFilterField={seriesOptions.filterField}
-          originalSortField={seriesOptions.sortField}
-          formInitialData={{}}
-          itemsLoading={seriesIsLoading}
-          summaryLinkField={{
-            field: "name",
-            to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
-          }}
-        />
-      )}
-
       {selectedTab === "player" && (
         <TableContainer
           items={callup}
           headers={[
-            { label: "代表試合シリーズ", field: "series" },
             { label: "選手", field: "player" },
+            { label: "所属チーム", field: "team" },
             { label: "招集状況", field: "status" },
             { label: "背番号", field: "number" },
             { label: "ポジション", field: "position" },
           ]}
-          modelType={ModelType.NATIONAL_CALLUP}
+          modelType={ModelType.NATIONAL_MATCH_SERIES}
           originalFilterField={callupOptions.filterField}
           originalSortField={callupOptions.sortField}
-          formInitialData={{}}
+          formInitialData={{ series: id }}
           itemsLoading={callupIsLoading}
         />
       )}

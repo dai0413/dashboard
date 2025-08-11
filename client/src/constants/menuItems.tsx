@@ -100,3 +100,15 @@ export const NationalTabItems: IconButtonProps[] = [
     text: "招集選手",
   },
 ];
+
+export const NationalMatchSeriesTabItems: IconButtonProps[] = [
+  {
+    icon: "match",
+    text: "試合",
+    className: "cursor-not-allowed",
+  },
+  {
+    icon: "player",
+    text: "招集選手",
+  },
+];

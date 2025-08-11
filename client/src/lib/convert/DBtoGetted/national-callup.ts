@@ -28,7 +28,7 @@ export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
     },
     team: {
       label: t.team ? t.team.abbr || t.team.team : "不明",
-      id: t.team ? t.team._id : "",
+      id: t.team && "_id" in t.team ? t.team._id : "",
     },
     status: status ? status : "",
     left_reason: left_reason ? left_reason : "",

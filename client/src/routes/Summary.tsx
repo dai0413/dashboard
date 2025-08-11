@@ -3,7 +3,7 @@ import { APP_ROUTES } from "../lib/appRoutes";
 import { Layout } from "../components/layout";
 import { wrapWithPrivateRoute } from "../components/routes";
 
-import { National, Player, Team } from "../pages/Summary";
+import { National, NationalMatchSeries, Player, Team } from "../pages/Summary";
 
 export const Summary = (
   <>
@@ -12,6 +12,14 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <National />
+        </Layout>
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <NationalMatchSeries />
         </Layout>
       )}
     />

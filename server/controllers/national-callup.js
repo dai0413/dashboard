@@ -2,16 +2,20 @@ const NationalCallUp = require("../models/national-callup");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
+const { formatNationalCallup } = require("../utils/format-national-callup");
 
 const getAllNationalCallUp = async (req, res) => {
   const country = req.query.country || null;
-
-  const matchStage = {};
-  if (country) {
-    matchStage["series.country"] = country;
-  }
+  const series = req.query.series || null;
 
   const nationalMatchSeries = await NationalCallUp.aggregate([
+    ...(series
+      ? [
+          {
+            $match: { series: new mongoose.Types.ObjectId(series) },
+          },
+        ]
+      : []),
     {
       $lookup: {
         from: "nationalmatchseries",
@@ -48,10 +52,11 @@ const getAllNationalCallUp = async (req, res) => {
       },
     },
     { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
-    { $sort: { joined_at: -1, _id: -1 } },
+    { $sort: { joined_at: -1, position: -1, number: 1, _id: -1 } },
   ]);
 
-  res.status(StatusCodes.OK).json({ data: nationalMatchSeries });
+  const result = nationalMatchSeries.map(formatNationalCallup);
+  res.status(StatusCodes.OK).json({ data: result });
 };
 
 const createNationalCallUp = async (req, res) => {
@@ -68,9 +73,10 @@ const createNationalCallUp = async (req, res) => {
     .populate("player")
     .populate("team");
 
-  res
-    .status(StatusCodes.CREATED)
-    .json({ message: "追加しました", data: pupulatedData });
+  res.status(StatusCodes.CREATED).json({
+    message: "追加しました",
+    data: formatNationalCallup(pupulatedData),
+  });
 };
 
 const getNationalCallUp = async (req, res) => {
@@ -91,9 +97,7 @@ const getNationalCallUp = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json({
-    data: {
-      ...nationalMatchSeries.toObject(),
-    },
+    data: formatNationalCallup(nationalMatchSeries),
   });
 };
 
@@ -122,7 +126,9 @@ const updateNationalCallUp = async (req, res) => {
     .populate("series")
     .populate("player")
     .populate("team");
-  res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "編集しました", data: formatNationalCallup(populated) });
 };
 
 const deleteNationalCallUp = async (req, res) => {
