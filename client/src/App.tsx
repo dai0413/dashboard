@@ -5,7 +5,7 @@ import { AuthProvider } from "./context/auth-context";
 import { AlertProvider } from "./context/alert-context";
 import { FilterProvider } from "./context/filter-context";
 import { Layout } from "./components/layout";
-import { PrivateRoute } from "./components/routes";
+import { PrivateRoute, wrapWithPrivateRoute } from "./components/routes";
 
 import Top from "./pages/Top";
 import Login from "./pages/Login";
@@ -18,6 +18,7 @@ import { TopPageProvider } from "./context/top-page-context";
 import { ModelWrapper } from "./context/models/model-wrapper";
 
 import { ModelTable, ModelDetail, Summary } from "./routes";
+import Models from "./pages/Models";
 
 const App: React.FC = () => {
   return (
@@ -52,7 +53,6 @@ const App: React.FC = () => {
                             </Layout>
                           }
                         />
-
                         <Route
                           path={APP_ROUTES.ME}
                           element={
@@ -62,6 +62,14 @@ const App: React.FC = () => {
                               </Layout>
                             </PrivateRoute>
                           }
+                        />
+                        <Route
+                          path={APP_ROUTES.MODELS}
+                          element={wrapWithPrivateRoute(
+                            <Layout>
+                              <Models />
+                            </Layout>
+                          )}
                         />
                       </Routes>
                     </div>

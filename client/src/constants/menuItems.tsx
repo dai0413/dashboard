@@ -87,17 +87,22 @@ export const TeamTabItems: IconButtonProps[] = [
 
 export const NationalTabItems: IconButtonProps[] = [
   {
+    icon: "tournament",
+    text: "大会",
+    className: "cursor-not-allowed",
+  },
+  {
     icon: "match",
-    text: "試合",
+    text: "代表試合",
     className: "cursor-not-allowed",
   },
   {
     icon: "series",
-    text: "シリーズ",
+    text: "代表シリーズ",
   },
   {
     icon: "player",
-    text: "招集選手",
+    text: "代表招集選手",
   },
 ];
 

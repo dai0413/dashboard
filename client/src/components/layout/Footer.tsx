@@ -1,7 +1,12 @@
 import { BottomMenuItems } from "../../constants/menuItems";
+import { useAuth } from "../../context/auth-context";
+import { isDev } from "../../utils/env";
 import { IconButton } from "../buttons";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Footer = () => {
+  const { staffState } = useAuth();
+
   return (
     <>
       {/* PC 用フッター（md以上で表示） */}
@@ -24,7 +29,11 @@ const Footer = () => {
       <div className="block md:hidden h-16 sm:h-auto" />
       <footer>
         <div className="block md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200">
-          <div className="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+          <div
+            className={`grid h-full max-w-lg mx-auto font-medium ${
+              staffState.admin || isDev ? "grid-cols-5" : "grid-cols-4"
+            }`}
+          >
             {BottomMenuItems.map(({ to, icon, text }) => (
               <IconButton
                 key={text}
@@ -36,6 +45,20 @@ const Footer = () => {
                 className="hover:text-green-500"
               />
             ))}
+
+            {(staffState.admin || isDev) && (
+              <>
+                <IconButton
+                  key={"データ一覧"}
+                  // icon={icon}
+                  text={"データ一覧"}
+                  color="gray"
+                  to={APP_ROUTES.MODELS}
+                  direction="vertical"
+                  className="hover:text-green-500"
+                />
+              </>
+            )}
           </div>
         </div>
       </footer>

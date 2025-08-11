@@ -14,12 +14,15 @@ import {
   ArrowLeftEndOnRectangleIcon,
   FolderOpenIcon,
   PresentationChartLineIcon,
+  RectangleGroupIcon,
+  UserGroupIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
-type Icon =
+export type Icon =
   | "add"
   | "delete"
   | "edit"
@@ -36,7 +39,10 @@ type Icon =
   | "future_in"
   | "loan"
   | "series"
-  | "match";
+  | "match"
+  | "tournament"
+  | "team"
+  | "callup";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -115,6 +121,13 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <FolderOpenIcon className={iconClass} />;
       case "match":
         return <PresentationChartLineIcon className={iconClass} />;
+      case "tournament":
+        return <RectangleGroupIcon className={iconClass} />;
+      case "team":
+        return <UserGroupIcon className={iconClass} />;
+      case "callup":
+        return <ClipboardDocumentListIcon className={iconClass} />;
+
       default:
         return null;
     }
