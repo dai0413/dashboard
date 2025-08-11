@@ -12,6 +12,8 @@ import {
   UserPlusIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowLeftEndOnRectangleIcon,
+  FolderOpenIcon,
+  PresentationChartLineIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
@@ -32,7 +34,9 @@ type Icon =
   | "transfer_in"
   | "transfer_out"
   | "future_in"
-  | "loan";
+  | "loan"
+  | "series"
+  | "match";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -107,6 +111,10 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <ArrowLeftStartOnRectangleIcon className={iconClass} />;
       case "future_in":
         return <ArrowLeftEndOnRectangleIcon className={iconClass} />;
+      case "series":
+        return <FolderOpenIcon className={iconClass} />;
+      case "match":
+        return <PresentationChartLineIcon className={iconClass} />;
       default:
         return null;
     }

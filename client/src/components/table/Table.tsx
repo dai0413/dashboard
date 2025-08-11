@@ -89,6 +89,17 @@ const renderCell = (
     );
   }
 
+  if (header.field === "series" && isObject && raw.id !== "") {
+    return (
+      <Link
+        to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${raw.id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {raw.label}
+      </Link>
+    );
+  }
+
   if (summaryLinkField && header.field === summaryLinkField.field) {
     return (
       <Link
