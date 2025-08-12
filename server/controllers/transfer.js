@@ -9,7 +9,8 @@ const { NotFoundError, BadRequestError } = require("../errors");
 const {
   getCurrentPlayersByTeamService,
   getCurrentLoanPlayersByTeamService,
-} = require("../services/transferService");
+  getNoNumberService,
+} = require("../services");
 
 const validateNewTransferDates = (data) => {
   const from = data.from_date ? new Date(data.from_date) : null;
@@ -304,6 +305,16 @@ const getCurrentLoanPlayersByTeam = async (req, res) => {
   res.status(StatusCodes.OK).json({ data: formattedTransfers });
 };
 
+const getNoNumberByCountry = async (req, res) => {
+  const countryId = req.params.countryId;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+  const result = await getNoNumberService(countryId, startDate, endDate);
+
+  const formattedTransfers = result.map(formatTransfer);
+  res.status(StatusCodes.OK).json({ data: formattedTransfers });
+};
+
 module.exports = {
   getAllTransfer,
   createTransfer,
@@ -312,4 +323,5 @@ module.exports = {
   deleteTransfer,
   getCurrentPlayersByTeam,
   getCurrentLoanPlayersByTeam,
+  getNoNumberByCountry,
 };
