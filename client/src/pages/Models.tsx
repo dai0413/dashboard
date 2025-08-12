@@ -55,19 +55,16 @@ const models: {
 
 const Models = () => {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">モデル一覧</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        {models.map((m) => (
-          <Link key={m.model} to={m.link}>
-            <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
-              <IconButton icon={m.icon} />
-              <h2 className="text-lg font-bold mb-2">{m.desc}</h2>
-              <p className="text-gray-500 text-sm">{m.model}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      {models.map((m) => (
+        <Link key={m.model} to={m.link}>
+          <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
+            <IconButton icon={m.icon} />
+            <h2 className="text-lg font-bold mb-2">{m.desc}</h2>
+            <p className="text-gray-500 text-sm">{m.model}</p>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 };

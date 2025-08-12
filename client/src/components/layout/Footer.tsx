@@ -2,7 +2,6 @@ import { BottomMenuItems } from "../../constants/menuItems";
 import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { IconButton } from "../buttons";
-import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Footer = () => {
   const { staffState } = useAuth();
@@ -45,17 +44,6 @@ const Footer = () => {
                 className="hover:text-green-500"
               />
             ))}
-
-            {(staffState.admin || isDev) && (
-              <IconButton
-                icon="series"
-                text={"データ"}
-                color="gray"
-                to={APP_ROUTES.MODELS}
-                direction="vertical"
-                className="hover:text-green-500"
-              />
-            )}
           </div>
         </div>
       </footer>

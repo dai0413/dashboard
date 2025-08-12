@@ -39,11 +39,9 @@ const Header = () => {
 
           <nav className="hidden sm:flex gap-4 items-center text-sm">
             {(staffState.admin || isDev) && (
-              <>
-                <Link to={APP_ROUTES.MODELS} className="hover:text-gray-900">
-                  データ一覧
-                </Link>
-              </>
+              <Link to={APP_ROUTES.ADMIN} className="hover:text-gray-900">
+                管理
+              </Link>
             )}
             <Link to={APP_ROUTES.TRANSFER} className="hover:text-gray-900">
               移籍
@@ -119,17 +117,6 @@ const Header = () => {
               className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 border-b border-gray-300`}
             />
           ))}
-          {(staffState.admin || isDev) && (
-            <>
-              <Link
-                onClick={() => setIsOpen(false)}
-                to={APP_ROUTES.MODELS}
-                className="flex justify-center text-xl text-gray-800 w-full text-center py-4"
-              >
-                データ一覧
-              </Link>
-            </>
-          )}
         </div>
       )}
     </>
