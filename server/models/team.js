@@ -12,7 +12,8 @@ const TeamSchema = new mongoose.Schema({
     type: String,
   },
   country: {
-    type: String,
+    type: mongoose.ObjectId,
+    ref: "Country",
   },
   genre: {
     type: String,
