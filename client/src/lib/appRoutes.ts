@@ -1,8 +1,9 @@
 export const APP_ROUTES = {
   HOME: "/",
+  ADMIN: "/admin",
   LOGIN: "/login",
   ME: "/me",
-  MODELS: "/models",
+  NO_NUMBER: "/transfer-no-number",
 
   // model
   COUNTRY: "/country",
