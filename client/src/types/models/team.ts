@@ -1,5 +1,8 @@
-import { GenreOptions } from "../../context/options-provider";
+import { genreOptions } from "../../context/options-provider";
+import { Label } from "../types";
+import { Country } from "./country";
 
+const GenreOptions = genreOptions.map((item) => item.key);
 type Genre = (typeof GenreOptions)[number] | null;
 
 export type Team = {
@@ -7,7 +10,7 @@ export type Team = {
   team: string;
   abbr: string;
   enTeam: string;
-  country: string;
+  country: Country | null;
   genre: Genre;
   jdataid: number;
   labalph: string;
@@ -15,8 +18,12 @@ export type Team = {
   sofaurl: string;
 };
 
-type TeamPost = Omit<Team, "_id">;
+type TeamPost = Omit<Team, "_id" | "country"> & {
+  country: Country["_id"] | null;
+};
 
 export type TeamForm = Partial<TeamPost>;
 
-export type TeamGet = Team;
+export type TeamGet = Omit<Team, "country"> & {
+  country: Label;
+};

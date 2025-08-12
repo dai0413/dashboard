@@ -82,7 +82,7 @@ const Player = () => {
       onSuccess: (items: Injury[]) => {
         setInjuries(convert(ModelType.INJURY, items));
       },
-      handleLoading: (time) => setLoading(time, "transfer"),
+      handleLoading: (time) => setLoading(time, "injury"),
     });
 
   useEffect(() => {

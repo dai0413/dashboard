@@ -1,10 +1,10 @@
 const Team = require("../models/team");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
-const csv = require("csv-parser");
 
 const getAllTeams = async (req, res) => {
-  const teams = await Team.find({});
+  const teams = await Team.find({}).populate("country");
+
   res.status(StatusCodes.OK).json({ data: teams });
 };
 
@@ -14,7 +14,10 @@ const createTeam = async (req, res) => {
   };
 
   const team = await Team.create(teamData);
-  res.status(StatusCodes.CREATED).json({ message: "追加しました", data: team });
+  const populatedData = await Team.findById(team._id).populate("country");
+  res
+    .status(StatusCodes.CREATED)
+    .json({ message: "追加しました", data: populatedData });
 };
 
 const getTeam = async (req, res) => {
@@ -24,7 +27,7 @@ const getTeam = async (req, res) => {
   const {
     params: { id: teamId },
   } = req;
-  const team = await Team.findById(teamId);
+  const team = await Team.findById(teamId).populate("country");
   if (!team) {
     throw new NotFoundError();
   }
@@ -56,7 +59,7 @@ const updateTeam = async (req, res) => {
   }
 
   // update
-  const populated = await Team.findById(updated._id);
+  const populated = await Team.findById(updated._id).populate("country");
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 

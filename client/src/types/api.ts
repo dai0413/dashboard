@@ -14,7 +14,21 @@ export type ResponseStatus = {
 };
 
 export type ReadItemsParamsMap = {
+  [ModelType.COUNTRY]: {};
+  [ModelType.INJURY]: {
+    latest?: boolean;
+    limit?: number;
+    player?: string;
+    now_team?: string;
+  };
+  [ModelType.NATIONAL_CALLUP]: {
+    country?: string;
+  };
+  [ModelType.NATIONAL_MATCH_SERIES]: {
+    country?: string;
+  };
   [ModelType.PLAYER]: {};
+  [ModelType.TEAM]: {};
   [ModelType.TRANSFER]: {
     limit?: number;
     player?: string;
@@ -28,11 +42,4 @@ export type ReadItemsParamsMap = {
     from_date_from?: string;
     from_date_to?: string;
   };
-  [ModelType.INJURY]: {
-    latest?: boolean;
-    limit?: number;
-    player?: string;
-    now_team?: string;
-  };
-  [ModelType.TEAM]: {};
 };

@@ -1,7 +1,7 @@
 type InputFieldProps = {
-  type: "text" | "number" | "date";
-  value: string | number | Date;
-  onChange: (value: string | number | Date) => void;
+  type: "text" | "number" | "date" | "checkbox";
+  value: string | number | Date | boolean;
+  onChange: (value: string | number | Date | boolean) => void;
   placeholder?: string;
 };
 
@@ -21,17 +21,24 @@ const InputField = ({
       : value;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const parsed =
-      type === "number" ? Number(raw) : type === "date" ? new Date(raw) : raw;
-    onChange(parsed);
+    if (type === "checkbox") {
+      onChange(e.target.checked);
+    } else if (type === "number") {
+      onChange(Number(e.target.value));
+    } else if (type === "date") {
+      onChange(new Date(e.target.value));
+    } else {
+      onChange(e.target.value);
+    }
   };
 
   return (
     <input
       type={type}
       className="w-full border border-gray-300 rounded px-3 py-2"
-      value={formattedValue as string | number}
+      {...(type === "checkbox"
+        ? { checked: Boolean(value) }
+        : { value: formattedValue as string | number })}
       placeholder={placeholder}
       onChange={handleChange}
     />

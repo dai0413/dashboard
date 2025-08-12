@@ -1,7 +1,12 @@
+import { genreOptions } from "../../../context/options-provider";
 import { TeamForm, TeamGet } from "../../../types/models/team";
-import { ReverseGenreLabelMap } from "../DBtoGetted/team";
 
-export const team = (t: TeamGet): TeamForm => ({
-  ...t,
-  genre: t.genre ? ReverseGenreLabelMap[t.genre] ?? "" : "",
-});
+export const team = (t: TeamGet): TeamForm => {
+  const genre = genreOptions.find((item) => item.label === t.genre)?.key;
+
+  return {
+    ...t,
+    genre: genre ? genre : "",
+    country: t.country.id,
+  };
+};

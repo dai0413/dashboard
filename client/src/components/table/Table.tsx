@@ -50,17 +50,6 @@ const renderCell = (
     });
   }
 
-  if (summaryLinkField && header.field === summaryLinkField.field) {
-    return (
-      <Link
-        to={`${summaryLinkField.to}/${row._id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {content}
-      </Link>
-    );
-  }
-
   if (header.field === "player" && isObject && raw.id !== "") {
     return (
       <Link
@@ -85,6 +74,39 @@ const renderCell = (
         className="hover:text-blue-600 underline"
       >
         {raw.label}
+      </Link>
+    );
+  }
+
+  if (header.field === "country" && isObject && raw.id !== "") {
+    return (
+      <Link
+        to={`${APP_ROUTES.NATIONAL_SUMMARY}/${raw.id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {raw.label}
+      </Link>
+    );
+  }
+
+  if (header.field === "series" && isObject && raw.id !== "") {
+    return (
+      <Link
+        to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${raw.id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {raw.label}
+      </Link>
+    );
+  }
+
+  if (summaryLinkField && header.field === summaryLinkField.field) {
+    return (
+      <Link
+        to={`${summaryLinkField.to}/${row._id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {isObject ? raw.label : content}
       </Link>
     );
   }

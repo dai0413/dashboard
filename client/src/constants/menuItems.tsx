@@ -3,11 +3,6 @@ import { IconButtonProps } from "../components/buttons/IconButton";
 
 export const BottomMenuItems: IconButtonProps[] = [
   {
-    to: APP_ROUTES.HOME,
-    icon: "home",
-    text: "ホーム",
-  },
-  {
     to: APP_ROUTES.TRANSFER,
     icon: "transfer",
     text: "移籍",
@@ -18,9 +13,19 @@ export const BottomMenuItems: IconButtonProps[] = [
     text: "怪我",
   },
   {
-    to: APP_ROUTES.ME,
-    icon: "my-page",
-    text: "マイページ",
+    to: APP_ROUTES.HOME,
+    icon: "home",
+    text: "ホーム",
+  },
+  {
+    icon: "series",
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
+    text: "日本",
+  },
+  {
+    icon: "setting",
+    to: APP_ROUTES.ADMIN,
+    text: "管理",
   },
 ];
 
@@ -36,9 +41,19 @@ export const SPMenuItems: IconButtonProps[] = [
     text: "怪我",
   },
   {
+    icon: "series",
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
+    text: "日本",
+  },
+  {
     icon: "my-page",
     to: APP_ROUTES.INJURY,
     text: "マイページ",
+  },
+  {
+    icon: "setting",
+    to: APP_ROUTES.ADMIN,
+    text: "管理",
   },
 ];
 
@@ -82,5 +97,38 @@ export const TeamTabItems: IconButtonProps[] = [
   {
     icon: "injury",
     text: "怪我",
+  },
+];
+
+export const NationalTabItems: IconButtonProps[] = [
+  {
+    icon: "tournament",
+    text: "大会",
+    className: "cursor-not-allowed",
+  },
+  {
+    icon: "match",
+    text: "代表試合",
+    className: "cursor-not-allowed",
+  },
+  {
+    icon: "series",
+    text: "代表シリーズ",
+  },
+  {
+    icon: "player",
+    text: "代表招集選手",
+  },
+];
+
+export const NationalMatchSeriesTabItems: IconButtonProps[] = [
+  {
+    icon: "match",
+    text: "試合",
+    className: "cursor-not-allowed",
+  },
+  {
+    icon: "player",
+    text: "招集選手",
   },
 ];

@@ -37,12 +37,19 @@ const player = require("./routes/player");
 const transfer = require("./routes/transfer");
 const injury = require("./routes/injury");
 const team = require("./routes/team");
+const country = require("./routes/country");
+const nationalMatchSeries = require("./routes/national-match-series");
+const nationalCallup = require("./routes/national-callup");
+
 const top = require("./routes/top");
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/player", authmiddleware, player);
 app.use("/api/v1/transfer", authmiddleware, transfer);
 app.use("/api/v1/injury", authmiddleware, injury);
 app.use("/api/v1/team", authmiddleware, team);
+app.use("/api/v1/country", authmiddleware, country);
+app.use("/api/v1/national-match-series", authmiddleware, nationalMatchSeries);
+app.use("/api/v1/national-callup", authmiddleware, nationalCallup);
 app.use("/api/v1/top-page", top);
 
 app.get("/", (req, res) => {

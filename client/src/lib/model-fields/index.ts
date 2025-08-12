@@ -3,10 +3,16 @@ import { transfer } from "./transfer";
 import { injury } from "./injury";
 import { player } from "./player";
 import { team } from "./team";
+import { country } from "./country";
+import { nationalMatchSeries } from "./national-match-series";
+import { nationalCallUp } from "./national-callup";
 
 export const fieldDefinition = {
-  [ModelType.PLAYER]: player,
-  [ModelType.TRANSFER]: transfer,
+  [ModelType.COUNTRY]: country,
   [ModelType.INJURY]: injury,
+  [ModelType.NATIONAL_CALLUP]: nationalCallUp,
+  [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
+  [ModelType.PLAYER]: player,
   [ModelType.TEAM]: team,
+  [ModelType.TRANSFER]: transfer,
 };

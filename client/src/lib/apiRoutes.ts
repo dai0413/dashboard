@@ -11,6 +11,37 @@ export const API_ROUTES = {
   TOP_PAGE: {
     GET: `${API_BASE_URL}/top-page`,
   },
+  COUNTRY: {
+    GET_ALL: `${API_BASE_URL}/country`,
+    CREATE: `${API_BASE_URL}/country`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/country/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/country/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/country/${id}`,
+  },
+  INJURY: {
+    GET_ALL: `${API_BASE_URL}/injury`,
+    CREATE: `${API_BASE_URL}/injury`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
+  },
+  NATIONAL_CALLUP: {
+    GET_ALL: `${API_BASE_URL}/national-callup`,
+    CREATE: `${API_BASE_URL}/national-callup`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
+  },
+  NATIONAL_MATCH_SERIES: {
+    GET_ALL: `${API_BASE_URL}/national-match-series`,
+    CREATE: `${API_BASE_URL}/national-match-series`,
+    DETAIL: (id: string | number) =>
+      `${API_BASE_URL}/national-match-series/${id}`,
+    UPDATE: (id: string | number) =>
+      `${API_BASE_URL}/national-match-series/${id}`,
+    DELETE: (id: string | number) =>
+      `${API_BASE_URL}/national-match-series/${id}`,
+  },
   PLAYER: {
     GET_ALL: `${API_BASE_URL}/player`,
     CREATE: `${API_BASE_URL}/player`,
@@ -20,6 +51,14 @@ export const API_ROUTES = {
     DETAIL: (id: string | number) => `${API_BASE_URL}/player/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
+  },
+  TEAM: {
+    GET_ALL: `${API_BASE_URL}/team`,
+    CREATE: `${API_BASE_URL}/team`,
+    DOWNLOAD: `${API_BASE_URL}/team/download`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/team/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
   },
   TRANSFER: {
     GET_ALL: `${API_BASE_URL}/transfer`,
@@ -31,20 +70,7 @@ export const API_ROUTES = {
       `${API_BASE_URL}/transfer/current-players/${teamId}`,
     CURRENT_LOANS_BY_TEAM: (teamId: string | number) =>
       `${API_BASE_URL}/transfer/current-loans/${teamId}`,
-  },
-  INJURY: {
-    GET_ALL: `${API_BASE_URL}/injury`,
-    CREATE: `${API_BASE_URL}/injury`,
-    DETAIL: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
-    UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
-    DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
-  },
-  TEAM: {
-    GET_ALL: `${API_BASE_URL}/team`,
-    CREATE: `${API_BASE_URL}/team`,
-    DOWNLOAD: `${API_BASE_URL}/team/download`,
-    DETAIL: (id: string | number) => `${API_BASE_URL}/team/${id}`,
-    UPDATE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
-    DELETE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
+    NO_NUMBER: (countryId: string | number) =>
+      `${API_BASE_URL}/transfer/no-number/${countryId}`,
   },
 };

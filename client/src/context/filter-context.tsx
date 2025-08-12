@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { FilterOperator, FilterableFieldDefinition } from "../types/field";
 import { isLabelObject, toDateKey } from "../utils";
+import { useOptions } from "./options-provider";
 
 type FilterState = {
   filterOpen: boolean;
@@ -10,6 +11,7 @@ type FilterState = {
   handleAddCondition: (index?: number) => void;
 
   filterCondition: FilterableFieldDefinition;
+  resetFilterConditions: () => void;
   handleFieldSelect: (field: FilterableFieldDefinition) => void;
   handleFieldValue: (value: string | number | Date) => void;
   handleFieldOperator: (value: string | number | Date) => void;
@@ -23,6 +25,8 @@ type FilterState = {
   editingIndex: number | null;
   isAdding: boolean;
   toggleAdding: () => void;
+
+  getFilterConditions: (filterCondition: FilterableFieldDefinition) => string;
 };
 
 const defaultFilterCondition: FilterableFieldDefinition = {
@@ -41,6 +45,7 @@ const defaultValue: FilterState = {
   handleAddCondition: () => {},
 
   filterCondition: defaultFilterCondition,
+  resetFilterConditions: () => {},
   handleFieldSelect: () => {},
   handleFieldValue: () => {},
   handleFieldOperator: () => {},
@@ -54,6 +59,8 @@ const defaultValue: FilterState = {
   editingIndex: null,
   isAdding: false,
   toggleAdding: () => {},
+
+  getFilterConditions: () => "",
 };
 
 const FilterContext = createContext<FilterState>(defaultValue);
@@ -69,6 +76,32 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   const [isAdding, setIsAdding] = useState<boolean>(false);
 
   const toggleAdding = () => setIsAdding((prev) => !prev);
+
+  const { getOptions } = useOptions();
+
+  const resetFilterConditions = () =>
+    setFilterCondition(defaultFilterCondition);
+
+  const getFilterConditions = (
+    filterCondition: FilterableFieldDefinition
+  ): string => {
+    const nowOperator = getOptions("operator").find(
+      (op) => op.key === filterCondition.operator
+    )?.label;
+
+    const valueOptions = getOptions(filterCondition.key);
+    const valueLabel = valueOptions.find(
+      (item) => item.key === filterCondition.value
+    )?.label;
+    const val = valueLabel ? valueLabel : filterCondition.value;
+
+    const nowValue =
+      filterCondition.type === "Date" && val instanceof Date
+        ? val.toISOString().slice(0, 10)
+        : String(val);
+
+    return `${filterCondition.label} が ${nowValue} ${nowOperator}`;
+  };
 
   // add filter contition
   const handleAddCondition = (index?: number) => {
@@ -130,7 +163,11 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
           compareValue = itemValue;
         }
 
-        const condVal = cond.value;
+        const condOptions = getOptions(cond.key);
+        const condValue = condOptions
+          ? condOptions.find((val) => val.key === cond.value)?.label
+          : null;
+        const condVal = condValue ? condValue : cond.value;
 
         switch (cond.operator) {
           case "equals":
@@ -206,8 +243,21 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleFieldSelect = (field: FilterableFieldDefinition) => {
-    const value =
-      field.key === "position" ? "GK" : field.key === "form" ? "完全" : "";
+    let value = "";
+    switch (field.key) {
+      case "position":
+        value = "GK";
+        break;
+      case "form":
+        value = "完全";
+        break;
+      case "team_class":
+        value = "full";
+        break;
+      case "genre":
+        value = "club";
+        break;
+    }
 
     setFilterCondition({
       key: field.key,
@@ -239,6 +289,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     handleAddCondition,
 
     filterCondition,
+    resetFilterConditions,
     handleFieldSelect,
     handleFieldValue,
     handleFieldOperator,
@@ -252,6 +303,8 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     editingIndex,
     isAdding,
     toggleAdding,
+
+    getFilterConditions,
   };
 
   return (
