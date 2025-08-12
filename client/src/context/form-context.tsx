@@ -8,10 +8,14 @@ import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { useTeam } from "./models/team-context";
 import { useOptions } from "./options-provider";
+import { useCountry } from "./models/country-context";
+import { useNationalMatchSeries } from "./models/national-match-series-context";
+import { useNationalCallup } from "./models/national-callup";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   newData: boolean;
   isOpen: boolean;
+  isEditing: boolean;
   modelType: T | null;
   openForm: (
     newData: boolean,
@@ -48,10 +52,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [isOpen, setIsOpen] = useState(false);
   const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
-
-  // console.log("modeltype in context", modelType);
-
   const [newData, setNewData] = useState<boolean>(true);
+  const [isEditing, setIsEditing] = useState<boolean>(true);
 
   const {
     modal: { handleSetAlert, resetAlert },
@@ -60,20 +62,26 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const modelContextMap: {
     [K in keyof FormTypeMap]: ModelContext<K>;
   } = {
-    [ModelType.PLAYER]: usePlayer(),
-    [ModelType.TRANSFER]: useTransfer(),
+    [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
+    [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
+    [ModelType.PLAYER]: usePlayer(),
     [ModelType.TEAM]: useTeam(),
+    [ModelType.TRANSFER]: useTransfer(),
   };
 
   const modelContext = useMemo(() => {
     return modelType ? modelContextMap[modelType] : null;
   }, [
     modelType,
-    modelContextMap[ModelType.PLAYER].formData,
-    modelContextMap[ModelType.TRANSFER].formData,
+    modelContextMap[ModelType.COUNTRY].formData,
     modelContextMap[ModelType.INJURY].formData,
+    modelContextMap[ModelType.NATIONAL_CALLUP].formData,
+    modelContextMap[ModelType.NATIONAL_MATCH_SERIES].formData,
+    modelContextMap[ModelType.PLAYER].formData,
     modelContextMap[ModelType.TEAM].formData,
+    modelContextMap[ModelType.TRANSFER].formData,
   ]);
 
   const getDiffKeys = modelContext?.getDiffKeys;
@@ -96,6 +104,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
     setIsOpen(true);
     setModelType(model);
+    setIsEditing(true);
   };
 
   const { resetFilter } = useOptions();
@@ -107,6 +116,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setModelType(null);
     setCurrentStep(0);
     resetAlert();
+    setIsEditing(false);
   };
 
   const nextData = () => {
@@ -114,6 +124,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     resetFilter();
     modelContext?.resetFormData();
     resetAlert();
+    setIsEditing(false);
   };
 
   const sendData = async () => {
@@ -145,6 +156,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
         modelContext?.formSteps ? modelContext?.formSteps.length - 1 : 0
       )
     );
+    setIsEditing(false);
   };
 
   const nextStep = () => {
@@ -201,6 +213,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const value: FormContextValue<T> = {
     newData,
     isOpen,
+    isEditing,
     modelType,
     openForm,
     closeForm,

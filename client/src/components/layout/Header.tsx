@@ -39,20 +39,21 @@ const Header = () => {
 
           <nav className="hidden sm:flex gap-4 items-center text-sm">
             {(staffState.admin || isDev) && (
-              <>
-                <Link to={APP_ROUTES.PLAYER} className="hover:text-gray-900">
-                  選手
-                </Link>
-                <Link to={APP_ROUTES.TEAM} className="hover:text-gray-900">
-                  チーム
-                </Link>
-              </>
+              <Link to={APP_ROUTES.ADMIN} className="hover:text-gray-900">
+                管理
+              </Link>
             )}
             <Link to={APP_ROUTES.TRANSFER} className="hover:text-gray-900">
               移籍
             </Link>
             <Link to={APP_ROUTES.INJURY} className="hover:text-gray-900">
               怪我
+            </Link>
+            <Link
+              to={`${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`}
+              className="hover:text-gray-900"
+            >
+              日本
             </Link>
             {accessToken ? (
               <>
@@ -104,7 +105,7 @@ const Header = () => {
 
       {isOpen && (
         <div className="fixed top-16 left-0 right-0 bottom-0 bg-white z-40 flex flex-col items-center justify-center">
-          {SPMenuItems.map(({ icon, text, to }, index, arr) => (
+          {SPMenuItems.map(({ icon, text, to }, index) => (
             <IconButton
               key={index}
               icon={icon}
@@ -113,9 +114,7 @@ const Header = () => {
               color="gray"
               onClick={() => setIsOpen(false)}
               direction="horizontal"
-              className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 ${
-                index !== arr.length - 1 ? "border-b border-gray-300" : ""
-              }`}
+              className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 border-b border-gray-300`}
             />
           ))}
         </div>

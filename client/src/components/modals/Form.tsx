@@ -32,22 +32,28 @@ const RenderField = <T extends keyof FormTypeMap>({
   const { getOptions, updateFilter, filters } = useOptions();
 
   const inputType =
-    type === "number" ? "number" : type === "date" ? "date" : "text";
+    type === "number"
+      ? "number"
+      : type === "date"
+      ? "date"
+      : type === "checkbox"
+      ? "checkbox"
+      : "text";
 
   // console.log("formData[key]", key, formData[key]);
   // 後で追加フィルタリング
 
-  const inputFieldOnChange = (value: string | number | Date) => {
+  const inputFieldOnChange = (value: string | number | Date | boolean) => {
     updateFilter(key as string, value as string);
   };
 
-  const inputHandleFormData = (value: string | number | Date) => {
+  const inputHandleFormData = (value: string | number | Date | boolean) => {
     handleFormData(key, value as any);
   };
 
   const multhInputHandleFormData = (
     index: number,
-    value: string | number | Date
+    value: string | number | Date | boolean
   ) => {
     const newValue = [...((formData[key] ?? []) as string[])];
     newValue[index] = value.toString();
@@ -221,7 +227,7 @@ const RenderField = <T extends keyof FormTypeMap>({
               ? (formData[key] as string[])
               : [""]), // 空配列なら1つだけ空の入力欄を出す
           ].map((item: string, index: number) => {
-            const onChange = (value: string | number | Date) =>
+            const onChange = (value: string | number | Date | boolean) =>
               multhInputHandleFormData(index, value);
 
             return (
@@ -253,7 +259,7 @@ const RenderField = <T extends keyof FormTypeMap>({
           type={inputType}
           value={value}
           onChange={inputHandleFormData}
-          placeholder="検索"
+          placeholder=""
         />
       )}
     </div>
@@ -264,6 +270,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   const {
     newData,
     isOpen,
+    isEditing,
     closeForm,
 
     prevStep,
@@ -414,29 +421,19 @@ const Form = <T extends keyof FormTypeMap>() => {
           )}
 
           <div className="mt-4">
-            {currentStep === formSteps.length - 1 && alert.success ? (
-              newData ? (
-                <LinkButtonGroup
-                  approve={{
-                    text: "次のデータへ",
-                    color: "green",
-                    onClick: nextData,
-                  }}
-                  deny={{
-                    text: "入力終了",
-                    color: "red",
-                    onClick: closeForm,
-                  }}
-                />
-              ) : (
-                <LinkButtonGroup
-                  deny={{
-                    text: "入力終了",
-                    color: "red",
-                    onClick: closeForm,
-                  }}
-                />
-              )
+            {currentStep === formSteps.length - 1 && !isEditing ? (
+              <LinkButtonGroup
+                approve={{
+                  text: "次のデータへ",
+                  color: "green",
+                  onClick: nextData,
+                }}
+                deny={{
+                  text: "入力終了",
+                  color: "red",
+                  onClick: closeForm,
+                }}
+              />
             ) : (
               <LinkButtonGroup
                 approve={{

@@ -12,12 +12,18 @@ import {
   UserPlusIcon,
   ArrowLeftStartOnRectangleIcon,
   ArrowLeftEndOnRectangleIcon,
+  FolderOpenIcon,
+  PresentationChartLineIcon,
+  RectangleGroupIcon,
+  UserGroupIcon,
+  ClipboardDocumentListIcon,
+  WrenchScrewdriverIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
-type Icon =
+export type Icon =
   | "add"
   | "delete"
   | "edit"
@@ -32,7 +38,13 @@ type Icon =
   | "transfer_in"
   | "transfer_out"
   | "future_in"
-  | "loan";
+  | "loan"
+  | "series"
+  | "match"
+  | "tournament"
+  | "team"
+  | "callup"
+  | "setting";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -107,6 +119,18 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <ArrowLeftStartOnRectangleIcon className={iconClass} />;
       case "future_in":
         return <ArrowLeftEndOnRectangleIcon className={iconClass} />;
+      case "series":
+        return <FolderOpenIcon className={iconClass} />;
+      case "match":
+        return <PresentationChartLineIcon className={iconClass} />;
+      case "tournament":
+        return <RectangleGroupIcon className={iconClass} />;
+      case "team":
+        return <UserGroupIcon className={iconClass} />;
+      case "callup":
+        return <ClipboardDocumentListIcon className={iconClass} />;
+      case "setting":
+        return <WrenchScrewdriverIcon className={iconClass} />;
       default:
         return null;
     }

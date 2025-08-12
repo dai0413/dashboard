@@ -39,9 +39,9 @@ const Team = () => {
   const { id } = useParams();
 
   const { isOpen: formIsOpen } = useForm();
-  const { resetFilterCOnditions } = useFilter();
+  const { resetFilterConditions } = useFilter();
 
-  useEffect(() => resetFilterCOnditions(), []);
+  useEffect(() => resetFilterConditions(), []);
 
   const [selectedTab, setSelectedTab] = useState("player");
 
@@ -94,7 +94,7 @@ const Team = () => {
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-      params: { team: id, from_date_after: new Date() },
+      params: { to_team: id, from_date_after: new Date() },
       onSuccess: (items: Transfer[]) => {
         setFuturePlayers(convert(ModelType.TRANSFER, items));
       },
@@ -217,7 +217,7 @@ const Team = () => {
             <div className="font-bold text-lg">{selected.team}</div>
             <div className="text-gray-600">{`略称：${selected.abbr}`}</div>
             <div className="text-sm text-gray-500">
-              {`国：${selected.country}`}
+              {`国：${selected.country.label}`}
             </div>
             <div className="text-sm text-gray-500">
               {`ジャンル：${selected.genre}`}

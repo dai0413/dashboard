@@ -13,18 +13,20 @@
     - [3.5 `DELETE` | `/api/v1/transfer/:id`](#35-delete--apiv1transferid)
     - [3.6 `GET` | `/api/v1/transfer/current-players/:teamId`](#36-get--apiv1transfercurrent-playersteamid)
     - [3.7 `GET` | `/api/v1/transfer/current-loans/:teamId`](#37-get--apiv1transfercurrent-loansteamid)
+    - [3.8 `GET` | `/api/v1/transfer/no-number/:countryId`](#38-get--apiv1transferno-numbercountryid)
 
 ## 1. 概要
 
-| メソッド | エンドポイント                             | 説明         | バリデーション        | フロント  |
-| -------- | ------------------------------------------ | ------------ | --------------------- | --------- |
-| `GET`    | `/api/v1/transfer`                         | 一覧取得     | なし                  | /transfer |
-| `POST`   | `/api/v1/transfer`                         | 新規追加     | 必須                  |
-| `GET`    | `/api/v1/transfer/:id`                     | 取得         | id のフォーマット検証 |
-| `PUT`    | `/api/v1/transfer/:id`                     | 更新         | id のフォーマット検証 |
-| `DELETE` | `/api/v1/transfer/:id`                     | 削除         | id のフォーマット検証 |
-| `GET`    | `/api/v1/transfer/current-players/:teamId` | 所属選手     | id のフォーマット検証 |
-| `GET`    | `/api/v1/transfer/current-loans/:teamId`   | レンタル選手 | id のフォーマット検証 |
+| メソッド | エンドポイント                             | 説明             | バリデーション        | フロント  |
+| -------- | ------------------------------------------ | ---------------- | --------------------- | --------- |
+| `GET`    | `/api/v1/transfer`                         | 一覧取得         | なし                  | /transfer |
+| `POST`   | `/api/v1/transfer`                         | 新規追加         | 必須                  |
+| `GET`    | `/api/v1/transfer/:id`                     | 取得             | id のフォーマット検証 |
+| `PUT`    | `/api/v1/transfer/:id`                     | 更新             | id のフォーマット検証 |
+| `DELETE` | `/api/v1/transfer/:id`                     | 削除             | id のフォーマット検証 |
+| `GET`    | `/api/v1/transfer/current-players/:teamId` | 所属選手         | id のフォーマット検証 |
+| `GET`    | `/api/v1/transfer/current-loans/:teamId`   | レンタル選手     | id のフォーマット検証 |
+| `GET`    | `/api/v1/transfer/no-number/:countryId`    | 背番号なしの一覧 | id のフォーマット検証 |
 
 ## 2. エラー処理
 
@@ -241,3 +243,5 @@
   ]
 }
 ```
+
+### 3.8 `GET` | `/api/v1/transfer/no-number/:countryId`

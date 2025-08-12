@@ -20,11 +20,17 @@
 
 各エンドポイントごとの仕様は以下にまとめています。
 
-| エンドポイント          | 機能説明 | 詳細ドキュメント                 |
-| ----------------------- | -------- | -------------------------------- |
-| `POST /api/v1/auth`     | 認証     | [auth.md](./api/auth.md)         |
-| `GET  /api/v1/player`   | 選手     | [player.md](./api/player.md)     |
-| `GET  /api/v1/transfer` | 移籍     | [transfer.md](./api/transfer.md) |
+| エンドポイント                  | 機能説明         | 詳細ドキュメント                                             |
+| ------------------------------- | ---------------- | ------------------------------------------------------------ |
+| `/api/v1/auth`                  | 認証             | [auth.md](./api/auth.md)                                     |
+| `/api/v1/country`               | 国               | [country.md](./api/country.md)                               |
+| `/api/v1/injury`                | 怪我             | [injury.md](./api/injury.md)                                 |
+| `/api/v1/player`                | 選手             | [player.md](./api/player.md)                                 |
+| `/api/v1/team`                  | チーム           | [team.md](./api/team.md)                                     |
+| `/api/v1/top-page`              | トップページ用   | [top-page.md](./api/top-page.md)                             |
+| `/api/v1/transfer`              | 移籍             | [transfer.md](./api/transfer.md)                             |
+| `/api/v1/national-match-series` | 代表試合シリーズ | 　[national-match-series.md](./api/national-match-series.md) |
+| `/api/v1/national-callup`       | 代表招集         | 　[national-callup.md](./api/national-callup.md)             |
 
 ---
 

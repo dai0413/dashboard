@@ -1,0 +1,68 @@
+import { FieldDefinition } from "../../types/field";
+
+export const nationalMatchSeries: FieldDefinition[] = [
+  {
+    key: "name",
+    label: "代表試合シリーズ",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "abbr",
+    label: "略称",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: false,
+  },
+  {
+    key: "country",
+    label: "国",
+    type: "select",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: false,
+  },
+  {
+    key: "team_class",
+    label: "年代・種別",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "matchs",
+    label: "試合",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: false,
+  },
+  {
+    key: "joined_at",
+    label: "活動開始日",
+    type: "Date",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "left_at",
+    label: "解散日",
+    type: "Date",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "urls",
+    label: "URL",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: true,
+  },
+];

@@ -7,6 +7,9 @@ import { injury } from "./injury";
 import { player } from "./player";
 import { transfer } from "./transfer";
 import { team } from "./team";
+import { country } from "./country";
+import { nationalMatchSeries } from "./national-match-series";
+import { nationalCallup } from "./national-callup";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => GettedModelDataMap[T];
@@ -16,24 +19,35 @@ type Converter<T extends ModelType> = {
 const convertMap: {
   [K in ModelType]: Converter<K>;
 } = {
-  [ModelType.PLAYER]: {
-    single: player,
-    multiple: (data) => data.map(player),
-  },
-  [ModelType.TRANSFER]: {
-    single: transfer,
-    multiple: (data) => data.map(transfer),
+  [ModelType.COUNTRY]: {
+    single: country,
+    multiple: (data) => data.map(country),
   },
   [ModelType.INJURY]: {
     single: injury,
     multiple: (data) => data.map(injury),
   },
+  [ModelType.NATIONAL_CALLUP]: {
+    single: nationalCallup,
+    multiple: (data) => data.map(nationalCallup),
+  },
+  [ModelType.NATIONAL_MATCH_SERIES]: {
+    single: nationalMatchSeries,
+    multiple: (data) => data.map(nationalMatchSeries),
+  },
+  [ModelType.PLAYER]: {
+    single: player,
+    multiple: (data) => data.map(player),
+  },
   [ModelType.TEAM]: {
     single: team,
     multiple: (data) => data.map(team),
   },
+  [ModelType.TRANSFER]: {
+    single: transfer,
+    multiple: (data) => data.map(transfer),
+  },
 };
-
 export function convert<T extends ModelType>(
   modelType: T,
   data: ModelDataMap[T]

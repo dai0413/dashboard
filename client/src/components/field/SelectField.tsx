@@ -1,7 +1,7 @@
 import { OptionArray } from "../../context/options-provider";
 
 type SelectFieldProps = {
-  type: "text" | "number" | "date";
+  type: "text" | "number" | "date" | "checkbox";
   value: string | number | Date;
   options: OptionArray;
   onChange: (value: string | number | Date) => void;
