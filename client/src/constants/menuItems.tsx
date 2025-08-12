@@ -22,6 +22,11 @@ export const BottomMenuItems: IconButtonProps[] = [
     to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
     text: "日本",
   },
+  {
+    icon: "setting",
+    to: APP_ROUTES.ADMIN,
+    text: "管理",
+  },
 ];
 
 export const SPMenuItems: IconButtonProps[] = [
@@ -44,6 +49,11 @@ export const SPMenuItems: IconButtonProps[] = [
     icon: "my-page",
     to: APP_ROUTES.INJURY,
     text: "マイページ",
+  },
+  {
+    icon: "setting",
+    to: APP_ROUTES.ADMIN,
+    text: "管理",
   },
 ];
 
