@@ -18,7 +18,8 @@ import { TopPageProvider } from "./context/top-page-context";
 import { ModelWrapper } from "./context/models/model-wrapper";
 
 import { ModelTable, ModelDetail, Summary } from "./routes";
-import Models from "./pages/Models";
+import NoNumber from "./pages/NoNumber";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App: React.FC = () => {
   return (
@@ -35,6 +36,14 @@ const App: React.FC = () => {
                         {ModelTable}
                         {ModelDetail}
                         {Summary}
+                        <Route
+                          path={APP_ROUTES.ADMIN}
+                          element={wrapWithPrivateRoute(
+                            <Layout>
+                              <AdminDashboard />
+                            </Layout>
+                          )}
+                        />
                         <Route
                           path={APP_ROUTES.HOME}
                           element={
@@ -64,10 +73,10 @@ const App: React.FC = () => {
                           }
                         />
                         <Route
-                          path={APP_ROUTES.MODELS}
+                          path={APP_ROUTES.NO_NUMBER}
                           element={wrapWithPrivateRoute(
                             <Layout>
-                              <Models />
+                              <NoNumber />
                             </Layout>
                           )}
                         />

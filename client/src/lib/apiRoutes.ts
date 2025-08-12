@@ -70,5 +70,7 @@ export const API_ROUTES = {
       `${API_BASE_URL}/transfer/current-players/${teamId}`,
     CURRENT_LOANS_BY_TEAM: (teamId: string | number) =>
       `${API_BASE_URL}/transfer/current-loans/${teamId}`,
+    NO_NUMBER: (countryId: string | number) =>
+      `${API_BASE_URL}/transfer/no-number/${countryId}`,
   },
 };
