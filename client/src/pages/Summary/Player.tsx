@@ -22,6 +22,8 @@ import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
+import { useForm } from "../../context/form-context";
+import { useFilter } from "../../context/filter-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -34,6 +36,12 @@ const Tabs = PlayerTabItems.filter(
 const Player = () => {
   const api = useApi();
   const { id } = useParams();
+
+  const { isOpen: formIsOpen } = useForm();
+  const { resetFilterCOnditions } = useFilter();
+
+  useEffect(() => resetFilterCOnditions(), []);
+
   const [selectedTab, setSelectedTab] = useState("transfer");
 
   const { selected, readItem, isLoading } = usePlayer();
@@ -82,7 +90,7 @@ const Player = () => {
     readItem(id);
     readTransfers(id);
     readInjuries(id);
-  }, [id]);
+  }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
