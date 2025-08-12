@@ -3,11 +3,6 @@ import { IconButtonProps } from "../components/buttons/IconButton";
 
 export const BottomMenuItems: IconButtonProps[] = [
   {
-    to: APP_ROUTES.HOME,
-    icon: "home",
-    text: "ホーム",
-  },
-  {
     to: APP_ROUTES.TRANSFER,
     icon: "transfer",
     text: "移籍",
@@ -18,9 +13,14 @@ export const BottomMenuItems: IconButtonProps[] = [
     text: "怪我",
   },
   {
-    to: APP_ROUTES.ME,
-    icon: "my-page",
-    text: "マイページ",
+    to: APP_ROUTES.HOME,
+    icon: "home",
+    text: "ホーム",
+  },
+  {
+    icon: "series",
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
+    text: "日本",
   },
 ];
 
@@ -34,6 +34,11 @@ export const SPMenuItems: IconButtonProps[] = [
     icon: "injury",
     to: APP_ROUTES.INJURY,
     text: "怪我",
+  },
+  {
+    icon: "series",
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
+    text: "日本",
   },
   {
     icon: "my-page",
