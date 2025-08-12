@@ -86,7 +86,7 @@ const Team = () => {
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-      params: { team: id, from_date_after: new Date() },
+      params: { to_team: id, from_date_after: new Date() },
       onSuccess: (items: Transfer[]) => {
         setFuturePlayers(convert(ModelType.TRANSFER, items));
       },
