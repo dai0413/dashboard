@@ -8,5 +8,9 @@ export const team = (t: Team): TeamGet => {
   return {
     ...t,
     genre: genre ? genre : "",
+    country: {
+      label: t.country?.name ?? "",
+      id: t.country?._id ?? "",
+    },
   };
 };

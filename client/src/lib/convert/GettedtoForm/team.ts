@@ -7,5 +7,6 @@ export const team = (t: TeamGet): TeamForm => {
   return {
     ...t,
     genre: genre ? genre : "",
+    country: t.country.id,
   };
 };
