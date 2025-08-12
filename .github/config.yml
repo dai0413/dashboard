@@ -11,7 +11,8 @@ issue_templates:
     file: feature_request.md
     labels: ["enhancement"]
 
-  - name: バグ報告
-    description: バグ発見時のテンプレート
-    file: bug_report.md
-    labels: ["bug"]
+  - name: 🧱 新規モデル追加
+    description: データベースに新しいモデルを追加する手順を記録・共有
+    file: add-new-model.md
+    title: "[Model] 新規モデル追加: "
+    labels: ["model", "backend", "frontend"]
