@@ -51,6 +51,12 @@ const Header = () => {
             <Link to={APP_ROUTES.INJURY} className="hover:text-gray-900">
               怪我
             </Link>
+            <Link
+              to={`${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`}
+              className="hover:text-gray-900"
+            >
+              日本
+            </Link>
             {accessToken ? (
               <>
                 <Link to={APP_ROUTES.ME} className="hover:text-gray-900">

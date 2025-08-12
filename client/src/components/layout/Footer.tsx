@@ -47,17 +47,14 @@ const Footer = () => {
             ))}
 
             {(staffState.admin || isDev) && (
-              <>
-                <IconButton
-                  key={"データ一覧"}
-                  // icon={icon}
-                  text={"データ一覧"}
-                  color="gray"
-                  to={APP_ROUTES.MODELS}
-                  direction="vertical"
-                  className="hover:text-green-500"
-                />
-              </>
+              <IconButton
+                icon="series"
+                text={"データ"}
+                color="gray"
+                to={APP_ROUTES.MODELS}
+                direction="vertical"
+                className="hover:text-green-500"
+              />
             )}
           </div>
         </div>
