@@ -3,7 +3,8 @@ export const APP_ROUTES = {
   ADMIN: "/admin",
   LOGIN: "/login",
   ME: "/me",
-  NO_NUMBER: "/transfer-no-number",
+  NO_NUMBER: "/transfer/no-number",
+  NO_CALLUP: "/national-callup/series-count",
 
   // model
   COUNTRY: "/country",

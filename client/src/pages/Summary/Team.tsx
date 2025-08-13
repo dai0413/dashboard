@@ -82,7 +82,7 @@ const Team = () => {
   const readCurrentPlayers = (id: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TRANSFER.CURRENT_PLAYERS_BY_TEAM(id),
+      backendRoute: API_ROUTES.AGGREGATE.CURRENT_PLAYERS_BY_TEAM(id),
       params: { from_date_to: String(new Date()) },
       onSuccess: (items: Transfer[]) => {
         setPlayers(convert(ModelType.TRANSFER, items));
@@ -104,7 +104,7 @@ const Team = () => {
   const readCurrentLoans = (id: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TRANSFER.CURRENT_LOANS_BY_TEAM(id),
+      backendRoute: API_ROUTES.AGGREGATE.CURRENT_LOANS_BY_TEAM(id),
       onSuccess: (items: Transfer[]) => {
         setOnLoan(convert(ModelType.TRANSFER, items));
       },
