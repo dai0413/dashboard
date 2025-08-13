@@ -8,23 +8,38 @@ const getCurrentPlayersByTeamService = async (
 ) => {
   const matchStage = {};
 
-  // from_date に関するフィルタ条件を構築
-  if (from_date_from || from_date_to) {
-    matchStage.from_date = {};
-    if (from_date_from) {
-      matchStage.from_date.$gte = new Date(from_date_from);
-    }
-    if (from_date_to) {
-      matchStage.from_date.$lte = new Date(from_date_to);
-    }
+  // チームID
+  if (teamId) {
+    matchStage["latestTransfer.to_team"] = {
+      $type: "objectId",
+      $eq: new mongoose.Types.ObjectId(teamId),
+    };
   }
 
-  return Transfer.aggregate([
-    // optional: from_date でフィルタリング
-    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+  // from_date範囲
+  if (from_date_from || from_date_to) {
+    const dateFilter = {};
+    if (from_date_from) dateFilter.$gte = new Date(from_date_from);
+    if (from_date_to) dateFilter.$lte = new Date(from_date_to);
+    matchStage["latestTransfer.from_date"] = dateFilter;
+  }
 
+  // form条件
+  matchStage["latestTransfer.form"] = {
+    $in: [
+      "完全",
+      "期限付き",
+      "期限付き延長",
+      "育成型期限付き",
+      "育成型期限付き延長",
+      "復帰",
+      "更新",
+    ],
+  };
+
+  return Transfer.aggregate([
     // 最新の移籍が上に来るように並べる
-    { $sort: { from_date: -1, _id: -1 } },
+    { $sort: { doa: -1, _id: -1 } },
 
     // playerごとに最新の移籍だけを残す
     {
@@ -33,28 +48,12 @@ const getCurrentPlayersByTeamService = async (
         latestTransfer: { $first: "$$ROOT" },
       },
     },
+    // optional: from_date でフィルタリング
+    { $match: matchStage },
 
     // latestTransferをルートに置く
     {
       $replaceRoot: { newRoot: "$latestTransfer" },
-    },
-
-    // 最新移籍の to_team が一致するプレイヤーだけ残す
-    {
-      $match: {
-        to_team: new mongoose.Types.ObjectId(teamId),
-        form: {
-          $in: [
-            "完全",
-            "期限付き",
-            "期限付き延長",
-            "育成型期限付き",
-            "育成型期限付き延長",
-            "復帰",
-            "更新",
-          ],
-        },
-      },
     },
 
     // from_team の情報を取得
