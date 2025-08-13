@@ -38,8 +38,10 @@ import {
   SortableFieldDefinition,
 } from "../../types/field";
 
+const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
+
 const initialFormData: NationalMatchSeriesForm = {
-  country: "688b2c5fe7d7762ddaad1dfb",
+  country: japan,
 };
 
 const defaultContext = getDefaultValue(initialFormData);
