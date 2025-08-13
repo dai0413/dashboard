@@ -28,6 +28,7 @@ import {
   NationalCallupGet,
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useFilter } from "../../context/filter-context";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -40,6 +41,9 @@ const Tabs = NationalTabItems.filter(
 const National = () => {
   const api = useApi();
   const { id } = useParams();
+  const { resetFilterConditions } = useFilter();
+  useEffect(() => resetFilterConditions(), []);
+
   const [selectedTab, setSelectedTab] = useState("series");
 
   const { selected, readItem, isLoading } = useCountry();

@@ -38,9 +38,9 @@ const Player = () => {
   const { id } = useParams();
 
   const { isOpen: formIsOpen } = useForm();
-  const { resetFilterCOnditions } = useFilter();
+  const { resetFilterConditions } = useFilter();
 
-  useEffect(() => resetFilterCOnditions(), []);
+  useEffect(() => resetFilterConditions(), []);
 
   const [selectedTab, setSelectedTab] = useState("transfer");
 
