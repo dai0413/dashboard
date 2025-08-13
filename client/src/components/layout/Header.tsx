@@ -13,6 +13,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
+  const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
   return (
     <>
@@ -50,7 +51,7 @@ const Header = () => {
               怪我
             </Link>
             <Link
-              to={`${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`}
+              to={`${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`}
               className="hover:text-gray-900"
             >
               日本

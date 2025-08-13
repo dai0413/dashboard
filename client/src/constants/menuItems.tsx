@@ -1,5 +1,6 @@
 import { APP_ROUTES } from "../lib/appRoutes";
 import { IconButtonProps } from "../components/buttons/IconButton";
+const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
 export const BottomMenuItems: IconButtonProps[] = [
   {
@@ -19,7 +20,7 @@ export const BottomMenuItems: IconButtonProps[] = [
   },
   {
     icon: "series",
-    to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`,
     text: "日本",
   },
   {
@@ -42,7 +43,7 @@ export const SPMenuItems: IconButtonProps[] = [
   },
   {
     icon: "series",
-    to: `${APP_ROUTES.NATIONAL_SUMMARY}/688b2c5fe7d7762ddaad1dfb`,
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`,
     text: "日本",
   },
   {
@@ -69,7 +70,6 @@ export const PlayerTabItems: IconButtonProps[] = [
   {
     icon: "nationality",
     text: "代表歴",
-    className: "cursor-not-allowed",
   },
 ];
 
