@@ -114,17 +114,11 @@ const National = () => {
   };
 
   const callupOptions = {
-    filterField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
-          .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+    filterField: ModelType.NATIONAL_CALLUP
+      ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isFilterable)
       : [],
-    sortField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+    sortField: ModelType.NATIONAL_CALLUP
+      ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isSortable)
       : [],
   };
 
