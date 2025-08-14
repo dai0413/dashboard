@@ -5,8 +5,14 @@ const mongoose = require("mongoose");
 const { formatNationalCallup } = require("../utils/format-national-callup");
 
 const getAllNationalCallUp = async (req, res) => {
-  const country = req.query.country || null;
   const series = req.query.series || null;
+
+  const matchStage = {};
+
+  if (req.query.country)
+    matchStage.country = new mongoose.Types.ObjectId(req.query.country);
+  if (req.query.player)
+    matchStage.player = new mongoose.Types.ObjectId(req.query.player);
 
   const nationalMatchSeries = await NationalCallUp.aggregate([
     ...(series
@@ -25,15 +31,7 @@ const getAllNationalCallUp = async (req, res) => {
       },
     },
     { $unwind: "$series" },
-    ...(country
-      ? [
-          {
-            $match: {
-              "series.country": new mongoose.Types.ObjectId(country),
-            },
-          },
-        ]
-      : []),
+    { $match: matchStage },
     {
       $lookup: {
         from: "players",
