@@ -9,8 +9,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       {
         key: "series",
         label: "代表試合シリーズ",
-        type: "select",
-        // required: true,
+        type: "table",
+        required: true,
       },
     ],
   },

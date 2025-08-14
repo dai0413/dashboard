@@ -363,7 +363,13 @@ const Form = <T extends keyof FormTypeMap>() => {
               )}
 
               {Object.entries(formData).map(([key, value]) => {
-                if (key === "_id" || key === "__v") return;
+                if (
+                  key === "_id" ||
+                  key === "__v" ||
+                  key === "createdAt" ||
+                  key === "updatedAt"
+                )
+                  return;
 
                 const field = formSteps
                   .flatMap((step) => step.fields || [])
@@ -373,6 +379,7 @@ const Form = <T extends keyof FormTypeMap>() => {
 
                 if (field?.type === "select" || field?.type === "table") {
                   const options = getOptions(key);
+                  console.log("key:", key, "options", options);
                   const selected = options?.find((opt) => opt.key === value);
                   displayValue = selected?.label || "未選択";
                 }

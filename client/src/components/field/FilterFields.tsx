@@ -1,10 +1,10 @@
-import { OptionArray } from "../../context/options-provider";
+import { OptionArray } from "../../types/option";
 import { InputField, SelectField } from "../field";
 
 type FilterFieldsProps = {
-  type: "string" | "number" | "Date" | "select";
-  value: string | number | Date;
-  onChange: (value: string | number | Date) => void;
+  type: "string" | "number" | "Date" | "select" | "checkbox";
+  value: string | number | Date | boolean;
+  onChange: (value: string | number | Date | boolean) => void;
   options: OptionArray;
 };
 
@@ -18,6 +18,14 @@ const FilterFields = ({
     case "string":
       return (
         <InputField type="text" value={value as string} onChange={onChange} />
+      );
+    case "checkbox":
+      return (
+        <InputField
+          type="checkbox"
+          value={value as string}
+          onChange={onChange}
+        />
       );
     case "number":
       return (
