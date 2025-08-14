@@ -28,7 +28,7 @@ const NationalCallUpSchema = new mongoose.Schema(
     number: {
       type: Number,
     },
-    position: {
+    position_group: {
       type: String,
       enum: ["GK", "DF", "MF", "FW", "MF/FW", "FP"],
     },

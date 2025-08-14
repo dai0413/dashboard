@@ -1,10 +1,13 @@
 import { Label } from "../types";
 import { Player } from "./player";
 import { Team } from "./team";
-import { PositionOptions, FormOptions } from "../../context/options-provider";
+import { position } from "../../utils/createOption/position";
+import { form } from "../../utils/createOption/form";
 
-type Position = (typeof PositionOptions)[number] | null;
-type Form = (typeof FormOptions)[number] | null;
+const positionOptions = position();
+const formOptions = form();
+type Position = (typeof positionOptions)[number] | null;
+type Form = (typeof formOptions)[number] | null;
 
 export type Transfer = {
   _id: string;

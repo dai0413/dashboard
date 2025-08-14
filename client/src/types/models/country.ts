@@ -1,14 +1,16 @@
-import {
-  AreaOptions,
-  ConfederationOptions,
-  DistrictOptions,
-  SubConfederationOptions,
-} from "../../context/options-provider";
+import { area } from "../../utils/createOption/area";
+import { confederation } from "../../utils/createOption/confederation";
+import { district } from "../../utils/createOption/district";
+import { subConfederation } from "../../utils/createOption/subConfederation";
 
-type Area = (typeof AreaOptions)[number] | null;
-type District = (typeof DistrictOptions)[number] | null;
-type Confederation = (typeof ConfederationOptions)[number] | null;
-type SubConfederation = (typeof SubConfederationOptions)[number] | null;
+const areaOptions = area().map((a) => a.label);
+const districtOptions = district().map((a) => a.label);
+const confederationOptions = confederation().map((a) => a.label);
+const subConfederationOptions = subConfederation().map((a) => a.label);
+type Area = (typeof areaOptions)[number] | null;
+type District = (typeof districtOptions)[number] | null;
+type Confederation = (typeof confederationOptions)[number] | null;
+type SubConfederation = (typeof subConfederationOptions)[number] | null;
 
 export type Country = {
   _id: string;

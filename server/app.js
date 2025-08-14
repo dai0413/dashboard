@@ -33,6 +33,9 @@ const authmiddleware = require("./middleware/auth");
 
 // routes
 const auth = require("./routes/auth");
+const top = require("./routes/top");
+const aggregate = require("./routes/aggregate");
+
 const player = require("./routes/player");
 const transfer = require("./routes/transfer");
 const injury = require("./routes/injury");
@@ -41,8 +44,8 @@ const country = require("./routes/country");
 const nationalMatchSeries = require("./routes/national-match-series");
 const nationalCallup = require("./routes/national-callup");
 
-const top = require("./routes/top");
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/aggregate", authmiddleware, aggregate);
 app.use("/api/v1/player", authmiddleware, player);
 app.use("/api/v1/transfer", authmiddleware, transfer);
 app.use("/api/v1/injury", authmiddleware, injury);

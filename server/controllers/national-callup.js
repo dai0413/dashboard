@@ -3,19 +3,24 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
 const { formatNationalCallup } = require("../utils/format-national-callup");
+const addPositionGroupOrder = require("../order/position_group");
 
 const getAllNationalCallUp = async (req, res) => {
-  const country = req.query.country || null;
-  const series = req.query.series || null;
+  const series = req.query.series
+    ? new mongoose.Types.ObjectId(req.query.series)
+    : null;
+  const country = req.query.country
+    ? new mongoose.Types.ObjectId(req.query.country)
+    : null;
+
+  const matchStage = {};
+
+  if (req.query.player)
+    matchStage.player = new mongoose.Types.ObjectId(req.query.player);
 
   const nationalMatchSeries = await NationalCallUp.aggregate([
-    ...(series
-      ? [
-          {
-            $match: { series: new mongoose.Types.ObjectId(series) },
-          },
-        ]
-      : []),
+    addPositionGroupOrder,
+    ...(series ? [{ $match: { series } }] : []),
     {
       $lookup: {
         from: "nationalmatchseries",
@@ -25,15 +30,8 @@ const getAllNationalCallUp = async (req, res) => {
       },
     },
     { $unwind: "$series" },
-    ...(country
-      ? [
-          {
-            $match: {
-              "series.country": new mongoose.Types.ObjectId(country),
-            },
-          },
-        ]
-      : []),
+    ...(country ? [{ $match: { "series.country": country } }] : []),
+    ...(Object.keys(matchStage).length ? [{ $match: matchStage }] : []),
     {
       $lookup: {
         from: "players",
@@ -52,7 +50,16 @@ const getAllNationalCallUp = async (req, res) => {
       },
     },
     { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
-    { $sort: { joined_at: -1, position: -1, number: 1, _id: -1 } },
+    {
+      $sort: {
+        joined_at: -1,
+        series: -1,
+        position_group_order: 1,
+        number: 1,
+        _id: -1,
+      },
+    },
+    { $project: { position_group_order: 0 } },
   ]);
 
   const result = nationalMatchSeries.map(formatNationalCallup);

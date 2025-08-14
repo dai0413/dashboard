@@ -40,9 +40,6 @@ const RenderField = <T extends keyof FormTypeMap>({
       ? "checkbox"
       : "text";
 
-  // console.log("formData[key]", key, formData[key]);
-  // 後で追加フィルタリング
-
   const inputFieldOnChange = (value: string | number | Date | boolean) => {
     updateFilter(key as string, value as string);
   };
@@ -363,7 +360,13 @@ const Form = <T extends keyof FormTypeMap>() => {
               )}
 
               {Object.entries(formData).map(([key, value]) => {
-                if (key === "_id" || key === "__v") return;
+                if (
+                  key === "_id" ||
+                  key === "__v" ||
+                  key === "createdAt" ||
+                  key === "updatedAt"
+                )
+                  return;
 
                 const field = formSteps
                   .flatMap((step) => step.fields || [])
