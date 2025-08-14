@@ -3,10 +3,14 @@ import { TableContainer } from "../../components/table";
 import { useInjury } from "../../context/models/injury-context";
 import { ModelType } from "../../types/models";
 import { useForm } from "../../context/form-context";
+import { useFilter } from "../../context/filter-context";
 
 const Injury = () => {
   const injuryContext = useInjury();
   const { isOpen } = useForm();
+  const { resetFilterConditions } = useFilter();
+
+  useEffect(() => resetFilterConditions(), []);
 
   useEffect(() => {
     injuryContext.readItems({});

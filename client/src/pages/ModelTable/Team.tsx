@@ -4,11 +4,14 @@ import { useForm } from "../../context/form-context";
 import { useTeam } from "../../context/models/team-context";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useFilter } from "../../context/filter-context";
 
 const Team = () => {
   const teamContext = useTeam();
   const { isOpen } = useForm();
+  const { resetFilterConditions } = useFilter();
 
+  useEffect(() => resetFilterConditions(), []);
   useEffect(() => {
     teamContext.readItems({});
   }, [isOpen]);
