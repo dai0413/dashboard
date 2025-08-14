@@ -1,5 +1,6 @@
-import { operatorOptions } from "../context/options-provider";
+import { operator } from "../utils/createOption/operator";
 
+const operatorOptions = operator();
 export type FilterOperator = (typeof operatorOptions)[number]["key"];
 
 // 共通の基本型

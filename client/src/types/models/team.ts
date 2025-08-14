@@ -1,8 +1,8 @@
-import { genreOptions } from "../../context/options-provider";
+import { genre } from "../../utils/createOption/genre";
 import { Label } from "../types";
 import { Country } from "./country";
 
-const GenreOptions = genreOptions.map((item) => item.key);
+const GenreOptions = genre().map((item) => item.key);
 type Genre = (typeof GenreOptions)[number] | null;
 
 export type Team = {

@@ -1,8 +1,8 @@
-import { teamClassOptions } from "../../context/options-provider";
+import { teamClass } from "../../utils/createOption/teamClass";
 import { Label } from "../types";
 import { Country } from "./country";
 
-const TeamClassOptions = teamClassOptions.map((item) => item.key);
+const TeamClassOptions = teamClass().map((item) => item.key);
 
 type TeamClass = (typeof TeamClassOptions)[number] | null;
 
