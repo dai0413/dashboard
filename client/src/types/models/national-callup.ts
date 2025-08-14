@@ -23,7 +23,7 @@ export type NationalCallup = {
   joined_at: Date | null;
   left_at: Date | null;
   number: number | null;
-  position: PositionGroup;
+  position_group: PositionGroup;
   is_captain: boolean;
   is_overage: boolean;
   is_backup: boolean;

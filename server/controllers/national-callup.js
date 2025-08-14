@@ -5,23 +5,20 @@ const mongoose = require("mongoose");
 const { formatNationalCallup } = require("../utils/format-national-callup");
 
 const getAllNationalCallUp = async (req, res) => {
-  const series = req.query.series || null;
+  const series = req.query.series
+    ? new mongoose.Types.ObjectId(req.query.series)
+    : null;
+  const country = req.query.country
+    ? new mongoose.Types.ObjectId(req.query.country)
+    : null;
 
   const matchStage = {};
 
-  if (req.query.country)
-    matchStage.country = new mongoose.Types.ObjectId(req.query.country);
   if (req.query.player)
     matchStage.player = new mongoose.Types.ObjectId(req.query.player);
 
   const nationalMatchSeries = await NationalCallUp.aggregate([
-    ...(series
-      ? [
-          {
-            $match: { series: new mongoose.Types.ObjectId(series) },
-          },
-        ]
-      : []),
+    ...(series ? [{ $match: { series } }] : []),
     {
       $lookup: {
         from: "nationalmatchseries",
@@ -31,7 +28,8 @@ const getAllNationalCallUp = async (req, res) => {
       },
     },
     { $unwind: "$series" },
-    { $match: matchStage },
+    ...(country ? [{ $match: { "series.country": country } }] : []),
+    ...(Object.keys(matchStage).length ? [{ $match: matchStage }] : []),
     {
       $lookup: {
         from: "players",
@@ -50,7 +48,15 @@ const getAllNationalCallUp = async (req, res) => {
       },
     },
     { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
-    { $sort: { joined_at: -1, position: -1, number: 1, _id: -1 } },
+    {
+      $sort: {
+        joined_at: -1,
+        series: -1,
+        position_group: -1,
+        number: 1,
+        _id: -1,
+      },
+    },
   ]);
 
   const result = nationalMatchSeries.map(formatNationalCallup);

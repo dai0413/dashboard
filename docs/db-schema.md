@@ -162,7 +162,7 @@
 | joined_at           | 日付     | true  | 合流日         |                          |
 | left_at             | 日付     | true  | 離脱日         |                          |
 | number              | 数字     | true  | 背番号         |                          |
-| position            | 文字列   | true  | ポジション     | ※1 ENUM                  |
+| position_group      | 文字列   | true  | ポジション     | ※1 ENUM                  |
 | is_overage          | 真偽値   | true  | オーバーエイジ |                          |
 | is_backup           | 真偽値   | true  | バックアップ   |                          |
 | is_training_partner | 真偽値   | true  | パートナー     |                          |
