@@ -1,18 +1,16 @@
-import {
-  callStatusOptions,
-  leftReasonOptions,
-  positionGroupOptions,
-} from "../../context/options-provider";
+import { leftReason } from "../../utils/createOption/leftReason";
+import { positionGroup } from "../../utils/createOption/positionGroup";
+import { status } from "../../utils/createOption/status";
 import { Label } from "../types";
 import { NationalMatchSeries } from "./national-match-series";
 import { Player } from "./player";
 import { Team } from "./team";
 
-const CallStatusOptions = callStatusOptions.map((item) => item.key);
-const PositionGroupOptions = positionGroupOptions.map((item) => item.key);
-const LeftReasonOptions = leftReasonOptions.map((item) => item.key);
+const StatusOptions = status().map((item) => item.key);
+const PositionGroupOptions = positionGroup().map((item) => item.key);
+const LeftReasonOptions = leftReason().map((item) => item.key);
 
-type Status = (typeof CallStatusOptions)[number] | null;
+type Status = (typeof StatusOptions)[number] | null;
 type PositionGroup = (typeof PositionGroupOptions)[number] | null;
 type LeftReason = (typeof LeftReasonOptions)[number] | null;
 

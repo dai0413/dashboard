@@ -1,15 +1,13 @@
 import {
-  callStatusOptions,
-  leftReasonOptions,
-} from "../../../context/options-provider";
-import {
   NationalCallup,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
+import { leftReason } from "../../../utils/createOption/leftReason";
+import { status } from "../../../utils/createOption/status";
 
 export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
-  const status = callStatusOptions.find((item) => item.key === t.status)?.label;
-  const left_reason = leftReasonOptions.find(
+  const statusOptions = status().find((item) => item.key === t.status)?.label;
+  const left_reason = leftReason().find(
     (item) => item.key === t.left_reason
   )?.label;
 
@@ -30,7 +28,7 @@ export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
       label: t.team ? t.team.abbr || t.team.team : "不明",
       id: t.team && "_id" in t.team ? t.team._id : "",
     },
-    status: status ? status : "",
+    status: statusOptions ? statusOptions : "",
     left_reason: left_reason ? left_reason : "",
   };
 };

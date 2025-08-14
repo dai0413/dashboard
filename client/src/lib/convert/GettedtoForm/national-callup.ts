@@ -1,15 +1,13 @@
 import {
-  callStatusOptions,
-  leftReasonOptions,
-} from "../../../context/options-provider";
-import {
   NationalCallupForm,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
+import { leftReason } from "../../../utils/createOption/leftReason";
+import { status } from "../../../utils/createOption/status";
 
 export const nationalCallup = (t: NationalCallupGet): NationalCallupForm => {
-  const status = callStatusOptions.find((item) => item.label === t.status)?.key;
-  const left_reason = leftReasonOptions.find(
+  const statusOptions = status().find((item) => item.label === t.status)?.key;
+  const left_reason = leftReason().find(
     (item) => item.label === t.left_reason
   )?.key;
 
@@ -20,7 +18,7 @@ export const nationalCallup = (t: NationalCallupGet): NationalCallupForm => {
     series: t.series.id,
     player: t.player.id,
     team: t.team.id,
-    status: status,
+    status: statusOptions,
     left_reason: left_reason,
   };
 };
