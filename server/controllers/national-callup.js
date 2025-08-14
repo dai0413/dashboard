@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
 const { formatNationalCallup } = require("../utils/format-national-callup");
+const addPositionGroupOrder = require("../order/position_group");
 
 const getAllNationalCallUp = async (req, res) => {
   const series = req.query.series
@@ -18,6 +19,7 @@ const getAllNationalCallUp = async (req, res) => {
     matchStage.player = new mongoose.Types.ObjectId(req.query.player);
 
   const nationalMatchSeries = await NationalCallUp.aggregate([
+    addPositionGroupOrder,
     ...(series ? [{ $match: { series } }] : []),
     {
       $lookup: {
@@ -52,11 +54,12 @@ const getAllNationalCallUp = async (req, res) => {
       $sort: {
         joined_at: -1,
         series: -1,
-        position_group: -1,
+        position_group_order: 1,
         number: 1,
         _id: -1,
       },
     },
+    { $project: { position_group_order: 0 } },
   ]);
 
   const result = nationalMatchSeries.map(formatNationalCallup);
