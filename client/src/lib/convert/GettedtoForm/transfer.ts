@@ -8,4 +8,6 @@ export const transfer = (t: TransferGet): TransferForm => ({
   player: t.player.id,
   from_team: t.from_team.id,
   to_team: t.to_team.id,
+  from_team_name: !t.from_team.id ? t.from_team.label : undefined,
+  to_team_name: !t.to_team.id ? t.to_team.label : undefined,
 });
