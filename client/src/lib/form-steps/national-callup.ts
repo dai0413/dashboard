@@ -53,7 +53,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         type: "number",
       },
       {
-        key: "position",
+        key: "position_group",
         label: "ポジション",
         type: "select",
       },

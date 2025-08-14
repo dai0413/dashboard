@@ -50,7 +50,7 @@ export const nationalCallUp: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: "position",
+    key: "position_group",
     label: "ポジション",
     type: "select",
     filterable: true,

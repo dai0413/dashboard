@@ -28,7 +28,7 @@ export enum OptionType {
   SUB_CONFEDERATION = "sub_confederation",
   TEAM_CLASS = "team_class",
   LEFT_REASON = "left_reason",
-  POSITION_GROUP = "positionGroup",
+  POSITION_GROUP = "position_group",
   STATUS = "status",
 }
 

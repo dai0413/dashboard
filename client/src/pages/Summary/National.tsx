@@ -215,7 +215,7 @@ const National = () => {
             { label: "選手", field: "player" },
             { label: "招集状況", field: "status" },
             { label: "背番号", field: "number" },
-            { label: "ポジション", field: "position" },
+            { label: "ポジション", field: "position_group" },
           ]}
           modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}
