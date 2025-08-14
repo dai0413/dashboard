@@ -157,7 +157,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
           if (isLabelObject(itemValue)) {
             compareValue = itemValue.label;
           } else {
-            compareValue = null;
+            compareValue = itemValue;
           }
         } else {
           compareValue = itemValue;
@@ -207,9 +207,17 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
             return Number(compareValue) <= Number(condVal);
 
           case "greater":
+            if (cond.type === "Date") {
+              if (compareValue && condVal && typeof condVal !== "boolean")
+                return new Date(compareValue) > new Date(condVal);
+            }
             return Number(compareValue) > Number(condVal);
 
           case "less":
+            if (cond.type === "Date") {
+              if (compareValue && condVal && typeof condVal !== "boolean")
+                return new Date(compareValue) < new Date(condVal);
+            }
             return Number(compareValue) < Number(condVal);
 
           case "is-empty":

@@ -3,11 +3,14 @@ import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useTransfer } from "../../context/models/transfer-context";
 import { ModelType } from "../../types/models";
+import { useFilter } from "../../context/filter-context";
 
 const Transfer = () => {
   const transferContext = useTransfer();
   const { isOpen } = useForm();
+  const { resetFilterConditions } = useFilter();
 
+  useEffect(() => resetFilterConditions(), []);
   useEffect(() => {
     transferContext.readItems({});
   }, [isOpen]);
@@ -22,6 +25,7 @@ const Transfer = () => {
           { label: "移籍元", field: "from_team" },
           { label: "移籍先", field: "to_team" },
           { label: "形態", field: "form" },
+          { label: "背番号", field: "number" },
         ]}
         contextState={transferContext}
         modelType={ModelType.TRANSFER}

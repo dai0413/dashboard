@@ -4,11 +4,14 @@ import { useForm } from "../../context/form-context";
 import { usePlayer } from "../../context/models/player-context";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useFilter } from "../../context/filter-context";
 
 const Player = () => {
   const playerContext = usePlayer();
   const { isOpen } = useForm();
+  const { resetFilterConditions } = useFilter();
 
+  useEffect(() => resetFilterConditions(), []);
   useEffect(() => {
     playerContext.readItems({});
   }, [isOpen]);
