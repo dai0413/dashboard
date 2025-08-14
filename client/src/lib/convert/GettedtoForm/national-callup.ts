@@ -18,6 +18,7 @@ export const nationalCallup = (t: NationalCallupGet): NationalCallupForm => {
     series: t.series.id,
     player: t.player.id,
     team: t.team.id,
+    team_name: !t.team.id ? t.team.label : undefined,
     status: statusOptions,
     left_reason: left_reason,
   };

@@ -11,14 +11,15 @@ const InputField = ({
   onChange,
   placeholder,
 }: InputFieldProps) => {
-  const formattedValue =
-    type === "date"
-      ? typeof value === "string"
-        ? value.slice(0, 10)
-        : value instanceof Date
-        ? value.toISOString().slice(0, 10)
-        : ""
-      : value;
+  function formatDateValue(value: unknown): string {
+    if (typeof value === "string") return value.slice(0, 10);
+    if (value instanceof Date && !isNaN(value.getTime())) {
+      return value.toISOString().slice(0, 10);
+    }
+    return "";
+  }
+
+  const formattedValue = type === "date" ? formatDateValue(value) : value;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (type === "checkbox") {
