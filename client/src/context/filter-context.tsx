@@ -13,8 +13,8 @@ type FilterState = {
   filterCondition: FilterableFieldDefinition;
   resetFilterConditions: () => void;
   handleFieldSelect: (field: FilterableFieldDefinition) => void;
-  handleFieldValue: (value: string | number | Date) => void;
-  handleFieldOperator: (value: string | number | Date) => void;
+  handleFieldValue: (value: string | number | Date | boolean) => void;
+  handleFieldOperator: (value: string | number | Date | boolean) => void;
 
   handleEdit: (index: number) => void;
   handleDelete: (index: number) => void;
@@ -194,14 +194,14 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
           case "gte":
             if (cond.type === "Date") {
-              if (compareValue && condVal)
+              if (compareValue && condVal && typeof condVal !== "boolean")
                 return new Date(compareValue) >= new Date(condVal);
             }
             return Number(compareValue) >= Number(condVal);
 
           case "lte":
             if (cond.type === "Date") {
-              if (compareValue && condVal)
+              if (compareValue && condVal && typeof condVal !== "boolean")
                 return new Date(compareValue) <= new Date(condVal);
             }
             return Number(compareValue) <= Number(condVal);
@@ -268,13 +268,13 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const handleFieldValue = (value: string | number | Date) =>
+  const handleFieldValue = (value: string | number | Date | boolean) =>
     setFilterCondition((prev) => ({
       ...prev,
       value: value,
     }));
 
-  const handleFieldOperator = (value: string | number | Date) => {
+  const handleFieldOperator = (value: string | number | Date | boolean) => {
     setFilterCondition((prev) => ({
       ...prev,
       operator: value as FilterOperator,
