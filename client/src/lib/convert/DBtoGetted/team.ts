@@ -1,13 +1,12 @@
-import { genreOptions } from "../../../context/options-provider";
-
 import { Team, TeamGet } from "../../../types/models/team";
+import { genre } from "../../../utils/createOption/genre";
 
 export const team = (t: Team): TeamGet => {
-  const genre = genreOptions.find((item) => item.key === t.genre)?.label;
+  const genreOptions = genre().find((item) => item.key === t.genre)?.label;
 
   return {
     ...t,
-    genre: genre ? genre : "",
+    genre: genreOptions ? genreOptions : "",
     country: {
       label: t.country?.name ?? "",
       id: t.country?._id ?? "",

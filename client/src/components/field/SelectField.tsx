@@ -1,4 +1,4 @@
-import { OptionArray } from "../../context/options-provider";
+import { OptionArray } from "../../types/option";
 
 type SelectFieldProps = {
   type: "text" | "number" | "date" | "checkbox";

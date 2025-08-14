@@ -1,4 +1,5 @@
-export const toDateKey = (value: string | number | Date): string => {
+export const toDateKey = (value: string | number | Date | boolean): string => {
+  if (typeof value === "boolean") return "";
   const date = value instanceof Date ? value : new Date(value);
   // タイムゾーン補正つきのローカル時間で日付を生成
   const y = date.getFullYear();

@@ -7,7 +7,7 @@ import { ModelType } from "../../types/models";
 import { PlayerTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
-import { OptionArray } from "../../context/options-provider";
+import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import {
@@ -24,6 +24,10 @@ import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { useFilter } from "../../context/filter-context";
+import {
+  NationalCallup,
+  NationalCallupGet,
+} from "../../types/models/national-callup";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -50,10 +54,13 @@ const Player = () => {
   const [transferIsLoading, setTransferIsLoading] = useState<boolean>(false);
   const [injuries, setInjuries] = useState<InjuryGet[]>([]);
   const [injuriesIsLoading, setInjuriesIsLoading] = useState<boolean>(false);
+  const [callup, setCallup] = useState<NationalCallupGet[]>([]);
+  const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);
 
   const isLoadingSetters = {
     transfer: setTransferIsLoading,
     injury: setInjuriesIsLoading,
+    callup: setCallupIsLoading,
   };
 
   const setLoading = (
@@ -85,11 +92,23 @@ const Player = () => {
       handleLoading: (time) => setLoading(time, "injury"),
     });
 
+  const readCallup = (playerId: string) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+      params: { player: playerId },
+      onSuccess: (items: NationalCallup[]) => {
+        setCallup(convert(ModelType.NATIONAL_CALLUP, items));
+      },
+      handleLoading: (time) => setLoading(time, "callup"),
+    });
+
   useEffect(() => {
     if (!id) return;
     readItem(id);
     readTransfers(id);
     readInjuries(id);
+    readCallup(id);
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
@@ -121,6 +140,21 @@ const Player = () => {
       : [],
     sortField: ModelType.INJURY
       ? (fieldDefinition[ModelType.INJURY]
+          .filter(isSortable)
+          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+      : [],
+  };
+
+  const callupOptions = {
+    filterField: ModelType.NATIONAL_CALLUP
+      ? (fieldDefinition[ModelType.NATIONAL_CALLUP]
+          .filter(isFilterable)
+          .filter(
+            (file) => file.key !== "player"
+          ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.NATIONAL_CALLUP
+      ? (fieldDefinition[ModelType.NATIONAL_CALLUP]
           .filter(isSortable)
           .filter((file) => file.key !== "player") as SortableFieldDefinition[])
       : [],
@@ -217,6 +251,23 @@ const Player = () => {
           originalSortField={injuryOptions.sortField}
           formInitialData={{ player: id }}
           itemsLoading={injuriesIsLoading}
+        />
+      )}
+
+      {selectedTab === "nationality" && (
+        <TableContainer
+          items={callup}
+          headers={[
+            { label: "代表試合シリーズ", field: "series" },
+            { label: "招集状況", field: "status" },
+            { label: "背番号", field: "number" },
+            { label: "活動開始日", field: "joined_at" },
+          ]}
+          modelType={ModelType.NATIONAL_CALLUP}
+          originalFilterField={callupOptions.filterField}
+          originalSortField={callupOptions.sortField}
+          formInitialData={{ player: id }}
+          itemsLoading={callupIsLoading}
         />
       )}
     </div>

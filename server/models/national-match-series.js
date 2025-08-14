@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const NationalCallUp = require("../models/national-callup");
 
 const NationalMatchSeriesSchema = new mongoose.Schema(
   {
@@ -66,8 +67,6 @@ NationalMatchSeriesSchema.index(
 
 async function syncCallUps(doc) {
   if (!doc) return;
-
-  const NationalCallUp = mongoose.model("NationalCallUp");
 
   const callUps = await NationalCallUp.find({ series: doc._id });
 

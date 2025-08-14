@@ -20,6 +20,7 @@ import { ModelWrapper } from "./context/models/model-wrapper";
 import { ModelTable, ModelDetail, Summary } from "./routes";
 import NoNumber from "./pages/NoNumber";
 import AdminDashboard from "./pages/AdminDashboard";
+import NoCallUp from "./pages/NoCallup";
 
 const App: React.FC = () => {
   return (
@@ -33,9 +34,6 @@ const App: React.FC = () => {
                   <Router>
                     <div className="App">
                       <Routes>
-                        {ModelTable}
-                        {ModelDetail}
-                        {Summary}
                         <Route
                           path={APP_ROUTES.ADMIN}
                           element={wrapWithPrivateRoute(
@@ -80,6 +78,17 @@ const App: React.FC = () => {
                             </Layout>
                           )}
                         />
+                        <Route
+                          path={APP_ROUTES.NO_CALLUP}
+                          element={wrapWithPrivateRoute(
+                            <Layout>
+                              <NoCallUp />
+                            </Layout>
+                          )}
+                        />
+                        {ModelTable}
+                        {ModelDetail}
+                        {Summary}
                       </Routes>
                     </div>
                     <Form />

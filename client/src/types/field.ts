@@ -1,5 +1,6 @@
-import { operatorOptions } from "../context/options-provider";
+import { operator } from "../utils/createOption/operator";
 
+const operatorOptions = operator();
 export type FilterOperator = (typeof operatorOptions)[number]["key"];
 
 // 共通の基本型
@@ -12,7 +13,7 @@ type BaseField = {
 // フィルター用
 type FilterField = {
   filterable?: boolean;
-  value?: string | number | Date;
+  value?: string | number | Date | boolean;
   operator?: FilterOperator;
   logic?: "AND" | "OR";
 };

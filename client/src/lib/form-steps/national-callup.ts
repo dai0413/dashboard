@@ -9,8 +9,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       {
         key: "series",
         label: "代表試合シリーズ",
-        type: "select",
-        // required: true,
+        type: "table",
+        required: true,
       },
     ],
   },
@@ -34,7 +34,6 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         key: "team",
         label: "チーム",
         type: "table",
-        required: true,
       },
       {
         key: "team_name",
@@ -42,6 +41,19 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         type: "input",
       },
     ],
+    validate: (formData) => {
+      if (Boolean(formData.team) && Boolean(formData.team_name)) {
+        return {
+          success: false,
+          message: "チームを選択、または入力してください",
+        };
+      }
+
+      return {
+        success: true,
+        message: "",
+      };
+    },
   },
   {
     stepLabel: "日付",
@@ -53,7 +65,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         type: "number",
       },
       {
-        key: "position",
+        key: "position_group",
         label: "ポジション",
         type: "select",
       },

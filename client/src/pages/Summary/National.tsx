@@ -6,7 +6,7 @@ import { ModelType } from "../../types/models";
 import { NationalTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
-import { OptionArray } from "../../context/options-provider";
+import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import {
@@ -114,17 +114,11 @@ const National = () => {
   };
 
   const callupOptions = {
-    filterField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
-          .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+    filterField: ModelType.NATIONAL_CALLUP
+      ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isFilterable)
       : [],
-    sortField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+    sortField: ModelType.NATIONAL_CALLUP
+      ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isSortable)
       : [],
   };
 
@@ -215,7 +209,7 @@ const National = () => {
             { label: "選手", field: "player" },
             { label: "招集状況", field: "status" },
             { label: "背番号", field: "number" },
-            { label: "ポジション", field: "position" },
+            { label: "ポジション", field: "position_group" },
           ]}
           modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}

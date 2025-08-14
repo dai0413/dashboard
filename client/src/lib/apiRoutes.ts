@@ -66,11 +66,15 @@ export const API_ROUTES = {
     DETAIL: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
+  },
+  AGGREGATE: {
+    NO_CALLUP: (countryId: string | number) =>
+      `${API_BASE_URL}/aggregate/national-callup/series-count/${countryId}`,
     CURRENT_PLAYERS_BY_TEAM: (teamId: string | number) =>
-      `${API_BASE_URL}/transfer/current-players/${teamId}`,
+      `${API_BASE_URL}/aggregate/transfer/current-players/${teamId}`,
     CURRENT_LOANS_BY_TEAM: (teamId: string | number) =>
-      `${API_BASE_URL}/transfer/current-loans/${teamId}`,
+      `${API_BASE_URL}/aggregate/transfer/current-loans/${teamId}`,
     NO_NUMBER: (countryId: string | number) =>
-      `${API_BASE_URL}/transfer/no-number/${countryId}`,
+      `${API_BASE_URL}/aggregate/transfer/no-number/${countryId}`,
   },
 };

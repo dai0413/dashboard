@@ -1,13 +1,13 @@
-import { teamClassOptions } from "../../../context/options-provider";
 import {
   NationalMatchSeriesForm,
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
+import { teamClass } from "../../../utils/createOption/teamClass";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeriesGet
 ): NationalMatchSeriesForm => {
-  const team_class = teamClassOptions.find(
+  const team_class = teamClass().find(
     (item) => item.label === t.team_class
   )?.key;
 

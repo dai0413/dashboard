@@ -2,8 +2,7 @@ import { IconButton } from "../../buttons/index";
 import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
 import { FilterableFieldDefinition } from "../../../types/field";
-import { OptionArray } from "../../../context/options-provider";
-
+import { OptionArray } from "../../../types/option";
 type OptionsProps = {
   fieldOptions: OptionArray;
   valueOptions: OptionArray;
@@ -11,9 +10,9 @@ type OptionsProps = {
 };
 
 type OnchangeProps = {
-  handleFieldValue: (value: string | number | Date) => void;
-  handleFieldOperator: (value: string | number | Date) => void;
-  handleFieldSelect: (e: string | number | Date) => void;
+  handleFieldValue: (value: string | number | Date | boolean) => void;
+  handleFieldOperator: (value: string | number | Date | boolean) => void;
+  handleFieldSelect: (e: string | number | Date | boolean) => void;
 };
 
 type OnApplyProps = {

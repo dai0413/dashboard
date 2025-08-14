@@ -79,14 +79,20 @@ const AdminDashboard = () => {
         <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">
           定期確認
         </h2>
-        <Link to={APP_ROUTES.NO_NUMBER}>
-          <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
-            <h2 className="text-lg font-bold mb-2">背番号なし移籍</h2>
-            <p className="text-gray-500 text-sm">
-              背番号なしの移籍は編集して更新必要
-            </p>
-          </div>
-        </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <Link to={APP_ROUTES.NO_NUMBER}>
+            <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
+              <h2 className="text-lg font-bold mb-2">移籍</h2>
+              <p className="text-gray-500 text-sm">背番号が未登録</p>
+            </div>
+          </Link>
+          <Link to={APP_ROUTES.NO_CALLUP}>
+            <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
+              <h2 className="text-lg font-bold mb-2">代表試合シリーズ</h2>
+              <p className="text-gray-500 text-sm">招集メンバーが0人</p>
+            </div>
+          </Link>
+        </div>
       </section>
     </div>
   );

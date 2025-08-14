@@ -23,6 +23,8 @@ export type ReadItemsParamsMap = {
   };
   [ModelType.NATIONAL_CALLUP]: {
     country?: string;
+    player?: string;
+    series?: string;
   };
   [ModelType.NATIONAL_MATCH_SERIES]: {
     country?: string;
