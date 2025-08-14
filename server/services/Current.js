@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Transfer = require("../models/transfer");
+const addPositionGroup = require("../order/position");
+const addPositionGroupOrder = require("../order/position_group");
 
 const getCurrentPlayersByTeamService = async (
   teamId,
@@ -50,12 +52,10 @@ const getCurrentPlayersByTeamService = async (
     },
     // optional: from_date でフィルタリング
     { $match: matchStage },
-
     // latestTransferをルートに置く
     {
       $replaceRoot: { newRoot: "$latestTransfer" },
     },
-
     // from_team の情報を取得
     {
       $lookup: {
@@ -88,7 +88,10 @@ const getCurrentPlayersByTeamService = async (
       },
     },
     { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
-    { $sort: { number: 1 } },
+    addPositionGroup,
+    addPositionGroupOrder,
+    { $sort: { position_group_order: 1, number: 1 } },
+    { $project: { position_group: 0, position_group_order: 0 } },
   ]);
 };
 

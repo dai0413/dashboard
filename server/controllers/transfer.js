@@ -45,65 +45,69 @@ const dateValidation = async (id, newData) => {
 };
 
 const getAllTransfer = async (req, res) => {
-  let limit = parseInt(req.query.limit, 10);
-  const player = req.query.player ? req.query.player : null;
-  const team = req.query.team ? req.query.team : null;
-  const from_team = req.query.from_team ? req.query.from_team : null;
-  const to_team = req.query.to_team ? req.query.to_team : null;
-  const form = req.query.form ? req.query.form : null;
-  const fromDateAfter = req.query.from_date_after
-    ? new Date(req.query.from_date_after)
-    : null;
-  const toDateBefore = req.query.to_date_before
-    ? new Date(req.query.to_date_before)
-    : null;
+  const matchStage = {};
 
-  if (isNaN(limit) || limit <= 0) {
-    limit = undefined;
+  // player, team, from_team, to_team, form, fromDateAfter, toDateBefore を matchStage に設定
+  if (req.query.player)
+    matchStage.player = new mongoose.Types.ObjectId(req.query.player);
+
+  if (req.query.team)
+    matchStage.$or = [
+      { from_team: new mongoose.Types.ObjectId(req.query.team) },
+      { to_team: new mongoose.Types.ObjectId(req.query.team) },
+    ];
+  if (req.query.from_team)
+    matchStage.from_team = new mongoose.Types.ObjectId(req.query.from_team);
+  if (req.query.to_team)
+    matchStage.to_team = new mongoose.Types.ObjectId(req.query.to_team);
+  if (req.query.form) {
+    const isNegated = req.query.form.startsWith("!");
+    const values = (isNegated ? req.query.form.slice(1) : req.query.form).split(
+      ","
+    );
+    matchStage.form = isNegated ? { $nin: values } : { $in: values };
   }
+  if (req.query.from_date_after)
+    matchStage.from_date = { $gte: new Date(req.query.from_date_after) };
+  if (req.query.to_date_before)
+    matchStage.to_date = { $lte: new Date(req.query.to_date_before) };
 
-  const condition = {};
-  if (player) condition.player = player;
-  if (team) {
-    condition.$or = [{ from_team: team }, { to_team: team }];
-  } else {
-    if (from_team) {
-      condition.from_team = from_team;
-    }
-    if (to_team) {
-      condition.to_team = to_team;
-    }
-  }
+  const pipeline = [
+    { $match: matchStage },
+    { $sort: { doa: -1, _id: -1 } },
+    { $limit: parseInt(req.query.limit, 10) || 10000 },
+    {
+      $lookup: {
+        from: "players",
+        localField: "player",
+        foreignField: "_id",
+        as: "player",
+      },
+    },
+    { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: "teams",
+        localField: "from_team",
+        foreignField: "_id",
+        as: "from_team",
+      },
+    },
+    { $unwind: { path: "$from_team", preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: "teams",
+        localField: "to_team",
+        foreignField: "_id",
+        as: "to_team",
+      },
+    },
+    { $unwind: { path: "$to_team", preserveNullAndEmptyArrays: true } },
+  ];
 
-  if (form) {
-    const isNegated = form.startsWith("!");
-    const values = (isNegated ? form.slice(1) : form).split(",");
-
-    condition.form = isNegated ? { $nin: values } : { $in: values };
-  }
-
-  // from_date の下限指定
-  if (fromDateAfter) {
-    condition.from_date = { $gte: fromDateAfter };
-  }
-
-  // to_date の上限指定
-  if (toDateBefore) {
-    condition.to_date = { $lte: toDateBefore };
-  }
-
-  let query = Transfer.find(condition).sort({ doa: -1, _id: -1 });
-
-  if (limit !== undefined) {
-    query = query.limit(limit);
-  }
-
-  const transfers = await query
-    .populate("from_team")
-    .populate("to_team")
-    .populate("player");
-
+  const transfers = await Transfer.aggregate(pipeline);
   const formattedTransfers = transfers.map(formatTransfer);
+
   res.status(StatusCodes.OK).json({ data: formattedTransfers });
 };
 
