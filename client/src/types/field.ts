@@ -13,7 +13,7 @@ type BaseField = {
 // フィルター用
 type FilterField = {
   filterable?: boolean;
-  value?: string | number | Date;
+  value?: string | number | Date | boolean;
   operator?: FilterOperator;
   logic?: "AND" | "OR";
 };

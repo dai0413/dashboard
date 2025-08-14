@@ -40,9 +40,6 @@ const RenderField = <T extends keyof FormTypeMap>({
       ? "checkbox"
       : "text";
 
-  // console.log("formData[key]", key, formData[key]);
-  // 後で追加フィルタリング
-
   const inputFieldOnChange = (value: string | number | Date | boolean) => {
     updateFilter(key as string, value as string);
   };
@@ -379,7 +376,6 @@ const Form = <T extends keyof FormTypeMap>() => {
 
                 if (field?.type === "select" || field?.type === "table") {
                   const options = getOptions(key);
-                  console.log("key:", key, "options", options);
                   const selected = options?.find((opt) => opt.key === value);
                   displayValue = selected?.label || "未選択";
                 }
