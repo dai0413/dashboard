@@ -16,7 +16,7 @@ import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { useFilter } from "../../context/filter-context";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useQuery } from "../../context/query-context";
 
 type Base<K extends keyof FormTypeMap> = {
   title?: string;
@@ -44,16 +44,10 @@ type TableContainerProps<K extends keyof FormTypeMap> =
 const TableContainer = <K extends keyof FormTypeMap>(
   props: TableContainerProps<K>
 ) => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { page, setPage } = useQuery();
 
-  const query = new URLSearchParams(location.search);
-  const initialPage = Number(query.get("page")) || 1;
-
-  const [currentPage, setCurrentPage] = useState<number>(initialPage);
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    navigate(`?page=${page}`, { replace: true });
+    setPage("page", page);
   };
 
   const { handleSort, closeSort } = useSort();
@@ -101,14 +95,14 @@ const TableContainer = <K extends keyof FormTypeMap>(
     setTableData(sorted);
     closeFilter();
     closeSort();
-    setCurrentPage(initialPage);
+    setPage("page", 1);
   };
 
   useEffect(() => {
     const filterd = handleFilter(tableItems);
     const sorted = handleSort(filterd);
     setTableData(sorted);
-    setCurrentPage(initialPage);
+    setPage("page", 1);
   }, [tableItems]);
 
   return (
@@ -142,7 +136,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         itemsPerPage={10}
         isLoading={tableIsLoading}
         summaryLinkField={props.summaryLinkField}
-        currentPage={currentPage}
+        currentPage={page.page}
         onPageChange={handlePageChange}
       />
     </div>
