@@ -23,4 +23,10 @@ export const getDefaultValue = (initialFormData: any) => ({
 
   filterableField: [],
   sortableField: [],
+
+  formDatas: [],
+  setFormDatas: () => {},
+  handleFormDatas: () => {},
+  manyDataFormSteps: [],
+  createItems: async () => {},
 });

@@ -37,6 +37,7 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
+import { manyDataSteps } from "../../lib/form-steps/many";
 
 const initialFormData: NationalCallupForm = {};
 
@@ -56,6 +57,45 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
 
   const [selected, setSelectedItem] = useState<NationalCallupGet | null>(null);
   const [formData, setFormData] = useState<NationalCallupForm>(initialFormData);
+
+  const [formDatas, setFormDatas] = useState<NationalCallupForm[]>([
+    // {
+    //   series: "688ea1a826c9a7f800b7f7b3",
+    //   player: "68516bd288294f93ffd0cb37",
+    //   joined_at: "2024-03-17T15:00:00.000Z",
+    //   left_at: "2024-03-24T15:00:00.000Z",
+    //   number: 1,
+    //   is_captain: false,
+    //   is_overage: false,
+    //   is_backup: false,
+    //   is_training_partner: false,
+    //   is_additional_call: false,
+    //   status: "joined",
+    //   left_reason: null,
+    //   position_group: "GK",
+    //   team: "685fe9e1bdafffc53f471941",
+    //   team_name: null,
+    // },
+  ]);
+
+  const createItems = async (formDatas: NationalCallupForm[]) => {
+    console.log("sending items", formDatas);
+    // createItemBase({
+    //   apiInstance: api,
+    //   backendRoute: ,
+    //   data: cleanData(formDatas),
+    //   onAfterCreate: (item : NationalCallup[]) => {
+    //      const createItems = convert(ModelType.NATIONAL_CALLUP, item)
+    //     setItems((prev) => [...prev, ...createItems])
+    //   },
+    //   handleLoading,
+    //   handleSetAlert,
+    // })
+  };
+
+  const [manyDataFormSteps, setManyDataFormSteps] = useState<
+    FormStep<ModelType.NATIONAL_CALLUP>[]
+  >([]);
 
   const [formSteps, setFormSteps] = useState<
     FormStep<ModelType.NATIONAL_CALLUP>[]
@@ -151,25 +191,24 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
     setSelectedItem(finded ? finded : null);
   };
 
+  function updateFormValue<T extends object, K extends keyof T>(
+    prev: T,
+    key: K,
+    value: T[K]
+  ): T {
+    // 同じ値をクリックしたら解除
+    if (prev[key] === value) {
+      return { ...prev, [key]: null };
+    }
+    // 違う値なら更新
+    return { ...prev, [key]: value };
+  }
+
   const handleFormData = <K extends keyof NationalCallupForm>(
     key: K,
     value: NationalCallupForm[K]
   ) => {
-    setFormData((prev) => {
-      // 同じ値をもう一度クリック → 選択解除
-      if (prev[key] === value) {
-        return {
-          ...prev,
-          [key]: null,
-        };
-      }
-
-      // 違う値なら選択更新
-      return {
-        ...prev,
-        [key]: value,
-      };
-    });
+    setFormData((prev) => updateFormValue(prev, key, value));
   };
 
   const resetFormData = () => {
@@ -178,6 +217,7 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setFormSteps(steps[ModelType.NATIONAL_CALLUP]);
+    setManyDataFormSteps(manyDataSteps[ModelType.NATIONAL_CALLUP]);
   }, []);
 
   const getDiffKeys = () => {
@@ -228,6 +268,11 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
 
     filterableField,
     sortableField,
+
+    formDatas,
+    setFormDatas,
+    manyDataFormSteps,
+    createItems,
   };
   return (
     <NationalCallupContext.Provider value={value}>
