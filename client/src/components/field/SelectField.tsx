@@ -31,7 +31,7 @@ const SelectField = ({
     <select
       value={formattedValue}
       onChange={(e) => handleChange(e)}
-      className="px-4 py-2 border rounded-md w-full"
+      className="w-full border border-gray-300 rounded px-3 py-2"
     >
       {defaultOption && <option value="">{defaultOption}</option>}
       {options.map((opt) => (
