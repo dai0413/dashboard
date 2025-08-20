@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useTransfer } from "./models/transfer-context";
 import { useInjury } from "./models/injury-context";
 import { usePlayer } from "./models/player-context";
@@ -13,30 +13,53 @@ import { useNationalMatchSeries } from "./models/national-match-series-context";
 import { useNationalCallup } from "./models/national-callup";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
-  newData: boolean;
+  modelType: T | null;
+  mode: "single" | "many";
+
+  formOperator: {
+    openForm: (
+      newData: boolean,
+      model: T | null,
+      editItem?: GettedModelDataMap[T],
+      initialFormData?: Partial<FormTypeMap[T]>,
+      many?: boolean
+    ) => void;
+    closeForm: () => void;
+  };
+
   isOpen: boolean;
   isEditing: boolean;
-  modelType: T | null;
-  openForm: (
-    newData: boolean,
-    model: T | null,
-    editItem?: GettedModelDataMap[T],
-    initialFormData?: Partial<FormTypeMap[T]>
-  ) => void;
-  closeForm: () => void;
+  newData: boolean;
 
-  nextStep: () => void;
-  prevStep: () => void;
-  nextData: () => void;
-  sendData: () => Promise<void>;
+  single: {
+    formData: FormTypeMap[T];
+    handleFormData: <K extends keyof FormTypeMap[T]>(
+      key: K,
+      value: FormTypeMap[T][K]
+    ) => void;
+    formSteps: FormStep<T>[];
+  };
 
-  currentStep: number;
-  formData: FormTypeMap[T];
-  formSteps: FormStep<T>[];
-  handleFormData: <K extends keyof FormTypeMap[T]>(
-    key: K,
-    value: FormTypeMap[T][K]
-  ) => void;
+  many?: {
+    formData: FormTypeMap[T][];
+    handleFormData: <K extends keyof FormTypeMap[T]>(
+      index: number,
+      key: K,
+      value: FormTypeMap[T][K]
+    ) => void;
+    formSteps: FormStep<T>[];
+    addFormDatas: (setPage?: (p: number) => void) => void;
+    deleteFormDatas: (index: number) => void;
+  };
+
+  steps: {
+    currentStep: number;
+    nextStep: () => void;
+    prevStep: () => void;
+    nextData: () => void;
+    sendData: () => Promise<void>;
+  };
+
   getDiffKeys: (() => string[]) | undefined;
 };
 
@@ -54,6 +77,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [newData, setNewData] = useState<boolean>(true);
   const [isEditing, setIsEditing] = useState<boolean>(true);
+
+  const [mode, setMode] = useState<"many" | "single">("single");
 
   const {
     modal: { handleSetAlert, resetAlert },
@@ -86,12 +111,24 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const getDiffKeys = modelContext?.getDiffKeys;
 
+  const startNewDatas = (item?: FormTypeMap[T]) => {
+    if (item) {
+      setFormDatas([item]);
+      modelContext?.setFormDatas([item]);
+    } else {
+      setFormDatas([]);
+    }
+  };
+
   const openForm = (
     newData: boolean,
     model: T | null,
     editItem?: GettedModelDataMap[T],
-    initialFormData?: object
+    initialFormData?: object,
+    many?: boolean
   ) => {
+    many ? setMode("many") : setMode("single");
+
     if (newData) {
       setNewData(true);
 
@@ -102,6 +139,13 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       setNewData(false);
       model ? modelContextMap[model].startEdit(editItem) : () => {};
     }
+
+    if (many) {
+      startNewDatas(initialFormData);
+    } else {
+      model ? modelContextMap[model].startEdit(editItem) : () => {};
+    }
+
     setIsOpen(true);
     setModelType(model);
     setIsEditing(true);
@@ -117,45 +161,62 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setCurrentStep(0);
     resetAlert();
     setIsEditing(false);
+    setMode("single");
   };
 
   const nextData = () => {
-    setCurrentStep(0);
-    resetFilter();
     modelContext?.resetFormData();
+    resetFilter();
+    setCurrentStep(0);
     resetAlert();
     setIsEditing(false);
+    setMode("single");
   };
 
   const sendData = async () => {
     if (!modelContext) return;
 
-    if (newData) {
-      modelContext?.createItem();
-    } else {
-      const difKeys = getDiffKeys && getDiffKeys();
-      if (!difKeys || difKeys?.length === 0)
-        return handleSetAlert({
-          success: false,
-          message: "変更点がありません",
-        });
+    if (mode === "single") {
+      if (newData) {
+        modelContext?.createItem();
+      } else {
+        const difKeys = getDiffKeys && getDiffKeys();
+        if (!difKeys || difKeys?.length === 0)
+          return handleSetAlert({
+            success: false,
+            message: "変更点がありません",
+          });
 
-      console.log(modelContext.formData);
-      const updated: FormTypeMap[T] = Object.fromEntries(
-        Object.entries(modelContext.formData).filter(([key]) =>
-          difKeys.includes(key)
+        const updated: FormTypeMap[T] = Object.fromEntries(
+          Object.entries(modelContext.formData).filter(([key]) =>
+            difKeys.includes(key)
+          )
+        );
+
+        modelContext?.updateItem(updated);
+      }
+
+      setCurrentStep((prev) =>
+        Math.min(
+          prev + 1,
+          modelContext?.formSteps ? modelContext?.formSteps.length - 1 : 0
         )
       );
-
-      modelContext?.updateItem(updated);
     }
 
-    setCurrentStep((prev) =>
-      Math.min(
-        prev + 1,
-        modelContext?.formSteps ? modelContext?.formSteps.length - 1 : 0
-      )
-    );
+    if (mode === "many") {
+      modelContext.createItems(formDatas);
+
+      setCurrentStep((prev) =>
+        Math.min(
+          prev + 1,
+          modelContext.manyDataFormSteps
+            ? modelContext.manyDataFormSteps.length - 1
+            : 0
+        )
+      );
+    }
+
     setIsEditing(false);
   };
 
@@ -169,7 +230,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     resetAlert();
   };
 
-  const nextStepWithValidation = () => {
+  const singleValidation = () => {
     const current = modelContext?.formSteps[currentStep];
 
     if (!current) return;
@@ -203,32 +264,158 @@ export const FormProvider = <T extends keyof FormTypeMap>({
         success: false,
         message: `${missing[0].label}は必須項目です。`,
       };
-      return handleSetAlert(payload);
+      handleSetAlert(payload);
+      return false;
     }
-    return nextStep();
+
+    return true;
+  };
+
+  const manyValidation = () => {
+    const current = modelContext?.manyDataFormSteps[currentStep];
+
+    if (!current) return;
+
+    if (current.validate) {
+      for (const d of modelContext?.formDatas ?? []) {
+        const valid = current.validate(d);
+        if (!valid.success) {
+          return handleSetAlert(valid);
+        }
+      }
+      return nextStep();
+    }
+
+    const missing = current.fields?.filter((f) => {
+      return (modelContext?.formDatas ?? []).some((d) => {
+        const value = d[f.key];
+        if (!f.required) return false;
+
+        if (Array.isArray(value)) {
+          return (value as string[]).every((v) => v.trim() === "");
+        }
+
+        if (typeof value === "string") {
+          return (value as string).trim() === "";
+        }
+
+        return !value;
+      });
+    });
+
+    if (missing && missing.length > 0) {
+      const payload = {
+        success: false,
+        message: `${missing[0].label}は必須項目です。`,
+      };
+      handleSetAlert(payload);
+      return false;
+    }
+
+    return true;
+  };
+
+  const nextStepWithValidation = () => {
+    if (mode === "single" && !singleValidation()) return;
+    if (mode === "many" && !manyValidation()) return;
+    nextStep();
   };
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
+  ////////////////////////// many data edit //////////////////////////
+  const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([]);
+
+  useEffect(() => {
+    if (modelContext) {
+      modelContext.setFormDatas(formDatas);
+    }
+  }, [formDatas]);
+
+  const handleFormData = <K extends keyof FormTypeMap[T]>(
+    index: number,
+    key: K,
+    value: FormTypeMap[T][K]
+  ) => {
+    const newFormDatas = formDatas.map((item, i) => {
+      if (i !== index) return item;
+
+      // 同じ値を選んだら解除（null）
+      if (item[key] === value) {
+        return { ...item, [key]: null };
+      }
+
+      // 違う値なら更新
+      return { ...item, [key]: value };
+    });
+
+    setFormDatas(newFormDatas);
+    modelContext?.setFormDatas(newFormDatas);
+  };
+
+  const addFormDatas = (setPage?: (p: number) => void) => {
+    const base = modelContext?.formData
+      ? { ...modelContext.formData }
+      : ({} as FormTypeMap[T]);
+
+    const newFormDatas = [...formDatas, base];
+
+    setFormDatas(newFormDatas);
+    modelContext?.setFormDatas(newFormDatas);
+
+    // 件数が 10 の倍数 + 1 のときにページを進める
+    const newCount = newFormDatas.length;
+    if ((newCount - 1) % 10 === 0 && newCount > 1) {
+      const newPage = Math.ceil(newCount / 10);
+      setPage && setPage(newPage);
+    }
+  };
+
+  const deleteFormDatas = (index: number) => {
+    const newFormDatas = formDatas.filter((_d, i) => i !== index);
+
+    setFormDatas(newFormDatas);
+    modelContext?.setFormDatas(newFormDatas);
+  };
+
+  const many = {
+    formSteps: modelContext?.manyDataFormSteps ?? [],
+    formData: formDatas,
+    handleFormData,
+    addFormDatas,
+    deleteFormDatas,
+  };
+
   const value: FormContextValue<T> = {
-    newData,
+    modelType,
+    mode,
+
+    formOperator: {
+      openForm,
+      closeForm,
+    },
     isOpen,
     isEditing,
-    modelType,
-    openForm,
-    closeForm,
+    newData,
 
-    nextStep: nextStepWithValidation,
-    prevStep,
-    nextData,
-    sendData,
+    single: {
+      formSteps: (modelContext?.formSteps as FormStep<T>[]) ?? [],
+      formData: (modelContext?.formData as FormTypeMap[T]) ?? {},
+      handleFormData:
+        (modelContext?.handleFormData as FormContextValue<T>["single"]["handleFormData"]) ??
+        (() => {}),
+    },
 
-    currentStep,
-    formData: (modelContext?.formData as FormTypeMap[T]) ?? {},
-    formSteps: (modelContext?.formSteps as FormStep<T>[]) ?? [],
-    handleFormData:
-      (modelContext?.handleFormData as FormContextValue<T>["handleFormData"]) ??
-      (() => {}),
+    many,
+
+    steps: {
+      currentStep,
+      nextStep: nextStepWithValidation,
+      prevStep,
+      nextData,
+      sendData,
+    },
+
     getDiffKeys,
   };
 

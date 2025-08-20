@@ -47,7 +47,10 @@ const DetailModal = <K extends keyof FormTypeMap>({
     modal: { alert, resetAlert },
   } = useAlert();
 
-  const { isOpen, openForm } = useForm();
+  const {
+    isOpen,
+    formOperator: { openForm },
+  } = useForm();
   const { staffState } = useAuth();
 
   useEffect(() => {

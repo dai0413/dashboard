@@ -36,13 +36,16 @@ const TableToolbar = <K extends keyof FormTypeMap>({
 }: TableToolbarProps<K>) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
-  const { openForm } = useForm();
+  const {
+    formOperator: { openForm },
+  } = useForm();
   const {
     main: { handleSetAlert },
   } = useAlert();
 
   const { staffState } = useAuth();
 
+  const [isAddOpen, SetIsAddOpen] = useState<boolean>(false);
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -83,7 +86,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     SetIsFolderOpen(false);
   };
 
-  const menu = [
+  const folderMenu = [
     <label>
       Upload
       <input
@@ -94,6 +97,27 @@ const TableToolbar = <K extends keyof FormTypeMap>({
       />
     </label>,
     <button onClick={handleDownload}>Download</button>,
+  ];
+
+  const addMenu = [
+    <button
+      onClick={() => {
+        openForm(true, modelType || null, undefined, formInitialData);
+        SetIsAddOpen(false);
+      }}
+    >
+      Single
+    </button>,
+    modelType === ModelType.NATIONAL_CALLUP ? (
+      <button
+        onClick={() => {
+          openForm(true, modelType || null, undefined, formInitialData, true);
+          SetIsAddOpen(false);
+        }}
+      >
+        Many
+      </button>
+    ) : null,
   ];
 
   return (
@@ -148,7 +172,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
       {(staffState.admin || isDev) && (
         <div className="flex items-center gap-x-4">
           {/* 右側：新規追加ボタン */}
-          <button
+          {/* <button
             onClick={() =>
               openForm(true, modelType || null, undefined, formInitialData)
             }
@@ -156,7 +180,19 @@ const TableToolbar = <K extends keyof FormTypeMap>({
           >
             <PlusCircleIcon className="w-8 h-8" />
             <span className="hidden md:inline">新規追加</span>
-          </button>
+          </button> */}
+
+          <div ref={dropdownRef} className="relative inline-block text-left">
+            <button
+              onClick={() => SetIsAddOpen(!isAddOpen)}
+              className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+              type="button"
+            >
+              <PlusCircleIcon className="w-8 h-8" />
+              <span className="hidden md:inline">新規追加</span>
+            </button>
+            {isAddOpen && <DropDownMenu menuItems={addMenu} />}
+          </div>
 
           {/* 右側：フォルダーボタン */}
           {(uploadFile || downloadFile) && (
@@ -170,7 +206,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
                 <span className="hidden md:inline">CSV</span>
               </button>
 
-              {isFolderOpen && <DropDownMenu menuItems={menu} />}
+              {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
             </div>
           )}
         </div>
