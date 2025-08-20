@@ -33,4 +33,9 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   filterableField: FilterableFieldDefinition[];
   sortableField: SortableFieldDefinition[];
+
+  formDatas: FormTypeMap[K][];
+  setFormDatas: React.Dispatch<React.SetStateAction<Partial<FormTypeMap[K]>[]>>;
+  manyDataFormSteps: FormStep<K>[];
+  createItems: (formDatas: FormTypeMap[K][]) => Promise<void>;
 };
