@@ -61,8 +61,8 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               filterCondition={filterCondition}
               options={{
                 fieldOptions: filterableField,
-                valueOptions: getOptions(filterCondition.key),
-                operatorOptions: getOptions("operator"),
+                valueOptions: getOptions(filterCondition.key, false, true),
+                operatorOptions: getOptions("operator", false, true),
               }}
               onChange={{
                 handleFieldValue: handleFieldValue,
@@ -111,8 +111,8 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               filterCondition={filterCondition}
               options={{
                 fieldOptions: filterableField,
-                valueOptions: getOptions(filterCondition.key),
-                operatorOptions: getOptions("operator"),
+                valueOptions: getOptions(filterCondition.key, false, true),
+                operatorOptions: getOptions("operator", false, true),
               }}
               onChange={{
                 handleFieldValue: handleFieldValue,

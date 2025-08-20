@@ -8,8 +8,8 @@ import { convert, OptionsMap, OptionType } from "../utils/createOption";
 import { OptionArray, OptionTable } from "../types/option";
 
 interface GetOptions {
-  (key: string, table: true): OptionTable;
-  (key: string, table?: false): OptionArray;
+  (key: string, table: true, filter?: boolean): OptionTable;
+  (key: string, table?: false, filter?: boolean): OptionArray;
 }
 
 type OptionsState = {
@@ -103,7 +103,11 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   function getOptions(key: string, table?: false): OptionArray;
   function getOptions(key: string, table: true): OptionTable;
 
-  function getOptions(key: string, table?: boolean): OptionArray | OptionTable {
+  function getOptions(
+    key: string,
+    table?: boolean,
+    filter?: boolean
+  ): OptionArray | OptionTable {
     const optionKey: keyof OptionsMap =
       key === "from_team" || key === "to_team"
         ? ("team" as keyof OptionsMap)
@@ -115,20 +119,30 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (table === true) {
       const options = convert(optionKey, data, true);
-      const filterValue = filters[key]?.value?.toLowerCase() ?? "";
-      const OptionTable = options as OptionTable;
-      OptionTable.data = OptionTable.data.filter((opt) =>
-        opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
-      );
 
-      return OptionTable;
+      if (filter) {
+        const filterValue = filters[key]?.value?.toLowerCase() ?? "";
+        const OptionTable = options as OptionTable;
+        OptionTable.data = OptionTable.data.filter((opt) =>
+          opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
+        );
+
+        return OptionTable;
+      }
+
+      return options;
     } else {
       const options = convert(optionKey, data, false);
-      const optionsArray = options as OptionArray;
-      const filterValue = filters[key]?.value?.toLowerCase() ?? "";
-      return optionsArray.filter((opt) =>
-        opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
-      );
+
+      if (filter) {
+        const optionsArray = options as OptionArray;
+        const filterValue = filters[key]?.value?.toLowerCase() ?? "";
+        return optionsArray.filter((opt) =>
+          opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
+        );
+      }
+
+      return options;
     }
   }
 
