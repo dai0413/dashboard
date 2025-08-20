@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { isLabelObject } from "../../utils";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { IconButton } from "../buttons";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -31,11 +31,16 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
   return pages;
 }
 
-const renderCell = (
+const RenderCell = (
   header: TableHeader,
   row: Record<string, any>,
   summaryLinkField?: SummaryLinkField
 ) => {
+  // console.log("row", row);
+  if ("element" in row && React.isValidElement(row.element)) {
+    if (row.key === header.field) return row.element;
+  }
+
   const raw = row[header.field];
   const isObject = isLabelObject(raw);
   let content = raw;
@@ -123,11 +128,19 @@ export type TableProps<T> = {
   rowSpacing?: "wide" | "narrow";
   form?: boolean;
   onClick?: (row: T) => void;
-  selectedKey?: string;
+  selectedKey?: string[];
   itemsPerPage?: number;
   isLoading?: boolean;
   currentPage?: number;
   onPageChange?: (page: number) => void;
+
+  edit?: boolean; // 多数データ編集か否か
+  renderFieldCell?: (
+    header: TableHeader,
+    row: T,
+    rowIndex: number
+  ) => React.ReactNode;
+  deleteOnClick?: (index: number) => void;
 };
 
 const Table = <T extends Record<string, any>>({
@@ -139,11 +152,14 @@ const Table = <T extends Record<string, any>>({
   rowSpacing = "narrow",
   form = false,
   onClick = () => {},
-  selectedKey = "",
+  selectedKey = [],
   itemsPerPage,
   isLoading,
   currentPage,
   onPageChange,
+  edit,
+  renderFieldCell,
+  deleteOnClick,
 }: TableProps<T>) => {
   const [pageNum, setPageNum] = useState<number>(1);
 
@@ -163,16 +179,34 @@ const Table = <T extends Record<string, any>>({
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
-      <table className="min-w-full table-auto border">
+      <table className="w-full table-fixed border">
         <thead className="sticky top-0 bg-gray-200 z-10">
           <tr className="bg-gray-200">
+            {edit && (
+              <th className="bg-gray-200 border" style={{ width: "35px" }}></th>
+            )}
             {headers.map((header) => (
-              <th scope="col" key={header.field} className="px-4 py-2 border">
+              <th
+                scope="col"
+                key={header.field}
+                className="px-4 py-2 border"
+                style={
+                  header.width ? { width: header.width } : { width: "150px" }
+                }
+              >
                 {header.label}
               </th>
             ))}
-            {detail && <th className="bg-gray-200 border">詳細</th>}
-            {form && <th className="bg-gray-200 border">追加</th>}
+            {detail && (
+              <th className="bg-gray-200 border" style={{ width: "80px" }}>
+                詳細
+              </th>
+            )}
+            {form && (
+              <th className="bg-gray-200 border" style={{ width: "80px" }}>
+                追加
+              </th>
+            )}
           </tr>
         </thead>
         {!isLoading && paginatedData.length == 0 && (
@@ -219,28 +253,53 @@ const Table = <T extends Record<string, any>>({
           <tbody>
             {paginatedData.map((row, i) => (
               <tr key={i}>
-                {headers.map((header) => (
-                  <td
-                    key={header.field}
-                    className={`border px-4 py-2 
+                {edit && (
+                  <th
+                    className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+                    style={{ width: "35px" }}
+                    onClick={() => deleteOnClick && deleteOnClick(i)}
+                  >
+                    <div className="flex justify-center items-center">
+                      <XMarkIcon className="w-6 h-6" />
+                    </div>
+                  </th>
+                )}
+                {headers.map((header) => {
+                  return (
+                    <td
+                      key={header.field}
+                      className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
+                      ${rowSpacing === "wide" ? "h-16" : "h-8"} 
+                      ${selectedKey.includes(row.key) ? "bg-blue-100" : ""}
                       ${
-                        rowSpacing === "wide"
-                          ? "h-16 whitespace-normal"
-                          : "h-8 whitespace-nowrap"
-                      } 
-                      ${
-                        selectedKey && row.key === selectedKey
-                          ? "bg-blue-100"
+                        edit && selectedKey.includes(header.field)
+                          ? "border-2 border-blue-700"
                           : ""
                       }
-                      overflow-hidden text-ellipsis max-w-[200px]
-                      `}
-                  >
-                    {renderCell(header, row, summaryLinkField)}
-                  </td>
-                ))}
+                    `}
+                      title={
+                        typeof row[header.field] === "boolean"
+                          ? row[header.field].toString()
+                          : row[header.field]
+                      }
+                      style={{ width: "150px" }}
+                    >
+                      {edit
+                        ? renderFieldCell &&
+                          renderFieldCell(
+                            header,
+                            row,
+                            itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i
+                          )
+                        : RenderCell(header, row, summaryLinkField)}
+                    </td>
+                  );
+                })}
                 {detail && (
-                  <td className="cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px]">
+                  <td
+                    className="cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap"
+                    style={{ width: "80px" }}
+                  >
                     <Link
                       to={`${detailLink}/${row._id}`}
                       className="underline hover:text-blue-600"
@@ -252,21 +311,21 @@ const Table = <T extends Record<string, any>>({
                 {form && (
                   <td
                     className={`px-4 py-2 border ${
-                      selectedKey && row.key === selectedKey
-                        ? "bg-blue-100"
-                        : ""
+                      selectedKey.includes(row.key) ? "bg-blue-100" : ""
                     }`}
                   >
                     <button
                       type="button"
-                      className="cursor-pointer  text-gray-500 hover:text-gray-700 text-2xl"
+                      className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
                       onClick={() => onClick?.(row)}
                     >
-                      {selectedKey && row.key === selectedKey ? (
-                        <XMarkIcon className="w-6 h-6" />
-                      ) : (
-                        <PlusCircleIcon className="w-6 h-6" />
-                      )}
+                      <div className="flex justify-center items-center">
+                        {selectedKey.includes(row.key) ? (
+                          <XMarkIcon className="w-6 h-6" />
+                        ) : (
+                          <PlusCircleIcon className="w-6 h-6" />
+                        )}
+                      </div>
                     </button>
                   </td>
                 )}

@@ -15,6 +15,7 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   key: keyof FormTypeMap[T];
   label: string;
   required?: boolean;
+  width?: string;
 };
 
 // <input type = "text">
@@ -73,5 +74,6 @@ export interface FormStep<K extends keyof FormTypeMap> {
   stepLabel: string;
   type: StepType;
   fields?: FieldDefinition<K>[];
+  many?: boolean;
   validate?: (data: FormTypeMap[K]) => ResponseStatus;
 }
