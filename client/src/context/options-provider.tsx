@@ -48,11 +48,21 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetFilter = () => setFilters({});
 
-  const { readItems: readPlayers, items: players } = usePlayer();
-  const { readItems: readTeams, items: teams } = useTeam();
-  const { readItems: readCountries, items: countries } = useCountry();
-  const { readItems: readNationalMatchSeries, items: nationalMatchSeries } =
-    useNationalMatchSeries();
+  const {
+    metacrud: { readItems: readPlayers, items: players },
+  } = usePlayer();
+  const {
+    metacrud: { readItems: readTeams, items: teams },
+  } = useTeam();
+  const {
+    metacrud: { readItems: readCountries, items: countries },
+  } = useCountry();
+  const {
+    metacrud: {
+      readItems: readNationalMatchSeries,
+      items: nationalMatchSeries,
+    },
+  } = useNationalMatchSeries();
 
   useEffect(() => {
     readPlayers({});

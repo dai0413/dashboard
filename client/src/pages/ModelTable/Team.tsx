@@ -13,7 +13,7 @@ const Team = () => {
 
   useEffect(() => resetFilterConditions(), []);
   useEffect(() => {
-    teamContext.readItems({});
+    teamContext.metacrud.readItems({});
   }, [isOpen]);
 
   return (

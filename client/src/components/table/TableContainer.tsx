@@ -61,20 +61,20 @@ const TableContainer = <K extends keyof FormTypeMap>(
       "items" in props
         ? props.items
         : "contextState" in props
-        ? props.contextState.items
+        ? props.contextState.metacrud.items
         : [];
     setTableData(items);
     setPage("page", 1);
   }, [
     "items" in props ? props.items : null,
-    "contextState" in props ? props.contextState.items : null,
+    "contextState" in props ? props.contextState.metacrud.items : null,
   ]);
 
   let souceLoading: boolean = false;
   if ("itemsLoading" in props) {
     souceLoading = props.itemsLoading || false;
   } else if ("contextState" in props) {
-    souceLoading = props.contextState.isLoading;
+    souceLoading = props.contextState.metacrud.isLoading;
   }
   const tableIsLoading = useMemo(() => souceLoading, [souceLoading]);
 
@@ -82,7 +82,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
   if ("originalFilterField" in props) {
     souceFilterField = props.originalFilterField || [];
   } else if ("contextState" in props) {
-    souceFilterField = props.contextState.filterableField;
+    souceFilterField = props.contextState.metacrud.filterableField;
   }
   const filterField = useMemo(() => souceFilterField, [souceFilterField]);
 
@@ -90,7 +90,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
   if ("originalSortField" in props) {
     souceSortField = props.originalSortField || [];
   } else if ("contextState" in props) {
-    souceSortField = props.contextState.sortableField;
+    souceSortField = props.contextState.metacrud.sortableField;
   }
   const sortField = useMemo(() => souceSortField, [souceSortField]);
 
@@ -118,10 +118,14 @@ const TableContainer = <K extends keyof FormTypeMap>(
         setRowSpacing={setRowSpacing}
         modelType={props.modelType}
         uploadFile={
-          "contextState" in props ? props.contextState.uploadFile : undefined
+          "contextState" in props
+            ? props.contextState.metacrud.uploadFile
+            : undefined
         }
         downloadFile={
-          "contextState" in props ? props.contextState.downloadFile : undefined
+          "contextState" in props
+            ? props.contextState.metacrud.downloadFile
+            : undefined
         }
         formInitialData={props.formInitialData}
       />

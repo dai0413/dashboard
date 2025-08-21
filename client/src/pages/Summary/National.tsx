@@ -47,7 +47,9 @@ const National = () => {
 
   const [selectedTab, setSelectedTab] = useState("series");
 
-  const { selected, readItem, isLoading } = useCountry();
+  const {
+    metacrud: { selected, readItem, isLoading },
+  } = useCountry();
 
   const [series, setSeries] = useState<NationalMatchSeriesGet[]>([]);
   const [seriesIsLoading, setSeriesIsLoading] = useState<boolean>(false);

@@ -45,7 +45,9 @@ const National = () => {
 
   const [selectedTab, setSelectedTab] = useState("player");
 
-  const { selected, readItem, isLoading } = useNationalMatchSeries();
+  const {
+    metacrud: { selected, readItem, isLoading },
+  } = useNationalMatchSeries();
 
   const [callup, setCallup] = useState<NationalCallupGet[]>([]);
   const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);

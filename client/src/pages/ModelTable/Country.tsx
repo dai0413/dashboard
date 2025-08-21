@@ -10,7 +10,7 @@ const Country = () => {
   const { isOpen } = useForm();
 
   useEffect(() => {
-    countryContext.readItems({});
+    countryContext.metacrud.readItems({});
   }, [isOpen]);
 
   return (
