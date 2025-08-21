@@ -79,8 +79,9 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const { getOptions } = useOptions();
 
-  const resetFilterConditions = () =>
-    setFilterCondition(defaultFilterCondition);
+  const resetFilterConditions = () => {
+    setFilterConditions([]);
+  };
 
   const getFilterConditions = (
     filterCondition: FilterableFieldDefinition

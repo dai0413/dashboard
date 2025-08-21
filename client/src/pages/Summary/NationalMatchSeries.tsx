@@ -25,6 +25,8 @@ import {
 import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
 import { toDateKey } from "../../utils";
 import { useFilter } from "../../context/filter-context";
+import { useForm } from "../../context/form-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -38,7 +40,8 @@ const National = () => {
   const api = useApi();
   const { id } = useParams();
   const { resetFilterConditions } = useFilter();
-  useEffect(() => resetFilterConditions(), []);
+  const { resetSort } = useSort();
+  const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("player");
 
@@ -71,9 +74,13 @@ const National = () => {
 
   useEffect(() => {
     if (!id) return;
-    readItem(id);
-    readCallup(id);
-  }, [id]);
+    resetFilterConditions();
+    resetSort([]);
+    (async () => {
+      readItem(id);
+      readCallup(id);
+    })();
+  }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
