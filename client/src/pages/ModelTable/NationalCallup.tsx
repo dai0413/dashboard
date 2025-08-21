@@ -18,11 +18,11 @@ const NationalMatchSeries = () => {
       <TableContainer
         title={"代表招集リスト"}
         headers={[
-          { label: "代表試合シリーズ", field: "series" },
+          { label: "代表試合シリーズ", field: "series", width: "250px" },
           { label: "選手", field: "player" },
-          { label: "招集状況", field: "status" },
-          { label: "背番号", field: "number" },
-          { label: "ポジション", field: "position_group" },
+          { label: "招集状況", field: "status", width: "100px" },
+          { label: "背番号", field: "number", width: "100px" },
+          { label: "ポジション", field: "position_group", width: "100px" },
         ]}
         contextState={context}
         modelType={ModelType.NATIONAL_CALLUP}
