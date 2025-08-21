@@ -52,7 +52,6 @@ const getAllNationalCallUp = async (req, res) => {
     { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
     {
       $sort: {
-        joined_at: -1,
         series: -1,
         position_group_order: 1,
         number: 1,
@@ -67,22 +66,35 @@ const getAllNationalCallUp = async (req, res) => {
 };
 
 const createNationalCallUp = async (req, res) => {
-  const nationalMatchSeriesData = {
-    ...req.body,
-  };
+  let formatted;
 
-  const nationalMatchSeries = await NationalCallUp.create(
-    nationalMatchSeriesData
-  );
+  if (Array.isArray(req.body)) {
+    const createdData = await NationalCallUp.insertMany(req.body);
+    const populatedData = await NationalCallUp.find({
+      _id: { $in: createdData.map((d) => d._id) },
+    })
+      .populate("series")
+      .populate("player")
+      .populate("team");
+    formatted = populatedData.map(formatNationalCallup);
+  } else {
+    const nationalMatchSeriesData = {
+      ...req.body,
+    };
 
-  const pupulatedData = await NationalCallUp.findById(nationalMatchSeries._id)
-    .populate("series")
-    .populate("player")
-    .populate("team");
+    const nationalMatchSeries = await NationalCallUp.create(
+      nationalMatchSeriesData
+    );
 
+    const pupulatedData = await NationalCallUp.findById(nationalMatchSeries._id)
+      .populate("series")
+      .populate("player")
+      .populate("team");
+    formatted = formatNationalCallup(pupulatedData);
+  }
   res.status(StatusCodes.CREATED).json({
     message: "追加しました",
-    data: formatNationalCallup(pupulatedData),
+    data: formatted,
   });
 };
 
