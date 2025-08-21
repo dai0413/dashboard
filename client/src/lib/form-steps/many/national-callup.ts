@@ -112,9 +112,11 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         };
       }
 
+      const isValid = Boolean(formData.team) || Boolean(formData.team_name);
+
       return {
-        success: true,
-        message: "",
+        success: isValid,
+        message: isValid ? "" : "移籍元、移籍先少なくとも1つ選択してください",
       };
     },
   },

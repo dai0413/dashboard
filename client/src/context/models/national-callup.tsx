@@ -79,18 +79,17 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
   ]);
 
   const createItems = async (formDatas: NationalCallupForm[]) => {
-    console.log("sending items", formDatas);
-    // createItemBase({
-    //   apiInstance: api,
-    //   backendRoute: ,
-    //   data: cleanData(formDatas),
-    //   onAfterCreate: (item : NationalCallup[]) => {
-    //      const createItems = convert(ModelType.NATIONAL_CALLUP, item)
-    //     setItems((prev) => [...prev, ...createItems])
-    //   },
-    //   handleLoading,
-    //   handleSetAlert,
-    // })
+    createItemBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.NATIONAL_CALLUP.CREATE,
+      data: cleanData(formDatas),
+      onAfterCreate: (item: NationalCallup[]) => {
+        const createItems = convert(ModelType.NATIONAL_CALLUP, item);
+        setItems((prev) => [...prev, ...createItems]);
+      },
+      handleLoading,
+      handleSetAlert,
+    });
   };
 
   const [manyDataFormSteps, setManyDataFormSteps] = useState<
