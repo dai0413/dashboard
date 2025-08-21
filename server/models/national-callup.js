@@ -71,31 +71,49 @@ NationalCallUpSchema.index(
   }
 );
 
+async function applySeriesDates(doc) {
+  const status = doc.status;
+
+  if (status === "declined") {
+    // 辞退の場合は期間を空にする
+    doc.joined_at = null;
+    doc.left_at = null;
+    return;
+  }
+
+  if (!["joined", "withdrawn"].includes(status)) {
+    return; // その他はスキップ
+  }
+
+  if (!doc.series) {
+    throw new Error("series is required");
+  }
+
+  const SeriesModel = mongoose.model("NationalMatchSeries");
+  const seriesDoc = await SeriesModel.findById(doc.series);
+
+  if (!seriesDoc) {
+    throw new Error(`series document not found: ${doc.series}`);
+  }
+
+  // joined_at 補完 & 範囲調整
+  if (!doc.joined_at) {
+    doc.joined_at = seriesDoc.joined_at;
+  } else if (seriesDoc.joined_at && doc.joined_at < seriesDoc.joined_at) {
+    doc.joined_at = seriesDoc.joined_at;
+  }
+
+  // left_at 補完 & 範囲調整
+  if (!doc.left_at) {
+    doc.left_at = seriesDoc.left_at;
+  } else if (seriesDoc.left_at && doc.left_at > seriesDoc.left_at) {
+    doc.left_at = seriesDoc.left_at;
+  }
+}
+
 NationalCallUpSchema.pre("save", async function (next) {
   try {
-    if (!this.series) {
-      return next(new Error("series is required"));
-    }
-
-    const SeriesModel = mongoose.model("NationalMatchSeries");
-    const seriesDoc = await SeriesModel.findById(this.series);
-
-    if (!seriesDoc) {
-      return next(new Error("series document not found"));
-    }
-
-    if (!this.joined_at) {
-      this.joined_at = seriesDoc.joined_at;
-    } else if (seriesDoc.joined_at && this.joined_at < seriesDoc.joined_at) {
-      this.joined_at = seriesDoc.joined_at;
-    }
-
-    if (!this.left_at) {
-      this.left_at = seriesDoc.left_at;
-    } else if (seriesDoc.left_at && this.left_at > seriesDoc.left_at) {
-      this.left_at = seriesDoc.left_at;
-    }
-
+    await applySeriesDates(this);
     next();
   } catch (err) {
     next(err);
@@ -104,34 +122,9 @@ NationalCallUpSchema.pre("save", async function (next) {
 
 NationalCallUpSchema.pre("insertMany", async function (next, docs) {
   try {
-    // docs は挿入予定のドキュメント配列
     for (const doc of docs) {
-      if (!doc.series) {
-        return next(new Error("series is required"));
-      }
-
-      const SeriesModel = mongoose.model("NationalMatchSeries");
-      const seriesDoc = await SeriesModel.findById(doc.series);
-
-      if (!seriesDoc) {
-        return next(new Error(`series document not found: ${doc.series}`));
-      }
-
-      // joined_at 補完 & 範囲調整
-      if (!doc.joined_at) {
-        doc.joined_at = seriesDoc.joined_at;
-      } else if (seriesDoc.joined_at && doc.joined_at < seriesDoc.joined_at) {
-        doc.joined_at = seriesDoc.joined_at;
-      }
-
-      // left_at 補完 & 範囲調整
-      if (!doc.left_at) {
-        doc.left_at = seriesDoc.left_at;
-      } else if (seriesDoc.left_at && doc.left_at > seriesDoc.left_at) {
-        doc.left_at = seriesDoc.left_at;
-      }
+      await applySeriesDates(doc);
     }
-
     next();
   } catch (err) {
     next(err);
