@@ -74,7 +74,6 @@ const NoNumber = () => {
           { label: "加入日", field: "from_date" },
           { label: "選手", field: "player" },
           { label: "移籍先", field: "to_team" },
-          { label: "背番号", field: "number" },
         ]}
         modelType={ModelType.TRANSFER}
         originalFilterField={inTransfersOptions.filterField}

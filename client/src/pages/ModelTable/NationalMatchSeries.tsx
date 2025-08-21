@@ -17,9 +17,9 @@ const NationalMatchSeries = () => {
       <TableContainer
         title={"代表試合シリーズ情報"}
         headers={[
-          { label: "名称", field: "name" },
-          { label: "国名", field: "country" },
-          { label: "年代", field: "team_class" },
+          { label: "名称", field: "name", width: "250px" },
+          { label: "国名", field: "country", width: "100px" },
+          { label: "年代", field: "team_class", width: "100px" },
           { label: "招集日", field: "joined_at" },
           { label: "解散日", field: "left_at" },
         ]}
