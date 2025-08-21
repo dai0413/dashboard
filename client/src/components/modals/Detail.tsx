@@ -41,7 +41,9 @@ const DetailModal = <K extends keyof FormTypeMap>({
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { isLoading, selected, readItem, deleteItem } = modelContext;
+  const {
+    metacrud: { isLoading, selected, readItem, deleteItem },
+  } = modelContext;
 
   const {
     modal: { alert, resetAlert },

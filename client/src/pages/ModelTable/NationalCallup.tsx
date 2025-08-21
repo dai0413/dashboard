@@ -10,7 +10,7 @@ const NationalMatchSeries = () => {
   const { isOpen } = useForm();
 
   useEffect(() => {
-    context.readItems({});
+    context.metacrud.readItems({});
   }, [isOpen]);
 
   return (

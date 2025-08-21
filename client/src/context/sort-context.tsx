@@ -49,7 +49,9 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
   const [sortOpen, setSortOpen] = useState<boolean>(false);
 
   const initializeSort = (sortableField: SortableFieldDefinition[]): void => {
-    const sortConditions = sortableField.map((fie) => ({ ...fie, asc: null }));
+    const sortConditions = sortableField?.length
+      ? sortableField.map((fie) => ({ ...fie, asc: null }))
+      : [];
 
     setSortConditions(sortConditions);
   };

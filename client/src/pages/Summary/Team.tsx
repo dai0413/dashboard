@@ -45,7 +45,9 @@ const Team = () => {
 
   const [selectedTab, setSelectedTab] = useState("player");
 
-  const { selected, readItem, isLoading: teamIsLoading } = useTeam();
+  const {
+    metacrud: { selected, readItem, isLoading: teamIsLoading },
+  } = useTeam();
 
   const [players, setPlayers] = useState<TransferGet[]>([]);
   const [playersIsLoading, setPlayersIsLoading] = useState<boolean>(false);

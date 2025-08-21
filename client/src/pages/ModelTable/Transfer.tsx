@@ -12,7 +12,7 @@ const Transfer = () => {
 
   useEffect(() => resetFilterConditions(), []);
   useEffect(() => {
-    transferContext.readItems({});
+    transferContext.metacrud.readItems({});
   }, [isOpen]);
 
   return (

@@ -13,7 +13,7 @@ const Injury = () => {
   useEffect(() => resetFilterConditions(), []);
 
   useEffect(() => {
-    injuryContext.readItems({});
+    injuryContext.metacrud.readItems({});
   }, [isOpen]);
 
   return (

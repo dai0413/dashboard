@@ -13,7 +13,7 @@ const Player = () => {
 
   useEffect(() => resetFilterConditions(), []);
   useEffect(() => {
-    playerContext.readItems({});
+    playerContext.metacrud.readItems({});
   }, [isOpen]);
 
   return (

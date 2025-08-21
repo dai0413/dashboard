@@ -100,21 +100,21 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     return modelType ? modelContextMap[modelType] : null;
   }, [
     modelType,
-    modelContextMap[ModelType.COUNTRY].formData,
-    modelContextMap[ModelType.INJURY].formData,
-    modelContextMap[ModelType.NATIONAL_CALLUP].formData,
-    modelContextMap[ModelType.NATIONAL_MATCH_SERIES].formData,
-    modelContextMap[ModelType.PLAYER].formData,
-    modelContextMap[ModelType.TEAM].formData,
-    modelContextMap[ModelType.TRANSFER].formData,
+    modelContextMap[ModelType.COUNTRY].single.formData,
+    modelContextMap[ModelType.INJURY].single.formData,
+    modelContextMap[ModelType.NATIONAL_CALLUP].single.formData,
+    modelContextMap[ModelType.NATIONAL_MATCH_SERIES].single.formData,
+    modelContextMap[ModelType.PLAYER].single.formData,
+    modelContextMap[ModelType.TEAM].single.formData,
+    modelContextMap[ModelType.TRANSFER].single.formData,
   ]);
 
-  const getDiffKeys = modelContext?.getDiffKeys;
+  const getDiffKeys = modelContext?.metacrud.getDiffKeys;
 
   const startNewDatas = (item?: FormTypeMap[T]) => {
     if (item) {
       setFormDatas([item]);
-      modelContext?.setFormDatas([item]);
+      modelContext?.bulk.setFormDatas([item]);
     } else {
       setFormDatas([]);
     }
@@ -134,16 +134,16 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
       model &&
         initialFormData &&
-        modelContextMap[model].startNewData(initialFormData);
+        modelContextMap[model].single.startNewData(initialFormData);
     } else {
       setNewData(false);
-      model ? modelContextMap[model].startEdit(editItem) : () => {};
+      model ? modelContextMap[model].single.startEdit(editItem) : () => {};
     }
 
     if (many) {
       startNewDatas(initialFormData);
     } else {
-      model ? modelContextMap[model].startEdit(editItem) : () => {};
+      model ? modelContextMap[model].single.startEdit(editItem) : () => {};
     }
 
     setIsOpen(true);
@@ -154,7 +154,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const { resetFilter } = useOptions();
 
   const closeForm = () => {
-    modelContext?.resetFormData();
+    modelContext?.single.resetFormData();
     resetFilter();
     setIsOpen(false);
     setModelType(null);
@@ -166,7 +166,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const nextData = () => {
-    modelContext?.resetFormData();
+    modelContext?.single.resetFormData();
     resetFilter();
     setCurrentStep(0);
     resetAlert();
@@ -180,7 +180,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     if (mode === "single") {
       if (newData) {
-        modelContext?.createItem();
+        modelContext?.metacrud.createItem();
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
         if (!difKeys || difKeys?.length === 0)
@@ -190,30 +190,32 @@ export const FormProvider = <T extends keyof FormTypeMap>({
           });
 
         const updated: FormTypeMap[T] = Object.fromEntries(
-          Object.entries(modelContext.formData).filter(([key]) =>
+          Object.entries(modelContext.single.formData).filter(([key]) =>
             difKeys.includes(key)
           )
         );
 
-        modelContext?.updateItem(updated);
+        modelContext?.metacrud.updateItem(updated);
       }
 
       setCurrentStep((prev) =>
         Math.min(
           prev + 1,
-          modelContext?.formSteps ? modelContext?.formSteps.length - 1 : 0
+          modelContext?.single.formSteps
+            ? modelContext?.single.formSteps.length - 1
+            : 0
         )
       );
     }
 
     if (mode === "many") {
-      modelContext.createItems(formDatas);
+      modelContext.metacrud.createItems(formDatas);
 
       setCurrentStep((prev) =>
         Math.min(
           prev + 1,
-          modelContext.manyDataFormSteps
-            ? modelContext.manyDataFormSteps.length - 1
+          modelContext.bulk.manyDataFormSteps
+            ? modelContext.bulk.manyDataFormSteps.length - 1
             : 0
         )
       );
@@ -226,24 +228,26 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setCurrentStep((prev) =>
       Math.min(
         prev + 1,
-        modelContext?.formSteps ? modelContext?.formSteps.length - 1 : 0
+        modelContext?.single.formSteps
+          ? modelContext?.single.formSteps.length - 1
+          : 0
       )
     );
     resetAlert();
   };
 
   const singleValidation = () => {
-    const current = modelContext?.formSteps[currentStep];
+    const current = modelContext?.single.formSteps[currentStep];
 
     if (!current) return;
 
     if (current.validate) {
-      const valid = current.validate(modelContext?.formData);
+      const valid = current.validate(modelContext?.single.formData);
       if (!valid.success) return handleSetAlert(valid);
     }
 
     const missing = current.fields?.filter((f) => {
-      const value = modelContext?.formData[f.key];
+      const value = modelContext?.single.formData[f.key];
 
       if (!f.required) return false;
 
@@ -273,7 +277,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const manyValidation = () => {
-    const current = modelContext?.manyDataFormSteps[currentStep];
+    const current = modelContext?.bulk.manyDataFormSteps[currentStep];
 
     if (!current) return;
 
@@ -328,7 +332,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   useEffect(() => {
     if (modelContext) {
-      modelContext.setFormDatas(formDatas);
+      modelContext.bulk.setFormDatas(formDatas);
     }
   }, [formDatas]);
 
@@ -350,18 +354,18 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     });
 
     setFormDatas(newFormDatas);
-    modelContext?.setFormDatas(newFormDatas);
+    modelContext?.bulk.setFormDatas(newFormDatas);
   };
 
   const addFormDatas = (setPage?: (p: number) => void) => {
-    const base = modelContext?.formData
-      ? { ...modelContext.formData }
+    const base = modelContext?.single.formData
+      ? { ...modelContext.single.formData }
       : ({} as FormTypeMap[T]);
 
     const newFormDatas = [...formDatas, base];
 
     setFormDatas(newFormDatas);
-    modelContext?.setFormDatas(newFormDatas);
+    modelContext?.bulk.setFormDatas(newFormDatas);
 
     // 件数が 10 の倍数 + 1 のときにページを進める
     const newCount = newFormDatas.length;
@@ -375,11 +379,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     const newFormDatas = formDatas.filter((_d, i) => i !== index);
 
     setFormDatas(newFormDatas);
-    modelContext?.setFormDatas(newFormDatas);
+    modelContext?.bulk.setFormDatas(newFormDatas);
   };
 
   const many = {
-    formSteps: modelContext?.manyDataFormSteps ?? [],
+    formSteps: modelContext?.bulk.manyDataFormSteps ?? [],
     formData: formDatas,
     handleFormData,
     addFormDatas,
@@ -399,10 +403,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     newData,
 
     single: {
-      formSteps: (modelContext?.formSteps as FormStep<T>[]) ?? [],
-      formData: (modelContext?.formData as FormTypeMap[T]) ?? {},
+      formSteps: (modelContext?.single.formSteps as FormStep<T>[]) ?? [],
+      formData: (modelContext?.single.formData as FormTypeMap[T]) ?? {},
       handleFormData:
-        (modelContext?.handleFormData as FormContextValue<T>["single"]["handleFormData"]) ??
+        (modelContext?.single
+          .handleFormData as FormContextValue<T>["single"]["handleFormData"]) ??
         (() => {}),
     },
 

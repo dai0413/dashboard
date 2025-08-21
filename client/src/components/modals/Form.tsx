@@ -37,8 +37,12 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   const { accessToken } = useAuth();
 
-  const { readItems: readPlayers } = usePlayer();
-  const { readItems: readTeams } = useTeam();
+  const {
+    metacrud: { readItems: readPlayers },
+  } = usePlayer();
+  const {
+    metacrud: { readItems: readTeams },
+  } = useTeam();
   const { page, setPage } = useQuery();
 
   useEffect(() => {
