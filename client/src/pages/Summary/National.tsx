@@ -29,6 +29,7 @@ import {
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -42,7 +43,7 @@ const National = () => {
   const api = useApi();
   const { id } = useParams();
   const { resetFilterConditions } = useFilter();
-  useEffect(() => resetFilterConditions(), []);
+  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("series");
 
@@ -89,9 +90,13 @@ const National = () => {
 
   useEffect(() => {
     if (!id) return;
-    readItem(id);
-    readSeries(id);
-    readCallup(id);
+    resetFilterConditions();
+    resetSort([]);
+    (async () => {
+      readItem(id);
+      readSeries(id);
+      readCallup(id);
+    })();
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
@@ -184,8 +189,8 @@ const National = () => {
         <TableContainer
           items={series}
           headers={[
-            { label: "名称", field: "name" },
-            { label: "年代", field: "team_class" },
+            { label: "名称", field: "name", width: "250px" },
+            { label: "年代", field: "team_class", width: "100px" },
             { label: "招集日", field: "joined_at" },
             { label: "解散日", field: "left_at" },
           ]}
@@ -205,11 +210,11 @@ const National = () => {
         <TableContainer
           items={callup}
           headers={[
-            { label: "代表試合シリーズ", field: "series" },
+            { label: "代表試合シリーズ", field: "series", width: "250px" },
             { label: "選手", field: "player" },
-            { label: "招集状況", field: "status" },
-            { label: "背番号", field: "number" },
-            { label: "ポジション", field: "position_group" },
+            { label: "招集状況", field: "status", width: "100px" },
+            { label: "背番号", field: "number", width: "100px" },
+            { label: "ポジション", field: "position_group", width: "100px" },
           ]}
           modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}

@@ -25,6 +25,7 @@ import { ReadItemsParamsMap } from "../../types/api";
 import { Injury, InjuryGet } from "../../types/models/injury";
 import { useForm } from "../../context/form-context";
 import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -40,8 +41,7 @@ const Team = () => {
 
   const { isOpen: formIsOpen } = useForm();
   const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
+  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("player");
 
@@ -137,22 +137,27 @@ const Team = () => {
 
   useEffect(() => {
     if (!id) return;
-    readItem(id);
-    readCurrentPlayers(id);
-    readFuturePlayers(id);
-    readTransfers(
-      { to_team: id, form: "!更新" },
-      (items: Transfer[]) => setInTransfers(convert(ModelType.TRANSFER, items)),
-      "in"
-    );
-    readTransfers(
-      { from_team: id },
-      (items: Transfer[]) =>
-        setOutTransfers(convert(ModelType.TRANSFER, items)),
-      "out"
-    );
-    readCurrentLoans(id);
-    readInjuries({ latest: true, now_team: id });
+    resetFilterConditions();
+    resetSort([]);
+    (async () => {
+      readItem(id);
+      readCurrentPlayers(id);
+      readFuturePlayers(id);
+      readTransfers(
+        { to_team: id, form: "!更新" },
+        (items: Transfer[]) =>
+          setInTransfers(convert(ModelType.TRANSFER, items)),
+        "in"
+      );
+      readTransfers(
+        { from_team: id },
+        (items: Transfer[]) =>
+          setOutTransfers(convert(ModelType.TRANSFER, items)),
+        "out"
+      );
+      readCurrentLoans(id);
+      readInjuries({ latest: true, now_team: id });
+    })();
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {

@@ -28,6 +28,7 @@ import {
   NationalCallup,
   NationalCallupGet,
 } from "../../types/models/national-callup";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -43,8 +44,7 @@ const Player = () => {
 
   const { isOpen: formIsOpen } = useForm();
   const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
+  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("transfer");
 
@@ -105,10 +105,14 @@ const Player = () => {
 
   useEffect(() => {
     if (!id) return;
-    readItem(id);
-    readTransfers(id);
-    readInjuries(id);
-    readCallup(id);
+    resetFilterConditions();
+    resetSort([]);
+    (async () => {
+      await readItem(id);
+      await readTransfers(id);
+      await readInjuries(id);
+      await readCallup(id);
+    })();
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
