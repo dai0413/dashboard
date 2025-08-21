@@ -1,6 +1,45 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const API_ROUTES = {
+type BaseCrudRoutes = {
+  GET_ALL: string;
+  CREATE: string;
+  DETAIL: (id: string | number) => string;
+  UPDATE: (id: string | number) => string;
+  DELETE: (id: string | number) => string;
+  UPLOAD?: string;
+  DOWNLOAD?: string;
+};
+
+type Model = {
+  COUNTRY: BaseCrudRoutes;
+  INJURY: BaseCrudRoutes;
+  NATIONAL_CALLUP: BaseCrudRoutes;
+  NATIONAL_MATCH_SERIES: BaseCrudRoutes;
+  PLAYER: BaseCrudRoutes & {
+    CHECK: string;
+  };
+  TEAM: BaseCrudRoutes;
+  TRANSFER: BaseCrudRoutes;
+};
+
+export const API_ROUTES: Model & {
+  AUTH: {
+    REGISTER: string;
+    LOGIN: string;
+    LOGOUT: string;
+    ME: string;
+    REFRESH: string;
+  };
+  TOP_PAGE: {
+    GET: string;
+  };
+  AGGREGATE: {
+    NO_CALLUP: (countryId: string | number) => string;
+    CURRENT_PLAYERS_BY_TEAM: (teamId: string | number) => string;
+    CURRENT_LOANS_BY_TEAM: (teamId: string | number) => string;
+    NO_NUMBER: (countryId: string | number) => string;
+  };
+} = {
   AUTH: {
     REGISTER: `${API_BASE_URL}/auth/register`,
     LOGIN: `${API_BASE_URL}/auth/login`,
