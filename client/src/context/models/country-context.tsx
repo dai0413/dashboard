@@ -1,22 +1,19 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useAlert } from "../alert-context";
-import { getDefaultValue } from "./initialValue.tsx/model-context";
 import { Country, CountryForm, CountryGet } from "../../types/models/country";
-import { ReadItemsParamsMap } from "../../types/api";
+import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
-import { steps } from "../../lib/form-steps";
-import { ModelContext } from "../../types/context";
+import { getSingleSteps } from "../../lib/form-steps";
+import {
+  BulkFormContext,
+  MetaCrudContext,
+  SingleFormContext,
+} from "../../types/context";
 import { useApi } from "../api-context";
 import {
   createItemBase,
@@ -33,63 +30,122 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
+import { updateFormValue } from "../../utils/updateFormValue";
+import { getBulkSteps } from "../../lib/form-steps/many";
 
-const initialFormData: CountryForm = {};
+type ContextModelType = ModelType.COUNTRY;
+const ContextModelString = ModelType.COUNTRY;
+type Form = CountryForm;
+type Get = CountryGet;
+type Model = Country;
+const backendRoute = API_ROUTES.COUNTRY;
+const singleStep = getSingleSteps(ContextModelString);
+const bulkStep = getBulkSteps(ContextModelString);
 
-const defaultContext = getDefaultValue(initialFormData);
+const SingleContext = createContext<SingleFormContext<ContextModelType> | null>(
+  null
+);
 
-const CountryContext =
-  createContext<ModelContext<ModelType.COUNTRY>>(defaultContext);
+const BulkContext = createContext<BulkFormContext<ContextModelType> | null>(
+  null
+);
 
-const CountryProvider = ({ children }: { children: ReactNode }) => {
-  const {
-    modal: { handleSetAlert },
-  } = useAlert();
+const MetaCrudContextContext =
+  createContext<MetaCrudContext<ContextModelType> | null>(null);
 
-  const api = useApi();
+const SingleProvider = ({ children }: { children: ReactNode }) => {
+  const [formData, setFormData] = useState<Form>({});
+  const [formSteps, setFormSteps] =
+    useState<FormStep<ContextModelType>[]>(singleStep);
 
-  const [items, setItems] = useState<CountryGet[]>([]);
-
-  const [selected, setSelectedItem] = useState<CountryGet | null>(null);
-  const [formData, setFormData] = useState<CountryForm>(initialFormData);
-  const [formSteps, setFormSteps] = useState<FormStep<ModelType.COUNTRY>[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const handleLoading = (time: "start" | "end") =>
-    time === "start" ? setIsLoading(true) : setIsLoading(false);
-
-  const startNewData = (item?: Partial<CountryForm>) => {
+  const startNewData = (item?: Partial<Form>) => {
     item ? setFormData(item) : setFormData({});
   };
 
-  const startEdit = (item?: CountryGet) => {
+  const startEdit = (item?: Get) => {
     if (item) {
-      setFormData(convertGettedToForm(ModelType.COUNTRY, item));
-      setSelectedItem(item);
+      setFormData(convertGettedToForm(ContextModelString, item));
     }
+  };
+
+  const handleFormData = <K extends keyof Form>(key: K, value: Form[K]) => {
+    setFormData((prev) => updateFormValue(prev, key, value));
+  };
+
+  const resetFormData = () => {
+    setFormData({});
+  };
+
+  const value: SingleFormContext<ContextModelType> = {
+    formData,
+    handleFormData,
+    resetFormData,
+    formSteps,
+    startNewData,
+    startEdit,
+  };
+  return (
+    <SingleContext.Provider value={value}>{children}</SingleContext.Provider>
+  );
+};
+
+const BulkProvider = ({ children }: { children: ReactNode }) => {
+  const [formDatas, setFormDatas] = useState<Form[]>([]);
+  const [manyDataFormSteps, setManyDataFormSteps] =
+    useState<FormStep<ContextModelType>[]>(bulkStep);
+
+  const value: BulkFormContext<ContextModelType> = {
+    formDatas,
+    setFormDatas,
+    manyDataFormSteps,
+  };
+  return <BulkContext.Provider value={value}>{children}</BulkContext.Provider>;
+};
+
+const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
+  const {
+    modal: { handleSetAlert },
+    main: { handleSetAlert: mainHandleSetAlert },
+  } = useAlert();
+  const api = useApi();
+  const { formData } = useSingle();
+
+  const [items, setItems] = useState<Get[]>([]);
+  const [selected, setSelectedItem] = useState<Get | null>(null);
+
+  const createItems = async (formDatas: Form[]) => {
+    createItemBase({
+      apiInstance: api,
+      backendRoute: backendRoute.CREATE,
+      data: cleanData(formDatas),
+      onAfterCreate: (item: Model[]) => {
+        const createItems = convert(ContextModelString, item);
+        setItems((prev) => [...prev, ...createItems]);
+      },
+      handleLoading,
+      handleSetAlert,
+    });
   };
 
   const createItem = async () =>
     createItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.COUNTRY.CREATE,
+      backendRoute: backendRoute.CREATE,
       data: cleanData(formData),
-      onAfterCreate: (item: Country) => {
-        setItems((prev) => [...prev, convert(ModelType.COUNTRY, item)]);
-        setFormData(initialFormData);
+      onAfterCreate: (item: Model) => {
+        setItems((prev) => [...prev, convert(ContextModelString, item)]);
       },
       handleLoading,
       handleSetAlert,
     });
 
-  const readItems = async (
-    params: ReadItemsParamsMap[ModelType.COUNTRY] = {}
-  ) =>
+  const readItems = async (params: ReadItemsParamsMap[ContextModelType] = {}) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.COUNTRY.GET_ALL,
+      backendRoute: backendRoute.GET_ALL,
       params,
-      onSuccess: (items: Country[]) => {
-        setItems(convert(ModelType.COUNTRY, items));
+      onSuccess: (items: Model[]) => {
+        setItems(convert(ContextModelString, items));
       },
       handleLoading,
       handleSetAlert,
@@ -98,9 +154,9 @@ const CountryProvider = ({ children }: { children: ReactNode }) => {
   const readItem = async (id: string) =>
     readItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.COUNTRY.DETAIL(id),
-      onSuccess: (item: Country) => {
-        setSelectedItem(convert(ModelType.COUNTRY, item));
+      backendRoute: backendRoute.DETAIL(id),
+      onSuccess: (item: Model) => {
+        setSelectedItem(convert(ContextModelString, item));
       },
       handleLoading,
       handleSetAlert,
@@ -109,7 +165,7 @@ const CountryProvider = ({ children }: { children: ReactNode }) => {
   const deleteItem = async (id: string) =>
     deleteItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.COUNTRY.DELETE(id),
+      backendRoute: backendRoute.DELETE(id),
       onAfterDelete: () => {
         setItems((prev) => prev.filter((t) => t._id !== id));
         setSelected();
@@ -118,60 +174,93 @@ const CountryProvider = ({ children }: { children: ReactNode }) => {
       handleSetAlert,
     });
 
-  const updateItem = async (updated: CountryForm) => {
+  const updateItem = async (updated: Form) => {
     if (!selected) return;
     const id = selected._id;
 
     updateItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.COUNTRY.UPDATE(id),
+      backendRoute: backendRoute.UPDATE(id),
       data: updated,
-      onAfterUpdate: (updatedItem: Country) => {
+      onAfterUpdate: (updatedItem: Model) => {
         setItems((prev) =>
           prev.map((t) =>
-            t._id === id ? convert(ModelType.COUNTRY, updatedItem) : t
+            t._id === id ? convert(ContextModelString, updatedItem) : t
           )
         );
-        setSelectedItem(convert(ModelType.COUNTRY, updatedItem));
+        setSelectedItem(convert(ContextModelString, updatedItem));
       },
       handleLoading,
       handleSetAlert,
     });
   };
 
+  const uploadFile =
+    typeof backendRoute.UPLOAD === "string"
+      ? async (file: File) => {
+          let alert: ResponseStatus = { success: false };
+
+          const formData = new FormData();
+          formData.append("file", file);
+
+          try {
+            const res = await api.post(backendRoute.UPLOAD!, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            const item = res.data.data as Model[];
+            setItems((prev) => [...prev, ...convert(ContextModelString, item)]);
+
+            alert = { success: true, message: res.data?.message };
+          } catch (err: any) {
+            const apiError = err.response?.data as APIError;
+
+            alert = {
+              success: false,
+              errors: apiError.error?.errors,
+              message: apiError.error?.message,
+            };
+          } finally {
+            mainHandleSetAlert(alert);
+          }
+        }
+      : undefined;
+
+  const downloadFile =
+    typeof backendRoute.DOWNLOAD === "string"
+      ? async () => {
+          try {
+            const res = await api.get(backendRoute.DOWNLOAD!, {
+              responseType: "blob",
+            });
+
+            const blob = new Blob([res.data], {
+              type: "text/csv;charset=utf-8;",
+            });
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${ContextModelString}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error("ファイルのダウンロードに失敗しました", error);
+          }
+        }
+      : undefined;
+
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);
     setSelectedItem(finded ? finded : null);
   };
 
-  const handleFormData = <K extends keyof CountryForm>(
-    key: K,
-    value: CountryForm[K]
-  ) => {
-    setFormData((prev) => {
-      // 同じ値をもう一度クリック → 選択解除
-      if (prev[key] === value) {
-        return {
-          ...prev,
-          [key]: null,
-        };
-      }
-
-      // 違う値なら選択更新
-      return {
-        ...prev,
-        [key]: value,
-      };
-    });
-  };
-
-  const resetFormData = () => {
-    setFormData(initialFormData);
-  };
-
-  useEffect(() => {
-    setFormSteps(steps[ModelType.COUNTRY]);
-  }, []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const handleLoading = (time: "start" | "end") =>
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
 
   const getDiffKeys = () => {
     if (!selected) return [];
@@ -179,7 +268,7 @@ const CountryProvider = ({ children }: { children: ReactNode }) => {
     const diff: string[] = [];
     for (const [key, formValue] of Object.entries(formData)) {
       const typedKey = key as keyof typeof formData;
-      const selectedValue = convertGettedToForm(ModelType.COUNTRY, selected)[
+      const selectedValue = convertGettedToForm(ContextModelString, selected)[
         typedKey
       ];
 
@@ -189,49 +278,72 @@ const CountryProvider = ({ children }: { children: ReactNode }) => {
     return diff;
   };
 
-  const filterableField = fieldDefinition[ModelType.COUNTRY].filter(
+  const filterableField = fieldDefinition[ContextModelString].filter(
     isFilterable
   ) as FilterableFieldDefinition[];
 
-  const sortableField = fieldDefinition[ModelType.COUNTRY].filter(
+  const sortableField = fieldDefinition[ContextModelString].filter(
     isSortable
   ) as SortableFieldDefinition[];
 
-  const value = {
+  const value: MetaCrudContext<ContextModelType> = {
     items,
     selected,
-    formData,
-    handleFormData,
-    resetFormData,
-    formSteps,
-
     setSelected,
-    startEdit,
-    startNewData,
-
-    createItem,
     readItem,
     readItems,
+    createItem,
+    createItems,
     updateItem,
     deleteItem,
-
     getDiffKeys,
+    uploadFile,
+    downloadFile,
     isLoading,
-
     filterableField,
     sortableField,
   };
   return (
-    <CountryContext.Provider value={value}>{children}</CountryContext.Provider>
+    <MetaCrudContextContext.Provider value={value}>
+      {children}
+    </MetaCrudContextContext.Provider>
   );
 };
 
-const useCountry = () => {
-  const context = useContext(CountryContext);
+const CountryContext = {
+  single: SingleContext,
+  bulk: BulkContext,
+  metacrud: MetaCrudContextContext,
+};
+
+const CountryProvider = ({ children }: { children: ReactNode }) => {
+  return (
+    <SingleProvider>
+      <BulkProvider>
+        <MetaCrudProvider>{children}</MetaCrudProvider>
+      </BulkProvider>
+    </SingleProvider>
+  );
+};
+
+const useSingle = () => {
+  const context = useContext(SingleContext);
   if (!context) {
-    throw new Error("useCountry must be used within a CountryProvider");
+    throw new Error("useSingle must be used within a SingleProvider");
   }
   return context;
+};
+
+const useCountry = () => {
+  const single = useContext(CountryContext.single);
+  const bulk = useContext(CountryContext.bulk);
+  const metacrud = useContext(CountryContext.metacrud);
+
+  if (!single || !bulk || !metacrud) {
+    throw new Error("useCountry must be used within CountryProvider");
+  }
+
+  return { single, bulk, metacrud };
 };
 
 export { useCountry, CountryProvider };

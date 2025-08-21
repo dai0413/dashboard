@@ -4,25 +4,43 @@ import { FilterableFieldDefinition, SortableFieldDefinition } from "./field";
 import { FormStep } from "./form";
 
 export type ModelContext<K extends keyof FormTypeMap> = {
+  single: SingleFormContext<K>;
+  bulk: BulkFormContext<K>;
+  metacrud: MetaCrudContext<K>;
+};
+
+// 単一データ編集
+export type SingleFormContext<K extends keyof FormTypeMap> = {
+  formData: FormTypeMap[K];
+  handleFormData: (key: keyof FormTypeMap[K], value: any) => void;
+  resetFormData: () => void;
+  formSteps: FormStep<K>[];
+  startNewData: (item?: FormTypeMap[K]) => void;
+  startEdit: (item?: GettedModelDataMap[K]) => void;
+};
+
+// 複数データ編集
+export type BulkFormContext<K extends keyof FormTypeMap> = {
+  formDatas: FormTypeMap[K][];
+  setFormDatas: React.Dispatch<React.SetStateAction<Partial<FormTypeMap[K]>[]>>;
+  manyDataFormSteps: FormStep<K>[];
+};
+
+// CRUD 操作& メタ情報
+export type MetaCrudContext<K extends keyof FormTypeMap> = {
   items: GettedModelDataMap[K][];
   selected: GettedModelDataMap[K] | null;
   setSelected: (id: string) => void;
 
-  formData: FormTypeMap[K];
-  handleFormData: (key: keyof FormTypeMap[K], value: any) => void;
-  resetFormData: () => void;
-
-  formSteps: FormStep<K>[];
-
-  startNewData: (item?: FormTypeMap[K]) => void;
-  startEdit: (item?: GettedModelDataMap[K]) => void;
-
-  createItem: () => void;
   readItem: (id: string) => Promise<void>;
   readItems: (
     params: ReadItemsParamsMap[K],
     onSuccess?: (items?: ModelDataMap[K][]) => void
   ) => Promise<void>;
+
+  createItem: () => Promise<void>;
+  createItems: (formDatas: FormTypeMap[K][]) => Promise<void>;
+
   updateItem: (data: FormTypeMap[K]) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
   uploadFile?: (file: File) => Promise<void>;
@@ -30,12 +48,6 @@ export type ModelContext<K extends keyof FormTypeMap> = {
 
   getDiffKeys: () => string[];
   isLoading: boolean;
-
   filterableField: FilterableFieldDefinition[];
   sortableField: SortableFieldDefinition[];
-
-  formDatas: FormTypeMap[K][];
-  setFormDatas: React.Dispatch<React.SetStateAction<Partial<FormTypeMap[K]>[]>>;
-  manyDataFormSteps: FormStep<K>[];
-  createItems: (formDatas: FormTypeMap[K][]) => Promise<void>;
 };

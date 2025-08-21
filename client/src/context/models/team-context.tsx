@@ -1,22 +1,19 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useAlert } from "../alert-context";
-import { getDefaultValue } from "./initialValue.tsx/model-context";
 import { Team, TeamForm, TeamGet } from "../../types/models/team";
-import { ReadItemsParamsMap } from "../../types/api";
+import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
-import { steps } from "../../lib/form-steps";
-import { ModelContext } from "../../types/context";
+import { getSingleSteps } from "../../lib/form-steps";
+import {
+  BulkFormContext,
+  MetaCrudContext,
+  SingleFormContext,
+} from "../../types/context";
 import { useApi } from "../api-context";
 import {
   createItemBase,
@@ -33,60 +30,122 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
+import { updateFormValue } from "../../utils/updateFormValue";
+import { getBulkSteps } from "../../lib/form-steps/many";
 
-const initialFormData: TeamForm = {};
+type ContextModelType = ModelType.TEAM;
+const ContextModelString = ModelType.TEAM;
+type Form = TeamForm;
+type Get = TeamGet;
+type Model = Team;
+const backendRoute = API_ROUTES.TEAM;
+const singleStep = getSingleSteps(ContextModelString);
+const bulkStep = getBulkSteps(ContextModelString);
 
-const defaultContext = getDefaultValue(initialFormData);
+const SingleContext = createContext<SingleFormContext<ContextModelType> | null>(
+  null
+);
 
-const TeamContext = createContext<ModelContext<ModelType.TEAM>>(defaultContext);
+const BulkContext = createContext<BulkFormContext<ContextModelType> | null>(
+  null
+);
 
-const TeamProvider = ({ children }: { children: ReactNode }) => {
-  const {
-    modal: { handleSetAlert },
-  } = useAlert();
+const MetaCrudContextContext =
+  createContext<MetaCrudContext<ContextModelType> | null>(null);
 
-  const api = useApi();
+const SingleProvider = ({ children }: { children: ReactNode }) => {
+  const [formData, setFormData] = useState<Form>({});
+  const [formSteps, setFormSteps] =
+    useState<FormStep<ContextModelType>[]>(singleStep);
 
-  const [items, setItems] = useState<TeamGet[]>([]);
-
-  const [selected, setSelectedItem] = useState<TeamGet | null>(null);
-  const [formData, setFormData] = useState<TeamForm>(initialFormData);
-  const [formSteps, setFormSteps] = useState<FormStep<ModelType.TEAM>[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const handleLoading = (time: "start" | "end") =>
-    time === "start" ? setIsLoading(true) : setIsLoading(false);
-
-  const startNewData = (item?: Partial<TeamForm>) => {
+  const startNewData = (item?: Partial<Form>) => {
     item ? setFormData(item) : setFormData({});
   };
 
-  const startEdit = (item?: TeamGet) => {
+  const startEdit = (item?: Get) => {
     if (item) {
-      setFormData(convertGettedToForm(ModelType.TEAM, item));
-      setSelectedItem(item);
+      setFormData(convertGettedToForm(ContextModelString, item));
     }
+  };
+
+  const handleFormData = <K extends keyof Form>(key: K, value: Form[K]) => {
+    setFormData((prev) => updateFormValue(prev, key, value));
+  };
+
+  const resetFormData = () => {
+    setFormData({});
+  };
+
+  const value: SingleFormContext<ContextModelType> = {
+    formData,
+    handleFormData,
+    resetFormData,
+    formSteps,
+    startNewData,
+    startEdit,
+  };
+  return (
+    <SingleContext.Provider value={value}>{children}</SingleContext.Provider>
+  );
+};
+
+const BulkProvider = ({ children }: { children: ReactNode }) => {
+  const [formDatas, setFormDatas] = useState<Form[]>([]);
+  const [manyDataFormSteps, setManyDataFormSteps] =
+    useState<FormStep<ContextModelType>[]>(bulkStep);
+
+  const value: BulkFormContext<ContextModelType> = {
+    formDatas,
+    setFormDatas,
+    manyDataFormSteps,
+  };
+  return <BulkContext.Provider value={value}>{children}</BulkContext.Provider>;
+};
+
+const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
+  const {
+    modal: { handleSetAlert },
+    main: { handleSetAlert: mainHandleSetAlert },
+  } = useAlert();
+  const api = useApi();
+  const { formData } = useSingle();
+
+  const [items, setItems] = useState<Get[]>([]);
+  const [selected, setSelectedItem] = useState<Get | null>(null);
+
+  const createItems = async (formDatas: Form[]) => {
+    createItemBase({
+      apiInstance: api,
+      backendRoute: backendRoute.CREATE,
+      data: cleanData(formDatas),
+      onAfterCreate: (item: Model[]) => {
+        const createItems = convert(ContextModelString, item);
+        setItems((prev) => [...prev, ...createItems]);
+      },
+      handleLoading,
+      handleSetAlert,
+    });
   };
 
   const createItem = async () =>
     createItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM.CREATE,
+      backendRoute: backendRoute.CREATE,
       data: cleanData(formData),
-      onAfterCreate: (item: Team) => {
-        setItems((prev) => [...prev, convert(ModelType.TEAM, item)]);
-        setFormData(initialFormData);
+      onAfterCreate: (item: Model) => {
+        setItems((prev) => [...prev, convert(ContextModelString, item)]);
       },
       handleLoading,
       handleSetAlert,
     });
 
-  const readItems = async (params: ReadItemsParamsMap[ModelType.TEAM] = {}) =>
+  const readItems = async (params: ReadItemsParamsMap[ContextModelType] = {}) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM.GET_ALL,
+      backendRoute: backendRoute.GET_ALL,
       params,
-      onSuccess: (items: Team[]) => {
-        setItems(convert(ModelType.TEAM, items));
+      onSuccess: (items: Model[]) => {
+        setItems(convert(ContextModelString, items));
       },
       handleLoading,
       handleSetAlert,
@@ -95,9 +154,9 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
   const readItem = async (id: string) =>
     readItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM.DETAIL(id),
-      onSuccess: (item: Team) => {
-        setSelectedItem(convert(ModelType.TEAM, item));
+      backendRoute: backendRoute.DETAIL(id),
+      onSuccess: (item: Model) => {
+        setSelectedItem(convert(ContextModelString, item));
       },
       handleLoading,
       handleSetAlert,
@@ -106,7 +165,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
   const deleteItem = async (id: string) =>
     deleteItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM.DELETE(id),
+      backendRoute: backendRoute.DELETE(id),
       onAfterDelete: () => {
         setItems((prev) => prev.filter((t) => t._id !== id));
         setSelected();
@@ -115,82 +174,93 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
       handleSetAlert,
     });
 
-  const updateItem = async (updated: TeamForm) => {
+  const updateItem = async (updated: Form) => {
     if (!selected) return;
     const id = selected._id;
 
     updateItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM.UPDATE(id),
+      backendRoute: backendRoute.UPDATE(id),
       data: updated,
-      onAfterUpdate: (updatedItem: Team) => {
+      onAfterUpdate: (updatedItem: Model) => {
         setItems((prev) =>
           prev.map((t) =>
-            t._id === id ? convert(ModelType.TEAM, updatedItem) : t
+            t._id === id ? convert(ContextModelString, updatedItem) : t
           )
         );
-        setSelectedItem(convert(ModelType.TEAM, updatedItem));
+        setSelectedItem(convert(ContextModelString, updatedItem));
       },
       handleLoading,
       handleSetAlert,
     });
   };
 
-  const downloadFile = async () => {
-    try {
-      const res = await api.get(API_ROUTES.TEAM.DOWNLOAD, {
-        responseType: "blob",
-      });
+  const uploadFile =
+    typeof backendRoute.UPLOAD === "string"
+      ? async (file: File) => {
+          let alert: ResponseStatus = { success: false };
 
-      const blob = new Blob([res.data], { type: "text/csv;charset=utf-8;" });
-      const url = window.URL.createObjectURL(blob);
+          const formData = new FormData();
+          formData.append("file", file);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "teams.csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("ファイルのダウンロードに失敗しました", error);
-    }
-  };
+          try {
+            const res = await api.post(backendRoute.UPLOAD!, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            const item = res.data.data as Model[];
+            setItems((prev) => [...prev, ...convert(ContextModelString, item)]);
+
+            alert = { success: true, message: res.data?.message };
+          } catch (err: any) {
+            const apiError = err.response?.data as APIError;
+
+            alert = {
+              success: false,
+              errors: apiError.error?.errors,
+              message: apiError.error?.message,
+            };
+          } finally {
+            mainHandleSetAlert(alert);
+          }
+        }
+      : undefined;
+
+  const downloadFile =
+    typeof backendRoute.DOWNLOAD === "string"
+      ? async () => {
+          try {
+            const res = await api.get(backendRoute.DOWNLOAD!, {
+              responseType: "blob",
+            });
+
+            const blob = new Blob([res.data], {
+              type: "text/csv;charset=utf-8;",
+            });
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${ContextModelString}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error("ファイルのダウンロードに失敗しました", error);
+          }
+        }
+      : undefined;
 
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);
     setSelectedItem(finded ? finded : null);
   };
 
-  const handleFormData = <K extends keyof TeamForm>(
-    key: K,
-    value: TeamForm[K]
-  ) => {
-    console.log("handleing", key, value);
-    setFormData((prev) => {
-      // 同じ値をもう一度クリック → 選択解除
-      if (prev[key] === value) {
-        return {
-          ...prev,
-          [key]: null,
-        };
-      }
-
-      // 違う値なら選択更新
-      return {
-        ...prev,
-        [key]: value,
-      };
-    });
-  };
-
-  const resetFormData = () => {
-    setFormData(initialFormData);
-  };
-
-  useEffect(() => {
-    setFormSteps(steps[ModelType.TEAM]);
-  }, []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const handleLoading = (time: "start" | "end") =>
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
 
   const getDiffKeys = () => {
     if (!selected) return [];
@@ -198,7 +268,7 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     const diff: string[] = [];
     for (const [key, formValue] of Object.entries(formData)) {
       const typedKey = key as keyof typeof formData;
-      const selectedValue = convertGettedToForm(ModelType.TEAM, selected)[
+      const selectedValue = convertGettedToForm(ContextModelString, selected)[
         typedKey
       ];
 
@@ -208,48 +278,72 @@ const TeamProvider = ({ children }: { children: ReactNode }) => {
     return diff;
   };
 
-  const filterableField = fieldDefinition[ModelType.TEAM].filter(
+  const filterableField = fieldDefinition[ContextModelString].filter(
     isFilterable
   ) as FilterableFieldDefinition[];
 
-  const sortableField = fieldDefinition[ModelType.TEAM].filter(
+  const sortableField = fieldDefinition[ContextModelString].filter(
     isSortable
   ) as SortableFieldDefinition[];
 
-  const value = {
+  const value: MetaCrudContext<ContextModelType> = {
     items,
     selected,
-    formData,
-    handleFormData,
-    resetFormData,
-    formSteps,
-
     setSelected,
-    startEdit,
-    startNewData,
-
-    createItem,
     readItem,
     readItems,
+    createItem,
+    createItems,
     updateItem,
     deleteItem,
-
     getDiffKeys,
-    isLoading,
-
+    uploadFile,
     downloadFile,
+    isLoading,
     filterableField,
     sortableField,
   };
-  return <TeamContext.Provider value={value}>{children}</TeamContext.Provider>;
+  return (
+    <MetaCrudContextContext.Provider value={value}>
+      {children}
+    </MetaCrudContextContext.Provider>
+  );
+};
+
+const TeamContext = {
+  single: SingleContext,
+  bulk: BulkContext,
+  metacrud: MetaCrudContextContext,
+};
+
+const TeamProvider = ({ children }: { children: ReactNode }) => {
+  return (
+    <SingleProvider>
+      <BulkProvider>
+        <MetaCrudProvider>{children}</MetaCrudProvider>
+      </BulkProvider>
+    </SingleProvider>
+  );
+};
+
+const useSingle = () => {
+  const context = useContext(SingleContext);
+  if (!context) {
+    throw new Error("useSingle must be used within a SingleProvider");
+  }
+  return context;
 };
 
 const useTeam = () => {
-  const context = useContext(TeamContext);
-  if (!context) {
-    throw new Error("useTeam must be used within a TeamProvider");
+  const single = useContext(TeamContext.single);
+  const bulk = useContext(TeamContext.bulk);
+  const metacrud = useContext(TeamContext.metacrud);
+
+  if (!single || !bulk || !metacrud) {
+    throw new Error("useTeam must be used within TeamProvider");
   }
-  return context;
+
+  return { single, bulk, metacrud };
 };
 
 export { useTeam, TeamProvider };

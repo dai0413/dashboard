@@ -7,8 +7,9 @@ import { team } from "./team";
 import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
 import { nationalCallUp } from "./national-callup";
+import { FormStep } from "../../types/form";
 
-export const steps = {
+export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COUNTRY]: [
     ...country,
     createConfirmationStep<ModelType.COUNTRY>(),
@@ -28,4 +29,10 @@ export const steps = {
     ...transfer,
     createConfirmationStep<ModelType.TRANSFER>(),
   ],
+};
+
+export const getSingleSteps = <T extends ModelType>(
+  modelType: T
+): FormStep<T>[] => {
+  return (steps[modelType] as FormStep<T>[] | undefined) ?? [];
 };

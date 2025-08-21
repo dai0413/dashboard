@@ -1,26 +1,23 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useAlert } from "../alert-context";
-import { getDefaultValue } from "./initialValue.tsx/model-context";
 import {
   NationalCallup,
   NationalCallupForm,
   NationalCallupGet,
 } from "../../types/models/national-callup";
-import { ReadItemsParamsMap } from "../../types/api";
+import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
 import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
-import { steps } from "../../lib/form-steps";
-import { ModelContext } from "../../types/context";
+import { getSingleSteps } from "../../lib/form-steps";
+import {
+  BulkFormContext,
+  MetaCrudContext,
+  SingleFormContext,
+} from "../../types/context";
 import { useApi } from "../api-context";
 import {
   createItemBase,
@@ -37,54 +34,96 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
-import { manyDataSteps } from "../../lib/form-steps/many";
+import { getBulkSteps } from "../../lib/form-steps/many";
+import { updateFormValue } from "../../utils/updateFormValue";
 
-const initialFormData: NationalCallupForm = {};
+type ContextModelType = ModelType.NATIONAL_CALLUP;
+const ContextModelString = ModelType.NATIONAL_CALLUP;
+type Form = NationalCallupForm;
+type Get = NationalCallupGet;
+type Model = NationalCallup;
+const backendRoute = API_ROUTES.NATIONAL_CALLUP;
+const singleStep = getSingleSteps(ContextModelString);
+const bulkStep = getBulkSteps(ContextModelString);
 
-const defaultContext = getDefaultValue(initialFormData);
+const SingleContext = createContext<SingleFormContext<ContextModelType> | null>(
+  null
+);
 
-const NationalCallupContext =
-  createContext<ModelContext<ModelType.NATIONAL_CALLUP>>(defaultContext);
+const BulkContext = createContext<BulkFormContext<ContextModelType> | null>(
+  null
+);
 
-const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
+const MetaCrudContextContext =
+  createContext<MetaCrudContext<ContextModelType> | null>(null);
+
+const SingleProvider = ({ children }: { children: ReactNode }) => {
+  const [formData, setFormData] = useState<Form>({});
+  const [formSteps, setFormSteps] =
+    useState<FormStep<ContextModelType>[]>(singleStep);
+
+  const startNewData = (item?: Partial<Form>) => {
+    item ? setFormData(item) : setFormData({});
+  };
+
+  const startEdit = (item?: Get) => {
+    if (item) {
+      setFormData(convertGettedToForm(ContextModelString, item));
+    }
+  };
+
+  const handleFormData = <K extends keyof Form>(key: K, value: Form[K]) => {
+    setFormData((prev) => updateFormValue(prev, key, value));
+  };
+
+  const resetFormData = () => {
+    setFormData({});
+  };
+
+  const value: SingleFormContext<ContextModelType> = {
+    formData,
+    handleFormData,
+    resetFormData,
+    formSteps,
+    startNewData,
+    startEdit,
+  };
+  return (
+    <SingleContext.Provider value={value}>{children}</SingleContext.Provider>
+  );
+};
+
+const BulkProvider = ({ children }: { children: ReactNode }) => {
+  const [formDatas, setFormDatas] = useState<Form[]>([]);
+  const [manyDataFormSteps, setManyDataFormSteps] =
+    useState<FormStep<ContextModelType>[]>(bulkStep);
+
+  const value: BulkFormContext<ContextModelType> = {
+    formDatas,
+    setFormDatas,
+    manyDataFormSteps,
+  };
+  return <BulkContext.Provider value={value}>{children}</BulkContext.Provider>;
+};
+
+const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
   const {
     modal: { handleSetAlert },
+    main: { handleSetAlert: mainHandleSetAlert },
   } = useAlert();
-
   const api = useApi();
+  const { formData } = useSingle();
 
-  const [items, setItems] = useState<NationalCallupGet[]>([]);
+  const [items, setItems] = useState<Get[]>([]);
+  const [selected, setSelectedItem] = useState<Get | null>(null);
 
-  const [selected, setSelectedItem] = useState<NationalCallupGet | null>(null);
-  const [formData, setFormData] = useState<NationalCallupForm>(initialFormData);
-
-  const [formDatas, setFormDatas] = useState<NationalCallupForm[]>([
-    // {
-    //   series: "688ea1a826c9a7f800b7f7b3",
-    //   player: "68516bd288294f93ffd0cb37",
-    //   joined_at: "2024-03-17T15:00:00.000Z",
-    //   left_at: "2024-03-24T15:00:00.000Z",
-    //   number: 1,
-    //   is_captain: false,
-    //   is_overage: false,
-    //   is_backup: false,
-    //   is_training_partner: false,
-    //   is_additional_call: false,
-    //   status: "joined",
-    //   left_reason: null,
-    //   position_group: "GK",
-    //   team: "685fe9e1bdafffc53f471941",
-    //   team_name: null,
-    // },
-  ]);
-
-  const createItems = async (formDatas: NationalCallupForm[]) => {
+  const createItems = async (formDatas: Form[]) => {
     createItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.CREATE,
+      backendRoute: backendRoute.CREATE,
       data: cleanData(formDatas),
-      onAfterCreate: (item: NationalCallup[]) => {
-        const createItems = convert(ModelType.NATIONAL_CALLUP, item);
+      onAfterCreate: (item: Model[]) => {
+        const createItems = convert(ContextModelString, item);
         setItems((prev) => [...prev, ...createItems]);
       },
       handleLoading,
@@ -92,50 +131,25 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const [manyDataFormSteps, setManyDataFormSteps] = useState<
-    FormStep<ModelType.NATIONAL_CALLUP>[]
-  >([]);
-
-  const [formSteps, setFormSteps] = useState<
-    FormStep<ModelType.NATIONAL_CALLUP>[]
-  >([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const handleLoading = (time: "start" | "end") =>
-    time === "start" ? setIsLoading(true) : setIsLoading(false);
-
-  const startNewData = (item?: Partial<NationalCallupForm>) => {
-    item ? setFormData(item) : setFormData({});
-  };
-
-  const startEdit = (item?: NationalCallupGet) => {
-    if (item) {
-      setFormData(convertGettedToForm(ModelType.NATIONAL_CALLUP, item));
-      setSelectedItem(item);
-    }
-  };
-
   const createItem = async () =>
     createItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.CREATE,
+      backendRoute: backendRoute.CREATE,
       data: cleanData(formData),
-      onAfterCreate: (item: NationalCallup) => {
-        setItems((prev) => [...prev, convert(ModelType.NATIONAL_CALLUP, item)]);
-        setFormData(initialFormData);
+      onAfterCreate: (item: Model) => {
+        setItems((prev) => [...prev, convert(ContextModelString, item)]);
       },
       handleLoading,
       handleSetAlert,
     });
 
-  const readItems = async (
-    params: ReadItemsParamsMap[ModelType.NATIONAL_CALLUP] = {}
-  ) =>
+  const readItems = async (params: ReadItemsParamsMap[ContextModelType] = {}) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+      backendRoute: backendRoute.GET_ALL,
       params,
-      onSuccess: (items: NationalCallup[]) => {
-        setItems(convert(ModelType.NATIONAL_CALLUP, items));
+      onSuccess: (items: Model[]) => {
+        setItems(convert(ContextModelString, items));
       },
       handleLoading,
       handleSetAlert,
@@ -144,9 +158,9 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
   const readItem = async (id: string) =>
     readItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.DETAIL(id),
-      onSuccess: (item: NationalCallup) => {
-        setSelectedItem(convert(ModelType.NATIONAL_CALLUP, item));
+      backendRoute: backendRoute.DETAIL(id),
+      onSuccess: (item: Model) => {
+        setSelectedItem(convert(ContextModelString, item));
       },
       handleLoading,
       handleSetAlert,
@@ -155,7 +169,7 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
   const deleteItem = async (id: string) =>
     deleteItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.DELETE(id),
+      backendRoute: backendRoute.DELETE(id),
       onAfterDelete: () => {
         setItems((prev) => prev.filter((t) => t._id !== id));
         setSelected();
@@ -164,60 +178,93 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
       handleSetAlert,
     });
 
-  const updateItem = async (updated: NationalCallupForm) => {
+  const updateItem = async (updated: Form) => {
     if (!selected) return;
     const id = selected._id;
 
     updateItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.UPDATE(id),
+      backendRoute: backendRoute.UPDATE(id),
       data: updated,
-      onAfterUpdate: (updatedItem: NationalCallup) => {
+      onAfterUpdate: (updatedItem: Model) => {
         setItems((prev) =>
           prev.map((t) =>
-            t._id === id ? convert(ModelType.NATIONAL_CALLUP, updatedItem) : t
+            t._id === id ? convert(ContextModelString, updatedItem) : t
           )
         );
-        setSelectedItem(convert(ModelType.NATIONAL_CALLUP, updatedItem));
+        setSelectedItem(convert(ContextModelString, updatedItem));
       },
       handleLoading,
       handleSetAlert,
     });
   };
 
+  const uploadFile =
+    typeof backendRoute.UPLOAD === "string"
+      ? async (file: File) => {
+          let alert: ResponseStatus = { success: false };
+
+          const formData = new FormData();
+          formData.append("file", file);
+
+          try {
+            const res = await api.post(backendRoute.UPLOAD!, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            });
+            const item = res.data.data as Model[];
+            setItems((prev) => [...prev, ...convert(ContextModelString, item)]);
+
+            alert = { success: true, message: res.data?.message };
+          } catch (err: any) {
+            const apiError = err.response?.data as APIError;
+
+            alert = {
+              success: false,
+              errors: apiError.error?.errors,
+              message: apiError.error?.message,
+            };
+          } finally {
+            mainHandleSetAlert(alert);
+          }
+        }
+      : undefined;
+
+  const downloadFile =
+    typeof backendRoute.DOWNLOAD === "string"
+      ? async () => {
+          try {
+            const res = await api.get(backendRoute.DOWNLOAD!, {
+              responseType: "blob",
+            });
+
+            const blob = new Blob([res.data], {
+              type: "text/csv;charset=utf-8;",
+            });
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${ContextModelString}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error("ファイルのダウンロードに失敗しました", error);
+          }
+        }
+      : undefined;
+
   const setSelected = (id?: string) => {
     const finded = items.find((t) => t._id === id);
     setSelectedItem(finded ? finded : null);
   };
 
-  function updateFormValue<T extends object, K extends keyof T>(
-    prev: T,
-    key: K,
-    value: T[K]
-  ): T {
-    // 同じ値をクリックしたら解除
-    if (prev[key] === value) {
-      return { ...prev, [key]: null };
-    }
-    // 違う値なら更新
-    return { ...prev, [key]: value };
-  }
-
-  const handleFormData = <K extends keyof NationalCallupForm>(
-    key: K,
-    value: NationalCallupForm[K]
-  ) => {
-    setFormData((prev) => updateFormValue(prev, key, value));
-  };
-
-  const resetFormData = () => {
-    setFormData(initialFormData);
-  };
-
-  useEffect(() => {
-    setFormSteps(steps[ModelType.NATIONAL_CALLUP]);
-    setManyDataFormSteps(manyDataSteps[ModelType.NATIONAL_CALLUP]);
-  }, []);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const handleLoading = (time: "start" | "end") =>
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
 
   const getDiffKeys = () => {
     if (!selected) return [];
@@ -225,10 +272,9 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
     const diff: string[] = [];
     for (const [key, formValue] of Object.entries(formData)) {
       const typedKey = key as keyof typeof formData;
-      const selectedValue = convertGettedToForm(
-        ModelType.NATIONAL_CALLUP,
-        selected
-      )[typedKey];
+      const selectedValue = convertGettedToForm(ContextModelString, selected)[
+        typedKey
+      ];
 
       !objectIsEqual(formValue, selectedValue) && diff.push(key);
     }
@@ -236,58 +282,74 @@ const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
     return diff;
   };
 
-  const filterableField = fieldDefinition[ModelType.NATIONAL_CALLUP].filter(
+  const filterableField = fieldDefinition[ContextModelString].filter(
     isFilterable
   ) as FilterableFieldDefinition[];
 
-  const sortableField = fieldDefinition[ModelType.NATIONAL_CALLUP].filter(
+  const sortableField = fieldDefinition[ContextModelString].filter(
     isSortable
   ) as SortableFieldDefinition[];
 
-  const value = {
+  const value: MetaCrudContext<ContextModelType> = {
     items,
     selected,
-    formData,
-    handleFormData,
-    resetFormData,
-    formSteps,
-
     setSelected,
-    startEdit,
-    startNewData,
-
-    createItem,
     readItem,
     readItems,
+    createItem,
+    createItems,
     updateItem,
     deleteItem,
-
     getDiffKeys,
+    uploadFile,
+    downloadFile,
     isLoading,
-
     filterableField,
     sortableField,
-
-    formDatas,
-    setFormDatas,
-    manyDataFormSteps,
-    createItems,
   };
   return (
-    <NationalCallupContext.Provider value={value}>
+    <MetaCrudContextContext.Provider value={value}>
       {children}
-    </NationalCallupContext.Provider>
+    </MetaCrudContextContext.Provider>
   );
 };
 
-const useNationalCallup = () => {
-  const context = useContext(NationalCallupContext);
+const NationalCallupContext = {
+  single: SingleContext,
+  bulk: BulkContext,
+  metacrud: MetaCrudContextContext,
+};
+
+const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
+  return (
+    <SingleProvider>
+      <BulkProvider>
+        <MetaCrudProvider>{children}</MetaCrudProvider>
+      </BulkProvider>
+    </SingleProvider>
+  );
+};
+
+const useSingle = () => {
+  const context = useContext(SingleContext);
   if (!context) {
-    throw new Error(
-      "useNationalCallup must be used within a NationalCallupProvider"
-    );
+    throw new Error("useSingle must be used within a SingleProvider");
   }
   return context;
+};
+
+const useNationalCallup = () => {
+  const single = useContext(NationalCallupContext.single);
+  const bulk = useContext(NationalCallupContext.bulk);
+  const metacrud = useContext(NationalCallupContext.metacrud);
+
+  if (!single || !bulk || !metacrud) {
+    throw new Error(
+      "useNationalCallup must be used within NationalCallupProvider"
+    );
+  }
+
+  return { single, bulk, metacrud };
 };
 
 export { useNationalCallup, NationalCallupProvider };
