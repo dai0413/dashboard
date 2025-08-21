@@ -161,6 +161,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setCurrentStep(0);
     resetAlert();
     setIsEditing(false);
+    setNewData(true);
     setMode("single");
   };
 
@@ -169,7 +170,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     resetFilter();
     setCurrentStep(0);
     resetAlert();
-    setIsEditing(false);
+    setIsEditing(true);
+    setNewData(true);
     setMode("single");
   };
 
@@ -238,7 +240,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     if (current.validate) {
       const valid = current.validate(modelContext?.formData);
       if (!valid.success) return handleSetAlert(valid);
-      return nextStep();
     }
 
     const missing = current.fields?.filter((f) => {
@@ -277,17 +278,16 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     if (!current) return;
 
     if (current.validate) {
-      for (const d of modelContext?.formDatas ?? []) {
+      for (const d of formDatas ?? []) {
         const valid = current.validate(d);
         if (!valid.success) {
           return handleSetAlert(valid);
         }
       }
-      return nextStep();
     }
 
     const missing = current.fields?.filter((f) => {
-      return (modelContext?.formDatas ?? []).some((d) => {
+      return (formDatas ?? []).some((d) => {
         const value = d[f.key];
         if (!f.required) return false;
 

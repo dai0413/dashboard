@@ -54,14 +54,21 @@ const TableContainer = <K extends keyof FormTypeMap>(
   const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
+  const [tableData, setTableData] = useState<any[]>([]);
 
-  let sourceItems: GettedModelDataMap[K][] = [];
-  if ("items" in props) {
-    sourceItems = props.items;
-  } else if ("contextState" in props) {
-    sourceItems = props.contextState.items;
-  }
-  const tableItems = useMemo(() => sourceItems, [sourceItems]);
+  useEffect(() => {
+    const items =
+      "items" in props
+        ? props.items
+        : "contextState" in props
+        ? props.contextState.items
+        : [];
+    setTableData(items);
+    setPage("page", 1);
+  }, [
+    "items" in props ? props.items : null,
+    "contextState" in props ? props.contextState.items : null,
+  ]);
 
   let souceLoading: boolean = false;
   if ("itemsLoading" in props) {
@@ -87,23 +94,14 @@ const TableContainer = <K extends keyof FormTypeMap>(
   }
   const sortField = useMemo(() => souceSortField, [souceSortField]);
 
-  const [tableData, setTableData] = useState<any[]>(tableItems);
-
   const handleApplyFilter = () => {
-    const filterd = handleFilter(tableItems);
+    const filterd = handleFilter(tableData);
     const sorted = handleSort(filterd);
     setTableData(sorted);
     closeFilter();
     closeSort();
     setPage("page", 1);
   };
-
-  useEffect(() => {
-    const filterd = handleFilter(tableItems);
-    const sorted = handleSort(filterd);
-    setTableData(sorted);
-    setPage("page", 1);
-  }, [tableItems]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">

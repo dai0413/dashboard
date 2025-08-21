@@ -1,6 +1,6 @@
 import { IconButton, LinkButtonGroup } from "../buttons/index";
 import { useSort } from "../../context/sort-context";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Modal } from "../ui/index";
 import { SortableFieldDefinition } from "../../types/field";
 
@@ -65,12 +65,14 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
     initializeSort(sortableField);
   }, []);
 
-  const selectingSortConditions = sortConditions.filter(
-    (cond) => cond.asc !== null
+  const selectingSortConditions = useMemo(
+    () => sortConditions.filter((cond) => cond.asc !== null),
+    [sortConditions]
   );
 
-  const notSelectingSortConditions = sortConditions.filter(
-    (cond) => cond.asc === null
+  const notSelectingSortConditions = useMemo(
+    () => sortConditions.filter((cond) => cond.asc === null),
+    [sortConditions]
   );
 
   return (
