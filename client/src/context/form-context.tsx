@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  JSX,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useTransfer } from "./models/transfer-context";
 import { useInjury } from "./models/injury-context";
 import { usePlayer } from "./models/player-context";
@@ -11,6 +18,7 @@ import { useOptions } from "./options-provider";
 import { useCountry } from "./models/country-context";
 import { useNationalMatchSeries } from "./models/national-match-series-context";
 import { useNationalCallup } from "./models/national-callup";
+import { getConfirmMes } from "../lib/confirm-mes.ts";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   modelType: T | null;
@@ -50,6 +58,9 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     formSteps: FormStep<T>[];
     addFormDatas: (setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
+    renderConfirmMes: (
+      confirmData: Record<string, string | number | undefined>[]
+    ) => JSX.Element;
   };
 
   steps: {
@@ -61,6 +72,10 @@ type FormContextValue<T extends keyof FormTypeMap> = {
   };
 
   getDiffKeys: (() => string[]) | undefined;
+  createFormMenuItems: (
+    modelType: T,
+    formInitialData: Partial<FormTypeMap[T]>
+  ) => any[];
 };
 
 export const FormModalContext = createContext<
@@ -382,12 +397,46 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelContext?.bulk.setFormDatas(newFormDatas);
   };
 
+  const createFormMenuItems = (
+    model: T,
+    formInitialData: Partial<FormTypeMap[T]>
+  ) => {
+    const hasSingle =
+      modelContextMap[model]?.single.formSteps &&
+      modelContextMap[model]?.single.formSteps.length > 0;
+    const hasBulk =
+      modelContextMap[model]?.bulk.manyDataFormSteps &&
+      modelContextMap[model]?.bulk.manyDataFormSteps.length > 0;
+
+    const menuItems = [
+      hasSingle && {
+        label: "Single",
+        onClick: () => {
+          openForm(true, model || null, undefined, formInitialData);
+        },
+      },
+      hasBulk && {
+        label: "Many",
+        onClick: () => {
+          openForm(true, model || null, undefined, formInitialData, true);
+        },
+      },
+    ].filter(Boolean) as { label: string; onClick: () => void }[];
+
+    return menuItems;
+  };
+
+  const renderer: (
+    confirmData: Record<string, string | number | undefined>[]
+  ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
+
   const many = {
     formSteps: modelContext?.bulk.manyDataFormSteps ?? [],
     formData: formDatas,
     handleFormData,
     addFormDatas,
     deleteFormDatas,
+    renderConfirmMes: renderer,
   };
 
   const value: FormContextValue<T> = {
@@ -422,6 +471,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     },
 
     getDiffKeys,
+    createFormMenuItems,
   };
 
   return (

@@ -36,13 +36,29 @@ const checkSimilarPlayers = async (req, res) => {
 };
 
 const createPlayer = async (req, res) => {
-  if (!req.body.name || !req.body.dob || !req.body.pob) {
-    throw new BadRequestError();
-  }
+  let player;
 
-  const player = await Player.create(req.body);
-  if (!player) {
-    throw new NotFoundError();
+  if (Array.isArray(req.body)) {
+    if (req.body.length === 0) {
+      throw new BadRequestError("データを送信してください");
+    }
+
+    // name チェック
+    const invalid = req.body.some((p) => !p.name);
+    if (invalid) {
+      throw new BadRequestError("name が必須です");
+    }
+
+    player = await Player.insertMany(req.body);
+  } else {
+    if (!req.body.name) {
+      throw new BadRequestError("name が必須です");
+    }
+
+    player = await Player.create(req.body);
+    if (!player) {
+      throw new NotFoundError("プレイヤーが作成できませんでした");
+    }
   }
   res.status(StatusCodes.OK).json({ message: "追加しました", data: player });
 };
