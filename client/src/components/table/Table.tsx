@@ -68,21 +68,34 @@ const RenderCell = (
   return isObject ? value.label : content;
 };
 
-export type TableProps<T> = {
+type TableDataProps<T> = {
   data: T[];
   headers: TableHeader[];
-  linkField?: LinkField[];
-  detailLink?: string | null;
-  rowSpacing?: "wide" | "narrow";
-  form?: boolean;
-  onClick?: (row: T) => void;
-  selectedKey?: string[];
+};
+
+type TableLinkProps = {
+  detailLink?: string | null; // 詳細リンク
+  linkField?: LinkField[]; // ページ遷移
+};
+
+type TableUIProps = {
   itemsPerPage?: number;
-  isLoading?: boolean;
   currentPage?: number;
   onPageChange?: (page: number) => void;
 
-  edit?: boolean; // 多数データ編集か否か
+  isLoading?: boolean;
+  rowSpacing?: "wide" | "narrow";
+};
+
+/** テーブル編集関連のProps */
+type TableEditProps<T> = {
+  /** 単一データ編集モード */
+  form?: boolean;
+  onClick?: (row: T) => void;
+  selectedKey?: string[];
+
+  /** 複数データ編集モード */
+  edit?: boolean;
   renderFieldCell?: (
     header: TableHeader,
     row: T,
@@ -90,6 +103,11 @@ export type TableProps<T> = {
   ) => React.ReactNode;
   deleteOnClick?: (index: number) => void;
 };
+
+type TableProps<T> = TableLinkProps &
+  TableUIProps &
+  TableDataProps<T> &
+  TableEditProps<T>;
 
 const Table = <T extends Record<string, any>>({
   data = [],
