@@ -31,6 +31,7 @@ type Original<K extends keyof FormTypeMap> = Base<K> & {
   itemsLoading?: boolean;
   originalFilterField?: FilterableFieldDefinition[];
   originalSortField?: SortableFieldDefinition[];
+  detailLink?: string | null;
 };
 
 type ModelBase<K extends keyof FormTypeMap> = Base<K> & {
@@ -105,6 +106,13 @@ const TableContainer = <K extends keyof FormTypeMap>(
     setPage("page", 1);
   };
 
+  const detailLink =
+    "detailLink" in props
+      ? props.detailLink
+      : props.modelType
+      ? ModelRouteMap[props.modelType]
+      : "";
+
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
       {props.title && (
@@ -134,8 +142,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
       <Table
         headers={props.headers}
         data={tableData}
-        detail={true}
-        detailLink={props.modelType ? ModelRouteMap[props.modelType] : ""}
+        detailLink={detailLink}
         rowSpacing={rowSpacing}
         itemsPerPage={10}
         isLoading={tableIsLoading}
