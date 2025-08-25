@@ -27,10 +27,12 @@ const Team = () => {
         ]}
         contextState={teamContext}
         modelType={ModelType.TEAM}
-        summaryLinkField={{
-          field: "team",
-          to: APP_ROUTES.TEAM_SUMMARY,
-        }}
+        linkField={[
+          {
+            field: "team",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

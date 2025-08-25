@@ -28,10 +28,12 @@ const Player = () => {
         ]}
         contextState={playerContext}
         modelType={ModelType.PLAYER}
-        summaryLinkField={{
-          field: "name",
-          to: APP_ROUTES.PLAYER_SUMMARY,
-        }}
+        linkField={[
+          {
+            field: "name",
+            to: APP_ROUTES.PLAYER_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

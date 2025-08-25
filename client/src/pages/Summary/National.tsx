@@ -201,10 +201,12 @@ const National = () => {
           originalSortField={seriesOptions.sortField}
           formInitialData={{}}
           itemsLoading={seriesIsLoading}
-          summaryLinkField={{
-            field: "name",
-            to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
-          }}
+          linkField={[
+            {
+              field: "name",
+              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -223,6 +225,16 @@ const National = () => {
           originalSortField={callupOptions.sortField}
           formInitialData={{}}
           itemsLoading={callupIsLoading}
+          linkField={[
+            {
+              field: "series",
+              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+            },
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+          ]}
         />
       )}
     </div>

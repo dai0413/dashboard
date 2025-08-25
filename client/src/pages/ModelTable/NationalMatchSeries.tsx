@@ -26,10 +26,16 @@ const NationalMatchSeries = () => {
         ]}
         contextState={nationalMatchSeriesContext}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
-        summaryLinkField={{
-          field: "name",
-          to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
-        }}
+        linkField={[
+          {
+            field: "name",
+            to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+          },
+          {
+            field: "country",
+            to: APP_ROUTES.NATIONAL_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

@@ -83,10 +83,12 @@ const NoCallUp = () => {
         originalSortField={inTransfersOptions.sortField}
         formInitialData={{}}
         itemsLoading={dataIsLoading}
-        summaryLinkField={{
-          field: "name",
-          to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
-        }}
+        linkField={[
+          {
+            field: "name",
+            to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

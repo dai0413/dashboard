@@ -20,14 +20,16 @@ const Country = () => {
         headers={[
           { label: "国名", field: "name" },
           { label: "英名", field: "en_name" },
-          { label: "地域", field: "area" },
+          { label: "地域", field: "area", width: "70px" },
         ]}
         contextState={countryContext}
         modelType={ModelType.COUNTRY}
-        summaryLinkField={{
-          field: "name",
-          to: APP_ROUTES.NATIONAL_SUMMARY,
-        }}
+        linkField={[
+          {
+            field: "name",
+            to: APP_ROUTES.NATIONAL_SUMMARY,
+          },
+        ]}
       />
     </div>
   );
