@@ -13,6 +13,7 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../types/field";
+import { APP_ROUTES } from "../lib/appRoutes";
 
 const NoNumber = () => {
   const api = useApi();
@@ -80,6 +81,16 @@ const NoNumber = () => {
         originalSortField={inTransfersOptions.sortField}
         formInitialData={{}}
         itemsLoading={playersIsLoading}
+        linkField={[
+          {
+            field: "player",
+            to: APP_ROUTES.PLAYER_SUMMARY,
+          },
+          {
+            field: "to_team",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

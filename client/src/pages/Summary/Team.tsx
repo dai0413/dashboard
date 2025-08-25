@@ -26,6 +26,7 @@ import { Injury, InjuryGet } from "../../types/models/injury";
 import { useForm } from "../../context/form-context";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -282,15 +283,21 @@ const Team = () => {
         <TableContainer
           items={players}
           headers={[
-            { label: "背番号", field: "number" },
+            { label: "背番号", field: "number", width: "70px" },
             { label: "選手", field: "player" },
-            { label: "ポジション", field: "position" },
+            { label: "ポジション", field: "position", width: "70px" },
           ]}
           modelType={ModelType.TRANSFER}
           originalFilterField={inTransfersOptions.filterField}
           originalSortField={inTransfersOptions.sortField}
           formInitialData={{ to_team: id }}
           itemsLoading={playersIsLoading}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -308,6 +315,16 @@ const Team = () => {
           originalSortField={inTransfersOptions.sortField}
           formInitialData={{ to_team: id }}
           itemsLoading={futurePlayersIsLoading}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+            {
+              field: "from_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -325,6 +342,16 @@ const Team = () => {
           originalSortField={inTransfersOptions.sortField}
           formInitialData={{ to_team: id }}
           itemsLoading={inTransfersIsLoading}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+            {
+              field: "from_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -342,6 +369,16 @@ const Team = () => {
           originalSortField={outTransfersOptions.sortField}
           formInitialData={{ from_team: id }}
           itemsLoading={outTransfersIsLoading}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+            {
+              field: "to_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -359,6 +396,16 @@ const Team = () => {
           originalSortField={outTransfersOptions.sortField}
           formInitialData={{ from_team: id }}
           itemsLoading={onLoanIsLoading}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+            {
+              field: "to_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -376,6 +423,12 @@ const Team = () => {
           originalSortField={injuryOptions.sortField}
           formInitialData={{ team: id }}
           itemsLoading={injuriesIsLoading}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+          ]}
         />
       )}
     </div>

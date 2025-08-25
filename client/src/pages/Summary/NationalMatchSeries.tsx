@@ -27,6 +27,7 @@ import { toDateKey } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { useForm } from "../../context/form-context";
 import { useSort } from "../../context/sort-context";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -189,6 +190,16 @@ const National = () => {
               : undefined,
           }}
           itemsLoading={callupIsLoading}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+          ]}
         />
       )}
     </div>

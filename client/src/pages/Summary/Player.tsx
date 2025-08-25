@@ -29,6 +29,7 @@ import {
   NationalCallupGet,
 } from "../../types/models/national-callup";
 import { useSort } from "../../context/sort-context";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -240,6 +241,16 @@ const Player = () => {
           originalSortField={transferOptions.sortField}
           formInitialData={{ player: id }}
           itemsLoading={transferIsLoading}
+          linkField={[
+            {
+              field: "from_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+            {
+              field: "to_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -257,6 +268,12 @@ const Player = () => {
           originalSortField={injuryOptions.sortField}
           formInitialData={{ player: id }}
           itemsLoading={injuriesIsLoading}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
 
@@ -274,6 +291,12 @@ const Player = () => {
           originalSortField={callupOptions.sortField}
           formInitialData={{ player: id }}
           itemsLoading={callupIsLoading}
+          linkField={[
+            {
+              field: "series",
+              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+            },
+          ]}
         />
       )}
     </div>

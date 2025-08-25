@@ -9,7 +9,7 @@ export type Label = {
   id: string;
 };
 
-export type SummaryLinkField = {
+export type LinkField = {
   field: string;
   to: string;
 };

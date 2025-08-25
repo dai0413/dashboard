@@ -4,7 +4,7 @@ import Table from "./Table";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { SummaryLinkField, TableHeader } from "../../types/types";
+import { LinkField, TableHeader } from "../../types/types";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -23,7 +23,7 @@ type Base<K extends keyof FormTypeMap> = {
   headers: TableHeader[];
   modelType?: ModelType | null;
   formInitialData?: Partial<FormTypeMap[K]>;
-  summaryLinkField?: SummaryLinkField;
+  linkField?: LinkField[];
 };
 
 type Original<K extends keyof FormTypeMap> = Base<K> & {
@@ -54,6 +54,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
   const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
+  const [items, setItems] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         : "contextState" in props
         ? props.contextState.metacrud.items
         : [];
+    setItems(items);
     setTableData(items);
     setPage("page", 1);
   }, [
@@ -95,7 +97,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
   const sortField = useMemo(() => souceSortField, [souceSortField]);
 
   const handleApplyFilter = () => {
-    const filterd = handleFilter(tableData);
+    const filterd = handleFilter(items);
     const sorted = handleSort(filterd);
     setTableData(sorted);
     closeFilter();
@@ -137,7 +139,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         rowSpacing={rowSpacing}
         itemsPerPage={10}
         isLoading={tableIsLoading}
-        summaryLinkField={props.summaryLinkField}
+        linkField={props.linkField}
         currentPage={page.page}
         onPageChange={handlePageChange}
       />

@@ -4,6 +4,7 @@ import { useForm } from "../../context/form-context";
 import { useTransfer } from "../../context/models/transfer-context";
 import { ModelType } from "../../types/models";
 import { useFilter } from "../../context/filter-context";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Transfer = () => {
   const transferContext = useTransfer();
@@ -29,6 +30,16 @@ const Transfer = () => {
         ]}
         contextState={transferContext}
         modelType={ModelType.TRANSFER}
+        linkField={[
+          {
+            field: "from_team",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
+          {
+            field: "to_team",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

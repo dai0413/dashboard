@@ -1,9 +1,8 @@
-import { SummaryLinkField, TableHeader } from "../../types/types";
+import { LinkField, TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { isLabelObject } from "../../utils";
-import { APP_ROUTES } from "../../lib/appRoutes";
 import { IconButton } from "../buttons";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -35,97 +34,44 @@ const RenderCell = (
   header: TableHeader,
   row: Record<string, any>,
   form: boolean,
-  summaryLinkField?: SummaryLinkField
+  linkField?: LinkField[]
 ) => {
-  // console.log("row", row);
   if ("element" in row && React.isValidElement(row.element)) {
     if (row.key === header.field) return row.element;
   }
 
-  const raw = row[header.field];
-  const isObject = isLabelObject(raw);
-  let content = raw;
+  const value = row[header.field];
+  const isObject = isLabelObject(value);
+  let content = value;
 
-  if (Array.isArray(raw)) {
-    content = raw.join(", ");
-  } else if (raw instanceof Date) {
-    content = raw.toLocaleDateString("ja-JP", {
+  if (Array.isArray(value)) {
+    content = value.join(", ");
+  } else if (value instanceof Date) {
+    content = value.toLocaleDateString("ja-JP", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
     });
   }
+  const field =
+    linkField && linkField.find((field) => field.field === header.field);
 
-  if (!form) {
-    if (header.field === "player" && isObject && raw.id !== "") {
-      return (
-        <Link
-          to={`${APP_ROUTES.PLAYER_SUMMARY}/${raw.id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {raw.label}
-        </Link>
-      );
-    }
-
-    if (
-      (header.field === "from_team" ||
-        header.field === "to_team" ||
-        header.field === "team") &&
-      isObject &&
-      raw.id !== ""
-    ) {
-      return (
-        <Link
-          to={`${APP_ROUTES.TEAM_SUMMARY}/${raw.id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {raw.label}
-        </Link>
-      );
-    }
-
-    if (header.field === "country" && isObject && raw.id !== "") {
-      return (
-        <Link
-          to={`${APP_ROUTES.NATIONAL_SUMMARY}/${raw.id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {raw.label}
-        </Link>
-      );
-    }
-
-    if (header.field === "series" && isObject && raw.id !== "") {
-      return (
-        <Link
-          to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${raw.id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {raw.label}
-        </Link>
-      );
-    }
-
-    if (summaryLinkField && header.field === summaryLinkField.field) {
-      return (
-        <Link
-          to={`${summaryLinkField.to}/${row._id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {isObject ? raw.label : content}
-        </Link>
-      );
-    }
+  if (!form && field) {
+    const id = value.id ? value.id : row._id;
+    return (
+      <Link to={`${field.to}/${id}`} className="hover:text-blue-600 underline">
+        {isObject ? value.label : content}
+      </Link>
+    );
   }
 
-  return isObject ? raw.label : content;
+  return isObject ? value.label : content;
 };
 
 export type TableProps<T> = {
   data: T[];
   headers: TableHeader[];
-  summaryLinkField?: SummaryLinkField;
+  linkField?: LinkField[];
   detail?: boolean;
   detailLink?: string;
   rowSpacing?: "wide" | "narrow";
@@ -149,7 +95,7 @@ export type TableProps<T> = {
 const Table = <T extends Record<string, any>>({
   data = [],
   headers = [],
-  summaryLinkField,
+  linkField,
   detail = false,
   detailLink = "",
   rowSpacing = "narrow",
@@ -294,7 +240,7 @@ const Table = <T extends Record<string, any>>({
                             row,
                             itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i
                           )
-                        : RenderCell(header, row, form, summaryLinkField)}
+                        : RenderCell(header, row, form, linkField)}
                     </td>
                   );
                 })}
@@ -338,7 +284,7 @@ const Table = <T extends Record<string, any>>({
         )}
       </table>
       {pages.length > 1 && (
-        <div className="flex justify-center mt-2 space-x-2">
+        <div className="flex justify-center m-4 space-x-2">
           {pages.map((page, index) =>
             page === "..." ? (
               <span key={index} className="px-2">
