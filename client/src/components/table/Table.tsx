@@ -72,8 +72,7 @@ export type TableProps<T> = {
   data: T[];
   headers: TableHeader[];
   linkField?: LinkField[];
-  detail?: boolean;
-  detailLink?: string;
+  detailLink?: string | null;
   rowSpacing?: "wide" | "narrow";
   form?: boolean;
   onClick?: (row: T) => void;
@@ -96,7 +95,6 @@ const Table = <T extends Record<string, any>>({
   data = [],
   headers = [],
   linkField,
-  detail = false,
   detailLink = "",
   rowSpacing = "narrow",
   form = false,
@@ -146,7 +144,7 @@ const Table = <T extends Record<string, any>>({
                 {header.label}
               </th>
             ))}
-            {detail && (
+            {detailLink && (
               <th className="bg-gray-200 border" style={{ width: "80px" }}>
                 詳細
               </th>
@@ -184,7 +182,7 @@ const Table = <T extends Record<string, any>>({
                     <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                   </td>
                 ))}
-                {detail && (
+                {detailLink && (
                   <td className="px-4 py-2 border">
                     <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
                   </td>
@@ -244,7 +242,7 @@ const Table = <T extends Record<string, any>>({
                     </td>
                   );
                 })}
-                {detail && (
+                {detailLink && (
                   <td
                     className="cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap"
                     style={{ width: "80px" }}
