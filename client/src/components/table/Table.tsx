@@ -34,6 +34,7 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
 const RenderCell = (
   header: TableHeader,
   row: Record<string, any>,
+  form: boolean,
   summaryLinkField?: SummaryLinkField
 ) => {
   // console.log("row", row);
@@ -55,65 +56,67 @@ const RenderCell = (
     });
   }
 
-  if (header.field === "player" && isObject && raw.id !== "") {
-    return (
-      <Link
-        to={`${APP_ROUTES.PLAYER_SUMMARY}/${raw.id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {raw.label}
-      </Link>
-    );
-  }
+  if (!form) {
+    if (header.field === "player" && isObject && raw.id !== "") {
+      return (
+        <Link
+          to={`${APP_ROUTES.PLAYER_SUMMARY}/${raw.id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {raw.label}
+        </Link>
+      );
+    }
 
-  if (
-    (header.field === "from_team" ||
-      header.field === "to_team" ||
-      header.field === "team") &&
-    isObject &&
-    raw.id !== ""
-  ) {
-    return (
-      <Link
-        to={`${APP_ROUTES.TEAM_SUMMARY}/${raw.id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {raw.label}
-      </Link>
-    );
-  }
+    if (
+      (header.field === "from_team" ||
+        header.field === "to_team" ||
+        header.field === "team") &&
+      isObject &&
+      raw.id !== ""
+    ) {
+      return (
+        <Link
+          to={`${APP_ROUTES.TEAM_SUMMARY}/${raw.id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {raw.label}
+        </Link>
+      );
+    }
 
-  if (header.field === "country" && isObject && raw.id !== "") {
-    return (
-      <Link
-        to={`${APP_ROUTES.NATIONAL_SUMMARY}/${raw.id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {raw.label}
-      </Link>
-    );
-  }
+    if (header.field === "country" && isObject && raw.id !== "") {
+      return (
+        <Link
+          to={`${APP_ROUTES.NATIONAL_SUMMARY}/${raw.id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {raw.label}
+        </Link>
+      );
+    }
 
-  if (header.field === "series" && isObject && raw.id !== "") {
-    return (
-      <Link
-        to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${raw.id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {raw.label}
-      </Link>
-    );
-  }
+    if (header.field === "series" && isObject && raw.id !== "") {
+      return (
+        <Link
+          to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${raw.id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {raw.label}
+        </Link>
+      );
+    }
 
-  if (summaryLinkField && header.field === summaryLinkField.field) {
-    return (
-      <Link
-        to={`${summaryLinkField.to}/${row._id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {isObject ? raw.label : content}
-      </Link>
-    );
+    if (summaryLinkField && header.field === summaryLinkField.field) {
+      return (
+        <Link
+          to={`${summaryLinkField.to}/${row._id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {isObject ? raw.label : content}
+        </Link>
+      );
+    }
   }
 
   return isObject ? raw.label : content;
@@ -291,7 +294,7 @@ const Table = <T extends Record<string, any>>({
                             row,
                             itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i
                           )
-                        : RenderCell(header, row, summaryLinkField)}
+                        : RenderCell(header, row, form, summaryLinkField)}
                     </td>
                   );
                 })}

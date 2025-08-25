@@ -210,14 +210,17 @@ const Form = <T extends keyof FormTypeMap>() => {
                   );
                 })}
               {mode === "many" && (
-                // <></>
-                <Table
-                  data={confirmData || []}
-                  headers={confirmManyDataHeaders || []}
-                  currentPage={page.formPage}
-                  onPageChange={(p: number) => setPage("formPage", p)}
-                  itemsPerPage={10}
-                />
+                <>
+                  {many?.renderConfirmMes(confirmData)}
+
+                  <Table
+                    data={confirmData || []}
+                    headers={confirmManyDataHeaders || []}
+                    currentPage={page.formPage}
+                    onPageChange={(p: number) => setPage("formPage", p)}
+                    itemsPerPage={10}
+                  />
+                </>
               )}
             </div>
           ) : steps[currentStep].many && many ? (
