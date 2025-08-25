@@ -17,6 +17,59 @@ import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
 
+type AddButtonProps = {
+  menuItems: { label: string; onClick: () => void }[];
+  dropdownRef: React.RefObject<HTMLDivElement | null>;
+  isAddOpen: boolean;
+  setIsAddOpen: (value: React.SetStateAction<boolean>) => void;
+};
+
+const AddButton = ({
+  menuItems,
+  dropdownRef,
+  isAddOpen,
+  setIsAddOpen,
+}: AddButtonProps) => {
+  const handleClick = () => {
+    if (menuItems.length === 1) {
+      // 1つだけ → 直接実行
+      menuItems[0].onClick();
+    } else {
+      // 2つ以上 → dropdown 切り替え
+      setIsAddOpen((prev) => !prev);
+    }
+  };
+
+  return (
+    <div ref={dropdownRef} className="relative inline-block text-left">
+      <button
+        onClick={handleClick}
+        className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+        type="button"
+      >
+        <PlusCircleIcon className="w-8 h-8" />
+        <span className="hidden md:inline">新規追加</span>
+      </button>
+
+      {menuItems.length > 1 && isAddOpen && (
+        <DropDownMenu
+          menuItems={menuItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => {
+                item.onClick();
+                setIsAddOpen((prev) => !prev);
+              }}
+            >
+              {item.label}
+            </button>
+          ))}
+        />
+      )}
+    </div>
+  );
+};
+
 type TableToolbarProps<K extends keyof FormTypeMap> = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
@@ -36,16 +89,14 @@ const TableToolbar = <K extends keyof FormTypeMap>({
 }: TableToolbarProps<K>) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
-  const {
-    formOperator: { openForm },
-  } = useForm();
+  const { createFormMenuItems } = useForm();
   const {
     main: { handleSetAlert },
   } = useAlert();
 
   const { staffState } = useAuth();
 
-  const [isAddOpen, SetIsAddOpen] = useState<boolean>(false);
+  const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -99,26 +150,9 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     <button onClick={handleDownload}>Download</button>,
   ];
 
-  const addMenu = [
-    <button
-      onClick={() => {
-        openForm(true, modelType || null, undefined, formInitialData);
-        SetIsAddOpen(false);
-      }}
-    >
-      Single
-    </button>,
-    modelType === ModelType.NATIONAL_CALLUP ? (
-      <button
-        onClick={() => {
-          openForm(true, modelType || null, undefined, formInitialData, true);
-          SetIsAddOpen(false);
-        }}
-      >
-        Many
-      </button>
-    ) : null,
-  ];
+  const menuItems = modelType
+    ? createFormMenuItems(modelType, formInitialData ? formInitialData : {})
+    : [];
 
   return (
     <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
@@ -172,27 +206,13 @@ const TableToolbar = <K extends keyof FormTypeMap>({
       {(staffState.admin || isDev) && (
         <div className="flex items-center gap-x-4">
           {/* 右側：新規追加ボタン */}
-          {/* <button
-            onClick={() =>
-              openForm(true, modelType || null, undefined, formInitialData)
-            }
-            className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-          >
-            <PlusCircleIcon className="w-8 h-8" />
-            <span className="hidden md:inline">新規追加</span>
-          </button> */}
 
-          <div ref={dropdownRef} className="relative inline-block text-left">
-            <button
-              onClick={() => SetIsAddOpen(!isAddOpen)}
-              className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-              type="button"
-            >
-              <PlusCircleIcon className="w-8 h-8" />
-              <span className="hidden md:inline">新規追加</span>
-            </button>
-            {isAddOpen && <DropDownMenu menuItems={addMenu} />}
-          </div>
+          <AddButton
+            menuItems={menuItems}
+            dropdownRef={dropdownRef}
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+          />
 
           {/* 右側：フォルダーボタン */}
           {(uploadFile || downloadFile) && (

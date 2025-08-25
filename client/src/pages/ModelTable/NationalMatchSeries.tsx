@@ -3,6 +3,7 @@ import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
 import { ModelType } from "../../types/models";
+import { APP_ROUTES } from "../../lib/appRoutes";
 
 const NationalMatchSeries = () => {
   const nationalMatchSeriesContext = useNationalMatchSeries();
@@ -25,6 +26,10 @@ const NationalMatchSeries = () => {
         ]}
         contextState={nationalMatchSeriesContext}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
+        summaryLinkField={{
+          field: "name",
+          to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+        }}
       />
     </div>
   );
