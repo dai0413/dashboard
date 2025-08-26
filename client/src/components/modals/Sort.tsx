@@ -58,11 +58,10 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
     toggleAsc,
     closeSort,
     resetSort,
-    initializeSort,
   } = useSort();
 
   useEffect(() => {
-    initializeSort(sortableField);
+    resetSort(sortableField);
   }, []);
 
   const selectingSortConditions = useMemo(

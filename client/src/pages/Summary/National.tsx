@@ -28,8 +28,6 @@ import {
   NationalCallupGet,
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { useFilter } from "../../context/filter-context";
-import { useSort } from "../../context/sort-context";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -42,8 +40,6 @@ const Tabs = NationalTabItems.filter(
 const National = () => {
   const api = useApi();
   const { id } = useParams();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("series");
 
@@ -92,8 +88,6 @@ const National = () => {
 
   useEffect(() => {
     if (!id) return;
-    resetFilterConditions();
-    resetSort([]);
     (async () => {
       readItem(id);
       readSeries(id);

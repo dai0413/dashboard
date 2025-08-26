@@ -23,12 +23,10 @@ import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
-import { useFilter } from "../../context/filter-context";
 import {
   NationalCallup,
   NationalCallupGet,
 } from "../../types/models/national-callup";
-import { useSort } from "../../context/sort-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Tabs = PlayerTabItems.filter(
@@ -44,8 +42,6 @@ const Player = () => {
   const { id } = useParams();
 
   const { isOpen: formIsOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("transfer");
 
@@ -108,8 +104,6 @@ const Player = () => {
 
   useEffect(() => {
     if (!id) return;
-    resetFilterConditions();
-    resetSort([]);
     (async () => {
       await readItem(id);
       await readTransfers(id);

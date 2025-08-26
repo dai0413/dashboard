@@ -24,9 +24,7 @@ import {
 } from "../../types/models/national-callup";
 import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
 import { toDateKey } from "../../utils";
-import { useFilter } from "../../context/filter-context";
 import { useForm } from "../../context/form-context";
-import { useSort } from "../../context/sort-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
@@ -40,8 +38,6 @@ const Tabs = NationalMatchSeriesTabItems.filter(
 const National = () => {
   const api = useApi();
   const { id } = useParams();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("player");
@@ -77,8 +73,6 @@ const National = () => {
 
   useEffect(() => {
     if (!id) return;
-    resetFilterConditions();
-    resetSort([]);
     (async () => {
       readItem(id);
       readCallup(id);

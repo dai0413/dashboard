@@ -4,6 +4,7 @@ import { useOptions } from "../../context/options-provider";
 import { Modal } from "../ui";
 import { FilterableFieldDefinition } from "../../types/field";
 import FieldRow from "./Filter/FieldRow";
+import { useEffect } from "react";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];
@@ -32,9 +33,14 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
     toggleAdding,
 
     getFilterConditions,
+    resetFilterConditions,
   } = useFilter();
 
   const { getOptions } = useOptions();
+
+  useEffect(() => {
+    resetFilterConditions();
+  }, []);
 
   return (
     <Modal isOpen={filterOpen} onClose={closeFilter}>

@@ -7,7 +7,6 @@ type SortState = {
   setSortConditions: (conditions: SortableFieldDefinition[]) => void;
   data: any[];
   setData: (data: any[]) => void;
-  initializeSort: (data: any[]) => void;
 
   moveSortConditionUp: (index: number) => void;
   moveSortConditionDown: (index: number) => void;
@@ -26,7 +25,6 @@ const defaultValue: SortState = {
   setSortConditions: () => {},
   data: [],
   setData: () => {},
-  initializeSort: () => {},
 
   moveSortConditionUp: () => {},
   moveSortConditionDown: () => {},
@@ -47,14 +45,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
     SortableFieldDefinition[]
   >(defaultValue.sortConditions);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
-
-  const initializeSort = (sortableField: SortableFieldDefinition[]): void => {
-    const sortConditions = sortableField?.length
-      ? sortableField.map((fie) => ({ ...fie, asc: null }))
-      : [];
-
-    setSortConditions(sortConditions);
-  };
 
   // ソート
   const handleSort = (data: any): any => {
@@ -100,7 +90,11 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
 
   // リセット
   const resetSort = (sortableField: SortableFieldDefinition[]): void => {
-    initializeSort(sortableField);
+    const sortConditions = sortableField?.length
+      ? sortableField.map((fie) => ({ ...fie, asc: null }))
+      : [];
+
+    setSortConditions(sortConditions);
   };
 
   const openSort = () => setSortOpen(true);
@@ -158,7 +152,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
     ...defaultValue,
     sortConditions,
     setSortConditions,
-    initializeSort,
 
     moveSortConditionUp,
     moveSortConditionDown,

@@ -32,6 +32,10 @@ const Transfer = () => {
         modelType={ModelType.TRANSFER}
         linkField={[
           {
+            field: "player",
+            to: APP_ROUTES.PLAYER_SUMMARY,
+          },
+          {
             field: "from_team",
             to: APP_ROUTES.TEAM_SUMMARY,
           },
