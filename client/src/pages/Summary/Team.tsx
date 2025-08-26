@@ -24,8 +24,6 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { ReadItemsParamsMap } from "../../types/api";
 import { Injury, InjuryGet } from "../../types/models/injury";
 import { useForm } from "../../context/form-context";
-import { useFilter } from "../../context/filter-context";
-import { useSort } from "../../context/sort-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Tabs = TeamTabItems.filter(
@@ -41,8 +39,6 @@ const Team = () => {
   const { id } = useParams();
 
   const { isOpen: formIsOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("player");
 
@@ -140,8 +136,6 @@ const Team = () => {
 
   useEffect(() => {
     if (!id) return;
-    resetFilterConditions();
-    resetSort([]);
     (async () => {
       readItem(id);
       readCurrentPlayers(id);
