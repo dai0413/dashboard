@@ -11,7 +11,7 @@ const NationalMatchSeriesSchema = new mongoose.Schema(
       type: String,
     },
     country: {
-      type: mongoose.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Country",
       required: true,
     },
@@ -33,7 +33,7 @@ const NationalMatchSeriesSchema = new mongoose.Schema(
       ],
     },
     matchs: {
-      type: [mongoose.ObjectId],
+      type: [mongoose.Schema.Types.ObjectId],
       ref: "Match",
     },
     joined_at: {

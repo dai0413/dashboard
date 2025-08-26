@@ -1,71 +1,76 @@
 const mongoose = require("mongoose");
 
-const InjurySchema = new mongoose.Schema({
-  doa: {
-    type: Date,
-    required: true,
-  },
-  team: {
-    type: mongoose.ObjectId,
-    ref: "Team",
-  },
-  team_name: {
-    type: String,
-  },
-  now_team: {
-    type: mongoose.ObjectId,
-    ref: "Team",
-  },
-  player: {
-    type: mongoose.ObjectId,
-    ref: "Player",
-    required: true,
-  },
-  doi: {
-    type: Date,
-  },
-  dos: {
-    type: Date,
-  },
-  injured_part: {
-    type: [String],
-    required: true,
-  },
-  is_injured: {
-    type: Boolean,
-    default: true,
-  },
-  ttp: {
-    type: [String],
-    validate: {
-      validator: function (values) {
-        if (!Array.isArray(values)) return false;
-        return values.every((value) =>
-          /^(\d+)([dwmy])$|^(\d+)([dwmy])-(\d+)([dwmy])$/i.test(value)
-        );
+const InjurySchema = new mongoose.Schema(
+  {
+    doa: {
+      type: Date,
+      required: true,
+    },
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
+    team_name: {
+      type: String,
+    },
+    now_team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
+    player: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Player",
+      required: true,
+    },
+    doi: {
+      type: Date,
+    },
+    dos: {
+      type: Date,
+    },
+    injured_part: {
+      type: [String],
+      required: true,
+    },
+    is_injured: {
+      type: Boolean,
+      default: true,
+    },
+    ttp: {
+      type: [String],
+      validate: {
+        validator: function (values) {
+          if (!Array.isArray(values)) return false;
+          return values.every((value) =>
+            /^(\d+)([dwmy])$|^(\d+)([dwmy])-(\d+)([dwmy])$/i.test(value)
+          );
+        },
+        message:
+          "全治期間は 数字+単位（d/w/m/y）、または 数字+単位-数字+単位 の形式で入力してください（例: 3d, 10-14d, 1d-3w）",
       },
-      message:
-        "全治期間は 数字+単位（d/w/m/y）、または 数字+単位-数字+単位 の形式で入力してください（例: 3d, 10-14d, 1d-3w）",
+    },
+    erd: {
+      type: Date,
+      validate: {
+        validator: function (value) {
+          return (
+            !value ||
+            (!this.doi && !this.dos) ||
+            value > this.doi ||
+            value > this.dos
+          );
+        },
+        message: "erd (復帰予測日）は負傷日,手術日よりも後でなければなりません",
+      },
+    },
+    URL: {
+      type: [String],
     },
   },
-  erd: {
-    type: Date,
-    validate: {
-      validator: function (value) {
-        return (
-          !value ||
-          (!this.doi && !this.dos) ||
-          value > this.doi ||
-          value > this.dos
-        );
-      },
-      message: "erd (復帰予測日）は負傷日,手術日よりも後でなければなりません",
-    },
-  },
-  URL: {
-    type: [String],
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 InjurySchema.pre("save", function (next) {
   if (Array.isArray(this.ttp) && this.ttp.length > 0 && !this.erd) {

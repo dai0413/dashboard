@@ -3,17 +3,17 @@ const mongoose = require("mongoose");
 const NationalCallUpSchema = new mongoose.Schema(
   {
     series: {
-      type: mongoose.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "NationalMatchSeries",
       required: true,
     },
     player: {
-      type: mongoose.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Player",
       required: true,
     },
     team: {
-      type: mongoose.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
     },
     team_name: {
