@@ -6,7 +6,6 @@ import {
   TransferGet,
 } from "../../types/models/transfer";
 import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
-import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
@@ -59,8 +58,6 @@ const MetaCrudContextContext =
 
 const SingleProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<Form>({});
-  const [formSteps, setFormSteps] =
-    useState<FormStep<ContextModelType>[]>(singleStep);
 
   const startNewData = (item?: Partial<Form>) => {
     item ? setFormData(item) : setFormData({});
@@ -84,7 +81,7 @@ const SingleProvider = ({ children }: { children: ReactNode }) => {
     formData,
     handleFormData,
     resetFormData,
-    formSteps,
+    formSteps: singleStep,
     startNewData,
     startEdit,
   };
@@ -95,13 +92,11 @@ const SingleProvider = ({ children }: { children: ReactNode }) => {
 
 const BulkProvider = ({ children }: { children: ReactNode }) => {
   const [formDatas, setFormDatas] = useState<Form[]>([]);
-  const [manyDataFormSteps, setManyDataFormSteps] =
-    useState<FormStep<ContextModelType>[]>(bulkStep);
 
   const value: BulkFormContext<ContextModelType> = {
     formDatas,
     setFormDatas,
-    manyDataFormSteps,
+    manyDataFormSteps: bulkStep,
   };
   return <BulkContext.Provider value={value}>{children}</BulkContext.Provider>;
 };
