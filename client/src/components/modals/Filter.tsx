@@ -147,7 +147,13 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
           color: "green",
           onClick: onApply,
         }}
-        reset={{ text: "リセット", color: "gray", onClick: closeFilter }}
+        reset={{
+          text: "リセット",
+          color: "gray",
+          onClick: () => {
+            resetFilterConditions();
+          },
+        }}
       />
     </Modal>
   );
