@@ -67,7 +67,6 @@ const TableContainer = <K extends keyof FormTypeMap>(
         : [];
     setItems(items);
     setTableData(items);
-    setPage("page", 1);
   }, [
     "items" in props ? props.items : null,
     "contextState" in props ? props.contextState.metacrud.items : null,
