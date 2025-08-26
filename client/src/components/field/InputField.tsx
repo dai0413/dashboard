@@ -1,3 +1,5 @@
+import { toDateKey } from "../../utils";
+
 type InputFieldProps = {
   type: "text" | "number" | "date" | "checkbox";
   value: string | number | Date | boolean;
@@ -14,7 +16,7 @@ const InputField = ({
   function formatDateValue(value: unknown): string {
     if (typeof value === "string") return value.slice(0, 10);
     if (value instanceof Date && !isNaN(value.getTime())) {
-      return value.toISOString().slice(0, 10);
+      return toDateKey(value);
     }
     return "";
   }

@@ -1,4 +1,5 @@
 import { OptionArray } from "../../types/option";
+import { toDateKey } from "../../utils";
 
 type SelectFieldProps = {
   type: "text" | "number" | "date" | "checkbox";
@@ -16,9 +17,7 @@ const SelectField = ({
   defaultOption,
 }: SelectFieldProps) => {
   const formattedValue =
-    type === "date" && value instanceof Date
-      ? value.toISOString().slice(0, 10) // YYYY-MM-DD
-      : String(value);
+    type === "date" && value instanceof Date ? toDateKey(value) : String(value);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const raw = e.target.value;
