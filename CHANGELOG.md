@@ -44,3 +44,52 @@
 - ヘッダー・フッター調整に伴う余白修正
 - 詳細ページにおける `undefined` 表示を空白に変更
 - その他軽微な修正
+
+## v1.3.0 #53 - 2025-08-26
+
+### 追加
+
+- モデル追加
+  - `Country`
+  - `NationalMatchSeries`
+  - `NationalCallUp`
+- 新規ページ追加
+  - `national-summary/:id`
+  - `national-match-series-summary/:id`
+  - `transfer/no-number`
+  - `national-callup/series-count`
+  - `admin`
+- データ追加フォーム
+  - `checkbox`追加
+  - 多数データ追加用フォーム
+- メニューに日本を追加
+- `player-summary`に`national-callup`タブを追加
+- `model-wrapper`にモデルプロバイダーまとめ
+- `query-context`に`page`管理
+- 新規モデル追加じの手順テンプレ作成
+
+### 改良
+
+- 開発中のログイン領略
+- サマリーページでのフォーム開閉時でデータ更新
+- サマリーページでのテーブルフィルターのリセットタイミング
+- `createOption`改善 `utils/createOption`に移動
+  - フィルタリングした後の`options`を返すのかどうかを引数に追加
+- テーブルページ遷移
+  - テーブルで page2 開く → 詳細 → テーブル page2 へ戻る
+- `Team`モデルの`Country`フィールドを変更
+  - 文字列から外部キーに変更
+- `IconButton` コンポーネントの改善
+  - アイコンを追加
+- modelContext のリファクタリング
+  - single, bulk, metacrud の 3 つに分類
+- `Table`コンポーネント
+  - 値 title のオブジェクト対応
+  - `width`対応
+- `player`の追加は多数データ(配列)対応
+
+### 修正
+
+- `team-summary/:id`の内定タブの表示データ修正
+  - `to_team`が一致する`transfer`モデルを取得
+- その他軽微な修正
