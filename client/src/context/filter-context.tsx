@@ -98,7 +98,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
     const nowValue =
       filterCondition.type === "Date" && val instanceof Date
-        ? val.toISOString().slice(0, 10)
+        ? toDateKey(val)
         : String(val);
 
     return `${filterCondition.label} が ${nowValue} ${nowOperator}`;

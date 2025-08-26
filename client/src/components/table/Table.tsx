@@ -2,7 +2,7 @@ import { LinkField, TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { isLabelObject } from "../../utils";
+import { isLabelObject, toDateKey } from "../../utils";
 import { IconButton } from "../buttons";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -47,11 +47,7 @@ const RenderCell = (
   if (Array.isArray(value)) {
     content = value.join(", ");
   } else if (value instanceof Date) {
-    content = value.toLocaleDateString("ja-JP", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
+    content = toDateKey(value);
   }
   const field =
     linkField && linkField.find((field) => field.field === header.field);
@@ -230,6 +226,17 @@ const Table = <T extends Record<string, any>>({
                   </th>
                 )}
                 {headers.map((header) => {
+                  const value = row[header.field];
+
+                  const title =
+                    typeof value === "boolean"
+                      ? value.toString()
+                      : value instanceof Date
+                      ? toDateKey(value)
+                      : isLabelObject(value)
+                      ? value.label
+                      : value;
+
                   return (
                     <td
                       key={header.field}
@@ -242,11 +249,7 @@ const Table = <T extends Record<string, any>>({
                           : ""
                       }
                     `}
-                      title={
-                        typeof row[header.field] === "boolean"
-                          ? row[header.field].toString()
-                          : row[header.field]
-                      }
+                      title={title}
                       style={{ width: "150px" }}
                     >
                       {edit
