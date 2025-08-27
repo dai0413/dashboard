@@ -18,6 +18,7 @@ type Model = {
   PLAYER: BaseCrudRoutes & {
     CHECK: string;
   };
+  REFEREE: BaseCrudRoutes;
   TEAM: BaseCrudRoutes;
   TRANSFER: BaseCrudRoutes;
 };
@@ -90,6 +91,13 @@ export const API_ROUTES: Model & {
     DETAIL: (id: string | number) => `${API_BASE_URL}/player/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
+  },
+  REFEREE: {
+    GET_ALL: `${API_BASE_URL}/referee`,
+    CREATE: `${API_BASE_URL}/referee`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
   },
   TEAM: {
     GET_ALL: `${API_BASE_URL}/team`,

@@ -2,12 +2,12 @@ import {
   NationalMatchSeries,
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
-import { teamClass } from "../../../utils/createOption/teamClass";
+import { ageGroup } from "../../../utils/createOption/ageGroup";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeries
 ): NationalMatchSeriesGet => {
-  const team_class = teamClass().find(
+  const team_class = ageGroup().find(
     (item) => item.key === t.team_class
   )?.label;
 

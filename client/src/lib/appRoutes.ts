@@ -12,6 +12,7 @@ export const APP_ROUTES = {
   NATIONAL_CALLUP: "/national-callup",
   NATIONAL_MATCH_SERIES: "/national-match-series",
   PLAYER: "/player",
+  REFEREE: "/referee",
   TEAM: "/team",
   TRANSFER: "/transfer",
 

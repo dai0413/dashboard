@@ -10,6 +10,7 @@ import {
   Country,
   NationalMatchSeries,
   NationalCallup,
+  Referee,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
@@ -27,6 +28,14 @@ export const ModelTable = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Player />
+        </Layout>
+      )}
+    />
+    <Route
+      path={APP_ROUTES.REFEREE}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Referee />
         </Layout>
       )}
     />

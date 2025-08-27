@@ -8,6 +8,7 @@ import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
 import { nationalCallUp } from "./national-callup";
 import { FormStep } from "../../types/form";
+import { referee } from "./referee";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COUNTRY]: [
@@ -24,6 +25,10 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
     createConfirmationStep<ModelType.NATIONAL_MATCH_SERIES>(),
   ],
   [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
+  [ModelType.REFEREE]: [
+    ...referee,
+    createConfirmationStep<ModelType.REFEREE>(),
+  ],
   [ModelType.TEAM]: [...team, createConfirmationStep<ModelType.TEAM>()],
   [ModelType.TRANSFER]: [
     ...transfer,

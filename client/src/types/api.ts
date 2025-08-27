@@ -30,6 +30,7 @@ export type ReadItemsParamsMap = {
     country?: string;
   };
   [ModelType.PLAYER]: {};
+  [ModelType.REFEREE]: {};
   [ModelType.TEAM]: {};
   [ModelType.TRANSFER]: {
     limit?: number;

@@ -8,12 +8,11 @@
   - [5. 怪我(injury)](#5-怪我injury)
   - [6. 国(country)](#6-国country)
   - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
-    - [※1 team\_class の ENUM 値](#1-team_class-の-enum-値)
   - [8. 代表召集リスト(NationalCallUpList)](#8-代表召集リストnationalcalluplist)
   - [6. 国(country)](#6-国country-1)
   - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries-1)
-    - [※1 team\_class の ENUM 値](#1-team_class-の-enum-値-1)
   - [8. 代表召集リスト(NationalCallUp)](#8-代表召集リストnationalcallup)
+  - [9. 審判(referee)](#9-審判referee)
 
 ## 1. ユーザー(user)
 
@@ -140,7 +139,7 @@
 | left_at    | 日付     | true  | 離脱日     |                     |
 | urls       | URL      | true  |            | 複数可              |
 
-### ※1 team_class の ENUM 値
+※1 team_class の ENUM 値
 
 以下のような代表クラスを指定：
 
@@ -209,7 +208,7 @@
 | left_at    | 日付     | true  | 離脱日     |                     |
 | urls       | URL      | true  |            | 複数可              |
 
-### ※1 team_class の ENUM 値
+※1 team_class の ENUM 値
 
 以下のような代表クラスを指定：
 
@@ -250,3 +249,16 @@ withdrawn : 途中離脱
 
 ※ team or team_name を入力
 ※series, player, の組み合わせユニーク
+
+## 9. 審判(referee)
+
+| フィールド  | 型           | null  | 注釈     | バリデーション    |
+| ----------- | ------------ | ----- | -------- | ----------------- |
+| name        | 文字列       | false | 名前     |                   |
+| en_name     | 文字列       | true  | 英語名   |                   |
+| dob         | 日付         | true  | 生年月日 |                   |
+| pob         | 文字列       | true  | 出身地   |                   |
+| citizenship | 外部キー配列 | true  | 国籍     | 国外部キー 複数可 |
+| player      | 外部キー     | true  | 選手     | 選手外部キー      |
+| transferurl | 文字列       | true  | transfer |                   |
+| sofaurl     | 文字列       | true  | sofa     |                   |

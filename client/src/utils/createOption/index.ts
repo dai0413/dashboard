@@ -7,7 +7,7 @@ import { player } from "./player";
 import { status } from "./status";
 import { positionGroup } from "./positionGroup";
 import { leftReason } from "./leftReason";
-import { teamClass } from "./teamClass";
+import { ageGroup } from "./ageGroup";
 import { area } from "./area";
 import { district } from "./district";
 import { confederation } from "./confederation";
@@ -70,7 +70,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.STATUS]: () => status(),
   [OptionType.POSITION_GROUP]: () => positionGroup(),
   [OptionType.LEFT_REASON]: () => leftReason(),
-  [OptionType.TEAM_CLASS]: () => teamClass(),
+  [OptionType.TEAM_CLASS]: () => ageGroup(),
   [OptionType.AREA]: () => area(),
   [OptionType.DISTRICT]: () => district(),
   [OptionType.CONFEDERATION]: () => confederation(),
