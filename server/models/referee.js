@@ -26,12 +26,10 @@ const RefereeSchema = new mongoose.Schema(
     transferurl: {
       type: String,
       unique: true,
-      sparse: true,
     },
     sofaurl: {
       type: String,
       unique: true,
-      sparse: true,
     },
   },
   {

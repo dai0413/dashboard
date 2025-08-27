@@ -1,6 +1,6 @@
 import { OptionArray } from "../../types/option";
 
-export const teamClass = (): OptionArray => [
+export const ageGroup = (): OptionArray => [
   { key: "full", label: "A" },
   { key: "u17", label: "u17" },
   { key: "u18", label: "u18" },

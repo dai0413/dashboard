@@ -118,12 +118,15 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     table?: boolean,
     filter?: boolean
   ): OptionArray | OptionTable {
+    const keyMap: Record<string, keyof OptionsMap> = {
+      citizenship: "country" as keyof OptionsMap,
+      from_team: "team" as keyof OptionsMap,
+      to_team: "team" as keyof OptionsMap,
+      series: "national-match-series" as keyof OptionsMap,
+    };
+
     const optionKey: keyof OptionsMap =
-      key === "from_team" || key === "to_team"
-        ? ("team" as keyof OptionsMap)
-        : key === "series"
-        ? ("national-match-series" as keyof OptionsMap)
-        : (key as keyof OptionsMap);
+      keyMap[key] ?? (key as keyof OptionsMap);
 
     const data = getDataForType(optionKey);
 

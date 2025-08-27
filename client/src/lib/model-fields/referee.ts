@@ -1,0 +1,68 @@
+import { FieldDefinition } from "../../types/field";
+
+export const referee: FieldDefinition[] = [
+  {
+    key: "name",
+    label: "名前",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "en_name",
+    label: "英名",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "dob",
+    label: "生年月日",
+    type: "Date",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "pob",
+    label: "出身地",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "citizenship",
+    label: "国籍",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "player",
+    label: "選手",
+    type: "select",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: true,
+  },
+  {
+    key: "transferurl",
+    label: "transferurl",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: false,
+  },
+  {
+    key: "sofaurl",
+    label: "sofaurl",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: false,
+  },
+];
