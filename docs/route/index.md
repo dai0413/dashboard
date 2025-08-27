@@ -18,6 +18,7 @@
 | `/national-callup`       | 代表招集リスト   |
 | `/national-match-series` | 代表試合シリーズ |
 | `/player`                | 選手             |
+| `/referee`               | 審判             |
 | `/team`                  | チーム           |
 | `/transfer`              | 移籍             |
 
@@ -30,6 +31,7 @@
 | `/national-callup/:id`       | 代表招集リスト   |
 | `/national-match-series/:id` | 代表試合シリーズ |
 | `/player/:id`                | 選手             |
+| `/referee/:id`               | 審判             |
 | `/team/:id`                  | チーム           |
 | `/transfer/:id`              | 移籍             |
 
@@ -37,7 +39,7 @@
 
 | パス                                       | 説明     |
 | ------------------------------------------ | -------- |
-| `/national-summary/:playerId`              | 国       |
-| `/national-match-series-summary/:playerId` | シリーズ |
+| `/national-summary/:countryId`             | 国       |
+| `/national-match-series-summary/:seriesId` | シリーズ |
 | `/player-summary/:playerId`                | 選手     |
 | `/team-summary/:teamId`                    | チーム   |

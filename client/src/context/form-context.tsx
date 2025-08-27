@@ -6,19 +6,20 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useTransfer } from "./models/transfer-context";
-import { useInjury } from "./models/injury-context";
-import { usePlayer } from "./models/player-context";
 import { useAlert } from "./alert-context";
 import { FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
-import { useTeam } from "./models/team-context";
+import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { useOptions } from "./options-provider";
+import { useTransfer } from "./models/transfer-context";
+import { useInjury } from "./models/injury-context";
+import { usePlayer } from "./models/player-context";
+import { useTeam } from "./models/team-context";
 import { useCountry } from "./models/country-context";
 import { useNationalMatchSeries } from "./models/national-match-series-context";
 import { useNationalCallup } from "./models/national-callup";
-import { getConfirmMes } from "../lib/confirm-mes.ts";
+import { useReferee } from "./models/referee-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   modelType: T | null;
@@ -107,6 +108,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
+    [ModelType.REFEREE]: useReferee(),
     [ModelType.TEAM]: useTeam(),
     [ModelType.TRANSFER]: useTransfer(),
   };
@@ -120,6 +122,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelContextMap[ModelType.NATIONAL_CALLUP].single.formData,
     modelContextMap[ModelType.NATIONAL_MATCH_SERIES].single.formData,
     modelContextMap[ModelType.PLAYER].single.formData,
+    modelContextMap[ModelType.REFEREE].single.formData,
     modelContextMap[ModelType.TEAM].single.formData,
     modelContextMap[ModelType.TRANSFER].single.formData,
   ]);
