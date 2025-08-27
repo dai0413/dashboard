@@ -10,6 +10,9 @@ require("../models/national-match-series");
 require("../models/player");
 require("../models/team");
 const NationalCallUp = require("../models/national-callup");
+const { parseObjectId } = require("./utils/parseObjectId");
+const { parseDate } = require("./utils/parseDate");
+const { parseBoolean } = require("./utils/parseBoolean");
 
 const inputPath =
   process.env.SAMPLE_INPUT_MODEL_PATH_NATIONAL_CALLUP || "national-callup.csv";
@@ -26,25 +29,6 @@ mongoose.connect(mongoUri, {
 });
 
 const datas = [];
-
-const parseBoolean = (val) => {
-  if (val === undefined || val === null) return false;
-  if (typeof val === "boolean") return val;
-  if (typeof val === "string") {
-    return ["true", "1", "yes", "y"].includes(val.toLowerCase());
-  }
-  return Boolean(val);
-};
-
-const parseObjectId = (val) => {
-  return val ? new mongoose.Types.ObjectId(val) : null;
-};
-
-const parseDate = (val) => {
-  if (!val) return null;
-  const date = new Date(val);
-  return isNaN(date) ? null : date;
-};
 
 fs.createReadStream(path.resolve(inputPath))
   .pipe(
