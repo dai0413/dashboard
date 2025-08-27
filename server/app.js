@@ -43,6 +43,7 @@ const team = require("./routes/team");
 const country = require("./routes/country");
 const nationalMatchSeries = require("./routes/national-match-series");
 const nationalCallup = require("./routes/national-callup");
+const referee = require("./routes/referee");
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/aggregate", authmiddleware, aggregate);
@@ -53,6 +54,7 @@ app.use("/api/v1/team", authmiddleware, team);
 app.use("/api/v1/country", authmiddleware, country);
 app.use("/api/v1/national-match-series", authmiddleware, nationalMatchSeries);
 app.use("/api/v1/national-callup", authmiddleware, nationalCallup);
+app.use("/api/v1/referee", authmiddleware, referee);
 app.use("/api/v1/top-page", top);
 
 app.get("/", (req, res) => {

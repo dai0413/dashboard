@@ -22,6 +22,12 @@ const models: {
     icon: "player",
   },
   {
+    model: "Referee",
+    desc: "審判",
+    link: APP_ROUTES.REFEREE,
+    icon: "player",
+  },
+  {
     model: "Transfer",
     desc: "移籍",
     link: APP_ROUTES.TRANSFER,

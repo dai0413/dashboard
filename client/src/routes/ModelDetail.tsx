@@ -10,6 +10,7 @@ import {
   Country,
   NationalMatchSeries,
   NationalCallup,
+  Referee,
 } from "../pages/ModelDetail/";
 
 export const ModelDetail = (
@@ -27,6 +28,14 @@ export const ModelDetail = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Player />
+        </Layout>
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.REFEREE}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Referee />
         </Layout>
       )}
     />
