@@ -26,7 +26,7 @@ export const nationalMatchSeries: FieldDefinition[] = [
     displayOnDetail: false,
   },
   {
-    key: "team_class",
+    key: "age_group",
     label: "年代・種別",
     type: "select",
     filterable: true,

@@ -15,7 +15,7 @@ const NationalMatchSeriesSchema = new mongoose.Schema(
       ref: "Country",
       required: true,
     },
-    team_class: {
+    age_group: {
       type: String,
       enum: [
         "full",
@@ -54,7 +54,7 @@ const NationalMatchSeriesSchema = new mongoose.Schema(
 NationalMatchSeriesSchema.index(
   {
     country: 1,
-    team_class: 1,
+    age_group: 1,
     joined_at: 1,
   },
   {

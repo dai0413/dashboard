@@ -9,7 +9,7 @@ export const nationalMatchSeries = (
     label: d.name,
     key: d._id,
     country: d.country.label,
-    team_class: d.team_class,
+    age_group: d.age_group,
   }));
 
   if (table === true) {
@@ -17,7 +17,7 @@ export const nationalMatchSeries = (
       header: [
         { label: "シリーズ名", field: "label" },
         { label: "国名", field: "country" },
-        { label: "年代・種別", field: "team_class" },
+        { label: "年代・種別", field: "age_group" },
       ],
       data: options,
     };
