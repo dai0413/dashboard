@@ -7,9 +7,7 @@ import { teamClass } from "../../../utils/createOption/teamClass";
 export const nationalMatchSeries = (
   t: NationalMatchSeries
 ): NationalMatchSeriesGet => {
-  const team_class = teamClass().find(
-    (item) => item.key === t.team_class
-  )?.label;
+  const age_group = teamClass().find((item) => item.key === t.age_group)?.label;
 
   return {
     ...t,
@@ -20,6 +18,6 @@ export const nationalMatchSeries = (
       label: t.country.name ?? "不明",
       id: t.country._id ?? "",
     },
-    team_class: team_class ? team_class : "",
+    age_group: age_group ? age_group : "",
   };
 };

@@ -11,7 +11,7 @@ export type NationalMatchSeries = {
   name: string;
   abbr: string | null;
   country: Country;
-  team_class: TeamClass;
+  age_group: TeamClass;
   matchs: [];
   joined_at: Date | null;
   left_at: Date | null;
