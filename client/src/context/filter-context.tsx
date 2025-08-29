@@ -260,7 +260,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       case "form":
         value = "完全";
         break;
-      case "team_class":
+      case "age_group":
         value = "full";
         break;
       case "genre":

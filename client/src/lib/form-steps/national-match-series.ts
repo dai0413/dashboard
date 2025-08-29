@@ -30,7 +30,7 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
           type: "table",
         },
         {
-          key: "team_class",
+          key: "age_group",
           label: "年代・種別",
           type: "select",
         },
