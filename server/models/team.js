@@ -36,15 +36,35 @@ const TeamSchema = new mongoose.Schema(
     },
     transferurl: {
       type: String,
-      unique: true,
     },
     sofaurl: {
       type: String,
-      unique: true,
     },
   },
   {
     timestamps: true,
+  }
+);
+
+// transferurl が存在する場合のみユニーク
+TeamSchema.index(
+  { transferurl: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      transferurl: { $exists: true, $ne: null, $type: "string" },
+    },
+  }
+);
+
+// sofaurl が存在する場合のみユニーク
+TeamSchema.index(
+  { sofaurl: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      sofaurl: { $exists: true, $ne: null, $type: "string" },
+    },
   }
 );
 
