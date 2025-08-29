@@ -15,8 +15,10 @@ import {
   NationalCallupForm,
   NationalCallupGet,
 } from "./national-callup";
+import { Competition, CompetitionForm, CompetitionGet } from "./competition";
 
 export enum ModelType {
+  COMPETITION = "competition",
   COUNTRY = "country",
   INJURY = "injury",
   NATIONAL_CALLUP = "national-callup",
@@ -28,6 +30,7 @@ export enum ModelType {
 }
 
 export type ModelDataMap = {
+  [ModelType.COMPETITION]: Competition;
   [ModelType.COUNTRY]: Country;
   [ModelType.INJURY]: Injury;
   [ModelType.NATIONAL_CALLUP]: NationalCallup;
@@ -39,6 +42,7 @@ export type ModelDataMap = {
 };
 
 export type GettedModelDataMap = {
+  [ModelType.COMPETITION]: CompetitionGet;
   [ModelType.COUNTRY]: CountryGet;
   [ModelType.INJURY]: InjuryGet;
   [ModelType.NATIONAL_CALLUP]: NationalCallupGet;
@@ -50,6 +54,7 @@ export type GettedModelDataMap = {
 };
 
 export type FormTypeMap = {
+  [ModelType.COMPETITION]: CompetitionForm;
   [ModelType.COUNTRY]: CountryForm;
   [ModelType.INJURY]: InjuryForm;
   [ModelType.NATIONAL_CALLUP]: NationalCallupForm;
@@ -61,6 +66,7 @@ export type FormTypeMap = {
 };
 
 export const ModelRouteMap = {
+  [ModelType.COMPETITION]: APP_ROUTES.COMPETITION,
   [ModelType.COUNTRY]: APP_ROUTES.COUNTRY,
   [ModelType.INJURY]: APP_ROUTES.INJURY,
   [ModelType.NATIONAL_CALLUP]: APP_ROUTES.NATIONAL_CALLUP,

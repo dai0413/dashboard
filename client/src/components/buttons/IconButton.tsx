@@ -18,6 +18,7 @@ import {
   UserGroupIcon,
   ClipboardDocumentListIcon,
   WrenchScrewdriverIcon,
+  TrophyIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
@@ -44,7 +45,8 @@ export type Icon =
   | "tournament"
   | "team"
   | "callup"
-  | "setting";
+  | "setting"
+  | "competition";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -131,6 +133,9 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <ClipboardDocumentListIcon className={iconClass} />;
       case "setting":
         return <WrenchScrewdriverIcon className={iconClass} />;
+      case "competition":
+        return <TrophyIcon className={iconClass} />;
+
       default:
         return null;
     }

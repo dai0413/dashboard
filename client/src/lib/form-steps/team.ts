@@ -31,7 +31,7 @@ export const team: FormStep<ModelType.TEAM>[] = [
       {
         key: "country",
         label: "国名",
-        type: "input",
+        type: "table",
       },
       {
         key: "genre",

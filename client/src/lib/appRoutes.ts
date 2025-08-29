@@ -7,6 +7,7 @@ export const APP_ROUTES = {
   NO_CALLUP: "/national-callup/series-count",
 
   // model
+  COMPETITION: "/competition",
   COUNTRY: "/country",
   INJURY: "/injury",
   NATIONAL_CALLUP: "/national-callup",

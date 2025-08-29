@@ -11,6 +11,7 @@ import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
 import { nationalCallup } from "./national-callup";
 import { referee } from "./referee";
+import { competition } from "./competition";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => GettedModelDataMap[T];
@@ -20,6 +21,10 @@ type Converter<T extends ModelType> = {
 const convertMap: {
   [K in ModelType]: Converter<K>;
 } = {
+  [ModelType.COMPETITION]: {
+    single: competition,
+    multiple: (data) => data.map(competition),
+  },
   [ModelType.COUNTRY]: {
     single: country,
     multiple: (data) => data.map(country),

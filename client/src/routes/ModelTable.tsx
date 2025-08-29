@@ -11,10 +11,19 @@ import {
   NationalMatchSeries,
   NationalCallup,
   Referee,
+  Competition,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
   <>
+    <Route
+      path={APP_ROUTES.COMPETITION}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Competition />
+        </Layout>
+      )}
+    />
     <Route
       path={APP_ROUTES.COUNTRY}
       element={wrapWithPrivateRoute(

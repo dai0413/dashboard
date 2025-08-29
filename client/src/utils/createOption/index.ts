@@ -16,6 +16,9 @@ import { position } from "./position";
 import { form } from "./form";
 import { genre } from "./genre";
 import { operator } from "./operator";
+import { competitionType } from "./competition_type";
+import { category } from "./category";
+import { level } from "./level";
 
 export enum OptionType {
   OPERATOR = "operator",
@@ -26,10 +29,13 @@ export enum OptionType {
   DISTRICT = "district",
   CONFEDERATION = "confederation",
   SUB_CONFEDERATION = "sub_confederation",
-  TEAM_CLASS = "age_group",
+  AGE_GROUP = "age_group",
   LEFT_REASON = "left_reason",
   POSITION_GROUP = "position_group",
   STATUS = "status",
+  COMPETITION_TYPE = "competition_type",
+  CATEGORY = "category",
+  LEVEL = "level",
 }
 
 type OptionMap = {
@@ -41,10 +47,13 @@ type OptionMap = {
   [OptionType.DISTRICT]: OptionArray;
   [OptionType.CONFEDERATION]: OptionArray;
   [OptionType.SUB_CONFEDERATION]: OptionArray;
-  [OptionType.TEAM_CLASS]: OptionArray;
+  [OptionType.AGE_GROUP]: OptionArray;
   [OptionType.LEFT_REASON]: OptionArray;
   [OptionType.POSITION_GROUP]: OptionArray;
   [OptionType.STATUS]: OptionArray;
+  [OptionType.COMPETITION_TYPE]: OptionArray;
+  [OptionType.CATEGORY]: OptionArray;
+  [OptionType.LEVEL]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -70,7 +79,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.STATUS]: () => status(),
   [OptionType.POSITION_GROUP]: () => positionGroup(),
   [OptionType.LEFT_REASON]: () => leftReason(),
-  [OptionType.TEAM_CLASS]: () => ageGroup(),
+  [OptionType.AGE_GROUP]: () => ageGroup(),
   [OptionType.AREA]: () => area(),
   [OptionType.DISTRICT]: () => district(),
   [OptionType.CONFEDERATION]: () => confederation(),
@@ -79,6 +88,9 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.FORM]: () => form(),
   [OptionType.GENRE]: () => genre(),
   [OptionType.OPERATOR]: () => operator(),
+  [OptionType.COMPETITION_TYPE]: () => competitionType(),
+  [OptionType.CATEGORY]: () => category(),
+  [OptionType.LEVEL]: () => level(),
 };
 
 // 実装
