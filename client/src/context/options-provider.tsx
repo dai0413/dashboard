@@ -90,7 +90,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       [OptionType.DISTRICT]: [],
       [OptionType.CONFEDERATION]: [],
       [OptionType.SUB_CONFEDERATION]: [],
-      [OptionType.TEAM_CLASS]: [],
+      [OptionType.AGE_GROUP]: [],
       [OptionType.LEFT_REASON]: [],
       [OptionType.POSITION_GROUP]: [],
       [OptionType.STATUS]: [],

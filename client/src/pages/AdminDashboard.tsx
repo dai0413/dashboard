@@ -22,6 +22,12 @@ const models: {
     icon: "player",
   },
   {
+    model: "Competition",
+    desc: "大会",
+    link: APP_ROUTES.COMPETITION,
+    icon: "competition",
+  },
+  {
     model: "Referee",
     desc: "審判",
     link: APP_ROUTES.REFEREE,

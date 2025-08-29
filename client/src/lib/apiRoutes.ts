@@ -11,6 +11,7 @@ type BaseCrudRoutes = {
 };
 
 type Model = {
+  COMPETITION: BaseCrudRoutes;
   COUNTRY: BaseCrudRoutes;
   INJURY: BaseCrudRoutes;
   NATIONAL_CALLUP: BaseCrudRoutes;
@@ -50,6 +51,13 @@ export const API_ROUTES: Model & {
   },
   TOP_PAGE: {
     GET: `${API_BASE_URL}/top-page`,
+  },
+  COMPETITION: {
+    GET_ALL: `${API_BASE_URL}/competition`,
+    CREATE: `${API_BASE_URL}/competition`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/competition/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/competition/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/competition/${id}`,
   },
   COUNTRY: {
     GET_ALL: `${API_BASE_URL}/country`,

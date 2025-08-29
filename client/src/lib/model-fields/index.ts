@@ -7,8 +7,10 @@ import { country } from "./country";
 import { nationalMatchSeries } from "./national-match-series";
 import { nationalCallUp } from "./national-callup";
 import { referee } from "./referee";
+import { competition } from "./competition";
 
 export const fieldDefinition = {
+  [ModelType.COMPETITION]: competition,
   [ModelType.COUNTRY]: country,
   [ModelType.INJURY]: injury,
   [ModelType.NATIONAL_CALLUP]: nationalCallUp,

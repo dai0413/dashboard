@@ -20,6 +20,7 @@ import { useCountry } from "./models/country-context";
 import { useNationalMatchSeries } from "./models/national-match-series-context";
 import { useNationalCallup } from "./models/national-callup";
 import { useReferee } from "./models/referee-context";
+import { useCompetition } from "./models/competition-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   modelType: T | null;
@@ -103,6 +104,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const modelContextMap: {
     [K in keyof FormTypeMap]: ModelContext<K>;
   } = {
+    [ModelType.COMPETITION]: useCompetition(),
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
@@ -117,6 +119,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     return modelType ? modelContextMap[modelType] : null;
   }, [
     modelType,
+    modelContextMap[ModelType.COMPETITION].single.formData,
     modelContextMap[ModelType.COUNTRY].single.formData,
     modelContextMap[ModelType.INJURY].single.formData,
     modelContextMap[ModelType.NATIONAL_CALLUP].single.formData,

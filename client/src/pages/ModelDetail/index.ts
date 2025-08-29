@@ -1,3 +1,4 @@
+export { default as Competition } from "./Competition";
 export { default as Country } from "./Country";
 export { default as Injury } from "./InjuryDetail";
 export { default as NationalCallup } from "./NationalCallup";
