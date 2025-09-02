@@ -8,24 +8,27 @@ import { NationalMatchSeriesProvider } from "./national-match-series-context";
 import { NationalCallupProvider } from "./national-callup";
 import { RefereeProvider } from "./referee-context";
 import { CompetitionProvider } from "./competition-context";
+import { SeasonProvider } from "./season-context";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
     <CountryProvider>
       <CompetitionProvider>
-        <NationalMatchSeriesProvider>
-          <TeamProvider>
-            <PlayerProvider>
-              <RefereeProvider>
-                <NationalCallupProvider>
-                  <InjuryProvider>
-                    <TransferProvider>{children}</TransferProvider>
-                  </InjuryProvider>
-                </NationalCallupProvider>
-              </RefereeProvider>
-            </PlayerProvider>
-          </TeamProvider>
-        </NationalMatchSeriesProvider>
+        <SeasonProvider>
+          <NationalMatchSeriesProvider>
+            <TeamProvider>
+              <PlayerProvider>
+                <RefereeProvider>
+                  <NationalCallupProvider>
+                    <InjuryProvider>
+                      <TransferProvider>{children}</TransferProvider>
+                    </InjuryProvider>
+                  </NationalCallupProvider>
+                </RefereeProvider>
+              </PlayerProvider>
+            </TeamProvider>
+          </NationalMatchSeriesProvider>
+        </SeasonProvider>
       </CompetitionProvider>
     </CountryProvider>
   );

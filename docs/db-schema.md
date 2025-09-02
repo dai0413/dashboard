@@ -11,6 +11,7 @@
   - [8. 代表召集リスト(NationalCallUp)](#8-代表召集リストnationalcallup)
   - [9. 審判(referee)](#9-審判referee)
   - [10. 大会(Competition)](#10-大会competition)
+  - [11. シーズン(Season)](#11-シーズンseason)
 
 ## 1. ユーザー(user)
 
@@ -194,19 +195,19 @@
 
 ## 10. 大会(Competition)
 
-| フィールド       | 型       | null  | 注釈       | バリデーション |
-| ---------------- | -------- | ----- | ---------- | -------------- |
-| name             | 文字列   | false | 大会名     |                |
-| abbr             | 文字列   | true  | 略称       |                |
-| en_name          | 文字列   | true  | 英名       |                |
-| country?         | 外部キー | true  | 国         | 国外部キー     |
-| competition_type | 文字列   | false | 大会規模   | ※1 ENUM        |
-| category?        | 文字列   | true  | 大会タイプ | ※2 ENUM        |
-| level?           | 文字列   | true  | 大会レベル | ※3 ENUM        |
-| age_group?       | 文字列   | true  | 年代       | ※4 ENUM        |
-| official_match?  | 真偽値   | true  | 公式戦     |                |
-| transferurl?     | 文字列   | true  | transfer   | unique         |
-| sofaurl?         | 文字列   | true  | sofa       | unique         |
+| フィールド       | 型       | null  | 注釈       | バリデーション       |
+| ---------------- | -------- | ----- | ---------- | -------------------- |
+| name             | 文字列   | false | 大会名     |                      |
+| abbr             | 文字列   | true  | 略称       |                      |
+| en_name          | 文字列   | true  | 英名       |                      |
+| country?         | 外部キー | true  | 国         | 国外部キー           |
+| competition_type | 文字列   | false | 大会規模   | ※1 ENUM              |
+| category?        | 文字列   | true  | 大会タイプ | ※2 ENUM              |
+| level?           | 文字列   | true  | 大会レベル | ※3 ENUM 将来的に廃棄 |
+| age_group?       | 文字列   | true  | 年代       | ※4 ENUM              |
+| official_match?  | 真偽値   | true  | 公式戦     |                      |
+| transferurl?     | 文字列   | true  | transfer   | unique               |
+| sofaurl?         | 文字列   | true  | sofa       | unique               |
 
 ※1 `club` | `national` | `other`
 ※2 `league` | `cup` | `po` | `friendly` | `qualification`
@@ -230,3 +231,17 @@
 - `youth`（ユース選抜）
 
 ※name, country, の組み合わせユニーク
+
+## 11. シーズン(Season)
+
+| フィールド  | 型       | null  | 注釈             | バリデーション       |
+| ----------- | -------- | ----- | ---------------- | -------------------- |
+| competition | 外部キー | false | 大会             | Competition 外部キー |
+| name        | 文字列   | false | 名称             | ※1                   |
+| start_date? | 日付     | true  | シーズン開始日   |                      |
+| end_date?   | 日付     | true  | シーズン終了日   |                      |
+| current?    | 真偽値   | true  | 現在のシーズンか |                      |
+| note?       | 文字列   | true  | 備考             |                      |
+
+※1 例 "2023","2023-2024"
+※competition, start_date, の組み合わせユニーク

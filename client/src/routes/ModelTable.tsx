@@ -12,6 +12,7 @@ import {
   NationalCallup,
   Referee,
   Competition,
+  Season,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
@@ -45,6 +46,14 @@ export const ModelTable = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Referee />
+        </Layout>
+      )}
+    />
+    <Route
+      path={APP_ROUTES.SEASON}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Season />
         </Layout>
       )}
     />

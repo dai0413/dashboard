@@ -8,6 +8,7 @@ import { nationalMatchSeries } from "./national-match-series";
 import { nationalCallUp } from "./national-callup";
 import { referee } from "./referee";
 import { competition } from "./competition";
+import { season } from "./season";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION]: competition,
@@ -17,6 +18,7 @@ export const fieldDefinition = {
   [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
   [ModelType.PLAYER]: player,
   [ModelType.REFEREE]: referee,
+  [ModelType.SEASON]: season,
   [ModelType.TEAM]: team,
   [ModelType.TRANSFER]: transfer,
 };

@@ -11,6 +11,7 @@ import {
   NationalMatchSeries,
   NationalCallup,
   Referee,
+  Season,
   Competition,
 } from "../pages/ModelDetail/";
 
@@ -45,6 +46,14 @@ export const ModelDetail = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Referee />
+        </Layout>
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.SEASON}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Season />
         </Layout>
       )}
     />
