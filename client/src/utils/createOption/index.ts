@@ -19,6 +19,7 @@ import { operator } from "./operator";
 import { competitionType } from "./competition_type";
 import { category } from "./category";
 import { level } from "./level";
+import { competition } from "./competition";
 
 export enum OptionType {
   OPERATOR = "operator",
@@ -36,6 +37,8 @@ export enum OptionType {
   COMPETITION_TYPE = "competition_type",
   CATEGORY = "category",
   LEVEL = "level",
+  CURRENT = "current",
+  IS_INJURED = "is_injured",
 }
 
 type OptionMap = {
@@ -54,6 +57,8 @@ type OptionMap = {
   [OptionType.COMPETITION_TYPE]: OptionArray;
   [OptionType.CATEGORY]: OptionArray;
   [OptionType.LEVEL]: OptionArray;
+  [OptionType.CURRENT]: OptionArray;
+  [OptionType.IS_INJURED]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -75,6 +80,8 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
     nationalMatchSeries(data, table ? table : false),
   [ModelType.PLAYER]: (data, table) => player(data, table ? table : false),
   [ModelType.TEAM]: (data, table) => team(data, table ? table : false),
+  [ModelType.COMPETITION]: (data, table) =>
+    competition(data, table ? table : false),
   //   [ModelType.TRANSFER]: ,
   [OptionType.STATUS]: () => status(),
   [OptionType.POSITION_GROUP]: () => positionGroup(),
@@ -91,6 +98,14 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.COMPETITION_TYPE]: () => competitionType(),
   [OptionType.CATEGORY]: () => category(),
   [OptionType.LEVEL]: () => level(),
+  [OptionType.CURRENT]: () => [
+    { key: "true", label: "最新" },
+    { key: "false", label: "" },
+  ],
+  [OptionType.IS_INJURED]: () => [
+    { key: "true", label: "負傷中" },
+    { key: "false", label: "復帰済み" },
+  ],
 };
 
 // 実装

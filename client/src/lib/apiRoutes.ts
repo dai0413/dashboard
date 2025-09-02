@@ -20,6 +20,7 @@ type Model = {
     CHECK: string;
   };
   REFEREE: BaseCrudRoutes;
+  SEASON: BaseCrudRoutes;
   TEAM: BaseCrudRoutes;
   TRANSFER: BaseCrudRoutes;
 };
@@ -106,6 +107,13 @@ export const API_ROUTES: Model & {
     DETAIL: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
+  },
+  SEASON: {
+    GET_ALL: `${API_BASE_URL}/season`,
+    CREATE: `${API_BASE_URL}/season`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/season/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/season/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/season/${id}`,
   },
   TEAM: {
     GET_ALL: `${API_BASE_URL}/team`,

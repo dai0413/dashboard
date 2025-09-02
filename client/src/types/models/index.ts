@@ -16,6 +16,7 @@ import {
   NationalCallupGet,
 } from "./national-callup";
 import { Competition, CompetitionForm, CompetitionGet } from "./competition";
+import { Season, SeasonForm, SeasonGet } from "./season";
 
 export enum ModelType {
   COMPETITION = "competition",
@@ -25,6 +26,7 @@ export enum ModelType {
   NATIONAL_MATCH_SERIES = "national-match-series",
   PLAYER = "player",
   REFEREE = "referee",
+  SEASON = "season",
   TEAM = "team",
   TRANSFER = "transfer",
 }
@@ -37,6 +39,7 @@ export type ModelDataMap = {
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeries;
   [ModelType.PLAYER]: Player;
   [ModelType.REFEREE]: Referee;
+  [ModelType.SEASON]: Season;
   [ModelType.TEAM]: Team;
   [ModelType.TRANSFER]: Transfer;
 };
@@ -49,6 +52,7 @@ export type GettedModelDataMap = {
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesGet;
   [ModelType.PLAYER]: PlayerGet;
   [ModelType.REFEREE]: RefereeGet;
+  [ModelType.SEASON]: SeasonGet;
   [ModelType.TEAM]: TeamGet;
   [ModelType.TRANSFER]: TransferGet;
 };
@@ -61,6 +65,7 @@ export type FormTypeMap = {
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesForm;
   [ModelType.PLAYER]: PlayerForm;
   [ModelType.REFEREE]: RefereeForm;
+  [ModelType.SEASON]: SeasonForm;
   [ModelType.TEAM]: TeamForm;
   [ModelType.TRANSFER]: TransferForm;
 };
@@ -73,6 +78,7 @@ export const ModelRouteMap = {
   [ModelType.NATIONAL_MATCH_SERIES]: APP_ROUTES.NATIONAL_MATCH_SERIES,
   [ModelType.PLAYER]: APP_ROUTES.PLAYER,
   [ModelType.REFEREE]: APP_ROUTES.REFEREE,
+  [ModelType.SEASON]: APP_ROUTES.SEASON,
   [ModelType.TEAM]: APP_ROUTES.TEAM,
   [ModelType.TRANSFER]: APP_ROUTES.TRANSFER,
 };

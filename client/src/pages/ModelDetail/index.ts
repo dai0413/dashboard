@@ -5,5 +5,6 @@ export { default as NationalCallup } from "./NationalCallup";
 export { default as NationalMatchSeries } from "./NationalMatchSeries";
 export { default as Player } from "./PlayerDetail";
 export { default as Referee } from "./Referee";
+export { default as Season } from "./Season";
 export { default as Team } from "./TeamDetail";
 export { default as Transfer } from "./TransferDetail";

@@ -60,7 +60,7 @@ export const injury: FieldDefinition[] = [
   {
     key: "is_injured",
     label: "負傷中",
-    type: "string",
+    type: "select",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
