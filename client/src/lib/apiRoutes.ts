@@ -21,6 +21,7 @@ type Model = {
   };
   REFEREE: BaseCrudRoutes;
   SEASON: BaseCrudRoutes;
+  TEAM_COMPETITION_SEASON: BaseCrudRoutes;
   TEAM: BaseCrudRoutes;
   TRANSFER: BaseCrudRoutes;
 };
@@ -114,6 +115,17 @@ export const API_ROUTES: Model & {
     DETAIL: (id: string | number) => `${API_BASE_URL}/season/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/season/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/season/${id}`,
+  },
+  TEAM_COMPETITION_SEASON: {
+    GET_ALL: `${API_BASE_URL}/team-competition-season`,
+    CREATE: `${API_BASE_URL}/team-competition-season`,
+    DOWNLOAD: `${API_BASE_URL}/team-competition-season/download`,
+    DETAIL: (id: string | number) =>
+      `${API_BASE_URL}/team-competition-season/${id}`,
+    UPDATE: (id: string | number) =>
+      `${API_BASE_URL}/team-competition-season/${id}`,
+    DELETE: (id: string | number) =>
+      `${API_BASE_URL}/team-competition-season/${id}`,
   },
   TEAM: {
     GET_ALL: `${API_BASE_URL}/team`,

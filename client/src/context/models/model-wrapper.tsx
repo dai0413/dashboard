@@ -9,6 +9,7 @@ import { NationalCallupProvider } from "./national-callup";
 import { RefereeProvider } from "./referee-context";
 import { CompetitionProvider } from "./competition-context";
 import { SeasonProvider } from "./season-context";
+import { TeamCompetitionSeasonProvider } from "./team-competition-season-context";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -17,15 +18,17 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
         <SeasonProvider>
           <NationalMatchSeriesProvider>
             <TeamProvider>
-              <PlayerProvider>
-                <RefereeProvider>
-                  <NationalCallupProvider>
-                    <InjuryProvider>
-                      <TransferProvider>{children}</TransferProvider>
-                    </InjuryProvider>
-                  </NationalCallupProvider>
-                </RefereeProvider>
-              </PlayerProvider>
+              <TeamCompetitionSeasonProvider>
+                <PlayerProvider>
+                  <RefereeProvider>
+                    <NationalCallupProvider>
+                      <InjuryProvider>
+                        <TransferProvider>{children}</TransferProvider>
+                      </InjuryProvider>
+                    </NationalCallupProvider>
+                  </RefereeProvider>
+                </PlayerProvider>
+              </TeamCompetitionSeasonProvider>
             </TeamProvider>
           </NationalMatchSeriesProvider>
         </SeasonProvider>

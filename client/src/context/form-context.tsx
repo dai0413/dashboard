@@ -22,6 +22,7 @@ import { useNationalCallup } from "./models/national-callup";
 import { useReferee } from "./models/referee-context";
 import { useCompetition } from "./models/competition-context";
 import { useSeason } from "./models/season-context";
+import { useTeamCompetitionSeason } from "./models/team-competition-season-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   modelType: T | null;
@@ -113,6 +114,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.PLAYER]: usePlayer(),
     [ModelType.REFEREE]: useReferee(),
     [ModelType.SEASON]: useSeason(),
+    [ModelType.TEAM_COMPETITION_SEASON]: useTeamCompetitionSeason(),
     [ModelType.TEAM]: useTeam(),
     [ModelType.TRANSFER]: useTransfer(),
   };
@@ -129,6 +131,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelContextMap[ModelType.PLAYER].single.formData,
     modelContextMap[ModelType.REFEREE].single.formData,
     modelContextMap[ModelType.SEASON].single.formData,
+    modelContextMap[ModelType.TEAM_COMPETITION_SEASON].single.formData,
     modelContextMap[ModelType.TEAM].single.formData,
     modelContextMap[ModelType.TRANSFER].single.formData,
   ]);

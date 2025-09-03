@@ -20,20 +20,21 @@
 
 各エンドポイントごとの仕様は以下にまとめています。
 
-| エンドポイント                  | 機能説明         | 詳細ドキュメント                                             |
-| ------------------------------- | ---------------- | ------------------------------------------------------------ |
-| `/api/v1/auth`                  | 認証             | [auth.md](./api/auth.md)                                     |
-| `/api/v1/competition`           | 大会             | [competition.md](./api/competition.md)                       |
-| `/api/v1/country`               | 国               | [country.md](./api/country.md)                               |
-| `/api/v1/injury`                | 怪我             | [injury.md](./api/injury.md)                                 |
-| `/api/v1/national-callup`       | 代表招集         | 　[national-callup.md](./api/national-callup.md)             |
-| `/api/v1/national-match-series` | 代表試合シリーズ | 　[national-match-series.md](./api/national-match-series.md) |
-| `/api/v1/player`                | 選手             | [player.md](./api/player.md)                                 |
-| `/api/v1/referee`               | 審判             | 　[referee.md](./api/referee.md)                             |
-| `/api/v1/season`                | シーズン         | 　[season.md](./api/season.md)                               |
-| `/api/v1/team`                  | チーム           | [team.md](./api/team.md)                                     |
-| `/api/v1/transfer`              | 移籍             | [transfer.md](./api/transfer.md)                             |
-| `/api/v1/top-page`              | トップページ用   | [top-page.md](./api/top-page.md)                             |
+| エンドポイント                    | 機能説明         | 詳細ドキュメント                                               |
+| --------------------------------- | ---------------- | -------------------------------------------------------------- |
+| `/api/v1/auth`                    | 認証             | [auth.md](./api/auth.md)                                       |
+| `/api/v1/competition`             | 大会             | [competition.md](./api/competition.md)                         |
+| `/api/v1/country`                 | 国               | [country.md](./api/country.md)                                 |
+| `/api/v1/injury`                  | 怪我             | [injury.md](./api/injury.md)                                   |
+| `/api/v1/national-callup`         | 代表招集         | 　[national-callup.md](./api/national-callup.md)               |
+| `/api/v1/national-match-series`   | 代表試合シリーズ | 　[national-match-series.md](./api/national-match-series.md)   |
+| `/api/v1/player`                  | 選手             | [player.md](./api/player.md)                                   |
+| `/api/v1/referee`                 | 審判             | 　[referee.md](./api/referee.md)                               |
+| `/api/v1/season`                  | シーズン         | 　[season.md](./api/season.md)                                 |
+| `/api/v1/team-competition-season` | チームの大会参加 | [team-competition-season.md](./api/team-competition-season.md) |
+| `/api/v1/team`                    | チーム           | [team.md](./api/team.md)                                       |
+| `/api/v1/transfer`                | 移籍             | [transfer.md](./api/transfer.md)                               |
+| `/api/v1/top-page`                | トップページ用   | [top-page.md](./api/top-page.md)                               |
 
 ---
 

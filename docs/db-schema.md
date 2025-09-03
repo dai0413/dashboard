@@ -12,6 +12,7 @@
   - [9. 審判(referee)](#9-審判referee)
   - [10. 大会(Competition)](#10-大会competition)
   - [11. シーズン(Season)](#11-シーズンseason)
+  - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
 
 ## 1. ユーザー(user)
 
@@ -245,3 +246,14 @@
 
 ※1 例 "2023","2023-2024"
 ※competition, start_date, の組み合わせユニーク
+
+## 12. チームの大会参加記録(TeamCompetitionSeason)
+
+| フィールド  | 型       | null  | 注釈     | バリデーション       |
+| ----------- | -------- | ----- | -------- | -------------------- |
+| team        | 外部キー | false | チーム   | Team 外部キー        |
+| season      | 外部キー | false | シーズン | Season 外部キー      |
+| competition | 外部キー | false | 大会     | Competition 外部キー |
+| note?       | 文字列   | true  | 備考     |                      |
+
+※team, season,competition の組み合わせユニーク

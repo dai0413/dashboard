@@ -6,17 +6,19 @@ require("dotenv").config({
 const csv = require("csv-parser");
 const mongoose = require("mongoose");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const Competition = require("../models/competition");
+const Team = require("../models/team");
 const Season = require("../models/season");
+const TeamCompetitionSeason = require("../models/team-competition-season");
 const { parseObjectId } = require("./utils/parseObjectId");
-const { parseBoolean } = require("./utils/parseBoolean");
-const { parseDate } = require("./utils/parseDate");
 
 const INPUT_BASE_PATH = process.env.INPUT_BASE_PATH;
 const OUTPUT_BASE_PATH = process.env.OUTPUT_BASE_PATH;
 
-const inputPath = path.join(INPUT_BASE_PATH, "season.csv");
-const outputPath = path.join(OUTPUT_BASE_PATH, "failed_season.csv");
+const inputPath = path.join(INPUT_BASE_PATH, "teamCompetitionSeason.csv");
+const outputPath = path.join(
+  OUTPUT_BASE_PATH,
+  "failed_teamCompetitionSeason.csv"
+);
 const mongoUri = process.env.MONGODB_URI;
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
@@ -42,35 +44,34 @@ fs.createReadStream(path.resolve(inputPath))
     console.log("data ' s number is ", datas.length);
 
     for (const row of datas) {
-      if (row.competition_id) {
-        row.competition = row.competition_id ? row.competition_id : null;
-      } else if (row.competition) {
-        const competition = await Competition.findOne({
-          abbr: row.competition,
-        });
-        row.competition = competition ? competition._id : null;
-      }
+      const team = await Team.findOne({
+        $or: [{ abbr: row.team }, { team: row.team }, { enTeam: row.team }],
+      }).select("_id");
+      if (!team) console.log("not found team", row.team);
+      row.team = team?._id || null;
+
+      const season = await Season.findOne({
+        competition: row.competition_id,
+        name: row.season,
+      });
+      if (!season) console.log("not found", row.season, row.competition);
+      row.season = season ? season._id : null;
     }
 
     const datasToAdd = datas.map((row) => {
       return {
         __original: { ...row },
         ...row,
-        competition: row.competition
-          ? parseObjectId(row.competition)
-          : undefined,
-        name: row.name,
-        start_date: parseDate(row.start_date),
-        end_date: parseDate(row.end_date),
-        current: parseBoolean(row.current),
-        note: row.note ? row.note : undefined,
+        team: row.team ? parseObjectId(row.team) : undefined,
+        season: row.season ? parseObjectId(row.season) : undefined,
+        competition: row.competition_id,
       };
     });
 
     const invalids = [];
 
     for (const d of datasToAdd) {
-      const doc = new Season(d);
+      const doc = new TeamCompetitionSeason(d);
       const err = doc.validateSync();
       if (err) {
         invalids.push({
@@ -85,7 +86,7 @@ fs.createReadStream(path.resolve(inputPath))
       console.log("エラー例:", invalids.slice(0, 5));
     }
     try {
-      const added = await Season.insertMany(datasToAdd, {
+      const added = await TeamCompetitionSeason.insertMany(datasToAdd, {
         ordered: false,
       });
       console.log(`✅ 挿入完了: ${added.length} 件`);
