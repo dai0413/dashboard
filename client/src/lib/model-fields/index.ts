@@ -9,6 +9,7 @@ import { nationalCallUp } from "./national-callup";
 import { referee } from "./referee";
 import { competition } from "./competition";
 import { season } from "./season";
+import { teamCompetitionSeason } from "./team-competition-season";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION]: competition,
@@ -19,6 +20,7 @@ export const fieldDefinition = {
   [ModelType.PLAYER]: player,
   [ModelType.REFEREE]: referee,
   [ModelType.SEASON]: season,
+  [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason,
   [ModelType.TEAM]: team,
   [ModelType.TRANSFER]: transfer,
 };

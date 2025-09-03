@@ -11,6 +11,7 @@ import { FormStep } from "../../types/form";
 import { referee } from "./referee";
 import { competition } from "./competition";
 import { season } from "./season";
+import { teamCompetitionSeason } from "./team-competition-season";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION]: [
@@ -36,6 +37,10 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
     createConfirmationStep<ModelType.REFEREE>(),
   ],
   [ModelType.SEASON]: [...season, createConfirmationStep<ModelType.SEASON>()],
+  [ModelType.TEAM_COMPETITION_SEASON]: [
+    ...teamCompetitionSeason,
+    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),
+  ],
   [ModelType.TEAM]: [...team, createConfirmationStep<ModelType.TEAM>()],
   [ModelType.TRANSFER]: [
     ...transfer,

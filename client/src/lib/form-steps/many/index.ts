@@ -3,12 +3,17 @@ import { ModelType } from "../../../types/models";
 import { createConfirmationStep } from "../confirmationStep";
 import { player } from "./player";
 import { nationalCallUp } from "./national-callup";
+import { teamCompetitionSeason } from "./team-competition-season";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
   [ModelType.NATIONAL_CALLUP]: [
     ...nationalCallUp,
     createConfirmationStep<ModelType.NATIONAL_CALLUP>(),
+  ],
+  [ModelType.TEAM_COMPETITION_SEASON]: [
+    ...teamCompetitionSeason,
+    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),
   ],
 };
 

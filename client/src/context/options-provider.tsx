@@ -7,6 +7,7 @@ import { ModelType } from "../types/models";
 import { convert, OptionsMap, OptionType } from "../utils/createOption";
 import { OptionArray, OptionTable } from "../types/option";
 import { useCompetition } from "./models/competition-context";
+import { useSeason } from "./models/season-context";
 
 interface GetOptions {
   (key: string, table: true, filter?: boolean): OptionTable;
@@ -67,6 +68,9 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     metacrud: { readItems: readCompetitions, items: competitions },
   } = useCompetition();
+  const {
+    metacrud: { readItems: readSeasons, items: seasons },
+  } = useSeason();
 
   useEffect(() => {
     readPlayers({});
@@ -74,6 +78,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     readCountries({});
     readNationalMatchSeries({});
     readCompetitions({});
+    readSeasons({});
   }, []);
 
   type Option = {
@@ -90,6 +95,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       [ModelType.COUNTRY]: countries,
       [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
       [ModelType.COMPETITION]: competitions,
+      [ModelType.SEASON]: seasons,
       [OptionType.FORM]: [],
       [OptionType.POSITION]: [],
       [OptionType.AREA]: [],

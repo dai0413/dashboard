@@ -33,6 +33,7 @@ export type ReadItemsParamsMap = {
   [ModelType.PLAYER]: {};
   [ModelType.REFEREE]: {};
   [ModelType.SEASON]: {};
+  [ModelType.TEAM_COMPETITION_SEASON]: {};
   [ModelType.TEAM]: {};
   [ModelType.TRANSFER]: {
     limit?: number;

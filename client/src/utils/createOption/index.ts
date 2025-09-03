@@ -20,6 +20,7 @@ import { competitionType } from "./competition_type";
 import { category } from "./category";
 import { level } from "./level";
 import { competition } from "./competition";
+import { season } from "./season";
 
 export enum OptionType {
   OPERATOR = "operator",
@@ -79,6 +80,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [ModelType.NATIONAL_MATCH_SERIES]: (data, table) =>
     nationalMatchSeries(data, table ? table : false),
   [ModelType.PLAYER]: (data, table) => player(data, table ? table : false),
+  [ModelType.SEASON]: (data, table) => season(data, table ? table : false),
   [ModelType.TEAM]: (data, table) => team(data, table ? table : false),
   [ModelType.COMPETITION]: (data, table) =>
     competition(data, table ? table : false),
