@@ -28,6 +28,7 @@ import {
   NationalCallupGet,
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { Competition, CompetitionGet } from "../../types/models/competition";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -41,7 +42,7 @@ const National = () => {
   const api = useApi();
   const { id } = useParams();
 
-  const [selectedTab, setSelectedTab] = useState("series");
+  const [selectedTab, setSelectedTab] = useState("competition");
 
   const {
     metacrud: { selected, readItem, isLoading },
@@ -51,8 +52,12 @@ const National = () => {
   const [seriesIsLoading, setSeriesIsLoading] = useState<boolean>(false);
   const [callup, setCallup] = useState<NationalCallupGet[]>([]);
   const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);
+  const [competition, setCompetition] = useState<CompetitionGet[]>([]);
+  const [competitionIsLoading, setCompetitionIsLoading] =
+    useState<boolean>(false);
 
   const isLoadingSetters = {
+    competition: setCompetitionIsLoading,
     series: setSeriesIsLoading,
     callup: setCallupIsLoading,
   };
@@ -86,12 +91,24 @@ const National = () => {
       handleLoading: (time) => setLoading(time, "callup"),
     });
 
+  const readCompetition = (countryId: string) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.COMPETITION.GET_ALL,
+      params: { country: countryId },
+      onSuccess: (items: Competition[]) => {
+        setCompetition(convert(ModelType.COMPETITION, items));
+      },
+      handleLoading: (time) => setLoading(time, "callup"),
+    });
+
   useEffect(() => {
     if (!id) return;
     (async () => {
       readItem(id);
       readSeries(id);
       readCallup(id);
+      readCompetition(id);
     })();
   }, [id]);
 
@@ -104,13 +121,15 @@ const National = () => {
       ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
           .filter(isFilterable)
           .filter(
-            (file) => file.key !== "player"
+            (file) => file.key !== "country"
           ) as FilterableFieldDefinition[])
       : [],
     sortField: ModelType.NATIONAL_MATCH_SERIES
       ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
           .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+          .filter(
+            (file) => file.key !== "country"
+          ) as SortableFieldDefinition[])
       : [],
   };
 
@@ -120,6 +139,23 @@ const National = () => {
       : [],
     sortField: ModelType.NATIONAL_CALLUP
       ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isSortable)
+      : [],
+  };
+
+  const competitionOptions = {
+    filterField: ModelType.COMPETITION
+      ? (fieldDefinition[ModelType.COMPETITION]
+          .filter(isFilterable)
+          .filter(
+            (file) => file.key !== "country"
+          ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.COMPETITION
+      ? (fieldDefinition[ModelType.COMPETITION]
+          .filter(isSortable)
+          .filter(
+            (file) => file.key !== "country"
+          ) as SortableFieldDefinition[])
       : [],
   };
 
@@ -181,6 +217,29 @@ const National = () => {
       </div>
 
       {/* コンテンツ表示 */}
+      {selectedTab === "competition" && (
+        <TableContainer
+          items={competition}
+          headers={[
+            { label: "大会名", field: "name" },
+            { label: "大会規模", field: "competition_type", width: "90px" },
+            { label: "大会タイプ", field: "category", width: "100px" },
+            { label: "年代", field: "age_group", width: "70px" },
+          ]}
+          modelType={ModelType.COMPETITION}
+          originalFilterField={competitionOptions.filterField}
+          originalSortField={competitionOptions.sortField}
+          formInitialData={{}}
+          itemsLoading={competitionIsLoading}
+          linkField={[
+            {
+              field: "name",
+              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+            },
+          ]}
+        />
+      )}
+
       {selectedTab === "series" && (
         <TableContainer
           items={series}

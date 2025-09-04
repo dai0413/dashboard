@@ -1,11 +1,34 @@
 const Competition = require("../models/competition");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const mongoose = require("mongoose");
 
 const getAllItems = async (req, res) => {
-  const datas = await Competition.find({}).populate("country");
+  const matchStage = {};
 
-  res.status(StatusCodes.OK).json({ data: datas });
+  if (req.query.country) {
+    try {
+      matchStage.country = new mongoose.Types.ObjectId(req.query.country);
+    } catch {
+      return res.status(400).json({ error: "Invalid country ID" });
+    }
+  }
+
+  const dat = await Competition.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    {
+      $lookup: {
+        from: "countries",
+        localField: "country",
+        foreignField: "_id",
+        as: "country",
+      },
+    },
+    { $unwind: "$country" },
+    { $sort: { _id: 1 } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ data: dat });
 };
 
 const createItem = async (req, res) => {
