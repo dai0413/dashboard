@@ -1,28 +1,36 @@
 import { AxiosInstance } from "axios";
-import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
+import { APIError, ResponseStatus } from "../../types/api";
+import { CrudRouteWithParams } from "../apiRoutes";
 
-type ReadItemsParams<K extends keyof ReadItemsParamsMap> = {
+type ReadItemsParams<R extends CrudRouteWithParams<any>> = {
   apiInstance: AxiosInstance;
-  backendRoute: string;
-  params?: ReadItemsParamsMap[K];
+  backendRoute: R;
+  params?: R["params"];
   onSuccess: (data: any) => void;
-
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: ResponseStatus) => void;
 };
 
-export const readItemsBase = async <K extends keyof ReadItemsParamsMap>({
+export const readItemsBase = async <
+  P,
+  R extends CrudRouteWithParams<P> = CrudRouteWithParams<P>
+>({
   apiInstance,
-  backendRoute,
   params,
+  backendRoute,
   onSuccess,
   handleLoading,
   handleSetAlert,
-}: ReadItemsParams<K>) => {
+}: ReadItemsParams<R>) => {
   handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
-    const res = await apiInstance.get(backendRoute, {
+    const url =
+      typeof backendRoute.URL === "function"
+        ? backendRoute.URL()
+        : backendRoute.URL;
+
+    const res = await apiInstance.get(url, {
       params,
     });
     onSuccess(res.data.data);

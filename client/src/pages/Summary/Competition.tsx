@@ -69,7 +69,10 @@ const Competition = () => {
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
-      params: { competition: competitionId, season: seasonId },
+      params: {
+        competition: competitionId,
+        season: seasonId,
+      },
       onSuccess: (items: TeamCompetitionSeason[]) => {
         setTeamCompetitionSeason(
           convert(ModelType.TEAM_COMPETITION_SEASON, items)
