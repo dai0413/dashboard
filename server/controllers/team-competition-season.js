@@ -1,14 +1,70 @@
 const TeamCompetitionSeason = require("../models/team-competition-season");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const mongoose = require("mongoose");
 
 const getAllItems = async (req, res) => {
-  const datas = await TeamCompetitionSeason.find({})
-    .populate("team")
-    .populate("season")
-    .populate("competition");
+  const matchStage = {};
 
-  res.status(StatusCodes.OK).json({ data: datas });
+  if (req.query.team) {
+    try {
+      matchStage.team = new mongoose.Types.ObjectId(req.query.team);
+    } catch {
+      return res.status(400).json({ error: "Invalid team ID" });
+    }
+  }
+
+  if (req.query.competition) {
+    try {
+      matchStage.competition = new mongoose.Types.ObjectId(
+        req.query.competition
+      );
+    } catch {
+      return res.status(400).json({ error: "Invalid competition ID" });
+    }
+  }
+
+  if (req.query.season) {
+    try {
+      matchStage.season = new mongoose.Types.ObjectId(req.query.season);
+    } catch {
+      return res.status(400).json({ error: "Invalid season ID" });
+    }
+  }
+
+  const dat = await TeamCompetitionSeason.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    {
+      $lookup: {
+        from: "teams",
+        localField: "team",
+        foreignField: "_id",
+        as: "team",
+      },
+    },
+    {
+      $lookup: {
+        from: "seasons",
+        localField: "season",
+        foreignField: "_id",
+        as: "season",
+      },
+    },
+    {
+      $lookup: {
+        from: "competitions",
+        localField: "competition",
+        foreignField: "_id",
+        as: "competition",
+      },
+    },
+    { $unwind: "$team" },
+    { $unwind: "$season" },
+    { $unwind: "$competition" },
+    { $sort: { "season.start_date": -1, _id: -1 } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ data: dat });
 };
 
 const createItem = async (req, res) => {

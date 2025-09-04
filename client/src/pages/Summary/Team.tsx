@@ -25,6 +25,10 @@ import { ReadItemsParamsMap } from "../../types/api";
 import { Injury, InjuryGet } from "../../types/models/injury";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import {
+  TeamCompetitionSeason,
+  TeamCompetitionSeasonGet,
+} from "../../types/models/team-competition-season";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -61,6 +65,11 @@ const Team = () => {
     useState<boolean>(false);
   const [injuries, setInjuries] = useState<InjuryGet[]>([]);
   const [injuriesIsLoading, setInjuriesIsLoading] = useState<boolean>(false);
+  const [teamCompetitionSeason, setTeamCompetitionSeason] = useState<
+    TeamCompetitionSeasonGet[]
+  >([]);
+  const [teamCompetitionSeasonIsLoading, setTeamCompetitionSeasonIsLoading] =
+    useState<boolean>(false);
 
   const isLoadingSetters = {
     player: setPlayersIsLoading,
@@ -69,6 +78,7 @@ const Team = () => {
     loan: setOnLoanIsLoading,
     future: setFuturePlayersIsLoading,
     injury: setInjuriesIsLoading,
+    teamCompetitionSeason: setTeamCompetitionSeasonIsLoading,
   };
 
   const setLoading = (
@@ -134,6 +144,21 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, "injury"),
     });
 
+  const readTeamCompetitionSeason = (
+    params: ReadItemsParamsMap[ModelType.TEAM_COMPETITION_SEASON]
+  ) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+      params,
+      onSuccess: (items: TeamCompetitionSeason[]) => {
+        setTeamCompetitionSeason(
+          convert(ModelType.TEAM_COMPETITION_SEASON, items)
+        );
+      },
+      handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
+    });
+
   useEffect(() => {
     if (!id) return;
     (async () => {
@@ -154,6 +179,7 @@ const Team = () => {
       );
       readCurrentLoans(id);
       readInjuries({ latest: true, now_team: id });
+      readTeamCompetitionSeason({ team: id });
     })();
   }, [id, formIsOpen]);
 
@@ -207,6 +233,19 @@ const Team = () => {
       ? (fieldDefinition[ModelType.INJURY]
           .filter(isSortable)
           .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+      : [],
+  };
+
+  const teamCompetitionSeasonOptions = {
+    filterField: ModelType.TEAM_COMPETITION_SEASON
+      ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+          .filter(isFilterable)
+          .filter((file) => file.key !== "team") as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.TEAM_COMPETITION_SEASON
+      ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+          .filter(isSortable)
+          .filter((file) => file.key !== "team") as SortableFieldDefinition[])
       : [],
   };
 
@@ -421,6 +460,27 @@ const Team = () => {
             {
               field: "player",
               to: APP_ROUTES.PLAYER_SUMMARY,
+            },
+          ]}
+        />
+      )}
+
+      {selectedTab === "teamCompetitionSeason" && (
+        <TableContainer
+          items={teamCompetitionSeason}
+          headers={[
+            { label: "大会", field: "competition" },
+            { label: "シーズン", field: "season", width: "120px" },
+          ]}
+          modelType={ModelType.TEAM_COMPETITION_SEASON}
+          originalFilterField={teamCompetitionSeasonOptions.filterField}
+          originalSortField={teamCompetitionSeasonOptions.sortField}
+          formInitialData={{}}
+          itemsLoading={teamCompetitionSeasonIsLoading}
+          linkField={[
+            {
+              field: "competition",
+              to: APP_ROUTES.COMPETITION_SUMMARY,
             },
           ]}
         />

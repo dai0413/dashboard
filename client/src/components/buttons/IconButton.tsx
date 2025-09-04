@@ -46,7 +46,8 @@ export type Icon =
   | "team"
   | "callup"
   | "setting"
-  | "competition";
+  | "competition"
+  | "teamCompetitionSeason";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -128,6 +129,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       case "tournament":
         return <RectangleGroupIcon className={iconClass} />;
       case "team":
+      case "teamCompetitionSeason":
         return <UserGroupIcon className={iconClass} />;
       case "callup":
         return <ClipboardDocumentListIcon className={iconClass} />;
