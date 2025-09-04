@@ -20,6 +20,7 @@ export const APP_ROUTES = {
   TRANSFER: "/transfer",
 
   // summary
+  COMPETITION_SUMMARY: "/competition-summary",
   NATIONAL_SUMMARY: "/national-summary",
   NATIONAL_MATCH_SERIES_SUMMARY: "/national-match-series-summary",
   PLAYER_SUMMARY: "/player-summary",

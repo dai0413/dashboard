@@ -24,12 +24,12 @@ const TeamCompetitionSeason = () => {
         ]}
         contextState={teamCompetitionSeason}
         modelType={ModelType.TEAM_COMPETITION_SEASON}
-        // linkField={[
-        //   {
-        //     field: "name",
-        //     to: APP_ROUTES.NATIONAL_SUMMARY,
-        //   },
-        // ]}
+        linkField={[
+          {
+            field: "competition",
+            to: APP_ROUTES.COMPETITION_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

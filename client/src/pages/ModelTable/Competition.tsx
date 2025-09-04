@@ -18,7 +18,7 @@ const Competition = () => {
       <TableContainer
         title={"大会情報"}
         headers={[
-          { label: "大会名", field: "abbr" },
+          { label: "大会名", field: "name" },
           { label: "国", field: "country", width: "70px" },
           { label: "大会規模", field: "competition_type", width: "90px" },
           { label: "大会タイプ", field: "category", width: "100px" },
@@ -26,12 +26,12 @@ const Competition = () => {
         ]}
         contextState={competitionContext}
         modelType={ModelType.COMPETITION}
-        // linkField={[
-        //   {
-        //     field: "name",
-        //     to: APP_ROUTES.NATIONAL_SUMMARY,
-        //   },
-        // ]}
+        linkField={[
+          {
+            field: "name",
+            to: APP_ROUTES.COMPETITION_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

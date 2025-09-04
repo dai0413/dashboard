@@ -24,12 +24,12 @@ const Competition = () => {
         ]}
         contextState={seasonContext}
         modelType={ModelType.SEASON}
-        // linkField={[
-        //   {
-        //     field: "name",
-        //     to: APP_ROUTES.NATIONAL_SUMMARY,
-        //   },
-        // ]}
+        linkField={[
+          {
+            field: "competition",
+            to: APP_ROUTES.COMPETITION_SUMMARY,
+          },
+        ]}
       />
     </div>
   );

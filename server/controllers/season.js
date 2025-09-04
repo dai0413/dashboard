@@ -1,11 +1,40 @@
 const Season = require("../models/season");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const mongoose = require("mongoose");
 
 const getAllItems = async (req, res) => {
-  const datas = await Season.find({}).populate("competition");
+  const matchStage = {};
 
-  res.status(StatusCodes.OK).json({ data: datas });
+  if (req.query.competition) {
+    try {
+      matchStage.competition = new mongoose.Types.ObjectId(
+        req.query.competition
+      );
+    } catch {
+      return res.status(400).json({ error: "Invalid competition ID" });
+    }
+  }
+
+  if (req.query.current !== undefined) {
+    matchStage.current = req.query.current === "true";
+  }
+
+  const dat = await Season.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    {
+      $lookup: {
+        from: "competitions",
+        localField: "competition",
+        foreignField: "_id",
+        as: "competition",
+      },
+    },
+    { $unwind: "$competition" },
+    { $sort: { start_date: -1, _id: -1 } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ data: dat });
 };
 
 const createItem = async (req, res) => {

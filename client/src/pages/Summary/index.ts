@@ -1,3 +1,4 @@
+export { default as Competition } from "./Competition";
 export { default as National } from "./National";
 export { default as NationalMatchSeries } from "./NationalMatchSeries";
 export { default as Player } from "./Player";
