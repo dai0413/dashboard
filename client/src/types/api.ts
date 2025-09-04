@@ -14,7 +14,9 @@ export type ResponseStatus = {
 };
 
 export type ReadItemsParamsMap = {
-  [ModelType.COMPETITION]: {};
+  [ModelType.COMPETITION]: {
+    country?: string;
+  };
   [ModelType.COUNTRY]: {};
   [ModelType.INJURY]: {
     latest?: boolean;
