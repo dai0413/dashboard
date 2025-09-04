@@ -3,7 +3,7 @@ import { Detail } from "../../components/modals";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { ModelType } from "../../types/models";
 
-const PlayerDetail = () => {
+const Player = () => {
   return (
     <Detail
       closeLink={APP_ROUTES.PLAYER}
@@ -14,4 +14,4 @@ const PlayerDetail = () => {
   );
 };
 
-export default PlayerDetail;
+export default Player;

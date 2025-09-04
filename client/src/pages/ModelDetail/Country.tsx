@@ -3,7 +3,7 @@ import { Detail } from "../../components/modals";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { ModelType } from "../../types/models";
 
-const CountryDetail = () => {
+const Country = () => {
   return (
     <Detail
       closeLink={APP_ROUTES.COUNTRY}
@@ -14,4 +14,4 @@ const CountryDetail = () => {
   );
 };
 
-export default CountryDetail;
+export default Country;
