@@ -3,7 +3,7 @@ import { Detail } from "../../components/modals";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { ModelType } from "../../types/models";
 
-const TransferDetail = () => {
+const Transfer = () => {
   return (
     <Detail
       closeLink={APP_ROUTES.TRANSFER}
@@ -14,4 +14,4 @@ const TransferDetail = () => {
   );
 };
 
-export default TransferDetail;
+export default Transfer;
