@@ -1,7 +1,15 @@
+import { ReadItemsParamsMap } from "../types/api";
+import { ModelType } from "../types/models";
+
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-type BaseCrudRoutes = {
-  GET_ALL: string;
+export type CrudRouteWithParams<P = undefined> = {
+  URL: string | ((id?: string | number) => string);
+  params?: P; // P が undefined ならパラメータなし
+};
+
+type BaseCrudRoutes<P = {}> = {
+  GET_ALL: CrudRouteWithParams<P>;
   CREATE: string;
   DETAIL: (id: string | number) => string;
   UPDATE: (id: string | number) => string;
@@ -11,19 +19,25 @@ type BaseCrudRoutes = {
 };
 
 type Model = {
-  COMPETITION: BaseCrudRoutes;
-  COUNTRY: BaseCrudRoutes;
-  INJURY: BaseCrudRoutes;
-  NATIONAL_CALLUP: BaseCrudRoutes;
-  NATIONAL_MATCH_SERIES: BaseCrudRoutes;
-  PLAYER: BaseCrudRoutes & {
+  COMPETITION: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COMPETITION]>;
+  COUNTRY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COUNTRY]>;
+  INJURY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.INJURY]>;
+  NATIONAL_CALLUP: BaseCrudRoutes<
+    ReadItemsParamsMap[ModelType.NATIONAL_CALLUP]
+  >;
+  NATIONAL_MATCH_SERIES: BaseCrudRoutes<
+    ReadItemsParamsMap[ModelType.NATIONAL_MATCH_SERIES]
+  >;
+  PLAYER: BaseCrudRoutes<ReadItemsParamsMap[ModelType.PLAYER]> & {
     CHECK: string;
   };
-  REFEREE: BaseCrudRoutes;
-  SEASON: BaseCrudRoutes;
-  TEAM_COMPETITION_SEASON: BaseCrudRoutes;
-  TEAM: BaseCrudRoutes;
-  TRANSFER: BaseCrudRoutes;
+  REFEREE: BaseCrudRoutes<ReadItemsParamsMap[ModelType.REFEREE]>;
+  SEASON: BaseCrudRoutes<ReadItemsParamsMap[ModelType.SEASON]>;
+  TEAM_COMPETITION_SEASON: BaseCrudRoutes<
+    ReadItemsParamsMap[ModelType.TEAM_COMPETITION_SEASON]
+  >;
+  TEAM: BaseCrudRoutes<ReadItemsParamsMap[ModelType.TEAM]>;
+  TRANSFER: BaseCrudRoutes<ReadItemsParamsMap[ModelType.TRANSFER]>;
 };
 
 export const API_ROUTES: Model & {
@@ -55,35 +69,35 @@ export const API_ROUTES: Model & {
     GET: `${API_BASE_URL}/top-page`,
   },
   COMPETITION: {
-    GET_ALL: `${API_BASE_URL}/competition`,
+    GET_ALL: { URL: `${API_BASE_URL}/competition` },
     CREATE: `${API_BASE_URL}/competition`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/competition/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/competition/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/competition/${id}`,
   },
   COUNTRY: {
-    GET_ALL: `${API_BASE_URL}/country`,
+    GET_ALL: { URL: `${API_BASE_URL}/country` },
     CREATE: `${API_BASE_URL}/country`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/country/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/country/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/country/${id}`,
   },
   INJURY: {
-    GET_ALL: `${API_BASE_URL}/injury`,
+    GET_ALL: { URL: `${API_BASE_URL}/injury` },
     CREATE: `${API_BASE_URL}/injury`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
   },
   NATIONAL_CALLUP: {
-    GET_ALL: `${API_BASE_URL}/national-callup`,
+    GET_ALL: { URL: `${API_BASE_URL}/national-callup` },
     CREATE: `${API_BASE_URL}/national-callup`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/national-callup/${id}`,
   },
   NATIONAL_MATCH_SERIES: {
-    GET_ALL: `${API_BASE_URL}/national-match-series`,
+    GET_ALL: { URL: `${API_BASE_URL}/national-match-series` },
     CREATE: `${API_BASE_URL}/national-match-series`,
     DETAIL: (id: string | number) =>
       `${API_BASE_URL}/national-match-series/${id}`,
@@ -93,7 +107,7 @@ export const API_ROUTES: Model & {
       `${API_BASE_URL}/national-match-series/${id}`,
   },
   PLAYER: {
-    GET_ALL: `${API_BASE_URL}/player`,
+    GET_ALL: { URL: `${API_BASE_URL}/player` },
     CREATE: `${API_BASE_URL}/player`,
     CHECK: `${API_BASE_URL}/player/check`,
     UPLOAD: `${API_BASE_URL}/player/upload`,
@@ -103,21 +117,23 @@ export const API_ROUTES: Model & {
     DELETE: (id: string | number) => `${API_BASE_URL}/player/${id}`,
   },
   REFEREE: {
-    GET_ALL: `${API_BASE_URL}/referee`,
+    GET_ALL: { URL: `${API_BASE_URL}/referee` },
     CREATE: `${API_BASE_URL}/referee`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/referee/${id}`,
   },
   SEASON: {
-    GET_ALL: `${API_BASE_URL}/season`,
+    GET_ALL: { URL: `${API_BASE_URL}/season` },
     CREATE: `${API_BASE_URL}/season`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/season/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/season/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/season/${id}`,
   },
   TEAM_COMPETITION_SEASON: {
-    GET_ALL: `${API_BASE_URL}/team-competition-season`,
+    GET_ALL: {
+      URL: `${API_BASE_URL}/team-competition-season`,
+    },
     CREATE: `${API_BASE_URL}/team-competition-season`,
     DOWNLOAD: `${API_BASE_URL}/team-competition-season/download`,
     DETAIL: (id: string | number) =>
@@ -128,7 +144,7 @@ export const API_ROUTES: Model & {
       `${API_BASE_URL}/team-competition-season/${id}`,
   },
   TEAM: {
-    GET_ALL: `${API_BASE_URL}/team`,
+    GET_ALL: { URL: `${API_BASE_URL}/team` },
     CREATE: `${API_BASE_URL}/team`,
     DOWNLOAD: `${API_BASE_URL}/team/download`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/team/${id}`,
@@ -136,7 +152,7 @@ export const API_ROUTES: Model & {
     DELETE: (id: string | number) => `${API_BASE_URL}/team/${id}`,
   },
   TRANSFER: {
-    GET_ALL: `${API_BASE_URL}/transfer`,
+    GET_ALL: { URL: `${API_BASE_URL}/transfer` },
     CREATE: `${API_BASE_URL}/transfer`,
     DETAIL: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
