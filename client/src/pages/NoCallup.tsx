@@ -40,8 +40,8 @@ const NoCallUp = () => {
   const readCurrentPlayers = (_id: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.AGGREGATE.NO_CALLUP(japan),
-      params: { endDate: String(new Date()) },
+      backendRoute: API_ROUTES.AGGREGATE.NO_CALLUP,
+      path: japan,
       onSuccess: (items: NationalMatchSeries[]) => {
         setData(convert(ModelType.NATIONAL_MATCH_SERIES, items));
       },

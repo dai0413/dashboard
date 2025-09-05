@@ -5,6 +5,7 @@ import { CrudRouteWithParams } from "../apiRoutes";
 type ReadItemsParams<R extends CrudRouteWithParams<any>> = {
   apiInstance: AxiosInstance;
   backendRoute: R;
+  path?: R["path"];
   params?: R["params"];
   onSuccess: (data: any) => void;
   handleLoading?: (time: "start" | "end") => void;
@@ -18,6 +19,7 @@ export const readItemsBase = async <
   apiInstance,
   params,
   backendRoute,
+  path,
   onSuccess,
   handleLoading,
   handleSetAlert,
@@ -27,7 +29,7 @@ export const readItemsBase = async <
   try {
     const url =
       typeof backendRoute.URL === "function"
-        ? backendRoute.URL()
+        ? backendRoute.URL(path)
         : backendRoute.URL;
 
     const res = await apiInstance.get(url, {

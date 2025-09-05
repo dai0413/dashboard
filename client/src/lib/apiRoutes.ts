@@ -5,6 +5,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export type CrudRouteWithParams<P = undefined> = {
   URL: string | ((id?: string | number) => string);
+  path?: string | number;
   params?: P; // P が undefined ならパラメータなし
 };
 
@@ -40,6 +41,14 @@ type Model = {
   TRANSFER: BaseCrudRoutes<ReadItemsParamsMap[ModelType.TRANSFER]>;
 };
 
+// Aggregate用
+type Aggregate = {
+  NO_CALLUP: CrudRouteWithParams<{}>;
+  CURRENT_PLAYERS_BY_TEAM: CrudRouteWithParams<{ from_date_to?: string }>;
+  CURRENT_LOANS_BY_TEAM: CrudRouteWithParams<{}>;
+  NO_NUMBER: CrudRouteWithParams<{ startData?: string; endDate?: string }>;
+};
+
 export const API_ROUTES: Model & {
   AUTH: {
     REGISTER: string;
@@ -51,12 +60,7 @@ export const API_ROUTES: Model & {
   TOP_PAGE: {
     GET: string;
   };
-  AGGREGATE: {
-    NO_CALLUP: (countryId: string | number) => string;
-    CURRENT_PLAYERS_BY_TEAM: (teamId: string | number) => string;
-    CURRENT_LOANS_BY_TEAM: (teamId: string | number) => string;
-    NO_NUMBER: (countryId: string | number) => string;
-  };
+  AGGREGATE: Aggregate;
 } = {
   AUTH: {
     REGISTER: `${API_BASE_URL}/auth/register`,
@@ -159,13 +163,18 @@ export const API_ROUTES: Model & {
     DELETE: (id: string | number) => `${API_BASE_URL}/transfer/${id}`,
   },
   AGGREGATE: {
-    NO_CALLUP: (countryId: string | number) =>
-      `${API_BASE_URL}/aggregate/national-callup/series-count/${countryId}`,
-    CURRENT_PLAYERS_BY_TEAM: (teamId: string | number) =>
-      `${API_BASE_URL}/aggregate/transfer/current-players/${teamId}`,
-    CURRENT_LOANS_BY_TEAM: (teamId: string | number) =>
-      `${API_BASE_URL}/aggregate/transfer/current-loans/${teamId}`,
-    NO_NUMBER: (countryId: string | number) =>
-      `${API_BASE_URL}/aggregate/transfer/no-number/${countryId}`,
+    NO_CALLUP: {
+      URL: (id) =>
+        `${API_BASE_URL}/aggregate/national-callup/series-count/${id}`,
+    },
+    CURRENT_PLAYERS_BY_TEAM: {
+      URL: (id) => `${API_BASE_URL}/aggregate/transfer/current-players/${id}`,
+    },
+    CURRENT_LOANS_BY_TEAM: {
+      URL: (id) => `${API_BASE_URL}/aggregate/transfer/current-loans/${id}`,
+    },
+    NO_NUMBER: {
+      URL: (id) => `${API_BASE_URL}/aggregate/transfer/no-number/${id}`,
+    },
   },
 };
