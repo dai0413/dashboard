@@ -234,7 +234,7 @@ const National = () => {
           linkField={[
             {
               field: "name",
-              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+              to: APP_ROUTES.COMPETITION_SUMMARY,
             },
           ]}
         />

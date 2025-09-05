@@ -24,7 +24,7 @@ const getAllItems = async (req, res) => {
         as: "country",
       },
     },
-    { $unwind: "$country" },
+    { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     { $sort: { _id: 1 } },
   ]);
 

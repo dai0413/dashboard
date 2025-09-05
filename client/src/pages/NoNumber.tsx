@@ -37,7 +37,8 @@ const NoNumber = () => {
   const readCurrentPlayers = (_id: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.AGGREGATE.NO_NUMBER(japan),
+      backendRoute: API_ROUTES.AGGREGATE.NO_NUMBER,
+      path: japan,
       params: { endDate: String(new Date()) },
       onSuccess: (items: Transfer[]) => {
         setPlayers(convert(ModelType.TRANSFER, items));
