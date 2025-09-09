@@ -22,6 +22,7 @@ import {
   TeamCompetitionSeasonForm,
   TeamCompetitionSeasonGet,
 } from "./team-competition-season";
+import { Stadium, StadiumForm, StadiumGet } from "./stadium";
 
 export enum ModelType {
   COMPETITION = "competition",
@@ -32,6 +33,7 @@ export enum ModelType {
   PLAYER = "player",
   REFEREE = "referee",
   SEASON = "season",
+  STADIUM = "stadium",
   TEAM_COMPETITION_SEASON = "team-competition-season",
   TEAM = "team",
   TRANSFER = "transfer",
@@ -46,6 +48,7 @@ export type ModelDataMap = {
   [ModelType.PLAYER]: Player;
   [ModelType.REFEREE]: Referee;
   [ModelType.SEASON]: Season;
+  [ModelType.STADIUM]: Stadium;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeason;
   [ModelType.TEAM]: Team;
   [ModelType.TRANSFER]: Transfer;
@@ -60,6 +63,7 @@ export type GettedModelDataMap = {
   [ModelType.PLAYER]: PlayerGet;
   [ModelType.REFEREE]: RefereeGet;
   [ModelType.SEASON]: SeasonGet;
+  [ModelType.STADIUM]: StadiumGet;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonGet;
   [ModelType.TEAM]: TeamGet;
   [ModelType.TRANSFER]: TransferGet;
@@ -74,6 +78,7 @@ export type FormTypeMap = {
   [ModelType.PLAYER]: PlayerForm;
   [ModelType.REFEREE]: RefereeForm;
   [ModelType.SEASON]: SeasonForm;
+  [ModelType.STADIUM]: StadiumForm;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonForm;
   [ModelType.TEAM]: TeamForm;
   [ModelType.TRANSFER]: TransferForm;
@@ -88,6 +93,7 @@ export const ModelRouteMap = {
   [ModelType.PLAYER]: APP_ROUTES.PLAYER,
   [ModelType.REFEREE]: APP_ROUTES.REFEREE,
   [ModelType.SEASON]: APP_ROUTES.SEASON,
+  [ModelType.STADIUM]: APP_ROUTES.STADIUM,
   [ModelType.TEAM_COMPETITION_SEASON]: APP_ROUTES.TEAM_COMPETITION_SEASON,
   [ModelType.TEAM]: APP_ROUTES.TEAM,
   [ModelType.TRANSFER]: APP_ROUTES.TRANSFER,

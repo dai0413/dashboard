@@ -13,6 +13,7 @@
   - [10. 大会(Competition)](#10-大会competition)
   - [11. シーズン(Season)](#11-シーズンseason)
   - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
+  - [13. スタジアム(Stadium)](#13-スタジアムstadium)
 
 ## 1. ユーザー(user)
 
@@ -257,3 +258,19 @@
 | note?       | 文字列   | true  | 備考     |                      |
 
 ※team, season,competition の組み合わせユニーク
+
+## 13. スタジアム(Stadium)
+
+| フィールド   | 型       | null  | 注釈     | バリデーション |
+| ------------ | -------- | ----- | -------- | -------------- |
+| name         | 文字列   | false | 名前     |                |
+| abbr         | 文字列   | true  | 略称     |                |
+| en_name      | 文字列   | true  | 英語名   |                |
+| alt_names    | [文字列] | true  | 別名     |                |
+| alt_abbrs    | [文字列] | true  | 別略称   |                |
+| alt_en_names | [文字列] | true  | 別英語名 |                |
+| country      | 外部キー | false | 国       | 国外部キー     |
+| transferurl? | 文字列   | true  | transfer | unique         |
+| sofaurl?     | 文字列   | true  | sofa     | unique         |
+
+※country, name, の組み合わせユニーク

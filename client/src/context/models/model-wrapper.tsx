@@ -10,29 +10,32 @@ import { RefereeProvider } from "./referee-context";
 import { CompetitionProvider } from "./competition-context";
 import { SeasonProvider } from "./season-context";
 import { TeamCompetitionSeasonProvider } from "./team-competition-season-context";
+import { StadiumProvider } from "./stadium-context";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
     <CountryProvider>
-      <CompetitionProvider>
-        <SeasonProvider>
-          <NationalMatchSeriesProvider>
-            <TeamProvider>
-              <TeamCompetitionSeasonProvider>
-                <PlayerProvider>
-                  <RefereeProvider>
-                    <NationalCallupProvider>
-                      <InjuryProvider>
-                        <TransferProvider>{children}</TransferProvider>
-                      </InjuryProvider>
-                    </NationalCallupProvider>
-                  </RefereeProvider>
-                </PlayerProvider>
-              </TeamCompetitionSeasonProvider>
-            </TeamProvider>
-          </NationalMatchSeriesProvider>
-        </SeasonProvider>
-      </CompetitionProvider>
+      <StadiumProvider>
+        <CompetitionProvider>
+          <SeasonProvider>
+            <NationalMatchSeriesProvider>
+              <TeamProvider>
+                <TeamCompetitionSeasonProvider>
+                  <PlayerProvider>
+                    <RefereeProvider>
+                      <NationalCallupProvider>
+                        <InjuryProvider>
+                          <TransferProvider>{children}</TransferProvider>
+                        </InjuryProvider>
+                      </NationalCallupProvider>
+                    </RefereeProvider>
+                  </PlayerProvider>
+                </TeamCompetitionSeasonProvider>
+              </TeamProvider>
+            </NationalMatchSeriesProvider>
+          </SeasonProvider>
+        </CompetitionProvider>
+      </StadiumProvider>
     </CountryProvider>
   );
 };

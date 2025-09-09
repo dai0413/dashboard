@@ -14,6 +14,7 @@ import { referee } from "./referee";
 import { competition } from "./competition";
 import { season } from "./season";
 import { teamCompetitionSeason } from "./team-competition-season";
+import { stadium } from "./stadium";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => GettedModelDataMap[T];
@@ -54,6 +55,10 @@ const convertMap: {
   [ModelType.SEASON]: {
     single: season,
     multiple: (data) => data.map(season),
+  },
+  [ModelType.STADIUM]: {
+    single: stadium,
+    multiple: (data) => data.map(stadium),
   },
   [ModelType.TEAM_COMPETITION_SEASON]: {
     single: teamCompetitionSeason,
