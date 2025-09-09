@@ -14,6 +14,7 @@ import {
   Season,
   Competition,
   TeamCompetitionSeason,
+  Stadium,
 } from "../pages/ModelDetail/";
 
 export const ModelDetail = (
@@ -55,6 +56,14 @@ export const ModelDetail = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Season />
+        </Layout>
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.STADIUM}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Stadium />
         </Layout>
       )}
     />

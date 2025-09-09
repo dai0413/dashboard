@@ -38,6 +38,7 @@ export type ReadItemsParamsMap = {
     competition?: string;
     current?: boolean;
   };
+  [ModelType.STADIUM]: {};
   [ModelType.TEAM_COMPETITION_SEASON]: {
     competition?: string;
     season?: string;

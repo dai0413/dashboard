@@ -64,6 +64,12 @@ const models: {
     icon: "injury",
   },
   {
+    model: "Stadium",
+    desc: "スタジアム",
+    link: APP_ROUTES.STADIUM,
+    icon: "injury",
+  },
+  {
     model: "NationalMatchSeries",
     desc: "代表試合シリーズ",
     link: APP_ROUTES.NATIONAL_MATCH_SERIES,

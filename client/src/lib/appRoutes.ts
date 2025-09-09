@@ -15,6 +15,7 @@ export const APP_ROUTES = {
   PLAYER: "/player",
   REFEREE: "/referee",
   SEASON: "/season",
+  STADIUM: "/stadium",
   TEAM_COMPETITION_SEASON: "/team-competition-season",
   TEAM: "/team",
   TRANSFER: "/transfer",

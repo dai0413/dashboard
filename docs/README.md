@@ -31,6 +31,7 @@
 | `/api/v1/player`                  | 選手             | [player.md](./api/player.md)                                   |
 | `/api/v1/referee`                 | 審判             | 　[referee.md](./api/referee.md)                               |
 | `/api/v1/season`                  | シーズン         | 　[season.md](./api/season.md)                                 |
+| `/api/v1/stadium`                 | スタジアム       | 　[stadium.md](./api/stadium.md)                               |
 | `/api/v1/team-competition-season` | チームの大会参加 | [team-competition-season.md](./api/team-competition-season.md) |
 | `/api/v1/team`                    | チーム           | [team.md](./api/team.md)                                       |
 | `/api/v1/transfer`                | 移籍             | [transfer.md](./api/transfer.md)                               |
