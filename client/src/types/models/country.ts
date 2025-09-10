@@ -1,7 +1,7 @@
-import { area } from "../../utils/createOption/area";
-import { confederation } from "../../utils/createOption/confederation";
-import { district } from "../../utils/createOption/district";
-import { subConfederation } from "../../utils/createOption/subConfederation";
+import { area } from "../../utils/createOption/Enum/area";
+import { confederation } from "../../utils/createOption/Enum/confederation";
+import { district } from "../../utils/createOption/Enum/district";
+import { subConfederation } from "../../utils/createOption/Enum/subConfederation";
 
 const areaOptions = area().map((a) => a.label);
 const districtOptions = district().map((a) => a.label);

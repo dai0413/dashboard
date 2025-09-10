@@ -1,5 +1,5 @@
-import { OptionArray, OptionTable } from "../../types/option";
-import { PlayerGet } from "../../types/models/player";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { PlayerGet } from "../../../types/models/player";
 
 export const player = (
   data: PlayerGet[],

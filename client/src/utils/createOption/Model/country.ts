@@ -1,5 +1,5 @@
-import { OptionArray, OptionTable } from "../../types/option";
-import { CountryGet } from "../../types/models/country";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { CountryGet } from "../../../types/models/country";
 
 export const country = (
   data: CountryGet[],

@@ -2,7 +2,7 @@ import {
   NationalMatchSeriesForm,
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
-import { ageGroup } from "../../../utils/createOption/ageGroup";
+import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeriesGet

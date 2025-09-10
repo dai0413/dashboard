@@ -1,6 +1,6 @@
-import { leftReason } from "../../utils/createOption/leftReason";
-import { positionGroup } from "../../utils/createOption/positionGroup";
-import { status } from "../../utils/createOption/status";
+import { leftReason } from "../../utils/createOption/Enum/leftReason";
+import { positionGroup } from "../../utils/createOption/Enum/positionGroup";
+import { status } from "../../utils/createOption/Enum/status";
 import { Label } from "../types";
 import { NationalMatchSeries } from "./national-match-series";
 import { Player } from "./player";

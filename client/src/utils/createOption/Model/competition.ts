@@ -1,5 +1,5 @@
-import { OptionArray, OptionTable } from "../../types/option";
-import { CompetitionGet } from "../../types/models/competition";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { CompetitionGet } from "../../../types/models/competition";
 
 export const competition = (
   data: CompetitionGet[],

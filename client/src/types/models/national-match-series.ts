@@ -1,4 +1,4 @@
-import { ageGroup } from "../../utils/createOption/ageGroup";
+import { ageGroup } from "../../utils/createOption/Enum/ageGroup";
 import { Label } from "../types";
 import { Country } from "./country";
 

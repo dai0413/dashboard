@@ -1,15 +1,15 @@
-import { OptionArray, OptionTable } from "../../types/option";
-import { NationalMatchSeriesGet } from "../../types/models/national-match-series";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { CompetitionStageGet } from "../../../types/models/competition-stage";
 
-export const nationalMatchSeries = (
-  data: NationalMatchSeriesGet[],
+export const competitionStage = (
+  data: CompetitionStageGet[],
   table: boolean
 ): OptionArray | OptionTable => {
   const options = data.map((d) => ({
-    label: d.name,
+    label: `${d.competition.label}-${d.name}`,
     key: d._id,
-    country: d.country.label,
-    age_group: d.age_group,
+    leg: d.leg,
+    stageType: d.stage_type,
   }));
 
   if (table === true) {

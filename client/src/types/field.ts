@@ -1,4 +1,4 @@
-import { operator } from "../utils/createOption/operator";
+import { operator } from "../utils/createOption/Enum/operator";
 
 const operatorOptions = operator();
 export type FilterOperator = (typeof operatorOptions)[number]["key"];

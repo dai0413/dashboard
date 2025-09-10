@@ -1,27 +1,32 @@
 import { OptionArray, OptionTable } from "../../types/option";
 import { GettedModelDataMap, ModelType } from "../../types/models";
-import { team } from "./team";
-import { country } from "./country";
-import { nationalMatchSeries } from "./national-match-series";
-import { player } from "./player";
-import { status } from "./status";
-import { positionGroup } from "./positionGroup";
-import { leftReason } from "./leftReason";
-import { ageGroup } from "./ageGroup";
-import { area } from "./area";
-import { district } from "./district";
-import { confederation } from "./confederation";
-import { subConfederation } from "./subConfederation";
-import { position } from "./position";
-import { form } from "./form";
-import { genre } from "./genre";
-import { operator } from "./operator";
-import { competitionType } from "./competition_type";
-import { category } from "./category";
-import { level } from "./level";
-import { competition } from "./competition";
-import { season } from "./season";
-import { stageType } from "./stageType";
+import {
+  competition,
+  season,
+  team,
+  country,
+  nationalMatchSeries,
+  player,
+  competitionStage,
+} from "./Model";
+import {
+  status,
+  positionGroup,
+  leftReason,
+  ageGroup,
+  area,
+  district,
+  confederation,
+  subConfederation,
+  position,
+  form,
+  genre,
+  operator,
+  competitionType,
+  category,
+  level,
+  stageType,
+} from "./Enum";
 
 export enum OptionType {
   OPERATOR = "operator",
@@ -85,6 +90,8 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [ModelType.PLAYER]: (data, table) => player(data, table ? table : false),
   [ModelType.SEASON]: (data, table) => season(data, table ? table : false),
   [ModelType.TEAM]: (data, table) => team(data, table ? table : false),
+  [ModelType.COMPETITION_STAGE]: (data, table) =>
+    competitionStage(data, table ? table : false),
   [ModelType.COMPETITION]: (data, table) =>
     competition(data, table ? table : false),
   //   [ModelType.TRANSFER]: ,

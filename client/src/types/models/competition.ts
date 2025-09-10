@@ -1,9 +1,9 @@
 import { Label } from "../types";
 import { Country } from "./country";
-import { competitionType } from "../../utils/createOption/competition_type";
-import { category } from "../../utils/createOption/category";
-import { level } from "../../utils/createOption/level";
-import { ageGroup } from "../../utils/createOption/ageGroup";
+import { competitionType } from "../../utils/createOption/Enum/competition_type";
+import { category } from "../../utils/createOption/Enum/category";
+import { level } from "../../utils/createOption/Enum/level";
+import { ageGroup } from "../../utils/createOption/Enum/ageGroup";
 
 const CompetitionTypeOptions = competitionType().map((item) => item.key);
 const CategoryOptions = category().map((item) => item.key);

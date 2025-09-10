@@ -1,8 +1,8 @@
 import { Label } from "../types";
 import { Player } from "./player";
 import { Team } from "./team";
-import { position } from "../../utils/createOption/position";
-import { form } from "../../utils/createOption/form";
+import { position } from "../../utils/createOption/Enum/position";
+import { form } from "../../utils/createOption/Enum/form";
 
 const positionOptions = position();
 const formOptions = form();

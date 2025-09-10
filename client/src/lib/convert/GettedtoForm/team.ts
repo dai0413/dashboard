@@ -1,5 +1,5 @@
 import { TeamForm, TeamGet } from "../../../types/models/team";
-import { genre } from "../../../utils/createOption/genre";
+import { genre } from "../../../utils/createOption/Enum/genre";
 
 export const team = (t: TeamGet): TeamForm => {
   const genreOptions = genre().find((item) => item.label === t.genre)?.key;

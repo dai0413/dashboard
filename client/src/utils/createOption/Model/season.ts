@@ -1,5 +1,5 @@
-import { OptionArray, OptionTable } from "../../types/option";
-import { SeasonGet } from "../../types/models/season";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { SeasonGet } from "../../../types/models/season";
 
 export const season = (
   data: SeasonGet[],

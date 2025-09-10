@@ -2,8 +2,8 @@ import {
   NationalCallupForm,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
-import { leftReason } from "../../../utils/createOption/leftReason";
-import { status } from "../../../utils/createOption/status";
+import { leftReason } from "../../../utils/createOption/Enum/leftReason";
+import { status } from "../../../utils/createOption/Enum/status";
 
 export const nationalCallup = (t: NationalCallupGet): NationalCallupForm => {
   const statusOptions = status().find((item) => item.label === t.status)?.key;
