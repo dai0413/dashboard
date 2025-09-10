@@ -53,7 +53,11 @@ const RenderCell = (
     linkField && linkField.find((field) => field.field === header.field);
 
   if (!form && field) {
-    const id = value.id ? value.id : row._id;
+    let id = "";
+    if (typeof value === "object" && "id" in value) {
+      id = value.id;
+    } else if ("_id" in row) id = row._id;
+
     return (
       <Link to={`${field.to}/${id}`} className="hover:text-blue-600 underline">
         {isObject ? value.label : content}

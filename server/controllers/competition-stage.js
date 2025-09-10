@@ -1,11 +1,52 @@
 const CompetitionStage = require("../models/competition-stage");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
+const mongoose = require("mongoose");
 
 const getAllItems = async (req, res) => {
-  const dat = await CompetitionStage.find({})
-    .populate("competition")
-    .populate("season");
+  const matchStage = {};
+
+  if (req.query.competition) {
+    try {
+      matchStage.competition = new mongoose.Types.ObjectId(
+        req.query.competition
+      );
+    } catch {
+      return res.status(400).json({ error: "Invalid competition ID" });
+    }
+  }
+
+  if (req.query.season) {
+    try {
+      matchStage.season = new mongoose.Types.ObjectId(req.query.season);
+    } catch {
+      return res.status(400).json({ error: "Invalid season ID" });
+    }
+  }
+
+  const dat = await CompetitionStage.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    {
+      $lookup: {
+        from: "competitions",
+        localField: "competition",
+        foreignField: "_id",
+        as: "competition",
+      },
+    },
+    { $unwind: { path: "$competition", preserveNullAndEmptyArrays: true } },
+    {
+      $lookup: {
+        from: "seasons",
+        localField: "season",
+        foreignField: "_id",
+        as: "season",
+      },
+    },
+    { $unwind: { path: "$season", preserveNullAndEmptyArrays: true } },
+    { $sort: { _id: 1, order: 1 } },
+  ]);
+
   res.status(StatusCodes.OK).json({ data: dat });
 };
 

@@ -29,6 +29,7 @@ import {
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { Competition, CompetitionGet } from "../../types/models/competition";
+import { useForm } from "../../context/form-context";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -41,6 +42,7 @@ const Tabs = NationalTabItems.filter(
 const National = () => {
   const api = useApi();
   const { id } = useParams();
+  const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("competition");
 
@@ -110,7 +112,7 @@ const National = () => {
       readCallup(id);
       readCompetition(id);
     })();
-  }, [id]);
+  }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);

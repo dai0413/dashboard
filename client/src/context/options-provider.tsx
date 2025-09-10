@@ -8,6 +8,7 @@ import { convert, OptionsMap, OptionType } from "../utils/createOption";
 import { OptionArray, OptionTable } from "../types/option";
 import { useCompetition } from "./models/competition-context";
 import { useSeason } from "./models/season-context";
+import { useCompetitionStage } from "./models/competition-stage-context";
 
 interface GetOptions {
   (key: string, table: true, filter?: boolean): OptionTable;
@@ -71,6 +72,9 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     metacrud: { readItems: readSeasons, items: seasons },
   } = useSeason();
+  const {
+    metacrud: { readItems: readCompetitionStages, items: competitionStage },
+  } = useCompetitionStage();
 
   useEffect(() => {
     readPlayers({});
@@ -79,6 +83,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     readNationalMatchSeries({});
     readCompetitions({});
     readSeasons({});
+    readCompetitionStages({});
   }, []);
 
   type Option = {
@@ -94,6 +99,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       [ModelType.TEAM]: teams,
       [ModelType.COUNTRY]: countries,
       [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
+      [ModelType.COMPETITION_STAGE]: competitionStage,
       [ModelType.COMPETITION]: competitions,
       [ModelType.SEASON]: seasons,
       [OptionType.FORM]: [],
@@ -131,10 +137,11 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     filter?: boolean
   ): OptionArray | OptionTable {
     const keyMap: Record<string, keyof OptionsMap> = {
-      citizenship: "country" as keyof OptionsMap,
-      from_team: "team" as keyof OptionsMap,
-      to_team: "team" as keyof OptionsMap,
-      series: "national-match-series" as keyof OptionsMap,
+      citizenship: ModelType.COUNTRY,
+      from_team: ModelType.TEAM,
+      to_team: ModelType.TEAM,
+      series: ModelType.NATIONAL_MATCH_SERIES,
+      parent_stage: ModelType.COMPETITION_STAGE,
     };
 
     const optionKey: keyof OptionsMap =
