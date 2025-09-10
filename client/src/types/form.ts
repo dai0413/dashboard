@@ -76,4 +76,5 @@ export interface FormStep<K extends keyof FormTypeMap> {
   fields?: FieldDefinition<K>[];
   many?: boolean;
   validate?: (data: FormTypeMap[K]) => ResponseStatus;
+  skip?: (data: FormTypeMap[K]) => boolean;
 }
