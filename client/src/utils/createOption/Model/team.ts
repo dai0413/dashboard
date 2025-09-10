@@ -1,5 +1,5 @@
-import { OptionArray, OptionTable } from "../../types/option";
-import { TeamGet } from "../../types/models/team";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { TeamGet } from "../../../types/models/team";
 
 export const team = (
   data: TeamGet[],

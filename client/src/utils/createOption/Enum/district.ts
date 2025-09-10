@@ -1,4 +1,4 @@
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../../types/option";
 
 const DistrictOptions = [
   "中央アジア",

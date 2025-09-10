@@ -1,4 +1,4 @@
-import { genre } from "../../utils/createOption/genre";
+import { genre } from "../../utils/createOption/Enum/genre";
 import { Label } from "../types";
 import { Country } from "./country";
 

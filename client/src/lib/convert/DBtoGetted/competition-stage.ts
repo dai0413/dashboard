@@ -2,7 +2,7 @@ import {
   CompetitionStage,
   CompetitionStageGet,
 } from "../../../types/models/competition-stage";
-import { stageType } from "../../../utils/createOption/stageType";
+import { stageType } from "../../../utils/createOption/Enum/stageType";
 
 export const competitionStage = (t: CompetitionStage): CompetitionStageGet => {
   const CompetitionStageType = stageType().find(

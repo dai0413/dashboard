@@ -1,8 +1,8 @@
 import { Competition, CompetitionGet } from "../../../types/models/competition";
-import { ageGroup } from "../../../utils/createOption/ageGroup";
-import { category } from "../../../utils/createOption/category";
-import { competitionType } from "../../../utils/createOption/competition_type";
-import { level } from "../../../utils/createOption/level";
+import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
+import { category } from "../../../utils/createOption/Enum/category";
+import { competitionType } from "../../../utils/createOption/Enum/competition_type";
+import { level } from "../../../utils/createOption/Enum/level";
 
 export const competition = (t: Competition): CompetitionGet => {
   const CompetitionType = competitionType().find(

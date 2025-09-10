@@ -1,4 +1,4 @@
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../../types/option";
 
 export const leftReason = (): OptionArray => [
   { key: "injury", label: "怪我" },
