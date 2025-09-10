@@ -24,6 +24,7 @@
 | --------------------------------- | ---------------- | -------------------------------------------------------------- |
 | `/api/v1/auth`                    | 認証             | [auth.md](./api/auth.md)                                       |
 | `/api/v1/competition`             | 大会             | [competition.md](./api/competition.md)                         |
+| `/api/v1/competition-stage`       | 大会             | [competition-stage.md](./api/competition-stage.md)             |
 | `/api/v1/country`                 | 国               | [country.md](./api/country.md)                                 |
 | `/api/v1/injury`                  | 怪我             | [injury.md](./api/injury.md)                                   |
 | `/api/v1/national-callup`         | 代表招集         | 　[national-callup.md](./api/national-callup.md)               |

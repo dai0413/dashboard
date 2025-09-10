@@ -13,8 +13,13 @@ import { competition } from "./competition";
 import { season } from "./season";
 import { teamCompetitionSeason } from "./team-competition-season";
 import { stadium } from "./stadium";
+import { competitionStage } from "./competition-stage";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
+  [ModelType.COMPETITION_STAGE]: [
+    ...competitionStage,
+    createConfirmationStep<ModelType.COMPETITION_STAGE>(),
+  ],
   [ModelType.COMPETITION]: [
     ...competition,
     createConfirmationStep<ModelType.COMPETITION>(),

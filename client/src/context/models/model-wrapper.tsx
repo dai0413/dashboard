@@ -11,6 +11,7 @@ import { CompetitionProvider } from "./competition-context";
 import { SeasonProvider } from "./season-context";
 import { TeamCompetitionSeasonProvider } from "./team-competition-season-context";
 import { StadiumProvider } from "./stadium-context";
+import { CompetitionStageProvider } from "./competition-stage-context";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -18,21 +19,23 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
       <StadiumProvider>
         <CompetitionProvider>
           <SeasonProvider>
-            <NationalMatchSeriesProvider>
-              <TeamProvider>
-                <TeamCompetitionSeasonProvider>
-                  <PlayerProvider>
-                    <RefereeProvider>
-                      <NationalCallupProvider>
-                        <InjuryProvider>
-                          <TransferProvider>{children}</TransferProvider>
-                        </InjuryProvider>
-                      </NationalCallupProvider>
-                    </RefereeProvider>
-                  </PlayerProvider>
-                </TeamCompetitionSeasonProvider>
-              </TeamProvider>
-            </NationalMatchSeriesProvider>
+            <CompetitionStageProvider>
+              <NationalMatchSeriesProvider>
+                <TeamProvider>
+                  <TeamCompetitionSeasonProvider>
+                    <PlayerProvider>
+                      <RefereeProvider>
+                        <NationalCallupProvider>
+                          <InjuryProvider>
+                            <TransferProvider>{children}</TransferProvider>
+                          </InjuryProvider>
+                        </NationalCallupProvider>
+                      </RefereeProvider>
+                    </PlayerProvider>
+                  </TeamCompetitionSeasonProvider>
+                </TeamProvider>
+              </NationalMatchSeriesProvider>
+            </CompetitionStageProvider>
           </SeasonProvider>
         </CompetitionProvider>
       </StadiumProvider>

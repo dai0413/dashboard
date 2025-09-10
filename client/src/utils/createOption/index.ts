@@ -21,6 +21,7 @@ import { category } from "./category";
 import { level } from "./level";
 import { competition } from "./competition";
 import { season } from "./season";
+import { stageType } from "./stageType";
 
 export enum OptionType {
   OPERATOR = "operator",
@@ -40,6 +41,7 @@ export enum OptionType {
   LEVEL = "level",
   CURRENT = "current",
   IS_INJURED = "is_injured",
+  STAGE_TYPE = "stage_type",
 }
 
 type OptionMap = {
@@ -60,6 +62,7 @@ type OptionMap = {
   [OptionType.LEVEL]: OptionArray;
   [OptionType.CURRENT]: OptionArray;
   [OptionType.IS_INJURED]: OptionArray;
+  [OptionType.STAGE_TYPE]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -108,6 +111,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
     { key: "true", label: "負傷中" },
     { key: "false", label: "復帰済み" },
   ],
+  [OptionType.STAGE_TYPE]: () => stageType(),
 };
 
 // 実装

@@ -15,10 +15,19 @@ import {
   Season,
   TeamCompetitionSeason,
   Stadium,
+  CompetitionStage,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
   <>
+    <Route
+      path={APP_ROUTES.COMPETITION_STAGE}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <CompetitionStage />
+        </Layout>
+      )}
+    />
     <Route
       path={APP_ROUTES.COMPETITION}
       element={wrapWithPrivateRoute(

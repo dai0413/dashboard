@@ -28,6 +28,12 @@ const models: {
     icon: "competition",
   },
   {
+    model: "CompetitionStage",
+    desc: "大会ステージ",
+    link: APP_ROUTES.COMPETITION_STAGE,
+    icon: "competition",
+  },
+  {
     model: "Season",
     desc: "シーズン",
     link: APP_ROUTES.SEASON,

@@ -20,6 +20,9 @@ type BaseCrudRoutes<P = {}> = {
 };
 
 type Model = {
+  COMPETITION_STAGE: BaseCrudRoutes<
+    ReadItemsParamsMap[ModelType.COMPETITION_STAGE]
+  >;
   COMPETITION: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COMPETITION]>;
   COUNTRY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COUNTRY]>;
   INJURY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.INJURY]>;
@@ -72,6 +75,13 @@ export const API_ROUTES: Model & {
   },
   TOP_PAGE: {
     GET: `${API_BASE_URL}/top-page`,
+  },
+  COMPETITION_STAGE: {
+    GET_ALL: { URL: `${API_BASE_URL}/competition-stage` },
+    CREATE: `${API_BASE_URL}/competition-stage`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/competition-stage/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/competition-stage/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/competition-stage/${id}`,
   },
   COMPETITION: {
     GET_ALL: { URL: `${API_BASE_URL}/competition` },

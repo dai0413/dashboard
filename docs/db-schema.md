@@ -14,6 +14,7 @@
   - [11. シーズン(Season)](#11-シーズンseason)
   - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
   - [13. スタジアム(Stadium)](#13-スタジアムstadium)
+  - [14. 大会ステージ(CompetitionStage)](#14-大会ステージcompetitionstage)
 
 ## 1. ユーザー(user)
 
@@ -274,3 +275,27 @@
 | sofaurl?     | 文字列   | true  | sofa     | unique         |
 
 ※country, name, の組み合わせユニーク
+
+## 14. 大会ステージ(CompetitionStage)
+
+| フィールド    | 型       | null  | 注釈                 | バリデーション               |
+| ------------- | -------- | ----- | -------------------- | ---------------------------- |
+| competition   | 外部キー | false | 大会                 | Competition 外部キー         |
+| season        | 外部キー | false | シーズン             | Season 外部キー              |
+| stage_type    | 文字列   | false |                      | ※1 ENUM                      |
+| name          | 文字列   | true  | ステージ名           | ※2                           |
+| round_number? | 数字     | true  | 数字で表すラウンド   | ※3                           |
+| leg?          | 数字     | true  | 第 1 戦、第 2 戦など |                              |
+| order?        | 数字     | true  | 表示順               |                              |
+| parent_stage? | 外部キー | true  | 親ステージ           | ※4 CompetitionStage 外部キー |
+| notes?        | 文字列   | true  | 備考                 |                              |
+
+※1 `none` | `group_stage`| `round`| `quarter_final`| `semi_final`| `final` | `other`
+※2 (例: "準決勝", "決勝", "Group Stage A")
+※3 (例: 1=1 回戦, 2=2 回戦)
+
+※4 同じ competition/season 内のステージだけ親にできる
+
+※competition, season, stage_type, round_number, leg の組み合わせユニーク
+
+※stage_type == `none` のときは name, round_number, leg, order, が undefined

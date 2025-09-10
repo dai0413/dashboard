@@ -11,8 +11,10 @@ import { competition } from "./competition";
 import { season } from "./season";
 import { teamCompetitionSeason } from "./team-competition-season";
 import { stadium } from "./stadium";
+import { competitionStage } from "./competition-stage";
 
 export const fieldDefinition = {
+  [ModelType.COMPETITION_STAGE]: competitionStage,
   [ModelType.COMPETITION]: competition,
   [ModelType.COUNTRY]: country,
   [ModelType.INJURY]: injury,
