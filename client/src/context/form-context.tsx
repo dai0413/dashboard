@@ -24,6 +24,7 @@ import { useCompetition } from "./models/competition-context";
 import { useSeason } from "./models/season-context";
 import { useTeamCompetitionSeason } from "./models/team-competition-season-context";
 import { useStadium } from "./models/stadium-context";
+import { useCompetitionStage } from "./models/competition-stage-context";
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   modelType: T | null;
@@ -108,6 +109,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [K in keyof FormTypeMap]: ModelContext<K>;
   } = {
     [ModelType.COMPETITION]: useCompetition(),
+    [ModelType.COMPETITION_STAGE]: useCompetitionStage(),
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
@@ -125,6 +127,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     return modelType ? modelContextMap[modelType] : null;
   }, [
     modelType,
+    modelContextMap[ModelType.COMPETITION_STAGE].single.formData,
     modelContextMap[ModelType.COMPETITION].single.formData,
     modelContextMap[ModelType.COUNTRY].single.formData,
     modelContextMap[ModelType.INJURY].single.formData,
@@ -254,18 +257,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setIsEditing(false);
   };
 
-  const nextStep = () => {
-    setCurrentStep((prev) =>
-      Math.min(
-        prev + 1,
-        modelContext?.single.formSteps
-          ? modelContext?.single.formSteps.length - 1
-          : 0
-      )
-    );
-    resetAlert();
-  };
-
   const singleValidation = () => {
     const current = modelContext?.single.formSteps[currentStep];
 
@@ -349,13 +340,59 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     return true;
   };
 
-  const nextStepWithValidation = () => {
-    if (mode === "single" && !singleValidation()) return;
-    if (mode === "many" && !manyValidation()) return;
-    nextStep();
+  const stepSkip = (next: number) => {
+    const current = modelContext?.single.formSteps[next];
+
+    if (!current) return;
+
+    if (current?.skip) {
+      const skip = current.skip(modelContext?.single.formData);
+
+      return skip;
+    }
+
+    return false;
   };
 
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
+  const nextStep = () => {
+    if (mode === "single" && !singleValidation()) return;
+    if (mode === "many" && !manyValidation()) return;
+
+    if (!modelContext?.single.formSteps) return;
+
+    let nextStepIndex = Math.min(
+      currentStep + 1,
+      modelContext.single.formSteps
+        ? modelContext.single.formSteps.length - 1
+        : 0
+    );
+
+    // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
+    while (
+      stepSkip(nextStepIndex) &&
+      nextStepIndex < modelContext.single.formSteps.length - 1
+    ) {
+      nextStepIndex++;
+    }
+
+    setCurrentStep(nextStepIndex);
+    resetAlert();
+  };
+
+  const prevStep = () => {
+    if (!modelContext?.single.formSteps) return;
+    let nextStepIndex = Math.max(currentStep - 1, 0);
+
+    // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
+    while (
+      stepSkip(nextStepIndex) &&
+      nextStepIndex < modelContext.single.formSteps.length - 1
+    ) {
+      nextStepIndex--;
+    }
+
+    setCurrentStep(nextStepIndex);
+  };
 
   ////////////////////////// many data edit //////////////////////////
   const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([]);
@@ -479,7 +516,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     steps: {
       currentStep,
-      nextStep: nextStepWithValidation,
+      nextStep,
       prevStep,
       nextData,
       sendData,
