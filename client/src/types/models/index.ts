@@ -23,8 +23,14 @@ import {
   TeamCompetitionSeasonGet,
 } from "./team-competition-season";
 import { Stadium, StadiumForm, StadiumGet } from "./stadium";
+import {
+  CompetitionStage,
+  CompetitionStageForm,
+  CompetitionStageGet,
+} from "./competition-stage";
 
 export enum ModelType {
+  COMPETITION_STAGE = "competition-stage",
   COMPETITION = "competition",
   COUNTRY = "country",
   INJURY = "injury",
@@ -40,6 +46,7 @@ export enum ModelType {
 }
 
 export type ModelDataMap = {
+  [ModelType.COMPETITION_STAGE]: CompetitionStage;
   [ModelType.COMPETITION]: Competition;
   [ModelType.COUNTRY]: Country;
   [ModelType.INJURY]: Injury;
@@ -55,6 +62,7 @@ export type ModelDataMap = {
 };
 
 export type GettedModelDataMap = {
+  [ModelType.COMPETITION_STAGE]: CompetitionStageGet;
   [ModelType.COMPETITION]: CompetitionGet;
   [ModelType.COUNTRY]: CountryGet;
   [ModelType.INJURY]: InjuryGet;
@@ -70,6 +78,7 @@ export type GettedModelDataMap = {
 };
 
 export type FormTypeMap = {
+  [ModelType.COMPETITION_STAGE]: CompetitionStageForm;
   [ModelType.COMPETITION]: CompetitionForm;
   [ModelType.COUNTRY]: CountryForm;
   [ModelType.INJURY]: InjuryForm;
@@ -85,6 +94,7 @@ export type FormTypeMap = {
 };
 
 export const ModelRouteMap = {
+  [ModelType.COMPETITION_STAGE]: APP_ROUTES.COMPETITION_STAGE,
   [ModelType.COMPETITION]: APP_ROUTES.COMPETITION,
   [ModelType.COUNTRY]: APP_ROUTES.COUNTRY,
   [ModelType.INJURY]: APP_ROUTES.INJURY,

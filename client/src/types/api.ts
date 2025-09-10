@@ -14,6 +14,10 @@ export type ResponseStatus = {
 };
 
 export type ReadItemsParamsMap = {
+  [ModelType.COMPETITION_STAGE]: {
+    season?: string;
+    competition?: string;
+  };
   [ModelType.COMPETITION]: {
     country?: string;
   };

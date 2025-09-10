@@ -15,6 +15,7 @@ import { competition } from "./competition";
 import { season } from "./season";
 import { teamCompetitionSeason } from "./team-competition-season";
 import { stadium } from "./stadium";
+import { competitionStage } from "./competition-stage";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -24,6 +25,10 @@ type Converter<T extends ModelType> = {
 const convertMap: {
   [K in ModelType]: Converter<K>;
 } = {
+  [ModelType.COMPETITION_STAGE]: {
+    single: competitionStage,
+    multiple: (data) => data.map(competitionStage),
+  },
   [ModelType.COMPETITION]: {
     single: competition,
     multiple: (data) => data.map(competition),

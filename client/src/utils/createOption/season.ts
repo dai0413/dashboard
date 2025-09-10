@@ -6,9 +6,8 @@ export const season = (
   table: boolean
 ): OptionArray | OptionTable => {
   const options = data.map((d) => ({
-    label: d.name,
+    label: `${d.name}-${d.competition.label}`,
     key: d._id,
-    competition: d.competition,
     current: d.current,
   }));
 
@@ -16,7 +15,6 @@ export const season = (
     return {
       header: [
         { label: "名前", field: "label" },
-        { label: "大会", field: "competition" },
         { label: "現在", field: "current" },
       ],
       data: options,
