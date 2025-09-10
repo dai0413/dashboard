@@ -47,6 +47,7 @@ export type Icon =
   | "callup"
   | "setting"
   | "competition"
+  | "competitionStage"
   | "teamCompetitionSeason";
 
 export type IconButtonProps = {
@@ -136,6 +137,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       case "setting":
         return <WrenchScrewdriverIcon className={iconClass} />;
       case "competition":
+      case "competitionStage":
         return <TrophyIcon className={iconClass} />;
 
       default:

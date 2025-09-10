@@ -138,6 +138,10 @@ export const NationalMatchSeriesTabItems: IconButtonProps[] = [
 
 export const CompetitionTabItems: IconButtonProps[] = [
   {
+    icon: "competitionStage",
+    text: "ステージ",
+  },
+  {
     icon: "teamCompetitionSeason",
     text: "チーム",
   },

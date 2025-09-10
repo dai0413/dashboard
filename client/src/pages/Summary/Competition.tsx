@@ -25,6 +25,11 @@ import {
 } from "../../types/models/team-competition-season";
 import { useCompetition } from "../../context/models/competition-context";
 import { Season, SeasonGet } from "../../types/models/season";
+import {
+  CompetitionStage,
+  CompetitionStageGet,
+} from "../../types/models/competition-stage";
+import { useForm } from "../../context/form-context";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -37,6 +42,7 @@ const Tabs = CompetitionTabItems.filter(
 const Competition = () => {
   const api = useApi();
   const { id } = useParams();
+  const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
@@ -53,9 +59,16 @@ const Competition = () => {
   const [season, setSeason] = useState<SeasonGet[]>([]);
   const [_seasonIsLoading, setSeasonIsLoading] = useState(false);
 
+  const [competitionStage, setCompetitionStage] = useState<
+    CompetitionStageGet[]
+  >([]);
+  const [competitionStageIsLoading, setCompetitionStageIsLoading] =
+    useState<boolean>(false);
+
   const isLoadingSetters = {
     teamCompetitionSeason: setTeamCompetitionSeasonIsLoading,
     season: setSeasonIsLoading,
+    competitionStage: setCompetitionStageIsLoading,
   };
 
   const setLoading = (
@@ -92,6 +105,17 @@ const Competition = () => {
       handleLoading: (time) => setLoading(time, "season"),
     });
 
+  const readCompetitionStage = (seasonId: string) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
+      params: { season: seasonId },
+      onSuccess: (items: CompetitionStage[]) => {
+        setCompetitionStage(convert(ModelType.COMPETITION_STAGE, items));
+      },
+      handleLoading: (time) => setLoading(time, "competitionStage"),
+    });
+
   useEffect(() => {
     if (!id) return;
     (async () => {
@@ -121,6 +145,23 @@ const Competition = () => {
       : [],
   };
 
+  const competitionStageOptions = {
+    filterField: ModelType.COMPETITION_STAGE
+      ? (fieldDefinition[ModelType.COMPETITION_STAGE]
+          .filter(isFilterable)
+          .filter(
+            (file) => file.key !== "competition"
+          ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.COMPETITION_STAGE
+      ? (fieldDefinition[ModelType.COMPETITION_STAGE]
+          .filter(isSortable)
+          .filter(
+            (file) => file.key !== "competition"
+          ) as SortableFieldDefinition[])
+      : [],
+  };
+
   const [selectedSeason, setSelectedSeason] = useState<SeasonGet | null>(null);
 
   useEffect(() => {
@@ -131,7 +172,8 @@ const Competition = () => {
   useEffect(() => {
     if (!id || !season.length || !selectedSeason) return;
     readTeamCompetitionSeason(id, selectedSeason._id);
-  }, [selectedSeason?._id]);
+    readCompetitionStage(selectedSeason._id);
+  }, [selectedSeason?._id, formIsOpen]);
 
   const handleSetSelectedSeason = (id: string | number | Date) => {
     const selected = season.find((s) => s._id === id) ?? null;
@@ -235,7 +277,9 @@ const Competition = () => {
           modelType={ModelType.TEAM_COMPETITION_SEASON}
           originalFilterField={teamCompetitionSeasonOptions.filterField}
           originalSortField={teamCompetitionSeasonOptions.sortField}
-          formInitialData={{}}
+          formInitialData={{
+            competition: id,
+          }}
           itemsLoading={teamCompetitionSeasonIsLoading}
           linkField={[
             {
@@ -243,6 +287,24 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+        />
+      )}
+
+      {selectedTab === "competitionStage" && (
+        <TableContainer
+          items={competitionStage}
+          headers={[
+            { label: "名前", field: "name", width: "170px" },
+            { label: "ステージタイプ", field: "stage_type", width: "100px" },
+            { label: "LEG", field: "leg", width: "50px" },
+          ]}
+          modelType={ModelType.COMPETITION_STAGE}
+          originalFilterField={competitionStageOptions.filterField}
+          originalSortField={competitionStageOptions.sortField}
+          formInitialData={{
+            season: selectedSeason?._id,
+          }}
+          itemsLoading={competitionStageIsLoading}
         />
       )}
     </div>
