@@ -114,6 +114,7 @@ export const API_ROUTES: Model & {
   NATIONAL_MATCH_SERIES: {
     GET_ALL: { URL: `${API_BASE_URL}/national-match-series` },
     CREATE: `${API_BASE_URL}/national-match-series`,
+    DOWNLOAD: `${API_BASE_URL}/national-match-series/download`,
     DETAIL: (id: string | number) =>
       `${API_BASE_URL}/national-match-series/${id}`,
     UPDATE: (id: string | number) =>

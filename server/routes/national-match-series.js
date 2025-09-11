@@ -7,12 +7,14 @@ const {
   getNationalMatchSeries,
   updateNationalMatchSeries,
   deleteNationalMatchSeries,
+  downloadItems,
 } = require("../controllers/national-match-series");
 
 router
   .route("/")
   .get(getAllNationalMatchSeries)
   .post(createNationalMatchSeries);
+router.route("/download").get(downloadItems);
 router
   .route("/:id")
   .patch(updateNationalMatchSeries)
