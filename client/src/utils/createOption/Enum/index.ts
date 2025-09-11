@@ -4,6 +4,7 @@ export { leftReason } from "./leftReason";
 export { ageGroup } from "./ageGroup";
 export { area } from "./area";
 export { district } from "./district";
+export { division } from "./division";
 export { confederation } from "./confederation";
 export { subConfederation } from "./subConfederation";
 export { position } from "./position";

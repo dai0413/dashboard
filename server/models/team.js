@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const age_group = require("../utils/Enum/age_group");
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -18,15 +19,16 @@ const TeamSchema = new mongoose.Schema(
     },
     genre: {
       type: String,
-      enum: [
-        "academy",
-        "club",
-        "college",
-        "high_school",
-        "second_team",
-        "third_team",
-        "youth",
-      ],
+      enum: ["club", "national"],
+    },
+    age_group: {
+      type: String,
+      enum: age_group,
+    },
+    division: {
+      type: String,
+      enum: ["1st", "2nd", "3rd"],
+      default: "1st",
     },
     jdataid: {
       type: Number,

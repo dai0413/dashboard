@@ -25,7 +25,7 @@ export const team: FormStep<ModelType.TEAM>[] = [
     ],
   },
   {
-    stepLabel: "国名・ジャンル",
+    stepLabel: "国名",
     type: "form",
     fields: [
       {
@@ -33,9 +33,25 @@ export const team: FormStep<ModelType.TEAM>[] = [
         label: "国名",
         type: "table",
       },
+    ],
+  },
+  {
+    stepLabel: "ジャンル・年代・ディビジョン",
+    type: "form",
+    fields: [
       {
         key: "genre",
         label: "ジャンル",
+        type: "select",
+      },
+      {
+        key: "age_group",
+        label: "年代",
+        type: "select",
+      },
+      {
+        key: "division",
+        label: "ディビジョン",
         type: "select",
       },
     ],
