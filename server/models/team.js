@@ -48,6 +48,17 @@ const TeamSchema = new mongoose.Schema(
   }
 );
 
+TeamSchema.index(
+  {
+    team: 1,
+    country: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: { country: { $exists: true, $type: "objectId" } },
+  }
+);
+
 // transferurl が存在する場合のみユニーク
 TeamSchema.index(
   { transferurl: 1 },
