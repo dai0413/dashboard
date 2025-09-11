@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const NationalCallUp = require("../models/national-callup");
+const age_group = require("../utils/Enum/age_group");
 
 const NationalMatchSeriesSchema = new mongoose.Schema(
   {
@@ -17,20 +18,7 @@ const NationalMatchSeriesSchema = new mongoose.Schema(
     },
     age_group: {
       type: String,
-      enum: [
-        "full",
-        "u17",
-        "u18",
-        "u19",
-        "u20",
-        "u21",
-        "u22",
-        "u23",
-        "u24",
-        "high_school",
-        "university",
-        "youth",
-      ],
+      enum: age_group,
     },
     matchs: {
       type: [mongoose.Schema.Types.ObjectId],

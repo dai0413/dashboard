@@ -15,6 +15,7 @@
   - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
   - [13. スタジアム(Stadium)](#13-スタジアムstadium)
   - [14. 大会ステージ(CompetitionStage)](#14-大会ステージcompetitionstage)
+  - [15. 試合(Match)](#15-試合match)
 
 ## 1. ユーザー(user)
 
@@ -30,19 +31,32 @@
 
 ## 2. チーム(team)
 
-| フィールド  | 型     | null  | 注釈      | バリデーション |
-| ----------- | ------ | ----- | --------- | -------------- |
-| team        | 文字列 | false | チーム名  |                |
-| abbr        | 文字列 | true  | 略称      |                |
-| enTeam      | 文字列 | true  | 英名      |                |
-| country     | 文字列 | true  | 国名      |                |
-| genre       | 文字列 | true  | ジャンル  | ※1             |
-| jdataid     | 数字   | true  | j.data.id |                |
-| labalph     | 文字列 | true  | lab.alph  |                |
-| transferurl | 文字列 | true  | transfer  |                |
-| sofaurl     | 文字列 | true  | sofa      |                |
+| フィールド   | 型     | null  | 注釈          | バリデーション    |
+| ------------ | ------ | ----- | ------------- | ----------------- |
+| team         | 文字列 | false | チーム名      |                   |
+| abbr?        | 文字列 | true  | 略称          |                   |
+| enTeam?      | 文字列 | true  | 英名          |                   |
+| country?     | 文字列 | true  | 国名          | 外部キー          |
+| genre?       | 文字列 | true  | ジャンル      | ※1                |
+| age_group?   | 文字列 | true  | 年代          | ※2                |
+| division?    | 文字列 | true  | 2nd, 3rd など | ※3 デフォルト=1st |
+| jdataid?     | 数字   | true  | j.data.id     |                   |
+| labalph?     | 文字列 | true  | lab.alph      |                   |
+| transferurl? | 文字列 | true  | transfer      |                   |
+| sofaurl?     | 文字列 | true  | sofa          |                   |
 
-※1 ENUM('academy', 'club', 'college', 'high_school', 'second_team', 'third_team', 'youth')
+※1 `club` | `national`
+
+※2 年代
+
+- `full`（フル代表）
+- `u17` ～ `u24`（各年代別代表）
+- `high_school`（高校選抜）
+- `university`（大学選抜）
+- `youth`（ユース選抜）
+-
+
+※3 `1st` |`2nd` | `3rd`
 
 ## 3. 選手(player)
 
