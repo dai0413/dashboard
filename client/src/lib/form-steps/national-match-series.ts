@@ -10,13 +10,14 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
         {
           key: "name",
           label: "活動名",
-          type: "input",
+          fieldType: "input",
+          valueType: "text",
           required: true,
         },
         // {
         //   key: "abbr",
         //   label: "略称",
-        //   type: "input",
+        //   fieldType : "input",valueType : "text"
         // },
       ],
     },
@@ -27,12 +28,14 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
         {
           key: "country",
           label: "国名",
-          type: "table",
+          fieldType: "table",
+          valueType: "option",
         },
         {
           key: "age_group",
           label: "年代・種別",
-          type: "select",
+          fieldType: "select",
+          valueType: "option",
         },
       ],
     },
@@ -43,7 +46,7 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
     //     {
     //       key: "matchs",
     //       label: "試合",
-    //       type: "table",
+    //       fieldType : "table",valueType : "option",
     //     },
     //   ],
     // },
@@ -54,12 +57,14 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
         {
           key: "joined_at",
           label: "活動開始日",
-          type: "date",
+          fieldType: "input",
+          valueType: "date",
         },
         {
           key: "left_at",
           label: "解散日",
-          type: "date",
+          fieldType: "input",
+          valueType: "date",
         },
       ],
     },
@@ -70,7 +75,9 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
         {
           key: "urls",
           label: "urls",
-          type: "multiurl",
+          multh: true,
+          fieldType: "textarea",
+          valueType: "text",
         },
       ],
     },

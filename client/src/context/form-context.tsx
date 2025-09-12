@@ -62,7 +62,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
       value: FormTypeMap[T][K]
     ) => void;
     formSteps: FormStep<T>[];
-    addFormDatas: (setPage?: (p: number) => void) => void;
+    addFormDatas: (baseCopy: boolean, setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
     renderConfirmMes: (
       confirmData: Record<string, string | number | undefined>[]
@@ -211,9 +211,21 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const sendData = async () => {
     if (!modelContext) return;
 
+    let item: FormTypeMap[T];
+    if (modelType === ModelType.PLAYER) {
+      console.log("sending data", modelContext.single.formData);
+
+      console.log("sending data2", formDatas);
+
+      item = { ...modelContext.single.formData, period: formDatas };
+      console.log("sendData item", item);
+    } else {
+      item = modelContext.single.formData;
+    }
+
     if (mode === "single") {
       if (newData) {
-        modelContext?.metacrud.createItem();
+        modelContext?.metacrud.createItem(item);
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
         if (!difKeys || difKeys?.length === 0)
@@ -268,7 +280,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
 
     const missing = current.fields?.filter((f) => {
-      const value = modelContext?.single.formData[f.key];
+      const value =
+        modelContext?.single.formData[f.key as keyof FormTypeMap[T]];
 
       if (!f.required) return false;
 
@@ -313,7 +326,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     const missing = current.fields?.filter((f) => {
       return (formDatas ?? []).some((d) => {
-        const value = d[f.key];
+        const value = d[f.key as keyof FormTypeMap[T]];
         if (!f.required) return false;
 
         if (Array.isArray(value)) {
@@ -395,7 +408,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   ////////////////////////// many data edit //////////////////////////
-  const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([]);
+  const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
+  useEffect(() => {
+    console.log("new formDatas", formDatas);
+  }, [formDatas]);
 
   useEffect(() => {
     if (modelContext) {
@@ -424,12 +440,12 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     modelContext?.bulk.setFormDatas(newFormDatas);
   };
 
-  const addFormDatas = (setPage?: (p: number) => void) => {
+  const addFormDatas = (baseCopy: boolean, setPage?: (p: number) => void) => {
     const base = modelContext?.single.formData
       ? { ...modelContext.single.formData }
       : ({} as FormTypeMap[T]);
 
-    const newFormDatas = [...formDatas, base];
+    const newFormDatas = [...formDatas, baseCopy ? base : {}];
 
     setFormDatas(newFormDatas);
     modelContext?.bulk.setFormDatas(newFormDatas);
