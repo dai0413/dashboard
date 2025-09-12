@@ -222,7 +222,12 @@ const Table = <T extends Record<string, any>>({
                   <th
                     className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
                     style={{ width: "35px" }}
-                    onClick={() => deleteOnClick && deleteOnClick(i)}
+                    onClick={() =>
+                      deleteOnClick &&
+                      deleteOnClick(
+                        itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i
+                      )
+                    }
                   >
                     <div className="flex justify-center items-center">
                       <XMarkIcon className="w-6 h-6" />

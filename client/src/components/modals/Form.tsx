@@ -61,17 +61,19 @@ const Form = <T extends keyof FormTypeMap>() => {
   const [isTableOpen, setIsTableOpen] = useState<boolean>(false);
 
   const confirmManyDataHeaders =
-    steps?.flatMap((s) =>
-      (s.fields ?? [])
-        .map((field) => ({
-          label: field.label,
-          field: field.key as string,
-          width: field.width,
-          fieldType: field.fieldType,
-          valueType: field.valueType,
-        }))
-        .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
-    ) ?? [];
+    steps
+      ?.filter((step) => step.many)
+      .flatMap((s) =>
+        (s.fields ?? [])
+          .map((field) => ({
+            label: field.label,
+            field: field.key as string,
+            width: field.width,
+            fieldType: field.fieldType,
+            valueType: field.valueType,
+          }))
+          .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
+      ) ?? [];
 
   const confirmData = (many?.formData ?? []).map((d) => {
     const row: Record<string, string | number | undefined> = {};
@@ -86,16 +88,14 @@ const Form = <T extends keyof FormTypeMap>() => {
         const options = getOptions(key);
         const selected = options?.find((opt) => opt.key === value);
         displayValue = selected?.label || "";
-      }
-
-      if (h.valueType === "boolean") {
+      } else if (h.valueType === "boolean") {
         displayValue = value ? "◯" : "";
+      } else {
+        displayValue = value as string | number;
       }
 
       if (value === null || value === undefined) {
         displayValue = "";
-      } else {
-        displayValue = value as string | number;
       }
 
       row[key] = displayValue;

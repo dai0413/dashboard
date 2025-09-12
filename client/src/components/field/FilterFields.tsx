@@ -22,7 +22,7 @@ const FilterFields = ({
     case "checkbox":
       return (
         <InputField
-          type="checkbox"
+          type="boolean"
           value={value as string}
           onChange={onChange}
         />

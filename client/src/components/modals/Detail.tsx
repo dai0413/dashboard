@@ -152,19 +152,18 @@ const DetailModal = <K extends keyof FormTypeMap>({
               );
             }
           })}
-          {staffState.admin ||
-            (isDev && (
-              <LinkButtonGroup
-                reset={{
-                  text: "編集",
-                  onClick: () => editOnClick(),
-                }}
-                deny={{
-                  text: "削除",
-                  onClick: () => deleteOnClick(),
-                }}
-              />
-            ))}
+          {(staffState.admin || isDev) && (
+            <LinkButtonGroup
+              reset={{
+                text: "編集",
+                onClick: () => editOnClick(),
+              }}
+              deny={{
+                text: "削除",
+                onClick: () => deleteOnClick(),
+              }}
+            />
+          )}
         </div>
       )}
     </Modal>

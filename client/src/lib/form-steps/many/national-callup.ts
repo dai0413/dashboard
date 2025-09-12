@@ -21,6 +21,13 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     type: "form",
     fields: [
       {
+        key: "position_group",
+        label: "POS.",
+        fieldType: "select",
+        valueType: "option",
+        width: "120px",
+      },
+      {
         key: "player",
         label: "選手",
         fieldType: "table",
@@ -48,13 +55,6 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         fieldType: "input",
         valueType: "number",
         width: "100px",
-      },
-      {
-        key: "position_group",
-        label: "POS.",
-        fieldType: "select",
-        valueType: "option",
-        width: "120px",
       },
       {
         key: "is_captain",

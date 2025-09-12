@@ -254,7 +254,9 @@ const National = () => {
           modelType={ModelType.NATIONAL_MATCH_SERIES}
           originalFilterField={seriesOptions.filterField}
           originalSortField={seriesOptions.sortField}
-          formInitialData={{}}
+          formInitialData={{
+            country: id,
+          }}
           itemsLoading={seriesIsLoading}
           linkField={[
             {
