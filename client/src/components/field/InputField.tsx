@@ -37,7 +37,7 @@ const InputField = ({
 
   return (
     <input
-      type={type}
+      type={type === "boolean" ? "checkbox" : type}
       className="w-full border border-gray-300 rounded px-3 py-2"
       {...(type === "boolean"
         ? { checked: Boolean(value) }

@@ -9,7 +9,7 @@ export const team = (
     label: d.abbr || d.team,
     key: d._id,
     country: d.country,
-    genre: d.genre,
+    age_group: d.age_group,
   }));
 
   if (table === true) {
@@ -17,7 +17,7 @@ export const team = (
       header: [
         { label: "チーム", field: "label", width: "200px" },
         { label: "国", field: "country", width: "100px" },
-        { label: "ジャンル", field: "genre", width: "100px" },
+        { label: "年代", field: "age_group", width: "100px" },
       ],
       data: options,
     };
