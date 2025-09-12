@@ -9,19 +9,18 @@ import { IconTextButton } from "../../buttons";
 import { useQuery } from "../../../context/query-context";
 import { useForm } from "../../../context/form-context";
 
-type RenderFieldProps<_T extends keyof FormTypeMap> = {
+type RenderFieldProps<T extends keyof FormTypeMap> = {
+  fields: FieldDefinition<T>[];
   isTableOpen: boolean;
   toggleTableOpen: () => void;
 };
 
 export const RenderManyField = <T extends keyof FormTypeMap>({
+  fields,
   isTableOpen,
   toggleTableOpen,
 }: RenderFieldProps<T>) => {
-  const {
-    many,
-    steps: { currentStep },
-  } = useForm<T>();
+  const { many, mode } = useForm<T>();
 
   const { getOptions } = useOptions();
   const { page, setPage } = useQuery();
@@ -31,15 +30,11 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
   };
   const [focus, setFocus] = useState<Focus | null>(null);
 
-  const fields = many?.formSteps[currentStep].fields as FieldDefinition<
-    keyof FormTypeMap
-  >[];
-
   const formData = focus && many?.formData[focus.rowIndex];
 
   const handleSetPage = (p: number) => setPage("formPage", p);
 
-  if (focus?.field.type === "table" && formData) {
+  if (focus?.field.fieldType === "table" && formData) {
     if (isTableOpen && focus)
       return (
         <RenderField
@@ -60,12 +55,17 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
       }))
     : [];
 
-  const requiredField = fields.filter((f) => f.required).map((f) => f.key);
+  const requiredField = [
+    fields
+      .filter((f) => f.required)
+      .map((f) => f.key)
+      .toString(),
+  ];
 
   return (
     <>
       <Table
-        data={many?.formData || []}
+        data={many?.formData.length === 0 ? [{}] : many?.formData || []}
         headers={headers}
         renderFieldCell={(
           header: TableHeader,
@@ -75,9 +75,12 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
           const field = fields?.find((f) => f.key === header.field);
           if (!field) return null;
 
-          const value = formData[field.key] as string | number | Date;
+          const value = formData[field.key as keyof FormTypeMap[T]] as
+            | string
+            | number
+            | Date;
 
-          if (field.type === "table") {
+          if (field.fieldType === "table") {
             return (
               <>
                 <button
@@ -93,11 +96,9 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
                 >
                   編集
                 </button>
-                <>
-                  {getOptions(field.key as string, false, false).find(
-                    (f) => f.key === value
-                  )?.label || "未選択"}
-                </>
+                {getOptions(field.key as string, false, false).find(
+                  (f) => f.key === value
+                )?.label || "未選択"}
               </>
             );
           } else
@@ -123,7 +124,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
         icon="add"
         color="blue"
         onClick={() => {
-          many?.addFormDatas(handleSetPage);
+          many?.addFormDatas(mode === "many" ? true : false, handleSetPage);
         }}
       >
         データ追加

@@ -33,7 +33,10 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
-import { updateFormValue } from "../../utils/updateFormValue";
+import {
+  updateFormValue,
+  updateNestedValue,
+} from "../../utils/updateFormValue";
 import { getBulkSteps } from "../../lib/form-steps/many";
 
 type ContextModelType = ModelType.COMPETITION;
@@ -70,7 +73,14 @@ const SingleProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleFormData = <K extends keyof Form>(key: K, value: Form[K]) => {
-    setFormData((prev) => updateFormValue(prev, key, value));
+    setFormData((prev) => {
+      // トップレベル（. や [] が含まれない）なら updateFormValue
+      if (!key.includes(".") && !key.includes("[")) {
+        return updateFormValue(prev, key as keyof typeof prev, value);
+      }
+      // ネストしているなら updateNestedValue
+      return updateNestedValue(prev, key, value);
+    });
   };
 
   const resetFormData = () => {

@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAlert } from "../alert-context";
 import { Player, PlayerForm, PlayerGet } from "../../types/models/player";
 import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
@@ -29,7 +35,10 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
-import { updateFormValue } from "../../utils/updateFormValue";
+import {
+  updateFormValue,
+  updateNestedValue,
+} from "../../utils/updateFormValue";
 import { getBulkSteps } from "../../lib/form-steps/many";
 
 type ContextModelType = ModelType.PLAYER;
@@ -55,6 +64,8 @@ const MetaCrudContextContext =
 const SingleProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<Form>({});
 
+  useEffect(() => console.log("formData", formData), [formData]);
+
   const startNewData = (item?: Partial<Form>) => {
     item ? setFormData(item) : setFormData({});
   };
@@ -66,9 +77,15 @@ const SingleProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleFormData = <K extends keyof Form>(key: K, value: Form[K]) => {
-    setFormData((prev) => updateFormValue(prev, key, value));
+    setFormData((prev) => {
+      // トップレベル（. や [] が含まれない）なら updateFormValue
+      if (!key.includes(".") && !key.includes("[")) {
+        return updateFormValue(prev, key as keyof typeof prev, value);
+      }
+      // ネストしているなら updateNestedValue
+      return updateNestedValue(prev, key, value);
+    });
   };
-
   const resetFormData = () => {
     setFormData({});
   };
@@ -122,7 +139,7 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const createItem = async () =>
+  const createItem = async () => {
     createItemBase({
       apiInstance: api,
       backendRoute: backendRoute.CREATE,
@@ -133,6 +150,7 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
       handleLoading,
       handleSetAlert,
     });
+  };
 
   const readItems = async (params: ReadItemsParamsMap[ContextModelType] = {}) =>
     readItemsBase({

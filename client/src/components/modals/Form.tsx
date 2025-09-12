@@ -67,7 +67,8 @@ const Form = <T extends keyof FormTypeMap>() => {
           label: field.label,
           field: field.key as string,
           width: field.width,
-          type: field.type,
+          fieldType: field.fieldType,
+          valueType: field.valueType,
         }))
         .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
     ) ?? [];
@@ -81,13 +82,17 @@ const Form = <T extends keyof FormTypeMap>() => {
 
       let displayValue: string | number | undefined;
 
-      if (h.type === "select" || h.type === "table") {
+      if (h.fieldType === "select" || h.fieldType === "table") {
         const options = getOptions(key);
         const selected = options?.find((opt) => opt.key === value);
         displayValue = selected?.label || "";
-      } else if (typeof value === "boolean") {
+      }
+
+      if (h.valueType === "boolean") {
         displayValue = value ? "◯" : "";
-      } else if (value === null || value === undefined) {
+      }
+
+      if (value === null || value === undefined) {
         displayValue = "";
       } else {
         displayValue = value as string | number;
@@ -142,7 +147,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                 </span>
               )}
 
-              {mode === "single" &&
+              {typeof single.formData === "object" &&
                 Object.entries(single.formData).map(([key, value]) => {
                   if (
                     key === "_id" ||
@@ -158,13 +163,24 @@ const Form = <T extends keyof FormTypeMap>() => {
 
                   let displayValue = value;
 
-                  if (field?.type === "select" || field?.type === "table") {
+                  if (
+                    field?.fieldType === "select" ||
+                    field?.fieldType === "table"
+                  ) {
                     const options = getOptions(key);
-                    const selected = options?.find((opt) => opt.key === value);
-                    displayValue = selected?.label || "未選択";
+                    const selected =
+                      field?.multh && Array.isArray(value)
+                        ? value
+                            .map(
+                              (v) => options.find((opt) => opt.key === v)?.label
+                            )
+                            .join(", ")
+                        : options?.find((opt) => opt.key === value)?.label;
+
+                    displayValue = selected || "未選択";
                   }
 
-                  if (field?.type === "date" && value) {
+                  if (field?.valueType === "date" && value) {
                     try {
                       const date = new Date(value as string);
                       displayValue = new Intl.DateTimeFormat("ja-JP", {
@@ -177,16 +193,16 @@ const Form = <T extends keyof FormTypeMap>() => {
                     }
                   }
 
-                  if (field?.type === "multiurl" && value) {
-                    const urls = value as string[];
-                    displayValue = `${
-                      urls.filter((u) => u.trim() !== "").length
-                    }件`;
-                  }
-
-                  if (field?.type === "multiInput" && value) {
-                    const inputs = value as string[];
-                    displayValue = inputs.join(",");
+                  if (field?.multh && field?.valueType === "text" && value) {
+                    if (field?.key === "URL") {
+                      const urls = value as string[];
+                      displayValue = `${
+                        urls.filter((u) => u.trim() !== "").length
+                      }件`;
+                    } else {
+                      const inputs = value as string[];
+                      displayValue = inputs.join(",");
+                    }
                   }
 
                   return (
@@ -209,7 +225,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                     </div>
                   );
                 })}
-              {mode === "many" && (
+              {confirmData.length > 0 && (
                 <>
                   {many?.renderConfirmMes(confirmData)}
 
@@ -223,8 +239,9 @@ const Form = <T extends keyof FormTypeMap>() => {
                 </>
               )}
             </div>
-          ) : steps[currentStep].many && many ? (
+          ) : steps[currentStep].fields && steps[currentStep].many && many ? (
             <RenderManyField
+              fields={steps[currentStep].fields}
               isTableOpen={isTableOpen}
               toggleTableOpen={() => setIsTableOpen((prev) => !prev)}
             />
