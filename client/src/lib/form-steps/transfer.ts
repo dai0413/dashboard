@@ -9,7 +9,8 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       {
         key: "player",
         label: "選手",
-        type: "table",
+        fieldType: "table",
+        valueType: "option",
         required: true,
       },
     ],
@@ -21,12 +22,14 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       {
         key: "from_team",
         label: "移籍元",
-        type: "table",
+        fieldType: "table",
+        valueType: "option",
       },
       {
         key: "from_team_name",
         label: "移籍元（登録外チーム）",
-        type: "input",
+        fieldType: "input",
+        valueType: "text",
       },
     ],
   },
@@ -37,12 +40,14 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       {
         key: "to_team",
         label: "移籍先",
-        type: "table",
+        fieldType: "table",
+        valueType: "option",
       },
       {
         key: "to_team_name",
         label: "移籍先（登録外チーム）",
-        type: "input",
+        fieldType: "input",
+        valueType: "text",
       },
     ],
     validate: (formData) => {
@@ -76,14 +81,26 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
     stepLabel: "日付を入力",
     type: "form",
     fields: [
-      { key: "doa", label: "移籍発表日", type: "date", required: true },
+      {
+        key: "doa",
+        label: "移籍発表日",
+        fieldType: "input",
+        valueType: "date",
+        required: true,
+      },
       {
         key: "from_date",
         label: "新チーム加入日",
-        type: "date",
+        fieldType: "input",
+        valueType: "date",
         required: true,
       },
-      { key: "to_date", label: "新チーム満了予定日", type: "date" },
+      {
+        key: "to_date",
+        label: "新チーム満了予定日",
+        fieldType: "input",
+        valueType: "date",
+      },
     ],
   },
   {
@@ -93,19 +110,35 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       {
         key: "form",
         label: "移籍形態",
-        type: "select",
+        fieldType: "select",
+        valueType: "option",
       },
-      { key: "number", label: "背番号", type: "number" },
+      {
+        key: "number",
+        label: "背番号",
+        fieldType: "input",
+        valueType: "number",
+      },
       {
         key: "position",
         label: "ポジション",
-        type: "multiselect",
+        multh: true,
+        fieldType: "select",
+        valueType: "option",
       },
     ],
   },
   {
     stepLabel: "公式発表のURLを入力",
     type: "form",
-    fields: [{ key: "URL", label: "URL", type: "multiurl" }],
+    fields: [
+      {
+        key: "URL",
+        label: "URL",
+        multh: true,
+        fieldType: "textarea",
+        valueType: "text",
+      },
+    ],
   },
 ];

@@ -4,6 +4,7 @@ import { useOptions } from "../../../context/options-provider";
 import { Table } from "../../table";
 import { InputField, SelectField } from "../../field";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { get } from "lodash";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FieldDefinition<T>;
@@ -19,31 +20,23 @@ export const RenderField = <T extends keyof FormTypeMap>({
   formData,
   handleFormData,
 }: RenderFieldProps<T>) => {
-  const { key, type } = field;
+  const { multh, key, fieldType, valueType } = field;
+  const formDataKey = key as keyof FormTypeMap[T];
   const { getOptions, updateFilter, filters } = useOptions();
 
-  const inputType =
-    type === "number"
-      ? "number"
-      : type === "date"
-      ? "date"
-      : type === "checkbox"
-      ? "checkbox"
-      : "text";
-
   const inputFieldOnChange = (value: string | number | Date | boolean) => {
-    updateFilter(key as string, value as string);
+    updateFilter(formDataKey as string, value as string);
   };
 
   const inputHandleFormData = (value: string | number | Date | boolean) => {
-    handleFormData(key, value as any);
+    handleFormData(formDataKey, value as any);
   };
 
   const multhInputHandleFormData = (
     index: number,
     value: string | number | Date | boolean
   ) => {
-    const newValue = [...((formData[key] ?? []) as string[])];
+    const newValue = [...((formData[formDataKey] ?? []) as string[])];
     newValue[index] = value.toString();
 
     if (
@@ -54,33 +47,40 @@ export const RenderField = <T extends keyof FormTypeMap>({
       newValue.push("");
     }
 
-    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+    handleFormData(formDataKey, newValue as FormTypeMap[T][typeof formDataKey]);
   };
 
   const filteredOptions = getOptions(field.key as string, false, true)?.filter(
     (option) =>
       !(
-        (formData[key] as string[]) ?? ([] as FormTypeMap[T][typeof key])
+        (formData[formDataKey] as string[]) ??
+        ([] as FormTypeMap[T][typeof formDataKey])
       ).includes(option.key)
   );
 
-  const value = formData[key] as string | number | Date;
+  const value = get(formData, formDataKey) as string | number | Date;
+  const valueLabel = getOptions(formDataKey as string, false, false).find(
+    (f) => f.key === value
+  )?.label;
 
   const multiInputHandleFormData = (value: string | number | Date) => {
     const selected = value;
     if (selected) {
-      const current = (formData[key] as string[]) ?? [];
-      handleFormData(key, [...current, selected] as FormTypeMap[T][typeof key]);
+      const current = (formData[formDataKey] as string[]) ?? [];
+      handleFormData(formDataKey, [
+        ...current,
+        selected,
+      ] as FormTypeMap[T][typeof formDataKey]);
     }
   };
 
-  if (type === "table")
+  if (fieldType === "table")
     return (
       <>
         <div className="mb-2 text-gray-700">
           選択中:{" "}
           {getOptions(key as string, false, false).find(
-            (f) => f.key === formData[key]
+            (f) => f.key === formData[formDataKey]
           )?.label || "未選択"}
         </div>
         <div className="mb-4">
@@ -96,31 +96,28 @@ export const RenderField = <T extends keyof FormTypeMap>({
           headers={getOptions(key as string, true, true).header}
           form={true}
           onClick={(row) => {
-            handleFormData(key, row.key as FormTypeMap[T][typeof key]);
+            handleFormData(
+              formDataKey,
+              row.key as FormTypeMap[T][typeof formDataKey]
+            );
           }}
-          selectedKey={typeof formData[key] === "string" ? [formData[key]] : []}
+          selectedKey={
+            typeof formData[formDataKey] === "string"
+              ? [formData[formDataKey]]
+              : []
+          }
           itemsPerPage={10}
         />
       </>
     );
 
-  if (type === "select")
-    return (
-      <SelectField
-        type={inputType}
-        value={value}
-        onChange={inputHandleFormData}
-        options={getOptions(field.key as string, false, true)}
-        defaultOption="--- 未選択 ---"
-      />
-    );
-
-  if (type === "multiurl")
+  if (multh && fieldType === "textarea")
     return (
       <>
         {[
-          ...(formData[key] && (formData[key] as string[]).length > 0
-            ? (formData[key] as string[])
+          ...(formData[formDataKey] &&
+          (formData[formDataKey] as string[]).length > 0
+            ? (formData[formDataKey] as string[])
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => (
           <div key={index} className="flex items-center space-x-2 mb-2">
@@ -129,7 +126,9 @@ export const RenderField = <T extends keyof FormTypeMap>({
               value={item}
               onChange={(e) => {
                 const value = e.target.value;
-                const newValue = [...((formData[key] ?? []) as string[])];
+                const newValue = [
+                  ...((formData[formDataKey] ?? []) as string[]),
+                ];
                 newValue[index] = value;
 
                 // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
@@ -141,16 +140,22 @@ export const RenderField = <T extends keyof FormTypeMap>({
                   newValue.push("");
                 }
 
-                handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                handleFormData(
+                  formDataKey,
+                  newValue as FormTypeMap[T][typeof formDataKey]
+                );
               }}
             />
 
             <button
               type="button"
               onClick={() => {
-                const newValue = [...(formData[key] as string[])];
+                const newValue = [...(formData[formDataKey] as string[])];
                 newValue.splice(index, 1);
-                handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                handleFormData(
+                  formDataKey,
+                  newValue as FormTypeMap[T][typeof formDataKey]
+                );
               }}
               className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
             >
@@ -161,35 +166,41 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (type === "multiselect")
+  if (multh && fieldType === "select")
     return (
       <>
-        {[...((formData[key] as string[]) ?? [])].map(
+        {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
             const inputArrayHandleFormData = (
               value: string | number | Date
             ) => {
-              const newValue = [...(formData[key] as string[])];
+              const newValue = [...(formData[formDataKey] as string[])];
               newValue[index] = String(value);
-              handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+              handleFormData(
+                formDataKey,
+                newValue as FormTypeMap[T][typeof formDataKey]
+              );
             };
 
             return (
               <div key={index} className="flex items-center space-x-2 mb-2">
                 <SelectField
-                  type={inputType}
+                  type={valueType}
                   value={item}
                   onChange={inputArrayHandleFormData}
-                  options={getOptions(field.key as string, false, true)}
+                  options={getOptions(key as string, false, true)}
                   defaultOption="--- 未選択 ---"
                 />
 
                 <button
                   type="button"
                   onClick={() => {
-                    const newValue = [...(formData[key] as string[])];
+                    const newValue = [...(formData[formDataKey] as string[])];
                     newValue.splice(index, 1);
-                    handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                    handleFormData(
+                      formDataKey,
+                      newValue as FormTypeMap[T][typeof formDataKey]
+                    );
                   }}
                   className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
                 >
@@ -201,7 +212,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
         )}
 
         <SelectField
-          type={inputType}
+          type={valueType}
           value={""}
           onChange={multiInputHandleFormData}
           options={filteredOptions}
@@ -210,12 +221,13 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (type === "multiInput")
+  if (multh && fieldType === "input")
     return (
       <>
         {[
-          ...(formData[key] && (formData[key] as string[]).length > 0
-            ? (formData[key] as string[])
+          ...(formData[formDataKey] &&
+          (formData[formDataKey] as string[]).length > 0
+            ? (formData[formDataKey] as string[])
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => {
           const onChange = (value: string | number | Date | boolean) =>
@@ -224,7 +236,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           return (
             <div key={index} className="flex items-center space-x-2 mb-2">
               <InputField
-                type={inputType}
+                type={valueType}
                 value={item}
                 onChange={onChange}
                 placeholder="検索"
@@ -233,9 +245,12 @@ export const RenderField = <T extends keyof FormTypeMap>({
               <button
                 type="button"
                 onClick={() => {
-                  const newValue = [...(formData[key] as string[])];
+                  const newValue = [...(formData[formDataKey] as string[])];
                   newValue.splice(index, 1);
-                  handleFormData(key, newValue as FormTypeMap[T][typeof key]);
+                  handleFormData(
+                    formDataKey,
+                    newValue as FormTypeMap[T][typeof formDataKey]
+                  );
                 }}
                 className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
               >
@@ -247,12 +262,24 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  return (
-    <InputField
-      type={inputType}
-      value={value}
-      onChange={inputHandleFormData}
-      placeholder=""
-    />
-  );
+  if (fieldType === "select")
+    return (
+      <SelectField
+        type={valueType}
+        value={valueLabel || ""}
+        onChange={inputHandleFormData}
+        options={getOptions(field.key as string, false, true)}
+        defaultOption="--- 未選択 ---"
+      />
+    );
+
+  if (fieldType === "input")
+    return (
+      <InputField
+        type={valueType}
+        value={value}
+        onChange={inputHandleFormData}
+        placeholder=""
+      />
+    );
 };

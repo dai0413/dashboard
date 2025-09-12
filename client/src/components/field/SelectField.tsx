@@ -2,7 +2,7 @@ import { OptionArray } from "../../types/option";
 import { toDateKey } from "../../utils";
 
 type SelectFieldProps = {
-  type: "text" | "number" | "date" | "checkbox";
+  type: "text" | "number" | "date" | "boolean" | "option";
   value: string | number | Date;
   options: OptionArray;
   onChange: (value: string | number | Date) => void;
@@ -29,7 +29,7 @@ const SelectField = ({
   return (
     <select
       value={formattedValue}
-      onChange={(e) => handleChange(e)}
+      onChange={handleChange}
       className="w-full border border-gray-300 rounded px-3 py-2"
     >
       {defaultOption && <option value="">{defaultOption}</option>}

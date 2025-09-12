@@ -11,52 +11,65 @@ type StepType = "form" | "confirm";
 //   required?: boolean;
 // }
 
+type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
+
 type FieldDefinitionBase<T extends keyof FormTypeMap> = {
-  key: keyof FormTypeMap[T];
+  key: FieldKey<T>;
   label: string;
   required?: boolean;
   width?: string;
+  multh?: boolean;
+};
+
+type MultiValueField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
+  multh: true;
 };
 
 // <input type = "text">
 type InputField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "input";
+  fieldType: "input";
+  valueType: "text";
 };
 // <input type = "date">
 type DateField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "date";
+  fieldType: "input";
+  valueType: "date";
 };
 // <input type = "number">
 type NumberField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "number";
+  fieldType: "input";
+  valueType: "number";
 };
 // <input type = "checkbox">
 type CheckboxField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "checkbox";
+  fieldType: "input";
+  valueType: "boolean";
 };
 // <select>
 type SelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "select";
-  options?: { key: string; label: string }[];
-};
-// .map{<input type = "text">}
-type MultiInputField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "multiInput";
-};
-// .map {<textarea>}
-type MultiTextareaField<T extends keyof FormTypeMap> =
-  FieldDefinitionBase<T> & {
-    type: "multiurl";
-  };
-// .map {<select>}
-type MultiSelectField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "multiselect";
-  options?: { key: string; label: string }[];
+  fieldType: "select";
+  valueType: "option";
 };
 // <table>
 type TableField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  type: "table";
-  options?: { key: string; label: string }[];
+  fieldType: "table";
+  valueType: "option";
+};
+
+// .map{<input type = "text">}
+type MultiInputField<T extends keyof FormTypeMap> = MultiValueField<T> & {
+  fieldType: "input";
+  valueType: "text";
+};
+// .map {<textarea>}
+type MultiTextareaField<T extends keyof FormTypeMap> = MultiValueField<T> & {
+  fieldType: "textarea";
+  valueType: "text";
+};
+// .map {<select>}
+type MultiSelectField<T extends keyof FormTypeMap> = MultiValueField<T> & {
+  fieldType: "select";
+  valueType: "option";
 };
 
 export type FieldDefinition<T extends keyof FormTypeMap> =
@@ -78,3 +91,7 @@ export interface FormStep<K extends keyof FormTypeMap> {
   validate?: (data: FormTypeMap[K]) => ResponseStatus;
   skip?: (data: FormTypeMap[K]) => boolean;
 }
+
+//  multiurl
+//  multiselect
+//  multiInput

@@ -1,7 +1,7 @@
 import { toDateKey } from "../../utils";
 
 type InputFieldProps = {
-  type: "text" | "number" | "date" | "checkbox";
+  type: "text" | "number" | "date" | "boolean" | "option";
   value: string | number | Date | boolean;
   onChange: (value: string | number | Date | boolean) => void;
   placeholder?: string;
@@ -24,7 +24,7 @@ const InputField = ({
   const formattedValue = type === "date" ? formatDateValue(value) : value;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (type === "checkbox") {
+    if (type === "boolean") {
       onChange(e.target.checked);
     } else if (type === "number") {
       onChange(Number(e.target.value));
@@ -39,7 +39,7 @@ const InputField = ({
     <input
       type={type}
       className="w-full border border-gray-300 rounded px-3 py-2"
-      {...(type === "checkbox"
+      {...(type === "boolean"
         ? { checked: Boolean(value) }
         : { value: formattedValue as string | number })}
       placeholder={placeholder}

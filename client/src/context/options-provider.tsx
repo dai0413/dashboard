@@ -3,7 +3,7 @@ import { usePlayer } from "./models/player-context";
 import { useTeam } from "./models/team-context";
 import { useCountry } from "./models/country-context";
 import { useNationalMatchSeries } from "./models/national-match-series-context";
-import { ModelType } from "../types/models";
+import { FormTypeMap, ModelType } from "../types/models";
 import { convert, OptionsMap, OptionType } from "../utils/createOption";
 import { OptionArray, OptionTable } from "../types/option";
 import { useCompetition } from "./models/competition-context";
@@ -128,6 +128,14 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     return data;
   }
 
+  const keyMap: Record<string, keyof OptionsMap> = {
+    citizenship: ModelType.COUNTRY,
+    from_team: ModelType.TEAM,
+    to_team: ModelType.TEAM,
+    series: ModelType.NATIONAL_MATCH_SERIES,
+    parent_stage: ModelType.COMPETITION_STAGE,
+  };
+
   function getOptions(key: string, table?: false): OptionArray;
   function getOptions(key: string, table: true): OptionTable;
 
@@ -136,16 +144,19 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     table?: boolean,
     filter?: boolean
   ): OptionArray | OptionTable {
-    const keyMap: Record<string, keyof OptionsMap> = {
-      citizenship: ModelType.COUNTRY,
-      from_team: ModelType.TEAM,
-      to_team: ModelType.TEAM,
-      series: ModelType.NATIONAL_MATCH_SERIES,
-      parent_stage: ModelType.COMPETITION_STAGE,
-    };
+    function getOptionKey<T extends keyof FormTypeMap>(
+      key: keyof FormTypeMap[T] | string,
+      keyMap: any
+    ): keyof OptionsMap {
+      if (typeof key === "string" && key.includes(".")) {
+        const parts = key.split(".");
+        const last = parts[parts.length - 1];
+        return keyMap[last] ?? (last as keyof OptionsMap);
+      }
+      return keyMap[key as string] ?? (key as keyof OptionsMap);
+    }
 
-    const optionKey: keyof OptionsMap =
-      keyMap[key] ?? (key as keyof OptionsMap);
+    const optionKey = getOptionKey(key, keyMap);
 
     const data = getDataForType(optionKey);
 

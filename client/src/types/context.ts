@@ -38,7 +38,7 @@ export type MetaCrudContext<K extends keyof FormTypeMap> = {
     onSuccess?: (items?: ModelDataMap[K][]) => void
   ) => Promise<void>;
 
-  createItem: () => Promise<void>;
+  createItem: (formData?: FormTypeMap[K]) => Promise<void>;
   createItems: (formDatas: FormTypeMap[K][]) => Promise<void>;
 
   updateItem: (data: FormTypeMap[K]) => Promise<void>;
