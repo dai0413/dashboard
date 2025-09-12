@@ -10,7 +10,8 @@ export const teamCompetitionSeason: FormStep<ModelType.TEAM_COMPETITION_SEASON>[
         {
           key: "team",
           label: "チーム",
-          type: "table",
+          fieldType: "table",
+          valueType: "option",
           required: true,
         },
       ],
@@ -22,7 +23,8 @@ export const teamCompetitionSeason: FormStep<ModelType.TEAM_COMPETITION_SEASON>[
         {
           key: "season",
           label: "シーズン",
-          type: "table",
+          fieldType: "table",
+          valueType: "option",
           required: true,
         },
       ],
@@ -34,7 +36,8 @@ export const teamCompetitionSeason: FormStep<ModelType.TEAM_COMPETITION_SEASON>[
         {
           key: "note",
           label: "メモ",
-          type: "input",
+          fieldType: "input",
+          valueType: "text",
         },
       ],
     },

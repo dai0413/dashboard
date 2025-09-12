@@ -9,7 +9,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
       {
         key: "player",
         label: "選手",
-        type: "table",
+        fieldType: "table",
+        valueType: "option",
         required: true,
       },
     ],
@@ -21,7 +22,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
       {
         key: "team",
         label: "所属",
-        type: "table",
+        fieldType: "table",
+        valueType: "option",
       },
     ],
   },
@@ -29,13 +31,20 @@ export const injury: FormStep<ModelType.INJURY>[] = [
     stepLabel: "日付を入力",
     type: "form",
     fields: [
-      { key: "doa", label: "発表日", type: "date", required: true },
+      {
+        key: "doa",
+        label: "発表日",
+        fieldType: "input",
+        valueType: "date",
+        required: true,
+      },
       {
         key: "doi",
         label: "負傷日",
-        type: "date",
+        fieldType: "input",
+        valueType: "date",
       },
-      { key: "dos", label: "手術日", type: "date" },
+      { key: "dos", label: "手術日", fieldType: "input", valueType: "date" },
     ],
   },
   {
@@ -45,18 +54,30 @@ export const injury: FormStep<ModelType.INJURY>[] = [
       {
         key: "injured_part",
         label: "負傷箇所・診断結果",
-        type: "multiInput",
+        fieldType: "input",
+        valueType: "text",
+        multh: true,
       },
       {
         key: "ttp",
         label: "全治期間",
-        type: "multiInput",
+        fieldType: "input",
+        valueType: "text",
+        multh: true,
       },
     ],
   },
   {
     stepLabel: "公式発表のURLを入力",
     type: "form",
-    fields: [{ key: "URL", label: "URL", type: "multiurl" }],
+    fields: [
+      {
+        key: "URL",
+        label: "URL",
+        fieldType: "textarea",
+        valueType: "text",
+        multh: true,
+      },
+    ],
   },
 ];
