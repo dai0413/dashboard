@@ -87,6 +87,12 @@ const models: {
     link: APP_ROUTES.NATIONAL_CALLUP,
     icon: "callup",
   },
+  {
+    model: "MatchFormat",
+    desc: "試合フォーマット",
+    link: APP_ROUTES.MATCH_FORMAT,
+    icon: "setting",
+  },
 ];
 
 const AdminDashboard = () => {

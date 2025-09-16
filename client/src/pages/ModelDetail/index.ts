@@ -2,6 +2,7 @@ export { default as CompetitionStage } from "./CompetitionStage";
 export { default as Competition } from "./Competition";
 export { default as Country } from "./Country";
 export { default as Injury } from "./InjuryDetail";
+export { default as MatchFormat } from "./MatchFormat";
 export { default as NationalCallup } from "./NationalCallup";
 export { default as NationalMatchSeries } from "./NationalMatchSeries";
 export { default as Player } from "./PlayerDetail";

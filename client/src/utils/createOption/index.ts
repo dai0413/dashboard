@@ -27,6 +27,7 @@ import {
   level,
   stageType,
   division,
+  periodLabel,
 } from "./Enum";
 
 export enum OptionType {
@@ -49,6 +50,7 @@ export enum OptionType {
   IS_INJURED = "is_injured",
   STAGE_TYPE = "stage_type",
   DIVISION = "division",
+  PERIOD_LABEL = "period_label",
 }
 
 type OptionMap = {
@@ -71,6 +73,7 @@ type OptionMap = {
   [OptionType.IS_INJURED]: OptionArray;
   [OptionType.STAGE_TYPE]: OptionArray;
   [OptionType.DIVISION]: OptionArray;
+  [OptionType.PERIOD_LABEL]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -123,6 +126,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   ],
   [OptionType.STAGE_TYPE]: () => stageType(),
   [OptionType.DIVISION]: () => division(),
+  [OptionType.PERIOD_LABEL]: () => periodLabel(),
 };
 
 // 実装

@@ -16,6 +16,7 @@ import {
   TeamCompetitionSeason,
   Stadium,
   CompetitionStage,
+  MatchFormat,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
@@ -89,6 +90,14 @@ export const ModelTable = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Injury />
+        </Layout>
+      )}
+    />
+    <Route
+      path={APP_ROUTES.MATCH_FORMAT}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <MatchFormat />
         </Layout>
       )}
     />

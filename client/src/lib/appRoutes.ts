@@ -11,6 +11,7 @@ export const APP_ROUTES = {
   COMPETITION: "/competition",
   COUNTRY: "/country",
   INJURY: "/injury",
+  MATCH_FORMAT: "/match-format",
   NATIONAL_CALLUP: "/national-callup",
   NATIONAL_MATCH_SERIES: "/national-match-series",
   PLAYER: "/player",
