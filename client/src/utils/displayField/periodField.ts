@@ -1,7 +1,9 @@
 import { MatchFormatGet } from "../../types/models/match-format";
 
 export const periodField = (d: MatchFormatGet, targetLabel: string): string => {
-  const targetPeriod = d.period.find((period) => period.label === targetLabel);
+  const targetPeriod = d.period.find(
+    (period) => period.period_label === targetLabel
+  );
   if (!targetPeriod) return ""; // periodが存在しない場合は空文字
 
   const { start, end } = targetPeriod;
@@ -23,8 +25,8 @@ export const periodOther = (
   notTargets: string[]
 ): string => {
   const targetPeriod = d.period.filter(
-    (period) => !notTargets.includes(period.label)
+    (period) => !notTargets.includes(period.period_label)
   );
 
-  return targetPeriod.map((d) => d.label).join(", ");
+  return targetPeriod.map((d) => d.period_label).join(", ");
 };

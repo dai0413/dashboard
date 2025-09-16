@@ -10,8 +10,9 @@ export const matchFormat = (t: MatchFormat): MatchFormatGet => {
   const period: MatchFormatGet["period"] = t.period.map((t) => {
     return {
       ...t,
-      label:
-        periodLabelOptions.find((item) => item.key === t.label)?.label ?? "",
+      period_label:
+        periodLabelOptions.find((item) => item.key === t.period_label)?.label ??
+        "",
     };
   });
 

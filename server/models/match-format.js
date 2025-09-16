@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const PeriodSchema = new mongoose.Schema(
   {
-    label: {
+    period_label: {
       type: String,
       required: true,
       enum: ["1H", "2H", "ET1", "ET2", "3H", "4H", "PK", "GB"],

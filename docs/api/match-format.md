@@ -64,13 +64,13 @@
       "name": "90",
       "period": [
         {
-          "label": "1H",
+          "period_label": "1H",
           "start": 0,
           "end": 45,
           "order": 0
         },
         {
-          "label": "2H",
+          "period_label": "2H",
           "start": 45,
           "end": 90,
           "order": 0
@@ -92,9 +92,9 @@
 {
   "name": "90+PK",
   "period": [
-    { "label": "1H", "start": 0, "end": 45 },
-    { "label": "2H", "start": 45, "end": 90 },
-    { "label": "PK" }
+    { "period_label": "1H", "start": 0, "end": 45 },
+    { "period_label": "2H", "start": 45, "end": 90 },
+    { "period_label": "PK" }
   ]
 }
 ```
@@ -111,19 +111,19 @@
       "name": "90+PK",
       "period": [
         {
-          "label": "1H",
+          "period_label": "1H",
           "start": 0,
           "end": 45,
           "order": 0
         },
         {
-          "label": "2H",
+          "period_label": "2H",
           "start": 45,
           "end": 90,
           "order": 0
         },
         {
-          "label": "PK",
+          "period_label": "PK",
           "start": null,
           "end": null,
           "order": 0
@@ -149,19 +149,19 @@
       "name": "putted",
       "period": [
         {
-          "label": "1H",
+          "period_label": "1H",
           "start": 0,
           "end": 45,
           "order": 0
         },
         {
-          "label": "2H",
+          "period_label": "2H",
           "start": 45,
           "end": 90,
           "order": 0
         },
         {
-          "label": "PK",
+          "period_label": "PK",
           "start": null,
           "end": null,
           "order": 0
@@ -196,19 +196,19 @@
       "name": "putted",
       "period": [
         {
-          "label": "1H",
+          "period_label": "1H",
           "start": 0,
           "end": 45,
           "order": 0
         },
         {
-          "label": "2H",
+          "period_label": "2H",
           "start": 45,
           "end": 90,
           "order": 0
         },
         {
-          "label": "PK",
+          "period_label": "PK",
           "start": null,
           "end": null,
           "order": 0

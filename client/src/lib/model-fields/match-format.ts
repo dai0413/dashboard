@@ -52,6 +52,14 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
+    key: (d: MatchFormatGet) => periodField(d, "4部"),
+    label: "4部",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: true,
+  },
+  {
     key: (d: MatchFormatGet) => periodField(d, "PK"),
     label: "PK",
     type: "string",
