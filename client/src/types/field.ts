@@ -5,7 +5,7 @@ export type FilterOperator = (typeof operatorOptions)[number]["key"];
 
 // 共通の基本型
 type BaseField = {
-  key: string;
+  key: string | ((data: any) => string);
   label: string;
   type: "string" | "number" | "Date" | "select" | "checkbox";
 };

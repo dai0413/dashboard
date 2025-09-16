@@ -93,7 +93,10 @@ const DetailModal = <K extends keyof FormTypeMap>({
       ) : (
         <div className="space-y-2 text-sm text-gray-700">
           {displayableField.map((field) => {
-            const value = selected[field.key as keyof typeof selected];
+            const value =
+              typeof field.key === "string"
+                ? selected[field.key as keyof typeof selected]
+                : field.key(selected);
 
             let displayValue = value || "";
 
@@ -104,11 +107,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
                 ? (displayValue = toDateKey(value as string | number | Date))
                 : displayValue;
 
-            displayValue =
-              Array.isArray(value) && value
-                ? value.filter((u) => u.trim() !== "").join(", ")
-                : displayValue;
-
+            if (value && Array.isArray(value)) {
+              if (typeof value[0] === "string") {
+                displayValue = value.filter((u) => u.trim() !== "").join(", ");
+              }
+            }
             if (field.label === "URL") {
               const urls = Array.isArray(value) ? value : [value];
               const validUrls = urls.filter(
@@ -117,7 +120,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
               return (
                 <div
-                  key={field.key}
+                  key={
+                    typeof field.key === "string"
+                      ? field.key
+                      : field.key.toString()
+                  }
                   className="flex justify-between border-b py-1"
                 >
                   <span className="font-semibold">
@@ -141,7 +148,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
             } else {
               return (
                 <div
-                  key={field.key}
+                  key={
+                    typeof field.key === "string"
+                      ? field.key
+                      : field.key.toString()
+                  }
                   className="flex justify-between border-b py-1"
                 >
                   <span className="font-semibold">

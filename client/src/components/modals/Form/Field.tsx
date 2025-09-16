@@ -61,7 +61,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const value = get(formData, formDataKey) as string | number | Date;
   const valueLabel = getOptions(formDataKey as string, false, false).find(
     (f) => f.key === value
-  )?.label;
+  )?.key;
 
   const multiInputHandleFormData = (value: string | number | Date) => {
     const selected = value;
