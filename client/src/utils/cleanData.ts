@@ -8,9 +8,12 @@ export const cleanData = <T extends keyof FormTypeMap>(
 
     Object.entries(data).forEach(([key, value]) => {
       if (Array.isArray(value)) {
-        cleanedData[key as keyof FormTypeMap[T]] = value.filter(
-          (v) => v && v.trim() !== ""
-        ) as FormTypeMap[T][keyof FormTypeMap[T]];
+        cleanedData[key as keyof FormTypeMap[T]] = value.filter((v) => {
+          if (typeof v === "string") {
+            return v.trim() !== "";
+          }
+          return v !== null && v !== undefined; // 数字やオブジェクトなら null/undefined チェックだけ
+        }) as FormTypeMap[T][keyof FormTypeMap[T]];
       } else {
         cleanedData[key as keyof FormTypeMap[T]] = value;
       }

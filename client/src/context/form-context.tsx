@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { useAlert } from "./alert-context";
-import { FormStep } from "../types/form";
+import { FieldDefinition, FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
@@ -25,6 +25,44 @@ import { useSeason } from "./models/season-context";
 import { useTeamCompetitionSeason } from "./models/team-competition-season-context";
 import { useStadium } from "./models/stadium-context";
 import { useCompetitionStage } from "./models/competition-stage-context";
+import { useMatchFormat } from "./models/match-format";
+import { convertGettedToForm } from "../lib/convert/GettedtoForm";
+import { updateFormValue } from "../utils/updateFormValue";
+import { getSingleSteps } from "../lib/form-steps";
+import { getBulkSteps } from "../lib/form-steps/many";
+import { objectIsEqual } from "../utils";
+
+const checkRequiredFields = <T extends keyof FormTypeMap>(
+  fields: FieldDefinition<T>[] | undefined,
+  data: FormTypeMap[T] | FormTypeMap[T][]
+): { success: boolean; message?: string } => {
+  if (!fields) return { success: true };
+
+  // 複数モードか単一モードかを統一して扱う
+  const dataArray = Array.isArray(data) ? data : [data];
+
+  for (const f of fields) {
+    if (!f.required) continue;
+
+    for (const d of dataArray) {
+      const value = d[f.key as keyof FormTypeMap[T]];
+
+      if (Array.isArray(value)) {
+        if ((value as string[]).every((v) => v.trim() === "")) {
+          return { success: false, message: `${f.label}は必須項目です。` };
+        }
+      } else if (typeof value === "string") {
+        if (value.trim() === "") {
+          return { success: false, message: `${f.label}は必須項目です。` };
+        }
+      } else if (!value) {
+        return { success: false, message: `${f.label}は必須項目です。` };
+      }
+    }
+  }
+
+  return { success: true };
+};
 
 type FormContextValue<T extends keyof FormTypeMap> = {
   modelType: T | null;
@@ -93,18 +131,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 }: {
   children: React.ReactNode;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modelType, setModelType] = useState<T | null>(null);
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [newData, setNewData] = useState<boolean>(true);
-  const [isEditing, setIsEditing] = useState<boolean>(true);
-
-  const [mode, setMode] = useState<"many" | "single">("single");
-
-  const {
-    modal: { handleSetAlert, resetAlert },
-  } = useAlert();
-
   const modelContextMap: {
     [K in keyof FormTypeMap]: ModelContext<K>;
   } = {
@@ -112,6 +138,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.COMPETITION_STAGE]: useCompetitionStage(),
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.MATCH_FORMAT]: useMatchFormat(),
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
@@ -122,35 +149,45 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.TEAM]: useTeam(),
     [ModelType.TRANSFER]: useTransfer(),
   };
+  const {
+    modal: { handleSetAlert, resetAlert },
+  } = useAlert();
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modelType, setModelType] = useState<T | null>(null);
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [newData, setNewData] = useState<boolean>(true);
+  const [isEditing, setIsEditing] = useState<boolean>(true);
+
+  const [mode, setMode] = useState<"many" | "single">("single");
+
+  const [singleStep, setSingleStep] = useState<FormStep<T>[]>([]);
+  const [bulkStep, setBulkStep] = useState<FormStep<T>[]>([]);
+
+  useEffect(() => {
+    setSingleStep(modelType ? getSingleSteps(modelType) : []);
+    setBulkStep(modelType ? getBulkSteps(modelType) : []);
+  }, [modelType]);
 
   const modelContext = useMemo(() => {
     return modelType ? modelContextMap[modelType] : null;
-  }, [
-    modelType,
-    modelContextMap[ModelType.COMPETITION_STAGE].single.formData,
-    modelContextMap[ModelType.COMPETITION].single.formData,
-    modelContextMap[ModelType.COUNTRY].single.formData,
-    modelContextMap[ModelType.INJURY].single.formData,
-    modelContextMap[ModelType.NATIONAL_CALLUP].single.formData,
-    modelContextMap[ModelType.NATIONAL_MATCH_SERIES].single.formData,
-    modelContextMap[ModelType.PLAYER].single.formData,
-    modelContextMap[ModelType.REFEREE].single.formData,
-    modelContextMap[ModelType.SEASON].single.formData,
-    modelContextMap[ModelType.STADIUM].single.formData,
-    modelContextMap[ModelType.TEAM_COMPETITION_SEASON].single.formData,
-    modelContextMap[ModelType.TEAM].single.formData,
-    modelContextMap[ModelType.TRANSFER].single.formData,
-  ]);
+  }, [modelType]);
 
-  const getDiffKeys = modelContext?.metacrud.getDiffKeys;
+  const getDiffKeys = () => {
+    if (!modelType) return [];
+    const selected = modelType && modelContext?.metacrud.selected;
 
-  const startNewDatas = (item?: FormTypeMap[T]) => {
-    if (item) {
-      setFormDatas([item]);
-      modelContext?.bulk.setFormDatas([item]);
-    } else {
-      setFormDatas([]);
+    if (!selected) return [];
+
+    const diff: string[] = [];
+    for (const [key, formValue] of Object.entries(formData)) {
+      const typedKey = key as keyof typeof formData;
+      const selectedValue = convertGettedToForm(modelType, selected)[typedKey];
+
+      !objectIsEqual(formValue, selectedValue) && diff.push(key);
     }
+
+    return diff;
   };
 
   const openForm = (
@@ -160,23 +197,38 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     initialFormData?: object,
     many?: boolean
   ) => {
+    if (!model) return;
+
     many ? setMode("many") : setMode("single");
 
     if (newData) {
       setNewData(true);
 
-      model &&
-        initialFormData &&
-        modelContextMap[model].single.startNewData(initialFormData);
+      initialFormData ? setFormData(initialFormData) : setFormData({});
+      initialFormData ? setFormDatas([initialFormData]) : setFormDatas([]);
     } else {
       setNewData(false);
-      model ? modelContextMap[model].single.startEdit(editItem) : () => {};
-    }
+      editItem && setFormData(convertGettedToForm(model, editItem));
 
-    if (many) {
-      startNewDatas(initialFormData);
-    } else {
-      model ? modelContextMap[model].single.startEdit(editItem) : () => {};
+      if (model === ModelType.MATCH_FORMAT) {
+        const matchFormatEditItem =
+          editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
+        const dat =
+          editItem &&
+          convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem);
+        const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
+        dat ? setFormDatas(periodArray) : setFormDatas([]);
+
+        const { period, ...data } = matchFormatEditItem;
+
+        matchFormatEditItem &&
+          setFormData(
+            convertGettedToForm(ModelType.MATCH_FORMAT, {
+              ...data,
+              period: [],
+            })
+          );
+      }
     }
 
     setIsOpen(true);
@@ -187,7 +239,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const { resetFilter } = useOptions();
 
   const closeForm = () => {
-    modelContext?.single.resetFormData();
+    resetFormData();
     resetFilter();
     setIsOpen(false);
     setModelType(null);
@@ -199,7 +251,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const nextData = () => {
-    modelContext?.single.resetFormData();
+    resetFormData();
     resetFilter();
     setCurrentStep(0);
     resetAlert();
@@ -211,19 +263,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const sendData = async () => {
     if (!modelContext) return;
 
-    let item: FormTypeMap[T];
-    if (modelType === ModelType.PLAYER) {
-      console.log("sending data", modelContext.single.formData);
-
-      console.log("sending data2", formDatas);
-
-      item = { ...modelContext.single.formData, period: formDatas };
-      console.log("sendData item", item);
-    } else {
-      item = modelContext.single.formData;
-    }
-
     if (mode === "single") {
+      let item: FormTypeMap[T];
+      if (modelType === ModelType.MATCH_FORMAT) {
+        item = { ...formData, period: formDatas };
+      } else {
+        item = formData;
+      }
+
       if (newData) {
         modelContext?.metacrud.createItem(item);
       } else {
@@ -235,21 +282,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
           });
 
         const updated: FormTypeMap[T] = Object.fromEntries(
-          Object.entries(modelContext.single.formData).filter(([key]) =>
-            difKeys.includes(key)
-          )
+          Object.entries(formData).filter(([key]) => difKeys.includes(key))
         );
 
         modelContext?.metacrud.updateItem(updated);
       }
 
       setCurrentStep((prev) =>
-        Math.min(
-          prev + 1,
-          modelContext?.single.formSteps
-            ? modelContext?.single.formSteps.length - 1
-            : 0
-        )
+        Math.min(prev + 1, singleStep ? singleStep.length - 1 : 0)
       );
     }
 
@@ -257,109 +297,20 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       modelContext.metacrud.createItems(formDatas);
 
       setCurrentStep((prev) =>
-        Math.min(
-          prev + 1,
-          modelContext.bulk.manyDataFormSteps
-            ? modelContext.bulk.manyDataFormSteps.length - 1
-            : 0
-        )
+        Math.min(prev + 1, bulkStep ? bulkStep.length - 1 : 0)
       );
     }
 
     setIsEditing(false);
   };
 
-  const singleValidation = () => {
-    const current = modelContext?.single.formSteps[currentStep];
-
-    if (!current) return;
-
-    if (current.validate) {
-      const valid = current.validate(modelContext?.single.formData);
-      if (!valid.success) return handleSetAlert(valid);
-    }
-
-    const missing = current.fields?.filter((f) => {
-      const value =
-        modelContext?.single.formData[f.key as keyof FormTypeMap[T]];
-
-      if (!f.required) return false;
-
-      if (Array.isArray(value)) {
-        const arr = value as string[];
-        return arr.every((v) => v.trim() === "");
-      }
-
-      if (typeof value === "string") {
-        const arr = value as string;
-        return arr.trim() === "";
-      }
-
-      return !value;
-    });
-
-    if (missing && missing.length > 0) {
-      const payload = {
-        success: false,
-        message: `${missing[0].label}は必須項目です。`,
-      };
-      handleSetAlert(payload);
-      return false;
-    }
-
-    return true;
-  };
-
-  const manyValidation = () => {
-    const current = modelContext?.bulk.manyDataFormSteps[currentStep];
-
-    if (!current) return;
-
-    if (current.validate) {
-      for (const d of formDatas ?? []) {
-        const valid = current.validate(d);
-        if (!valid.success) {
-          return handleSetAlert(valid);
-        }
-      }
-    }
-
-    const missing = current.fields?.filter((f) => {
-      return (formDatas ?? []).some((d) => {
-        const value = d[f.key as keyof FormTypeMap[T]];
-        if (!f.required) return false;
-
-        if (Array.isArray(value)) {
-          return (value as string[]).every((v) => v.trim() === "");
-        }
-
-        if (typeof value === "string") {
-          return (value as string).trim() === "";
-        }
-
-        return !value;
-      });
-    });
-
-    if (missing && missing.length > 0) {
-      const payload = {
-        success: false,
-        message: `${missing[0].label}は必須項目です。`,
-      };
-      handleSetAlert(payload);
-      return false;
-    }
-
-    return true;
-  };
-
   const stepSkip = (next: number) => {
-    const current = modelContext?.single.formSteps[next];
+    const current = singleStep[next];
 
     if (!current) return;
 
     if (current?.skip) {
-      const skip = current.skip(modelContext?.single.formData);
+      const skip = current.skip(formData);
 
       return skip;
     }
@@ -368,23 +319,43 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const nextStep = () => {
-    if (mode === "single" && !singleValidation()) return;
-    if (mode === "many" && !manyValidation()) return;
+    const current =
+      mode === "single" ? singleStep[currentStep] : bulkStep[currentStep];
 
-    if (!modelContext?.single.formSteps) return;
+    if (!current) return;
+    const checkData = current.many ? formDatas : formData;
+
+    // --- 必須チェック ---
+    const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
+    if (!requiredCheck.success) {
+      handleSetAlert(requiredCheck);
+      return false;
+    }
+
+    // --- validate 関数によるバリデーション ---
+    if (checkData && current.validate) {
+      if (Array.isArray(checkData)) {
+        for (const d of formDatas ?? []) {
+          const valid = current.validate(d);
+          if (!valid.success) return handleSetAlert(valid);
+        }
+      } else {
+        const valid = current.validate(checkData);
+        if (!valid.success) return handleSetAlert(valid);
+      }
+    }
+
+    if (!singleStep) {
+      return;
+    }
 
     let nextStepIndex = Math.min(
       currentStep + 1,
-      modelContext.single.formSteps
-        ? modelContext.single.formSteps.length - 1
-        : 0
+      singleStep ? singleStep.length - 1 : 0
     );
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    while (
-      stepSkip(nextStepIndex) &&
-      nextStepIndex < modelContext.single.formSteps.length - 1
-    ) {
+    while (stepSkip(nextStepIndex) && nextStepIndex < singleStep.length - 1) {
       nextStepIndex++;
     }
 
@@ -393,32 +364,34 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const prevStep = () => {
-    if (!modelContext?.single.formSteps) return;
+    if (!singleStep) return;
     let nextStepIndex = Math.max(currentStep - 1, 0);
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    while (
-      stepSkip(nextStepIndex) &&
-      nextStepIndex < modelContext.single.formSteps.length - 1
-    ) {
+    while (stepSkip(nextStepIndex) && nextStepIndex < singleStep.length - 1) {
       nextStepIndex--;
     }
 
     setCurrentStep(nextStepIndex);
   };
 
+  ////////////////////////// single data edit //////////////////////////
+  const [formData, setFormData] = useState<FormTypeMap[T]>({});
+
+  const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
+    key: K,
+    value: FormTypeMap[T][K]
+  ) => {
+    setFormData((prev) => updateFormValue(prev, key, value));
+  };
+
+  const resetFormData = () => {
+    setFormData({});
+  };
+
   ////////////////////////// many data edit //////////////////////////
+
   const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
-  useEffect(() => {
-    console.log("new formDatas", formDatas);
-  }, [formDatas]);
-
-  useEffect(() => {
-    if (modelContext) {
-      modelContext.bulk.setFormDatas(formDatas);
-    }
-  }, [formDatas]);
-
   const handleFormData = <K extends keyof FormTypeMap[T]>(
     index: number,
     key: K,
@@ -437,18 +410,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     });
 
     setFormDatas(newFormDatas);
-    modelContext?.bulk.setFormDatas(newFormDatas);
   };
 
   const addFormDatas = (baseCopy: boolean, setPage?: (p: number) => void) => {
-    const base = modelContext?.single.formData
-      ? { ...modelContext.single.formData }
-      : ({} as FormTypeMap[T]);
+    const base = formData ? { ...formData } : ({} as FormTypeMap[T]);
 
     const newFormDatas = [...formDatas, baseCopy ? base : {}];
 
     setFormDatas(newFormDatas);
-    modelContext?.bulk.setFormDatas(newFormDatas);
 
     // 件数が 10 の倍数 + 1 のときにページを進める
     const newCount = newFormDatas.length;
@@ -462,19 +431,17 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     const newFormDatas = formDatas.filter((_d, i) => i !== index);
 
     setFormDatas(newFormDatas);
-    modelContext?.bulk.setFormDatas(newFormDatas);
   };
 
   const createFormMenuItems = (
     model: T,
     formInitialData: Partial<FormTypeMap[T]>
   ) => {
-    const hasSingle =
-      modelContextMap[model]?.single.formSteps &&
-      modelContextMap[model]?.single.formSteps.length > 0;
-    const hasBulk =
-      modelContextMap[model]?.bulk.manyDataFormSteps &&
-      modelContextMap[model]?.bulk.manyDataFormSteps.length > 0;
+    const singleStep = getSingleSteps(model);
+    const bulkStep = getBulkSteps(model);
+
+    const hasSingle = singleStep && singleStep.length > 0;
+    const hasBulk = bulkStep && bulkStep.length > 0;
 
     const menuItems = [
       hasSingle && {
@@ -499,7 +466,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
 
   const many = {
-    formSteps: modelContext?.bulk.manyDataFormSteps ?? [],
+    formSteps: bulkStep,
     formData: formDatas,
     handleFormData,
     addFormDatas,
@@ -520,12 +487,9 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     newData,
 
     single: {
-      formSteps: (modelContext?.single.formSteps as FormStep<T>[]) ?? [],
-      formData: (modelContext?.single.formData as FormTypeMap[T]) ?? {},
-      handleFormData:
-        (modelContext?.single
-          .handleFormData as FormContextValue<T>["single"]["handleFormData"]) ??
-        (() => {}),
+      formSteps: singleStep,
+      formData: formData,
+      handleFormData: singleHandleFormData,
     },
 
     many,
