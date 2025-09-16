@@ -1,29 +1,9 @@
 import { GettedModelDataMap, FormTypeMap, ModelDataMap } from "../types/models";
 import { ReadItemsParamsMap } from "./api";
 import { FilterableFieldDefinition, SortableFieldDefinition } from "./field";
-import { FormStep } from "./form";
 
 export type ModelContext<K extends keyof FormTypeMap> = {
-  single: SingleFormContext<K>;
-  bulk: BulkFormContext<K>;
   metacrud: MetaCrudContext<K>;
-};
-
-// 単一データ編集
-export type SingleFormContext<K extends keyof FormTypeMap> = {
-  formData: FormTypeMap[K];
-  handleFormData: (key: keyof FormTypeMap[K], value: any) => void;
-  resetFormData: () => void;
-  formSteps: FormStep<K>[];
-  startNewData: (item?: FormTypeMap[K]) => void;
-  startEdit: (item?: GettedModelDataMap[K]) => void;
-};
-
-// 複数データ編集
-export type BulkFormContext<K extends keyof FormTypeMap> = {
-  formDatas: FormTypeMap[K][];
-  setFormDatas: React.Dispatch<React.SetStateAction<Partial<FormTypeMap[K]>[]>>;
-  manyDataFormSteps: FormStep<K>[];
 };
 
 // CRUD 操作& メタ情報
@@ -38,7 +18,7 @@ export type MetaCrudContext<K extends keyof FormTypeMap> = {
     onSuccess?: (items?: ModelDataMap[K][]) => void
   ) => Promise<void>;
 
-  createItem: (formData?: FormTypeMap[K]) => Promise<void>;
+  createItem: (formData: FormTypeMap[K]) => Promise<void>;
   createItems: (formDatas: FormTypeMap[K][]) => Promise<void>;
 
   updateItem: (data: FormTypeMap[K]) => Promise<void>;
@@ -46,7 +26,6 @@ export type MetaCrudContext<K extends keyof FormTypeMap> = {
   uploadFile?: (file: File) => Promise<void>;
   downloadFile?: () => Promise<void>;
 
-  getDiffKeys: () => string[];
   isLoading: boolean;
   filterableField: FilterableFieldDefinition[];
   sortableField: SortableFieldDefinition[];

@@ -5,9 +5,9 @@ type PeriodLabel = (typeof periodlabelOptions)[number];
 
 export type MatchFormat = {
   _id: string;
-  name: String;
+  name: string;
   period: {
-    label: PeriodLabel;
+    period_label: PeriodLabel;
     start?: Number | null;
     end?: Number | null;
     order?: Number | null;
