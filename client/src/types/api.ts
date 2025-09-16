@@ -22,6 +22,7 @@ export type ReadItemsParamsMap = {
     country?: string;
   };
   [ModelType.COUNTRY]: {};
+  [ModelType.MATCH_FORMAT]: {};
   [ModelType.INJURY]: {
     latest?: boolean;
     limit?: number;

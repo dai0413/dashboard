@@ -15,7 +15,7 @@
   - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
   - [13. スタジアム(Stadium)](#13-スタジアムstadium)
   - [14. 大会ステージ(CompetitionStage)](#14-大会ステージcompetitionstage)
-  - [15. 試合(Match)](#15-試合match)
+  - [15. 試合フォーマット(match_format)](#15-試合フォーマットmatch_format)
 
 ## 1. ユーザー(user)
 
@@ -313,3 +313,32 @@
 ※competition, season, stage_type, round_number, leg の組み合わせユニーク
 
 ※stage_type == `none` のときは name, round_number, leg, order, が undefined
+
+## 15. 試合フォーマット(match_format)
+
+| フィールド | 型                                            | null  | 注釈 | バリデーション |
+| ---------- | --------------------------------------------- | ----- | ---- | -------------- |
+| name       | 名前                                          | false | 名前 | unique         |
+| period     | [{label : 文字列, start : 数字 , end : 数字}] |       |      | unique         |
+
+※ label は※1 から選択
+※1 `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
+
+- 例 1 "match_format": [
+  { "label": "1H", "start": 0, "end": 45 },
+  { "label": "2H", "start": 45, "end": 90 },
+  { "label": "ET1", "start": 90, "end": 105 },
+  { "label": "ET2", "start": 105, "end": 120 }
+  ]
+
+- 例 2 "match_format": [
+  { "label": "1H", "start": 0, "end": 45 },
+  { "label": "2H", "start": 45, "end": 90 },
+  { "label": "PK", "start": null, "end": null }
+  ]
+
+- 例 3 "match_format": [
+  { "label": "1H", "start": 0, "end": 30 },
+  { "label": "2H", "start": 30, "end": 60 },
+  { "label": "3H", "start": 60, "end": 90 }
+  ]

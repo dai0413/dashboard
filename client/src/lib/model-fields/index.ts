@@ -12,12 +12,14 @@ import { season } from "./season";
 import { teamCompetitionSeason } from "./team-competition-season";
 import { stadium } from "./stadium";
 import { competitionStage } from "./competition-stage";
+import { matchFormat } from "./match-format";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
   [ModelType.COMPETITION]: competition,
   [ModelType.COUNTRY]: country,
   [ModelType.INJURY]: injury,
+  [ModelType.MATCH_FORMAT]: matchFormat,
   [ModelType.NATIONAL_CALLUP]: nationalCallUp,
   [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
   [ModelType.PLAYER]: player,

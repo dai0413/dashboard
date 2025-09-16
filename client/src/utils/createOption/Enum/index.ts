@@ -15,3 +15,4 @@ export { competitionType } from "./competition_type";
 export { category } from "./category";
 export { level } from "./level";
 export { stageType } from "./stageType";
+export { periodLabel } from "./period-label";

@@ -12,34 +12,37 @@ import { SeasonProvider } from "./season-context";
 import { TeamCompetitionSeasonProvider } from "./team-competition-season-context";
 import { StadiumProvider } from "./stadium-context";
 import { CompetitionStageProvider } from "./competition-stage-context";
+import { MatchFormatProvider } from "./match-format";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <CountryProvider>
-      <StadiumProvider>
-        <CompetitionProvider>
-          <SeasonProvider>
-            <CompetitionStageProvider>
-              <NationalMatchSeriesProvider>
-                <TeamProvider>
-                  <TeamCompetitionSeasonProvider>
-                    <PlayerProvider>
-                      <RefereeProvider>
-                        <NationalCallupProvider>
-                          <InjuryProvider>
-                            <TransferProvider>{children}</TransferProvider>
-                          </InjuryProvider>
-                        </NationalCallupProvider>
-                      </RefereeProvider>
-                    </PlayerProvider>
-                  </TeamCompetitionSeasonProvider>
-                </TeamProvider>
-              </NationalMatchSeriesProvider>
-            </CompetitionStageProvider>
-          </SeasonProvider>
-        </CompetitionProvider>
-      </StadiumProvider>
-    </CountryProvider>
+    <MatchFormatProvider>
+      <CountryProvider>
+        <StadiumProvider>
+          <CompetitionProvider>
+            <SeasonProvider>
+              <CompetitionStageProvider>
+                <NationalMatchSeriesProvider>
+                  <TeamProvider>
+                    <TeamCompetitionSeasonProvider>
+                      <PlayerProvider>
+                        <RefereeProvider>
+                          <NationalCallupProvider>
+                            <InjuryProvider>
+                              <TransferProvider>{children}</TransferProvider>
+                            </InjuryProvider>
+                          </NationalCallupProvider>
+                        </RefereeProvider>
+                      </PlayerProvider>
+                    </TeamCompetitionSeasonProvider>
+                  </TeamProvider>
+                </NationalMatchSeriesProvider>
+              </CompetitionStageProvider>
+            </SeasonProvider>
+          </CompetitionProvider>
+        </StadiumProvider>
+      </CountryProvider>
+    </MatchFormatProvider>
   );
 };
 
