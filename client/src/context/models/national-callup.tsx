@@ -10,13 +10,7 @@ import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { convertGettedToForm } from "../../lib/convert/GettedtoForm";
-import { getSingleSteps } from "../../lib/form-steps";
-import {
-  BulkFormContext,
-  MetaCrudContext,
-  SingleFormContext,
-} from "../../types/context";
+import { MetaCrudContext } from "../../types/context";
 import { useApi } from "../api-context";
 import {
   createItemBase,
@@ -25,7 +19,7 @@ import {
   readItemsBase,
   updateItemBase,
 } from "../../lib/api";
-import { objectIsEqual, cleanData } from "../../utils";
+import { cleanData } from "../../utils";
 import { fieldDefinition } from "../../lib/model-fields";
 import {
   FilterableFieldDefinition,
@@ -33,8 +27,6 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
-import { getBulkSteps } from "../../lib/form-steps/many";
-import { updateFormValue } from "../../utils/updateFormValue";
 
 type ContextModelType = ModelType.NATIONAL_CALLUP;
 const ContextModelString = ModelType.NATIONAL_CALLUP;
@@ -42,64 +34,9 @@ type Form = NationalCallupForm;
 type Get = NationalCallupGet;
 type Model = NationalCallup;
 const backendRoute = API_ROUTES.NATIONAL_CALLUP;
-const singleStep = getSingleSteps(ContextModelString);
-const bulkStep = getBulkSteps(ContextModelString);
-
-const SingleContext = createContext<SingleFormContext<ContextModelType> | null>(
-  null
-);
-
-const BulkContext = createContext<BulkFormContext<ContextModelType> | null>(
-  null
-);
 
 const MetaCrudContextContext =
   createContext<MetaCrudContext<ContextModelType> | null>(null);
-
-const SingleProvider = ({ children }: { children: ReactNode }) => {
-  const [formData, setFormData] = useState<Form>({});
-
-  const startNewData = (item?: Partial<Form>) => {
-    item ? setFormData(item) : setFormData({});
-  };
-
-  const startEdit = (item?: Get) => {
-    if (item) {
-      setFormData(convertGettedToForm(ContextModelString, item));
-    }
-  };
-
-  const handleFormData = <K extends keyof Form>(key: K, value: Form[K]) => {
-    setFormData((prev) => updateFormValue(prev, key, value));
-  };
-
-  const resetFormData = () => {
-    setFormData({});
-  };
-
-  const value: SingleFormContext<ContextModelType> = {
-    formData,
-    handleFormData,
-    resetFormData,
-    formSteps: singleStep,
-    startNewData,
-    startEdit,
-  };
-  return (
-    <SingleContext.Provider value={value}>{children}</SingleContext.Provider>
-  );
-};
-
-const BulkProvider = ({ children }: { children: ReactNode }) => {
-  const [formDatas, setFormDatas] = useState<Form[]>([]);
-
-  const value: BulkFormContext<ContextModelType> = {
-    formDatas,
-    setFormDatas,
-    manyDataFormSteps: bulkStep,
-  };
-  return <BulkContext.Provider value={value}>{children}</BulkContext.Provider>;
-};
 
 const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
   const {
@@ -107,7 +44,6 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
     main: { handleSetAlert: mainHandleSetAlert },
   } = useAlert();
   const api = useApi();
-  const { formData } = useSingle();
 
   const [items, setItems] = useState<Get[]>([]);
   const [selected, setSelectedItem] = useState<Get | null>(null);
@@ -126,7 +62,7 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const createItem = async () =>
+  const createItem = async (formData: Form) =>
     createItemBase({
       apiInstance: api,
       backendRoute: backendRoute.CREATE,
@@ -261,22 +197,6 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
   const handleLoading = (time: "start" | "end") =>
     time === "start" ? setIsLoading(true) : setIsLoading(false);
 
-  const getDiffKeys = () => {
-    if (!selected) return [];
-
-    const diff: string[] = [];
-    for (const [key, formValue] of Object.entries(formData)) {
-      const typedKey = key as keyof typeof formData;
-      const selectedValue = convertGettedToForm(ContextModelString, selected)[
-        typedKey
-      ];
-
-      !objectIsEqual(formValue, selectedValue) && diff.push(key);
-    }
-
-    return diff;
-  };
-
   const filterableField = fieldDefinition[ContextModelString].filter(
     isFilterable
   ) as FilterableFieldDefinition[];
@@ -295,7 +215,6 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
     createItems,
     updateItem,
     deleteItem,
-    getDiffKeys,
     uploadFile,
     downloadFile,
     isLoading,
@@ -309,42 +228,23 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-const NationalCallupContext = {
-  single: SingleContext,
-  bulk: BulkContext,
+const CompetitionContext = {
   metacrud: MetaCrudContextContext,
 };
 
 const NationalCallupProvider = ({ children }: { children: ReactNode }) => {
-  return (
-    <SingleProvider>
-      <BulkProvider>
-        <MetaCrudProvider>{children}</MetaCrudProvider>
-      </BulkProvider>
-    </SingleProvider>
-  );
-};
-
-const useSingle = () => {
-  const context = useContext(SingleContext);
-  if (!context) {
-    throw new Error("useSingle must be used within a SingleProvider");
-  }
-  return context;
+  return <MetaCrudProvider>{children}</MetaCrudProvider>;
 };
 
 const useNationalCallup = () => {
-  const single = useContext(NationalCallupContext.single);
-  const bulk = useContext(NationalCallupContext.bulk);
-  const metacrud = useContext(NationalCallupContext.metacrud);
+  const metacrud = useContext(CompetitionContext.metacrud);
 
-  if (!single || !bulk || !metacrud) {
+  if (!metacrud) {
     throw new Error(
       "useNationalCallup must be used within NationalCallupProvider"
     );
   }
 
-  return { single, bulk, metacrud };
+  return { metacrud };
 };
-
 export { useNationalCallup, NationalCallupProvider };
