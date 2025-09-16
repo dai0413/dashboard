@@ -40,7 +40,9 @@ const RenderCell = (
     if (row.key === header.field) return row.element;
   }
 
-  const value = row[header.field];
+  const value =
+    typeof header.field === "string" ? row[header.field] : header.field(row);
+
   const isObject = isLabelObject(value);
   let content = value;
 
@@ -153,7 +155,11 @@ const Table = <T extends Record<string, any>>({
             {headers.map((header) => (
               <th
                 scope="col"
-                key={header.field}
+                key={
+                  typeof header.field === "string"
+                    ? header.field
+                    : header.field.toString()
+                }
                 className="px-4 py-2 border"
                 style={
                   header.width ? { width: header.width } : { width: "150px" }
@@ -235,7 +241,10 @@ const Table = <T extends Record<string, any>>({
                   </th>
                 )}
                 {headers.map((header) => {
-                  const value = row[header.field];
+                  const value =
+                    typeof header.field === "string"
+                      ? row[header.field]
+                      : header.field(row);
 
                   const title =
                     typeof value === "boolean"
@@ -248,12 +257,18 @@ const Table = <T extends Record<string, any>>({
 
                   return (
                     <td
-                      key={header.field}
+                      key={
+                        typeof header.field === "string"
+                          ? header.field
+                          : header.field.toString()
+                      }
                       className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${selectedKey.includes(row.key) ? "bg-blue-100" : ""}
                       ${
-                        edit && selectedKey.includes(header.field)
+                        edit &&
+                        typeof header.field === "string" &&
+                        selectedKey.includes(header.field)
                           ? "border-2 border-blue-700"
                           : ""
                       }
