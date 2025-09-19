@@ -17,6 +17,7 @@ import { teamCompetitionSeason } from "./team-competition-season";
 import { stadium } from "./stadium";
 import { competitionStage } from "./competition-stage";
 import { matchFormat } from "./match-format";
+import { match } from "./match";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -41,6 +42,10 @@ const convertMap: {
   [ModelType.INJURY]: {
     single: injury,
     multiple: (data) => data.map(injury),
+  },
+  [ModelType.MATCH]: {
+    single: match,
+    multiple: (data) => data.map(match),
   },
   [ModelType.MATCH_FORMAT]: {
     single: matchFormat,

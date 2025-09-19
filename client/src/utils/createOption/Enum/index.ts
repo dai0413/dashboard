@@ -16,3 +16,4 @@ export { category } from "./category";
 export { level } from "./level";
 export { stageType } from "./stageType";
 export { periodLabel } from "./period-label";
+export { result } from "./result";

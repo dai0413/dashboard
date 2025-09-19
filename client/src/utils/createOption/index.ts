@@ -8,6 +8,8 @@ import {
   nationalMatchSeries,
   player,
   competitionStage,
+  stadium,
+  matchFormat,
 } from "./Model";
 import {
   status,
@@ -28,6 +30,7 @@ import {
   stageType,
   division,
   periodLabel,
+  result,
 } from "./Enum";
 
 export enum OptionType {
@@ -51,6 +54,7 @@ export enum OptionType {
   STAGE_TYPE = "stage_type",
   DIVISION = "division",
   PERIOD_LABEL = "period_label",
+  RESULT = "result",
 }
 
 type OptionMap = {
@@ -74,6 +78,7 @@ type OptionMap = {
   [OptionType.STAGE_TYPE]: OptionArray;
   [OptionType.DIVISION]: OptionArray;
   [OptionType.PERIOD_LABEL]: OptionArray;
+  [OptionType.RESULT]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -91,10 +96,13 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [ModelType.COUNTRY]: (data, table) => country(data, table ? table : false),
   //   [ModelType.INJURY]:,
   //   [ModelType.NATIONAL_CALLUP]: ,
+  [ModelType.MATCH_FORMAT]: (data, table) =>
+    matchFormat(data, table ? table : false),
   [ModelType.NATIONAL_MATCH_SERIES]: (data, table) =>
     nationalMatchSeries(data, table ? table : false),
   [ModelType.PLAYER]: (data, table) => player(data, table ? table : false),
   [ModelType.SEASON]: (data, table) => season(data, table ? table : false),
+  [ModelType.STADIUM]: (data, table) => stadium(data, table ? table : false),
   [ModelType.TEAM]: (data, table) => team(data, table ? table : false),
   [ModelType.COMPETITION_STAGE]: (data, table) =>
     competitionStage(data, table ? table : false),
@@ -127,6 +135,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.STAGE_TYPE]: () => stageType(),
   [OptionType.DIVISION]: () => division(),
   [OptionType.PERIOD_LABEL]: () => periodLabel(),
+  [OptionType.RESULT]: () => result(),
 };
 
 // 実装

@@ -17,6 +17,7 @@ import {
   Stadium,
   CompetitionStage,
   MatchFormat,
+  Match,
 } from "../pages/ModelDetail/";
 
 export const ModelDetail = (
@@ -116,6 +117,14 @@ export const ModelDetail = (
       element={wrapWithPrivateRoute(
         <Layout>
           <MatchFormat />
+        </Layout>
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.MATCH}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Match />
         </Layout>
       )}
     />

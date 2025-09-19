@@ -9,6 +9,8 @@ import { OptionArray, OptionTable } from "../types/option";
 import { useCompetition } from "./models/competition-context";
 import { useSeason } from "./models/season-context";
 import { useCompetitionStage } from "./models/competition-stage-context";
+import { useStadium } from "./models/stadium-context";
+import { useMatchFormat } from "./models/match-format";
 
 interface GetOptions {
   (key: string, table: true, filter?: boolean): OptionTable;
@@ -75,6 +77,12 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     metacrud: { readItems: readCompetitionStages, items: competitionStage },
   } = useCompetitionStage();
+  const {
+    metacrud: { readItems: readMatchFormat, items: matchFormat },
+  } = useMatchFormat();
+  const {
+    metacrud: { readItems: readStadium, items: stadium },
+  } = useStadium();
 
   useEffect(() => {
     readPlayers({});
@@ -84,6 +92,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     readCompetitions({});
     readSeasons({});
     readCompetitionStages({});
+    readStadium({});
+    readMatchFormat({});
   }, []);
 
   type Option = {
@@ -102,6 +112,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       [ModelType.COMPETITION_STAGE]: competitionStage,
       [ModelType.COMPETITION]: competitions,
       [ModelType.SEASON]: seasons,
+      [ModelType.STADIUM]: stadium,
+      [ModelType.MATCH_FORMAT]: matchFormat,
       [OptionType.FORM]: [],
       [OptionType.POSITION]: [],
       [OptionType.AREA]: [],
@@ -132,8 +144,12 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     citizenship: ModelType.COUNTRY,
     from_team: ModelType.TEAM,
     to_team: ModelType.TEAM,
+    home_team: ModelType.TEAM,
+    away_team: ModelType.TEAM,
     series: ModelType.NATIONAL_MATCH_SERIES,
     parent_stage: ModelType.COMPETITION_STAGE,
+    competition_stage: ModelType.COMPETITION_STAGE,
+    match_format: ModelType.MATCH_FORMAT,
   };
 
   function getOptions(key: string, table?: false): OptionArray;

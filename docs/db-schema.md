@@ -15,7 +15,8 @@
   - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
   - [13. スタジアム(Stadium)](#13-スタジアムstadium)
   - [14. 大会ステージ(CompetitionStage)](#14-大会ステージcompetitionstage)
-  - [15. 試合フォーマット(match_format)](#15-試合フォーマットmatch_format)
+  - [15. 試合フォーマット(match\_format)](#15-試合フォーマットmatch_format)
+  - [16. 試合(Match)](#16-試合match)
 
 ## 1. ユーザー(user)
 
@@ -314,6 +315,8 @@
 
 ※stage_type == `none` のときは name, round_number, leg, order, が undefined
 
+※ season 入力で　 competition 自動入力
+
 ## 15. 試合フォーマット(match_format)
 
 | フィールド | 型                                            | null  | 注釈 | バリデーション |
@@ -342,3 +345,40 @@
   { "label": "2H", "start": 30, "end": 60 },
   { "label": "3H", "start": 60, "end": 90 }
   ]
+
+## 16. 試合(Match)
+
+| フィールド        | 型       | form | 注釈             | バリデーション            |
+| ----------------- | -------- | ---- | ---------------- | ------------------------- |
+| competition       | 外部キー | ✕    | 大会             | Competition 外部キー      |
+| competition-stage | 外部キー | 必須 | ステージ         | CompetitionStage 外部キー |
+| season            | 外部キー | ✕    | シーズン         | Season 外部キー           |
+| home_team         | 外部キー | 必須 | ホーム           | Team 外部キー             |
+| away_team         | 外部キー | 必須 | アウェイ         | Team 外部キー             |
+| match_format?     | 外部キー | ◯    | 試合フォーマット | MatchFormat 外部キー      |
+| stadium?          | 外部キー | ◯    | スタジアム       | Stadium 外部キー          |
+| play_time?        | 数字     | ✕    | プレイ時間       | match_format から計算     |
+| date?             | 日付     | ◯    | 開催日           |                           |
+| audience?         | 数字     | ◯    | 観客数           |                           |
+| home_goal?        | 数字     | ◯    | ホーム得点       |                           |
+| away_goal?        | 数字     | ◯    | アウェイ得点     |                           |
+| home_pk_goal?     | 数字     | ◯    | ホーム PK 得点   |                           |
+| away_pk_goal?     | 数字     | ◯    | アウェイ PK 得点 |                           |
+| result?           | 文字列   | ✕    | 試合結果         | ※2 ENUM 得点から計算      |
+| match_week?       | 数字     | ◯    | 節               |                           |
+| weather?          | 文字列   | ◯    | 天気             |                           |
+| temperature?      | 数字     | ◯    | 気温             |                           |
+| humidity?         | 数字     | ◯    | 湿度             |                           |
+| transferurl?      | 文字列   | ◯    | transfer         | unique                    |
+| sofaurl?          | 文字列   | ◯    | sofa             | unique                    |
+| urls?             | [文字列] | ◯    | urls             |                           |
+| old_id?           | 文字列   | ✕    | 旧 match_id      | unique                    |
+
+※2 'home' | 'away' | 'draw'
+
+※competition, competition_stage, home_team, away_team, date , の組み合わせユニーク
+※competition, competition_stage, home_team, away_team, match_week , の組み合わせユニーク
+
+※competition_stage を入力で competition , season を自動入力
+※match_format 　を入力で　 play_time 　を自動入力
+※goal から result を自動入力

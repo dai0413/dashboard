@@ -40,6 +40,12 @@ const models: {
     icon: "competition",
   },
   {
+    model: "Match",
+    desc: "試合",
+    link: APP_ROUTES.MATCH,
+    icon: "match",
+  },
+  {
     model: "TeamCompetitionSeason",
     desc: "チームの大会参加記録",
     link: APP_ROUTES.TEAM_COMPETITION_SEASON,
