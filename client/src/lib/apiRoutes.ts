@@ -27,6 +27,7 @@ type Model = {
   COUNTRY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COUNTRY]>;
   INJURY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.INJURY]>;
   MATCH_FORMAT: BaseCrudRoutes<ReadItemsParamsMap[ModelType.MATCH_FORMAT]>;
+  MATCH: BaseCrudRoutes<ReadItemsParamsMap[ModelType.MATCH]>;
   NATIONAL_CALLUP: BaseCrudRoutes<
     ReadItemsParamsMap[ModelType.NATIONAL_CALLUP]
   >;
@@ -111,6 +112,14 @@ export const API_ROUTES: Model & {
     DETAIL: (id: string | number) => `${API_BASE_URL}/match-format/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/match-format/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/match-format/${id}`,
+  },
+  MATCH: {
+    GET_ALL: { URL: `${API_BASE_URL}/match` },
+    CREATE: `${API_BASE_URL}/match`,
+    UPLOAD: `${API_BASE_URL}/match/upload`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/match/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/match/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/match/${id}`,
   },
   NATIONAL_CALLUP: {
     GET_ALL: { URL: `${API_BASE_URL}/national-callup` },

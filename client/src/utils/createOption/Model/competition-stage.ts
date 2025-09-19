@@ -6,18 +6,16 @@ export const competitionStage = (
   table: boolean
 ): OptionArray | OptionTable => {
   const options = data.map((d) => ({
-    label: `${d.competition.label}-${d.name}`,
+    label: `${d.competition.label} ${d.name ? d.name : ""}`,
     key: d._id,
-    leg: d.leg,
-    stageType: d.stage_type,
+    season: d.season.label,
   }));
 
   if (table === true) {
     return {
       header: [
-        { label: "シリーズ名", field: "label" },
-        { label: "国名", field: "country" },
-        { label: "年代・種別", field: "age_group" },
+        { label: "シリーズ名", field: "label", width: "200px" },
+        { label: "シーズン", field: "season", width: "80px" },
       ],
       data: options,
     };

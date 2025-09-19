@@ -26,6 +26,7 @@ import { useTeamCompetitionSeason } from "./models/team-competition-season-conte
 import { useStadium } from "./models/stadium-context";
 import { useCompetitionStage } from "./models/competition-stage-context";
 import { useMatchFormat } from "./models/match-format";
+import { useMatch } from "./models/match-context";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
 import { getSingleSteps } from "../lib/form-steps";
@@ -139,6 +140,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
     [ModelType.MATCH_FORMAT]: useMatchFormat(),
+    [ModelType.MATCH]: useMatch(),
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),

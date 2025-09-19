@@ -17,6 +17,7 @@ import {
   Stadium,
   CompetitionStage,
   MatchFormat,
+  Match,
 } from "../pages/ModelTable/";
 
 export const ModelTable = (
@@ -98,6 +99,14 @@ export const ModelTable = (
       element={wrapWithPrivateRoute(
         <Layout>
           <MatchFormat />
+        </Layout>
+      )}
+    />
+    <Route
+      path={APP_ROUTES.MATCH}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Match />
         </Layout>
       )}
     />

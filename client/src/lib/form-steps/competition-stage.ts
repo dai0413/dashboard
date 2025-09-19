@@ -36,7 +36,7 @@ export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
         key: "name",
         label: "名前を入力  （準決勝, 決勝, グループステージ A)",
         fieldType: "input",
-        valueType: "number",
+        valueType: "text",
       },
       {
         key: "round_number",

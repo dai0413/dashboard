@@ -5,3 +5,5 @@ export { player } from "./player";
 export { competition } from "./competition";
 export { competitionStage } from "./competition-stage";
 export { season } from "./season";
+export { stadium } from "./stadium";
+export { matchFormat } from "./match-format";
