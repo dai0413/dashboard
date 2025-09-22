@@ -266,14 +266,16 @@
 
 ## 12. チームの大会参加記録(TeamCompetitionSeason)
 
-| フィールド  | 型       | null  | 注釈     | バリデーション       |
+| フィールド  | 型       | form  | 注釈     | バリデーション       |
 | ----------- | -------- | ----- | -------- | -------------------- |
-| team        | 外部キー | false | チーム   | Team 外部キー        |
-| season      | 外部キー | false | シーズン | Season 外部キー      |
+| team        | 外部キー | ✕     | チーム   | Team 外部キー        |
+| season      | 外部キー | 必須  | シーズン | Season 外部キー      |
 | competition | 外部キー | false | 大会     | Competition 外部キー |
 | note?       | 文字列   | true  | 備考     |                      |
 
 ※team, season,competition の組み合わせユニーク
+
+※ season 入力で　 competition 自動入力
 
 ## 13. スタジアム(Stadium)
 

@@ -35,6 +35,9 @@ const MatchSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Stadium",
     },
+    stadium_name: {
+      type: String,
+    },
     play_time: { type: Number },
     date: { type: Date },
     audience: { type: Number },

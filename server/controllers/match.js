@@ -2,6 +2,7 @@ const Match = require("../models/match");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
+const { formatMatch } = require("../utils/formatMatch");
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
@@ -37,7 +38,7 @@ const getAllItems = async (req, res) => {
       return res.status(400).json({ error: "Invalid team ID" });
     }
   }
-  const dat = await Match.aggregate([
+  const pipeline = [
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     {
       $lookup: {
@@ -117,9 +118,12 @@ const getAllItems = async (req, res) => {
       $unwind: { path: "$stadium", preserveNullAndEmptyArrays: true },
     },
     { $sort: { _id: 1, order: 1 } },
-  ]);
+  ];
 
-  res.status(StatusCodes.OK).json({ data: dat });
+  const items = await Match.aggregate(pipeline);
+  const formatted = items.map(formatMatch);
+
+  res.status(StatusCodes.OK).json({ data: formatted });
 };
 
 const createItem = async (req, res) => {
@@ -138,7 +142,7 @@ const createItem = async (req, res) => {
     .populate("stadium");
   res
     .status(StatusCodes.CREATED)
-    .json({ message: "追加しました", data: populatedData });
+    .json({ message: "追加しました", data: formatMatch(populatedData) });
 };
 
 const getItem = async (req, res) => {
@@ -161,9 +165,7 @@ const getItem = async (req, res) => {
   }
 
   res.status(StatusCodes.OK).json({
-    data: {
-      ...data.toObject(),
-    },
+    data: formatMatch(data),
   });
 };
 
@@ -192,7 +194,9 @@ const updateItem = async (req, res) => {
     .populate("away_team")
     .populate("match_format")
     .populate("stadium");
-  res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "編集しました", data: formatMatch(populated) });
 };
 
 const deleteItem = async (req, res) => {
@@ -221,11 +225,14 @@ const uploadItem = async (req, res) => {
     })
     .on("end", async () => {
       const toAdd = rows.map((row) => ({
-        competition_stage: row.competition_stage,
-        home_team: row.home_team,
-        away_team: row.away_team,
-        match_format: row.match_format ? row.match_format : undefined,
-        stadium: row.stadium ? row.stadium : undefined,
+        competition_stage: parseObjectId(row.competition_stage),
+        home_team: parseObjectId(row.home_team),
+        away_team: parseObjectId(row.away_team),
+        match_format: row.match_format
+          ? parseObjectId(row.match_format)
+          : undefined,
+        stadium: row.stadium ? parseObjectId(row.stadium) : undefined,
+        stadium_name: row.stadium_name ? row.stadium_name : undefined,
         date: row.date ? row.date : undefined,
         audience: row.audience ? row.audience : undefined,
         home_goal: row.home_goal ? row.home_goal : undefined,

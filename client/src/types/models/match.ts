@@ -59,6 +59,7 @@ type MatchPost = Omit<
   match_format?: MatchFormat["_id"];
   stadium?: Stadium["_id"];
   date: string;
+  stadium_name?: string;
 };
 
 export type MatchForm = Partial<MatchPost>;
