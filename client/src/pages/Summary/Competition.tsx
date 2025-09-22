@@ -30,6 +30,8 @@ import {
   CompetitionStageGet,
 } from "../../types/models/competition-stage";
 import { useForm } from "../../context/form-context";
+import { Match, MatchGet } from "../../types/models/match";
+import { toDateKey } from "../../utils";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -57,7 +59,7 @@ const Competition = () => {
     useState<boolean>(false);
 
   const [season, setSeason] = useState<SeasonGet[]>([]);
-  const [_seasonIsLoading, setSeasonIsLoading] = useState(false);
+  const [_seasonIsLoading, setSeasonIsLoading] = useState<boolean>(false);
 
   const [competitionStage, setCompetitionStage] = useState<
     CompetitionStageGet[]
@@ -65,10 +67,14 @@ const Competition = () => {
   const [competitionStageIsLoading, setCompetitionStageIsLoading] =
     useState<boolean>(false);
 
+  const [match, setMatch] = useState<MatchGet[]>([]);
+  const [matchIsLoading, setMatcIsLoading] = useState<boolean>(false);
+
   const isLoadingSetters = {
     teamCompetitionSeason: setTeamCompetitionSeasonIsLoading,
     season: setSeasonIsLoading,
     competitionStage: setCompetitionStageIsLoading,
+    match: setMatcIsLoading,
   };
 
   const setLoading = (
@@ -114,6 +120,17 @@ const Competition = () => {
         setCompetitionStage(convert(ModelType.COMPETITION_STAGE, items));
       },
       handleLoading: (time) => setLoading(time, "competitionStage"),
+    });
+
+  const readMatch = (seasonId: string) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.MATCH.GET_ALL,
+      params: { season: seasonId },
+      onSuccess: (items: Match[]) => {
+        setMatch(convert(ModelType.MATCH, items));
+      },
+      handleLoading: (time) => setLoading(time, "match"),
     });
 
   useEffect(() => {
@@ -162,6 +179,23 @@ const Competition = () => {
       : [],
   };
 
+  const matchOptions = {
+    filterField: ModelType.MATCH
+      ? (fieldDefinition[ModelType.MATCH]
+          .filter(isFilterable)
+          .filter(
+            (file) => file.key !== "competition"
+          ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.MATCH
+      ? (fieldDefinition[ModelType.MATCH]
+          .filter(isSortable)
+          .filter(
+            (file) => file.key !== "competition"
+          ) as SortableFieldDefinition[])
+      : [],
+  };
+
   const [selectedSeason, setSelectedSeason] = useState<SeasonGet | null>(null);
 
   useEffect(() => {
@@ -173,6 +207,7 @@ const Competition = () => {
     if (!id || !season.length || !selectedSeason) return;
     readTeamCompetitionSeason(id, selectedSeason._id);
     readCompetitionStage(selectedSeason._id);
+    readMatch(selectedSeason._id);
   }, [selectedSeason?._id, formIsOpen]);
 
   const handleSetSelectedSeason = (id: string | number | Date) => {
@@ -305,6 +340,60 @@ const Competition = () => {
             season: selectedSeason?._id,
           }}
           itemsLoading={competitionStageIsLoading}
+        />
+      )}
+
+      {selectedTab === "match" && (
+        <TableContainer
+          items={match}
+          headers={[
+            {
+              label: "開催日",
+              field: "date",
+              getData: (d: MatchGet) =>
+                d.date ? toDateKey(new Date(d.date)) : "",
+            },
+            { label: "節", field: "match_week", width: "80px" },
+            { label: "ステージ", field: "competition_stage", width: "100px" },
+            { label: "ホーム", field: "home_team" },
+            {
+              label: "結果",
+              field: "result",
+              getData: (d: MatchGet) => {
+                // ゴール数がある場合
+                const score =
+                  d.home_goal !== undefined && d.away_goal !== undefined
+                    ? `${d.home_goal}-${d.away_goal}`
+                    : "";
+
+                // PKがある場合
+                const pk =
+                  d.home_pk_goal !== undefined && d.away_pk_goal !== undefined
+                    ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
+                    : "";
+
+                return score + pk;
+              },
+            },
+            { label: "アウェイ", field: "away_team" },
+          ]}
+          modelType={ModelType.MATCH}
+          originalFilterField={matchOptions.filterField}
+          originalSortField={matchOptions.sortField}
+          formInitialData={{
+            season: selectedSeason?._id,
+          }}
+          itemsLoading={matchIsLoading}
+          linkField={[
+            {
+              field: "home_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+            {
+              field: "away_team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
         />
       )}
     </div>

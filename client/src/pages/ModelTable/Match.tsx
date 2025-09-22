@@ -6,7 +6,6 @@ import { useForm } from "../../context/form-context";
 import { useFilter } from "../../context/filter-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { MatchGet } from "../../types/models/match";
-import { toDateKey } from "../../utils";
 
 const Match = () => {
   const context = useMatch();
@@ -24,18 +23,15 @@ const Match = () => {
       <TableContainer
         title={"試合情報"}
         headers={[
-          { label: "大会", field: "competition" },
-          { label: "ステージ", field: "competition_stage" },
           { label: "シーズン", field: "season" },
-          {
-            label: "開催日",
-            field: (d: MatchGet) => (d.date ? toDateKey(new Date(d.date)) : ""),
-          },
+          { label: "大会", field: "competition" },
+          { label: "ステージ", field: "competition_stage", width: "100px" },
+          { label: "節", field: "match_week", width: "80px" },
           { label: "ホーム", field: "home_team" },
-          { label: "アウェイ", field: "away_team" },
           {
             label: "結果",
-            field: (d: MatchGet) => {
+            field: "result",
+            getData: (d: MatchGet) => {
               // ゴール数がある場合
               const score =
                 d.home_goal !== undefined && d.away_goal !== undefined
@@ -51,6 +47,7 @@ const Match = () => {
               return score + pk;
             },
           },
+          { label: "アウェイ", field: "away_team" },
         ]}
         contextState={context}
         modelType={ModelType.MATCH}

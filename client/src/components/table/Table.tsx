@@ -40,8 +40,7 @@ const RenderCell = (
     if (row.key === header.field) return row.element;
   }
 
-  const value =
-    typeof header.field === "string" ? row[header.field] : header.field(row);
+  const value = header.getData ? header.getData(row) : row[header.field];
 
   const isObject = isLabelObject(value);
   let content = value;
@@ -155,11 +154,7 @@ const Table = <T extends Record<string, any>>({
             {headers.map((header) => (
               <th
                 scope="col"
-                key={
-                  typeof header.field === "string"
-                    ? header.field
-                    : header.field.toString()
-                }
+                key={header.field}
                 className="px-4 py-2 border"
                 style={
                   header.width ? { width: header.width } : { width: "150px" }
@@ -241,10 +236,9 @@ const Table = <T extends Record<string, any>>({
                   </th>
                 )}
                 {headers.map((header) => {
-                  const value =
-                    typeof header.field === "string"
-                      ? row[header.field]
-                      : header.field(row);
+                  const value = header.getData
+                    ? header.getData(row)
+                    : row[header.field];
 
                   const title =
                     typeof value === "boolean"
@@ -257,11 +251,7 @@ const Table = <T extends Record<string, any>>({
 
                   return (
                     <td
-                      key={
-                        typeof header.field === "string"
-                          ? header.field
-                          : header.field.toString()
-                      }
+                      key={header.field}
                       className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${selectedKey.includes(row.key) ? "bg-blue-100" : ""}

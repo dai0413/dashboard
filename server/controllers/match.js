@@ -6,6 +6,37 @@ const mongoose = require("mongoose");
 const getAllItems = async (req, res) => {
   const matchStage = {};
 
+  if (req.query.competition) {
+    try {
+      matchStage.competition = new mongoose.Types.ObjectId(
+        req.query.competition
+      );
+    } catch {
+      return res.status(400).json({ erro: "Invalid competition ID" });
+    }
+  }
+
+  if (req.query.season) {
+    try {
+      matchStage.season = new mongoose.Types.ObjectId(req.query.season);
+    } catch {
+      return res.status(400).json({ erro: "Invalid season ID" });
+    }
+  }
+
+  if (req.query.team) {
+    try {
+      const teamId = new mongoose.Types.ObjectId(req.query.team);
+
+      // すでに $or がある場合も考慮してマージ
+      if (!matchStage.$or) {
+        matchStage.$or = [];
+      }
+      matchStage.$or.push({ home_team: teamId }, { away_team: teamId });
+    } catch {
+      return res.status(400).json({ error: "Invalid team ID" });
+    }
+  }
   const dat = await Match.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     {
