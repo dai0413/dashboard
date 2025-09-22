@@ -313,7 +313,7 @@ const Competition = () => {
           originalFilterField={teamCompetitionSeasonOptions.filterField}
           originalSortField={teamCompetitionSeasonOptions.sortField}
           formInitialData={{
-            competition: id,
+            season: selectedSeason?._id,
           }}
           itemsLoading={teamCompetitionSeasonIsLoading}
           linkField={[

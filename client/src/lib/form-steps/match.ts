@@ -52,7 +52,29 @@ export const match: FormStep<ModelType.MATCH>[] = [
         valueType: "option",
         required: true,
       },
+      {
+        key: "stadium_name",
+        label: "登録外スタジアム",
+        fieldType: "input",
+        valueType: "text",
+      },
     ],
+    validate: (formData) => {
+      if (Boolean(formData.stadium) && Boolean(formData.stadium_name)) {
+        return {
+          success: false,
+          message: "スタジアムは選択、または入力してください",
+        };
+      }
+
+      const isValid =
+        Boolean(formData.stadium) || Boolean(formData.stadium_name);
+
+      return {
+        success: isValid,
+        message: isValid ? "" : "スタジアムは選択、または入力してください",
+      };
+    },
   },
   {
     stepLabel: "節・試合形式・日付・観客数を入力",
