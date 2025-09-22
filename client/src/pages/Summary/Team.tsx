@@ -29,6 +29,8 @@ import {
   TeamCompetitionSeason,
   TeamCompetitionSeasonGet,
 } from "../../types/models/team-competition-season";
+import { Match, MatchGet } from "../../types/models/match";
+import { toDateKey } from "../../utils";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -70,6 +72,8 @@ const Team = () => {
   >([]);
   const [teamCompetitionSeasonIsLoading, setTeamCompetitionSeasonIsLoading] =
     useState<boolean>(false);
+  const [match, setMatch] = useState<MatchGet[]>([]);
+  const [matchIsLoading, setMatcIsLoading] = useState<boolean>(false);
 
   const isLoadingSetters = {
     player: setPlayersIsLoading,
@@ -79,6 +83,7 @@ const Team = () => {
     future: setFuturePlayersIsLoading,
     injury: setInjuriesIsLoading,
     teamCompetitionSeason: setTeamCompetitionSeasonIsLoading,
+    match: setMatcIsLoading,
   };
 
   const setLoading = (
@@ -161,6 +166,17 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
     });
 
+  const readMatch = (id: string) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.MATCH.GET_ALL,
+      params: { team: id },
+      onSuccess: (items: Match[]) => {
+        setMatch(convert(ModelType.MATCH, items));
+      },
+      handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
+    });
+
   useEffect(() => {
     if (!id) return;
     (async () => {
@@ -182,6 +198,7 @@ const Team = () => {
       readCurrentLoans(id);
       readInjuries({ latest: true, now_team: id });
       readTeamCompetitionSeason({ team: id });
+      readMatch(id);
     })();
   }, [id, formIsOpen]);
 
@@ -248,6 +265,19 @@ const Team = () => {
       ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
           .filter(isSortable)
           .filter((file) => file.key !== "team") as SortableFieldDefinition[])
+      : [],
+  };
+
+  const matchOptions = {
+    filterField: ModelType.MATCH
+      ? (fieldDefinition[ModelType.MATCH].filter(
+          isFilterable
+        ) as FilterableFieldDefinition[])
+      : [],
+    sortField: ModelType.MATCH
+      ? (fieldDefinition[ModelType.MATCH].filter(
+          isSortable
+        ) as SortableFieldDefinition[])
       : [],
   };
 
@@ -484,6 +514,64 @@ const Team = () => {
               field: "competition",
               to: APP_ROUTES.COMPETITION_SUMMARY,
             },
+          ]}
+        />
+      )}
+
+      {selectedTab === "match" && (
+        <TableContainer
+          items={match}
+          headers={[
+            {
+              label: "開催日",
+              field: "date",
+              getData: (d: MatchGet) =>
+                d.date ? toDateKey(new Date(d.date)) : "",
+            },
+            { label: "大会", field: "competition" },
+            { label: "ステージ", field: "competition_stage" },
+            { label: "節", field: "match_week", width: "80px" },
+            {
+              label: "相手",
+              field: "vsTeam",
+              getData: (d: MatchGet) => {
+                const isHome = d.home_team.id === id;
+                const vsTeam = isHome ? d.away_team : d.home_team;
+
+                return vsTeam;
+              },
+            },
+            {
+              label: "結果",
+              field: "result",
+              getData: (d: MatchGet) => {
+                const isHome = d.home_team.id === id;
+                const goal = isHome ? d.home_goal : d.away_goal;
+                const againstGoal = isHome ? d.away_goal : d.home_goal;
+                const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
+                const againstPkGoal = isHome ? d.away_pk_goal : d.home_pk_goal;
+
+                const score =
+                  goal !== undefined && againstGoal !== undefined
+                    ? `${goal}-${againstGoal}`
+                    : "";
+
+                const pk =
+                  pkGoal !== undefined && againstPkGoal !== undefined
+                    ? `(${pkGoal}PK${againstPkGoal})`
+                    : "";
+
+                return score + pk;
+              },
+            },
+          ]}
+          modelType={ModelType.MATCH}
+          originalFilterField={matchOptions.filterField}
+          originalSortField={matchOptions.sortField}
+          itemsLoading={matchIsLoading}
+          linkField={[
+            { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
+            { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
           ]}
         />
       )}

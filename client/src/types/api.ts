@@ -23,7 +23,11 @@ export type ReadItemsParamsMap = {
   };
   [ModelType.COUNTRY]: {};
   [ModelType.MATCH_FORMAT]: {};
-  [ModelType.MATCH]: {};
+  [ModelType.MATCH]: {
+    team?: string;
+    season?: string;
+    competition?: string;
+  };
   [ModelType.INJURY]: {
     latest?: boolean;
     limit?: number;

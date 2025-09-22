@@ -1,6 +1,7 @@
 export type TableHeader = {
   label: string;
-  field: string | ((data: any) => string);
+  field: string;
+  getData?: (data: any) => string | Label;
   width?: string;
 };
 
