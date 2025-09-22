@@ -1,4 +1,4 @@
-const formatInjury = (injuryDoc) => {
+const injury = (injuryDoc) => {
   const injury = injuryDoc.toObject();
 
   const { team, team_name, ...rest } = injury;
@@ -9,4 +9,4 @@ const formatInjury = (injuryDoc) => {
   };
 };
 
-module.exports = { formatInjury };
+module.exports = { injury };

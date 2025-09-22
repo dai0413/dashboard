@@ -1,4 +1,4 @@
-const formatMatch = (matchDoc) => {
+const match = (matchDoc) => {
   const match =
     typeof matchDoc.toObject === "function" ? matchDoc.toObject() : matchDoc;
 
@@ -10,4 +10,4 @@ const formatMatch = (matchDoc) => {
   };
 };
 
-module.exports = { formatMatch };
+module.exports = { match };

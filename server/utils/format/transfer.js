@@ -1,4 +1,4 @@
-const formatTransfer = (transferDoc) => {
+const transfer = (transferDoc) => {
   const transfer =
     typeof transferDoc.toObject === "function"
       ? transferDoc.toObject()
@@ -15,4 +15,4 @@ const formatTransfer = (transferDoc) => {
   };
 };
 
-module.exports = { formatTransfer };
+module.exports = { transfer };

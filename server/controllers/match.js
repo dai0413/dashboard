@@ -2,7 +2,7 @@ const Match = require("../models/match");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
-const { formatMatch } = require("../utils/formatMatch");
+const { formatMatch } = require("../utils/format");
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
@@ -239,7 +239,6 @@ const uploadItem = async (req, res) => {
         away_goal: row.away_goal ? row.away_goal : undefined,
         home_pk_goal: row.home_pk_goal ? row.home_pk_goal : undefined,
         away_pk_goal: row.away_pk_goal ? row.away_pk_goal : undefined,
-        result: row.result ? row.result : undefined,
         match_week: row.match_week ? row.match_week : undefined,
         weather: row.weather ? row.weather : undefined,
         temperature: row.temperature ? row.temperature : undefined,

@@ -1,7 +1,7 @@
 const Transfer = require("../models/transfer");
 const Team = require("../models/team");
 const Player = require("../models/player");
-const { formatTransfer } = require("../utils/formatTransfer");
+const { formatTransfer } = require("../utils/format");
 
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
