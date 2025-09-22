@@ -1,5 +1,4 @@
-const { formatTransfer } = require("../utils/formatTransfer");
-const { formatNationalCallup } = require("../utils/format-national-callup");
+const { formatTransfer, formatNationalCallup } = require("../utils/format");
 
 const {
   getCurrentPlayersByTeamService,

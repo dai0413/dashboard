@@ -5,7 +5,7 @@ const Team = require("../models/team");
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../errors");
-const { formatInjury } = require("../utils/formatInjury");
+const { formatInjury } = require("../utils/format");
 
 const getAllInjury = async (req, res) => {
   let limit = parseInt(req.query.limit, 10);
@@ -71,7 +71,6 @@ const getAllInjury = async (req, res) => {
 };
 
 const createInjury = async (req, res) => {
-  console.log("create injury");
   const { team, team_name, player } = req.body;
   let injuryData = { ...req.body };
 

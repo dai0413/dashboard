@@ -2,8 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const Transfer = require("../models/transfer");
 const Injury = require("../models/injury");
 
-const { formatTransfer } = require("../utils/formatTransfer");
-const { formatInjury } = require("../utils/formatInjury");
+const { formatTransfer } = require("../utils/format");
 
 const getTopPageData = async (req, res) => {
   let limit = req.query.limit ? parseInt(req.query.limit, 10) : 5;

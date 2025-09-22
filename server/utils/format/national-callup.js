@@ -1,4 +1,4 @@
-const formatNationalCallup = (nationalCallupDoc) => {
+const nationalCallup = (nationalCallupDoc) => {
   const nationalCallup =
     typeof nationalCallupDoc.toObject === "function"
       ? nationalCallupDoc.toObject()
@@ -12,4 +12,4 @@ const formatNationalCallup = (nationalCallupDoc) => {
   };
 };
 
-module.exports = { formatNationalCallup };
+module.exports = { nationalCallup };
