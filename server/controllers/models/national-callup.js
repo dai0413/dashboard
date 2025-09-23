@@ -1,11 +1,16 @@
-const NationalCallUp = require("../models/national-callup");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 const { formatNationalCallup } = require("../../utils/format");
 const addPositionGroupOrder = require("../../order/position_group");
+const { getNest } = require("../../utils/getNest");
+const {
+  nationalCallup: { MODEL, POPULATE_PATHS },
+} = require("../../modelsConfig");
 
-const getAllNationalCallUp = async (req, res) => {
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
+
+const getAllItems = async (req, res) => {
   const series = req.query.series
     ? new mongoose.Types.ObjectId(req.query.series)
     : null;
@@ -18,7 +23,7 @@ const getAllNationalCallUp = async (req, res) => {
   if (req.query.player)
     matchStage.player = new mongoose.Types.ObjectId(req.query.player);
 
-  const nationalMatchSeries = await NationalCallUp.aggregate([
+  const nationalMatchSeries = await MODEL.aggregate([
     addPositionGroupOrder,
     ...(series ? [{ $match: { series } }] : []),
     {
@@ -65,52 +70,34 @@ const getAllNationalCallUp = async (req, res) => {
   res.status(StatusCodes.OK).json({ data: result });
 };
 
-const createNationalCallUp = async (req, res) => {
-  let formatted;
+const createItem = async (req, res) => {
+  let populatedData;
+  if (bulk && Array.isArray(req.body)) {
+    const docs = await MODEL.insertMany(req.body);
 
-  if (Array.isArray(req.body)) {
-    const createdData = await NationalCallUp.insertMany(req.body);
-    const populatedData = await NationalCallUp.find({
-      _id: { $in: createdData.map((d) => d._id) },
-    })
-      .populate("series")
-      .populate("player")
-      .populate("team");
-    formatted = populatedData.map(formatNationalCallup);
-  } else {
-    const nationalMatchSeriesData = {
-      ...req.body,
-    };
-
-    const nationalMatchSeries = await NationalCallUp.create(
-      nationalMatchSeriesData
+    const ids = docs.map((doc) => doc._id);
+    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
+      getNestField(true)
     );
-
-    const pupulatedData = await NationalCallUp.findById(nationalMatchSeries._id)
-      .populate("series")
-      .populate("player")
-      .populate("team");
-    formatted = formatNationalCallup(pupulatedData);
+  } else {
+    const data = await MODEL.create(req.body);
+    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
   }
-  res.status(StatusCodes.CREATED).json({
-    message: "追加しました",
-    data: formatted,
-  });
+  res
+    .status(StatusCodes.OK)
+    .json({ message: "追加しました", data: populatedData });
 };
 
-const getNationalCallUp = async (req, res) => {
+const getItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
     params: { id: nationalMatchSeriesId },
   } = req;
-  const nationalMatchSeries = await NationalCallUp.findById(
+  const nationalMatchSeries = await MODEL.findById(
     nationalMatchSeriesId
-  )
-    .populate("series")
-    .populate("player")
-    .populate("team");
+  ).populate(getNestField(true));
   if (!nationalMatchSeries) {
     throw new NotFoundError();
   }
@@ -120,7 +107,7 @@ const getNationalCallUp = async (req, res) => {
   });
 };
 
-const updateNationalCallUp = async (req, res) => {
+const updateItem = async (req, res) => {
   const {
     params: { id: nationalMatchSeriesId },
     body,
@@ -128,7 +115,7 @@ const updateNationalCallUp = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await NationalCallUp.findByIdAndUpdate(
+  const updated = await MODEL.findByIdAndUpdate(
     { _id: nationalMatchSeriesId },
     updatedData,
     {
@@ -141,16 +128,15 @@ const updateNationalCallUp = async (req, res) => {
   }
 
   // update
-  const populated = await NationalCallUp.findById(updated._id)
-    .populate("series")
-    .populate("player")
-    .populate("team");
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res
     .status(StatusCodes.OK)
     .json({ message: "編集しました", data: formatNationalCallup(populated) });
 };
 
-const deleteNationalCallUp = async (req, res) => {
+const deleteItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
@@ -158,7 +144,7 @@ const deleteNationalCallUp = async (req, res) => {
     params: { id: nationalMatchSeriesId },
   } = req;
 
-  const nationalMatchSeries = await NationalCallUp.findOneAndDelete({
+  const nationalMatchSeries = await MODEL.findOneAndDelete({
     _id: nationalMatchSeriesId,
   });
   if (!nationalMatchSeries) {
@@ -169,9 +155,9 @@ const deleteNationalCallUp = async (req, res) => {
 };
 
 module.exports = {
-  getAllNationalCallUp,
-  createNationalCallUp,
-  getNationalCallUp,
-  updateNationalCallUp,
-  deleteNationalCallUp,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
 };

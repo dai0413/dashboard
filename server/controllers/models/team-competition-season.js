@@ -37,37 +37,31 @@ const getAllItems = async (req, res) => {
     }
   }
 
-  const dat = await MODEL.aggregate([
+  const data = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     ...getNestField(false),
     { $sort: { "season.start_date": -1, _id: -1 } },
   ]);
 
-  res.status(StatusCodes.OK).json({ data: dat });
+  res.status(StatusCodes.OK).json({ data });
 };
 
 const createItem = async (req, res) => {
-  const createData = req.body;
+  let populatedData;
+  if (bulk && Array.isArray(req.body)) {
+    const docs = await MODEL.insertMany(req.body);
 
-  let created;
-
-  if (Array.isArray(createData)) {
-    if (createData.length === 0) {
-      throw new BadRequestError("データを送信してください");
-    }
-
-    const insertedDocs = await MODEL.insertMany(createData);
-
-    // モデルから populate をかけ直す
-    created = await MODEL.populate(insertedDocs, getNestField(true));
+    const ids = docs.map((doc) => doc._id);
+    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
+      getNestField(true)
+    );
   } else {
-    const data = await MODEL.create(createData);
-    created = await MODEL.findById(data._id).populate(getNestField(true));
+    const data = await MODEL.create(req.body);
+    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
   }
-
   res
-    .status(StatusCodes.CREATED)
-    .json({ message: "追加しました", data: created });
+    .status(StatusCodes.OK)
+    .json({ message: "追加しました", data: populatedData });
 };
 
 const getItem = async (req, res) => {
@@ -81,23 +75,18 @@ const getItem = async (req, res) => {
   if (!data) {
     throw new NotFoundError();
   }
-
-  res.status(StatusCodes.OK).json({
-    data: {
-      ...data.toObject(),
-    },
-  });
+  res.status(StatusCodes.OK).json({ data });
 };
 
 const updateItem = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
   const {
     params: { id },
-    body,
   } = req;
 
-  const updatedData = { ...body };
-
-  const updated = await MODEL.findByIdAndUpdate({ _id: id }, updatedData, {
+  const updated = await MODEL.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -105,7 +94,6 @@ const updateItem = async (req, res) => {
     throw new NotFoundError();
   }
 
-  // update
   const populated = await MODEL.findById(updated._id).populate(
     getNestField(true)
   );
@@ -120,11 +108,10 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await MODEL.findOneAndDelete({ _id: id });
-  if (!team) {
+  const data = await MODEL.findOneAndDelete({ _id: id });
+  if (!data) {
     throw new NotFoundError();
   }
-
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 

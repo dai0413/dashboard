@@ -1,13 +1,18 @@
-const MatchFormat = require("../models/match-format");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
-const mongoose = require("mongoose");
+const { getNest } = require("../../utils/getNest");
+const {
+  matchFormat: { MODEL, POPULATE_PATHS },
+} = require("../../modelsConfig");
+
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
 
-  const dat = await MatchFormat.aggregate([
+  const dat = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    ...getNestField(false),
     { $sort: { _id: 1, order: 1 } },
   ]);
 
@@ -19,8 +24,10 @@ const createItem = async (req, res) => {
     ...req.body,
   };
 
-  const data = await MatchFormat.create(createData);
-  const populatedData = await MatchFormat.findById(data._id);
+  const data = await MODEL.create(createData);
+  const populatedData = await MODEL.findById(data._id).populate(
+    getNestField(true)
+  );
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: populatedData });
@@ -33,7 +40,7 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await MatchFormat.findById(id);
+  const data = await MODEL.findById(id).populate(getNestField(true));
   if (!data) {
     throw new NotFoundError();
   }
@@ -53,20 +60,18 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await MatchFormat.findByIdAndUpdate(
-    { _id: id },
-    updatedData,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const updated = await MODEL.findByIdAndUpdate({ _id: id }, updatedData, {
+    new: true,
+    runValidators: true,
+  });
   if (!updated) {
     throw new NotFoundError();
   }
 
   // update
-  const populated = await MatchFormat.findById(updated._id);
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
@@ -78,7 +83,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await MatchFormat.findOneAndDelete({ _id: id });
+  const team = await MODEL.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }

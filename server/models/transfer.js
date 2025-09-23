@@ -121,4 +121,58 @@ TransferSchema.index(
   { unique: true }
 );
 
+// injuryモデルのnow_teamを更新
+async function syncNowTeam(playerId) {
+  const Transfer = mongoose.model("Transfer");
+  const Injury = mongoose.model("Injury");
+
+  const latest = await Transfer.findOne({
+    player: playerId,
+    to_team: { $ne: null },
+  }).sort({ from_date: -1, _id: -1 });
+
+  await Injury.updateMany(
+    { player: playerId },
+    { $set: { now_team: latest ? latest.to_team : null } }
+  );
+}
+
+// save
+TransferSchema.post("save", async function (doc, next) {
+  await syncNowTeam(doc.player);
+  next();
+});
+
+// findOneAndUpdate / updateOne / updateMany
+TransferSchema.post(
+  ["findOneAndUpdate", "updateOne", "updateMany"],
+  async function (res, next) {
+    if (this.getQuery().player) {
+      await syncNowTeam(this.getQuery().player);
+    }
+    next();
+  }
+);
+
+// insertMany
+TransferSchema.post("insertMany", async function (docs, next) {
+  const playerIds = [...new Set(docs.map((d) => d.player.toString()))];
+  await Promise.all(playerIds.map((id) => syncNowTeam(id)));
+  next();
+});
+
+// delete
+TransferSchema.post(
+  ["findOneAndDelete", "deleteOne", "deleteMany"],
+  async function (res, next) {
+    if (!res) return next();
+
+    const playerIds = Array.isArray(res)
+      ? res.map((d) => d.player)
+      : [res.player];
+    await Promise.all(playerIds.map((id) => syncNowTeam(id)));
+    next();
+  }
+);
+
 module.exports = mongoose.model("Transfer", TransferSchema);

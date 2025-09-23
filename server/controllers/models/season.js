@@ -1,7 +1,13 @@
-const Season = require("../models/season");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
+
+const { getNest } = require("../../utils/getNest");
+const {
+  season: { MODEL, POPULATE_PATHS, bulk },
+} = require("../../modelsConfig");
+
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
@@ -20,17 +26,9 @@ const getAllItems = async (req, res) => {
     matchStage.current = req.query.current === "true";
   }
 
-  const dat = await Season.aggregate([
+  const dat = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    {
-      $lookup: {
-        from: "competitions",
-        localField: "competition",
-        foreignField: "_id",
-        as: "competition",
-      },
-    },
-    { $unwind: "$competition" },
+    ...getNestField(false),
     { $sort: { start_date: -1, _id: -1 } },
   ]);
 
@@ -38,14 +36,20 @@ const getAllItems = async (req, res) => {
 };
 
 const createItem = async (req, res) => {
-  const createData = {
-    ...req.body,
-  };
+  let populatedData;
+  if (bulk && Array.isArray(req.body)) {
+    const docs = await MODEL.insertMany(req.body);
 
-  const data = await Season.create(createData);
-  const populatedData = await Season.findById(data._id).populate("competition");
+    const ids = docs.map((doc) => doc._id);
+    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
+      getNestField(true)
+    );
+  } else {
+    const data = await MODEL.create(req.body);
+    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
+  }
   res
-    .status(StatusCodes.CREATED)
+    .status(StatusCodes.OK)
     .json({ message: "追加しました", data: populatedData });
 };
 
@@ -56,27 +60,22 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await Season.findById(id).populate("competition");
+  const data = await MODEL.findById(id).populate(getNestField(true));
   if (!data) {
     throw new NotFoundError();
   }
-
-  res.status(StatusCodes.OK).json({
-    data: {
-      ...data.toObject(),
-    },
-  });
+  res.status(StatusCodes.OK).json({ data });
 };
 
 const updateItem = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
   const {
     params: { id },
-    body,
   } = req;
 
-  const updatedData = { ...body };
-
-  const updated = await Season.findByIdAndUpdate({ _id: id }, updatedData, {
+  const updated = await MODEL.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -84,8 +83,9 @@ const updateItem = async (req, res) => {
     throw new NotFoundError();
   }
 
-  // update
-  const populated = await Season.findById(updated._id).populate("competition");
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
@@ -97,7 +97,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await Season.findOneAndDelete({ _id: id });
+  const team = await MODEL.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }

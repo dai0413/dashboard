@@ -2,18 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getAllTransfer,
-  createTransfer,
-  getTransfer,
-  updateTransfer,
-  deleteTransfer,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
 } = require("../controllers/models/transfer");
 
-router.route("/").get(getAllTransfer).post(createTransfer);
-router
-  .route("/:id")
-  .patch(updateTransfer)
-  .delete(deleteTransfer)
-  .get(getTransfer);
+router.route("/").get(getAllItems).post(createItem);
+router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
 module.exports = router;

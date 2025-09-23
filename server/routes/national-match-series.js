@@ -2,23 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getAllNationalMatchSeries,
-  createNationalMatchSeries,
-  getNationalMatchSeries,
-  updateNationalMatchSeries,
-  deleteNationalMatchSeries,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
   downloadItems,
 } = require("../controllers/models/national-match-series");
 
-router
-  .route("/")
-  .get(getAllNationalMatchSeries)
-  .post(createNationalMatchSeries);
+router.route("/").get(getAllItems).post(createItem);
 router.route("/download").get(downloadItems);
-router
-  .route("/:id")
-  .patch(updateNationalMatchSeries)
-  .delete(deleteNationalMatchSeries)
-  .get(getNationalMatchSeries);
+router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
 module.exports = router;
