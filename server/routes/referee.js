@@ -7,7 +7,7 @@ const {
   getItem,
   updateItem,
   deleteItem,
-} = require("../controllers/referee");
+} = require("../controllers/models/referee");
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);

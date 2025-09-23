@@ -1,6 +1,6 @@
 const Season = require("../models/season");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 
 const getAllItems = async (req, res) => {

@@ -1,50 +1,31 @@
-const CompetitionStage = require("../models/competition-stage");
+const Competition = require("../models/competition");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
 
-  if (req.query.competition) {
+  if (req.query.country) {
     try {
-      matchStage.competition = new mongoose.Types.ObjectId(
-        req.query.competition
-      );
+      matchStage.country = new mongoose.Types.ObjectId(req.query.country);
     } catch {
-      return res.status(400).json({ error: "Invalid competition ID" });
+      return res.status(400).json({ error: "Invalid country ID" });
     }
   }
 
-  if (req.query.season) {
-    try {
-      matchStage.season = new mongoose.Types.ObjectId(req.query.season);
-    } catch {
-      return res.status(400).json({ error: "Invalid season ID" });
-    }
-  }
-
-  const dat = await CompetitionStage.aggregate([
+  const dat = await Competition.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     {
       $lookup: {
-        from: "competitions",
-        localField: "competition",
+        from: "countries",
+        localField: "country",
         foreignField: "_id",
-        as: "competition",
+        as: "country",
       },
     },
-    { $unwind: { path: "$competition", preserveNullAndEmptyArrays: true } },
-    {
-      $lookup: {
-        from: "seasons",
-        localField: "season",
-        foreignField: "_id",
-        as: "season",
-      },
-    },
-    { $unwind: { path: "$season", preserveNullAndEmptyArrays: true } },
-    { $sort: { _id: 1, order: 1 } },
+    { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    { $sort: { _id: 1 } },
   ]);
 
   res.status(StatusCodes.OK).json({ data: dat });
@@ -55,10 +36,10 @@ const createItem = async (req, res) => {
     ...req.body,
   };
 
-  const data = await CompetitionStage.create(createData);
-  const populatedData = await CompetitionStage.findById(data._id)
-    .populate("competition")
-    .populate("season");
+  const data = await Competition.create(createData);
+  const populatedData = await Competition.findById(data._id).populate(
+    "country"
+  );
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: populatedData });
@@ -71,9 +52,7 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await CompetitionStage.findById(id)
-    .populate("competition")
-    .populate("season");
+  const data = await Competition.findById(id).populate("country");
   if (!data) {
     throw new NotFoundError();
   }
@@ -93,7 +72,7 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await CompetitionStage.findByIdAndUpdate(
+  const updated = await Competition.findByIdAndUpdate(
     { _id: id },
     updatedData,
     {
@@ -106,9 +85,7 @@ const updateItem = async (req, res) => {
   }
 
   // update
-  const populated = await CompetitionStage.findById(updated._id)
-    .populate("competition")
-    .populate("season");
+  const populated = await Competition.findById(updated._id).populate("country");
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
@@ -120,7 +97,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await CompetitionStage.findOneAndDelete({ _id: id });
+  const team = await Competition.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }

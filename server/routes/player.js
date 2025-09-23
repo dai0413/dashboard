@@ -10,7 +10,7 @@ const {
   deletePlayer,
   uploadPlayer,
   downloadPlayer,
-} = require("../controllers/player");
+} = require("../controllers/models/player");
 
 const upload = require("../middleware/upload");
 const detectEncoding = require("../middleware/detectEncoding");

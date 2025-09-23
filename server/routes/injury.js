@@ -7,7 +7,7 @@ const {
   getInjury,
   updateInjury,
   deleteInjury,
-} = require("../controllers/injury");
+} = require("../controllers/models/injury");
 
 router.route("/").get(getAllInjury).post(createInjury);
 router.route("/:id").patch(updateInjury).delete(deleteInjury).get(getInjury);

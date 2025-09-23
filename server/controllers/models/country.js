@@ -1,6 +1,6 @@
 const Country = require("../models/country");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllCountrys = async (req, res) => {
   const countries = await Country.find({});

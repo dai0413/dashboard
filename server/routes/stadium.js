@@ -7,7 +7,7 @@ const {
   getItem,
   updateItem,
   deleteItem,
-} = require("../controllers/stadium");
+} = require("../controllers/models/stadium");
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);

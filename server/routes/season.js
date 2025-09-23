@@ -7,7 +7,7 @@ const {
   getItem,
   updateItem,
   deleteItem,
-} = require("../controllers/season");
+} = require("../controllers/models/season");
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);

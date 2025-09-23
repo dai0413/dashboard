@@ -1,6 +1,6 @@
 const NationalMatchSeries = require("../models/national-match-series");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllNationalMatchSeries = async (req, res) => {
   const country = req.query.country ? req.query.country : null;

@@ -1,11 +1,11 @@
 const Transfer = require("../models/transfer");
 const Team = require("../models/team");
 const Player = require("../models/player");
-const { formatTransfer } = require("../utils/format");
+const { formatTransfer } = require("../../utils/format");
 
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const validateNewTransferDates = (data) => {
   const from = data.from_date ? new Date(data.from_date) : null;

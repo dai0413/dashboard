@@ -7,7 +7,7 @@ const {
   getItem,
   updateItem,
   deleteItem,
-} = require("../controllers/competition");
+} = require("../controllers/models/competition");
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);

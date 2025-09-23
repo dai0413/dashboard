@@ -1,17 +1,13 @@
-const MatchFormat = require("../models/match-format");
+const Referee = require("../models/referee");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
-const mongoose = require("mongoose");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllItems = async (req, res) => {
-  const matchStage = {};
+  const datas = await Referee.find({})
+    .populate("citizenship")
+    .populate("player");
 
-  const dat = await MatchFormat.aggregate([
-    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    { $sort: { _id: 1, order: 1 } },
-  ]);
-
-  res.status(StatusCodes.OK).json({ data: dat });
+  res.status(StatusCodes.OK).json({ data: datas });
 };
 
 const createItem = async (req, res) => {
@@ -19,8 +15,10 @@ const createItem = async (req, res) => {
     ...req.body,
   };
 
-  const data = await MatchFormat.create(createData);
-  const populatedData = await MatchFormat.findById(data._id);
+  const data = await Referee.create(createData);
+  const populatedData = await Referee.findById(data._id)
+    .populate("citizenship")
+    .populate("player");
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: populatedData });
@@ -33,7 +31,9 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await MatchFormat.findById(id);
+  const data = await Referee.findById(id)
+    .populate("citizenship")
+    .populate("player");
   if (!data) {
     throw new NotFoundError();
   }
@@ -53,20 +53,18 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await MatchFormat.findByIdAndUpdate(
-    { _id: id },
-    updatedData,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const updated = await Referee.findByIdAndUpdate({ _id: id }, updatedData, {
+    new: true,
+    runValidators: true,
+  });
   if (!updated) {
     throw new NotFoundError();
   }
 
   // update
-  const populated = await MatchFormat.findById(updated._id);
+  const populated = await Referee.findById(updated._id)
+    .populate("citizenship")
+    .populate("player");
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
@@ -78,7 +76,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await MatchFormat.findOneAndDelete({ _id: id });
+  const team = await Referee.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }

@@ -8,7 +8,7 @@ const {
   updateItem,
   deleteItem,
   uploadItem,
-} = require("../controllers/match");
+} = require("../controllers/models/match");
 
 const upload = require("../middleware/upload");
 const detectEncoding = require("../middleware/detectEncoding");

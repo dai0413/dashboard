@@ -4,8 +4,8 @@ const Player = require("../models/player");
 const Team = require("../models/team");
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
-const { formatInjury } = require("../utils/format");
+const { NotFoundError, BadRequestError } = require("../../errors");
+const { formatInjury } = require("../../utils/format");
 
 const getAllInjury = async (req, res) => {
   let limit = parseInt(req.query.limit, 10);
