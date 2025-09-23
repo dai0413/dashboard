@@ -1,33 +1,9 @@
-const Competition = require("../models/competition");
+const Stadium = require("../models/stadium");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
-const mongoose = require("mongoose");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllItems = async (req, res) => {
-  const matchStage = {};
-
-  if (req.query.country) {
-    try {
-      matchStage.country = new mongoose.Types.ObjectId(req.query.country);
-    } catch {
-      return res.status(400).json({ error: "Invalid country ID" });
-    }
-  }
-
-  const dat = await Competition.aggregate([
-    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    {
-      $lookup: {
-        from: "countries",
-        localField: "country",
-        foreignField: "_id",
-        as: "country",
-      },
-    },
-    { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
-    { $sort: { _id: 1 } },
-  ]);
-
+  const dat = await Stadium.find({}).populate("country");
   res.status(StatusCodes.OK).json({ data: dat });
 };
 
@@ -36,10 +12,8 @@ const createItem = async (req, res) => {
     ...req.body,
   };
 
-  const data = await Competition.create(createData);
-  const populatedData = await Competition.findById(data._id).populate(
-    "country"
-  );
+  const data = await Stadium.create(createData);
+  const populatedData = await Stadium.findById(data._id).populate("country");
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: populatedData });
@@ -52,7 +26,7 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await Competition.findById(id).populate("country");
+  const data = await Stadium.findById(id).populate("country");
   if (!data) {
     throw new NotFoundError();
   }
@@ -72,20 +46,16 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await Competition.findByIdAndUpdate(
-    { _id: id },
-    updatedData,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const updated = await Stadium.findByIdAndUpdate({ _id: id }, updatedData, {
+    new: true,
+    runValidators: true,
+  });
   if (!updated) {
     throw new NotFoundError();
   }
 
   // update
-  const populated = await Competition.findById(updated._id).populate("country");
+  const populated = await Stadium.findById(updated._id).populate("country");
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
@@ -97,7 +67,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await Competition.findOneAndDelete({ _id: id });
+  const team = await Stadium.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }

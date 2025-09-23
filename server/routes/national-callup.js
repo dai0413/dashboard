@@ -7,7 +7,7 @@ const {
   getNationalCallUp,
   updateNationalCallUp,
   deleteNationalCallUp,
-} = require("../controllers/national-callup");
+} = require("../controllers/models/national-callup");
 
 router.route("/").get(getAllNationalCallUp).post(createNationalCallUp);
 router

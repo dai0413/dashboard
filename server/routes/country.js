@@ -7,7 +7,7 @@ const {
   getCountry,
   updateCountry,
   deleteCountry,
-} = require("../controllers/country");
+} = require("../controllers/models/country");
 
 router.route("/").get(getAllCountrys).post(createCountry);
 router.route("/:id").patch(updateCountry).delete(deleteCountry).get(getCountry);

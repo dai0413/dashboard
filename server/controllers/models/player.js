@@ -1,6 +1,6 @@
 const Player = require("../models/player");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 const csv = require("csv-parser");
 
 const getAllPlayers = async (req, res) => {

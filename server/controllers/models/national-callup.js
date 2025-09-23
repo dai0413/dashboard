@@ -1,9 +1,9 @@
 const NationalCallUp = require("../models/national-callup");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
-const { formatNationalCallup } = require("../utils/format");
-const addPositionGroupOrder = require("../order/position_group");
+const { formatNationalCallup } = require("../../utils/format");
+const addPositionGroupOrder = require("../../order/position_group");
 
 const getAllNationalCallUp = async (req, res) => {
   const series = req.query.series

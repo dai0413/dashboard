@@ -8,7 +8,7 @@ const {
   updateNationalMatchSeries,
   deleteNationalMatchSeries,
   downloadItems,
-} = require("../controllers/national-match-series");
+} = require("../controllers/models/national-match-series");
 
 router
   .route("/")

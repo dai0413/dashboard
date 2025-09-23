@@ -7,7 +7,7 @@ const {
   getTransfer,
   updateTransfer,
   deleteTransfer,
-} = require("../controllers/transfer");
+} = require("../controllers/models/transfer");
 
 router.route("/").get(getAllTransfer).post(createTransfer);
 router

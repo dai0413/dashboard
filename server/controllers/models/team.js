@@ -1,6 +1,6 @@
 const Team = require("../models/team");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
 const getAllTeams = async (req, res) => {
   const teams = await Team.find({}).populate("country");

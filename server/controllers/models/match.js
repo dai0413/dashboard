@@ -1,8 +1,8 @@
 const Match = require("../models/match");
 const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
+const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
-const { formatMatch } = require("../utils/format");
+const { formatMatch } = require("../../utils/format");
 
 const getAllItems = async (req, res) => {
   const matchStage = {};

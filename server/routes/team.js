@@ -8,7 +8,7 @@ const {
   updateTeam,
   deleteTeam,
   downloadTeam,
-} = require("../controllers/team");
+} = require("../controllers/models/team");
 
 router.route("/").get(getAllTeams).post(createTeam);
 router.route("/download").get(downloadTeam);
