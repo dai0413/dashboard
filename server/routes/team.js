@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getAllTeams,
-  createTeam,
-  getTeam,
-  updateTeam,
-  deleteTeam,
-  downloadTeam,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  downloadItem,
 } = require("../controllers/models/team");
 
-router.route("/").get(getAllTeams).post(createTeam);
-router.route("/download").get(downloadTeam);
-router.route("/:id").patch(updateTeam).delete(deleteTeam).get(getTeam);
+router.route("/").get(getAllItems).post(createItem);
+router.route("/download").get(downloadItem);
+router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
 module.exports = router;

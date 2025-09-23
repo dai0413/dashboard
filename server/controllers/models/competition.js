@@ -1,7 +1,12 @@
-const Competition = require("../models/competition");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
+const { getNest } = require("../../utils/getNest");
+const {
+  competition: { MODEL, POPULATE_PATHS },
+} = require("../../modelsConfig");
+
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
@@ -14,17 +19,9 @@ const getAllItems = async (req, res) => {
     }
   }
 
-  const dat = await Competition.aggregate([
+  const dat = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    {
-      $lookup: {
-        from: "countries",
-        localField: "country",
-        foreignField: "_id",
-        as: "country",
-      },
-    },
-    { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    ...getNestField(false),
     { $sort: { _id: 1 } },
   ]);
 
@@ -36,9 +33,9 @@ const createItem = async (req, res) => {
     ...req.body,
   };
 
-  const data = await Competition.create(createData);
-  const populatedData = await Competition.findById(data._id).populate(
-    "country"
+  const data = await MODEL.create(createData);
+  const populatedData = await MODEL.findById(data._id).populate(
+    getNestField(true)
   );
   res
     .status(StatusCodes.CREATED)
@@ -52,7 +49,7 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await Competition.findById(id).populate("country");
+  const data = await MODEL.findById(id).populate(getNestField(true));
   if (!data) {
     throw new NotFoundError();
   }
@@ -72,20 +69,18 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await Competition.findByIdAndUpdate(
-    { _id: id },
-    updatedData,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const updated = await MODEL.findByIdAndUpdate({ _id: id }, updatedData, {
+    new: true,
+    runValidators: true,
+  });
   if (!updated) {
     throw new NotFoundError();
   }
 
   // update
-  const populated = await Competition.findById(updated._id).populate("country");
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
@@ -97,7 +92,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await Competition.findOneAndDelete({ _id: id });
+  const team = await MODEL.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }

@@ -1,26 +1,39 @@
-const Player = require("../models/player");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const csv = require("csv-parser");
 
-const getAllPlayers = async (req, res) => {
-  const players = await Player.find({});
-  res.status(StatusCodes.OK).json({ data: players });
+const { getNest } = require("../../utils/getNest");
+const {
+  player: { MODEL, POPULATE_PATHS, bulk },
+} = require("../../modelsConfig");
+
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
+
+const getAllItems = async (req, res) => {
+  const matchStage = {};
+
+  const data = await MODEL.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    ...getNestField(false),
+    { $sort: { _id: 1, order: 1 } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ data });
 };
 
-const checkSimilarPlayers = async (req, res) => {
+const checkItem = async (req, res) => {
   if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
     throw new BadRequestError();
   }
   const { name, en_name, dob, pob } = req.body;
   // 類似選手検索
-  const similarPlayers = await Player.find({
+  const similar = await MODEL.find({
     $or: [{ name: name }, { en_name: en_name }, { dob: dob }],
   });
 
   // 類似選手あり
-  if (similarPlayers.length > 0) {
-    const existing_players = similarPlayers.map((p) => ({
+  if (similar.length > 0) {
+    const existing = similar.map((p) => ({
       _id: p._id,
       name: p.name,
       en_name: p.en_name || "",
@@ -28,64 +41,54 @@ const checkSimilarPlayers = async (req, res) => {
     }));
     return res.status(StatusCodes.OK).json({
       message: "類似する選手が存在します。追加しますか？",
-      existing_players: existing_players,
+      existing: existing,
     });
   } else {
-    createPlayer(req, res);
+    createItem(req, res);
   }
 };
 
-const createPlayer = async (req, res) => {
-  let player;
+const createItem = async (req, res) => {
+  let populatedData;
+  if (bulk && Array.isArray(req.body)) {
+    const docs = await MODEL.insertMany(req.body);
 
-  if (Array.isArray(req.body)) {
-    if (req.body.length === 0) {
-      throw new BadRequestError("データを送信してください");
-    }
-
-    // name チェック
-    const invalid = req.body.some((p) => !p.name);
-    if (invalid) {
-      throw new BadRequestError("name が必須です");
-    }
-
-    player = await Player.insertMany(req.body);
+    const ids = docs.map((doc) => doc._id);
+    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
+      getNestField(true)
+    );
   } else {
-    if (!req.body.name) {
-      throw new BadRequestError("name が必須です");
-    }
-
-    player = await Player.create(req.body);
-    if (!player) {
-      throw new NotFoundError("プレイヤーが作成できませんでした");
-    }
+    const data = await MODEL.create(req.body);
+    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
   }
-  res.status(StatusCodes.OK).json({ message: "追加しました", data: player });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ message: "追加しました", data: populatedData });
 };
 
-const getPlayer = async (req, res) => {
+const getItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
-    params: { id: playerId },
+    params: { id },
   } = req;
-  const player = await Player.findById(playerId);
-  if (!player) {
+  const data = await MODEL.findById(id).populate(getNestField(true));
+  if (!data) {
     throw new NotFoundError();
   }
-  res.status(StatusCodes.OK).json({ data: player });
+  res.status(StatusCodes.OK).json({ data });
 };
 
-const updatePlayer = async (req, res) => {
+const updateItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
-    params: { id: playerId },
+    params: { id },
   } = req;
 
-  const updated = await Player.findByIdAndUpdate(playerId, req.body, {
+  const updated = await MODEL.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -93,27 +96,29 @@ const updatePlayer = async (req, res) => {
     throw new NotFoundError();
   }
 
-  const populated = await Player.findById(updated._id);
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
-const deletePlayer = async (req, res) => {
+const deleteItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
-    params: { id: playerId },
+    params: { id },
   } = req;
 
-  const player = await Player.findOneAndDelete({ _id: playerId });
-  if (!player) {
+  const data = await MODEL.findOneAndDelete({ _id: id });
+  if (!data) {
     throw new NotFoundError();
   }
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-const uploadPlayer = async (req, res) => {
-  const existingCount = await Player.countDocuments();
+const uploadItem = async (req, res) => {
+  const existingCount = await MODEL.countDocuments();
   const rows = [];
 
   req.decodedStream
@@ -138,7 +143,7 @@ const uploadPlayer = async (req, res) => {
       }));
 
       try {
-        const addedPlayers = await Player.insertMany(playersToAdd);
+        const addedPlayers = await MODEL.insertMany(playersToAdd);
         res.status(StatusCodes.OK).json({
           message: `${addedPlayers.length}件の選手を追加しました`,
           data: addedPlayers,
@@ -154,9 +159,9 @@ const uploadPlayer = async (req, res) => {
 
 const moment = require("moment");
 
-const downloadPlayer = async (req, res) => {
+const downloadItem = async (req, res) => {
   try {
-    const players = await Player.find();
+    const players = await MODEL.find();
     if (players.length === 0) {
       return res.status(404).json({ message: "データがありません" });
     }
@@ -184,12 +189,12 @@ const downloadPlayer = async (req, res) => {
 };
 
 module.exports = {
-  getAllPlayers,
-  createPlayer,
-  checkSimilarPlayers,
-  getPlayer,
-  updatePlayer,
-  deletePlayer,
-  uploadPlayer,
-  downloadPlayer,
+  getAllItems,
+  createItem,
+  checkItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  downloadItem,
 };

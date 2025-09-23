@@ -1,5 +1,6 @@
 const injury = (injuryDoc) => {
-  const injury = injuryDoc.toObject();
+  const injury =
+    typeof injuryDoc.toObject === "function" ? injuryDoc.toObject() : injuryDoc;
 
   const { team, team_name, ...rest } = injury;
 

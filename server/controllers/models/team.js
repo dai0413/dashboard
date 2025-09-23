@@ -1,56 +1,66 @@
-const Team = require("../models/team");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 
-const getAllTeams = async (req, res) => {
-  const teams = await Team.find({}).populate("country");
+const { getNest } = require("../../utils/getNest");
+const {
+  team: { MODEL, POPULATE_PATHS, bulk },
+} = require("../../modelsConfig");
 
-  res.status(StatusCodes.OK).json({ data: teams });
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
+
+const getAllItems = async (req, res) => {
+  const matchStage = {};
+
+  const data = await MODEL.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    ...getNestField(false),
+    { $sort: { _id: 1, order: 1 } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ data });
 };
 
-const createTeam = async (req, res) => {
-  const teamData = {
-    ...req.body,
-  };
+const createItem = async (req, res) => {
+  let populatedData;
+  if (bulk && Array.isArray(req.body)) {
+    const docs = await MODEL.insertMany(req.body);
 
-  const team = await Team.create(teamData);
-  const populatedData = await Team.findById(team._id).populate("country");
+    const ids = docs.map((doc) => doc._id);
+    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
+      getNestField(true)
+    );
+  } else {
+    const data = await MODEL.create(req.body);
+    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
+  }
   res
-    .status(StatusCodes.CREATED)
+    .status(StatusCodes.OK)
     .json({ message: "追加しました", data: populatedData });
 };
 
-const getTeam = async (req, res) => {
+const getItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
-    params: { id: teamId },
+    params: { id },
   } = req;
-  const team = await Team.findById(teamId).populate("country");
-  if (!team) {
+  const data = await MODEL.findById(id).populate(getNestField(true));
+  if (!data) {
     throw new NotFoundError();
   }
-
-  res.status(StatusCodes.OK).json({
-    data: {
-      ...team.toObject(),
-    },
-  });
+  res.status(StatusCodes.OK).json({ data });
 };
 
-const updateTeam = async (req, res) => {
-  // if (!req.params.id || !req.body.team || !req.body.team) {
-  //   throw new BadRequestError();
-  // }
+const updateItem = async (req, res) => {
+  if (!req.params.id) {
+    throw new BadRequestError();
+  }
   const {
-    params: { id: teamId },
-    body,
+    params: { id },
   } = req;
 
-  const updatedData = { ...body };
-
-  const updated = await Team.findByIdAndUpdate({ _id: teamId }, updatedData, {
+  const updated = await MODEL.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -58,30 +68,30 @@ const updateTeam = async (req, res) => {
     throw new NotFoundError();
   }
 
-  // update
-  const populated = await Team.findById(updated._id).populate("country");
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
-const deleteTeam = async (req, res) => {
+const deleteItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
-    params: { id: teamId },
+    params: { id },
   } = req;
 
-  const team = await Team.findOneAndDelete({ _id: teamId });
-  if (!team) {
+  const data = await MODEL.findOneAndDelete({ _id: id });
+  if (!data) {
     throw new NotFoundError();
   }
-
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-const downloadTeam = async (req, res) => {
+const downloadItem = async (req, res) => {
   try {
-    const teams = await Team.find();
+    const teams = await MODEL.find();
     if (teams.length === 0) {
       return res.status(404).json({ message: "データがありません" });
     }
@@ -106,10 +116,10 @@ const downloadTeam = async (req, res) => {
 };
 
 module.exports = {
-  getAllTeams,
-  createTeam,
-  getTeam,
-  updateTeam,
-  deleteTeam,
-  downloadTeam,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  downloadItem,
 };

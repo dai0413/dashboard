@@ -1,31 +1,43 @@
-const Country = require("../models/country");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
+const { getNest } = require("../../utils/getNest");
+const {
+  country: { MODEL, POPULATE_PATHS },
+} = require("../../modelsConfig");
 
-const getAllCountrys = async (req, res) => {
-  const countries = await Country.find({});
-  res.status(StatusCodes.OK).json({ data: countries });
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
+
+const getAllItems = async (req, res) => {
+  const matchStage = {};
+
+  const dat = await MODEL.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
+    ...getNestField(false),
+    { $sort: { _id: 1 } },
+  ]);
+
+  res.status(StatusCodes.OK).json({ data: dat });
 };
 
-const createCountry = async (req, res) => {
+const createItem = async (req, res) => {
   const countryData = {
     ...req.body,
   };
 
-  const country = await Country.create(countryData);
+  const country = await MODEL.create(countryData);
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: country });
 };
 
-const getCountry = async (req, res) => {
+const getItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
     params: { id: countryId },
   } = req;
-  const country = await Country.findById(countryId);
+  const country = await MODEL.findById(countryId);
   if (!country) {
     throw new NotFoundError();
   }
@@ -37,7 +49,7 @@ const getCountry = async (req, res) => {
   });
 };
 
-const updateCountry = async (req, res) => {
+const updateItem = async (req, res) => {
   const {
     params: { id: countryId },
     body,
@@ -45,7 +57,7 @@ const updateCountry = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await Country.findByIdAndUpdate(
+  const updated = await MODEL.findByIdAndUpdate(
     { _id: countryId },
     updatedData,
     {
@@ -58,11 +70,11 @@ const updateCountry = async (req, res) => {
   }
 
   // update
-  const populated = await Country.findById(updated._id);
+  const populated = await MODEL.findById(updated._id);
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
-const deleteCountry = async (req, res) => {
+const deleteItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
@@ -70,7 +82,7 @@ const deleteCountry = async (req, res) => {
     params: { id: countryId },
   } = req;
 
-  const country = await Country.findOneAndDelete({ _id: countryId });
+  const country = await MODEL.findOneAndDelete({ _id: countryId });
   if (!country) {
     throw new NotFoundError();
   }
@@ -79,9 +91,9 @@ const deleteCountry = async (req, res) => {
 };
 
 module.exports = {
-  getAllCountrys,
-  createCountry,
-  getCountry,
-  updateCountry,
-  deleteCountry,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
 };

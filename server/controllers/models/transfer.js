@@ -1,11 +1,16 @@
-const Transfer = require("../models/transfer");
-const Team = require("../models/team");
 const Player = require("../models/player");
 const { formatTransfer } = require("../../utils/format");
 
 const mongoose = require("mongoose");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
+
+const { getNest } = require("../../utils/getNest");
+const {
+  transfer: { MODEL, POPULATE_PATHS, bulk },
+} = require("../../modelsConfig");
+
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
 const validateNewTransferDates = (data) => {
   const from = data.from_date ? new Date(data.from_date) : null;
@@ -27,7 +32,7 @@ const validateNewTransferDates = (data) => {
 };
 
 const dateValidation = async (id, newData) => {
-  const transfer = await Transfer.findById(id);
+  const transfer = await MODEL.findById(id);
   if (!transfer) throw new NotFoundError();
 
   const currentFrom = transfer.from_date;
@@ -44,7 +49,7 @@ const dateValidation = async (id, newData) => {
   }
 };
 
-const getAllTransfer = async (req, res) => {
+const getAllItems = async (req, res) => {
   const matchStage = {};
 
   // player, team, from_team, to_team, form, fromDateAfter, toDateBefore を matchStage に設定
@@ -72,46 +77,17 @@ const getAllTransfer = async (req, res) => {
   if (req.query.to_date_before)
     matchStage.to_date = { $lte: new Date(req.query.to_date_before) };
 
-  const pipeline = [
-    { $match: matchStage },
-    { $sort: { doa: -1, _id: -1 } },
+  const data = await MODEL.aggregate([
+    ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     { $limit: parseInt(req.query.limit, 10) || 10000 },
-    {
-      $lookup: {
-        from: "players",
-        localField: "player",
-        foreignField: "_id",
-        as: "player",
-      },
-    },
-    { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
-    {
-      $lookup: {
-        from: "teams",
-        localField: "from_team",
-        foreignField: "_id",
-        as: "from_team",
-      },
-    },
-    { $unwind: { path: "$from_team", preserveNullAndEmptyArrays: true } },
-    {
-      $lookup: {
-        from: "teams",
-        localField: "to_team",
-        foreignField: "_id",
-        as: "to_team",
-      },
-    },
-    { $unwind: { path: "$to_team", preserveNullAndEmptyArrays: true } },
-  ];
+    ...getNestField(false),
+    { $sort: { doa: -1, _id: -1 } },
+  ]);
 
-  const transfers = await Transfer.aggregate(pipeline);
-  const formattedTransfers = transfers.map(formatTransfer);
-
-  res.status(StatusCodes.OK).json({ data: formattedTransfers });
+  res.status(StatusCodes.OK).json({ data: data.map(formatTransfer) });
 };
 
-const createTransfer = async (req, res) => {
+const createItem = async (req, res) => {
   const { from_team_name, to_team_name, from_team, to_team, player } = req.body;
   let transferData = { ...req.body };
 
@@ -121,90 +97,45 @@ const createTransfer = async (req, res) => {
   if (from_team && from_team_name)
     throw new BadRequestError("移籍先チームを選択または入力してください");
 
-  // from_team
-  if (from_team) {
-    let fromTeamId = null;
-    if (from_team) {
-      if (!mongoose.Types.ObjectId.isValid(from_team)) {
-        throw new BadRequestError("移籍元 の ID が不正です。");
-      }
-      const team = await Team.findById(from_team);
-      if (!team) {
-        throw new BadRequestError("移籍元 が見つかりません。");
-      }
-      fromTeamId = team._id;
-    }
-
-    transferData.from_team = fromTeamId;
-  } else if (from_team_name) {
-    transferData.from_team_name = from_team_name;
-  }
-
   if (to_team && to_team_name)
     throw new BadRequestError("移籍先チームを選択または入力してください");
 
-  // to_team
-  if (to_team) {
-    let toTeamId = null;
-    if (to_team) {
-      if (!mongoose.Types.ObjectId.isValid(to_team)) {
-        throw new BadRequestError("移籍先 の ID が不正です。");
-      }
-      const team = await Team.findById(to_team);
-      if (!team) {
-        throw new BadRequestError("移籍先 が見つかりません。");
-      }
-      toTeamId = team._id;
-    }
-
-    transferData.to_team = toTeamId;
-  } else if (to_team_name) {
-    transferData.to_team_name = to_team_name;
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(player)) {
-    throw new BadRequestError("player の ID が不正です。");
-  }
-
   validateNewTransferDates(transferData);
-  const transfer = await Transfer.create(transferData);
+  // await dateValidation(transferId, updatedData);
+  const transfer = await MODEL.create(transferData);
 
-  const populatedTransfer = await Transfer.findById(transfer._id)
-    .populate("from_team")
-    .populate("to_team")
-    .populate("player");
+  const populatedTransfer = await MODEL.findById(transfer._id).populate(
+    getNestField(true)
+  );
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: formatTransfer(populatedTransfer) });
 };
 
-const getTransfer = async (req, res) => {
+const getItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
-
   const {
-    params: { id: transferId },
+    params: { id },
   } = req;
-  const transfer = await Transfer.findById(transferId)
-    .populate("from_team")
-    .populate("to_team")
-    .populate("player");
-
-  if (!transfer) {
+  const data = await MODEL.findById(id).populate(getNestField(true));
+  if (!data) {
     throw new NotFoundError();
   }
 
-  res.status(StatusCodes.OK).json({ data: formatTransfer(transfer) });
+  res.status(StatusCodes.OK).json({
+    data: formatTransfer(data),
+  });
 };
 
-const updateTransfer = async (req, res) => {
+const updateItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
 
   const {
-    params: { id: transferId },
+    params: { id },
   } = req;
   const { from_team_name, to_team_name, from_team, to_team, player } = req.body;
   let updatedData = { ...req.body };
@@ -212,24 +143,10 @@ const updateTransfer = async (req, res) => {
   // from_team
   if (from_team && from_team_name)
     throw new BadRequestError("移籍先チームを選択または入力してください");
-  if (from_team && !mongoose.Types.ObjectId.isValid(from_team)) {
-    const fromTeamObj = await Team.findById(from_team);
-    if (!fromTeamObj) {
-      throw new BadRequestError("移籍元 が見つかりません。");
-    }
-    updatedData.from_team = fromTeamObj._id;
-  }
 
   // to_team
   if (to_team && to_team_name)
     throw new BadRequestError("移籍先チームを選択または入力してください");
-  if (to_team && !mongoose.Types.ObjectId.isValid(to_team)) {
-    const toTeamObj = await Team.findById(to_team);
-    if (!toTeamObj) {
-      throw new BadRequestError("移籍先 が見つかりません。");
-    }
-    updatedData.to_team = toTeamObj._id;
-  }
 
   // player
   if (player && !mongoose.Types.ObjectId.isValid(player)) {
@@ -241,50 +158,41 @@ const updateTransfer = async (req, res) => {
   }
 
   // date validation
-  await dateValidation(transferId, updatedData);
+  await dateValidation(id, updatedData);
 
   // update
-  const updatedTransfer = await Transfer.findByIdAndUpdate(
-    { _id: transferId },
-    updatedData,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  if (!updatedTransfer) {
+  const updated = await MODEL.findByIdAndUpdate({ _id: id }, updatedData, {
+    new: true,
+    runValidators: true,
+  });
+  if (!updated) {
     throw new NotFoundError();
   }
-  const populated = await Transfer.findById(updatedTransfer._id)
-    .populate("from_team")
-    .populate("to_team")
-    .populate("player");
-
-  res
-    .status(StatusCodes.OK)
-    .json({ message: "編集しました", data: formatTransfer(populated) });
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
+  res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
-const deleteTransfer = async (req, res) => {
+const deleteItem = async (req, res) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
-
   const {
-    params: { id: transferId },
+    params: { id },
   } = req;
 
-  const transfer = await Transfer.findOneAndDelete({ _id: transferId });
-  if (!transfer) {
+  const data = await MODEL.findOneAndDelete({ _id: id });
+  if (!data) {
     throw new NotFoundError();
   }
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
 module.exports = {
-  getAllTransfer,
-  createTransfer,
-  getTransfer,
-  updateTransfer,
-  deleteTransfer,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
 };

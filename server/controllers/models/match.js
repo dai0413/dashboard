@@ -1,8 +1,13 @@
-const Match = require("../models/match");
 const { StatusCodes } = require("http-status-codes");
 const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 const { formatMatch } = require("../../utils/format");
+const { getNest } = require("../../utils/getNest");
+const {
+  match: { MODEL, POPULATE_PATHS },
+} = require("../../modelsConfig");
+
+const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
@@ -38,92 +43,13 @@ const getAllItems = async (req, res) => {
       return res.status(400).json({ error: "Invalid team ID" });
     }
   }
-  const pipeline = [
+  const data = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    {
-      $lookup: {
-        from: "competitions",
-        localField: "competition",
-        foreignField: "_id",
-        as: "competition",
-      },
-    },
-    {
-      $unwind: { path: "$competition", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $lookup: {
-        from: "competitionstages",
-        localField: "competition_stage",
-        foreignField: "_id",
-        as: "competition_stage",
-      },
-    },
-    {
-      $unwind: { path: "$competition_stage", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $lookup: {
-        from: "seasons",
-        localField: "season",
-        foreignField: "_id",
-        as: "season",
-      },
-    },
-    {
-      $unwind: { path: "$season", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $lookup: {
-        from: "teams",
-        localField: "home_team",
-        foreignField: "_id",
-        as: "home_team",
-      },
-    },
-    {
-      $unwind: { path: "$home_team", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $lookup: {
-        from: "teams",
-        localField: "away_team",
-        foreignField: "_id",
-        as: "away_team",
-      },
-    },
-    {
-      $unwind: { path: "$away_team", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $lookup: {
-        from: "matchformats",
-        localField: "match_format",
-        foreignField: "_id",
-        as: "match_format",
-      },
-    },
-    {
-      $unwind: { path: "$match_format", preserveNullAndEmptyArrays: true },
-    },
-    {
-      $lookup: {
-        from: "stadia",
-        localField: "stadium",
-        foreignField: "_id",
-        as: "stadium",
-      },
-    },
-    {
-      $unwind: { path: "$stadium", preserveNullAndEmptyArrays: true },
-    },
+    ...getNestField(false),
     { $sort: { _id: 1, order: 1 } },
-  ];
+  ]);
 
-  const items = await Match.aggregate(pipeline);
-  const formatted = items.map(formatMatch);
-
-  res.status(StatusCodes.OK).json({ data: formatted });
+  res.status(StatusCodes.OK).json({ data: data.map(formatMatch) });
 };
 
 const createItem = async (req, res) => {
@@ -131,15 +57,10 @@ const createItem = async (req, res) => {
     ...req.body,
   };
 
-  const data = await Match.create(createData);
-  const populatedData = await Match.findById(data._id)
-    .populate("competition")
-    .populate("competition_stage")
-    .populate("season")
-    .populate("home_team")
-    .populate("away_team")
-    .populate("match_format")
-    .populate("stadium");
+  const data = await MODEL.create(createData);
+  const populatedData = await MODEL.findById(data._id).populate(
+    getNestField(true)
+  );
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: formatMatch(populatedData) });
@@ -152,14 +73,7 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await Match.findById(id)
-    .populate("competition")
-    .populate("competition_stage")
-    .populate("season")
-    .populate("home_team")
-    .populate("away_team")
-    .populate("match_format")
-    .populate("stadium");
+  const data = await MODEL.findById(id).populate(getNestField(true));
   if (!data) {
     throw new NotFoundError();
   }
@@ -177,7 +91,7 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await Match.findByIdAndUpdate({ _id: id }, updatedData, {
+  const updated = await MODEL.findByIdAndUpdate({ _id: id }, updatedData, {
     new: true,
     runValidators: true,
   });
@@ -186,14 +100,9 @@ const updateItem = async (req, res) => {
   }
 
   // update
-  const populated = await Match.findById(updated._id)
-    .populate("competition")
-    .populate("competition_stage")
-    .populate("season")
-    .populate("home_team")
-    .populate("away_team")
-    .populate("match_format")
-    .populate("stadium");
+  const populated = await MODEL.findById(updated._id).populate(
+    getNestField(true)
+  );
   res
     .status(StatusCodes.OK)
     .json({ message: "編集しました", data: formatMatch(populated) });
@@ -207,7 +116,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await Match.findOneAndDelete({ _id: id });
+  const team = await MODEL.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }
@@ -250,7 +159,7 @@ const uploadItem = async (req, res) => {
       }));
 
       try {
-        const added = await Match.insertMany(toAdd);
+        const added = await MODEL.insertMany(toAdd);
         res.status(StatusCodes.OK).json({
           message: `${added.length}件のデータを追加しました`,
           data: added,

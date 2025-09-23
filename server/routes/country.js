@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getAllCountrys,
-  createCountry,
-  getCountry,
-  updateCountry,
-  deleteCountry,
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
 } = require("../controllers/models/country");
 
-router.route("/").get(getAllCountrys).post(createCountry);
-router.route("/:id").patch(updateCountry).delete(deleteCountry).get(getCountry);
+router.route("/").get(getAllItems).post(createItem);
+router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
 module.exports = router;
