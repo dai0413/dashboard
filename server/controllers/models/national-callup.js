@@ -45,7 +45,7 @@ const getAllItems = async (req, res) => {
         as: "player",
       },
     },
-    { $unwind: "$player" },
+    { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
     {
       $lookup: {
         from: "teams",

@@ -1,5 +1,3 @@
-const { config } = require("../modelsConfig");
-
 // populate 用
 const getPopulateOptions = (POPULATE_PATHS) =>
   POPULATE_PATHS.map(({ path }) => ({ path }));
