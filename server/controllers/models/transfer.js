@@ -79,9 +79,9 @@ const getAllItems = async (req, res) => {
 
   const data = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    { $limit: parseInt(req.query.limit, 10) || 10000 },
     ...getNestField(false),
     { $sort: { doa: -1, _id: -1 } },
+    { $limit: parseInt(req.query.limit, 10) || 30000 },
   ]);
 
   res.status(StatusCodes.OK).json({ data: data.map(formatTransfer) });
