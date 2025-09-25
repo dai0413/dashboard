@@ -105,6 +105,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
             displayValue =
               field.type === "Date" && value
                 ? (displayValue = toDateKey(value as string | number | Date))
+                : field.type === "datetime-local"
+                ? (displayValue = toDateKey(
+                    value as string | number | Date,
+                    true
+                  ))
                 : displayValue;
 
             if (value && Array.isArray(value)) {

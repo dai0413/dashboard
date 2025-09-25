@@ -18,12 +18,12 @@ export const match = (t: Match): MatchGet => {
 
   const home_team = {
     label: t.home_team ? t.home_team.abbr || t.home_team.team : "不明",
-    id: t.home_team && "_id" in t.home_team ? t.home_team._id : "",
+    id: t.home_team ? t.home_team._id : "",
   };
 
   const away_team = {
     label: t.away_team ? t.away_team.abbr || t.away_team.team : "不明",
-    id: t.away_team && "_id" in t.away_team ? t.away_team._id : "",
+    id: t.away_team ? t.away_team._id : "",
   };
 
   const match_format = t.match_format
@@ -40,6 +40,8 @@ export const match = (t: Match): MatchGet => {
       }
     : undefined;
 
+  const date = typeof t.date === "string" ? new Date(t.date) : t.date;
+
   return {
     ...t,
     competition,
@@ -49,5 +51,6 @@ export const match = (t: Match): MatchGet => {
     away_team,
     match_format,
     stadium,
+    date,
   };
 };

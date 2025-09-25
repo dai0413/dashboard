@@ -1,10 +1,11 @@
 import { TransferForm, TransferGet } from "../../../types/models/transfer";
+import { toDateKey } from "../../../utils";
 
 export const transfer = (t: TransferGet): TransferForm => ({
   ...t,
-  doa: t.doa ? t.doa.toISOString() : "",
-  from_date: t.from_date ? t.from_date.toISOString() : "",
-  to_date: t.to_date ? t.to_date?.toDateString() : "",
+  doa: t.doa ? toDateKey(t.doa) : "",
+  from_date: t.from_date ? toDateKey(t.from_date) : "",
+  to_date: t.to_date ? toDateKey(t.to_date) : "",
   player: t.player.id,
   from_team: t.from_team.id,
   to_team: t.to_team.id,

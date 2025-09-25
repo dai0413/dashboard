@@ -35,6 +35,12 @@ type DateField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
   fieldType: "input";
   valueType: "date";
 };
+// <input type = "datetime-local">
+type DateTimeLocalField<T extends keyof FormTypeMap> =
+  FieldDefinitionBase<T> & {
+    fieldType: "input";
+    valueType: "datetime-local";
+  };
 // <input type = "number">
 type NumberField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
   fieldType: "input";
@@ -75,6 +81,7 @@ type MultiSelectField<T extends keyof FormTypeMap> = MultiValueField<T> & {
 export type FieldDefinition<T extends keyof FormTypeMap> =
   | InputField<T>
   | DateField<T>
+  | DateTimeLocalField<T>
   | NumberField<T>
   | CheckboxField<T>
   | SelectField<T>
