@@ -3,9 +3,12 @@ const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 const { formatMatch } = require("../../utils/format");
 const { getNest } = require("../../utils/getNest");
+const { parseObjectId } = require("../../csvImport/utils/parseObjectId");
+const { parseDate } = require("../../csvImport/utils/parseDate");
 const {
   match: { MODEL, POPULATE_PATHS },
 } = require("../../modelsConfig");
+const csv = require("csv-parser");
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -127,8 +130,12 @@ const deleteItem = async (req, res) => {
 const uploadItem = async (req, res) => {
   const rows = [];
 
-  req.decodeStream
-    .pipe(csv())
+  req.decodedStream
+    .pipe(
+      csv({
+        mapHeaders: ({ header }) => header.replace(/'/g, "").trim(),
+      })
+    )
     .on("data", (row) => {
       rows.push(row);
     })
@@ -142,7 +149,7 @@ const uploadItem = async (req, res) => {
           : undefined,
         stadium: row.stadium ? parseObjectId(row.stadium) : undefined,
         stadium_name: row.stadium_name ? row.stadium_name : undefined,
-        date: row.date ? row.date : undefined,
+        date: row.date ? parseDate(row.date) : undefined,
         audience: row.audience ? row.audience : undefined,
         home_goal: row.home_goal ? row.home_goal : undefined,
         away_goal: row.away_goal ? row.away_goal : undefined,
@@ -159,16 +166,33 @@ const uploadItem = async (req, res) => {
       }));
 
       try {
-        const added = await MODEL.insertMany(toAdd);
+        const added = await MODEL.insertMany(toAdd, { ordered: false });
+
         res.status(StatusCodes.OK).json({
           message: `${added.length}件のデータを追加しました`,
           data: added,
         });
       } catch (err) {
-        console.error("保存エラー:", err);
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ message: "保存中にエラーが発生しました" });
+        // console.error("保存エラー:", err);
+
+        // MongoBulkWriteError の場合、失敗した行を取り出せる
+        if (err.writeErrors) {
+          const failed = err.writeErrors.map((e) => ({
+            index: e.index,
+            code: e.code,
+            errmsg: e.errmsg,
+          }));
+
+          res.status(StatusCodes.PARTIAL_CONTENT).json({
+            message: `${toAdd.length - failed.length}件追加に成功、${
+              failed.length
+            }件失敗`,
+          });
+        } else {
+          res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ message: "保存中にエラーが発生しました" });
+        }
       }
     });
 };
