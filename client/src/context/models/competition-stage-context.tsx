@@ -5,7 +5,7 @@ import {
   CompetitionStageForm,
   CompetitionStageGet,
 } from "../../types/models/competition-stage";
-import { APIError, ReadItemsParamsMap, ResponseStatus } from "../../types/api";
+import { ReadItemsParamsMap } from "../../types/api";
 import { ModelType } from "../../types/models";
 
 import { API_ROUTES } from "../../lib/apiRoutes";
@@ -28,6 +28,7 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
+import { uploadFileBase } from "../../lib/api/uploadFile";
 
 type ContextModelType = ModelType.COMPETITION_STAGE;
 const ContextModelString = ModelType.COMPETITION_STAGE;
@@ -134,32 +135,16 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
   const uploadFile =
     typeof backendRoute.UPLOAD === "string"
       ? async (file: File) => {
-          let alert: ResponseStatus = { success: false };
-
-          const formData = new FormData();
-          formData.append("file", file);
-
-          try {
-            const res = await api.post(backendRoute.UPLOAD!, formData, {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            });
-            const item = res.data.data as Model[];
-            setItems((prev) => [...prev, ...convert(ContextModelString, item)]);
-
-            alert = { success: true, message: res.data?.message };
-          } catch (err: any) {
-            const apiError = err.response?.data as APIError;
-
-            alert = {
-              success: false,
-              errors: apiError.error?.errors,
-              message: apiError.error?.message,
-            };
-          } finally {
-            mainHandleSetAlert(alert);
-          }
+          uploadFileBase({
+            apiInstance: api,
+            backendRoute: backendRoute.UPLOAD!,
+            data: file,
+            onAfterUpload: (item: Model[]) => {
+              const createItems = convert(ContextModelString, item);
+              setItems((prev) => [...prev, ...createItems]);
+            },
+            handleSetAlert: mainHandleSetAlert,
+          });
         }
       : undefined;
 

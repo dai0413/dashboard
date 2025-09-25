@@ -190,6 +190,19 @@ MatchSchema.pre("validate", async function (next) {
   next();
 });
 
+MatchSchema.pre("insertMany", async function (next, docs) {
+  for (const doc of docs) {
+    if (doc.competition_stage) {
+      await applyCompetitionSeason(doc);
+    }
+    if (doc.match_format) {
+      await applyPlayTime(doc);
+    }
+    await computeResult(doc);
+  }
+  next();
+});
+
 // --- update 系 ---
 MatchSchema.pre(["findOneAndUpdate", "updateOne"], async function (next) {
   const update = this.getUpdate();
