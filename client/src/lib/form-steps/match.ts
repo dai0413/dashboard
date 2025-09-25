@@ -96,7 +96,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
         key: "date",
         label: "日付",
         fieldType: "input",
-        valueType: "date",
+        valueType: "datetime-local",
       },
       {
         key: "audience",

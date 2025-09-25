@@ -1,7 +1,7 @@
 import { toDateKey } from "../../utils";
 
 type InputFieldProps = {
-  type: "text" | "number" | "date" | "boolean" | "option";
+  type: "text" | "number" | "date" | "datetime-local" | "boolean" | "option";
   value: string | number | Date | boolean;
   onChange: (value: string | number | Date | boolean) => void;
   placeholder?: string;
@@ -14,21 +14,28 @@ const InputField = ({
   placeholder,
 }: InputFieldProps) => {
   function formatDateValue(value: unknown): string {
-    if (typeof value === "string") return value.slice(0, 10);
+    if (typeof value === "string")
+      return value.slice(0, type === "datetime-local" ? 16 : 10);
     if (value instanceof Date && !isNaN(value.getTime())) {
+      if (type === "datetime-local") {
+        return toDateKey(value, true).replace(" ", "T");
+      }
       return toDateKey(value);
     }
     return "";
   }
 
-  const formattedValue = type === "date" ? formatDateValue(value) : value;
+  const formattedValue =
+    type === "date" || type === "datetime-local"
+      ? formatDateValue(value)
+      : value;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (type === "boolean") {
       onChange(e.target.checked);
     } else if (type === "number") {
       onChange(Number(e.target.value));
-    } else if (type === "date") {
+    } else if (type === "date" || type === "datetime-local") {
       onChange(new Date(e.target.value));
     } else {
       onChange(e.target.value);

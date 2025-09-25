@@ -68,7 +68,7 @@ export const match: FieldDefinition[] = [
   {
     key: "date",
     label: "日付",
-    type: "Date",
+    type: "datetime-local",
     filterable: true,
     sortable: true,
     displayOnDetail: true,

@@ -7,7 +7,7 @@ export type FilterOperator = (typeof operatorOptions)[number]["key"];
 type BaseField = {
   key: string | ((data: any) => string);
   label: string;
-  type: "string" | "number" | "Date" | "select" | "checkbox";
+  type: "string" | "number" | "Date" | "select" | "checkbox" | "datetime-local";
 };
 
 // フィルター用
