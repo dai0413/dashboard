@@ -3,6 +3,7 @@ import {
   Bars2Icon,
   Bars3Icon,
   AdjustmentsVerticalIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 
 import { PlusCircleIcon, FolderPlusIcon } from "@heroicons/react/24/solid";
@@ -77,6 +78,8 @@ type TableToolbarProps<K extends keyof FormTypeMap> = {
   uploadFile?: (file: File) => Promise<void>;
   downloadFile?: () => Promise<void>;
   formInitialData?: Partial<FormTypeMap[K]>;
+  handleUpdateTrigger?: () => void;
+  reloadFun?: () => Promise<void>;
 };
 
 const TableToolbar = <K extends keyof FormTypeMap>({
@@ -86,6 +89,8 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   uploadFile,
   downloadFile,
   formInitialData,
+  handleUpdateTrigger,
+  reloadFun,
 }: TableToolbarProps<K>) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
@@ -116,7 +121,6 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   }, []);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(uploadFile);
     if (!uploadFile) {
       handleSetAlert({ success: false, message: "未対応のモデルです" });
       return SetIsFolderOpen(false);
@@ -125,6 +129,8 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     if (file) {
       await uploadFile(file);
       SetIsFolderOpen(false);
+
+      handleUpdateTrigger && handleUpdateTrigger();
     }
   };
 
@@ -203,34 +209,48 @@ const TableToolbar = <K extends keyof FormTypeMap>({
         </button>
       </div>
 
-      {(staffState.admin || isDev) && (
-        <div className="flex items-center gap-x-4">
-          {/* 右側：新規追加ボタン */}
+      <div className="flex items-center gap-x-4">
+        {/* リロード */}
+        {reloadFun && (
+          <button
+            className="cursor-pointer flex items-center gap-x-2"
+            onClick={reloadFun}
+          >
+            <ArrowPathIcon className="w-6 h-6" />
+            <span className="hidden md:inline">リロード</span>
+          </button>
+        )}
 
-          <AddButton
-            menuItems={menuItems}
-            dropdownRef={dropdownRef}
-            isAddOpen={isAddOpen}
-            setIsAddOpen={setIsAddOpen}
-          />
-
-          {/* 右側：フォルダーボタン */}
-          {(uploadFile || downloadFile) && (
-            <div ref={dropdownRef} className="relative inline-block text-left">
-              <button
-                onClick={() => SetIsFolderOpen(!isFolderOpen)}
-                className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                type="button"
+        {(staffState.admin || isDev) && (
+          <>
+            {/* 右側：新規追加ボタン */}
+            <AddButton
+              menuItems={menuItems}
+              dropdownRef={dropdownRef}
+              isAddOpen={isAddOpen}
+              setIsAddOpen={setIsAddOpen}
+            />
+            {/* 右側：フォルダーボタン */}
+            {(uploadFile || downloadFile) && (
+              <div
+                ref={dropdownRef}
+                className="relative inline-block text-left"
               >
-                <FolderPlusIcon className="w-8 h-8" />
-                <span className="hidden md:inline">CSV</span>
-              </button>
+                <button
+                  onClick={() => SetIsFolderOpen(!isFolderOpen)}
+                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                  type="button"
+                >
+                  <FolderPlusIcon className="w-8 h-8" />
+                  <span className="hidden md:inline">CSV</span>
+                </button>
 
-              {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
-            </div>
-          )}
-        </div>
-      )}
+                {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
