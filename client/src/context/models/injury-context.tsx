@@ -134,9 +134,14 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
             apiInstance: api,
             backendRoute: backendRoute.UPLOAD!,
             data: file,
-            onAfterUpload: (item: Model[]) => {
-              const createItems = convert(ContextModelString, item);
-              setItems((prev) => [...prev, ...createItems]);
+            onAfterUpload: (item: Model[] | Model) => {
+              if (Array.isArray(item)) {
+                const createItems = convert(ContextModelString, item);
+                setItems((prev) => [...prev, ...createItems]);
+              } else {
+                const createItems = convert(ContextModelString, item);
+                setItems((prev) => [...prev, ...[createItems]]);
+              }
             },
             handleSetAlert: mainHandleSetAlert,
           });
