@@ -31,6 +31,7 @@ import {
 } from "../../types/models/team-competition-season";
 import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
+import { useQuery } from "../../context/query-context";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -43,6 +44,11 @@ const Tabs = TeamTabItems.filter(
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
+  const { page, setPage } = useQuery();
+
+  const handlePageChange = (page: number) => {
+    setPage("page", page);
+  };
 
   const { isOpen: formIsOpen } = useForm();
 
@@ -324,7 +330,7 @@ const Team = () => {
                     icon={icon}
                     text={text}
                     color={isActive ? "green" : "gray"}
-                    onClick={() => icon && setSelectedTab(icon)}
+                    onClick={() => icon && handleSelectedTab(icon)}
                     direction="horizontal"
                     className={`
                         px-4 py-2 border-b-2 
@@ -363,6 +369,8 @@ const Team = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -390,6 +398,8 @@ const Team = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -417,6 +427,8 @@ const Team = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -444,6 +456,8 @@ const Team = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -471,6 +485,8 @@ const Team = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -494,6 +510,8 @@ const Team = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -515,6 +533,8 @@ const Team = () => {
               to: APP_ROUTES.COMPETITION_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -573,6 +593,8 @@ const Team = () => {
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
             { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
     </div>

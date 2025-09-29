@@ -17,9 +17,15 @@ import {
   SortableFieldDefinition,
 } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
+import { useQuery } from "../context/query-context";
 
 const NoCallUp = () => {
   const api = useApi();
+  const { page, setPage } = useQuery();
+
+  const handlePageChange = (page: number) => {
+    setPage("page", page);
+  };
 
   const [data, setData] = useState<NationalMatchSeriesGet[]>([]);
   const [dataIsLoading, setDataIsLoading] = useState<boolean>(false);
@@ -89,6 +95,8 @@ const NoCallUp = () => {
             to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
           },
         ]}
+        pageNum={page.page}
+        handlePageChange={handlePageChange}
       />
     </div>
   );

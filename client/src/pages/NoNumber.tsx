@@ -14,10 +14,15 @@ import {
   SortableFieldDefinition,
 } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
+import { useQuery } from "../context/query-context";
 
 const NoNumber = () => {
   const api = useApi();
+  const { page, setPage } = useQuery();
 
+  const handlePageChange = (page: number) => {
+    setPage("page", page);
+  };
   const [players, setPlayers] = useState<TransferGet[]>([]);
   const [playersIsLoading, setPlayersIsLoading] = useState<boolean>(false);
 
@@ -92,6 +97,8 @@ const NoNumber = () => {
             to: APP_ROUTES.TEAM_SUMMARY,
           },
         ]}
+        pageNum={page.page}
+        handlePageChange={handlePageChange}
       />
     </div>
   );

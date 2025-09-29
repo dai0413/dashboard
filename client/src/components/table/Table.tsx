@@ -47,8 +47,8 @@ const RenderCell = (
 
   if (Array.isArray(value)) {
     content = value.join(", ");
-  } else if (value instanceof Date) {
-    content = toDateKey(value);
+  } else if (header.field === "date" || value instanceof Date) {
+    content = toDateKey(value, false);
   }
   const field =
     linkField && linkField.find((field) => field.field === header.field);

@@ -16,8 +16,6 @@ import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { useFilter } from "../../context/filter-context";
 
-import { useQuery } from "../../context/query-context";
-
 type Base<K extends keyof FormTypeMap> = {
   title?: string;
   headers: TableHeader[];
@@ -32,6 +30,10 @@ type Original<K extends keyof FormTypeMap> = Base<K> & {
   originalFilterField?: FilterableFieldDefinition[];
   originalSortField?: SortableFieldDefinition[];
   detailLink?: string | null;
+  pageNum: number;
+  handlePageChange: (page: number) => void;
+  uploadFile?: (file: File) => Promise<void>;
+  reloadFun?: () => Promise<void>;
 };
 
 type ModelBase<K extends keyof FormTypeMap> = Base<K> & {
@@ -45,18 +47,14 @@ type TableContainerProps<K extends keyof FormTypeMap> =
 const TableContainer = <K extends keyof FormTypeMap>(
   props: TableContainerProps<K>
 ) => {
-  const { page, setPage } = useQuery();
-
-  const handlePageChange = (page: number) => {
-    setPage("page", page);
-  };
-
   const { handleSort, closeSort } = useSort();
   const { handleFilter, closeFilter } = useFilter();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
   const [items, setItems] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
+
+  const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
 
   useEffect(() => {
     const items =
@@ -68,6 +66,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
     setItems(items);
     setTableData(items);
   }, [
+    updateTrigger,
     "items" in props ? props.items : null,
     "contextState" in props ? props.contextState.metacrud.items : null,
   ]);
@@ -102,7 +101,9 @@ const TableContainer = <K extends keyof FormTypeMap>(
     setTableData(sorted);
     closeFilter();
     closeSort();
-    setPage("page", 1);
+
+    if ("handlePageChange" in props && props.handlePageChange)
+      props.handlePageChange(1);
   };
 
   const detailLink =
@@ -127,7 +128,9 @@ const TableContainer = <K extends keyof FormTypeMap>(
         setRowSpacing={setRowSpacing}
         modelType={props.modelType}
         uploadFile={
-          "contextState" in props
+          "uploadFile" in props
+            ? props.uploadFile
+            : "contextState" in props
             ? props.contextState.metacrud.uploadFile
             : undefined
         }
@@ -137,6 +140,10 @@ const TableContainer = <K extends keyof FormTypeMap>(
             : undefined
         }
         formInitialData={props.formInitialData}
+        handleUpdateTrigger={() => {
+          setUpdateTrigger((prev) => !prev);
+        }}
+        reloadFun={"reloadFun" in props ? props.reloadFun : undefined}
       />
       <Table
         headers={props.headers}
@@ -146,8 +153,10 @@ const TableContainer = <K extends keyof FormTypeMap>(
         itemsPerPage={10}
         isLoading={tableIsLoading}
         linkField={props.linkField}
-        currentPage={page.page}
-        onPageChange={handlePageChange}
+        currentPage={"pageNum" in props ? props.pageNum : 1}
+        onPageChange={
+          "handlePageChange" in props ? props.handlePageChange : undefined
+        }
       />
     </div>
   );

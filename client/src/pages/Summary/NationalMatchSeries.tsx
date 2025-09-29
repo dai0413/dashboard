@@ -26,6 +26,7 @@ import { useNationalMatchSeries } from "../../context/models/national-match-seri
 import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useQuery } from "../../context/query-context";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -39,6 +40,11 @@ const National = () => {
   const api = useApi();
   const { id } = useParams();
   const { isOpen: formIsOpen } = useForm();
+  const { page, setPage } = useQuery();
+
+  const handlePageChange = (page: number) => {
+    setPage("page", page);
+  };
 
   const [selectedTab, setSelectedTab] = useState("player");
 
@@ -141,7 +147,7 @@ const National = () => {
                     icon={icon}
                     text={text}
                     color={isActive ? "green" : "gray"}
-                    onClick={() => icon && setSelectedTab(icon)}
+                    onClick={() => icon && handleSelectedTab(icon)}
                     direction="horizontal"
                     className={`
                         px-4 py-2 border-b-2 
@@ -194,6 +200,8 @@ const National = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
     </div>
