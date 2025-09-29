@@ -19,7 +19,7 @@ export const uploadFileBase = async ({
 }: UploadParams) => {
   handleSetAlert &&
     handleSetAlert({
-      success: true,
+      success: false,
       message: "データ送信中",
     });
   let alert: ResponseStatus = { success: false };
