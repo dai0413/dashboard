@@ -3,7 +3,7 @@ const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 const { getNest } = require("../../utils/getNest");
 const {
-  teamCompetitionSeason: { MODEL, POPULATE_PATHS },
+  teamCompetitionSeason: { MODEL, POPULATE_PATHS, bulk },
 } = require("../../modelsConfig");
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);

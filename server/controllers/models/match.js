@@ -4,11 +4,18 @@ const mongoose = require("mongoose");
 const { formatMatch } = require("../../utils/format");
 const { getNest } = require("../../utils/getNest");
 const { parseObjectId } = require("../../csvImport/utils/parseObjectId");
-const { parseDate } = require("../../csvImport/utils/parseDate");
 const {
   match: { MODEL, POPULATE_PATHS },
 } = require("../../modelsConfig");
 const csv = require("csv-parser");
+const { fromZonedTime } = require("date-fns-tz");
+
+function parseDateJST(dateStr) {
+  // CSVの日付フォーマットをパース（例: "1992/9/5 15:00:00"）
+  // JSTとして解釈し、UTCに変換したDateを返す
+  if (!dateStr) return undefined;
+  return fromZonedTime(new Date(dateStr), "Asia/Tokyo");
+}
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -149,7 +156,7 @@ const uploadItem = async (req, res) => {
           : undefined,
         stadium: row.stadium ? parseObjectId(row.stadium) : undefined,
         stadium_name: row.stadium_name ? row.stadium_name : undefined,
-        date: row.date ? parseDate(row.date) : undefined,
+        date: row.date ? parseDateJST(row.date) : undefined,
         audience: row.audience ? row.audience : undefined,
         home_goal: row.home_goal ? row.home_goal : undefined,
         away_goal: row.away_goal ? row.away_goal : undefined,
@@ -168,9 +175,14 @@ const uploadItem = async (req, res) => {
       try {
         const added = await MODEL.insertMany(toAdd, { ordered: false });
 
+        // populate用にIDを集めて find する
+        const populatedAdded = await MODEL.find({
+          _id: { $in: added.map((a) => a._id) },
+        }).populate(getNestField(true));
+
         res.status(StatusCodes.OK).json({
-          message: `${added.length}件のデータを追加しました`,
-          data: added,
+          message: `${populatedAdded.length}件のデータを追加しました`,
+          data: populatedAdded.map(formatMatch),
         });
       } catch (err) {
         // console.error("保存エラー:", err);
