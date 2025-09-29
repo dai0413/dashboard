@@ -16,6 +16,8 @@ const CompetitionStageSchema = new mongoose.Schema(
       type: String,
       enum: [
         `none`,
+        `1st`,
+        `2nd`,
         `group_stage`,
         `round`,
         `quarter_final`,
