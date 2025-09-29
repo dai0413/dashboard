@@ -32,6 +32,8 @@ import {
 import { useForm } from "../../context/form-context";
 import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
+import { useMatch } from "../../context/models/match-context";
+import { useQuery } from "../../context/query-context";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -45,6 +47,11 @@ const Competition = () => {
   const api = useApi();
   const { id } = useParams();
   const { isOpen: formIsOpen } = useForm();
+  const { page, setPage } = useQuery();
+
+  const handlePageChange = (page: number) => {
+    setPage("page", page);
+  };
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
@@ -142,6 +149,7 @@ const Competition = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    handlePageChange(1);
     setSelectedTab(value as string);
   };
 
@@ -285,7 +293,7 @@ const Competition = () => {
                     icon={icon}
                     text={text}
                     color={isActive ? "green" : "gray"}
-                    onClick={() => icon && setSelectedTab(icon)}
+                    onClick={() => icon && handleSelectedTab(icon)}
                     direction="horizontal"
                     className={`
                         px-4 py-2 border-b-2 
@@ -322,6 +330,8 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -340,6 +350,8 @@ const Competition = () => {
             season: selectedSeason?._id,
           }}
           itemsLoading={competitionStageIsLoading}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -394,6 +406,12 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          uploadFile={useMatch().metacrud.uploadFile}
+          reloadFun={
+            selectedSeason ? () => readMatch(selectedSeason._id) : undefined
+          }
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
     </div>

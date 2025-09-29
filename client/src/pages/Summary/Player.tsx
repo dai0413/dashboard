@@ -28,6 +28,7 @@ import {
   NationalCallupGet,
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useQuery } from "../../context/query-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -40,6 +41,11 @@ const Tabs = PlayerTabItems.filter(
 const Player = () => {
   const api = useApi();
   const { id } = useParams();
+  const { page, setPage } = useQuery();
+
+  const handlePageChange = (page: number) => {
+    setPage("page", page);
+  };
 
   const { isOpen: formIsOpen } = useForm();
 
@@ -201,7 +207,7 @@ const Player = () => {
                     icon={icon}
                     text={text}
                     color={isActive ? "green" : "gray"}
-                    onClick={() => icon && setSelectedTab(icon)}
+                    onClick={() => icon && handleSelectedTab(icon)}
                     direction="horizontal"
                     className={`
                         px-4 py-2 border-b-2 
@@ -245,6 +251,8 @@ const Player = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -268,6 +276,8 @@ const Player = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
 
@@ -291,6 +301,8 @@ const Player = () => {
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
             },
           ]}
+          pageNum={page.page}
+          handlePageChange={handlePageChange}
         />
       )}
     </div>

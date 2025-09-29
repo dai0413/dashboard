@@ -23,6 +23,7 @@ const Match = () => {
       <TableContainer
         title={"試合情報"}
         headers={[
+          { label: "日付", field: "date" },
           { label: "シーズン", field: "season" },
           { label: "大会", field: "competition" },
           { label: "ステージ", field: "competition_stage", width: "100px" },

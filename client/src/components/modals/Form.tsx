@@ -75,34 +75,36 @@ const Form = <T extends keyof FormTypeMap>() => {
           .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
       ) ?? [];
 
-  const confirmData = (many?.formData ?? []).map((d) => {
-    const row: Record<string, string | number | undefined> = {};
+  const confirmData = (many?.formData ?? [])
+    .map((d) => {
+      const row: Record<string, string | number | undefined> = {};
 
-    confirmManyDataHeaders.forEach((h) => {
-      const key = h.field;
-      const value = d[key as keyof typeof d];
+      confirmManyDataHeaders.forEach((h) => {
+        const key = h.field;
+        const value = d[key as keyof typeof d];
 
-      let displayValue: string | number | undefined;
+        let displayValue: string | number | undefined;
 
-      if (h.fieldType === "select" || h.fieldType === "table") {
-        const options = getOptions(key);
-        const selected = options?.find((opt) => opt.key === value);
-        displayValue = selected?.label || "";
-      } else if (h.valueType === "boolean") {
-        displayValue = value ? "◯" : "";
-      } else {
-        displayValue = value as string | number;
-      }
+        if (h.fieldType === "select" || h.fieldType === "table") {
+          const options = getOptions(key);
+          const selected = options?.find((opt) => opt.key === value);
+          displayValue = selected?.label || "";
+        } else if (h.valueType === "boolean") {
+          displayValue = value ? "◯" : "";
+        } else {
+          displayValue = value as string | number;
+        }
 
-      if (value === null || value === undefined) {
-        displayValue = "";
-      }
+        if (value === null || value === undefined) {
+          displayValue = "";
+        }
 
-      row[key] = displayValue;
-    });
+        row[key] = displayValue;
+      });
 
-    return row;
-  });
+      return row;
+    })
+    .filter((row) => Object.keys(row).length > 0);
 
   return (
     <Modal isOpen={isOpen} onClose={closeForm}>
@@ -295,7 +297,12 @@ const Form = <T extends keyof FormTypeMap>() => {
                       : "次へ",
                   color: "green",
                   onClick:
-                    currentStep === steps.length - 1 ? sendData : nextStep,
+                    currentStep === steps.length - 1
+                      ? () => {
+                          sendData();
+                          setPage("formPage", 1);
+                        }
+                      : nextStep,
                 }}
                 deny={{
                   text: "戻る",
