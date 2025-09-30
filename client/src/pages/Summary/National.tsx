@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
 import { useCountry } from "../../context/models/country-context";
@@ -167,6 +167,16 @@ const National = () => {
       : [],
   };
 
+  const seriesFormInitialData = useMemo(() => {
+    if (!id) return {};
+    return { country: id };
+  }, [id]);
+
+  const competitionFormInitialData = useMemo(() => {
+    if (!id) return {};
+    return { country: id };
+  }, [id]);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
@@ -237,7 +247,7 @@ const National = () => {
           modelType={ModelType.COMPETITION}
           originalFilterField={competitionOptions.filterField}
           originalSortField={competitionOptions.sortField}
-          formInitialData={{}}
+          formInitialData={competitionFormInitialData}
           itemsLoading={competitionIsLoading}
           linkField={[
             {
@@ -262,9 +272,7 @@ const National = () => {
           modelType={ModelType.NATIONAL_MATCH_SERIES}
           originalFilterField={seriesOptions.filterField}
           originalSortField={seriesOptions.sortField}
-          formInitialData={{
-            country: id,
-          }}
+          formInitialData={seriesFormInitialData}
           itemsLoading={seriesIsLoading}
           linkField={[
             {
@@ -290,7 +298,6 @@ const National = () => {
           modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}
           originalSortField={callupOptions.sortField}
-          formInitialData={{}}
           itemsLoading={callupIsLoading}
           linkField={[
             {

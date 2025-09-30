@@ -207,7 +207,8 @@ const Competition = () => {
   const [selectedSeason, setSelectedSeason] = useState<SeasonGet | null>(null);
 
   useEffect(() => {
-    const newSeason = season.find((s) => s.current) || null;
+    const current = season.find((s) => s.current);
+    let newSeason = current ? current : season[0];
     setSelectedSeason(newSeason);
   }, [season]);
 
@@ -232,6 +233,11 @@ const Competition = () => {
     [season]
   );
 
+  const formInitialData = useMemo(() => {
+    if (!selectedSeason) return {};
+    return { season: selectedSeason._id };
+  }, [selectedSeason?._id]);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
@@ -239,6 +245,16 @@ const Competition = () => {
         <div className="border-b pb-2">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="font-bold text-lg">{selected.name}</div>
+            <div className="w-full md:w-50">
+              <SelectField
+                type="text"
+                value={selectedSeason ? selectedSeason?._id : ""}
+                options={seasonOptions}
+                onChange={handleSetSelectedSeason}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="text-gray-600">{selected.en_name}</div>
             {selected.country.label ? (
               <div className="text-md text-gray-500">{`国：${selected.country.label}`}</div>
@@ -255,15 +271,6 @@ const Competition = () => {
             {selected.age_group ? (
               <div className="text-md text-gray-500">{`年代：${selected.age_group}`}</div>
             ) : undefined}
-
-            <div className="w-full md:w-50">
-              <SelectField
-                type="text"
-                value={selectedSeason ? selectedSeason?._id : ""}
-                options={seasonOptions}
-                onChange={handleSetSelectedSeason}
-              />
-            </div>
           </div>
         </div>
       ) : (
@@ -320,9 +327,7 @@ const Competition = () => {
           modelType={ModelType.TEAM_COMPETITION_SEASON}
           originalFilterField={teamCompetitionSeasonOptions.filterField}
           originalSortField={teamCompetitionSeasonOptions.sortField}
-          formInitialData={{
-            season: selectedSeason?._id,
-          }}
+          formInitialData={formInitialData}
           itemsLoading={teamCompetitionSeasonIsLoading}
           linkField={[
             {
@@ -346,9 +351,7 @@ const Competition = () => {
           modelType={ModelType.COMPETITION_STAGE}
           originalFilterField={competitionStageOptions.filterField}
           originalSortField={competitionStageOptions.sortField}
-          formInitialData={{
-            season: selectedSeason?._id,
-          }}
+          formInitialData={formInitialData}
           itemsLoading={competitionStageIsLoading}
           pageNum={page.page}
           handlePageChange={handlePageChange}
@@ -392,9 +395,7 @@ const Competition = () => {
           modelType={ModelType.MATCH}
           originalFilterField={matchOptions.filterField}
           originalSortField={matchOptions.sortField}
-          formInitialData={{
-            season: selectedSeason?._id,
-          }}
+          formInitialData={formInitialData}
           itemsLoading={matchIsLoading}
           linkField={[
             {

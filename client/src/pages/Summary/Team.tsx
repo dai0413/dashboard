@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
 
@@ -287,6 +287,21 @@ const Team = () => {
       : [],
   };
 
+  const inTransfersFormInitialData = useMemo(() => {
+    if (!id) return {};
+    return { to_team: id };
+  }, [id]);
+
+  const outTransfersFormInitialData = useMemo(() => {
+    if (!id) return {};
+    return { from_team: id };
+  }, [id]);
+
+  const injuryFormInitialData = useMemo(() => {
+    if (!id) return {};
+    return { team: id };
+  }, [id]);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
@@ -361,7 +376,7 @@ const Team = () => {
           modelType={ModelType.TRANSFER}
           originalFilterField={inTransfersOptions.filterField}
           originalSortField={inTransfersOptions.sortField}
-          formInitialData={{ to_team: id }}
+          formInitialData={inTransfersFormInitialData}
           itemsLoading={playersIsLoading}
           linkField={[
             {
@@ -386,7 +401,7 @@ const Team = () => {
           modelType={ModelType.TRANSFER}
           originalFilterField={inTransfersOptions.filterField}
           originalSortField={inTransfersOptions.sortField}
-          formInitialData={{ to_team: id }}
+          formInitialData={inTransfersFormInitialData}
           itemsLoading={futurePlayersIsLoading}
           linkField={[
             {
@@ -415,7 +430,7 @@ const Team = () => {
           modelType={ModelType.TRANSFER}
           originalFilterField={inTransfersOptions.filterField}
           originalSortField={inTransfersOptions.sortField}
-          formInitialData={{ to_team: id }}
+          formInitialData={inTransfersFormInitialData}
           itemsLoading={inTransfersIsLoading}
           linkField={[
             {
@@ -444,7 +459,7 @@ const Team = () => {
           modelType={ModelType.TRANSFER}
           originalFilterField={outTransfersOptions.filterField}
           originalSortField={outTransfersOptions.sortField}
-          formInitialData={{ from_team: id }}
+          formInitialData={outTransfersFormInitialData}
           itemsLoading={outTransfersIsLoading}
           linkField={[
             {
@@ -473,7 +488,7 @@ const Team = () => {
           modelType={ModelType.TRANSFER}
           originalFilterField={outTransfersOptions.filterField}
           originalSortField={outTransfersOptions.sortField}
-          formInitialData={{ from_team: id }}
+          formInitialData={outTransfersFormInitialData}
           itemsLoading={onLoanIsLoading}
           linkField={[
             {
@@ -502,7 +517,7 @@ const Team = () => {
           modelType={ModelType.INJURY}
           originalFilterField={injuryOptions.filterableField}
           originalSortField={injuryOptions.sortField}
-          formInitialData={{ team: id }}
+          formInitialData={injuryFormInitialData}
           itemsLoading={injuriesIsLoading}
           linkField={[
             {
@@ -525,7 +540,6 @@ const Team = () => {
           modelType={ModelType.TEAM_COMPETITION_SEASON}
           originalFilterField={teamCompetitionSeasonOptions.filterField}
           originalSortField={teamCompetitionSeasonOptions.sortField}
-          formInitialData={{}}
           itemsLoading={teamCompetitionSeasonIsLoading}
           linkField={[
             {
