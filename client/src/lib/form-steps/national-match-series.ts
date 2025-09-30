@@ -14,15 +14,10 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
           valueType: "text",
           required: true,
         },
-        // {
-        //   key: "abbr",
-        //   label: "略称",
-        //   fieldType : "input",valueType : "text"
-        // },
       ],
     },
     {
-      stepLabel: "チーム情報を入力",
+      stepLabel: "国を選択",
       type: "form",
       fields: [
         {
@@ -31,6 +26,12 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
           fieldType: "table",
           valueType: "option",
         },
+      ],
+    },
+    {
+      stepLabel: "年代を選択",
+      type: "form",
+      fields: [
         {
           key: "age_group",
           label: "年代・種別",
