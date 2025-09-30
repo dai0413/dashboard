@@ -81,13 +81,33 @@ const DetailModal = <K extends keyof FormTypeMap>({
   };
 
   return (
-    <Modal isOpen={true} onClose={() => navigate(-1)}>
+    <Modal
+      isOpen={true}
+      onClose={() => navigate(-1)}
+      header={
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
+      }
+      footer={
+        (staffState.admin || isDev) && (
+          <LinkButtonGroup
+            reset={{
+              text: "編集",
+              onClick: () => editOnClick(),
+            }}
+            deny={{
+              text: "削除",
+              onClick: () => deleteOnClick(),
+            }}
+          />
+        )
+      }
+    >
       <Alert
         success={alert?.success || false}
         message={alert?.message}
         resetAlert={resetAlert}
       />
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
+
       {isLoading || !selected ? (
         <SkeletonFieldList rows={displayableField.length} />
       ) : (
@@ -98,7 +118,10 @@ const DetailModal = <K extends keyof FormTypeMap>({
                 ? selected[field.key as keyof typeof selected]
                 : field.key(selected);
 
-            let displayValue = value || "";
+            let displayValue =
+              typeof value === "undefined" || typeof value === null
+                ? ""
+                : value;
 
             if (isLabelObject(value)) displayValue = value.label || "";
 
@@ -168,18 +191,6 @@ const DetailModal = <K extends keyof FormTypeMap>({
               );
             }
           })}
-          {(staffState.admin || isDev) && (
-            <LinkButtonGroup
-              reset={{
-                text: "編集",
-                onClick: () => editOnClick(),
-              }}
-              deny={{
-                text: "削除",
-                onClick: () => deleteOnClick(),
-              }}
-            />
-          )}
         </div>
       )}
     </Modal>

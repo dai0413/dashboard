@@ -3,7 +3,7 @@ const { NotFoundError, BadRequestError } = require("../../errors");
 const mongoose = require("mongoose");
 const { getNest } = require("../../utils/getNest");
 const {
-  competitionStage: { MODEL, POPULATE_PATHS },
+  competitionStage: { MODEL, POPULATE_PATHS, bulk },
 } = require("../../modelsConfig");
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
@@ -39,14 +39,23 @@ const getAllItems = async (req, res) => {
 };
 
 const createItem = async (req, res) => {
-  const createData = {
-    ...req.body,
-  };
+  let populatedData;
+  if (Array.isArray(req.body)) {
+    if (!bulk)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: "modelsConfigへの設定不足",
+      });
 
-  const data = await MODEL.create(createData);
-  const populatedData = await MODEL.findById(data._id).populate(
-    getNestField(true)
-  );
+    const docs = await MODEL.insertMany(req.body);
+
+    const ids = docs.map((doc) => doc._id);
+    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
+      getNestField(true)
+    );
+  } else {
+    const data = await MODEL.create(req.body);
+    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
+  }
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: populatedData });

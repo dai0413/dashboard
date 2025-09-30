@@ -75,9 +75,27 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
   );
 
   return (
-    <Modal isOpen={sortOpen} onClose={closeSort}>
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">並び替え</h3>
-
+    <Modal
+      isOpen={sortOpen}
+      onClose={closeSort}
+      header={
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">並び替え</h3>
+      }
+      footer={
+        <LinkButtonGroup
+          deny={{
+            text: "並び替える",
+            color: "green",
+            onClick: onApply,
+          }}
+          reset={{
+            text: "リセット",
+            color: "gray",
+            onClick: () => resetSort(sortableField),
+          }}
+        />
+      }
+    >
       <section>
         <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
           選択中
@@ -133,19 +151,6 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
           </div>
         ))}
       </section>
-
-      <LinkButtonGroup
-        deny={{
-          text: "並び替える",
-          color: "green",
-          onClick: onApply,
-        }}
-        reset={{
-          text: "リセット",
-          color: "gray",
-          onClick: () => resetSort(sortableField),
-        }}
-      />
     </Modal>
   );
 };

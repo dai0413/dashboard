@@ -7,9 +7,7 @@ const config = {
     query: { field: "country", type: "ObjectId" },
     sort: { _id: 1 },
   },
-  create: {
-    bulk: true,
-  },
+  bulk: true,
 };
 
 module.exports = { config };
