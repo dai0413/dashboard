@@ -263,6 +263,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const sendData = async () => {
+    let result: boolean = false;
     if (!modelContext) return;
 
     if (mode === "single") {
@@ -274,7 +275,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       }
 
       if (newData) {
-        modelContext?.metacrud.createItem(item);
+        result = await modelContext?.metacrud.createItem(item);
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
         if (!difKeys || difKeys?.length === 0)
@@ -287,7 +288,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
           Object.entries(formData).filter(([key]) => difKeys.includes(key))
         );
 
-        modelContext?.metacrud.updateItem(updated);
+        result = await modelContext?.metacrud.updateItem(updated);
       }
 
       setCurrentStep((prev) =>
@@ -296,14 +297,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
 
     if (mode === "many") {
-      modelContext.metacrud.createItems(formDatas);
+      result = await modelContext.metacrud.createItems(formDatas);
 
       setCurrentStep((prev) =>
         Math.min(prev + 1, bulkStep ? bulkStep.length - 1 : 0)
       );
     }
 
-    setIsEditing(false);
+    if (result) setIsEditing(false);
   };
 
   const stepSkip = (next: number) => {

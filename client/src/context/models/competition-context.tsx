@@ -50,7 +50,7 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
   const [selected, setSelectedItem] = useState<Get | null>(null);
 
   const createItems = async (formDatas: Form[]) => {
-    createItemBase({
+    const result = createItemBase({
       apiInstance: api,
       backendRoute: backendRoute.CREATE,
       data: cleanData(formDatas),
@@ -61,10 +61,11 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
       handleLoading,
       handleSetAlert,
     });
+    return result;
   };
 
-  const createItem = async (formData: Form) =>
-    createItemBase({
+  const createItem = async (formData: Form) => {
+    const result = createItemBase({
       apiInstance: api,
       backendRoute: backendRoute.CREATE,
       data: cleanData(formData),
@@ -74,6 +75,8 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
       handleLoading,
       handleSetAlert,
     });
+    return result;
+  };
 
   const readItems = async (params: ReadItemsParamsMap[ContextModelType] = {}) =>
     readItemsBase({
@@ -98,8 +101,8 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
       handleSetAlert,
     });
 
-  const deleteItem = async (id: string) =>
-    deleteItemBase({
+  const deleteItem = async (id: string) => {
+    const result = deleteItemBase({
       apiInstance: api,
       backendRoute: backendRoute.DELETE(id),
       onAfterDelete: () => {
@@ -110,11 +113,14 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
       handleSetAlert,
     });
 
+    return result;
+  };
+
   const updateItem = async (updated: Form) => {
-    if (!selected) return;
+    if (!selected) return false;
     const id = selected._id;
 
-    updateItemBase({
+    const result = updateItemBase({
       apiInstance: api,
       backendRoute: backendRoute.UPDATE(id),
       data: updated,
@@ -129,12 +135,14 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
       handleLoading,
       handleSetAlert,
     });
+
+    return result;
   };
 
   const uploadFile =
     typeof backendRoute.UPLOAD === "string"
       ? async (file: File) => {
-          uploadFileBase({
+          const result = uploadFileBase({
             apiInstance: api,
             backendRoute: backendRoute.UPLOAD!,
             data: file,
@@ -149,6 +157,8 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
             },
             handleSetAlert: mainHandleSetAlert,
           });
+
+          return result;
         }
       : undefined;
 
@@ -172,8 +182,11 @@ const MetaCrudProvider = ({ children }: { children: ReactNode }) => {
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
+            return true;
           } catch (error) {
             console.error("ファイルのダウンロードに失敗しました", error);
+
+            return false;
           }
         }
       : undefined;

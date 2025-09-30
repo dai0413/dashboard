@@ -18,13 +18,13 @@ export type MetaCrudContext<K extends keyof FormTypeMap> = {
     onSuccess?: (items?: ModelDataMap[K][]) => void
   ) => Promise<void>;
 
-  createItem: (formData: FormTypeMap[K]) => Promise<void>;
-  createItems: (formDatas: FormTypeMap[K][]) => Promise<void>;
+  createItem: (formData: FormTypeMap[K]) => Promise<boolean>;
+  createItems: (formDatas: FormTypeMap[K][]) => Promise<boolean>;
 
-  updateItem: (data: FormTypeMap[K]) => Promise<void>;
-  deleteItem: (id: string) => Promise<void>;
-  uploadFile?: (file: File) => Promise<void>;
-  downloadFile?: () => Promise<void>;
+  updateItem: (data: FormTypeMap[K]) => Promise<boolean>;
+  deleteItem: (id: string) => Promise<boolean>;
+  uploadFile?: (file: File) => Promise<boolean>;
+  downloadFile?: () => Promise<boolean>;
 
   isLoading: boolean;
   filterableField: FilterableFieldDefinition[];
