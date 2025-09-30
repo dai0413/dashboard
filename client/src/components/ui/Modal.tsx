@@ -14,7 +14,7 @@ const Modal = ({ isOpen, onClose, children, header, footer }: ModalProps) => {
 
   const modal = (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-start justify-center pt-[10vh]">
-      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl h-[80vh] flex flex-col border border-gray-300">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl h-[80vh] flex flex-col">
         {/* Close Button */}
         {onClose && (
           <button
@@ -27,7 +27,7 @@ const Modal = ({ isOpen, onClose, children, header, footer }: ModalProps) => {
 
         {/* Header */}
         {header && (
-          <div className="flex-shrink-0 w-full p-4 border-b border-gray-200">
+          <div className="flex-shrink-0 w-full p-4 border-dotted border-b border-gray-800">
             {header}
           </div>
         )}
@@ -37,7 +37,7 @@ const Modal = ({ isOpen, onClose, children, header, footer }: ModalProps) => {
 
         {/* Footer */}
         {footer && (
-          <div className="flex-shrink-0 w-full p-4 border-t border-gray-200 flex justify-end gap-2">
+          <div className="flex-shrink-0 w-full p-4 border-dotted border-t border-gray-800 flex justify-end gap-2">
             {footer}
           </div>
         )}

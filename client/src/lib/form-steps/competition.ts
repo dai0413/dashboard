@@ -28,15 +28,21 @@ export const competition: FormStep<ModelType.COMPETITION>[] = [
     ],
   },
   {
-    stepLabel: "国・大会規模・大会タイプ・大会レベル・年代・公式戦",
+    stepLabel: "国を選択",
     type: "form",
     fields: [
       {
         key: "country",
         label: "国",
-        fieldType: "select",
+        fieldType: "table",
         valueType: "option",
       },
+    ],
+  },
+  {
+    stepLabel: "大会規模・大会タイプ・大会レベル・年代・公式戦",
+    type: "form",
+    fields: [
       {
         key: "competition_type",
         label: "大会規模",
