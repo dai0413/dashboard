@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
 import { usePlayer } from "../../context/models/player-context";
@@ -167,6 +167,11 @@ const Player = () => {
       : [],
   };
 
+  const formInitialData = useMemo(() => {
+    if (!id) return {};
+    return { player: id };
+  }, [id]);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
@@ -239,7 +244,7 @@ const Player = () => {
           modelType={ModelType.TRANSFER}
           originalFilterField={transferOptions.filterField}
           originalSortField={transferOptions.sortField}
-          formInitialData={{ player: id }}
+          formInitialData={formInitialData}
           itemsLoading={transferIsLoading}
           linkField={[
             {
@@ -268,7 +273,7 @@ const Player = () => {
           modelType={ModelType.INJURY}
           originalFilterField={injuryOptions.filterField}
           originalSortField={injuryOptions.sortField}
-          formInitialData={{ player: id }}
+          formInitialData={formInitialData}
           itemsLoading={injuriesIsLoading}
           linkField={[
             {
@@ -293,7 +298,7 @@ const Player = () => {
           modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}
           originalSortField={callupOptions.sortField}
-          formInitialData={{ player: id }}
+          formInitialData={formInitialData}
           itemsLoading={callupIsLoading}
           linkField={[
             {

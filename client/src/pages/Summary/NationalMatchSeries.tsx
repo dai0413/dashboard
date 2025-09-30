@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
 import { ModelType } from "../../types/models";
@@ -104,6 +104,17 @@ const National = () => {
       : [],
   };
 
+  const formInitialData = useMemo(() => {
+    if (!selected) return { series: id };
+    return {
+      series: id,
+      joined_at: selected?.joined_at
+        ? toDateKey(selected?.joined_at)
+        : undefined,
+      left_at: selected?.left_at ? toDateKey(selected?.left_at) : undefined,
+    };
+  }, [id, selected]);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
@@ -180,15 +191,7 @@ const National = () => {
           modelType={ModelType.NATIONAL_CALLUP}
           originalFilterField={callupOptions.filterField}
           originalSortField={callupOptions.sortField}
-          formInitialData={{
-            series: id,
-            joined_at: selected?.joined_at
-              ? toDateKey(selected?.joined_at)
-              : undefined,
-            left_at: selected?.left_at
-              ? toDateKey(selected?.left_at)
-              : undefined,
-          }}
+          formInitialData={formInitialData}
           itemsLoading={callupIsLoading}
           linkField={[
             {
