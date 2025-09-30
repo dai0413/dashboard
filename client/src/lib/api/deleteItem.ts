@@ -18,11 +18,13 @@ export const deleteItemBase = async ({
   handleSetAlert,
 }: DeleteParams) => {
   handleLoading && handleLoading("start");
+  let result: boolean;
   let alert: ResponseStatus = { success: false };
   try {
     const res = await apiInstance.delete(backendRoute);
     onAfterDelete();
     alert = { success: true, message: res.data?.message };
+    result = true;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -31,8 +33,11 @@ export const deleteItemBase = async ({
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
+    result = false;
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
   }
+
+  return result;
 };

@@ -20,10 +20,13 @@ export const updateItemBase = async ({
 }: UpdateParams) => {
   handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
+  let result = false;
   try {
     const res = await apiInstance.patch(backendRoute, data);
     onAfterUpdate(res.data.data);
     alert = { success: true, message: res.data?.message };
+
+    result = true;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -32,8 +35,12 @@ export const updateItemBase = async ({
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
+
+    result = false;
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
+
+    return result;
   }
 };

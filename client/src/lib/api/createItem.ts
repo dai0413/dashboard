@@ -20,10 +20,12 @@ export const createItemBase = async ({
 }: CreateParams) => {
   handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
+  let result: boolean;
   try {
     const res = await apiInstance.post(backendRoute, data);
     onAfterCreate(res.data.data);
     alert = { success: true, message: res.data?.message };
+    result = true;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -32,8 +34,11 @@ export const createItemBase = async ({
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
+    result = false;
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
   }
+
+  return result;
 };

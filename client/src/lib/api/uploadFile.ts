@@ -22,6 +22,7 @@ export const uploadFileBase = async ({
       success: false,
       message: "データ送信中",
     });
+  let result: boolean;
   let alert: ResponseStatus = { success: false };
   const formData = new FormData();
   formData.append("file", data);
@@ -36,6 +37,7 @@ export const uploadFileBase = async ({
       onAfterUpload(res.data.data);
     }
     alert = { success: true, message: res.data?.message };
+    result = true;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -44,7 +46,10 @@ export const uploadFileBase = async ({
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
+    result = false;
   } finally {
     handleSetAlert && handleSetAlert(alert);
   }
+
+  return result;
 };

@@ -75,8 +75,8 @@ type TableToolbarProps<K extends keyof FormTypeMap> = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
   modelType?: ModelType | null;
-  uploadFile?: (file: File) => Promise<void>;
-  downloadFile?: () => Promise<void>;
+  uploadFile?: (file: File) => Promise<boolean>;
+  downloadFile?: () => Promise<boolean>;
   formInitialData?: Partial<FormTypeMap[K]>;
   handleUpdateTrigger?: () => void;
   reloadFun?: () => Promise<void>;

@@ -32,7 +32,7 @@ type Original<K extends keyof FormTypeMap> = Base<K> & {
   detailLink?: string | null;
   pageNum: number;
   handlePageChange: (page: number) => void;
-  uploadFile?: (file: File) => Promise<void>;
+  uploadFile?: (file: File) => Promise<boolean>;
   reloadFun?: () => Promise<void>;
 };
 
