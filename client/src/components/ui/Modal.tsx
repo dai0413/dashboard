@@ -4,15 +4,18 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 interface ModalProps {
   isOpen?: boolean;
   onClose?: () => void;
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
   children: React.ReactNode;
 }
 
-const Modal = ({ isOpen, onClose, children }: ModalProps) => {
+const Modal = ({ isOpen, onClose, children, header, footer }: ModalProps) => {
   if (!isOpen) return null;
 
   const modal = (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-center justify-center">
-      <div className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl border border-gray-300">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-start justify-center pt-[10vh]">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl h-[80vh] flex flex-col border border-gray-300">
+        {/* Close Button */}
         {onClose && (
           <button
             onClick={onClose}
@@ -22,7 +25,22 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
           </button>
         )}
 
-        {children}
+        {/* Header */}
+        {header && (
+          <div className="flex-shrink-0 w-full p-4 border-b border-gray-200">
+            {header}
+          </div>
+        )}
+
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto p-4">{children}</div>
+
+        {/* Footer */}
+        {footer && (
+          <div className="flex-shrink-0 w-full p-4 border-t border-gray-200 flex justify-end gap-2">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

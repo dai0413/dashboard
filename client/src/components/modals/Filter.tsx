@@ -43,9 +43,29 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
   }, []);
 
   return (
-    <Modal isOpen={filterOpen} onClose={closeFilter}>
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">フィルター</h3>
-
+    <Modal
+      isOpen={filterOpen}
+      onClose={closeFilter}
+      header={
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">フィルター</h3>
+      }
+      footer={
+        <LinkButtonGroup
+          deny={{
+            text: "検索",
+            color: "green",
+            onClick: onApply,
+          }}
+          reset={{
+            text: "リセット",
+            color: "gray",
+            onClick: () => {
+              resetFilterConditions();
+            },
+          }}
+        />
+      }
+    >
       <section>
         <h4 className="text-md font-semibold text-gray-600 border-b pb-1 mb-2">
           条件
@@ -140,21 +160,6 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
           </IconTextButton>
         )}
       </section>
-
-      <LinkButtonGroup
-        deny={{
-          text: "検索",
-          color: "green",
-          onClick: onApply,
-        }}
-        reset={{
-          text: "リセット",
-          color: "gray",
-          onClick: () => {
-            resetFilterConditions();
-          },
-        }}
-      />
     </Modal>
   );
 };

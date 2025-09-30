@@ -107,34 +107,99 @@ const Form = <T extends keyof FormTypeMap>() => {
     .filter((row) => Object.keys(row).length > 0);
 
   return (
-    <Modal isOpen={isOpen} onClose={closeForm}>
-      <Alert
-        success={alert?.success || false}
-        message={alert?.message}
-        resetAlert={resetAlert}
-      />
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">
-        {newData ? "新規データ作成" : "既存データ編集"}
-      </h3>
+    <Modal
+      isOpen={isOpen}
+      onClose={closeForm}
+      header={
+        <>
+          {steps && steps.length !== 0 ? (
+            <>
+              <h3 className="text-xl font-semibold text-gray-700 mb-4">
+                {newData ? "新規データ作成" : "既存データ編集"}
+              </h3>
 
+              <div>
+                <div className="mb-4 text-sm text-gray-500">
+                  ステップ {currentStep + 1} / {steps.length}：
+                  {steps[currentStep].stepLabel}
+                </div>
+
+                <div className="flex space-x-2 mb-4">
+                  {steps.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`flex-1 h-2 rounded-full ${
+                        index <= currentStep ? "bg-green-500" : "bg-gray-300"
+                      }`}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+          <Alert
+            success={alert?.success || false}
+            message={alert?.message}
+            resetAlert={resetAlert}
+          />
+        </>
+      }
+      footer={
+        <div className="mt-4">
+          {isTableOpen ? (
+            <LinkButtonGroup
+              deny={{
+                text: "戻る",
+                color: "red",
+                onClick: () => setIsTableOpen(false),
+              }}
+            />
+          ) : steps && currentStep === steps.length - 1 && !isEditing ? (
+            <LinkButtonGroup
+              approve={{
+                text: "次のデータへ",
+                color: "green",
+                onClick: nextData,
+              }}
+              deny={{
+                text: "入力終了",
+                color: "red",
+                onClick: closeForm,
+              }}
+            />
+          ) : (
+            <LinkButtonGroup
+              approve={{
+                text:
+                  steps && currentStep === steps.length - 1
+                    ? newData
+                      ? "追加"
+                      : "変更"
+                    : "次へ",
+                color: "green",
+                onClick:
+                  steps && currentStep === steps.length - 1
+                    ? () => {
+                        sendData();
+                        setPage("formPage", 1);
+                      }
+                    : nextStep,
+              }}
+              deny={{
+                text: "戻る",
+                color: "red",
+                onClick: prevStep,
+                disabled: currentStep === 0,
+              }}
+            />
+          )}
+        </div>
+      }
+    >
       {!steps || steps.length === 0 ? null : (
         <>
-          <div className="mb-4 text-sm text-gray-500">
-            ステップ {currentStep + 1} / {steps.length}：
-            {steps[currentStep].stepLabel}
-          </div>
-
-          <div className="flex space-x-2 mb-4">
-            {steps.map((_, index) => (
-              <div
-                key={index}
-                className={`flex-1 h-2 rounded-full ${
-                  index <= currentStep ? "bg-green-500" : "bg-gray-300"
-                }`}
-              ></div>
-            ))}
-          </div>
-
           {steps[currentStep].type === "confirm" ? (
             <div className="space-y-2 text-sm text-gray-700">
               {!newData && alert.success && diffKeys.length > 0 && (
@@ -263,56 +328,6 @@ const Form = <T extends keyof FormTypeMap>() => {
               </div>
             ))
           )}
-
-          <div className="mt-4">
-            {isTableOpen ? (
-              <LinkButtonGroup
-                deny={{
-                  text: "戻る",
-                  color: "red",
-                  onClick: () => setIsTableOpen(false),
-                }}
-              />
-            ) : currentStep === steps.length - 1 && !isEditing ? (
-              <LinkButtonGroup
-                approve={{
-                  text: "次のデータへ",
-                  color: "green",
-                  onClick: nextData,
-                }}
-                deny={{
-                  text: "入力終了",
-                  color: "red",
-                  onClick: closeForm,
-                }}
-              />
-            ) : (
-              <LinkButtonGroup
-                approve={{
-                  text:
-                    currentStep === steps.length - 1
-                      ? newData
-                        ? "追加"
-                        : "変更"
-                      : "次へ",
-                  color: "green",
-                  onClick:
-                    currentStep === steps.length - 1
-                      ? () => {
-                          sendData();
-                          setPage("formPage", 1);
-                        }
-                      : nextStep,
-                }}
-                deny={{
-                  text: "戻る",
-                  color: "red",
-                  onClick: prevStep,
-                  disabled: currentStep === 0,
-                }}
-              />
-            )}
-          </div>
         </>
       )}
     </Modal>

@@ -6,6 +6,7 @@ const config = {
     { path: "competition", collection: "competitions" },
     { path: "season", collection: "seasons" },
   ],
+  bulk: true,
 };
 
 module.exports = { config };
