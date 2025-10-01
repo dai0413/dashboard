@@ -32,10 +32,19 @@ const getCurrentLoanPlayersByTeam = async (req, res) => {
 };
 
 const getNoNumberByCountry = async (req, res) => {
-  const countryId = req.params.countryId;
-  const startDate = req.query.startDate;
-  const endDate = req.query.endDate;
-  const result = await getNoNumberService(countryId, startDate, endDate);
+  const { startDate, endDate } = req.query;
+
+  // competition を配列に正規化
+  let competitions = req.query.competition;
+  if (competitions) {
+    if (typeof competitions === "string") {
+      competitions = competitions.split(","); // comp1,comp2 形式
+    }
+  } else {
+    competitions = [];
+  }
+
+  const result = await getNoNumberService(competitions, startDate, endDate);
 
   const formattedTransfers = result.map(formatTransfer);
   res.status(StatusCodes.OK).json({ data: formattedTransfers });
