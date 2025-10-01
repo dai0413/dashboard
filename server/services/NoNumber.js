@@ -1,25 +1,70 @@
 const mongoose = require("mongoose");
 const Transfer = require("../models/transfer");
+const Season = require("../models/season");
+const TeamCompetitionSeason = require("../models/team-competition-season");
 
 const getNoNumberService = async (
-  countryId,
+  competitionIds = [],
   startDate = null,
   endDate = null
 ) => {
-  const matchStage = {
-    "to_team.country": new mongoose.Types.ObjectId(countryId),
-    $or: [{ number: { $exists: false } }, { number: null }],
-    form: {
-      $in: [
-        "完全",
-        "期限付き",
-        "期限付き延長",
-        "育成型期限付き",
-        "育成型期限付き延長",
-        "復帰",
-        "更新",
-      ],
+  // seson検索
+  const seasonQuery = {
+    competition: {
+      $in: competitionIds.map((id) => new mongoose.Types.ObjectId(id)),
     },
+  };
+
+  if (startDate && endDate) {
+    seasonQuery.start_date = { $lte: new Date(endDate) };
+    seasonQuery.end_date = { $gte: new Date(startDate) };
+  } else if (startDate) {
+    seasonQuery.end_date = { $gte: new Date(startDate) };
+  } else if (endDate) {
+    seasonQuery.start_date = { $lte: new Date(endDate) };
+  }
+
+  const seasons = await Season.find({
+    competition: competitionIds.map((id) => new mongoose.Types.ObjectId(id)),
+    start_date: { $lte: new Date(endDate) },
+    end_date: { $gte: new Date(startDate) },
+  }).select("_id start_date end_date");
+  const seasonIds = seasons.map((s) => s._id);
+  const teamSeasons = await TeamCompetitionSeason.find({
+    season: { $in: seasonIds },
+  }).select("team season");
+
+  const seasonTeamPairs = teamSeasons.map((ts) => {
+    const season = seasons.find((s) => s._id.equals(ts.season));
+    return { season, team: ts.team.toString() };
+  });
+
+  const matchStage = {
+    $and: [
+      {
+        $or: seasonTeamPairs.map((pair) => ({
+          "to_team._id": new mongoose.Types.ObjectId(pair.team),
+          from_date: {
+            $gte: pair.season.start_date,
+            $lte: pair.season.end_date,
+          },
+        })),
+      },
+      { $or: [{ number: { $exists: false } }, { number: null }] },
+      {
+        form: {
+          $in: [
+            "完全",
+            "期限付き",
+            "期限付き延長",
+            "育成型期限付き",
+            "育成型期限付き延長",
+            "復帰",
+            "更新",
+          ],
+        },
+      },
+    ],
   };
 
   // 日付範囲が指定されていれば追加

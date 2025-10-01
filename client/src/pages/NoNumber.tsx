@@ -37,14 +37,17 @@ const NoNumber = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
+  const j1 = import.meta.env.VITE_J1_ID;
+  const j2 = import.meta.env.VITE_J2_ID;
+  const j3 = import.meta.env.VITE_J3_ID;
 
-  const readCurrentPlayers = (_id: string) =>
+  const competitionParam = [j1, j2, j3].join(",");
+
+  const readCurrentPlayers = () =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.AGGREGATE.NO_NUMBER,
-      path: japan,
-      params: { endDate: String(new Date()) },
+      params: { competition: competitionParam, endDate: String(new Date()) },
       onSuccess: (items: Transfer[]) => {
         setPlayers(convert(ModelType.TRANSFER, items));
       },
@@ -52,7 +55,7 @@ const NoNumber = () => {
     });
 
   useEffect(() => {
-    readCurrentPlayers(japan);
+    readCurrentPlayers();
   }, []);
 
   const inTransfersOptions = {

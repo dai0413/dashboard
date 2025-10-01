@@ -52,7 +52,11 @@ type Aggregate = {
   NO_CALLUP: CrudRouteWithParams<{}>;
   CURRENT_PLAYERS_BY_TEAM: CrudRouteWithParams<{ from_date_to?: string }>;
   CURRENT_LOANS_BY_TEAM: CrudRouteWithParams<{}>;
-  NO_NUMBER: CrudRouteWithParams<{ startData?: string; endDate?: string }>;
+  NO_NUMBER: CrudRouteWithParams<{
+    competition?: string;
+    startData?: string;
+    endDate?: string;
+  }>;
 };
 
 export const API_ROUTES: Model & {
@@ -210,7 +214,7 @@ export const API_ROUTES: Model & {
       URL: (id) => `${API_BASE_URL}/aggregate/transfer/current-loans/${id}`,
     },
     NO_NUMBER: {
-      URL: (id) => `${API_BASE_URL}/aggregate/transfer/no-number/${id}`,
+      URL: `${API_BASE_URL}/aggregate/transfer/no-number`,
     },
   },
 };
