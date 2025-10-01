@@ -23,11 +23,6 @@ export const BottomMenuItems: IconButtonProps[] = [
     to: `${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`,
     text: "日本",
   },
-  {
-    icon: "setting",
-    to: APP_ROUTES.ADMIN,
-    text: "管理",
-  },
 ];
 
 export const SPMenuItems: IconButtonProps[] = [

@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="block md:hidden fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200">
           <div
             className={`grid h-full max-w-lg mx-auto font-medium ${
-              staffState.admin || isDev ? "grid-cols-5" : "grid-cols-4"
+              staffState.admin || isDev ? "grid-cols-4" : "grid-cols-4"
             }`}
           >
             {BottomMenuItems.map(({ to, icon, text }) => (
