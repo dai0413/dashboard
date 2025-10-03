@@ -13,6 +13,97 @@ import { RenderField } from "./Form/Field";
 import { RenderManyField } from "./Form/ManyField";
 import { Table } from "../table";
 import { useQuery } from "../../context/query-context";
+import { FieldList } from "../modals/index";
+import { FieldListData } from "../../types/types";
+import { toDateKey } from "../../utils";
+import { DetailFieldDefinition } from "../../types/field";
+import { FormStep } from "../../types/form";
+import { GetOptions } from "../../types/option";
+
+const convertDisplayField = <T extends keyof FormTypeMap>(
+  displayableField: DetailFieldDefinition[],
+  formData: FormTypeMap[T],
+  steps: FormStep<T>[],
+  onEdit: (nextStepIndex: number) => void,
+  getOptions: GetOptions
+): FieldListData => {
+  const data: FieldListData = {};
+  displayableField.forEach((display) => {
+    if (typeof display.key === "string") {
+      const value =
+        display.key in formData
+          ? formData[display.key as keyof FormTypeMap[T]]
+          : undefined;
+
+      let da: {
+        value: string;
+        onEdit: (() => void) | undefined;
+      } = {
+        value:
+          typeof value === "undefined" ||
+          value === null ||
+          value === "" ||
+          (Array.isArray(value) && value.length === 0)
+            ? "未入力"
+            : (value as string),
+        onEdit: undefined,
+      };
+
+      if (Array.isArray(value) && value.length === 0) da.value = "未入力";
+
+      if (steps) {
+        const inputField = steps
+          .flatMap((step) => step.fields || [])
+          .find((f) => f.key === display.key);
+
+        const stepIndex = steps.findIndex((step) =>
+          (step.fields || []).some((f) => f.key === display.key)
+        );
+
+        da.onEdit = () => onEdit(stepIndex);
+
+        if (!inputField) {
+          da = { value: "入力対象外", onEdit: undefined };
+        } else {
+          if (
+            inputField.fieldType === "select" ||
+            inputField.fieldType === "table"
+          ) {
+            const options = getOptions(inputField.key as string);
+            const selected =
+              inputField?.multi && Array.isArray(value)
+                ? value
+                    .map((v) => options.find((opt) => opt.key === v)?.label)
+                    .join(", ")
+                : options?.find((opt) => opt.key === value)?.label;
+
+            da.value = selected || "未選択";
+          }
+
+          if (
+            inputField.valueType === "date" ||
+            inputField.valueType === "datetime-local"
+          ) {
+            let datevalue: string = "";
+            if (inputField.valueType === "date") {
+              datevalue = toDateKey(value as string | number | Date);
+            }
+            if (inputField.valueType === "datetime-local") {
+              datevalue = toDateKey(value as string | number | Date, true);
+            }
+            if (datevalue === "NaN-NaN-NaN") {
+              da.value = "未入力";
+            } else da.value = datevalue;
+          }
+        }
+      }
+
+      data[display.key] = da;
+    }
+  });
+
+  return data;
+};
 
 const Form = <T extends keyof FormTypeMap>() => {
   const {
@@ -26,9 +117,10 @@ const Form = <T extends keyof FormTypeMap>() => {
 
     many,
 
-    steps: { currentStep, nextStep, prevStep, nextData, sendData },
+    steps: { currentStep, nextStep, prevStep, nextData, sendData, handleStep },
 
     getDiffKeys,
+    displayableField,
   } = useForm<T>();
 
   const {
@@ -60,7 +152,7 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   const [isTableOpen, setIsTableOpen] = useState<boolean>(false);
 
-  const confirmManyDataHeaders =
+  const confirmBulkDataHeaders =
     steps
       ?.filter((step) => step.many)
       .flatMap((s) =>
@@ -75,11 +167,11 @@ const Form = <T extends keyof FormTypeMap>() => {
           .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
       ) ?? [];
 
-  const confirmData = (many?.formData ?? [])
+  const confirmBulkData = (many?.formData ?? [])
     .map((d) => {
       const row: Record<string, string | number | undefined> = {};
 
-      confirmManyDataHeaders.forEach((h) => {
+      confirmBulkDataHeaders.forEach((h) => {
         const key = h.field;
         const value = d[key as keyof typeof d];
 
@@ -105,6 +197,73 @@ const Form = <T extends keyof FormTypeMap>() => {
       return row;
     })
     .filter((row) => Object.keys(row).length > 0);
+
+  const data: FieldListData = {};
+  displayableField.forEach((display) => {
+    if (typeof display.key === "string") {
+      const value =
+        display.key in single.formData
+          ? single.formData[display.key as keyof FormTypeMap[T]]
+          : undefined;
+
+      let da: {
+        value: string;
+        onEdit: (() => void) | undefined;
+      } = {
+        value:
+          typeof value === "undefined" ||
+          value === null ||
+          value === "" ||
+          (Array.isArray(value) && value.length === 0)
+            ? "未入力"
+            : (value as string),
+        onEdit: undefined,
+      };
+
+      if (Array.isArray(value) && value.length === 0) da.value = "未入力";
+
+      if (steps) {
+        const inputField = steps
+          .flatMap((step) => step.fields || [])
+          .find((f) => f.key === display.key);
+
+        const stepIndex = steps.findIndex((step) =>
+          (step.fields || []).some((f) => f.key === display.key)
+        );
+
+        da.onEdit = () => handleStep(stepIndex);
+
+        if (!inputField) {
+          da = { value: "入力対象外", onEdit: undefined };
+        } else {
+          if (
+            inputField.fieldType === "select" ||
+            inputField.fieldType === "table"
+          ) {
+            const options = getOptions(inputField.key as string);
+            const selected =
+              inputField?.multi && Array.isArray(value)
+                ? value
+                    .map((v) => options.find((opt) => opt.key === v)?.label)
+                    .join(", ")
+                : options?.find((opt) => opt.key === value)?.label;
+
+            da.value = selected || "未選択";
+          }
+
+          if (inputField.valueType === "date")
+            da.value = toDateKey(value as string | number | Date);
+          if (inputField.valueType === "datetime-local")
+            da.value = toDateKey(value as string | number | Date, true);
+
+          if (value && Array.isArray(value))
+            da.value = value.filter((u) => u.trim() !== "").join(", ");
+        }
+      }
+
+      data[display.key] = da;
+    }
+  });
 
   return (
     <Modal
@@ -214,91 +373,35 @@ const Form = <T extends keyof FormTypeMap>() => {
                 </span>
               )}
 
-              {typeof single.formData === "object" &&
-                Object.entries(single.formData).map(([key, value]) => {
-                  if (
-                    key === "_id" ||
-                    key === "__v" ||
-                    key === "createdAt" ||
-                    key === "updatedAt"
-                  )
-                    return;
+              {typeof single.formData === "object" && (
+                <FieldList
+                  isForm={true}
+                  fields={displayableField}
+                  data={convertDisplayField(
+                    displayableField,
+                    single.formData,
+                    steps,
+                    handleStep,
+                    getOptions
+                  )}
+                  diffKeys={diffKeys}
+                  diffColor={!newData}
+                  isEmpty={mode === "single" ? true : false}
+                  isExclude={mode === "single" ? true : false}
+                />
+              )}
 
-                  const field = steps
-                    .flatMap((step) => step.fields || [])
-                    .find((f) => f.key === key);
-
-                  let displayValue = value;
-
-                  if (
-                    field?.fieldType === "select" ||
-                    field?.fieldType === "table"
-                  ) {
-                    const options = getOptions(key);
-                    const selected =
-                      field?.multh && Array.isArray(value)
-                        ? value
-                            .map(
-                              (v) => options.find((opt) => opt.key === v)?.label
-                            )
-                            .join(", ")
-                        : options?.find((opt) => opt.key === value)?.label;
-
-                    displayValue = selected || "未選択";
-                  }
-
-                  if (field?.valueType === "date" && value) {
-                    try {
-                      const date = new Date(value as string);
-                      displayValue = new Intl.DateTimeFormat("ja-JP", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }).format(date);
-                    } catch {
-                      // 無効な日付ならそのまま表示
-                    }
-                  }
-
-                  if (field?.multh && field?.valueType === "text" && value) {
-                    if (field?.key === "URL") {
-                      const urls = value as string[];
-                      displayValue = `${
-                        urls.filter((u) => u.trim() !== "").length
-                      }件`;
-                    } else {
-                      const inputs = value as string[];
-                      displayValue = inputs.join(",");
-                    }
-                  }
-
-                  return (
-                    <div
-                      key={key}
-                      className="flex justify-between border-b py-1"
-                    >
-                      <span className="font-semibold">
-                        {field?.label ?? key}
-                      </span>
-                      <span
-                        className={
-                          !newData && diffKeys.includes(key)
-                            ? "text-red-500 font-semibold bg-red-50 px-1 rounded"
-                            : ""
-                        }
-                      >
-                        {String(displayValue)}
-                      </span>
-                    </div>
-                  );
-                })}
-              {confirmData.length > 0 && (
+              {confirmBulkData.length > 0 && (
                 <>
-                  {many?.renderConfirmMes(confirmData)}
+                  <div className="bg-gray-200 w-full p-1">
+                    <span className="font-bold">多数データ入力値</span>
+                  </div>
+
+                  {many?.renderConfirmMes(confirmBulkData)}
 
                   <Table
-                    data={confirmData || []}
-                    headers={confirmManyDataHeaders || []}
+                    data={confirmBulkData || []}
+                    headers={confirmBulkDataHeaders || []}
                     currentPage={page.formPage}
                     onPageChange={(p: number) => setPage("formPage", p)}
                     itemsPerPage={10}

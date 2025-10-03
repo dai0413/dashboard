@@ -14,3 +14,11 @@ export type LinkField = {
   field: string;
   to: string;
 };
+
+export type FieldListData = Record<
+  string,
+  {
+    value: any;
+    onEdit?: () => void;
+  }
+>;
