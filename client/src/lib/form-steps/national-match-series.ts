@@ -76,7 +76,7 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
         {
           key: "urls",
           label: "urls",
-          multh: true,
+          multi: true,
           fieldType: "textarea",
           valueType: "text",
         },

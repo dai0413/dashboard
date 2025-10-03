@@ -32,7 +32,7 @@ const getAllItems = async (req, res) => {
   const dat = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     ...getNestField(false),
-    { $sort: { _id: 1, order: 1 } },
+    { $sort: { order: 1, _id: 1 } },
   ]);
 
   res.status(StatusCodes.OK).json({ data: dat });

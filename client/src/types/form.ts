@@ -18,11 +18,11 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   label: string;
   required?: boolean;
   width?: string;
-  multh?: boolean;
+  multi?: boolean;
 };
 
 type MultiValueField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
-  multh: true;
+  multi: true;
 };
 
 // <input type = "text">

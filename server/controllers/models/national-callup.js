@@ -5,7 +5,7 @@ const { formatNationalCallup } = require("../../utils/format");
 const addPositionGroupOrder = require("../../order/position_group");
 const { getNest } = require("../../utils/getNest");
 const {
-  nationalCallup: { MODEL, POPULATE_PATHS },
+  nationalCallup: { MODEL, POPULATE_PATHS, bulk },
 } = require("../../modelsConfig");
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);

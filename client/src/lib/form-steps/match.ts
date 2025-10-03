@@ -181,7 +181,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
         label: "urls",
         fieldType: "textarea",
         valueType: "text",
-        multh: true,
+        multi: true,
       },
     ],
   },

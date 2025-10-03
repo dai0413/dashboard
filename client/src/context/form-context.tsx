@@ -32,6 +32,8 @@ import { updateFormValue } from "../utils/updateFormValue";
 import { getSingleSteps } from "../lib/form-steps";
 import { getBulkSteps } from "../lib/form-steps/many";
 import { objectIsEqual } from "../utils";
+import { fieldDefinition } from "../lib/model-fields";
+import { DetailFieldDefinition, isDisplayOnDetail } from "../types/field";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FieldDefinition<T>[] | undefined,
@@ -114,8 +116,10 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     prevStep: () => void;
     nextData: () => void;
     sendData: () => Promise<void>;
+    handleStep: (nextStepIndex: number) => void;
   };
 
+  displayableField: DetailFieldDefinition[];
   getDiffKeys: (() => string[]) | undefined;
   createFormMenuItems: (
     modelType: T,
@@ -378,6 +382,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setCurrentStep(nextStepIndex);
   };
 
+  const handleStep = (nextStepIndex: number) => {
+    setCurrentStep(nextStepIndex);
+  };
+
   ////////////////////////// single data edit //////////////////////////
   const [formData, setFormData] = useState<FormTypeMap[T]>({});
 
@@ -477,6 +485,13 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     renderConfirmMes: renderer,
   };
 
+  // 確認画面
+  const displayableField = modelType
+    ? (fieldDefinition[modelType].filter(
+        isDisplayOnDetail
+      ) as DetailFieldDefinition[])
+    : [];
+
   const value: FormContextValue<T> = {
     modelType,
     mode,
@@ -503,8 +518,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       prevStep,
       nextData,
       sendData,
+      handleStep,
     },
 
+    displayableField,
     getDiffKeys,
     createFormMenuItems,
   };
