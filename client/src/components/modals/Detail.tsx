@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ModelContext } from "../../types/context";
-import { FormTypeMap, ModelType } from "../../types/models";
+import { FormTypeMap } from "../../types/models";
 import { useEffect } from "react";
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui";
@@ -27,14 +27,12 @@ const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
 );
 
 type DetailModalProps<K extends keyof FormTypeMap> = {
-  closeLink: string;
-  modelType: ModelType | null;
+  modelType: K | null;
   modelContext: ModelContext<K>;
   title: string;
 };
 
 const DetailModal = <K extends keyof FormTypeMap>({
-  // closeLink,
   modelType,
   modelContext,
   title,
