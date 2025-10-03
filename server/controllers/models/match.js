@@ -56,7 +56,7 @@ const getAllItems = async (req, res) => {
   const data = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     ...getNestField(false),
-    { $sort: { matchStage: 1, date: 1, _id: 1 } },
+    { $sort: { competition_stage: 1, date: 1, _id: 1 } },
   ]);
 
   res.status(StatusCodes.OK).json({ data: data.map(formatMatch) });

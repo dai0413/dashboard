@@ -122,7 +122,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       {
         key: "position",
         label: "ポジション",
-        multh: true,
+        multi: true,
         fieldType: "select",
         valueType: "option",
       },
@@ -135,7 +135,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       {
         key: "URL",
         label: "URL",
-        multh: true,
+        multi: true,
         fieldType: "textarea",
         valueType: "text",
       },

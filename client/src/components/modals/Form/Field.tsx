@@ -20,7 +20,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
   formData,
   handleFormData,
 }: RenderFieldProps<T>) => {
-  const { multh, key, fieldType, valueType } = field;
+  const { multi, key, fieldType, valueType } = field;
   const formDataKey = key as keyof FormTypeMap[T];
   const { getOptions, updateFilter, filters } = useOptions();
 
@@ -111,7 +111,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (multh && fieldType === "textarea")
+  if (multi && fieldType === "textarea")
     return (
       <>
         {[
@@ -166,7 +166,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (multh && fieldType === "select")
+  if (multi && fieldType === "select")
     return (
       <>
         {[...((formData[formDataKey] as string[]) ?? [])].map(
@@ -221,7 +221,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (multh && fieldType === "input")
+  if (multi && fieldType === "input")
     return (
       <>
         {[
