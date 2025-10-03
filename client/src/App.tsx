@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { APP_ROUTES } from "./lib/appRoutes";
 import { ModelWrapper } from "./context/models/model-wrapper";
 import { AuthProvider } from "./context/auth-context";
@@ -20,7 +20,9 @@ import Me from "./pages/Me";
 import NoNumber from "./pages/NoNumber";
 import AdminDashboard from "./pages/AdminDashboard";
 import NoCallUp from "./pages/NoCallup";
-import { ModelTable, ModelDetail, Summary } from "./routes";
+import NotFound from "./pages/NotFound";
+import models from "./pages/Models";
+import { Summary } from "./routes";
 
 const App: React.FC = () => {
   return (
@@ -31,10 +33,26 @@ const App: React.FC = () => {
             <FilterProvider>
               <SortProvider>
                 <FormProvider>
-                  <Router>
+                  <BrowserRouter>
                     <QueryProvider>
                       <div className="App">
                         <Routes>
+                          {Object.entries(models).map(
+                            ([key, { table: Table, detail: Detail }]) => (
+                              <Route
+                                path={`/${key}/*`}
+                                element={wrapWithPrivateRoute(
+                                  <Layout>
+                                    <Table />
+                                    <Routes>
+                                      <Route path=":id" element={<Detail />} />
+                                    </Routes>
+                                  </Layout>
+                                )}
+                              />
+                            )
+                          )}
+
                           <Route
                             path={APP_ROUTES.ADMIN}
                             element={wrapWithPrivateRoute(
@@ -87,14 +105,14 @@ const App: React.FC = () => {
                               </Layout>
                             )}
                           />
-                          {ModelTable}
-                          {ModelDetail}
                           {Summary}
+
+                          <Route path="*" element={<NotFound />} />
                         </Routes>
                       </div>
                       <Form />
                     </QueryProvider>
-                  </Router>
+                  </BrowserRouter>
                 </FormProvider>
               </SortProvider>
             </FilterProvider>
