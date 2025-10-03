@@ -1,7 +1,7 @@
 import { LinkField, TableHeader } from "../../types/types";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { isLabelObject, toDateKey } from "../../utils";
 import { IconButton } from "../buttons";
 import React, { useEffect, useMemo, useState } from "react";
@@ -127,6 +127,8 @@ const Table = <T extends Record<string, any>>({
   renderFieldCell,
   deleteOnClick,
 }: TableProps<T>) => {
+  const location = useLocation();
+
   const [pageNum, setPageNum] = useState<number>(1);
 
   useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
@@ -285,6 +287,12 @@ const Table = <T extends Record<string, any>>({
                     <Link
                       to={`${detailLink}/${row._id}`}
                       className="underline hover:text-blue-600"
+                      state={{
+                        backgroundLocation: {
+                          ...location,
+                          pathname: location.pathname.replace(/\/$/, ""),
+                        },
+                      }}
                     >
                       詳細
                     </Link>
