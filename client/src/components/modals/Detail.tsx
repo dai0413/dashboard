@@ -7,12 +7,13 @@ import { Modal } from "../ui";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useForm } from "../../context/form-context";
-import { isLabelObject, toDateKey } from "../../utils";
 
 import { fieldDefinition } from "../../lib/model-fields";
 import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
 import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
+import { FieldList } from "../modals/index";
+import { FieldListData } from "../../types/types";
 
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
@@ -80,6 +81,20 @@ const DetailModal = <K extends keyof FormTypeMap>({
     }
   };
 
+  const fieldListData: FieldListData = selected
+    ? Object.entries(selected).reduce<FieldListData>((acc, [key, value]) => {
+        let displayValue: any;
+
+        displayValue =
+          typeof value === "undefined" || typeof value === null ? "" : value;
+
+        acc[key] = {
+          value: displayValue,
+        };
+        return acc;
+      }, {})
+    : {};
+
   return (
     <Modal
       isOpen={true}
@@ -111,87 +126,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
       {isLoading || !selected ? (
         <SkeletonFieldList rows={displayableField.length} />
       ) : (
-        <div className="space-y-2 text-sm text-gray-700">
-          {displayableField.map((field) => {
-            const value =
-              typeof field.key === "string"
-                ? selected[field.key as keyof typeof selected]
-                : field.key(selected);
-
-            let displayValue =
-              typeof value === "undefined" || typeof value === null
-                ? ""
-                : value;
-
-            if (isLabelObject(value)) displayValue = value.label || "";
-
-            displayValue =
-              field.type === "Date" && value
-                ? (displayValue = toDateKey(value as string | number | Date))
-                : field.type === "datetime-local"
-                ? (displayValue = toDateKey(
-                    value as string | number | Date,
-                    true
-                  ))
-                : displayValue;
-
-            if (value && Array.isArray(value)) {
-              if (typeof value[0] === "string") {
-                displayValue = value.filter((u) => u.trim() !== "").join(", ");
-              }
-            }
-            if (field.label === "URL") {
-              const urls = Array.isArray(value) ? value : [value];
-              const validUrls = urls.filter(
-                (u) => typeof u === "string" && u.trim() !== ""
-              );
-
-              return (
-                <div
-                  key={
-                    typeof field.key === "string"
-                      ? field.key
-                      : field.key.toString()
-                  }
-                  className="flex justify-between border-b py-1"
-                >
-                  <span className="font-semibold">
-                    {field?.label ?? field.key}
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {validUrls.map((url, index) => (
-                      <a
-                        key={index}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline"
-                      >
-                        link-{index + 1}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            } else {
-              return (
-                <div
-                  key={
-                    typeof field.key === "string"
-                      ? field.key
-                      : field.key.toString()
-                  }
-                  className="flex justify-between border-b py-1"
-                >
-                  <span className="font-semibold">
-                    {field?.label ?? field.key}
-                  </span>
-                  <span>{String(displayValue)}</span>
-                </div>
-              );
-            }
-          })}
-        </div>
+        <FieldList
+          fields={displayableField}
+          isForm={false}
+          data={fieldListData}
+        />
       )}
     </Modal>
   );

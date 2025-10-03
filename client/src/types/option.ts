@@ -7,3 +7,8 @@ export type OptionTable = {
   header: TableHeader[];
   data: OptionArray;
 };
+
+export interface GetOptions {
+  (key: string, table: true, filter?: boolean): OptionTable;
+  (key: string, table?: false, filter?: boolean): OptionArray;
+}

@@ -5,17 +5,12 @@ import { useCountry } from "./models/country-context";
 import { useNationalMatchSeries } from "./models/national-match-series-context";
 import { FormTypeMap, ModelType } from "../types/models";
 import { convert, OptionsMap, OptionType } from "../utils/createOption";
-import { OptionArray, OptionTable } from "../types/option";
+import { GetOptions, OptionTable } from "../types/option";
 import { useCompetition } from "./models/competition-context";
 import { useSeason } from "./models/season-context";
 import { useCompetitionStage } from "./models/competition-stage-context";
 import { useStadium } from "./models/stadium-context";
 import { useMatchFormat } from "./models/match-format";
-
-interface GetOptions {
-  (key: string, table: true, filter?: boolean): OptionTable;
-  (key: string, table?: false, filter?: boolean): OptionArray;
-}
 
 type OptionsState = {
   getOptions: GetOptions;
