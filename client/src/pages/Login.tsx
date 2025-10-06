@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/auth-context";
 import { useNavigate } from "react-router-dom";
+import { FullScreenLoader } from "../components/ui";
 
 type form = {
   userName: string;
@@ -9,7 +10,7 @@ type form = {
 };
 
 const Login = () => {
-  const { login, register } = useAuth();
+  const { login, register, loading } = useAuth();
   const navigate = useNavigate();
 
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -33,13 +34,6 @@ const Login = () => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  // const nav = async (fn: () => Promise<boolean>, to: string) => {
-  //   const result = await fn();
-  //   if (result) {
-  //     navigate(to);
-  //   }
-  // };
-
   const handleLogin = async () => {
     try {
       const result = await login(form.email, form.password);
@@ -59,6 +53,8 @@ const Login = () => {
       navigate("/");
     }
   };
+
+  if (loading) return <FullScreenLoader />;
 
   return (
     <section className="text-gray-600 body-font">

@@ -15,6 +15,7 @@ type AuthState = {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   refresh: (accessToken: string) => void;
+  loading: boolean;
 };
 
 const defaultValue: AuthState = {
@@ -24,6 +25,7 @@ const defaultValue: AuthState = {
   login: async () => true,
   logout: async () => {},
   refresh: async () => {},
+  loading: false,
 };
 
 type StaffState = {
@@ -38,6 +40,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [staffState, setStaffState] = useState<StaffState>(
     defaultValue.staffState
   );
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     main: { handleSetAlert },
   } = useAlert();
@@ -47,6 +50,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     password: string
   ): Promise<boolean> => {
+    setLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await axios.post(API_ROUTES.AUTH.REGISTER, {
@@ -69,10 +73,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
       handleSetAlert(alert);
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   const login = async (email: string, password: string): Promise<boolean> => {
+    setLoading(true);
     let alert: ResponseStatus = { success: false };
     try {
       const res = await axios.post(API_ROUTES.AUTH.LOGIN, { email, password });
@@ -96,6 +103,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       };
       handleSetAlert(alert);
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -131,6 +140,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     login,
     logout,
     refresh,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
