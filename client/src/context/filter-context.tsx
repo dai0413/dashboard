@@ -86,6 +86,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   const getFilterConditions = (
     filterCondition: FilterableFieldDefinition
   ): string => {
+    if (typeof filterCondition.key !== "string") return "";
     const nowOperator = getOptions("operator").find(
       (op) => op.key === filterCondition.operator
     )?.label;
@@ -97,7 +98,10 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     const val = valueLabel ? valueLabel : filterCondition.value;
 
     const nowValue =
-      filterCondition.type === "Date" && val instanceof Date
+      filterCondition.operator === "is-empty" ||
+      filterCondition.operator === "is-not-empty"
+        ? ""
+        : filterCondition.type === "Date" && val instanceof Date
         ? toDateKey(val)
         : String(val);
 
@@ -150,18 +154,23 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   const handleFilter = (data: any[]): any[] => {
     return data.filter((item) =>
       filterConditions.every((cond) => {
+        if (typeof cond.key !== "string") return false;
         const itemValue = item[cond.key];
 
-        let compareValue: string | null = "";
+        // 配列 string[]に修正
+        let compareValue: string[] = [];
 
-        if (typeof itemValue === "object") {
+        if (Array.isArray(itemValue)) {
+          // すでに配列の場合 → string に変換
+          compareValue = itemValue.map((v) => String(v));
+        } else if (itemValue && typeof itemValue === "object") {
           if (isLabelObject(itemValue)) {
-            compareValue = itemValue.label;
+            compareValue = [String(itemValue.label)];
           } else {
-            compareValue = itemValue;
+            compareValue = [JSON.stringify(itemValue)];
           }
-        } else {
-          compareValue = itemValue;
+        } else if (typeof itemValue !== "undefined" && itemValue !== null) {
+          compareValue = [String(itemValue)];
         }
 
         const condOptions = getOptions(cond.key);
@@ -172,67 +181,98 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
         switch (cond.operator) {
           case "equals":
-            if (cond.type === "Date") {
-              if (compareValue && condVal)
-                return toDateKey(compareValue) === toDateKey(condVal);
+            if (cond.type === "Date" && condVal) {
+              return compareValue
+                .map((c) => toDateKey(c))
+                .includes(toDateKey(condVal));
             }
-            return compareValue == condVal;
+            return compareValue.includes(String(condVal));
+
           case "not-equal":
-            if (cond.type === "Date") {
-              if (compareValue && condVal)
-                return toDateKey(compareValue) !== toDateKey(condVal);
+            if (cond.type === "Date" && condVal) {
+              return !compareValue
+                .map((c) => toDateKey(c))
+                .includes(toDateKey(condVal));
             }
-            return compareValue != condVal;
+            return !compareValue.includes(String(condVal));
 
           case "contains":
-            if (
-              typeof compareValue === "string" &&
-              typeof condVal === "string"
-            ) {
-              return compareValue.includes(condVal);
+            if (typeof condVal === "string") {
+              // compareValue のいずれかが condVal を含む
+              return compareValue.some((val) => val.includes(condVal));
             }
             return false;
 
           case "gte":
-            if (cond.type === "Date") {
-              if (compareValue && condVal && typeof condVal !== "boolean")
-                return new Date(compareValue) >= new Date(condVal);
+            if (
+              cond.type === "Date" &&
+              condVal &&
+              typeof condVal !== "boolean"
+            ) {
+              return compareValue.some(
+                (val) =>
+                  !isNaN(new Date(val).getTime()) &&
+                  new Date(val) >= new Date(condVal)
+              );
             }
-            return Number(compareValue) >= Number(condVal);
+            return compareValue.some((val) => Number(val) >= Number(condVal));
 
           case "lte":
-            if (cond.type === "Date") {
-              if (compareValue && condVal && typeof condVal !== "boolean")
-                return new Date(compareValue) <= new Date(condVal);
+            if (
+              cond.type === "Date" &&
+              condVal &&
+              typeof condVal !== "boolean"
+            ) {
+              return compareValue.some(
+                (val) =>
+                  !isNaN(new Date(val).getTime()) &&
+                  new Date(val) <= new Date(condVal)
+              );
             }
-            return Number(compareValue) <= Number(condVal);
+            return compareValue.some((val) => Number(val) <= Number(condVal));
 
           case "greater":
-            if (cond.type === "Date") {
-              if (compareValue && condVal && typeof condVal !== "boolean")
-                return new Date(compareValue) > new Date(condVal);
+            if (
+              cond.type === "Date" &&
+              condVal &&
+              typeof condVal !== "boolean"
+            ) {
+              return compareValue.some(
+                (val) =>
+                  !isNaN(new Date(val).getTime()) &&
+                  new Date(val) > new Date(condVal)
+              );
             }
-            return Number(compareValue) > Number(condVal);
+            return compareValue.some((val) => Number(val) > Number(condVal));
 
           case "less":
-            if (cond.type === "Date") {
-              if (compareValue && condVal && typeof condVal !== "boolean")
-                return new Date(compareValue) < new Date(condVal);
+            if (
+              cond.type === "Date" &&
+              condVal &&
+              typeof condVal !== "boolean"
+            ) {
+              return compareValue.some(
+                (val) =>
+                  !isNaN(new Date(val).getTime()) &&
+                  new Date(val) < new Date(condVal)
+              );
             }
-            return Number(compareValue) < Number(condVal);
+            return compareValue.some((val) => Number(val) < Number(condVal));
 
           case "is-empty":
             return (
               compareValue === null ||
               compareValue === undefined ||
-              compareValue === ""
+              compareValue.length === 0 ||
+              compareValue.every((val) => val === "")
             );
 
           case "is-not-empty":
             return (
               compareValue !== null &&
               compareValue !== undefined &&
-              compareValue !== ""
+              compareValue.length !== 0 &&
+              compareValue.some((val) => val !== "")
             );
 
           default:
