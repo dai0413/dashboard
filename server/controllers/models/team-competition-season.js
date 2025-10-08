@@ -10,6 +10,7 @@ const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
 const getAllItems = async (req, res) => {
   const matchStage = {};
+  const populatedAfterMatchStage = {};
 
   if (req.query.team) {
     try {
@@ -37,9 +38,17 @@ const getAllItems = async (req, res) => {
     }
   }
 
+  if (req.query.competition_category) {
+    populatedAfterMatchStage["competition.category"] =
+      req.query.competition_category;
+  }
+
   const data = await MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
     ...getNestField(false),
+    ...(Object.keys(populatedAfterMatchStage).length > 0
+      ? [{ $match: populatedAfterMatchStage }]
+      : []),
     { $sort: { "season.start_date": -1, _id: -1 } },
   ]);
 

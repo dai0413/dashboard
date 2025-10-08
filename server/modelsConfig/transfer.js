@@ -30,8 +30,8 @@ const config = {
         ).split(",");
         matchStage.form = isNegated ? { $nin: values } : { $in: values };
       }
-      if (req.query.from_date_after)
-        matchStage.from_date = { $gte: new Date(req.query.from_date_after) };
+      if (req.query.from_date_gte)
+        matchStage.from_date = { $gte: new Date(req.query.from_date_gte) };
       if (req.query.to_date_before)
         matchStage.to_date = { $lte: new Date(req.query.to_date_before) };
       return matchStage;
