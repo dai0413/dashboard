@@ -32,6 +32,7 @@ import {
 import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { useQuery } from "../../context/query-context";
+import { Season, SeasonGet } from "../../types/models/season";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -81,6 +82,8 @@ const Team = () => {
   const [match, setMatch] = useState<MatchGet[]>([]);
   const [matchIsLoading, setMatcIsLoading] = useState<boolean>(false);
 
+  const [season, setSeason] = useState<SeasonGet | null>(null);
+
   const isLoadingSetters = {
     player: setPlayersIsLoading,
     in: setInTransfersIsLoading,
@@ -99,12 +102,22 @@ const Team = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const readCurrentPlayers = (id: string) =>
+  const readSeason = (seasonId: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.AGGREGATE.CURRENT_PLAYERS_BY_TEAM,
-      path: id,
-      params: { from_date_to: String(new Date()) },
+      backendRoute: {
+        URL: API_ROUTES.SEASON.DETAIL(seasonId),
+      },
+      onSuccess: (item: Season) => {
+        setSeason(convert(ModelType.SEASON, item));
+      },
+    });
+
+  const readPlayers = (params: ReadItemsParamsMap[ModelType.TRANSFER]) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.TRANSFER.GET_ALL,
+      params,
       onSuccess: (items: Transfer[]) => {
         setPlayers(convert(ModelType.TRANSFER, items));
       },
@@ -115,7 +128,7 @@ const Team = () => {
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-      params: { to_team: id, from_date_after: String(new Date()) },
+      params: { to_team: id, from_date_gte: String(new Date()) },
       onSuccess: (items: Transfer[]) => {
         setFuturePlayers(convert(ModelType.TRANSFER, items));
       },
@@ -157,13 +170,11 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, "injury"),
     });
 
-  const readTeamCompetitionSeason = (
-    params: ReadItemsParamsMap[ModelType.TEAM_COMPETITION_SEASON]
-  ) =>
+  const readTeamCompetitionSeason = (id: string) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
-      params,
+      params: { team: id, competition_category: "league" },
       onSuccess: (items: TeamCompetitionSeason[]) => {
         setTeamCompetitionSeason(
           convert(ModelType.TEAM_COMPETITION_SEASON, items)
@@ -187,26 +198,9 @@ const Team = () => {
     if (!id) return;
     (async () => {
       readItem(id);
-      readCurrentPlayers(id);
-      readFuturePlayers(id);
-      readTransfers(
-        { to_team: id, form: "!更新" },
-        (items: Transfer[]) =>
-          setInTransfers(convert(ModelType.TRANSFER, items)),
-        "in"
-      );
-      readTransfers(
-        { from_team: id },
-        (items: Transfer[]) =>
-          setOutTransfers(convert(ModelType.TRANSFER, items)),
-        "out"
-      );
-      readCurrentLoans(id);
-      readInjuries({ latest: true, now_team: id });
-      readTeamCompetitionSeason({ team: id });
-      readMatch(id);
+      readTeamCompetitionSeason(id);
     })();
-  }, [id, formIsOpen]);
+  }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
@@ -302,13 +296,90 @@ const Team = () => {
     return { team: id };
   }, [id]);
 
+  const [selectedteamCompetitionSeason, setSelectedTeamCompetitionSeason] =
+    useState<TeamCompetitionSeasonGet | null>(null);
+
+  useEffect(() => {
+    const current = teamCompetitionSeason[0];
+    setSelectedTeamCompetitionSeason(current);
+  }, [teamCompetitionSeason]);
+
+  useEffect(() => {
+    if (!selectedteamCompetitionSeason?.season.id) return;
+    (async () => {
+      readSeason(selectedteamCompetitionSeason?.season.id);
+      // readPlayers(id);
+      // readFuturePlayers(id);
+      // readTransfers(
+      //   { to_team: id, form: "!更新" },
+      //   (items: Transfer[]) =>
+      //     setInTransfers(convert(ModelType.TRANSFER, items)),
+      //   "in"
+      // );
+      // readTransfers(
+      //   { from_team: id },
+      //   (items: Transfer[]) =>
+      //     setOutTransfers(convert(ModelType.TRANSFER, items)),
+      //   "out"
+      // );
+      // readCurrentLoans(id);
+      // readInjuries({ latest: true, now_team: id });
+      // readTeamCompetitionSeason(id);
+      // readMatch(id);
+    })();
+  }, [selectedteamCompetitionSeason?._id, formIsOpen]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    readPlayers({
+      from_date_to: season?.end_date ? toDateKey(season?.end_date) : undefined,
+      from_date_from: season?.start_date
+        ? toDateKey(season?.start_date)
+        : undefined,
+      to_team: id,
+    });
+
+    console.log("start", season?.start_date);
+    console.log("end", season?.end_date);
+  }, [season]);
+
+  const handleSetSelectedSeason = (id: string | number | Date) => {
+    const selected = teamCompetitionSeason.find((s) => s._id === id) ?? null;
+    setSelectedTeamCompetitionSeason(selected);
+  };
+
+  const seasonOptions: OptionArray = useMemo(
+    () =>
+      teamCompetitionSeason.map((s) => ({
+        key: s._id,
+        label: s.season.label,
+      })),
+    [teamCompetitionSeason]
+  );
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
       {!teamIsLoading && selected ? (
         <div className="border-b pb-2">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="font-bold text-lg">{selected.team}</div>
+            <div className="w-full md:w-50">
+              <SelectField
+                type="text"
+                value={
+                  selectedteamCompetitionSeason
+                    ? selectedteamCompetitionSeason?._id
+                    : ""
+                }
+                options={seasonOptions}
+                onChange={handleSetSelectedSeason}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
             <div className="text-gray-600">{`略称：${selected.abbr}`}</div>
             <div className="text-sm text-gray-500">
               {`国：${selected.country.label}`}

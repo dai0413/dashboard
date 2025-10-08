@@ -50,7 +50,9 @@ type Model = {
 // Aggregate用
 type Aggregate = {
   NO_CALLUP: CrudRouteWithParams<{}>;
-  CURRENT_PLAYERS_BY_TEAM: CrudRouteWithParams<{ from_date_to?: string }>;
+  CURRENT_PLAYERS_BY_TEAM: CrudRouteWithParams<
+    ReadItemsParamsMap["CURRENT_PLAYERS_BY_TEAM"]
+  >;
   CURRENT_LOANS_BY_TEAM: CrudRouteWithParams<{}>;
   NO_NUMBER: CrudRouteWithParams<{
     competition?: string;
