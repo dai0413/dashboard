@@ -53,6 +53,7 @@ export type ReadItemsParamsMap = {
     competition?: string;
     season?: string;
     team?: string;
+    competition_category?: string;
   };
   [ModelType.TEAM]: {};
   [ModelType.TRANSFER]: {
@@ -62,9 +63,14 @@ export type ReadItemsParamsMap = {
     from_team?: string;
     to_team?: string;
     form?: string;
-    from_date_after?: string;
+    from_date_gte?: string;
     to_date_before?: string;
 
+    from_date_from?: string;
+    from_date_to?: string;
+  };
+
+  CURRENT_PLAYERS_BY_TEAM: {
     from_date_from?: string;
     from_date_to?: string;
   };
