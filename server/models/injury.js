@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const InjurySchema = new mongoose.Schema(
   {
@@ -140,4 +140,4 @@ InjurySchema.index(
   { unique: true }
 );
 
-module.exports = mongoose.model("Injury", InjurySchema);
+export const Injury = mongoose.model("Injury", InjurySchema);

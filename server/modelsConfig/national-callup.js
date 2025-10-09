@@ -1,6 +1,6 @@
-const NationalCallUp = require("../models/national-callup");
+import { NationalCallUp } from "../models/national-callup.js";
 
-const config = {
+export default {
   MODEL: NationalCallUp,
   POPULATE_PATHS: [
     { path: "series", collection: "nationalmatchseries" },
@@ -9,5 +9,3 @@ const config = {
   ],
   bulk: true,
 };
-
-module.exports = { config };

@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
-const { UnauthenticatedError } = require("../errors");
+import jwt from "jsonwebtoken";
+import { UnauthenticatedError } from "../errors/index.js";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const auth = (req, res, next) => {
+export default function authmiddleware(req, res, next) {
   if (isDevelopment) return next();
 
   const token = req.header("Authorization")?.replace("Bearer ", "");
@@ -24,6 +24,4 @@ const auth = (req, res, next) => {
   } catch (error) {
     throw new UnauthenticatedError();
   }
-};
-
-module.exports = auth;
+}

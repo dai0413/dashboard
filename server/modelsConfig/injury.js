@@ -1,6 +1,6 @@
-const Injury = require("../models/injury");
+import { Injury } from "../models/injury.js";
 
-const config = {
+export default {
   MODEL: Injury,
   POPULATE_PATHS: [
     { path: "player", collection: "players" },
@@ -8,5 +8,3 @@ const config = {
     { path: "now_team", collection: "teams" },
   ],
 };
-
-module.exports = { config };

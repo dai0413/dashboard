@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const NationalCallUp = require("../models/national-callup");
-const age_group = require("../utils/Enum/age_group");
+import { mongoose } from "mongoose";
+import { NationalCallUp } from "../models/national-callup.js";
+import { age_group } from "../utils/Enum/age_group.js";
 
 const NationalMatchSeriesSchema = new mongoose.Schema(
   {
@@ -94,7 +94,7 @@ NationalMatchSeriesSchema.post("save", async function (doc) {
   await syncCallUps(doc);
 });
 
-module.exports = mongoose.model(
+export const NationalMatchSeries = mongoose.model(
   "NationalMatchSeries",
   NationalMatchSeriesSchema
 );

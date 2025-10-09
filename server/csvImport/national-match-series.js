@@ -1,12 +1,14 @@
-const fs = require("fs");
-const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../.env"),
+import fs from "fs";
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(process.cwd(), "../.env"),
 });
-const csv = require("csv-parser");
-const mongoose = require("mongoose");
-const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const NationalMatchSeries = require("../models/national-match-series");
+
+import csv from "csv-parser";
+import { mongoose } from "mongoose";
+import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
+import NationalMatchSeries from "../models/national-match-series.js";
 
 const inputPath =
   process.env.SAMPLE_INPUT_MODEL_PATH_NATIONAL_MATCH_SERIES ||

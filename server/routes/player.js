@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
+import {
   getAllItems,
   createItem,
   checkItem,
@@ -10,11 +10,11 @@ const {
   deleteItem,
   uploadItem,
   downloadItem,
-} = require("../controllers/models/player");
+} from "../controllers/models/player.js";
 
-const upload = require("../middleware/upload");
-const detectEncoding = require("../middleware/detectEncoding");
-const checkFileExists = require("../middleware/checkFileExists");
+import upload from "../middleware/upload.js";
+import detectEncoding from "../middleware/detectEncoding.js";
+import checkFileExists from "../middleware/checkFileExists.js";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/check").post(checkItem);
@@ -24,4 +24,4 @@ router
 router.route("/download").get(downloadItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
-module.exports = router;
+export default router;

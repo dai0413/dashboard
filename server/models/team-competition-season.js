@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const TeamCompetitionSeasonSchema = new mongoose.Schema(
   {
@@ -62,7 +62,7 @@ TeamCompetitionSeasonSchema.pre(
   }
 );
 
-module.exports = mongoose.model(
+export const TeamCompetitionSeason = mongoose.model(
   "TeamCompetitionSeason",
   TeamCompetitionSeasonSchema
 );

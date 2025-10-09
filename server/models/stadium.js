@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const StadiumSchema = new mongoose.Schema(
   {
@@ -68,4 +68,4 @@ StadiumSchema.index(
   }
 );
 
-module.exports = mongoose.model("Stadium", StadiumSchema);
+export const Stadium = mongoose.model("Stadium", StadiumSchema);

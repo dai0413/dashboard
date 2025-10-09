@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const SeasonSchema = new mongoose.Schema(
   {
@@ -44,4 +44,4 @@ SeasonSchema.index(
   }
 );
 
-module.exports = mongoose.model("Season", SeasonSchema);
+export const Season = mongoose.model("Season", SeasonSchema);

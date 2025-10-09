@@ -1,12 +1,13 @@
-const { formatTransfer, formatNationalCallup } = require("../utils/format");
+import { formatTransfer, formatNationalCallup } from "../utils/format/index.js";
 
-const {
+import {
   getCurrentPlayersByTeamService,
   getCurrentLoanPlayersByTeamService,
   getNoNumberService,
   getNoCallUpService,
-} = require("../services");
-const { StatusCodes } = require("http-status-codes");
+} from "../services/index.js";
+
+import { StatusCodes } from "http-status-codes";
 
 const getCurrentPlayersByTeam = async (req, res) => {
   const teamId = req.params.teamId;
@@ -59,7 +60,7 @@ const getNoCallUp = async (req, res) => {
   res.status(StatusCodes.OK).json({ data: formattedCallUp });
 };
 
-module.exports = {
+export {
   getCurrentPlayersByTeam,
   getCurrentLoanPlayersByTeam,
   getNoNumberByCountry,

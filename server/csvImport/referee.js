@@ -1,17 +1,19 @@
-const fs = require("fs");
-const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../.env"),
+import fs from "fs";
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(process.cwd(), "../.env"),
 });
-const csv = require("csv-parser");
-const mongoose = require("mongoose");
-const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-require("../models/country");
-require("../models/player");
-const Country = require("../models/country");
-const Referee = require("../models/referee");
-const { parseObjectId } = require("./utils/parseObjectId");
-const { parseDate } = require("./utils/parseDate");
+
+import csv from "csv-parser";
+import { mongoose } from "mongoose";
+import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
+import "../models/country.js";
+import "../models/player.js";
+import Country from "../models/country.js";
+import Referee from "../models/referee.js";
+import { parseObjectId } from "./utils/parseObjectId.js";
+import { parseDate } from "./utils/parseDate.js";
 
 const inputPath = process.env.SAMPLE_INPUT_MODEL_PATH_REFEREE || "referee.csv";
 const outputPath =

@@ -1,6 +1,6 @@
-const Transfer = require("../models/transfer");
+import { Transfer } from "../models/transfer.js";
 
-const config = {
+export default {
   MODEL: Transfer,
   POPULATE_PATHS: [
     { path: "from_team", collection: "teams" },
@@ -38,5 +38,3 @@ const config = {
     },
   },
 };
-
-module.exports = { config };

@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const NationalMatchSeries = require("../models/national-match-series");
+import { mongoose } from "mongoose";
+import { NationalMatchSeries } from "../models/national-match-series.js";
 
-const getNoCallUpService = async (countryId) => {
+export const getNoCallUpService = async (countryId) => {
   return NationalMatchSeries.aggregate([
     {
       $match: { country: new mongoose.Types.ObjectId(countryId) },
@@ -36,5 +36,3 @@ const getNoCallUpService = async (countryId) => {
     { $sort: { joined_at: -1, _id: -1 } },
   ]);
 };
-
-module.exports = getNoCallUpService;

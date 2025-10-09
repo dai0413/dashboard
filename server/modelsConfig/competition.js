@@ -1,8 +1,6 @@
-const Competition = require("../models/competition");
+import { Competition } from "../models/competition.js";
 
-const config = {
+export default {
   MODEL: Competition,
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
 };
-
-module.exports = { config };

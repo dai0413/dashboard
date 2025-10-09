@@ -1,14 +1,14 @@
-const Player = require("../models/player");
-const { formatTransfer } = require("../../utils/format");
+import { Player } from "../../models/player.js";
+import { formatTransfer } from "../../utils/format/index.js";
 
-const mongoose = require("mongoose");
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
+import { mongoose } from "mongoose";
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
 
-const { getNest } = require("../../utils/getNest");
-const {
-  transfer: { MODEL, POPULATE_PATHS, bulk },
-} = require("../../modelsConfig");
+import { getNest } from "../../utils/getNest.js";
+
+import { transfer } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = transfer;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -189,10 +189,4 @@ const deleteItem = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-module.exports = {
-  getAllItems,
-  createItem,
-  getItem,
-  updateItem,
-  deleteItem,
-};
+export { getAllItems, createItem, getItem, updateItem, deleteItem };

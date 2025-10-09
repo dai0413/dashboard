@@ -1,6 +1,6 @@
-const NationalMatchSeries = require("../models/national-match-series");
+import { NationalMatchSeries } from "../models/national-match-series.js";
 
-const config = {
+export default {
   MODEL: NationalMatchSeries,
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
   getALL: {
@@ -8,5 +8,3 @@ const config = {
     sort: { joined_at: -1, _id: -1 },
   },
 };
-
-module.exports = { config };

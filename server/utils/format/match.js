@@ -10,4 +10,4 @@ const match = (matchDoc) => {
   };
 };
 
-module.exports = { match };
+export { match };

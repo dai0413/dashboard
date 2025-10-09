@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const age_group = require("../utils/Enum/age_group");
+import { mongoose } from "mongoose";
+import { age_group } from "../utils/Enum/age_group.js";
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -81,4 +81,4 @@ TeamSchema.index(
   }
 );
 
-module.exports = mongoose.model("Team", TeamSchema);
+export const Team = mongoose.model("Team", TeamSchema);

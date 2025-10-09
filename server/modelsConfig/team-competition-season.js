@@ -1,6 +1,6 @@
-const TeamCompetitionSeason = require("../models/team-competition-season");
+import { TeamCompetitionSeason } from "../models/team-competition-season.js";
 
-const config = {
+export default {
   MODEL: TeamCompetitionSeason,
   POPULATE_PATHS: [
     { path: "team", collection: "teams" },
@@ -8,5 +8,3 @@ const config = {
     { path: "competition", collection: "competitions" },
   ],
 };
-
-module.exports = { config };

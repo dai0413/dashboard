@@ -1,4 +1,4 @@
-const age_group = [
+export const age_group = [
   "full",
   "u17",
   "u18",
@@ -12,5 +12,3 @@ const age_group = [
   "university",
   "youth",
 ];
-
-module.exports = age_group;

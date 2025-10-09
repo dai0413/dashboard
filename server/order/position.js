@@ -23,7 +23,7 @@ const positionToGroup = {
   FW: "FW",
 };
 
-const addPositionGroup = {
+export const addPositionGroup = {
   $addFields: {
     position_group: {
       $let: {
@@ -158,5 +158,3 @@ const position = {
     },
   },
 };
-
-module.exports = addPositionGroup;

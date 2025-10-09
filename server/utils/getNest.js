@@ -23,4 +23,4 @@ const getNest = (usePopulate, POPULATE_PATHS) => {
     : getAggregateLookups(POPULATE_PATHS);
 };
 
-module.exports = { getNest };
+export { getNest };

@@ -1,18 +1,20 @@
-const fs = require("fs");
-const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../.env"),
+import fs from "fs";
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(process.cwd(), "../.env"),
 });
-const csv = require("csv-parser");
-const mongoose = require("mongoose");
-const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-require("../models/national-match-series");
-require("../models/player");
-require("../models/team");
-const NationalCallUp = require("../models/national-callup");
-const { parseObjectId } = require("./utils/parseObjectId");
-const { parseDate } = require("./utils/parseDate");
-const { parseBoolean } = require("./utils/parseBoolean");
+
+import csv from "csv-parser";
+import { mongoose } from "mongoose";
+import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
+import "../models/national-match-series.js";
+import "../models/player.js";
+import "../models/team.js";
+import NationalCallUp from "../models/national-callup.js";
+import { parseObjectId } from "./utils/parseObjectId.js";
+import { parseDate } from "./utils/parseDate.js";
+import { parseBoolean } from "./utils/parseBoolean.js";
 
 const inputPath =
   process.env.SAMPLE_INPUT_MODEL_PATH_NATIONAL_CALLUP || "national-callup.csv";

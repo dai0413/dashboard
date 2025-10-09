@@ -1,10 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const csv = require("csv-parser");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../.env"),
+import fs from "fs";
+import path from "path";
+import csv from "csv-parser";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(process.cwd(), "../.env"),
 });
-const mongoose = require("mongoose");
+
+import { mongoose } from "mongoose";
 const mongoUri = process.env.MONGODB_URI;
 const INPUT_BASE_PATH = process.env.INPUT_BASE_PATH;
 const inputPath = path.join(INPUT_BASE_PATH, "teams2.csv");

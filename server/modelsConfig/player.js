@@ -1,6 +1,6 @@
-const Player = require("../models/player");
+import { Player } from "../models/player.js";
 
-const config = {
+export default {
   MODEL: Player,
   POPULATE_PATHS: [],
   getALL: {
@@ -9,5 +9,3 @@ const config = {
   },
   bulk: true,
 };
-
-module.exports = { config };

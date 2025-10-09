@@ -1,12 +1,12 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
+import {
   getCurrentPlayersByTeam,
   getCurrentLoanPlayersByTeam,
   getNoNumberByCountry,
   getNoCallUp,
-} = require("../controllers/aggregate");
+} from "../controllers/aggregate.js";
 
 router.route("/transfer/current-players/:teamId").get(getCurrentPlayersByTeam);
 router
@@ -15,4 +15,4 @@ router
 router.route("/transfer/no-number").get(getNoNumberByCountry);
 router.route("/national-callup/series-count/:countryId").get(getNoCallUp);
 
-module.exports = router;
+export default router;

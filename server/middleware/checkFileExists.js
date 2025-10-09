@@ -1,10 +1,8 @@
-const { BadRequestError } = require("../errors");
+import { BadRequestError } from "../errors/index.js";
 
-const checkFileExists = (req, res, next) => {
+export default function checkFileExists(req, res, next) {
   if (!req.file) {
     throw new BadRequestError("ファイルが存在しません");
   }
   next();
-};
-
-module.exports = checkFileExists;
+}

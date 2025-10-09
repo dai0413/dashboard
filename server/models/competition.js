@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const age_group = require("../utils/Enum/age_group");
+import { mongoose } from "mongoose";
+import { age_group } from "../utils/Enum/age_group.js";
 
 const CompetitionSchema = new mongoose.Schema(
   {
@@ -92,4 +92,4 @@ CompetitionSchema.index(
   }
 );
 
-module.exports = mongoose.model("Competition", CompetitionSchema);
+export const Competition = mongoose.model("Competition", CompetitionSchema);

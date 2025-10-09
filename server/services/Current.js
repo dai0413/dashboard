@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const Transfer = require("../models/transfer");
-const addPositionGroup = require("../order/position");
-const addPositionGroupOrder = require("../order/position_group");
+import { mongoose } from "mongoose";
+import { Transfer } from "../models/transfer.js";
+import { addPositionGroup } from "../order/position.js";
+import { addPositionGroupOrder } from "../order/position_group.js";
 
-const getCurrentPlayersByTeamService = async (
+export const getCurrentPlayersByTeamService = async (
   teamId,
   from_date_from,
   from_date_to
@@ -94,5 +94,3 @@ const getCurrentPlayersByTeamService = async (
     { $project: { position_group: 0, position_group_order: 0 } },
   ]);
 };
-
-module.exports = getCurrentPlayersByTeamService;

@@ -1,15 +1,17 @@
-const fs = require("fs");
-const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../.env"),
+import fs from "fs";
+import path from "path";
+import dotenv from "dotenv";
+import csv from "csv-parser";
+import mongoose from "mongoose";
+import { createObjectCsvWriter as createCsvWriter } from "csv-writer";
+import Country from "../models/country.js";
+import Competition from "../models/competition.js";
+import { parseObjectId } from "./utils/parseObjectId.js";
+import { parseBoolean } from "./utils/parseBoolean.js";
+
+dotenv.config({
+  path: path.resolve(process.cwd(), "../.env"),
 });
-const csv = require("csv-parser");
-const mongoose = require("mongoose");
-const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-const Country = require("../models/country");
-const Competition = require("../models/competition");
-const { parseObjectId } = require("./utils/parseObjectId");
-const { parseBoolean } = require("./utils/parseBoolean");
 
 const INPUT_BASE_PATH = process.env.INPUT_BASE_PATH;
 const OUTPUT_BASE_PATH = process.env.OUTPUT_BASE_PATH;

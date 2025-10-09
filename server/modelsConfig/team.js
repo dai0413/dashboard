@@ -1,8 +1,6 @@
-const Team = require("../models/team");
+import { Team } from "../models/team.js";
 
-const config = {
+export default {
   MODEL: Team,
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
 };
-
-module.exports = { config };

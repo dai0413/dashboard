@@ -7,4 +7,4 @@ const parseBoolean = (val) => {
   return Boolean(val);
 };
 
-module.exports = { parseBoolean };
+export { parseBoolean };

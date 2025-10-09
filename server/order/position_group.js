@@ -1,4 +1,4 @@
-const addPositionGroupOrder = {
+export const addPositionGroupOrder = {
   $addFields: {
     position_group_order: {
       $switch: {
@@ -15,5 +15,3 @@ const addPositionGroupOrder = {
     },
   },
 };
-
-module.exports = addPositionGroupOrder;

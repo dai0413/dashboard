@@ -1,8 +1,6 @@
-const Country = require("../models/country");
+import { Country } from "../models/country.js";
 
-const config = {
+export default {
   MODEL: Country,
   POPULATE_PATHS: [],
 };
-
-module.exports = { config };

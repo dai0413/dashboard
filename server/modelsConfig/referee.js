@@ -1,11 +1,9 @@
-const Referee = require("../models/referee");
+import { Referee } from "../models/referee.js";
 
-const config = {
+export default {
   MODEL: Referee,
   POPULATE_PATHS: [
     { path: "citizenship", collection: "countries" },
     { path: "player", collection: "players" },
   ],
 };
-
-module.exports = { config };

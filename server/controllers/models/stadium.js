@@ -1,10 +1,10 @@
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
 
-const { getNest } = require("../../utils/getNest");
-const {
-  stadium: { MODEL, POPULATE_PATHS, bulk },
-} = require("../../modelsConfig");
+import { getNest } from "../../utils/getNest.js";
+
+import { stadium } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = stadium;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -89,10 +89,4 @@ const deleteItem = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-module.exports = {
-  getAllItems,
-  createItem,
-  getItem,
-  updateItem,
-  deleteItem,
-};
+export { getAllItems, createItem, getItem, updateItem, deleteItem };

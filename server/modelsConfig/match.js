@@ -1,6 +1,6 @@
-const Match = require("../models/match");
+import { Match } from "../models/match.js";
 
-const config = {
+export default {
   MODEL: Match,
   POPULATE_PATHS: [
     { path: "competition", collection: "competitions" },
@@ -12,5 +12,3 @@ const config = {
     { path: "stadium", collection: "stadia" },
   ],
 };
-
-module.exports = { config };
