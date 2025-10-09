@@ -1,8 +1,6 @@
-const Season = require("../models/season");
+import { Season } from "../models/season.js";
 
-const config = {
+export default {
   MODEL: Season,
   POPULATE_PATHS: [{ path: "competition", collection: "competitions" }],
 };
-
-module.exports = { config };

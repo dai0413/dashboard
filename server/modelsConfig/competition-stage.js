@@ -1,6 +1,6 @@
-const CompetitionStage = require("../models/competition-stage");
+import { CompetitionStage } from "../models/competition-stage.js";
 
-const config = {
+export default {
   MODEL: CompetitionStage,
   POPULATE_PATHS: [
     { path: "competition", collection: "competitions" },
@@ -8,5 +8,3 @@ const config = {
   ],
   bulk: true,
 };
-
-module.exports = { config };

@@ -1,17 +1,17 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
+import {
   getAllItems,
   createItem,
   getItem,
   updateItem,
   deleteItem,
   downloadItem,
-} = require("../controllers/models/team");
+} from "../controllers/models/team.js";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/download").get(downloadItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
-module.exports = router;
+export default router;

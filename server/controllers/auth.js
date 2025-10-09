@@ -1,11 +1,12 @@
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
-const { StatusCodes } = require("http-status-codes");
-const {
+import { User } from "../models/user.js";
+import jwt from "jsonwebtoken";
+import { StatusCodes } from "http-status-codes";
+
+import {
   BadRequestError,
   UnauthenticatedError,
   NotFoundError,
-} = require("../errors");
+} from "../errors/index.js";
 
 const register = async (req, res) => {
   const { user_name, email, password } = req.body;
@@ -125,4 +126,4 @@ const refresh = async (req, res) => {
   });
 };
 
-module.exports = { register, login, logout, me, refresh };
+export { register, login, logout, me, refresh };

@@ -1,11 +1,11 @@
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
-const csv = require("csv-parser");
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
+import csv from "csv-parser";
 
-const { getNest } = require("../../utils/getNest");
-const {
-  player: { MODEL, POPULATE_PATHS, bulk },
-} = require("../../modelsConfig");
+import { getNest } from "../../utils/getNest.js";
+
+import { player } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = player;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -157,7 +157,7 @@ const uploadItem = async (req, res) => {
     });
 };
 
-const moment = require("moment");
+import moment from "moment";
 
 const downloadItem = async (req, res) => {
   try {
@@ -188,7 +188,7 @@ const downloadItem = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getAllItems,
   createItem,
   checkItem,

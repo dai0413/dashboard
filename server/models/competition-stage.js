@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const CompetitionStageSchema = new mongoose.Schema(
   {
@@ -160,4 +160,7 @@ CompetitionStageSchema.pre(
   }
 );
 
-module.exports = mongoose.model("CompetitionStage", CompetitionStageSchema);
+export const CompetitionStage = mongoose.model(
+  "CompetitionStage",
+  CompetitionStageSchema
+);

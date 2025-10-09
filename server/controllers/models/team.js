@@ -1,10 +1,10 @@
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
 
-const { getNest } = require("../../utils/getNest");
-const {
-  team: { MODEL, POPULATE_PATHS, bulk },
-} = require("../../modelsConfig");
+import { getNest } from "../../utils/getNest.js";
+
+import { team } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = team;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -115,7 +115,7 @@ const downloadItem = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getAllItems,
   createItem,
   getItem,

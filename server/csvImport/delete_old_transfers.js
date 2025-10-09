@@ -1,9 +1,11 @@
-const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../.env"),
+import path from "path";
+import dotenv from "dotenv";
+dotenv.config({
+  path: path.resolve(process.cwd(), "../.env"),
 });
-const mongoose = require("mongoose");
-const Transfer = require("../models/transfer");
+
+import { mongoose } from "mongoose";
+import { Transfer } from "../models/transfer.js";
 
 const mongoUri = process.env.MONGODB_URI;
 

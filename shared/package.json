@@ -1,0 +1,12 @@
+{
+  "version": "1.2.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}

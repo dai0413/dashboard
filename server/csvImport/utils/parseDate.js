@@ -22,4 +22,4 @@ const parseDate = (val) => {
   return isNaN(date.getTime()) ? null : date;
 };
 
-module.exports = { parseDate };
+export { parseDate };

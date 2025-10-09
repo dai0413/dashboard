@@ -1,9 +1,9 @@
-const getCurrentPlayersByTeamService = require("./Current");
-const getCurrentLoanPlayersByTeamService = require("./CurrentLoan");
-const getNoNumberService = require("./NoNumber");
-const getNoCallUpService = require("./NoCallup");
+import { getCurrentPlayersByTeamService } from "./Current.js";
+import { getCurrentLoanPlayersByTeamService } from "./CurrentLoan.js";
+import { getNoNumberService } from "./NoNumber.js";
+import { getNoCallUpService } from "./NoCallup.js";
 
-module.exports = {
+export {
   getCurrentPlayersByTeamService,
   getCurrentLoanPlayersByTeamService,
   getNoNumberService,

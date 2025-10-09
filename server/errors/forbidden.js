@@ -1,12 +1,10 @@
-const { StatusCodes } = require("http-status-codes");
-const CustomAPIError = require("./custom-api");
+import { StatusCodes } from "http-status-codes";
+import CustomAPIError from "./custom-api.js";
 
-class ForbiddenError extends CustomAPIError {
+export default class ForbiddenError extends CustomAPIError {
   constructor(message) {
     super(message);
     this.statusCode = StatusCodes.FORBIDDEN;
     this.message = message || "アクセス権限がありません。";
   }
 }
-
-module.exports = ForbiddenError;

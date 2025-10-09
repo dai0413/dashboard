@@ -2,7 +2,7 @@ import request from "supertest";
 import path from "path";
 import { z } from "zod";
 import { WithId } from "mongodb";
-const app = require("../../server/app");
+import app from "../../server/app.js";
 
 const route: string = "/api/v1/player";
 const sampleData = {

@@ -1,7 +1,7 @@
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../errors");
-const mongoose = require("mongoose");
-const config = require("../modelsConfig");
+import { StatusCodes } from "http-status-codes";
+import { mongoose } from "mongoose";
+import { NotFoundError, BadRequestError } from "../errors/index.js";
+import config from "../modelsConfig/index.js";
 
 // --- ヘルパー: query から matchStage を作る ---
 const buildMatchStage = (query) => {
@@ -124,4 +124,4 @@ const crudFactory = (modelKey) => {
   return { getAllItems, createItem, getItem, updateItem, deleteItem };
 };
 
-module.exports = { crudFactory };
+export { crudFactory };

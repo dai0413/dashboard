@@ -12,4 +12,4 @@ const nationalCallup = (nationalCallupDoc) => {
   };
 };
 
-module.exports = { nationalCallup };
+export { nationalCallup };

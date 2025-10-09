@@ -1,6 +1,6 @@
-const { StatusCodes } = require("http-status-codes");
+import { StatusCodes } from "http-status-codes";
 
-const errorHandlerMiddleware = (err, req, res, next) => {
+export default function errorHandlerMiddleware(err, req, res, next) {
   console.log("in the error handle middleware");
   let customError = {
     statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
@@ -33,6 +33,4 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   return res.status(customError.statusCode).json({
     error: { message: customError.msg, code: customError.statusCode },
   });
-};
-
-module.exports = errorHandlerMiddleware;
+}

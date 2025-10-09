@@ -10,4 +10,4 @@ const injury = (injuryDoc) => {
   };
 };
 
-module.exports = { injury };
+export { injury };

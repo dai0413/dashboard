@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Transfer = require("../models/transfer");
+import { mongoose } from "mongoose";
+import { Transfer } from "../models/transfer.js";
 
-const getCurrentLoanPlayersByTeamService = async (teamId) => {
+export const getCurrentLoanPlayersByTeamService = async (teamId) => {
   return Transfer.aggregate([
     // 最新の移籍が上に来るように並べる
     { $sort: { from_date: -1, _id: -1 } },
@@ -69,5 +69,3 @@ const getCurrentLoanPlayersByTeamService = async (teamId) => {
     { $sort: { from_date: -1, _id: -1 } },
   ]);
 };
-
-module.exports = getCurrentLoanPlayersByTeamService;

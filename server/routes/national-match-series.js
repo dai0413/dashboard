@@ -1,17 +1,17 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const {
+import {
   getAllItems,
   createItem,
   getItem,
   updateItem,
   deleteItem,
   downloadItems,
-} = require("../controllers/models/national-match-series");
+} from "../controllers/models/national-match-series.js";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/download").get(downloadItems);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
-module.exports = router;
+export default router;

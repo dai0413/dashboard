@@ -1,8 +1,7 @@
-const { StatusCodes } = require("http-status-codes");
-const Transfer = require("../models/transfer");
-const Injury = require("../models/injury");
-
-const { formatTransfer, formatInjury } = require("../utils/format");
+import { StatusCodes } from "http-status-codes";
+import { Transfer } from "../models/transfer.js";
+import { Injury } from "../models/injury.js";
+import { formatTransfer, formatInjury } from "../utils/format/index.js";
 
 const getTopPageData = async (req, res) => {
   let limit = req.query.limit ? parseInt(req.query.limit, 10) : 5;
@@ -34,4 +33,4 @@ const getTopPageData = async (req, res) => {
     .json({ transferData: formattedTransfers, injuryData: formattedInjuries });
 };
 
-module.exports = { getTopPageData };
+export { getTopPageData };

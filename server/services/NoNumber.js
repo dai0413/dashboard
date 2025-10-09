@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const Transfer = require("../models/transfer");
-const Season = require("../models/season");
-const TeamCompetitionSeason = require("../models/team-competition-season");
+import { mongoose } from "mongoose";
+import { Transfer } from "../models/transfer.js";
+import { Season } from "../models/season.js";
+import { TeamCompetitionSeason } from "../models/team-competition-season.js";
 
-const getNoNumberService = async (
+export const getNoNumberService = async (
   competitionIds = [],
   startDate = null,
   endDate = null
@@ -130,5 +130,3 @@ const getNoNumberService = async (
     { $sort: { from_date: -1, _id: -1 } },
   ]);
 };
-
-module.exports = getNoNumberService;

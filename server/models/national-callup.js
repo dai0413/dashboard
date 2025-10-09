@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const NationalCallUpSchema = new mongoose.Schema(
   {
@@ -131,4 +131,7 @@ NationalCallUpSchema.pre("insertMany", async function (next, docs) {
   }
 });
 
-module.exports = mongoose.model("NationalCallUp", NationalCallUpSchema);
+export const NationalCallUp = mongoose.model(
+  "NationalCallUp",
+  NationalCallUpSchema
+);

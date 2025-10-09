@@ -1,8 +1,6 @@
-const MatchFormat = require("../models/match-format");
+import { MatchFormat } from "../models/match-format.js";
 
-const config = {
+export default {
   MODEL: MatchFormat,
   POPULATE_PATHS: [],
 };
-
-module.exports = { config };

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const RefereeSchema = new mongoose.Schema(
   {
@@ -57,4 +57,4 @@ RefereeSchema.index(
   }
 );
 
-module.exports = mongoose.model("Referee", RefereeSchema);
+export const Referee = mongoose.model("Referee", RefereeSchema);

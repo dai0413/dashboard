@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const MatchSchema = new mongoose.Schema(
   {
@@ -221,4 +221,4 @@ MatchSchema.pre(["findOneAndUpdate", "updateOne"], async function (next) {
   next();
 });
 
-module.exports = mongoose.model("Match", MatchSchema);
+export const Match = mongoose.model("Match", MatchSchema);

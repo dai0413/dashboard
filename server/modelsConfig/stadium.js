@@ -1,8 +1,6 @@
-const Stadium = require("../models/stadium");
+import { Stadium } from "../models/stadium.js";
 
-const config = {
+export default {
   MODEL: Stadium,
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
 };
-
-module.exports = { config };

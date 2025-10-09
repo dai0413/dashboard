@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const PeriodSchema = new mongoose.Schema(
   {
@@ -50,4 +50,4 @@ const MatchFormatSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("MatchFormat", MatchFormatSchema);
+export const MatchFormat = mongoose.model("MatchFormat", MatchFormatSchema);

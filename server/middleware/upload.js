@@ -1,5 +1,5 @@
-const multer = require("multer");
-const { BadRequestError } = require("../errors");
+import multer from "multer";
+import { BadRequestError } from "../errors/index.js";
 
 // メモリ上で一時保存（ディスクに保存しない）
 const storage = multer.memoryStorage();
@@ -18,4 +18,4 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-module.exports = upload;
+export default upload;

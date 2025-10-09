@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
-const { formatInjury } = require("../../utils/format");
-const { getNest } = require("../../utils/getNest");
-const {
-  injury: { MODEL, POPULATE_PATHS },
-} = require("../../modelsConfig");
+import { mongoose } from "mongoose";
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
+import { formatInjury } from "../../utils/format/index.js";
+import { getNest } from "../../utils/getNest.js";
+
+import { injury } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = injury;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -125,10 +125,4 @@ const deleteItem = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-module.exports = {
-  getAllItems,
-  createItem,
-  getItem,
-  updateItem,
-  deleteItem,
-};
+export { getAllItems, createItem, getItem, updateItem, deleteItem };

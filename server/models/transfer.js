@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const TransferSchema = new mongoose.Schema(
   {
@@ -175,4 +175,4 @@ TransferSchema.post(
   }
 );
 
-module.exports = mongoose.model("Transfer", TransferSchema);
+export const Transfer = mongoose.model("Transfer", TransferSchema);

@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
-const { getNest } = require("../../utils/getNest");
-const {
-  nationalMatchSeries: { MODEL, POPULATE_PATHS },
-} = require("../../modelsConfig");
+import { mongoose } from "mongoose";
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
+import { getNest } from "../../utils/getNest.js";
+
+import { nationalMatchSeries } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = nationalMatchSeries;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -136,7 +136,7 @@ const downloadItems = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   getAllItems,
   createItem,
   getItem,

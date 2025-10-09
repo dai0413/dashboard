@@ -1,11 +1,6 @@
-const { transfer } = require("./transfer");
-const { match } = require("./match");
-const { injury } = require("./injury");
-const { nationalCallup } = require("./national-callup");
+import { transfer as formatTransfer } from "./transfer.js";
+import { match as formatMatch } from "./match.js";
+import { injury as formatInjury } from "./injury.js";
+import { nationalCallup as formatNationalCallup } from "./national-callup.js";
 
-module.exports = {
-  formatTransfer: transfer,
-  formatMatch: match,
-  formatInjury: injury,
-  formatNationalCallup: nationalCallup,
-};
+export { formatTransfer, formatMatch, formatInjury, formatNationalCallup };

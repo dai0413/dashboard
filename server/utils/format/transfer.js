@@ -15,4 +15,4 @@ const transfer = (transferDoc) => {
   };
 };
 
-module.exports = { transfer };
+export { transfer };

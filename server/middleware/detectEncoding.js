@@ -1,9 +1,9 @@
-const iconv = require("iconv-lite");
-const jschardet = require("jschardet");
-const { Readable } = require("stream");
-const { BadRequestError } = require("../errors");
+import iconv from "iconv-lite";
+import jschardet from "jschardet";
+import { Readable } from "stream";
+import { BadRequestError } from "../errors/index.js";
 
-const detectEncoding = (req, res, next) => {
+export default function detectEncoding(req, res, next) {
   if (!req.file || !req.file.buffer) {
     throw new BadRequestError("ファイルが存在しません");
   }
@@ -28,6 +28,4 @@ const detectEncoding = (req, res, next) => {
   // デコード済みのStreamをセット
   req.decodedStream = Readable.from(decodedText);
   next();
-};
-
-module.exports = detectEncoding;
+}

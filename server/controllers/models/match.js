@@ -1,14 +1,14 @@
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
-const mongoose = require("mongoose");
-const { formatMatch } = require("../../utils/format");
-const { getNest } = require("../../utils/getNest");
-const { parseObjectId } = require("../../csvImport/utils/parseObjectId");
-const {
-  match: { MODEL, POPULATE_PATHS },
-} = require("../../modelsConfig");
-const csv = require("csv-parser");
-const { fromZonedTime } = require("date-fns-tz");
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
+import { mongoose } from "mongoose";
+import { formatMatch } from "../../utils/format/index.js";
+import { getNest } from "../../utils/getNest.js";
+import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
+import { match } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = match;
+
+import csv from "csv-parser";
+import { fromZonedTime } from "date-fns-tz";
 
 function parseDateJST(dateStr) {
   // CSVの日付フォーマットをパース（例: "1992/9/5 15:00:00"）
@@ -209,11 +209,4 @@ const uploadItem = async (req, res) => {
     });
 };
 
-module.exports = {
-  getAllItems,
-  createItem,
-  getItem,
-  updateItem,
-  deleteItem,
-  uploadItem,
-};
+export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import { mongoose } from "mongoose";
 
 const CountrySchema = new mongoose.Schema(
   {
@@ -118,4 +118,4 @@ CountrySchema.index(
   { unique: true }
 );
 
-module.exports = mongoose.model("Country", CountrySchema);
+export const Country = mongoose.model("Country", CountrySchema);

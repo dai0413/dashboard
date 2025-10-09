@@ -1,11 +1,10 @@
-const Referee = require("../models/referee");
-const { StatusCodes } = require("http-status-codes");
-const { NotFoundError, BadRequestError } = require("../../errors");
+import { StatusCodes } from "http-status-codes";
+import { NotFoundError, BadRequestError } from "../../errors/index.js";
 
-const { getNest } = require("../../utils/getNest");
-const {
-  referee: { MODEL, POPULATE_PATHS, bulk },
-} = require("../../modelsConfig");
+import { getNest } from "../../utils/getNest.js";
+
+import { referee } from "../../modelsConfig/index.js";
+const { MODEL, POPULATE_PATHS, bulk } = referee;
 
 const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
 
@@ -46,7 +45,7 @@ const getItem = async (req, res) => {
   const {
     params: { id },
   } = req;
-  const data = await Referee.findById(id).populate(getNestField(true));
+  const data = await MODEL.findById(id).populate(getNestField(true));
   if (!data) {
     throw new NotFoundError();
   }
@@ -62,7 +61,7 @@ const updateItem = async (req, res) => {
 
   const updatedData = { ...body };
 
-  const updated = await Referee.findByIdAndUpdate({ _id: id }, updatedData, {
+  const updated = await MODEL.findByIdAndUpdate({ _id: id }, updatedData, {
     new: true,
     runValidators: true,
   });
@@ -84,7 +83,7 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const team = await Referee.findOneAndDelete({ _id: id });
+  const team = await MODEL.findOneAndDelete({ _id: id });
   if (!team) {
     throw new NotFoundError();
   }
@@ -92,10 +91,4 @@ const deleteItem = async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-module.exports = {
-  getAllItems,
-  createItem,
-  getItem,
-  updateItem,
-  deleteItem,
-};
+export { getAllItems, createItem, getItem, updateItem, deleteItem };
