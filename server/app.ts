@@ -13,7 +13,10 @@ const CLIENT_URLS = process.env.CLIENT_URL?.split(",");
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || CLIENT_URLS.includes(origin)) {
+      if (
+        !origin ||
+        (CLIENT_URLS !== undefined && CLIENT_URLS.includes(origin))
+      ) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));

@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "allowJs": true,
     "checkJs": false,
     "target": "ES2020",
-    "module": "commonjs",
     "rootDir": "./",
     "outDir": "./dist",
     "esModuleInterop": true,
