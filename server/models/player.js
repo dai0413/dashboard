@@ -25,8 +25,8 @@ export const Player = mongoose.model("Player", PlayerSchema);
 
 // import mongoose from "mongoose";
 // import { zodToJsonSchema } from "zod-to-json-schema";
+// import mongooseSchemaJsonschema from "mongoose-schema-jsonschema";
 // import { PlayerSchema } from "../../shared/schemas/player.schema";
-// import { fromJsonSchema } from "mongoose-schema-jsonschema";
 
 // // 1️⃣ Zod → JSON Schema に変換
 // const jsonSchema = zodToJsonSchema(PlayerSchema);
