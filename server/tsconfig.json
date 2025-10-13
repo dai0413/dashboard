@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
     "allowJs": true,
     "checkJs": false,
     "target": "ES2020",
-    "rootDir": "./",
+    "rootDir": "../",
     "outDir": "./dist",
     "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
