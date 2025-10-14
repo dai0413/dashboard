@@ -1,5 +1,6 @@
-import { mongoose } from "mongoose";
-import { age_group } from "../utils/Enum/age_group.js";
+import mongoose from "mongoose";
+import { age_group } from "../../shared/enum/age_group.ts";
+import { competition_type } from "../../shared/enum/competition_type.ts";
 
 const CompetitionSchema = new mongoose.Schema(
   {
@@ -19,7 +20,7 @@ const CompetitionSchema = new mongoose.Schema(
     },
     competition_type: {
       type: String,
-      enum: [`club`, `national`, `other`],
+      enum: competition_type,
     },
     category: {
       type: String,

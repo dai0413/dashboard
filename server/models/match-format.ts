@@ -1,4 +1,4 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const PeriodSchema = new mongoose.Schema(
   {
@@ -11,7 +11,7 @@ const PeriodSchema = new mongoose.Schema(
       type: Number,
       default: null,
       validate: {
-        validator: function (value) {
+        validator: function (value: number) {
           // end が null の場合はチェック不要
           if (value == null || this.end == null) return true;
           return value <= this.end;
@@ -23,7 +23,7 @@ const PeriodSchema = new mongoose.Schema(
       type: Number,
       default: null,
       validate: {
-        validator: function (value) {
+        validator: function (value: number) {
           // start が null の場合はチェック不要
           if (value == null || this.start == null) return true;
           return this.start <= value;

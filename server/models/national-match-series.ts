@@ -1,6 +1,6 @@
-import { mongoose } from "mongoose";
-import { NationalCallUp } from "../models/national-callup.js";
-import { age_group } from "../utils/Enum/age_group.js";
+import mongoose from "mongoose";
+import { NationalCallUp } from "./national-callup.ts";
+import { age_group } from "../../shared/enum/age_group.ts";
 
 const NationalMatchSeriesSchema = new mongoose.Schema(
   {

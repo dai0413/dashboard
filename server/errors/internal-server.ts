@@ -1,9 +1,9 @@
 import { StatusCodes } from "http-status-codes";
-import CustomAPIError from "./custom-api.js";
+import CustomAPIError from "./custom-api.ts";
 
 export default class InternalServerError extends CustomAPIError {
-  constructor(message) {
-    super(message || "サーバーエラーです。");
+  constructor(message: string = "サーバーエラーです。") {
+    super(message);
     this.statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
   }
 }

@@ -1,5 +1,7 @@
-import { mongoose } from "mongoose";
-import { age_group } from "../utils/Enum/age_group.js";
+import mongoose from "mongoose";
+import { age_group } from "../../shared/enum/age_group.ts";
+import { division } from "../../shared/enum/division.ts";
+import { genre } from "../../shared/enum/genre.ts";
 
 const TeamSchema = new mongoose.Schema(
   {
@@ -19,7 +21,7 @@ const TeamSchema = new mongoose.Schema(
     },
     genre: {
       type: String,
-      enum: ["club", "national"],
+      enum: genre,
     },
     age_group: {
       type: String,
@@ -27,7 +29,7 @@ const TeamSchema = new mongoose.Schema(
     },
     division: {
       type: String,
-      enum: ["1st", "2nd", "3rd"],
+      enum: division,
       default: "1st",
     },
     jdataid: {

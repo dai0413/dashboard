@@ -1,4 +1,5 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
+import { result } from "../../shared/enum/result.ts";
 
 const MatchSchema = new mongoose.Schema(
   {
@@ -47,7 +48,7 @@ const MatchSchema = new mongoose.Schema(
     away_pk_goal: { type: Number },
     result: {
       type: String,
-      enum: ["home", "away", "draw"],
+      enum: result,
     },
     match_week: { type: Number },
     weather: { type: String },

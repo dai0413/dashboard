@@ -1,10 +1,9 @@
 import { StatusCodes } from "http-status-codes";
-import CustomAPIError from "./custom-api.js";
+import CustomAPIError from "./custom-api.ts";
 
 export default class BadRequestError extends CustomAPIError {
-  constructor(message) {
+  constructor(message: string = "リクエストの内容が不十分です。") {
     super(message);
     this.statusCode = StatusCodes.BAD_REQUEST;
-    this.message = message || "リクエストの内容が不十分です。";
   }
 }

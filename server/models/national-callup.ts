@@ -1,4 +1,7 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
+import { position_group } from "../../shared/enum/position_group.ts";
+import { status } from "../../shared/enum/status.ts";
+import { left_reason } from "../../shared/enum/left_reason.ts";
 
 const NationalCallUpSchema = new mongoose.Schema(
   {
@@ -30,7 +33,7 @@ const NationalCallUpSchema = new mongoose.Schema(
     },
     position_group: {
       type: String,
-      enum: ["GK", "DF", "MF", "FW", "MF/FW", "FP"],
+      enum: position_group,
     },
     is_captain: { type: Boolean, default: false, required: true },
     is_overage: { type: Boolean, default: false, required: true },
@@ -39,21 +42,12 @@ const NationalCallUpSchema = new mongoose.Schema(
     is_additional_call: { type: Boolean, default: false, required: true },
     status: {
       type: String,
-      enum: ["joined", "declined", "withdrawn"],
+      enum: status,
       default: "joined",
     },
     left_reason: {
       type: String,
-      enum: [
-        "injury",
-        "condition",
-        "club",
-        "transfer",
-        "suspension",
-        "personal",
-        "management",
-        "other",
-      ],
+      enum: left_reason,
     },
   },
   {
