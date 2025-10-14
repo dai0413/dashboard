@@ -1,10 +1,9 @@
 import { StatusCodes } from "http-status-codes";
-import CustomAPIError from "./custom-api.js";
+import CustomAPIError from "./custom-api.ts";
 
 export default class UnauthenticatedError extends CustomAPIError {
-  constructor(message) {
+  constructor(message: string = "ログインしてください。") {
     super(message);
     this.statusCode = StatusCodes.UNAUTHORIZED;
-    this.message = message || "ログインしてください。";
   }
 }

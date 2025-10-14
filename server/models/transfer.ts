@@ -1,4 +1,6 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
+import { position } from "../../shared/enum/position.ts";
+import { form } from "../../shared/enum/form.ts";
 
 const TransferSchema = new mongoose.Schema(
   {
@@ -9,7 +11,6 @@ const TransferSchema = new mongoose.Schema(
     from_team: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
-      // required: true,
     },
     from_team_name: {
       type: String,
@@ -17,7 +18,6 @@ const TransferSchema = new mongoose.Schema(
     to_team: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
-      // required: true,
     },
     to_team_name: {
       type: String,
@@ -29,57 +29,11 @@ const TransferSchema = new mongoose.Schema(
     },
     position: {
       type: [String],
-      enum: [
-        "GK",
-        "DF",
-        "CB",
-        "RCB",
-        "LCB",
-        "SB",
-        "RSB",
-        "LSB",
-        "WB",
-        "RWB",
-        "LWB",
-        "MF",
-        "CM",
-        "LCM",
-        "RCM",
-        "DM",
-        "OM",
-        "SH",
-        "WG",
-        "RIH",
-        "LIH",
-        "RSH",
-        "LSH",
-        "RWG",
-        "LWG",
-        "CF",
-        "FW",
-      ],
+      enum: position,
     },
     form: {
       type: String,
-      enum: [
-        "完全",
-        "期限付き",
-        "期限付き延長",
-        "期限付き満了",
-        "期限付き解除",
-        "育成型期限付き",
-        "育成型期限付き延長",
-        "育成型期限付き満了",
-        "育成型期限付き解除",
-        "満了",
-        "退団",
-        "引退",
-        "契約解除",
-        "復帰",
-        "離脱",
-        "更新",
-        "内定解除",
-      ],
+      enum: form,
     },
     number: {
       type: Number,
@@ -122,7 +76,7 @@ TransferSchema.index(
 );
 
 // injuryモデルのnow_teamを更新
-async function syncNowTeam(playerId) {
+async function syncNowTeam(playerId: string) {
   const Transfer = mongoose.model("Transfer");
   const Injury = mongoose.model("Injury");
 

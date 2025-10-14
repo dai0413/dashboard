@@ -1,4 +1,4 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const InjurySchema = new mongoose.Schema(
   {
@@ -30,7 +30,6 @@ const InjurySchema = new mongoose.Schema(
     },
     injured_part: {
       type: [String],
-      required: true,
     },
     is_injured: {
       type: Boolean,
@@ -39,7 +38,7 @@ const InjurySchema = new mongoose.Schema(
     ttp: {
       type: [String],
       validate: {
-        validator: function (values) {
+        validator: function (values: string[]) {
           if (!Array.isArray(values)) return false;
           return values.every((value) =>
             /^(\d+)([dwmy])$|^(\d+)([dwmy])-(\d+)([dwmy])$/i.test(value)
@@ -52,7 +51,7 @@ const InjurySchema = new mongoose.Schema(
     erd: {
       type: Date,
       validate: {
-        validator: function (value) {
+        validator: function (value: Date) {
           return (
             !value ||
             (!this.doi && !this.dos) ||

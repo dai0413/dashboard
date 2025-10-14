@@ -1,9 +1,15 @@
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
 import { Readable } from "stream";
-import { BadRequestError } from "../errors/index.js";
+import { BadRequestError } from "../errors/index.ts";
+import { NextFunction, Response } from "express";
+import { DecodedRequest } from "../types.ts";
 
-export default function detectEncoding(req, res, next) {
+export default function detectEncoding(
+  req: DecodedRequest,
+  res: Response,
+  next: NextFunction
+) {
   if (!req.file || !req.file.buffer) {
     throw new BadRequestError("ファイルが存在しません");
   }

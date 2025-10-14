@@ -1,4 +1,5 @@
-import { mongoose } from "mongoose";
+import mongoose from "mongoose";
+import { stage_type } from "../../shared/enum/stage_type.ts";
 
 const CompetitionStageSchema = new mongoose.Schema(
   {
@@ -14,45 +15,21 @@ const CompetitionStageSchema = new mongoose.Schema(
     },
     stage_type: {
       type: String,
-      enum: [
-        `none`,
-        `1st`,
-        `2nd`,
-        `group_stage`,
-        `round`,
-        `quarter_final`,
-        `semi_final`,
-        `final`,
-        `playoff`,
-        `qualifier`,
-        `other`,
-      ],
+      enum: stage_type,
       default: "none",
       required: true,
     },
-    name: {
-      type: String,
-    },
-    round_number: {
-      type: Number,
-    },
-    leg: {
-      type: Number,
-    },
-    order: {
-      type: Number,
-    },
+    name: { type: String },
+    round_number: { type: Number },
+    leg: { type: Number },
+    order: { type: Number },
     parent_stage: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CompetitionStage",
     },
-    notes: {
-      type: String,
-    },
+    notes: { type: String },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 CompetitionStageSchema.index(
