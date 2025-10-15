@@ -1,0 +1,15 @@
+export const sub_confederation = [
+  "CAFA",
+  "UNAF",
+  "COSAFA",
+  "CFU",
+  "AFF",
+  "WAFF",
+  "SAFF",
+  "UNCAF",
+  "WAFU",
+  "CECAFA",
+  "UNIFFAC",
+  "NAFU",
+  "EAFF",
+];

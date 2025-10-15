@@ -1,27 +1,17 @@
 import { z } from "zod";
+import { dateField } from "./utils/dateField.ts";
 
-export const PlayerSchema = z.object({
-  name: z.string().nonempty(),
-  en_name: z.string().optional(),
-  dob: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
-    )
-    .optional(),
-  pob: z.string().optional(),
-  createdAt: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
-    )
-    .optional(),
-  updatedAt: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
-    )
-    .optional(),
+export const PlayerZodSchema = z.object({
+  name: z
+    .string()
+    .nonempty()
+    .refine((v) => !!v, { message: "nameは必須です" }),
+  en_name: z.string().nonempty().optional(),
+  dob: dateField,
+  pob: z.string().nonempty().optional(),
+  createdAt: dateField,
+  updatedAt: dateField,
 });
 
-export type Player = z.infer<typeof PlayerSchema>;
+export type PlayerType = z.infer<typeof PlayerZodSchema>;
+export const PlayerZodSchemaArray = z.array(PlayerZodSchema);
