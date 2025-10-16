@@ -1,20 +1,19 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { RefereeType } from "../../shared/schemas/referee.schema.ts";
 
-const RefereeSchema = new mongoose.Schema(
+export interface IReferee
+  extends Omit<RefereeType, "citizenship" | "player">,
+    Document {
+  citizenship: Schema.Types.ObjectId[];
+  player: Schema.Types.ObjectId;
+}
+
+const RefereeSchema: Schema<IReferee> = new Schema<IReferee, any, IReferee>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    en_name: {
-      type: String,
-    },
-    dob: {
-      type: Date,
-    },
-    pob: {
-      type: String,
-    },
+    name: { type: String, required: true },
+    en_name: { type: String },
+    dob: { type: Date },
+    pob: { type: String },
     citizenship: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Country",
@@ -23,16 +22,10 @@ const RefereeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Player",
     },
-    transferurl: {
-      type: String,
-    },
-    sofaurl: {
-      type: String,
-    },
+    transferurl: { type: String },
+    sofaurl: { type: String },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 // transferurl が存在する場合のみユニーク
@@ -57,4 +50,7 @@ RefereeSchema.index(
   }
 );
 
-export const Referee = mongoose.model("Referee", RefereeSchema);
+export const RefereeModel: Model<IReferee> = mongoose.model<IReferee>(
+  "Referee",
+  RefereeSchema
+);

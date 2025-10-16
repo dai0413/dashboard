@@ -1,7 +1,20 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { CompetitionStageType } from "../../shared/schemas/competition-stage.schema.ts";
 import { stage_type } from "../../shared/enum/stage_type.ts";
 
-const CompetitionStageSchema = new mongoose.Schema(
+export interface ICompetitionStage
+  extends Omit<CompetitionStageType, "competition" | "season" | "parent_stage">,
+    Document {
+  competition: Schema.Types.ObjectId;
+  season: Schema.Types.ObjectId;
+  parent_stage: Schema.Types.ObjectId;
+}
+
+const CompetitionStageSchema: Schema<ICompetitionStage> = new Schema<
+  ICompetitionStage,
+  any,
+  ICompetitionStage
+>(
   {
     competition: {
       type: mongoose.Schema.Types.ObjectId,
@@ -107,7 +120,11 @@ CompetitionStageSchema.pre("validate", async function (next) {
 CompetitionStageSchema.pre(
   ["findOneAndUpdate", "updateOne"],
   async function (next) {
-    const update = this.getUpdate();
+    const update = this.getUpdate() as {
+      season?: mongoose.Types.ObjectId;
+      stage_type?: string;
+      $set?: Partial<ICompetitionStage>;
+    };
     const seasonId = update.season || update.$set?.season;
     if (seasonId) {
       const Season = mongoose.model("Season");
@@ -117,19 +134,15 @@ CompetitionStageSchema.pre(
       }
     }
 
-    const stageType = update.stage_type || update.$set?.stage_type;
-    if (stageType === "none") {
-      if (update.$set) {
-        update.$set.name = undefined;
-        update.$set.round_number = undefined;
-        update.$set.leg = undefined;
-        update.$set.order = undefined;
-      } else {
-        update.name = undefined;
-        update.round_number = undefined;
-        update.leg = undefined;
-        update.order = undefined;
-      }
+    // stage_type が none の場合の処理
+    const stageType = update.$set?.stage_type;
+    if (stageType === "none" && update.$set) {
+      Object.assign(update.$set, {
+        name: undefined,
+        round_number: undefined,
+        leg: undefined,
+        order: undefined,
+      });
       this.setUpdate(update);
     }
 
@@ -137,7 +150,5 @@ CompetitionStageSchema.pre(
   }
 );
 
-export const CompetitionStage = mongoose.model(
-  "CompetitionStage",
-  CompetitionStageSchema
-);
+export const CompetitionStageModel: Model<ICompetitionStage> =
+  mongoose.model<ICompetitionStage>("CompetitionStage", CompetitionStageSchema);

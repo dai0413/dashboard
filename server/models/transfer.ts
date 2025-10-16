@@ -1,8 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { TransferType } from "../../shared/schemas/transfer.schema.ts";
 import { position } from "../../shared/enum/position.ts";
 import { form } from "../../shared/enum/form.ts";
 
-const TransferSchema = new mongoose.Schema(
+export interface ITransfer
+  extends Omit<TransferType, "from_team" | "to_team" | "player">,
+    Document {
+  from_team: Schema.Types.ObjectId;
+  to_team: Schema.Types.ObjectId;
+  player: Schema.Types.ObjectId;
+}
+
+const TransferSchema: Schema<ITransfer> = new Schema<ITransfer, any, ITransfer>(
   {
     doa: {
       type: Date,
@@ -56,9 +65,7 @@ const TransferSchema = new mongoose.Schema(
       type: [String],
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 TransferSchema.index(
@@ -76,7 +83,7 @@ TransferSchema.index(
 );
 
 // injuryモデルのnow_teamを更新
-async function syncNowTeam(playerId: string) {
+async function syncNowTeam(playerId: Schema.Types.ObjectId) {
   const Transfer = mongoose.model("Transfer");
   const Injury = mongoose.model("Injury");
 
@@ -92,7 +99,7 @@ async function syncNowTeam(playerId: string) {
 }
 
 // save
-TransferSchema.post("save", async function (doc, next) {
+TransferSchema.post("save", async function (doc: ITransfer, next) {
   await syncNowTeam(doc.player);
   next();
 });
@@ -109,8 +116,8 @@ TransferSchema.post(
 );
 
 // insertMany
-TransferSchema.post("insertMany", async function (docs, next) {
-  const playerIds = [...new Set(docs.map((d) => d.player.toString()))];
+TransferSchema.post("insertMany", async function (docs: ITransfer[], next) {
+  const playerIds = [...new Set(docs.map((d) => d.player))];
   await Promise.all(playerIds.map((id) => syncNowTeam(id)));
   next();
 });
@@ -129,4 +136,7 @@ TransferSchema.post(
   }
 );
 
-export const Transfer = mongoose.model("Transfer", TransferSchema);
+export const TransferModel: Model<ITransfer> = mongoose.model<ITransfer>(
+  "Transfer",
+  TransferSchema
+);

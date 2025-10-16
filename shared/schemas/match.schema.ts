@@ -65,4 +65,4 @@ export const MatchZodSchema = z
   );
 
 export type MatchType = z.infer<typeof MatchZodSchema>;
-export const MatchSchemaArray = z.array(MatchZodSchema);
+export const MatchZodSchemaArray = z.array(MatchZodSchema);

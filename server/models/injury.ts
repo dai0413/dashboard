@@ -1,40 +1,29 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { InjuryType } from "../../shared/schemas/injury.schema.ts";
 
-const InjurySchema = new mongoose.Schema(
+export interface IInjury
+  extends Omit<InjuryType, "team" | "player" | "now_team">,
+    Document {
+  team: Schema.Types.ObjectId;
+  player: Schema.Types.ObjectId;
+  now_team: Schema.Types.ObjectId;
+}
+
+const InjurySchema: Schema<IInjury> = new Schema<IInjury, any, IInjury>(
   {
-    doa: {
-      type: Date,
-      required: true,
-    },
-    team: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
-    },
-    team_name: {
-      type: String,
-    },
-    now_team: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
-    },
+    doa: { type: Date, required: true },
+    team: { type: Schema.Types.ObjectId, ref: "Team" },
+    team_name: { type: String },
+    now_team: { type: Schema.Types.ObjectId, ref: "Team" },
     player: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Player",
       required: true,
     },
-    doi: {
-      type: Date,
-    },
-    dos: {
-      type: Date,
-    },
-    injured_part: {
-      type: [String],
-    },
-    is_injured: {
-      type: Boolean,
-      default: true,
-    },
+    doi: { type: Date },
+    dos: { type: Date },
+    injured_part: { type: [String] },
+    is_injured: { type: Boolean, default: true },
     ttp: {
       type: [String],
       validate: {
@@ -52,19 +41,19 @@ const InjurySchema = new mongoose.Schema(
       type: Date,
       validate: {
         validator: function (value: Date) {
-          return (
-            !value ||
-            (!this.doi && !this.dos) ||
-            value > this.doi ||
-            value > this.dos
-          );
+          if (this.doi && this.dos) {
+            return (
+              !value ||
+              (!this.doi && !this.dos) ||
+              value > this.doi ||
+              value > this.dos
+            );
+          }
         },
         message: "erd (復帰予測日）は負傷日,手術日よりも後でなければなりません",
       },
     },
-    URL: {
-      type: [String],
-    },
+    URL: { type: [String] },
   },
   {
     timestamps: true,
@@ -74,11 +63,14 @@ const InjurySchema = new mongoose.Schema(
 InjurySchema.pre("save", function (next) {
   if (Array.isArray(this.ttp) && this.ttp.length > 0 && !this.erd) {
     // 複数の期間がある場合、最大の復帰予測日を求める処理
+    // doi または dos が存在しなければスキップ
+    const baseDate = this.doi || this.dos;
+    if (!baseDate) return next();
 
-    let maxDate = null;
+    let maxDate: Date | null = null;
 
     this.ttp.forEach((periodStr) => {
-      let dateToAdd = new Date(this.doi || this.dos);
+      let dateToAdd = new Date(baseDate);
 
       // 単一期間のマッチ
       let ttpMatch = periodStr.match(/^(\d+)([dwmy])$/i);
@@ -139,4 +131,7 @@ InjurySchema.index(
   { unique: true }
 );
 
-export const Injury = mongoose.model("Injury", InjurySchema);
+export const InjuryModel: Model<IInjury> = mongoose.model<IInjury>(
+  "Injury",
+  InjurySchema
+);

@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { competition_type } from "../enum/competition_type";
-import { objectId } from "./utils/objectId";
-import { category } from "../enum/category";
-import { level } from "../enum/level";
-import { age_group } from "../enum/age_group";
-import { dateField } from "./utils/dateField";
+import { competition_type } from "../enum/competition_type.ts";
+import { objectId } from "./utils/objectId.ts";
+import { category } from "../enum/category.ts";
+import { level } from "../enum/level.ts";
+import { age_group } from "../enum/age_group.ts";
+import { dateField } from "./utils/dateField.ts";
 
 export const CompetitionZodSchema = z.object({
   name: z
@@ -26,4 +26,4 @@ export const CompetitionZodSchema = z.object({
 });
 
 export type CompetitionType = z.infer<typeof CompetitionZodSchema>;
-export const CompetitionSchemaArray = z.array(CompetitionZodSchema);
+export const CompetitionZodSchemaArray = z.array(CompetitionZodSchema);

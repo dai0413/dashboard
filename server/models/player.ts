@@ -1,7 +1,9 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { PlayerType } from "../../shared/schemas/player.schema.ts";
 
-export interface IPlayer extends PlayerType, Document {}
+export interface IPlayer extends Omit<PlayerType, "_id">, Document {
+  _id: Types.ObjectId;
+}
 
 const PlayerMongooseSchema: Schema<IPlayer> = new Schema(
   {
@@ -13,9 +15,7 @@ const PlayerMongooseSchema: Schema<IPlayer> = new Schema(
   { timestamps: true }
 );
 
-const PlayerModel: Model<IPlayer> = mongoose.model<IPlayer>(
+export const PlayerModel: Model<IPlayer> = mongoose.model<IPlayer>(
   "Player",
   PlayerMongooseSchema
 );
-
-export default PlayerModel;

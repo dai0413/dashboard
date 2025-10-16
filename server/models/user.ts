@@ -1,8 +1,11 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { UserType } from "../../shared/schemas/user.schema.ts";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
-const UserSchema = new mongoose.Schema(
+export interface IUser extends UserType, Document {}
+
+const UserSchema: Schema<IUser> = new Schema<IUser, any, IUser>(
   {
     user_name: {
       type: String,
@@ -43,40 +46,49 @@ UserSchema.pre("save", async function () {
 });
 
 UserSchema.methods.createJWT = function () {
+  const secret: Secret = process.env.JWT_SECRET!;
+  const expiresIn: SignOptions["expiresIn"] =
+    (process.env.JWT_EXPIRATION as any) || "15m";
+
   return jwt.sign(
     {
       userId: this._id,
-      name: this.name,
+      name: this.user_name,
       email: this.email,
       is_staff: this.is_staff,
       admin: this.admin,
     },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_EXPIRATION,
-    }
+    secret,
+    { expiresIn }
   );
 };
 
 UserSchema.methods.createRefreshToken = function () {
+  const secret: Secret = process.env.JWT_SECRET!;
+  const expiresIn: SignOptions["expiresIn"] =
+    (process.env.JWT_REFRESH_EXPIRATION as any) || "7d";
+
   return jwt.sign(
     {
       userId: this._id,
-      name: this.name,
+      name: this.user_name,
       email: this.email,
       is_staff: this.is_staff,
       admin: this.admin,
     },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_REFRESH_EXPIRATION,
-    }
+    secret,
+    { expiresIn }
   );
 };
 
-UserSchema.methods.comparePassword = async function (candidatePassword) {
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string
+) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
 };
 
-export const User = mongoose.model("User", UserSchema);
+export const UserModel: Model<IUser> = mongoose.model<IUser>(
+  "User",
+  UserSchema
+);
