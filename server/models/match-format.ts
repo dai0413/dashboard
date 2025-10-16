@@ -1,7 +1,9 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { MatchFormatType } from "../../shared/schemas/match-format.schema.ts";
 
-export interface IMatchFormat extends MatchFormatType, Document {}
+export interface IMatchFormat extends Omit<MatchFormatType, "_id">, Document {
+  _id: Types.ObjectId;
+}
 
 const PeriodSchema = new mongoose.Schema(
   {

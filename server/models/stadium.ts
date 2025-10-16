@@ -1,8 +1,11 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { StadiumType } from "../../shared/schemas/stadium.schema.ts";
 
-export interface IStadium extends Omit<StadiumType, "country">, Document {
-  country: Schema.Types.ObjectId;
+export interface IStadium
+  extends Omit<StadiumType, "_id" | "country">,
+    Document {
+  _id: Types.ObjectId;
+  country: Types.ObjectId;
 }
 
 const StadiumSchema: Schema<IStadium> = new Schema<IStadium, any, IStadium>(

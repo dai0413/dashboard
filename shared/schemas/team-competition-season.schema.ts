@@ -3,6 +3,7 @@ import { dateField } from "./utils/dateField.ts";
 import { objectId } from "./utils/objectId.ts";
 
 export const TeamCompetitionSeasonZodSchema = z.object({
+  _id: objectId,
   team: objectId.refine((v) => !!v, {
     message: "teamは必須です",
   }),
@@ -20,6 +21,14 @@ export const TeamCompetitionSeasonZodSchema = z.object({
 export type TeamCompetitionSeasonType = z.infer<
   typeof TeamCompetitionSeasonZodSchema
 >;
-export const TeamCompetitionSeasonZodSchemaArray = z.array(
-  TeamCompetitionSeasonZodSchema
-);
+
+export const TeamCompetitionSeasonFormSchema =
+  TeamCompetitionSeasonZodSchema.omit({
+    _id: true,
+    competition: true,
+    createdAt: true,
+    updatedAt: true,
+  });
+
+export const TeamCompetitionSeasonResponseSchema =
+  TeamCompetitionSeasonZodSchema;

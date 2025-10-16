@@ -7,6 +7,7 @@ import { left_reason } from "../enum/left_reason.ts";
 
 export const NationalCallUpZodSchema = z
   .object({
+    _id: objectId,
     series: objectId.refine((v) => !!v, {
       message: "seriesは必須です",
     }),
@@ -46,4 +47,11 @@ export const NationalCallUpZodSchema = z
   );
 
 export type NationalCallUpType = z.infer<typeof NationalCallUpZodSchema>;
-export const NationalCallUpZodSchemaArray = z.array(NationalCallUpZodSchema);
+
+export const NationalCallUpFormSchema = NationalCallUpZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const NationalCallUpResponseSchema = NationalCallUpZodSchema;

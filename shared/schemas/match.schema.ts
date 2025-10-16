@@ -5,6 +5,7 @@ import { result } from "../enum/result.ts";
 
 export const MatchZodSchema = z
   .object({
+    _id: objectId,
     competition: objectId.refine((v) => !!v, {
       message: "competitionは必須です",
     }),
@@ -65,4 +66,15 @@ export const MatchZodSchema = z
   );
 
 export type MatchType = z.infer<typeof MatchZodSchema>;
-export const MatchZodSchemaArray = z.array(MatchZodSchema);
+
+export const MatchFormSchema = MatchZodSchema.omit({
+  _id: true,
+  competition: true,
+  season: true,
+  play_time: true,
+  result: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const MatchResponseSchema = MatchZodSchema;

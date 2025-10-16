@@ -1,8 +1,11 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { SeasonType } from "../../shared/schemas/season.schema.ts";
 
-export interface ISeason extends Omit<SeasonType, "competition">, Document {
-  competition: Schema.Types.ObjectId;
+export interface ISeason
+  extends Omit<SeasonType, "_id" | "competition">,
+    Document {
+  _id: Types.ObjectId;
+  competition: Types.ObjectId;
 }
 
 const SeasonSchema: Schema<ISeason> = new Schema<ISeason, any, ISeason>(

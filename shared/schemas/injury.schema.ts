@@ -6,6 +6,7 @@ const ttpPattern = /^(\d+)([dwmy])$|^(\d+)-(\d+)([dwmy])$/i;
 
 export const InjuryZodSchema = z
   .object({
+    _id: objectId,
     doa: dateField.refine((v) => !!v, { message: "doaは必須です" }),
     team: objectId.optional(),
     team_name: z.string().nonempty().optional(),
@@ -43,4 +44,12 @@ export const InjuryZodSchema = z
   );
 
 export type InjuryType = z.infer<typeof InjuryZodSchema>;
-export const InjuryZodSchemaArray = z.array(InjuryZodSchema);
+
+export const InjuryFormSchema = InjuryZodSchema.omit({
+  _id: true,
+  erd: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const InjuryResponseSchema = InjuryZodSchema;

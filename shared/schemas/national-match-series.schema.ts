@@ -4,6 +4,7 @@ import { dateField } from "./utils/dateField.ts";
 import { age_group } from "../enum/age_group.ts";
 
 export const NationalMatchSeriesZodSchema = z.object({
+  _id: objectId,
   name: z
     .string()
     .nonempty()
@@ -22,6 +23,11 @@ export const NationalMatchSeriesZodSchema = z.object({
 export type NationalMatchSeriesType = z.infer<
   typeof NationalMatchSeriesZodSchema
 >;
-export const NationalMatchSeriesZodSchemaArray = z.array(
-  NationalMatchSeriesZodSchema
-);
+
+export const NationalMatchSeriesFormSchema = NationalMatchSeriesZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const NationalMatchSeriesResponseSchema = NationalMatchSeriesZodSchema;

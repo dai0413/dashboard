@@ -1,12 +1,13 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { NationalMatchSeriesType } from "../../shared/schemas/national-match-series.schema.ts";
 import { age_group } from "../../shared/enum/age_group.ts";
 
 export interface INationalMatchSeries
-  extends Omit<NationalMatchSeriesType, "country" | "matchs">,
+  extends Omit<NationalMatchSeriesType, "_id" | "country" | "matchs">,
     Document {
-  country: Schema.Types.ObjectId;
-  matchs: Schema.Types.ObjectId[];
+  _id: Types.ObjectId;
+  country: Types.ObjectId;
+  matchs: Types.ObjectId[];
 }
 
 const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<

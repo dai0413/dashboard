@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
+import { objectId } from "./utils/objectId.ts";
 
 export const PlayerZodSchema = z.object({
+  _id: objectId,
   name: z
     .string()
     .nonempty()
@@ -14,4 +16,11 @@ export const PlayerZodSchema = z.object({
 });
 
 export type PlayerType = z.infer<typeof PlayerZodSchema>;
-export const PlayerZodSchemaArray = z.array(PlayerZodSchema);
+
+export const PlayerFormSchema = PlayerZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const PlayerResponseSchema = PlayerZodSchema;

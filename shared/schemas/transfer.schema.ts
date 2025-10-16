@@ -6,6 +6,7 @@ import { form } from "../enum/form.ts";
 
 export const TransferZodSchema = z
   .object({
+    _id: objectId,
     doa: dateField.refine((v) => !!v, { message: "doaは必須です" }),
     from_team: objectId.optional(),
     from_team_name: z.string().nonempty().optional(),
@@ -46,4 +47,11 @@ export const TransferZodSchema = z
   );
 
 export type TransferType = z.infer<typeof TransferZodSchema>;
-export const TransferZodSchemaArray = z.array(TransferZodSchema);
+
+export const TransferFormSchema = TransferZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const TransferResponseSchema = TransferZodSchema;

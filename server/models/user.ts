@@ -1,9 +1,11 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { UserType } from "../../shared/schemas/user.schema.ts";
 import bcrypt from "bcryptjs";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
-export interface IUser extends UserType, Document {}
+export interface IUser extends Omit<UserType, "_id">, Document {
+  _id: Types.ObjectId;
+}
 
 const UserSchema: Schema<IUser> = new Schema<IUser, any, IUser>(
   {
