@@ -1,31 +1,28 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { SeasonType } from "../../shared/schemas/season.schema.ts";
 
-const SeasonSchema = new mongoose.Schema(
+export interface ISeason extends Omit<SeasonType, "competition">, Document {
+  competition: Schema.Types.ObjectId;
+}
+
+const SeasonSchema: Schema<ISeason> = new Schema<ISeason, any, ISeason>(
   {
     competition: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Competition",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true },
     start_date: { type: Date },
     end_date: { type: Date },
     current: { type: Boolean },
     note: { type: String },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 SeasonSchema.index(
-  {
-    competition: 1,
-    start_date: 1,
-  },
+  { competition: 1, start_date: 1 },
   {
     unique: true,
     partialFilterExpression: {
@@ -34,14 +31,9 @@ SeasonSchema.index(
   }
 );
 
-SeasonSchema.index(
-  {
-    competition: 1,
-    name: 1,
-  },
-  {
-    unique: true,
-  }
-);
+SeasonSchema.index({ competition: 1, name: 1 }, { unique: true });
 
-export const Season = mongoose.model("Season", SeasonSchema);
+export const SeasonModel: Model<ISeason> = mongoose.model<ISeason>(
+  "Season",
+  SeasonSchema
+);

@@ -1,62 +1,34 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { CompetitionType } from "../../shared/schemas/competition.schema.ts";
+
 import { age_group } from "../../shared/enum/age_group.ts";
 import { competition_type } from "../../shared/enum/competition_type.ts";
+import { category } from "../../shared/enum/category.ts";
+import { level } from "../../shared/enum/level.ts";
 
-const CompetitionSchema = new mongoose.Schema(
+export interface ICompetition
+  extends Omit<CompetitionType, "country">,
+    Document {
+  country: Schema.Types.ObjectId;
+}
+
+const CompetitionSchema: Schema<ICompetition> = new Schema<
+  ICompetition,
+  any,
+  ICompetition
+>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    abbr: {
-      type: String,
-    },
-    en_name: {
-      type: String,
-    },
-    country: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Country",
-    },
-    competition_type: {
-      type: String,
-      enum: competition_type,
-    },
-    category: {
-      type: String,
-      enum: [`league`, `cup`, `po`, `friendly`, `qualification`],
-    },
-    level: {
-      type: String,
-      enum: [
-        `1部`,
-        `2部`,
-        `3部`,
-        `4部`,
-        `5部`,
-        `6部`,
-        `リーグカップ`,
-        `国内カップ戦`,
-        `国内スーパーカップ`,
-        `入れ替え`,
-        `地域大会`,
-        `地域予選`,
-        `世界大会`,
-      ],
-    },
-    age_group: {
-      type: String,
-      enum: age_group,
-    },
-    official_match: {
-      type: Boolean,
-    },
-    transferurl: {
-      type: String,
-    },
-    sofaurl: {
-      type: String,
-    },
+    name: { type: String, required: true },
+    abbr: { type: String },
+    en_name: { type: String },
+    country: { type: Schema.Types.ObjectId, ref: "Country" },
+    competition_type: { type: String, enum: competition_type },
+    category: { type: String, enum: category },
+    level: { type: String, enum: level },
+    age_group: { type: String, enum: age_group },
+    official_match: { type: Boolean },
+    transferurl: { type: String },
+    sofaurl: { type: String },
   },
   {
     timestamps: true,
@@ -93,4 +65,5 @@ CompetitionSchema.index(
   }
 );
 
-export const Competition = mongoose.model("Competition", CompetitionSchema);
+export const CompetitionModel: Model<ICompetition> =
+  mongoose.model<ICompetition>("Competition", CompetitionSchema);

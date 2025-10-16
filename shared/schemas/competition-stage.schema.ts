@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { stage_type } from "../enum/stage_type";
-import { objectId } from "./utils/objectId";
-import { dateField } from "./utils/dateField";
+import { stage_type } from "../enum/stage_type.ts";
+import { objectId } from "./utils/objectId.ts";
+import { dateField } from "./utils/dateField.ts";
 
 export const CompetitionStageZodSchema = z
   .object({
@@ -45,4 +45,6 @@ export const CompetitionStageZodSchema = z
   );
 
 export type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;
-export const CompetitionStageSchemaArray = z.array(CompetitionStageZodSchema);
+export const CompetitionStageZodSchemaArray = z.array(
+  CompetitionStageZodSchema
+);

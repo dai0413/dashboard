@@ -1,77 +1,63 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model, Error } from "mongoose";
+import { NationalCallUpType } from "../../shared/schemas/national-callup.schema.ts";
 import { position_group } from "../../shared/enum/position_group.ts";
 import { status } from "../../shared/enum/status.ts";
 import { left_reason } from "../../shared/enum/left_reason.ts";
 
-const NationalCallUpSchema = new mongoose.Schema(
+export interface INationalCallUp
+  extends Omit<NationalCallUpType, "series" | "player" | "team">,
+    Document {
+  series: Schema.Types.ObjectId;
+  player: Schema.Types.ObjectId;
+  team: Schema.Types.ObjectId;
+}
+
+const NationalCallUpSchema: Schema<INationalCallUp> = new Schema<
+  INationalCallUp,
+  any,
+  INationalCallUp
+>(
   {
     series: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "NationalMatchSeries",
       required: true,
     },
     player: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Player",
       required: true,
     },
     team: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Team",
     },
-    team_name: {
-      type: String,
-    },
-    joined_at: {
-      type: Date,
-    },
-    left_at: {
-      type: Date,
-    },
-    number: {
-      type: Number,
-    },
-    position_group: {
-      type: String,
-      enum: position_group,
-    },
+    team_name: { type: String },
+    joined_at: { type: Date },
+    left_at: { type: Date },
+    number: { type: Number },
+    position_group: { type: String, enum: position_group },
     is_captain: { type: Boolean, default: false, required: true },
     is_overage: { type: Boolean, default: false, required: true },
     is_backup: { type: Boolean, default: false, required: true },
     is_training_partner: { type: Boolean, default: false, required: true },
     is_additional_call: { type: Boolean, default: false, required: true },
-    status: {
-      type: String,
-      enum: status,
-      default: "joined",
-    },
-    left_reason: {
-      type: String,
-      enum: left_reason,
-    },
+    status: { type: String, enum: status, default: "joined" },
+    left_reason: { type: String, enum: left_reason },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-NationalCallUpSchema.index(
-  {
-    series: 1,
-    player: 1,
-  },
-  {
-    unique: true,
-  }
-);
+NationalCallUpSchema.index({ series: 1, player: 1 }, { unique: true });
 
-async function applySeriesDates(doc) {
+async function applySeriesDates(doc: Partial<INationalCallUp>) {
   const status = doc.status;
+  if (!status) return;
 
   if (status === "declined") {
     // 辞退の場合は期間を空にする
-    doc.joined_at = null;
-    doc.left_at = null;
+    doc.joined_at = undefined;
+    doc.left_at = undefined;
     return;
   }
 
@@ -84,7 +70,9 @@ async function applySeriesDates(doc) {
   }
 
   const SeriesModel = mongoose.model("NationalMatchSeries");
-  const seriesDoc = await SeriesModel.findById(doc.series);
+  const seriesDoc = await SeriesModel.findById(doc.series).select(
+    "joined_at left_at"
+  );
 
   if (!seriesDoc) {
     throw new Error(`series document not found: ${doc.series}`);
@@ -110,22 +98,23 @@ NationalCallUpSchema.pre("save", async function (next) {
     await applySeriesDates(this);
     next();
   } catch (err) {
-    next(err);
+    next(err as Error);
   }
 });
 
-NationalCallUpSchema.pre("insertMany", async function (next, docs) {
-  try {
-    for (const doc of docs) {
-      await applySeriesDates(doc);
+NationalCallUpSchema.pre(
+  "insertMany",
+  async function (next, docs: INationalCallUp[]) {
+    try {
+      for (const doc of docs) {
+        await applySeriesDates(doc);
+      }
+      next();
+    } catch (err) {
+      next(err as Error);
     }
-    next();
-  } catch (err) {
-    next(err);
   }
-});
-
-export const NationalCallUp = mongoose.model(
-  "NationalCallUp",
-  NationalCallUpSchema
 );
+
+export const NationalCallUpModel: Model<INationalCallUp> =
+  mongoose.model<INationalCallUp>("NationalCallUp", NationalCallUpSchema);

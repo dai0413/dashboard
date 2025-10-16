@@ -1,50 +1,41 @@
-import mongoose from "mongoose";
-import { NationalCallUp } from "./national-callup.ts";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { NationalMatchSeriesType } from "../../shared/schemas/national-match-series.schema.ts";
 import { age_group } from "../../shared/enum/age_group.ts";
 
-const NationalMatchSeriesSchema = new mongoose.Schema(
+export interface INationalMatchSeries
+  extends Omit<NationalMatchSeriesType, "country" | "matchs">,
+    Document {
+  country: Schema.Types.ObjectId;
+  matchs: Schema.Types.ObjectId[];
+}
+
+const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
+  INationalMatchSeries,
+  any,
+  INationalMatchSeries
+>(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    abbr: {
-      type: String,
-    },
+    name: { type: String, required: true },
+    abbr: { type: String },
     country: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Country",
       required: true,
     },
-    age_group: {
-      type: String,
-      enum: age_group,
-    },
+    age_group: { type: String, enum: age_group },
     matchs: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Match",
     },
-    joined_at: {
-      type: Date,
-    },
-    left_at: {
-      type: Date,
-    },
-    urls: {
-      type: [String],
-    },
+    joined_at: { type: Date },
+    left_at: { type: Date },
+    urls: { type: [String] },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 NationalMatchSeriesSchema.index(
-  {
-    country: 1,
-    age_group: 1,
-    joined_at: 1,
-  },
+  { country: 1, age_group: 1, joined_at: 1 },
   {
     unique: true,
     partialFilterExpression: {
@@ -53,20 +44,23 @@ NationalMatchSeriesSchema.index(
   }
 );
 
-async function syncCallUps(doc) {
+async function syncCallUps(doc: INationalMatchSeries) {
   if (!doc) return;
 
-  const callUps = await NationalCallUp.find({ series: doc._id });
+  const NationalCallUpModel = mongoose.model("NationalCallUp");
+  const callUps = await NationalCallUpModel.find({ series: doc._id });
 
   const bulkOps = callUps
     .map((cu) => {
-      const update = {};
-      if (!cu.joined_at) {
+      const update: Record<string, any> = {};
+
+      if (!cu.joined_at && doc.joined_at) {
         update.joined_at = doc.joined_at;
       }
-      if (!cu.left_at) {
+      if (!cu.left_at && doc.left_at) {
         update.left_at = doc.left_at;
       }
+
       return Object.keys(update).length
         ? {
             updateOne: {
@@ -76,25 +70,49 @@ async function syncCallUps(doc) {
           }
         : null;
     })
-    .filter(Boolean);
+    .filter((op): op is NonNullable<typeof op> => op !== null);
 
   if (bulkOps.length > 0) {
-    await NationalCallUp.bulkWrite(bulkOps);
+    await NationalCallUpModel.bulkWrite(bulkOps);
     console.log(`📌 ${bulkOps.length} 件の CallUp を series に同期しました`);
   }
 }
 
 // findOneAndUpdate後
-NationalMatchSeriesSchema.post("findOneAndUpdate", async function (doc) {
-  await syncCallUps(doc);
-});
+NationalMatchSeriesSchema.post(
+  "findOneAndUpdate",
+  async function (doc: INationalMatchSeries) {
+    if (!doc) return;
+    const rawUpdate = this.getUpdate();
+    if (!rawUpdate) return;
 
-// save後
-NationalMatchSeriesSchema.post("save", async function (doc) {
-  await syncCallUps(doc);
-});
+    // update.$set を吸収
+    const update = {
+      ...(rawUpdate as any),
+      ...(rawUpdate as any).$set,
+    } as Partial<INationalMatchSeries>;
 
-export const NationalMatchSeries = mongoose.model(
-  "NationalMatchSeries",
-  NationalMatchSeriesSchema
+    if (update?.joined_at || update?.left_at) {
+      await syncCallUps(doc);
+    }
+  }
 );
+// save後
+NationalMatchSeriesSchema.post(
+  "save",
+  async function (doc: INationalMatchSeries) {
+    const modifiedPaths = this.modifiedPaths();
+    if (
+      modifiedPaths.includes("joined_at") ||
+      modifiedPaths.includes("left_at")
+    ) {
+      await syncCallUps(doc);
+    }
+  }
+);
+
+export const NationalMatchSeriesModel: Model<INationalMatchSeries> =
+  mongoose.model<INationalMatchSeries>(
+    "NationalMatchSeries",
+    NationalMatchSeriesSchema
+  );

@@ -1,4 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { MatchFormatType } from "../../shared/schemas/match-format.schema.ts";
+
+export interface IMatchFormat extends MatchFormatType, Document {}
 
 const PeriodSchema = new mongoose.Schema(
   {
@@ -12,9 +15,9 @@ const PeriodSchema = new mongoose.Schema(
       default: null,
       validate: {
         validator: function (value: number) {
-          // end が null の場合はチェック不要
-          if (value == null || this.end == null) return true;
-          return value <= this.end;
+          const doc = this as { start?: number; end?: number };
+          if (value == null || doc.end == null) return true;
+          return doc.start! <= doc.end!;
         },
         message: "start must be less than or equal to end",
       },
@@ -24,9 +27,9 @@ const PeriodSchema = new mongoose.Schema(
       default: null,
       validate: {
         validator: function (value: number) {
-          // start が null の場合はチェック不要
-          if (value == null || this.start == null) return true;
-          return this.start <= value;
+          const doc = this as { start?: number; end?: number };
+          if (value == null || doc.end == null) return true;
+          return doc.start! <= doc.end!;
         },
         message: "end must be greater than or equal to start",
       },
@@ -36,18 +39,17 @@ const PeriodSchema = new mongoose.Schema(
   { _id: false } // period単位で_idいらない
 );
 
-const MatchFormatSchema = new mongoose.Schema(
+const MatchFormatSchema: Schema<IMatchFormat> = new Schema<
+  IMatchFormat,
+  any,
+  IMatchFormat
+>(
   {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    name: { type: String, required: true, unique: true },
     period: [PeriodSchema],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-export const MatchFormat = mongoose.model("MatchFormat", MatchFormatSchema);
+export const MatchFormatModel: Model<IMatchFormat> =
+  mongoose.model<IMatchFormat>("MatchFormat", MatchFormatSchema);

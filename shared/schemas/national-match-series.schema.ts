@@ -22,6 +22,6 @@ export const NationalMatchSeriesZodSchema = z.object({
 export type NationalMatchSeriesType = z.infer<
   typeof NationalMatchSeriesZodSchema
 >;
-export const NationalMatchSeriesSchemaArray = z.array(
+export const NationalMatchSeriesZodSchemaArray = z.array(
   NationalMatchSeriesZodSchema
 );

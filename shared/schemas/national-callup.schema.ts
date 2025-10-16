@@ -46,4 +46,4 @@ export const NationalCallUpZodSchema = z
   );
 
 export type NationalCallUpType = z.infer<typeof NationalCallUpZodSchema>;
-export const NationalCallUpSchemaArray = z.array(NationalCallUpZodSchema);
+export const NationalCallUpZodSchemaArray = z.array(NationalCallUpZodSchema);

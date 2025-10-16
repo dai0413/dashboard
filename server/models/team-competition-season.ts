@@ -1,38 +1,40 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
+import { TeamCompetitionSeasonType } from "../../shared/schemas/team-competition-season.schema.ts";
 
-const TeamCompetitionSeasonSchema = new mongoose.Schema(
-  {
-    team: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Team",
-      required: true,
+export interface ITeamCompetitionSeasonType
+  extends Omit<TeamCompetitionSeasonType, "team" | "season" | "competition">,
+    Document {
+  team: Schema.Types.ObjectId;
+  season: Schema.Types.ObjectId;
+  competition: Schema.Types.ObjectId;
+}
+
+const TeamCompetitionSeasonSchema: Schema<ITeamCompetitionSeasonType> =
+  new Schema<ITeamCompetitionSeasonType, any, ITeamCompetitionSeasonType>(
+    {
+      team: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Team",
+        required: true,
+      },
+      season: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Season",
+        required: true,
+      },
+      competition: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Competition",
+        required: true,
+      },
+      note: { type: String },
     },
-    season: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Season",
-      required: true,
-    },
-    competition: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Competition",
-      required: true,
-    },
-    note: { type: String },
-  },
-  {
-    timestamps: true,
-  }
-);
+    { timestamps: true }
+  );
 
 TeamCompetitionSeasonSchema.index(
-  {
-    team: 1,
-    season: 1,
-    competition: 1,
-  },
-  {
-    unique: true,
-  }
+  { team: 1, season: 1, competition: 1 },
+  { unique: true }
 );
 
 TeamCompetitionSeasonSchema.pre("validate", async function (next) {
@@ -49,8 +51,16 @@ TeamCompetitionSeasonSchema.pre("validate", async function (next) {
 TeamCompetitionSeasonSchema.pre(
   ["findOneAndUpdate", "updateOne"],
   async function (next) {
-    const update = this.getUpdate();
-    const seasonId = update.season || update.$set?.season;
+    const rawUpdate = this.getUpdate();
+    if (!rawUpdate) return;
+
+    // update.$set を吸収
+    const update = {
+      ...(rawUpdate as any),
+      ...(rawUpdate as any).$set,
+    } as Partial<ITeamCompetitionSeasonType>;
+
+    const seasonId = update.season;
     if (seasonId) {
       const Season = mongoose.model("Season");
       const season = await Season.findById(seasonId);
@@ -62,7 +72,8 @@ TeamCompetitionSeasonSchema.pre(
   }
 );
 
-export const TeamCompetitionSeason = mongoose.model(
-  "TeamCompetitionSeason",
-  TeamCompetitionSeasonSchema
-);
+export const TeamCompetitionSeasonModel: Model<ITeamCompetitionSeasonType> =
+  mongoose.model<ITeamCompetitionSeasonType>(
+    "TeamCompetitionSeason",
+    TeamCompetitionSeasonSchema
+  );
