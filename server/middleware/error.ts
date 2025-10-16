@@ -8,7 +8,7 @@ export default function errorHandlerMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  console.log("in the error handle middleware");
+  console.error("Error in middleware:", err);
 
   // デフォルト値
   let customError = {

@@ -1,33 +1,35 @@
 import { StatusCodes } from "http-status-codes";
-import { NotFoundError, BadRequestError } from "../../errors/index.js";
 import csv from "csv-parser";
+import { Request, Response } from "express";
+import moment from "moment";
+import { NotFoundError, BadRequestError } from "../../errors/index.ts";
 
-import { getNest } from "../../utils/getNest.js";
+import { getNest } from "../../utils/getNest.ts";
 
-import { player } from "../../modelsConfig/index.js";
-const { MODEL, POPULATE_PATHS, bulk } = player;
+import { player } from "../../../shared/models-config/player.ts";
+import { DecodedRequest } from "../../types.ts";
 
-const getNestField = (usePopulate) => getNest(usePopulate, POPULATE_PATHS);
+const { MONGO_MODEL, TYPE, POPULATE_PATHS, bulk } = player;
 
-const getAllItems = async (req, res) => {
+const getAllItems = async (req: Request, res: Response) => {
   const matchStage = {};
 
-  const data = await MODEL.aggregate([
+  const data = await MONGO_MODEL.aggregate([
     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-    ...getNestField(false),
+    ...getNest(false, POPULATE_PATHS),
     { $sort: { _id: 1, order: 1 } },
   ]);
 
   res.status(StatusCodes.OK).json({ data });
 };
 
-const checkItem = async (req, res) => {
+const checkItem = async (req: Request, res: Response) => {
   if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
     throw new BadRequestError();
   }
-  const { name, en_name, dob, pob } = req.body;
+  const { name, en_name, dob } = req.body;
   // 類似選手検索
-  const similar = await MODEL.find({
+  const similar = await MONGO_MODEL.find({
     $or: [{ name: name }, { en_name: en_name }, { dob: dob }],
   });
 
@@ -48,39 +50,43 @@ const checkItem = async (req, res) => {
   }
 };
 
-const createItem = async (req, res) => {
+const createItem = async (req: Request, res: Response) => {
   let populatedData;
   if (bulk && Array.isArray(req.body)) {
-    const docs = await MODEL.insertMany(req.body);
+    const docs = await MONGO_MODEL.insertMany(req.body);
 
     const ids = docs.map((doc) => doc._id);
-    populatedData = await MODEL.find({ _id: { $in: ids } }).populate(
-      getNestField(true)
-    );
+    populatedData = await MONGO_MODEL.find({
+      _id: { $in: ids },
+    }).populate(getNest(true, POPULATE_PATHS));
   } else {
-    const data = await MODEL.create(req.body);
-    populatedData = await MODEL.findById(data._id).populate(getNestField(true));
+    const data = await MONGO_MODEL.create(req.body);
+    populatedData = await MONGO_MODEL.findById(data._id).populate(
+      getNest(true, POPULATE_PATHS)
+    );
   }
   res
     .status(StatusCodes.CREATED)
     .json({ message: "追加しました", data: populatedData });
 };
 
-const getItem = async (req, res) => {
+const getItem = async (req: Request, res: Response) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
   const {
     params: { id },
   } = req;
-  const data = await MODEL.findById(id).populate(getNestField(true));
+  const data = await MONGO_MODEL.findById(id).populate(
+    getNest(true, POPULATE_PATHS)
+  );
   if (!data) {
     throw new NotFoundError();
   }
   res.status(StatusCodes.OK).json({ data });
 };
 
-const updateItem = async (req, res) => {
+const updateItem = async (req: Request, res: Response) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
@@ -88,7 +94,7 @@ const updateItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const updated = await MODEL.findByIdAndUpdate(id, req.body, {
+  const updated = await MONGO_MODEL.findByIdAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
   });
@@ -96,13 +102,13 @@ const updateItem = async (req, res) => {
     throw new NotFoundError();
   }
 
-  const populated = await MODEL.findById(updated._id).populate(
-    getNestField(true)
+  const populated = await MONGO_MODEL.findById(updated._id).populate(
+    getNest(true, POPULATE_PATHS)
   );
   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
 };
 
-const deleteItem = async (req, res) => {
+const deleteItem = async (req: Request, res: Response) => {
   if (!req.params.id) {
     throw new BadRequestError();
   }
@@ -110,20 +116,20 @@ const deleteItem = async (req, res) => {
     params: { id },
   } = req;
 
-  const data = await MODEL.findOneAndDelete({ _id: id });
+  const data = await MONGO_MODEL.findOneAndDelete({ _id: id });
   if (!data) {
     throw new NotFoundError();
   }
   res.status(StatusCodes.OK).json({ message: "削除しました" });
 };
 
-const uploadItem = async (req, res) => {
-  const existingCount = await MODEL.countDocuments();
-  const rows = [];
+const uploadItem = async (req: DecodedRequest, res: Response) => {
+  const existingCount = await MONGO_MODEL.countDocuments();
+  const rows: (typeof TYPE)[] = [];
 
   req.decodedStream
     .pipe(csv())
-    .on("data", (row) => {
+    .on("data", (row: typeof TYPE) => {
       rows.push(row);
     })
     .on("end", async () => {
@@ -143,7 +149,7 @@ const uploadItem = async (req, res) => {
       }));
 
       try {
-        const addedPlayers = await MODEL.insertMany(playersToAdd);
+        const addedPlayers = await MONGO_MODEL.insertMany(playersToAdd);
         res.status(StatusCodes.OK).json({
           message: `${addedPlayers.length}件の選手を追加しました`,
           data: addedPlayers,
@@ -157,11 +163,9 @@ const uploadItem = async (req, res) => {
     });
 };
 
-import moment from "moment";
-
-const downloadItem = async (req, res) => {
+const downloadItem = async (req: Request, res: Response) => {
   try {
-    const players = await MODEL.find();
+    const players = await MONGO_MODEL.find();
     if (players.length === 0) {
       return res.status(404).json({ message: "データがありません" });
     }
