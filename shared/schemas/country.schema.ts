@@ -1,11 +1,13 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
+import { objectId } from "./utils/objectId.ts";
 import { area } from "../enum/area.ts";
 import { district } from "../enum/district.ts";
 import { confederation } from "../enum/confederation.ts";
 import { sub_confederation } from "../enum/sub_confederation.ts";
 
 export const CountryZodSchema = z.object({
+  _id: objectId,
   name: z
     .string()
     .nonempty()
@@ -34,4 +36,11 @@ export const CountryZodSchema = z.object({
 });
 
 export type CountryType = z.infer<typeof CountryZodSchema>;
-export const CountryZodSchemaArray = z.array(CountryZodSchema);
+
+export const CountryFormSchema = CountryZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const CountryResponseSchema = CountryZodSchema;

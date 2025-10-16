@@ -1,36 +1,43 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { TeamCompetitionSeasonType } from "../../shared/schemas/team-competition-season.schema.ts";
 
-export interface ITeamCompetitionSeasonType
-  extends Omit<TeamCompetitionSeasonType, "team" | "season" | "competition">,
+export interface ITeamCompetitionSeason
+  extends Omit<
+      TeamCompetitionSeasonType,
+      "_id" | "team" | "season" | "competition"
+    >,
     Document {
-  team: Schema.Types.ObjectId;
-  season: Schema.Types.ObjectId;
-  competition: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  team: Types.ObjectId;
+  season: Types.ObjectId;
+  competition: Types.ObjectId;
 }
 
-const TeamCompetitionSeasonSchema: Schema<ITeamCompetitionSeasonType> =
-  new Schema<ITeamCompetitionSeasonType, any, ITeamCompetitionSeasonType>(
-    {
-      team: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Team",
-        required: true,
-      },
-      season: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Season",
-        required: true,
-      },
-      competition: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Competition",
-        required: true,
-      },
-      note: { type: String },
+const TeamCompetitionSeasonSchema: Schema<ITeamCompetitionSeason> = new Schema<
+  ITeamCompetitionSeason,
+  any,
+  ITeamCompetitionSeason
+>(
+  {
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      required: true,
     },
-    { timestamps: true }
-  );
+    season: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Season",
+      required: true,
+    },
+    competition: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Competition",
+      required: true,
+    },
+    note: { type: String },
+  },
+  { timestamps: true }
+);
 
 TeamCompetitionSeasonSchema.index(
   { team: 1, season: 1, competition: 1 },
@@ -58,7 +65,7 @@ TeamCompetitionSeasonSchema.pre(
     const update = {
       ...(rawUpdate as any),
       ...(rawUpdate as any).$set,
-    } as Partial<ITeamCompetitionSeasonType>;
+    } as Partial<ITeamCompetitionSeason>;
 
     const seasonId = update.season;
     if (seasonId) {
@@ -72,8 +79,8 @@ TeamCompetitionSeasonSchema.pre(
   }
 );
 
-export const TeamCompetitionSeasonModel: Model<ITeamCompetitionSeasonType> =
-  mongoose.model<ITeamCompetitionSeasonType>(
+export const TeamCompetitionSeasonModel: Model<ITeamCompetitionSeason> =
+  mongoose.model<ITeamCompetitionSeason>(
     "TeamCompetitionSeason",
     TeamCompetitionSeasonSchema
   );

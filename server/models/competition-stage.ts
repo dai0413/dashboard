@@ -1,13 +1,17 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { CompetitionStageType } from "../../shared/schemas/competition-stage.schema.ts";
 import { stage_type } from "../../shared/enum/stage_type.ts";
 
 export interface ICompetitionStage
-  extends Omit<CompetitionStageType, "competition" | "season" | "parent_stage">,
+  extends Omit<
+      CompetitionStageType,
+      "_id" | "competition" | "season" | "parent_stage"
+    >,
     Document {
-  competition: Schema.Types.ObjectId;
-  season: Schema.Types.ObjectId;
-  parent_stage: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  competition: Types.ObjectId;
+  season: Types.ObjectId;
+  parent_stage: Types.ObjectId;
 }
 
 const CompetitionStageSchema: Schema<ICompetitionStage> = new Schema<

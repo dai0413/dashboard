@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
+import { objectId } from "./utils/objectId.ts";
 
 export const UserZodSchema = z.object({
+  _id: objectId,
   user_name: z
     .string()
     .min(3, "ユーザー名は3文字以上で入力してください。")
@@ -16,4 +18,11 @@ export const UserZodSchema = z.object({
 });
 
 export type UserType = z.infer<typeof UserZodSchema>;
-export const UserZodSchemaArray = z.array(UserZodSchema);
+
+export const UserFormSchema = UserZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const UserResponseSchema = UserZodSchema;

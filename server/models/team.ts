@@ -1,11 +1,12 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { TeamType } from "../../shared/schemas/team.schema.ts";
 import { age_group } from "../../shared/enum/age_group.ts";
 import { division } from "../../shared/enum/division.ts";
 import { genre } from "../../shared/enum/genre.ts";
 
-export interface ITeam extends Omit<TeamType, "country">, Document {
-  country: Schema.Types.ObjectId;
+export interface ITeam extends Omit<TeamType, "_id" | "country">, Document {
+  _id: Types.ObjectId;
+  country: Types.ObjectId;
 }
 
 const TeamSchema: Schema<ITeam> = new Schema<ITeam, any, ITeam>(

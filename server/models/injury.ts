@@ -1,12 +1,13 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { InjuryType } from "../../shared/schemas/injury.schema.ts";
 
 export interface IInjury
-  extends Omit<InjuryType, "team" | "player" | "now_team">,
+  extends Omit<InjuryType, "_id" | "team" | "player" | "now_team">,
     Document {
-  team: Schema.Types.ObjectId;
-  player: Schema.Types.ObjectId;
-  now_team: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  team: Types.ObjectId;
+  player: Types.ObjectId;
+  now_team: Types.ObjectId;
 }
 
 const InjurySchema: Schema<IInjury> = new Schema<IInjury, any, IInjury>(

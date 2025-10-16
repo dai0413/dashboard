@@ -1,14 +1,15 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { TransferType } from "../../shared/schemas/transfer.schema.ts";
 import { position } from "../../shared/enum/position.ts";
 import { form } from "../../shared/enum/form.ts";
 
 export interface ITransfer
-  extends Omit<TransferType, "from_team" | "to_team" | "player">,
+  extends Omit<TransferType, "_id" | "from_team" | "to_team" | "player">,
     Document {
-  from_team: Schema.Types.ObjectId;
-  to_team: Schema.Types.ObjectId;
-  player: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  from_team: Types.ObjectId;
+  to_team: Types.ObjectId;
+  player: Types.ObjectId;
 }
 
 const TransferSchema: Schema<ITransfer> = new Schema<ITransfer, any, ITransfer>(
@@ -83,7 +84,7 @@ TransferSchema.index(
 );
 
 // injuryモデルのnow_teamを更新
-async function syncNowTeam(playerId: Schema.Types.ObjectId) {
+async function syncNowTeam(playerId: Types.ObjectId) {
   const Transfer = mongoose.model("Transfer");
   const Injury = mongoose.model("Injury");
 

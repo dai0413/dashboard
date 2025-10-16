@@ -1,11 +1,13 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { CountryType } from "../../shared/schemas/country.schema.ts";
 import { area } from "../../shared/enum/area.ts";
 import { district } from "../../shared/enum/district.ts";
 import { confederation } from "../../shared/enum/confederation.ts";
 import { sub_confederation } from "../../shared/enum/sub_confederation.ts";
 
-export interface ICountry extends CountryType, Document {}
+export interface ICountry extends Omit<CountryType, "_id">, Document {
+  _id: Types.ObjectId;
+}
 
 const CountrySchema = new Schema<ICountry, any, ICountry>(
   {

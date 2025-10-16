@@ -1,14 +1,15 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
 import { period_label } from "../enum/period_label.ts";
+import { objectId } from "./utils/objectId.ts";
 
 const PeriodZodSchema = z
   .object({
     period_label: z.enum(period_label).refine((v) => !!v, {
       message: "period_labelは必須です",
     }),
-    start: z.number().nullable(),
-    end: z.number().nullable(),
+    start: z.number().optional(),
+    end: z.number().optional(),
     order: z.number().default(0),
   })
   .refine(
@@ -23,6 +24,7 @@ const PeriodZodSchema = z
   );
 
 export const MatchFormatZodSchema = z.object({
+  _id: objectId,
   name: z
     .string()
     .nonempty()
@@ -33,4 +35,11 @@ export const MatchFormatZodSchema = z.object({
 });
 
 export type MatchFormatType = z.infer<typeof MatchFormatZodSchema>;
-export const MatchFormatZodSchemaArray = z.array(MatchFormatZodSchema);
+
+export const MatchFormatFormSchema = MatchFormatZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const MatchFormatResponseSchema = MatchFormatZodSchema;

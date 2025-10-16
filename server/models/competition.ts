@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { CompetitionType } from "../../shared/schemas/competition.schema.ts";
 
 import { age_group } from "../../shared/enum/age_group.ts";
@@ -7,9 +7,10 @@ import { category } from "../../shared/enum/category.ts";
 import { level } from "../../shared/enum/level.ts";
 
 export interface ICompetition
-  extends Omit<CompetitionType, "country">,
+  extends Omit<CompetitionType, "_id" | "country">,
     Document {
-  country: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  country: Types.ObjectId;
 }
 
 const CompetitionSchema: Schema<ICompetition> = new Schema<

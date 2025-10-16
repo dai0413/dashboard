@@ -5,6 +5,7 @@ import { dateField } from "./utils/dateField.ts";
 
 export const CompetitionStageZodSchema = z
   .object({
+    _id: objectId,
     competition: objectId.refine((v) => !!v, {
       message: "competitionは必須です",
     }),
@@ -45,6 +46,12 @@ export const CompetitionStageZodSchema = z
   );
 
 export type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;
-export const CompetitionStageZodSchemaArray = z.array(
-  CompetitionStageZodSchema
-);
+
+export const CompetitionStageFormSchema = CompetitionStageZodSchema.omit({
+  _id: true,
+  competition: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const CompetitionStageResponseSchema = CompetitionStageZodSchema;

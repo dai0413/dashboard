@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import { MatchType } from "../../shared/schemas/match.schema.ts";
 
 import { result } from "../../shared/enum/result.ts";
@@ -6,6 +6,7 @@ import { result } from "../../shared/enum/result.ts";
 export interface IMatch
   extends Omit<
       MatchType,
+      | "_id"
       | "competition"
       | "competition_stage"
       | "season"
@@ -15,13 +16,14 @@ export interface IMatch
       | "stadium"
     >,
     Document {
-  competition: Schema.Types.ObjectId;
-  competition_stage: Schema.Types.ObjectId;
-  season: Schema.Types.ObjectId;
-  home_team: Schema.Types.ObjectId;
-  away_team: Schema.Types.ObjectId;
-  match_format: Schema.Types.ObjectId;
-  stadium: Schema.Types.ObjectId;
+  _id: Types.ObjectId;
+  competition: Types.ObjectId;
+  competition_stage: Types.ObjectId;
+  season: Types.ObjectId;
+  home_team: Types.ObjectId;
+  away_team: Types.ObjectId;
+  match_format: Types.ObjectId;
+  stadium: Types.ObjectId;
 }
 
 const MatchSchema: Schema<IMatch> = new Schema<IMatch, any, IMatch>(

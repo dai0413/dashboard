@@ -7,6 +7,7 @@ import { age_group } from "../enum/age_group.ts";
 import { dateField } from "./utils/dateField.ts";
 
 export const CompetitionZodSchema = z.object({
+  _id: objectId,
   name: z
     .string()
     .nonempty()
@@ -26,4 +27,11 @@ export const CompetitionZodSchema = z.object({
 });
 
 export type CompetitionType = z.infer<typeof CompetitionZodSchema>;
-export const CompetitionZodSchemaArray = z.array(CompetitionZodSchema);
+
+export const CompetitionFormSchema = CompetitionZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const CompetitionResponseSchema = CompetitionZodSchema;

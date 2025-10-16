@@ -5,6 +5,7 @@ import { age_group } from "../enum/age_group.ts";
 import { division } from "../enum/division.ts";
 
 export const TeamZodSchema = z.object({
+  _id: objectId,
   team: z
     .string()
     .nonempty()
@@ -34,4 +35,11 @@ export const TeamZodSchema = z.object({
 });
 
 export type TeamType = z.infer<typeof TeamZodSchema>;
-export const TeamZodSchemaArray = z.array(TeamZodSchema);
+
+export const TeamFormSchema = TeamZodSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const TeamResponseSchema = TeamZodSchema;
