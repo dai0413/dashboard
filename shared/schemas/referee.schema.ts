@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
 import { objectId } from "./utils/objectId.ts";
+import { PlayerZodSchema } from "./player.schema.ts";
+import { CountryZodSchema } from "./country.schema.ts";
 
 export const RefereeZodSchema = z.object({
   _id: objectId,
@@ -28,4 +30,12 @@ export const RefereeFormSchema = RefereeZodSchema.omit({
   updatedAt: true,
 });
 
-export const RefereeResponseSchema = RefereeZodSchema;
+export const RefereeResponseSchema = RefereeZodSchema.extend({
+  citizenship: z.array(CountryZodSchema).default([]),
+  player: PlayerZodSchema.optional(),
+});
+
+export const RefereePopulatedSchema = RefereeZodSchema.extend({
+  citizenship: z.array(CountryZodSchema).default([]),
+  player: PlayerZodSchema.optional(),
+});

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
 import { objectId } from "./utils/objectId.ts";
+import { CountryZodSchema } from "./country.schema.ts";
 
 export const StadiumZodSchema = z.object({
   _id: objectId,
@@ -25,4 +26,10 @@ export const StadiumFormSchema = StadiumZodSchema.omit({
   updatedAt: true,
 });
 
-export const StadiumResponseSchema = StadiumZodSchema;
+export const StadiumResponseSchema = StadiumZodSchema.extend({
+  country: CountryZodSchema.optional(),
+});
+
+export const StadiumPopulatedSchema = StadiumZodSchema.extend({
+  country: CountryZodSchema.optional(),
+});
