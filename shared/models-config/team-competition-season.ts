@@ -8,6 +8,7 @@ import {
   TeamCompetitionSeasonType,
   TeamCompetitionSeasonFormSchema,
   TeamCompetitionSeasonResponseSchema,
+  TeamCompetitionSeasonPopulatedSchema,
 } from "../schemas/team-competition-season.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 
@@ -15,13 +16,15 @@ export const teamCompetitionSeason: ControllerConfig<
   ITeamCompetitionSeason,
   TeamCompetitionSeasonType,
   z.infer<typeof TeamCompetitionSeasonFormSchema>,
-  z.infer<typeof TeamCompetitionSeasonResponseSchema>
+  z.infer<typeof TeamCompetitionSeasonResponseSchema>,
+  z.infer<typeof TeamCompetitionSeasonPopulatedSchema>
 > = {
   name: "team-competition-season",
   SCHEMA: {
     DATA: TeamCompetitionSeasonZodSchema,
     FORM: TeamCompetitionSeasonFormSchema,
     RESPONSE: TeamCompetitionSeasonResponseSchema,
+    POPULATED: TeamCompetitionSeasonPopulatedSchema,
   },
   TYPE: {} as TeamCompetitionSeasonType,
   MONGO_MODEL: TeamCompetitionSeasonModel,
@@ -30,28 +33,39 @@ export const teamCompetitionSeason: ControllerConfig<
     { path: "season", collection: "seasons" },
     { path: "competition", collection: "competitions" },
   ],
-  getALL: {
-    sort: { _id: 1 },
+  getAllConfig: {
+    query: [
+      { field: "team", type: "ObjectId" },
+      {
+        field: "competition",
+        type: "ObjectId",
+      },
+      {
+        field: "competition.category",
+        type: "String",
+      },
+    ],
+    sort: { "season.start_date": -1, _id: -1 },
   },
   bulk: false,
   download: false,
   TEST: {
-    sampleData: [
+    sampleData: (deps) => [
       {
-        team: "685fe9e1bdafffc53f471928",
-        season: "68b54342990b9673bf8a99c4",
+        team: deps.team._id,
+        season: deps.season._id,
       },
       {
-        team: "685fe9e1bdafffc53f471928",
-        season: "68b54342990b9673bf8a99c4",
+        team: deps.team._id,
+        season: deps.season._id,
       },
       {
-        team: "685fe9e1bdafffc53f471928",
-        season: "68b54342990b9673bf8a99c4",
+        team: deps.team._id,
+        season: deps.season._id,
       },
     ],
     updatedData: {
-      team: "685fe9e1bdafffc53f471928",
+      note: "memo",
     },
   },
 };

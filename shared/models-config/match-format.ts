@@ -8,26 +8,28 @@ import {
   MatchFormatType,
   MatchFormatFormSchema,
   MatchFormatResponseSchema,
+  MatchFormatPopulatedSchema,
 } from "../schemas/match-format.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
-import { createPath } from "../../server/modelsConfig/utils/createPath.ts";
 
 export const matchFormat: ControllerConfig<
   IMatchFormat,
   MatchFormatType,
   z.infer<typeof MatchFormatFormSchema>,
-  z.infer<typeof MatchFormatResponseSchema>
+  z.infer<typeof MatchFormatResponseSchema>,
+  z.infer<typeof MatchFormatPopulatedSchema>
 > = {
   name: "match-format",
   SCHEMA: {
     DATA: MatchFormatZodSchema,
     FORM: MatchFormatFormSchema,
     RESPONSE: MatchFormatResponseSchema,
+    POPULATED: MatchFormatPopulatedSchema,
   },
   TYPE: {} as MatchFormatType,
   MONGO_MODEL: MatchFormatModel,
   POPULATE_PATHS: [],
-  getALL: {
+  getAllConfig: {
     sort: { _id: 1 },
   },
   bulk: false,
@@ -61,6 +63,5 @@ export const matchFormat: ControllerConfig<
     updatedData: {
       name: "updated_name",
     },
-    testDataPath: createPath("player"),
   },
 };

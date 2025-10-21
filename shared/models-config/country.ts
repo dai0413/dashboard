@@ -5,6 +5,7 @@ import {
   CountryType,
   CountryFormSchema,
   CountryResponseSchema,
+  CountryPopulatedSchema,
 } from "../schemas/country.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 
@@ -12,18 +13,20 @@ export const country: ControllerConfig<
   ICountry,
   CountryType,
   z.infer<typeof CountryFormSchema>,
-  z.infer<typeof CountryResponseSchema>
+  z.infer<typeof CountryResponseSchema>,
+  z.infer<typeof CountryPopulatedSchema>
 > = {
   name: "country",
   SCHEMA: {
     DATA: CountryZodSchema,
     FORM: CountryFormSchema,
     RESPONSE: CountryResponseSchema,
+    POPULATED: CountryPopulatedSchema,
   },
   TYPE: {} as CountryType,
   MONGO_MODEL: CountryModel,
   POPULATE_PATHS: [],
-  getALL: {
+  getAllConfig: {
     sort: { _id: 1 },
   },
   bulk: false,

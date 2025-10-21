@@ -8,6 +8,7 @@ import {
   CompetitionType,
   CompetitionFormSchema,
   CompetitionResponseSchema,
+  CompetitionPopulatedSchema,
 } from "../schemas/competition.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 
@@ -15,28 +16,30 @@ export const competition: ControllerConfig<
   ICompetition,
   CompetitionType,
   z.infer<typeof CompetitionFormSchema>,
-  z.infer<typeof CompetitionResponseSchema>
+  z.infer<typeof CompetitionResponseSchema>,
+  z.infer<typeof CompetitionPopulatedSchema>
 > = {
   name: "competition",
   SCHEMA: {
     DATA: CompetitionZodSchema,
     FORM: CompetitionFormSchema,
     RESPONSE: CompetitionResponseSchema,
+    POPULATED: CompetitionPopulatedSchema,
   },
   TYPE: {} as CompetitionType,
   MONGO_MODEL: CompetitionModel,
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
-  getALL: {
+  getAllConfig: {
     sort: { _id: 1 },
   },
   bulk: false,
   download: false,
   TEST: {
-    sampleData: [
+    sampleData: (deps) => [
       {
         name: "Ｊ１リーグ",
         abbr: "J1",
-        country: "688b2c5fe7d7762ddaad1dfb",
+        country: deps.country._id,
         competition_type: "club",
         category: "league",
         level: "1部",
@@ -46,7 +49,7 @@ export const competition: ControllerConfig<
       {
         name: "Ｊ２リーグ",
         abbr: "J2",
-        country: "688b2c5fe7d7762ddaad1dfb",
+        country: deps.country._id,
         competition_type: "club",
         category: "league",
         level: "2部",
@@ -56,7 +59,7 @@ export const competition: ControllerConfig<
       {
         name: "Ｊ３リーグ",
         abbr: "J3",
-        country: "688b2c5fe7d7762ddaad1dfb",
+        country: deps.country._id,
         competition_type: "club",
         category: "league",
         level: "3部",
