@@ -7,7 +7,15 @@ export interface IUser extends Omit<UserType, "_id">, Document {
   _id: Types.ObjectId;
 }
 
-const UserSchema: Schema<IUser> = new Schema<IUser, any, IUser>(
+interface IUserMethods {
+  createJWT(): string;
+  createRefreshToken(): string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
+
+export interface UserModelType extends Model<IUser, {}, IUserMethods> {}
+
+const UserSchema = new Schema<IUser, UserModelType, IUserMethods>(
   {
     user_name: {
       type: String,

@@ -16,7 +16,7 @@ const StadiumSchema: Schema<IStadium> = new Schema<IStadium, any, IStadium>(
     alt_names: { type: [String] },
     alt_abbrs: { type: [String] },
     alt_en_names: { type: [String] },
-    country: { type: Schema.Types.ObjectId, ref: "Country", required: true },
+    country: { type: Schema.Types.ObjectId, ref: "Country" },
     transferurl: { type: String },
     sofaurl: { type: String },
   },
