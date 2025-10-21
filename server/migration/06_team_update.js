@@ -1,12 +1,10 @@
 import fs from "fs";
 import path from "path";
 import csv from "csv-parser";
-import dotenv from "dotenv";
-dotenv.config({
-  path: path.resolve(process.cwd(), "../.env"),
-});
-
 import { mongoose } from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
 const mongoUri = process.env.MONGODB_URI;
 const INPUT_BASE_PATH = process.env.INPUT_BASE_PATH;
 const inputPath = path.join(INPUT_BASE_PATH, "teams2.csv");

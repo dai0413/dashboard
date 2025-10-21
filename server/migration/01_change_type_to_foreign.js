@@ -1,12 +1,8 @@
-import path from "path";
-import dotenv from "dotenv";
-dotenv.config({
-  path: path.resolve(process.cwd(), "../.env"),
-});
-
 import { mongoose } from "mongoose";
 import Country from "../models/country.js";
 import Team from "../models/team.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const mongoUri = process.env.MONGODB_URI;
 
