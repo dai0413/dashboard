@@ -1,65 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
-import { ParsedQs } from "qs";
 import { NotFoundError, BadRequestError } from "../errors/index.ts";
 import { getNest } from "./getNest.ts";
-import { ControllerConfig, GetAllQuery } from "../modelsConfig/types/type.ts";
+import { ControllerConfig } from "../modelsConfig/types/type.ts";
 import { convertObjectIdToString } from "./convertObjectIdToString.ts";
 import z from "zod";
-
-// --- ヘルパー: query から matchStage を作る ---
-const buildMatchStage = (
-  query: ParsedQs,
-  queryConfig?: GetAllQuery["query"],
-  buildCustomMatch?: (query: ParsedQs) => Record<string, any>
-) => {
-  if (!queryConfig) return {};
-  let matchStage: Record<string, any> = {};
-
-  // --- 標準クエリ構築 ---
-  for (const { field, type } of queryConfig ?? []) {
-    const value = query[field];
-    if (value == null || value === "") continue; // 空文字・未定義スキップ
-
-    try {
-      switch (type) {
-        case "ObjectId":
-          matchStage[field] = new Types.ObjectId(value as string);
-          break;
-        case "Number":
-          const num = Number(value);
-          if (isNaN(num))
-            throw new BadRequestError(`${field} は数値である必要があります`);
-          matchStage[field] = num;
-          break;
-        case "Boolean":
-          matchStage[field] = value === "true";
-          break;
-        case "Date":
-          const date = new Date(value as string);
-          if (isNaN(date.getTime()))
-            throw new BadRequestError(`${field} は有効な日付ではありません`);
-          matchStage[field] = date;
-          break;
-        default:
-          matchStage[field] = value;
-      }
-    } catch (err) {
-      if (err instanceof BadRequestError) throw err;
-      throw new BadRequestError(`${field} の型変換に失敗しました`);
-    }
-  }
-
-  // --- カスタム条件マージ ---
-  if (buildCustomMatch) {
-    const customStage = buildCustomMatch(query);
-    if (customStage && typeof customStage === "object") {
-      matchStage = { ...matchStage, ...customStage };
-    }
-  }
-  return matchStage;
-};
+import { buildMatchStage } from "./buildMatchStage.ts";
 
 const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>
@@ -176,9 +123,17 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestError("Invalid ID");
     }
-    const data = await MONGO_MODEL.findById(id).populate(POPULATE_PATHS);
-    if (!data) throw new NotFoundError(`${name} データが見つかりません`);
-    res.status(StatusCodes.OK).json({ data });
+    const populated = await MONGO_MODEL.findById(id).populate(POPULATE_PATHS);
+
+    if (!populated) {
+      throw new NotFoundError(`${name} データ取得中にエラーが発生しました`);
+    }
+
+    const plain = convertObjectIdToString(populated.toObject());
+    const parsedResult = POPULATED.parse(plain);
+    const response = convertFun ? convertFun(parsedResult) : parsedResult;
+
+    res.status(StatusCodes.OK).json({ data: response });
   };
 
   // --- UPDATE ---

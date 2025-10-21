@@ -1,56 +1,73 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { TransferModel } from "../models/transfer.ts";
-import { InjuryModel } from "../models/injury.ts";
-import { transfer as formatTransfer } from "../utils/format/transfer.ts";
-import { injury as formatInjury } from "../utils/format/injury.ts";
-import {
-  TransferPopulatedSchema,
-  TransferResponseSchema,
-} from "../../shared/schemas/transfer.schema.ts";
-import {
-  InjuryPopulatedSchema,
-  InjuryResponseSchema,
-} from "../../shared/schemas/injury.schema.ts";
+import { convertObjectIdToString } from "../utils/convertObjectIdToString.ts";
+import { buildMatchStage } from "../utils/buildMatchStage.ts";
+import { transfer as transferConfig } from "../../shared/models-config/transfer.ts";
+import { injury as injuryConfig } from "../../shared/models-config/injury.ts";
+import { getNest } from "../utils/getNest.ts";
+import { ParsedQs } from "qs";
+import { ControllerConfig } from "../modelsConfig/types/type.ts";
+
+const createData = async <
+  TDoc,
+  TData,
+  TForm = TData,
+  TResponse = TData,
+  TPopulated = TData
+>(
+  config: ControllerConfig<TDoc, TData, TForm, TResponse, TPopulated>,
+  query: ParsedQs
+): Promise<(TResponse | TPopulated)[]> => {
+  const limit: number = query.limit ? parseInt(query.limit as string, 10) : 5;
+
+  const {
+    SCHEMA: { POPULATED },
+    MONGO_MODEL,
+    POPULATE_PATHS,
+    getAllConfig: getAllConfig,
+    convertFun,
+  } = config;
+
+  const beforeMatch = buildMatchStage(
+    query,
+    getAllConfig?.query?.filter((q) => !q.populateBefore),
+    getAllConfig?.buildCustomMatch
+  );
+  const afterMatch = buildMatchStage(
+    query,
+    getAllConfig?.query?.filter((q) => q.populateBefore),
+    getAllConfig?.buildCustomMatch
+  );
+
+  const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
+  const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
+
+  const data = await MONGO_MODEL.aggregate([
+    ...getNest(false, beforePaths),
+    ...(Object.keys(beforeMatch).length > 0 ? [{ $match: beforeMatch }] : []),
+    ...getNest(false, afterPaths),
+    { $sort: { doa: -1, _id: -1 } },
+    ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
+    ...(getAllConfig?.project && Object.keys(getAllConfig.project).length > 0
+      ? [{ $project: getAllConfig.project }]
+      : []),
+    ...[{ $limit: limit }],
+  ]);
+
+  const processed = data.map((item) => {
+    const plain = convertObjectIdToString(item);
+    const parsed = POPULATED.parse(plain);
+    return convertFun ? convertFun(parsed) : parsed;
+  });
+
+  return processed;
+};
 
 const getTopPageData = async (req: Request, res: Response) => {
-  let limit: number | undefined = req.query.limit
-    ? parseInt(req.query.limit as string, 10)
-    : 5;
-  if (isNaN(limit) || limit <= 0) {
-    limit = undefined;
-  }
+  const transferData = await createData(transferConfig, req.query);
+  const injuryData = await createData(injuryConfig, req.query);
 
-  let transferQuery = TransferModel.find({}).sort({ doa: -1, _id: -1 });
-  let injuryQuery = InjuryModel.find({}).sort({ doa: -1, _id: -1 });
-
-  if (limit !== undefined) {
-    transferQuery = transferQuery.limit(limit);
-  }
-  if (limit !== undefined) {
-    injuryQuery = injuryQuery.limit(limit);
-  }
-
-  const populatedTransfer = await transferQuery
-    .populate("from_team")
-    .populate("to_team")
-    .populate("player");
-  const parsedTransfer = TransferPopulatedSchema.parse(populatedTransfer);
-  const responseTransfer = TransferResponseSchema.parse(
-    formatTransfer(parsedTransfer)
-  );
-
-  const populatedInjuries = await injuryQuery
-    .populate("player")
-    .populate("team");
-  const parsedInjuries = InjuryPopulatedSchema.parse(populatedInjuries);
-  const responseInjuries = InjuryResponseSchema.parse(
-    formatInjury(parsedInjuries)
-  );
-
-  res
-    .status(StatusCodes.OK)
-    .json({ transferData: responseTransfer, injuryData: responseInjuries });
+  res.status(StatusCodes.OK).json({ transferData, injuryData });
 };
 
 export { getTopPageData };
