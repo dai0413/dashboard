@@ -7,11 +7,9 @@ import {
   getItem,
   updateItem,
   deleteItem,
-  downloadItem,
-} from "../controllers/models/team.js";
+} from "../controllers/models/team-competition-season.ts";
 
 router.route("/").get(getAllItems).post(createItem);
-router.route("/download").get(downloadItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
 export default router;

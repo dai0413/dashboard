@@ -7,7 +7,7 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/team-competition-season.js";
+} from "../controllers/models/competition-stage.ts";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);

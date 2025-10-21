@@ -7,7 +7,7 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/country.js";
+} from "../controllers/models/transfer.ts";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);

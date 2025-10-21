@@ -7,9 +7,11 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/injury.js";
+  downloadItems,
+} from "../controllers/models/national-match-series.ts";
 
 router.route("/").get(getAllItems).post(createItem);
+router.route("/download").get(downloadItems);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
 
 export default router;
