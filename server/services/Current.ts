@@ -1,14 +1,14 @@
-import { mongoose } from "mongoose";
-import { Transfer } from "../models/transfer.js";
+import mongoose from "mongoose";
+import { TransferModel } from "../models/transfer.ts";
 import { addPositionGroup } from "../order/position.js";
 import { addPositionGroupOrder } from "../order/position_group.js";
 
 export const getCurrentPlayersByTeamService = async (
-  teamId,
-  from_date_from,
-  from_date_to
+  teamId: string | null = null,
+  from_date_from: string | null = null,
+  from_date_to: string | null = null
 ) => {
-  const matchStage = {};
+  const matchStage: Record<string, any> = {};
 
   // チームID
   if (teamId) {
@@ -20,7 +20,7 @@ export const getCurrentPlayersByTeamService = async (
 
   // from_date範囲
   if (from_date_from || from_date_to) {
-    const dateFilter = {};
+    const dateFilter: Record<string, Date> = {};
     if (from_date_from) dateFilter.$gte = new Date(from_date_from);
     if (from_date_to) dateFilter.$lte = new Date(from_date_to);
     matchStage["latestTransfer.from_date"] = dateFilter;
@@ -39,7 +39,7 @@ export const getCurrentPlayersByTeamService = async (
     ],
   };
 
-  return Transfer.aggregate([
+  return TransferModel.aggregate([
     // 最新の移籍が上に来るように並べる
     { $sort: { doa: -1, _id: -1 } },
 

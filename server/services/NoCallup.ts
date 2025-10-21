@@ -1,8 +1,8 @@
-import { mongoose } from "mongoose";
-import { NationalMatchSeries } from "../models/national-match-series.js";
+import mongoose from "mongoose";
+import { NationalMatchSeriesModel } from "../models/national-match-series.ts";
 
-export const getNoCallUpService = async (countryId) => {
-  return NationalMatchSeries.aggregate([
+export const getNoCallUpService = async (countryId: string) => {
+  return NationalMatchSeriesModel.aggregate([
     {
       $match: { country: new mongoose.Types.ObjectId(countryId) },
     },

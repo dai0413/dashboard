@@ -1,8 +1,8 @@
-import { mongoose } from "mongoose";
-import { Transfer } from "../models/transfer.js";
+import mongoose from "mongoose";
+import { TransferModel } from "../models/transfer.ts";
 
-export const getCurrentLoanPlayersByTeamService = async (teamId) => {
-  return Transfer.aggregate([
+export const getCurrentLoanPlayersByTeamService = async (teamId: string) => {
+  const data = TransferModel.aggregate([
     // 最新の移籍が上に来るように並べる
     { $sort: { from_date: -1, _id: -1 } },
 
@@ -68,4 +68,6 @@ export const getCurrentLoanPlayersByTeamService = async (teamId) => {
     { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
     { $sort: { from_date: -1, _id: -1 } },
   ]);
+
+  return data;
 };

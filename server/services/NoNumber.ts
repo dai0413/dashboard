@@ -1,15 +1,15 @@
-import { mongoose } from "mongoose";
-import { Transfer } from "../models/transfer.js";
-import { Season } from "../models/season.js";
-import { TeamCompetitionSeason } from "../models/team-competition-season.js";
+import mongoose from "mongoose";
+import { TransferModel } from "../models/transfer.ts";
+import { SeasonModel } from "../models/season.ts";
+import { TeamCompetitionSeasonModel } from "../models/team-competition-season.ts";
 
 export const getNoNumberService = async (
-  competitionIds = [],
-  startDate = null,
-  endDate = null
+  competitionIds: string[] = [],
+  startDate: string | null = null,
+  endDate: string | null = null
 ) => {
   // seson検索
-  const seasonQuery = {
+  const seasonQuery: Record<string, any> = {
     competition: {
       $in: competitionIds.map((id) => new mongoose.Types.ObjectId(id)),
     },
@@ -24,29 +24,54 @@ export const getNoNumberService = async (
     seasonQuery.start_date = { $lte: new Date(endDate) };
   }
 
-  const seasons = await Season.find({
-    competition: competitionIds.map((id) => new mongoose.Types.ObjectId(id)),
-    start_date: { $lte: new Date(endDate) },
-    end_date: { $gte: new Date(startDate) },
-  }).select("_id start_date end_date");
-  const seasonIds = seasons.map((s) => s._id);
-  const teamSeasons = await TeamCompetitionSeason.find({
-    season: { $in: seasonIds },
-  }).select("team season");
+  const competitionObjectIds = competitionIds.map(
+    (id) => new mongoose.Types.ObjectId(id)
+  );
 
-  const seasonTeamPairs = teamSeasons.map((ts) => {
-    const season = seasons.find((s) => s._id.equals(ts.season));
-    return { season, team: ts.team.toString() };
-  });
+  const dateMatch: any = {};
+  if (startDate) dateMatch.end_date = { $gte: new Date(startDate) };
+  if (endDate) dateMatch.start_date = { $lte: new Date(endDate) };
 
-  const matchStage = {
+  const pipeline = [
+    // --- Season のフィルタリング ---
+    {
+      $match: {
+        competition: { $in: competitionObjectIds },
+        ...dateMatch,
+      },
+    },
+    // --- TeamCompetitionSeason との紐付け ---
+    {
+      $lookup: {
+        from: "teamcompetitionseasons",
+        localField: "_id",
+        foreignField: "season",
+        as: "teamSeasons",
+      },
+    },
+    { $unwind: "$teamSeasons" },
+    // --- 必要なフィールドを抽出 ---
+    {
+      $project: {
+        _id: 0,
+        seasonId: "$_id",
+        start_date: 1,
+        end_date: 1,
+        team: "$teamSeasons.team",
+      },
+    },
+  ];
+
+  const seasonTeamPairs = await SeasonModel.aggregate(pipeline);
+
+  const matchStage: Record<string, any> = {
     $and: [
       {
         $or: seasonTeamPairs.map((pair) => ({
           "to_team._id": new mongoose.Types.ObjectId(pair.team),
           from_date: {
-            $gte: pair.season.start_date,
-            $lte: pair.season.end_date,
+            $gte: pair.start_date,
+            $lte: pair.end_date,
           },
         })),
       },
@@ -83,7 +108,7 @@ export const getNoNumberService = async (
     delete matchStage.from_date;
   }
 
-  return Transfer.aggregate([
+  const noNumberData = TransferModel.aggregate([
     // 最新の移籍が上に来るように並べる
     { $sort: { from_date: -1, _id: -1 } },
 
@@ -129,4 +154,23 @@ export const getNoNumberService = async (
 
     { $sort: { from_date: -1, _id: -1 } },
   ]);
+
+  console.log("noNumberData", noNumberData);
+
+  return noNumberData;
 };
+
+// const seasons = await SeasonModel.find({
+//   competition: competitionIds.map((id) => new mongoose.Types.ObjectId(id)),
+//   start_date: { $lte: new Date(endDate) },
+//   end_date: { $gte: new Date(startDate) },
+// }).select("_id start_date end_date");
+// const seasonIds = seasons.map((s) => s._id);
+// const teamSeasons = await TeamCompetitionSeasonModel.find({
+//   season: { $in: seasonIds },
+// }).select("team season");
+
+// const seasonTeamPairs = teamSeasons.map((ts) => {
+//   const season = seasons.find((s) => s._id.equals(ts.season));
+//   return { season, team: ts.team.toString() };
+// });

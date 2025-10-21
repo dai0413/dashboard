@@ -6,7 +6,7 @@ import {
   getCurrentLoanPlayersByTeam,
   getNoNumberByCountry,
   getNoCallUp,
-} from "../controllers/aggregate.js";
+} from "../controllers/aggregate.ts";
 
 router.route("/transfer/current-players/:teamId").get(getCurrentPlayersByTeam);
 router
