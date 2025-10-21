@@ -1,15 +1,12 @@
-import path from "path";
 import dotenv from "dotenv";
-dotenv.config({
-  path: path.resolve(process.cwd(), "../.env"),
-});
+dotenv.config();
 
+const mongoUri = process.env.MONGODB_URI;
 import { mongoose } from "mongoose";
 
 import Country from "../models/country.js";
 import Team from "../models/team.js";
 
-const mongoUri = process.env.MONGODB_URI;
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
