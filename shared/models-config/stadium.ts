@@ -5,6 +5,7 @@ import {
   StadiumType,
   StadiumFormSchema,
   StadiumResponseSchema,
+  StadiumPopulatedSchema,
 } from "../schemas/stadium.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 
@@ -12,18 +13,20 @@ export const stadium: ControllerConfig<
   IStadium,
   StadiumType,
   z.infer<typeof StadiumFormSchema>,
-  z.infer<typeof StadiumResponseSchema>
+  z.infer<typeof StadiumResponseSchema>,
+  z.infer<typeof StadiumPopulatedSchema>
 > = {
   name: "stadium",
   SCHEMA: {
     DATA: StadiumZodSchema,
     FORM: StadiumFormSchema,
     RESPONSE: StadiumResponseSchema,
+    POPULATED: StadiumPopulatedSchema,
   },
   TYPE: {} as StadiumType,
   MONGO_MODEL: StadiumModel,
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
-  getALL: {
+  getAllConfig: {
     sort: { _id: 1 },
   },
   bulk: false,

@@ -8,6 +8,7 @@ import {
   CompetitionStageType,
   CompetitionStageFormSchema,
   CompetitionStageResponseSchema,
+  CompetitionStagePopulatedSchema,
 } from "../schemas/competition-stage.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 
@@ -15,13 +16,15 @@ export const competitionStage: ControllerConfig<
   ICompetitionStage,
   CompetitionStageType,
   z.infer<typeof CompetitionStageFormSchema>,
-  z.infer<typeof CompetitionStageResponseSchema>
+  z.infer<typeof CompetitionStageResponseSchema>,
+  z.infer<typeof CompetitionStagePopulatedSchema>
 > = {
   name: "competition-stage",
   SCHEMA: {
     DATA: CompetitionStageZodSchema,
     FORM: CompetitionStageFormSchema,
     RESPONSE: CompetitionStageResponseSchema,
+    POPULATED: CompetitionStagePopulatedSchema,
   },
   TYPE: {} as CompetitionStageType,
   MONGO_MODEL: CompetitionStageModel,
@@ -29,24 +32,27 @@ export const competitionStage: ControllerConfig<
     { path: "competition", collection: "competitions" },
     { path: "season", collection: "seasons" },
   ],
-  getALL: {
+  getAllConfig: {
     sort: { _id: 1 },
   },
   bulk: true,
   download: false,
   TEST: {
-    sampleData: [
+    sampleData: (deps) => [
       {
-        season: "68b7b227b3716945451a5362",
-        stage_type: "none",
+        season: deps.season._id,
+        stage_type: "quarter_final",
+        order: 0,
       },
       {
-        season: "68b7b227b3716945451a5362",
+        season: deps.season._id,
         stage_type: "1st",
+        order: 1,
       },
       {
-        season: "68b7b227b3716945451a5362",
-        stage_type: "2nd",
+        season: deps.season._id,
+        stage_type: "semi_final",
+        order: 2,
       },
     ],
     updatedData: { stage_type: "group_stage" },

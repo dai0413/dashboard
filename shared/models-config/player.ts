@@ -5,6 +5,7 @@ import {
   PlayerType,
   PlayerFormSchema,
   PlayerResponseSchema,
+  PlayerPopulatedSchema,
 } from "../schemas/player.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 import { createPath } from "../../server/modelsConfig/utils/createPath.ts";
@@ -13,18 +14,20 @@ export const player: ControllerConfig<
   IPlayer,
   PlayerType,
   z.infer<typeof PlayerFormSchema>,
-  z.infer<typeof PlayerResponseSchema>
+  z.infer<typeof PlayerResponseSchema>,
+  z.infer<typeof PlayerPopulatedSchema>
 > = {
   name: "player",
   SCHEMA: {
     DATA: PlayerZodSchema,
     FORM: PlayerFormSchema,
     RESPONSE: PlayerResponseSchema,
+    POPULATED: PlayerPopulatedSchema,
   },
   TYPE: {} as PlayerType,
   MONGO_MODEL: PlayerModel,
   POPULATE_PATHS: [],
-  getALL: {
+  getAllConfig: {
     query: [{ field: "country", type: "ObjectId" }],
     sort: { _id: 1 },
   },
