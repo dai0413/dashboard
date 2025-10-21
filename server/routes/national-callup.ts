@@ -7,7 +7,7 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/season.js";
+} from "../controllers/models/national-callup.ts";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
