@@ -24,3 +24,5 @@ export const PlayerFormSchema = PlayerZodSchema.omit({
 });
 
 export const PlayerResponseSchema = PlayerZodSchema;
+
+export const PlayerPopulatedSchema = PlayerZodSchema;

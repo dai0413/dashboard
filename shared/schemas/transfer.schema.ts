@@ -3,6 +3,8 @@ import { objectId } from "./utils/objectId.ts";
 import { dateField } from "./utils/dateField.ts";
 import { position } from "../enum/position.ts";
 import { form } from "../enum/form.ts";
+import { PlayerZodSchema } from "./player.schema.ts";
+import { TeamZodSchema } from "./team.schema.ts";
 
 export const TransferZodSchema = z
   .object({
@@ -54,4 +56,21 @@ export const TransferFormSchema = TransferZodSchema.omit({
   updatedAt: true,
 });
 
-export const TransferResponseSchema = TransferZodSchema;
+export const TransferResponseSchema = TransferZodSchema.omit({
+  from_team_name: true,
+  to_team_name: true,
+}).extend({
+  player: PlayerZodSchema.extend({ _id: objectId.optional() }),
+  from_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+  to_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+});
+
+export const TransferPopulatedSchema = TransferZodSchema.omit({
+  player: true,
+  from_team: true,
+  to_team: true,
+}).safeExtend({
+  player: PlayerZodSchema,
+  from_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+  to_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+});

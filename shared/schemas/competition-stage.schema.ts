@@ -2,6 +2,8 @@ import { z } from "zod";
 import { stage_type } from "../enum/stage_type.ts";
 import { objectId } from "./utils/objectId.ts";
 import { dateField } from "./utils/dateField.ts";
+import { CompetitionZodSchema } from "./competition.schema.ts";
+import { SeasonZodSchema } from "./season.schema.ts";
 
 export const CompetitionStageZodSchema = z
   .object({
@@ -54,4 +56,22 @@ export const CompetitionStageFormSchema = CompetitionStageZodSchema.omit({
   updatedAt: true,
 });
 
-export const CompetitionStageResponseSchema = CompetitionStageZodSchema;
+export const CompetitionStageResponseSchema = CompetitionStageZodSchema.omit({
+  competition: true,
+  season: true,
+  parent_stage: true,
+}).safeExtend({
+  competition: CompetitionZodSchema,
+  season: SeasonZodSchema,
+  parent_stage: z.array(CompetitionStageZodSchema).optional(),
+});
+
+export const CompetitionStagePopulatedSchema = CompetitionStageZodSchema.omit({
+  competition: true,
+  season: true,
+  parent_stage: true,
+}).safeExtend({
+  competition: CompetitionZodSchema,
+  season: SeasonZodSchema,
+  parent_stage: z.array(CompetitionStageZodSchema).optional(),
+});

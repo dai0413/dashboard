@@ -26,3 +26,5 @@ export const UserFormSchema = UserZodSchema.omit({
 });
 
 export const UserResponseSchema = UserZodSchema;
+
+export const UserPopulatedSchema = UserZodSchema;

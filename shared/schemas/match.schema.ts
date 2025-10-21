@@ -2,6 +2,12 @@ import { z } from "zod";
 import { objectId } from "./utils/objectId.ts";
 import { dateField } from "./utils/dateField.ts";
 import { result } from "../enum/result.ts";
+import { TeamZodSchema } from "./team.schema.ts";
+import { CompetitionZodSchema } from "./competition.schema.ts";
+import { CompetitionStageZodSchema } from "./competition-stage.schema.ts";
+import { SeasonZodSchema } from "./season.schema.ts";
+import { MatchFormatZodSchema } from "./match-format.schema.ts";
+import { StadiumZodSchema } from "./stadium.schema.ts";
 
 export const MatchZodSchema = z
   .object({
@@ -77,4 +83,38 @@ export const MatchFormSchema = MatchZodSchema.omit({
   updatedAt: true,
 });
 
-export const MatchResponseSchema = MatchZodSchema;
+export const MatchResponseSchema = MatchZodSchema.omit({
+  competition: true,
+  competition_stage: true,
+  season: true,
+  home_team: true,
+  away_team: true,
+  match_format: true,
+  stadium: true,
+}).safeExtend({
+  competition: CompetitionZodSchema,
+  competition_stage: CompetitionStageZodSchema,
+  season: SeasonZodSchema,
+  home_team: TeamZodSchema,
+  away_team: TeamZodSchema,
+  match_format: MatchFormatZodSchema.optional(),
+  stadium: StadiumZodSchema.extend({ _id: objectId.optional() }).optional(),
+});
+
+export const MatchPopulatedSchema = MatchZodSchema.omit({
+  competition: true,
+  competition_stage: true,
+  season: true,
+  home_team: true,
+  away_team: true,
+  match_format: true,
+  stadium: true,
+}).safeExtend({
+  competition: CompetitionZodSchema,
+  competition_stage: CompetitionStageZodSchema,
+  season: SeasonZodSchema,
+  home_team: TeamZodSchema,
+  away_team: TeamZodSchema,
+  match_format: MatchFormatZodSchema.optional(),
+  stadium: StadiumZodSchema.extend({ _id: objectId.optional() }).optional(),
+});

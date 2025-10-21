@@ -3,6 +3,7 @@ import { objectId } from "./utils/objectId.ts";
 import { genre } from "../enum/genre.ts";
 import { age_group } from "../enum/age_group.ts";
 import { division } from "../enum/division.ts";
+import { CountryZodSchema } from "./country.schema.ts";
 
 export const TeamZodSchema = z.object({
   _id: objectId,
@@ -15,7 +16,7 @@ export const TeamZodSchema = z.object({
   country: objectId.optional(),
   genre: z.enum(genre).optional(),
   age_group: z.enum(age_group).optional(),
-  division: z.enum(division).default("1st"),
+  division: z.enum(division).default("1st").optional(),
   jdataid: z.number().optional(),
   labalph: z.string().optional(),
   transferurl: z.string().nonempty().optional(),
@@ -42,4 +43,10 @@ export const TeamFormSchema = TeamZodSchema.omit({
   updatedAt: true,
 });
 
-export const TeamResponseSchema = TeamZodSchema;
+export const TeamResponseSchema = TeamZodSchema.extend({
+  country: CountryZodSchema.optional(),
+});
+
+export const TeamPopulatedSchema = TeamZodSchema.extend({
+  country: CountryZodSchema.optional(),
+});

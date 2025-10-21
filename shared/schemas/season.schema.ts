@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
 import { objectId } from "./utils/objectId.ts";
+import { CompetitionZodSchema } from "./competition.schema.ts";
 
 export const SeasonZodSchema = z.object({
   _id: objectId,
@@ -27,4 +28,10 @@ export const SeasonFormSchema = SeasonZodSchema.omit({
   updatedAt: true,
 });
 
-export const SeasonResponseSchema = SeasonZodSchema;
+export const SeasonResponseSchema = SeasonZodSchema.extend({
+  competition: CompetitionZodSchema,
+});
+
+export const SeasonPopulatedSchema = SeasonZodSchema.extend({
+  competition: CompetitionZodSchema,
+});

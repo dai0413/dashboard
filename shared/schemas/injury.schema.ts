@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.ts";
 import { objectId } from "./utils/objectId.ts";
+import { TeamZodSchema } from "./team.schema.ts";
+import { PlayerZodSchema } from "./player.schema.ts";
 
 const ttpPattern = /^(\d+)([dwmy])$|^(\d+)-(\d+)([dwmy])$/i;
 
@@ -52,4 +54,20 @@ export const InjuryFormSchema = InjuryZodSchema.omit({
   updatedAt: true,
 });
 
-export const InjuryResponseSchema = InjuryZodSchema;
+export const InjuryResponseSchema = InjuryZodSchema.omit({
+  team_name: true,
+}).extend({
+  player: PlayerZodSchema,
+  team: TeamZodSchema.extend({ _id: objectId.optional() }),
+  now_team: TeamZodSchema.optional(),
+});
+
+export const InjuryPopulatedSchema = InjuryZodSchema.omit({
+  team: true,
+  now_team: true,
+  player: true,
+}).safeExtend({
+  team: TeamZodSchema,
+  now_team: TeamZodSchema.optional(),
+  player: PlayerZodSchema,
+});

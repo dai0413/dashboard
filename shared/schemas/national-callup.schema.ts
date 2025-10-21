@@ -4,6 +4,9 @@ import { dateField } from "./utils/dateField.ts";
 import { position_group } from "../enum/position_group.ts";
 import { status } from "../enum/status.ts";
 import { left_reason } from "../enum/left_reason.ts";
+import { PlayerZodSchema } from "./player.schema.ts";
+import { NationalMatchSeriesZodSchema } from "./national-match-series.schema.ts";
+import { TeamZodSchema } from "./team.schema.ts";
 
 export const NationalCallUpZodSchema = z
   .object({
@@ -14,7 +17,7 @@ export const NationalCallUpZodSchema = z
     player: objectId.refine((v) => !!v, {
       message: "playerは必須です",
     }),
-    team: objectId,
+    team: objectId.optional(),
     team_name: z.string().nonempty().optional(),
     joined_at: dateField,
     left_at: dateField,
@@ -54,4 +57,23 @@ export const NationalCallUpFormSchema = NationalCallUpZodSchema.omit({
   updatedAt: true,
 });
 
-export const NationalCallUpResponseSchema = NationalCallUpZodSchema;
+export const NationalCallUpResponseSchema = NationalCallUpZodSchema.omit({
+  series: true,
+  player: true,
+  team: true,
+  team_name: true,
+}).safeExtend({
+  series: NationalMatchSeriesZodSchema,
+  player: PlayerZodSchema,
+  team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+});
+
+export const NationalCallUpPopulatedSchema = NationalCallUpZodSchema.omit({
+  series: true,
+  player: true,
+  team: true,
+}).safeExtend({
+  series: NationalMatchSeriesZodSchema,
+  player: PlayerZodSchema,
+  team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+});

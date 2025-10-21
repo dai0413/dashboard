@@ -5,6 +5,7 @@ import { category } from "../enum/category.ts";
 import { level } from "../enum/level.ts";
 import { age_group } from "../enum/age_group.ts";
 import { dateField } from "./utils/dateField.ts";
+import { CountryZodSchema } from "./country.schema.ts";
 
 export const CompetitionZodSchema = z.object({
   _id: objectId,
@@ -34,4 +35,10 @@ export const CompetitionFormSchema = CompetitionZodSchema.omit({
   updatedAt: true,
 });
 
-export const CompetitionResponseSchema = CompetitionZodSchema;
+export const CompetitionResponseSchema = CompetitionZodSchema.extend({
+  country: CountryZodSchema.optional(),
+});
+
+export const CompetitionPopulatedSchema = CompetitionZodSchema.extend({
+  country: CountryZodSchema.optional(),
+});
