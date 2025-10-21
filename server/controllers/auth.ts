@@ -1,4 +1,4 @@
-import { User } from "../models/user.js";
+import { UserModel, UserModelType } from "../models/user.ts";
 import jwt from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 
@@ -6,9 +6,16 @@ import {
   BadRequestError,
   UnauthenticatedError,
   NotFoundError,
-} from "../errors/index.js";
+} from "../errors/index.ts";
 
-const register = async (req, res) => {
+import { Request, Response, NextFunction } from "express";
+
+import { user } from "../../shared/models-config/user.ts";
+import { crudFactory } from "../utils/crudFactory.ts";
+
+const { MONGO_MODEL, POPULATE_PATHS, bulk } = user;
+
+const register = async (req: Request, res: Response) => {
   const { user_name, email, password } = req.body;
   if (!user_name || !email || !password) {
     new BadRequestError(
@@ -16,7 +23,9 @@ const register = async (req, res) => {
     );
   }
 
-  const user = await User.create(req.body);
+  const user = (await UserModel.create(
+    req.body
+  )) as InstanceType<UserModelType>;
 
   const token = user.createJWT();
   const refreshToken = user.createRefreshToken();
@@ -33,7 +42,7 @@ const register = async (req, res) => {
   });
 };
 
-const login = async (req, res, next) => {
+const login = async (req: Request, res: Response, next: NextFunction) => {
   console.log("login start");
   const { email, password } = req.body;
   if (!email || !password) {
@@ -42,7 +51,9 @@ const login = async (req, res, next) => {
     );
   }
 
-  const user = await User.findOne({ email });
+  const user = (await UserModel.findOne({
+    email,
+  })) as InstanceType<UserModelType>;
   if (!user) {
     return next(new UnauthenticatedError("メールアドレスが間違っています。"));
   }
@@ -72,7 +83,7 @@ const login = async (req, res, next) => {
   console.log("login end");
 };
 
-const logout = async (req, res) => {
+const logout = async (req: Request, res: Response) => {
   res.clearCookie("refreshToken");
   delete req.user;
   res.status(StatusCodes.OK).json({
@@ -80,22 +91,24 @@ const logout = async (req, res) => {
   });
 };
 
-const me = async (req, res) => {
+const me = async (req: Request, res: Response) => {
   if (!req.user || !req.user.userId) {
     throw new UnauthenticatedError();
   }
-  const user = await User.findById(req.user.userId);
+  const user = (await UserModel.findById(
+    req.user.userId
+  )) as InstanceType<UserModelType>;
   if (!user) {
     throw new NotFoundError();
   }
   res.status(StatusCodes.OK).json({
-    user_name: user.name,
+    user_name: user.user_name,
     email: user.email,
     is_staff: user.is_staff,
   });
 };
 
-const refresh = async (req, res) => {
+const refresh = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
@@ -104,16 +117,18 @@ const refresh = async (req, res) => {
 
   let decoded;
   try {
-    decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    decoded = jwt.verify(refreshToken, process.env.JWT_SECRET as string);
   } catch (error) {
     throw new UnauthenticatedError();
   }
 
-  if (!decoded || !decoded.userId) {
+  if (typeof decoded === "string" || !decoded.userId) {
     throw new UnauthenticatedError();
   }
 
-  const user = await User.findById(decoded.userId);
+  const user = (await UserModel.findById(
+    decoded.userId
+  )) as InstanceType<UserModelType>;
   if (!user) {
     throw new NotFoundError();
   }

@@ -1,20 +1,16 @@
 import { StatusCodes } from "http-status-codes";
-import csv from "csv-parser";
 import { Request, Response } from "express";
-import moment from "moment";
-import { BadRequestError } from "../../errors/index.ts";
 
-import { player } from "../../../shared/models-config/player.ts";
-import { DecodedRequest } from "../../types.ts";
+import { team } from "../../../shared/models-config/team.ts";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
-const { MONGO_MODEL, TYPE } = player;
+const getAllItems = crudFactory(team).getAllItems;
+const createItem = crudFactory(team).createItem;
+const getItem = crudFactory(team).getItem;
+const updateItem = crudFactory(team).updateItem;
+const deleteItem = crudFactory(team).deleteItem;
 
-const getAllItems = crudFactory(player).getAllItems;
-const createItem = crudFactory(player).createItem;
-const getItem = crudFactory(player).getItem;
-const updateItem = crudFactory(player).updateItem;
-const deleteItem = crudFactory(player).deleteItem;
+const { MONGO_MODEL, TYPE } = team;
 
 // const getAllItems = async (req: Request, res: Response) => {
 //   const matchStage = {};
@@ -101,73 +97,6 @@ const deleteItem = crudFactory(player).deleteItem;
 //   res.status(StatusCodes.OK).json({ message: "削除しました" });
 // };
 
-const checkItem = async (req: Request, res: Response) => {
-  if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
-    throw new BadRequestError();
-  }
-  const { name, en_name, dob } = req.body;
-  // 類似選手検索
-  const similar = await MONGO_MODEL.find({
-    $or: [{ name: name }, { en_name: en_name }, { dob: dob }],
-  });
-
-  // 類似選手あり
-  if (similar.length > 0) {
-    const existing = similar.map((p) => ({
-      _id: p._id,
-      name: p.name,
-      en_name: p.en_name || "",
-      dob: p.dob ? p.dob.toISOString().split("T")[0] : "",
-    }));
-    return res.status(StatusCodes.OK).json({
-      message: "類似する選手が存在します。追加しますか？",
-      existing: existing,
-    });
-  } else {
-    createItem(req, res);
-  }
-};
-
-const uploadItem = async (req: DecodedRequest, res: Response) => {
-  const existingCount = await MONGO_MODEL.countDocuments();
-  const rows: (typeof TYPE)[] = [];
-
-  req.decodedStream
-    .pipe(csv())
-    .on("data", (row: typeof TYPE) => {
-      rows.push(row);
-    })
-    .on("end", async () => {
-      if (existingCount >= rows.length) {
-        return res.status(StatusCodes.OK).json({
-          message: "追加する選手データはありません（すでに全件登録済み）",
-          data: [],
-        });
-      }
-
-      const newRows = rows.slice(existingCount); // 追加分だけ
-      const playersToAdd = newRows.map((row) => ({
-        name: row.name,
-        en_name: row.en_name,
-        dob: row.dob,
-        pob: row.pob,
-      }));
-
-      try {
-        const addedPlayers = await MONGO_MODEL.insertMany(playersToAdd);
-        res.status(StatusCodes.OK).json({
-          message: `${addedPlayers.length}件の選手を追加しました`,
-          data: addedPlayers,
-        });
-      } catch (err) {
-        console.error("保存エラー:", err);
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ message: "保存中にエラーが発生しました" });
-      }
-    });
-};
-
 const downloadItem = async (req: Request, res: Response) => {
   try {
     const data = await MONGO_MODEL.find();
@@ -175,19 +104,16 @@ const downloadItem = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "データがありません" });
     }
 
-    const header = `"player_id","name","en_name","dob","pob"\n`;
+    const header = `"id","team","abbr","enTeam","country","genre","jdataid","labalph","transferurl","sofaurl"\n`;
 
     const csvContent = data
-      .map((player, index) => {
-        const dob = player.dob ? moment(player.dob).format("YYYY/MM/DD") : ""; // 空でも対応
-        return `"${index + 1}","${player.name}","${player.en_name}","${dob}","${
-          player.pob
-        }"`;
+      .map((team) => {
+        return `"${team._id}","${team.team}","${team.abbr}","${team.enTeam}","${team.country}","${team.genre}","${team.jdataid}","${team.labalph}","${team.transferurl},"${team.sofaurl}""`;
       })
       .join("\n");
 
     res.header("Content-Type", "text/csv; charset=utf-8");
-    res.attachment("players.csv");
+    res.attachment("teams.csv");
     res.status(StatusCodes.OK).send("\uFEFF" + header + csvContent); // 先頭にBOMをつけてExcel文字化け防止
   } catch (err) {
     console.error("CSV出力エラー:", err);
@@ -200,10 +126,8 @@ const downloadItem = async (req: Request, res: Response) => {
 export {
   getAllItems,
   createItem,
-  checkItem,
   getItem,
   updateItem,
   deleteItem,
-  uploadItem,
   downloadItem,
 };
