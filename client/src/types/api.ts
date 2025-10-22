@@ -63,11 +63,8 @@ export type ReadItemsParamsMap = {
     from_team?: string;
     to_team?: string;
     form?: string;
-    from_date_gte?: string;
-    to_date_before?: string;
-
-    from_date_from?: string;
-    from_date_to?: string;
+    from_date?: string;
+    to_date?: string;
   };
 
   CURRENT_PLAYERS_BY_TEAM: {
