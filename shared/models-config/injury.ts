@@ -37,7 +37,9 @@ export const injury: ControllerConfig<
   getAllConfig: {
     query: [
       { field: "player", type: "ObjectId" },
+      { field: "team", type: "ObjectId" },
       { field: "now_team", type: "ObjectId" },
+      { field: "doa", type: "Date" },
       { field: "limit", type: "Number" },
     ],
     sort: { _id: 1 },

@@ -9,6 +9,7 @@ import {
 } from "../schemas/match.schema.ts";
 import { ControllerConfig } from "../../server/modelsConfig/types/type.ts";
 import { match as convertFun } from "../../server/utils/format/match.ts";
+import { match as customMatch } from "../../server/modelsConfig/utils/customMatch/match.ts";
 
 export const match: ControllerConfig<
   IMatch,
@@ -39,10 +40,11 @@ export const match: ControllerConfig<
     query: [
       { field: "limit", type: "Number" },
       { field: "competition", type: "ObjectId" },
-      { field: "team", type: "ObjectId" },
       { field: "season", type: "ObjectId" },
+      { field: "date", type: "Date" },
     ],
     sort: { _id: 1 },
+    buildCustomMatch: customMatch,
   },
   bulk: false,
   download: false,

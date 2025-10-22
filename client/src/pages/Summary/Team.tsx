@@ -21,7 +21,6 @@ import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { Transfer, TransferGet } from "../../types/models/transfer";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { ReadItemsParamsMap } from "../../types/api";
 import { Injury, InjuryGet } from "../../types/models/injury";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
@@ -33,6 +32,7 @@ import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { useQuery } from "../../context/query-context";
 import { Season, SeasonGet } from "../../types/models/season";
+import { QueryParams } from "../../lib/api/readItems";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -113,7 +113,7 @@ const Team = () => {
       },
     });
 
-  const readPlayers = (params: ReadItemsParamsMap[ModelType.TRANSFER]) =>
+  const readPlayers = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
@@ -124,22 +124,22 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, "player"),
     });
 
-  const readFuturePlayers = (id: string) =>
+  const readFuturePlayers = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-      params: { to_team: id, from_date_gte: String(new Date()) },
+      params,
       onSuccess: (items: Transfer[]) => {
         setFuturePlayers(convert(ModelType.TRANSFER, items));
       },
       handleLoading: (time) => setLoading(time, "future"),
     });
 
-  const readCurrentLoans = (id: string) =>
+  const readCurrentLoans = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.AGGREGATE.CURRENT_LOANS_BY_TEAM,
-      path: id,
+      backendRoute: API_ROUTES.TRANSFER.GET_ALL,
+      params,
       onSuccess: (items: Transfer[]) => {
         setOnLoan(convert(ModelType.TRANSFER, items));
       },
@@ -147,7 +147,7 @@ const Team = () => {
     });
 
   const readTransfers = (
-    params: ReadItemsParamsMap[ModelType.TRANSFER],
+    params: QueryParams,
     onSuccess: (data: Transfer[]) => void,
     type: "in" | "out"
   ) =>
@@ -159,7 +159,7 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, type),
     });
 
-  const readInjuries = (params: ReadItemsParamsMap[ModelType.INJURY]) =>
+  const readInjuries = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.INJURY.GET_ALL,
@@ -170,11 +170,11 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, "injury"),
     });
 
-  const readTeamCompetitionSeason = (id: string) =>
+  const readTeamCompetitionSeason = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
-      params: { team: id, competition_category: "league" },
+      params,
       onSuccess: (items: TeamCompetitionSeason[]) => {
         setTeamCompetitionSeason(
           convert(ModelType.TEAM_COMPETITION_SEASON, items)
@@ -183,11 +183,11 @@ const Team = () => {
       handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
     });
 
-  const readMatch = (id: string) =>
+  const readMatch = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.MATCH.GET_ALL,
-      params: { team: id },
+      params,
       onSuccess: (items: Match[]) => {
         setMatch(convert(ModelType.MATCH, items));
       },
@@ -198,7 +198,7 @@ const Team = () => {
     if (!id) return;
     (async () => {
       readItem(id);
-      readTeamCompetitionSeason(id);
+      readTeamCompetitionSeason({ team: id });
     })();
   }, [id]);
 
@@ -255,19 +255,6 @@ const Team = () => {
       : [],
   };
 
-  const teamCompetitionSeasonOptions = {
-    filterField: ModelType.TEAM_COMPETITION_SEASON
-      ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "team") as FilterableFieldDefinition[])
-      : [],
-    sortField: ModelType.TEAM_COMPETITION_SEASON
-      ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
-          .filter(isSortable)
-          .filter((file) => file.key !== "team") as SortableFieldDefinition[])
-      : [],
-  };
-
   const matchOptions = {
     filterField: ModelType.MATCH
       ? (fieldDefinition[ModelType.MATCH].filter(
@@ -308,40 +295,72 @@ const Team = () => {
     if (!selectedteamCompetitionSeason?.season.id) return;
     (async () => {
       readSeason(selectedteamCompetitionSeason?.season.id);
-      // readPlayers(id);
-      // readFuturePlayers(id);
-      // readTransfers(
-      //   { to_team: id, form: "!更新" },
-      //   (items: Transfer[]) =>
-      //     setInTransfers(convert(ModelType.TRANSFER, items)),
-      //   "in"
-      // );
-      // readTransfers(
-      //   { from_team: id },
-      //   (items: Transfer[]) =>
-      //     setOutTransfers(convert(ModelType.TRANSFER, items)),
-      //   "out"
-      // );
-      // readCurrentLoans(id);
-      // readInjuries({ latest: true, now_team: id });
-      // readTeamCompetitionSeason(id);
-      // readMatch(id);
     })();
   }, [selectedteamCompetitionSeason?._id, formIsOpen]);
 
   useEffect(() => {
     if (!id) return;
 
-    readPlayers({
-      from_date_to: season?.end_date ? toDateKey(season?.end_date) : undefined,
-      from_date_from: season?.start_date
-        ? toDateKey(season?.start_date)
-        : undefined,
+    const startDate = season?.start_date
+      ? toDateKey(new Date(season?.start_date).toISOString())
+      : undefined;
+
+    const endDate = season?.end_date
+      ? toDateKey(new Date(season?.end_date).toISOString())
+      : undefined;
+
+    // startDate + 2年
+    const oneYearLater = season?.start_date
+      ? toDateKey(
+          new Date(
+            new Date(season?.start_date).setFullYear(
+              new Date(season?.start_date).getFullYear() + 2
+            )
+          ).toISOString()
+        )
+      : undefined;
+
+    // seasonDate を安全に作成
+    const seasonDate: string[] = [];
+    if (startDate) seasonDate.push(`>=${startDate}`);
+    if (endDate) seasonDate.push(`<=${endDate}`);
+
+    if (seasonDate.length === 0) return;
+
+    readPlayers({ from_date: seasonDate, to_team: id, sort: "number" });
+    readFuturePlayers({
+      from_date: [`>${endDate}`, `<${oneYearLater}`],
       to_team: id,
+      "from_team.age_group": "!full",
+      from_team: `exists`,
     });
 
-    console.log("start", season?.start_date);
-    console.log("end", season?.end_date);
+    readTransfers(
+      {
+        to_team: id,
+        form: "!更新",
+        from_date: seasonDate,
+      },
+      (items: Transfer[]) => setInTransfers(convert(ModelType.TRANSFER, items)),
+      "in"
+    );
+
+    readTransfers(
+      { from_team: id, from_date: seasonDate },
+      (items: Transfer[]) =>
+        setOutTransfers(convert(ModelType.TRANSFER, items)),
+      "out"
+    );
+
+    readCurrentLoans({
+      from_team: id,
+      form: ["期限付き", "育成型期限付き"],
+      from_date: seasonDate,
+    });
+
+    readInjuries({ team: id, doa: seasonDate });
+
+    readMatch({ team: id, date: seasonDate });
   }, [season]);
 
   const handleSetSelectedSeason = (id: string | number | Date) => {
@@ -594,28 +613,6 @@ const Team = () => {
             {
               field: "player",
               to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-          ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
-        />
-      )}
-
-      {selectedTab === "teamCompetitionSeason" && (
-        <TableContainer
-          items={teamCompetitionSeason}
-          headers={[
-            { label: "大会", field: "competition" },
-            { label: "シーズン", field: "season", width: "120px" },
-          ]}
-          modelType={ModelType.TEAM_COMPETITION_SEASON}
-          originalFilterField={teamCompetitionSeasonOptions.filterField}
-          originalSortField={teamCompetitionSeasonOptions.sortField}
-          itemsLoading={teamCompetitionSeasonIsLoading}
-          linkField={[
-            {
-              field: "competition",
-              to: APP_ROUTES.COMPETITION_SUMMARY,
             },
           ]}
           pageNum={page.page}

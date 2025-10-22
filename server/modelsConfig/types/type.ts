@@ -18,7 +18,7 @@ export type GetAllQuery = {
   query?: {
     field: string;
     type: "ObjectId" | "String" | "Number" | "Date" | "Boolean";
-    populateBefore?: boolean;
+    populateAfter?: boolean;
   }[];
   buildCustomMatch?: (query: ParsedQs) => Record<string, any>;
 };
