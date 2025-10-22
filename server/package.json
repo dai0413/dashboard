@@ -24,7 +24,8 @@
     "zod-to-json-schema": "^3.24.6"
   },
   "scripts": {
-    "dev": "nodemon --watch ./ --watch ../shared --ext js,ts,json --exec \"node --loader ts-node/esm ./app.ts\"",
+    "typecheck": "tsc --noEmit",
+    "dev": "node --loader ts-node/esm app.ts",
     "start": "node dist/app.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },

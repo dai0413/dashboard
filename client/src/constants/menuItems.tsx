@@ -94,10 +94,6 @@ export const TeamTabItems: IconButtonProps[] = [
     text: "怪我",
   },
   {
-    icon: "teamCompetitionSeason",
-    text: "大会参加",
-  },
-  {
     icon: "match",
     text: "試合",
   },
