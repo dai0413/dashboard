@@ -30,12 +30,12 @@ const createData = async <
 
   const beforeMatch = buildMatchStage(
     query,
-    getAllConfig?.query?.filter((q) => !q.populateBefore),
+    getAllConfig?.query?.filter((q) => !q.populateAfter),
     getAllConfig?.buildCustomMatch
   );
   const afterMatch = buildMatchStage(
     query,
-    getAllConfig?.query?.filter((q) => q.populateBefore),
+    getAllConfig?.query?.filter((q) => q.populateAfter),
     getAllConfig?.buildCustomMatch
   );
 

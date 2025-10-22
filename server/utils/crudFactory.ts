@@ -8,12 +8,29 @@ import { convertObjectIdToString } from "./convertObjectIdToString.ts";
 import z from "zod";
 import { buildMatchStage } from "./buildMatchStage.ts";
 
+const parseSort = (sortParam?: string) => {
+  if (!sortParam) return {};
+
+  const sortFields = sortParam.split(",").map((f) => f.trim());
+  const sortObj: Record<string, 1 | -1> = {};
+
+  for (const field of sortFields) {
+    if (!field) continue;
+    if (field.startsWith("-")) {
+      sortObj[field.slice(1)] = -1;
+    } else {
+      sortObj[field] = 1;
+    }
+  }
+  return sortObj;
+};
+
 const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>
 ) => {
   const {
     name,
-    SCHEMA: { POPULATED, RESPONSE, FORM },
+    SCHEMA: { POPULATED, FORM },
     MONGO_MODEL,
     POPULATE_PATHS,
     getAllConfig: getAllConfig,
@@ -24,19 +41,31 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   // --- GET all ---
   const getAllItems = async (req: Request, res: Response) => {
     try {
+      console.log(req.query);
+      const sortQuery = parseSort(req.query.sort as string);
+      console.log("sortQuery", sortQuery);
+
       const beforeMatch = buildMatchStage(
         req.query,
-        getAllConfig?.query?.filter((q) => !q.populateBefore),
+        getAllConfig?.query?.filter((q) => !q.populateAfter),
         getAllConfig?.buildCustomMatch
       );
+      console.log("beforeMatch", JSON.stringify(beforeMatch, null, 2));
+
       const afterMatch = buildMatchStage(
         req.query,
-        getAllConfig?.query?.filter((q) => q.populateBefore),
+        getAllConfig?.query?.filter((q) => q.populateAfter),
         getAllConfig?.buildCustomMatch
       );
+      console.log("afterMatch", JSON.stringify(afterMatch, null, 2));
 
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
       const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
+
+      const sort =
+        Object.keys(sortQuery).length > 0
+          ? sortQuery
+          : getAllConfig?.sort || { _id: 1 };
 
       const data = await MONGO_MODEL.aggregate([
         ...getNest(false, beforePaths),
@@ -44,8 +73,8 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
           ? [{ $match: beforeMatch }]
           : []),
         ...getNest(false, afterPaths),
-        { $sort: getAllConfig?.sort || { _id: 1 } },
         ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
+        { $sort: sort },
         ...(getAllConfig?.project &&
         Object.keys(getAllConfig.project).length > 0
           ? [{ $project: getAllConfig.project }]

@@ -2,11 +2,25 @@ import { AxiosInstance } from "axios";
 import { APIError, ResponseStatus } from "../../types/api";
 import { CrudRouteWithParams } from "../apiRoutes";
 
+// --- 比較演算子をサポートする値型 ---
+export type QueryValue =
+  | string
+  | number
+  | boolean
+  | Date
+  | `${">" | "<" | ">=" | "<=" | "!=" | "="}${string | number}`
+  | Array<string | number | boolean | Date>
+  | "exists"
+  | "not_exists";
+
+// --- クエリパラメータの型 ---
+export type QueryParams = Record<string, QueryValue>;
+
 type ReadItemsParams<R extends CrudRouteWithParams<any>> = {
   apiInstance: AxiosInstance;
   backendRoute: R;
   path?: R["path"];
-  params?: R["params"];
+  params?: QueryParams;
   onSuccess: (data: any) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: ResponseStatus) => void;
