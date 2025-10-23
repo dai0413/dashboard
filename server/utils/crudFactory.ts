@@ -41,23 +41,18 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   // --- GET all ---
   const getAllItems = async (req: Request, res: Response) => {
     try {
-      console.log(req.query);
       const sortQuery = parseSort(req.query.sort as string);
-      console.log("sortQuery", sortQuery);
 
       const beforeMatch = buildMatchStage(
         req.query,
         getAllConfig?.query?.filter((q) => !q.populateAfter),
         getAllConfig?.buildCustomMatch
       );
-      console.log("beforeMatch", JSON.stringify(beforeMatch, null, 2));
 
       const afterMatch = buildMatchStage(
         req.query,
-        getAllConfig?.query?.filter((q) => q.populateAfter),
-        getAllConfig?.buildCustomMatch
+        getAllConfig?.query?.filter((q) => q.populateAfter)
       );
-      console.log("afterMatch", JSON.stringify(afterMatch, null, 2));
 
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
       const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
@@ -79,7 +74,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
         Object.keys(getAllConfig.project).length > 0
           ? [{ $project: getAllConfig.project }]
           : []),
-        ...[{ $limit: 1000 }],
+        ...[{ $limit: 10000 }],
       ]);
 
       const processed = data.map((item) => {

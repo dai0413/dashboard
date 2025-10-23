@@ -34,6 +34,7 @@ import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { useMatch } from "../../context/models/match-context";
 import { useQuery } from "../../context/query-context";
+import { QueryParams } from "../../lib/api/readItems";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -91,14 +92,11 @@ const Competition = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const readTeamCompetitionSeason = (competitionId: string, seasonId: string) =>
+  const readTeamCompetitionSeason = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
-      params: {
-        competition: competitionId,
-        season: seasonId,
-      },
+      params,
       onSuccess: (items: TeamCompetitionSeason[]) => {
         setTeamCompetitionSeason(
           convert(ModelType.TEAM_COMPETITION_SEASON, items)
@@ -118,22 +116,22 @@ const Competition = () => {
       handleLoading: (time) => setLoading(time, "season"),
     });
 
-  const readCompetitionStage = (seasonId: string) =>
+  const readCompetitionStage = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
-      params: { season: seasonId },
+      params,
       onSuccess: (items: CompetitionStage[]) => {
         setCompetitionStage(convert(ModelType.COMPETITION_STAGE, items));
       },
       handleLoading: (time) => setLoading(time, "competitionStage"),
     });
 
-  const readMatch = (seasonId: string) =>
+  const readMatch = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.MATCH.GET_ALL,
-      params: { season: seasonId },
+      params,
       onSuccess: (items: Match[]) => {
         setMatch(convert(ModelType.MATCH, items));
       },
@@ -214,9 +212,16 @@ const Competition = () => {
 
   useEffect(() => {
     if (!id || !season.length || !selectedSeason) return;
-    readTeamCompetitionSeason(id, selectedSeason._id);
-    readCompetitionStage(selectedSeason._id);
-    readMatch(selectedSeason._id);
+
+    readTeamCompetitionSeason({
+      competition: id,
+      season: selectedSeason._id,
+    });
+
+    readCompetitionStage({ season: selectedSeason._id });
+    readMatch({
+      season: selectedSeason._id,
+    });
   }, [selectedSeason?._id, formIsOpen]);
 
   const handleSetSelectedSeason = (id: string | number | Date) => {
@@ -409,7 +414,9 @@ const Competition = () => {
           ]}
           uploadFile={useMatch().metacrud.uploadFile}
           reloadFun={
-            selectedSeason ? () => readMatch(selectedSeason._id) : undefined
+            selectedSeason
+              ? () => readMatch({ match: selectedSeason._id })
+              : undefined
           }
           pageNum={page.page}
           handlePageChange={handlePageChange}

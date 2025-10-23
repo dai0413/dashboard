@@ -64,7 +64,6 @@ export const buildMatchStage = (
   queryConfig?: { field: string; type: string }[],
   buildCustomMatch?: (query: ParsedQs) => Record<string, any>
 ) => {
-  // console.log("query in server", query);
   if (!queryConfig) return {};
 
   const fieldConditions: Record<string, any> = {}; // AND用
