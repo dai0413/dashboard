@@ -9,7 +9,7 @@ export type CrudRouteWithParams<P = undefined> = {
   params?: P; // P が undefined ならパラメータなし
 };
 
-type BaseCrudRoutes<P = {}> = {
+export type BaseCrudRoutes<P = {}> = {
   GET_ALL: CrudRouteWithParams<P>;
   CREATE: string;
   DETAIL: (id: string | number) => string;
