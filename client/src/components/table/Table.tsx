@@ -54,14 +54,29 @@ const RenderCell = (
     linkField && linkField.find((field) => field.field === header.field);
 
   if (!form && field) {
-    let id = "";
+    // オブジェクトでidありのもの
     if (typeof value === "object" && "id" in value) {
-      id = value.id;
-    } else if ("_id" in row) id = row._id;
+      const id = value.id;
 
+      return id ? (
+        <Link
+          to={`${field.to}/${id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {value.label}
+        </Link>
+      ) : (
+        content
+      );
+    }
+
+    // オブジェクトでなく_idをkeyとするもの
     return (
-      <Link to={`${field.to}/${id}`} className="hover:text-blue-600 underline">
-        {isObject ? value.label : content}
+      <Link
+        to={`${field.to}/${row._id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {content}
       </Link>
     );
   }
