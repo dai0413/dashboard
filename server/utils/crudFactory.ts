@@ -74,7 +74,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
         Object.keys(getAllConfig.project).length > 0
           ? [{ $project: getAllConfig.project }]
           : []),
-        ...[{ $limit: 10000 }],
+        ...[{ $limit: 100000 }],
       ]);
 
       const processed = data.map((item) => {
