@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
-import { usePlayer } from "../../context/models/player-context";
+import { usePlayer } from "../../context/models/player";
 import { toDateKey } from "../../utils";
 import { ModelType } from "../../types/models";
 import { PlayerTabItems } from "../../constants/menuItems";

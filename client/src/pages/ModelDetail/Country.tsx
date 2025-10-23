@@ -1,4 +1,4 @@
-import { useCountry } from "../../context/models/country-context";
+import { useCountry } from "../../context/models/country";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

@@ -22,27 +22,32 @@ const MatchFormat = () => {
           { label: "大会名", field: "name", width: "150px" },
           {
             label: "前半",
-            field: (d: MatchFormatGet) => periodField(d, "前半"),
+            field: "1st",
+            getData: (d: MatchFormatGet) => periodField(d, "前半"),
             width: "80px",
           },
           {
             label: "後半",
-            field: (d: MatchFormatGet) => periodField(d, "後半"),
+            field: "2nd",
+            getData: (d: MatchFormatGet) => periodField(d, "前半"),
             width: "80px",
           },
           {
             label: "延前",
-            field: (d: MatchFormatGet) => periodField(d, "延長前半"),
+            field: "1ex",
+            getData: (d: MatchFormatGet) => periodField(d, "延長前半"),
             width: "80px",
           },
           {
             label: "延後",
-            field: (d: MatchFormatGet) => periodField(d, "延長後半"),
+            field: "2ex",
+            getData: (d: MatchFormatGet) => periodField(d, "延長後半"),
             width: "80px",
           },
           {
             label: "その他",
-            field: (d: MatchFormatGet) =>
+            field: "other",
+            getData: (d: MatchFormatGet) =>
               periodOther(d, [
                 "前半",
                 "後半",
@@ -55,7 +60,8 @@ const MatchFormat = () => {
           },
           {
             label: "PK",
-            field: (d: MatchFormatGet) => periodField(d, "PK"),
+            field: "pk",
+            getData: (d: MatchFormatGet) => periodField(d, "PK"),
             width: "60px",
           },
         ]}

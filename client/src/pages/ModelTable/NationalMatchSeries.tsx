@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
-import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
+import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 

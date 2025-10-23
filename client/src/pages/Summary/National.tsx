@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { TableContainer } from "../../components/table";
-import { useCountry } from "../../context/models/country-context";
+import { useCountry } from "../../context/models/country";
 import { ModelType } from "../../types/models";
 import { NationalTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";

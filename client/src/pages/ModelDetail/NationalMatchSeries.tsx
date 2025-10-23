@@ -1,4 +1,4 @@
-import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
+import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

@@ -1,4 +1,4 @@
-import { useTeam } from "../../context/models/team-context";
+import { useTeam } from "../../context/models/team";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

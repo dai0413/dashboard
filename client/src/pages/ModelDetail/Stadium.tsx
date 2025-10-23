@@ -1,4 +1,4 @@
-import { useStadium } from "../../context/models/stadium-context";
+import { useStadium } from "../../context/models/stadium";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

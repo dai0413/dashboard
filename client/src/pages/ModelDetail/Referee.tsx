@@ -1,4 +1,4 @@
-import { useReferee } from "../../context/models/referee-context";
+import { useReferee } from "../../context/models/referee";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

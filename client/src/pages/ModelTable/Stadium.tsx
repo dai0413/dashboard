@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
-import { useStadium } from "../../context/models/stadium-context";
+import { useStadium } from "../../context/models/stadium";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 

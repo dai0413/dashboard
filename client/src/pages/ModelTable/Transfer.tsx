@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
-import { useTransfer } from "../../context/models/transfer-context";
+import { useTransfer } from "../../context/models/transfer";
 import { ModelType } from "../../types/models";
 import { useFilter } from "../../context/filter-context";
 import { APP_ROUTES } from "../../lib/appRoutes";

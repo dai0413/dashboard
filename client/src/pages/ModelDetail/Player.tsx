@@ -1,4 +1,4 @@
-import { usePlayer } from "../../context/models/player-context";
+import { usePlayer } from "../../context/models/player";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

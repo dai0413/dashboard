@@ -1,4 +1,4 @@
-import { useSeason } from "../../context/models/season-context";
+import { useSeason } from "../../context/models/season";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 
