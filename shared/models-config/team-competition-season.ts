@@ -47,6 +47,7 @@ export const teamCompetitionSeason: ControllerConfig<
       {
         field: "competition.category",
         type: "String",
+        populateAfter: true,
       },
     ],
     sort: { "season.start_date": -1, _id: -1 },

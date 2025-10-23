@@ -42,7 +42,7 @@ export const injury: ControllerConfig<
       { field: "doa", type: "Date" },
       { field: "limit", type: "Number" },
     ],
-    sort: { _id: 1 },
+    sort: { doa: -1, _id: 1 },
   },
   bulk: false,
   download: false,
