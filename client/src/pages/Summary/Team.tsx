@@ -198,7 +198,10 @@ const Team = () => {
     if (!id) return;
     (async () => {
       readItem(id);
-      readTeamCompetitionSeason({ team: id });
+      readTeamCompetitionSeason({
+        team: id,
+        "competition.category": "league",
+      });
     })();
   }, [id]);
 
