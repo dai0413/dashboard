@@ -1,13 +1,18 @@
-import { GettedModelDataMap, FormTypeMap, ModelDataMap } from "../types/models";
+import {
+  GettedModelDataMap,
+  FormTypeMap,
+  ModelDataMap,
+  ModelType,
+} from "../types/models";
 import { ReadItemsParamsMap } from "./api";
 import { FilterableFieldDefinition, SortableFieldDefinition } from "./field";
 
-export type ModelContext<K extends keyof FormTypeMap> = {
+export type ModelContext<K extends ModelType> = {
   metacrud: MetaCrudContext<K>;
 };
 
 // CRUD 操作& メタ情報
-export type MetaCrudContext<K extends keyof FormTypeMap> = {
+export type MetaCrudContext<K extends ModelType> = {
   items: GettedModelDataMap[K][];
   selected: GettedModelDataMap[K] | null;
   setSelected: (id: string) => void;

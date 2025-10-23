@@ -330,7 +330,12 @@ const Team = () => {
 
     if (seasonDate.length === 0) return;
 
-    readPlayers({ from_date: seasonDate, to_team: id, sort: "number" });
+    readPlayers({
+      from_date: seasonDate,
+      to_team: id,
+      sort: "number",
+      form: ["!期限付き満了"],
+    });
     readFuturePlayers({
       from_date: [`>${endDate}`, `<${oneYearLater}`],
       to_team: id,
