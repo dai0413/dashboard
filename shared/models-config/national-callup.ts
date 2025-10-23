@@ -33,13 +33,16 @@ export const nationalCallUp: ControllerConfig<
     {
       path: "series",
       collection: "nationalmatchseries",
-      matchBefore: true,
     },
     { path: "player", collection: "players" },
     { path: "team", collection: "teams" },
   ],
   getAllConfig: {
-    query: [{ field: "country", type: "ObjectId" }],
+    query: [
+      { field: "player", type: "ObjectId" },
+      { field: "series", type: "ObjectId" },
+      { field: "series.country", type: "ObjectId", populateAfter: true },
+    ],
     sort: {
       series: -1,
       position_group_order: 1,

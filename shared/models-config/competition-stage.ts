@@ -33,6 +33,7 @@ export const competitionStage: ControllerConfig<
     { path: "season", collection: "seasons" },
   ],
   getAllConfig: {
+    query: [{ field: "season", type: "ObjectId" }],
     sort: { _id: 1 },
   },
   bulk: true,

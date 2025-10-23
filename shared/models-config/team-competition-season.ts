@@ -41,6 +41,10 @@ export const teamCompetitionSeason: ControllerConfig<
         type: "ObjectId",
       },
       {
+        field: "season",
+        type: "ObjectId",
+      },
+      {
         field: "competition.category",
         type: "String",
       },

@@ -27,6 +27,7 @@ import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useQuery } from "../../context/query-context";
+import { QueryParams } from "../../lib/api/readItems";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -66,11 +67,11 @@ const National = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const readCallup = (seriesId: string) =>
+  const readCallup = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params: { series: seriesId },
+      params,
       onSuccess: (items: NationalCallup[]) => {
         setCallup(convert(ModelType.NATIONAL_CALLUP, items));
       },
@@ -81,9 +82,18 @@ const National = () => {
     if (!id) return;
     (async () => {
       readItem(id);
-      readCallup(id);
     })();
   }, [id, formIsOpen]);
+
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      readCallup({
+        series: id,
+        sort: "position,number",
+      });
+    })();
+  }, [selected]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);

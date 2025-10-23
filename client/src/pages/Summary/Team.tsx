@@ -77,7 +77,7 @@ const Team = () => {
   const [teamCompetitionSeason, setTeamCompetitionSeason] = useState<
     TeamCompetitionSeasonGet[]
   >([]);
-  const [teamCompetitionSeasonIsLoading, setTeamCompetitionSeasonIsLoading] =
+  const [_teamCompetitionSeasonIsLoading, setTeamCompetitionSeasonIsLoading] =
     useState<boolean>(false);
   const [match, setMatch] = useState<MatchGet[]>([]);
   const [matchIsLoading, setMatcIsLoading] = useState<boolean>(false);
@@ -191,7 +191,7 @@ const Team = () => {
       onSuccess: (items: Match[]) => {
         setMatch(convert(ModelType.MATCH, items));
       },
-      handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
+      handleLoading: (time) => setLoading(time, "match"),
     });
 
   useEffect(() => {
@@ -360,7 +360,7 @@ const Team = () => {
 
     readInjuries({ team: id, doa: seasonDate });
 
-    readMatch({ team: id, date: seasonDate });
+    readMatch({ team: id, date: seasonDate, sort: "date" });
   }, [season]);
 
   const handleSetSelectedSeason = (id: string | number | Date) => {

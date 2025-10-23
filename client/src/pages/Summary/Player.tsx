@@ -29,6 +29,7 @@ import {
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useQuery } from "../../context/query-context";
+import { QueryParams } from "../../lib/api/readItems";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -75,33 +76,33 @@ const Player = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const readTransfers = (playerId: string) =>
+  const readTransfers = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-      params: { player: playerId },
+      params,
       onSuccess: (items: Transfer[]) => {
         setTransfers(convert(ModelType.TRANSFER, items));
       },
       handleLoading: (time) => setLoading(time, "transfer"),
     });
 
-  const readInjuries = (playerId: string) =>
+  const readInjuries = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.INJURY.GET_ALL,
-      params: { player: playerId },
+      params,
       onSuccess: (items: Injury[]) => {
         setInjuries(convert(ModelType.INJURY, items));
       },
       handleLoading: (time) => setLoading(time, "injury"),
     });
 
-  const readCallup = (playerId: string) =>
+  const readCallup = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params: { player: playerId },
+      params,
       onSuccess: (items: NationalCallup[]) => {
         setCallup(convert(ModelType.NATIONAL_CALLUP, items));
       },
@@ -112,9 +113,9 @@ const Player = () => {
     if (!id) return;
     (async () => {
       await readItem(id);
-      await readTransfers(id);
-      await readInjuries(id);
-      await readCallup(id);
+      await readTransfers({ player: id });
+      await readInjuries({ player: id });
+      await readCallup({ player: id });
     })();
   }, [id, formIsOpen]);
 

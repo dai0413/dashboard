@@ -31,6 +31,7 @@ import { APP_ROUTES } from "../../lib/appRoutes";
 import { Competition, CompetitionGet } from "../../types/models/competition";
 import { useForm } from "../../context/form-context";
 import { useQuery } from "../../context/query-context";
+import { QueryParams } from "../../lib/api/readItems";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -77,33 +78,33 @@ const National = () => {
     isLoadingSetters[data](time === "start");
   };
 
-  const readSeries = (countryId: string) =>
+  const readSeries = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
-      params: { country: countryId },
+      params,
       onSuccess: (items: NationalMatchSeries[]) => {
         setSeries(convert(ModelType.NATIONAL_MATCH_SERIES, items));
       },
       handleLoading: (time) => setLoading(time, "series"),
     });
 
-  const readCallup = (countryId: string) =>
+  const readCallup = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params: { country: countryId },
+      params,
       onSuccess: (items: NationalCallup[]) => {
         setCallup(convert(ModelType.NATIONAL_CALLUP, items));
       },
       handleLoading: (time) => setLoading(time, "callup"),
     });
 
-  const readCompetition = (countryId: string) =>
+  const readCompetition = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.COMPETITION.GET_ALL,
-      params: { country: countryId },
+      params,
       onSuccess: (items: Competition[]) => {
         setCompetition(convert(ModelType.COMPETITION, items));
       },
@@ -114,9 +115,9 @@ const National = () => {
     if (!id) return;
     (async () => {
       readItem(id);
-      readSeries(id);
-      readCallup(id);
-      readCompetition(id);
+      readSeries({ country: id, sort: "-_id" });
+      readCallup({ "series.country": id, sort: "-series,position,number" });
+      readCompetition({ country: id, sort: "_id" });
     })();
   }, [id, formIsOpen]);
 
