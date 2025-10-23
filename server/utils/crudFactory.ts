@@ -161,18 +161,56 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   };
 
   // --- UPDATE ---
+  const nullToUndefined = (obj: any): any => {
+    if (obj === null) return undefined;
+    if (Array.isArray(obj)) return obj.map(nullToUndefined);
+    if (typeof obj === "object" && obj !== null) {
+      return Object.fromEntries(
+        Object.entries(obj).map(([k, v]) => [k, nullToUndefined(v)])
+      );
+    }
+    return obj;
+  };
+
   const updateItem = async (req: Request, res: Response) => {
     const { id } = req.params;
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestError("正しいIDを入力してください");
     }
+    const data = nullToUndefined(req.body);
 
-    const parsed = (FORM as z.ZodObject<any>).partial().parse(req.body);
+    const parsed = (FORM as z.ZodObject<any>).partial().parse(data);
 
-    const updated = await MONGO_MODEL.findByIdAndUpdate(id, parsed, {
+    // parsed を $set / $unset に分離する
+    const setFields: Record<string, any> = {};
+    const unsetFields: Record<string, "" | 1> = {};
+
+    Object.entries(parsed).forEach(([key, val]) => {
+      if (val === undefined) {
+        // undefined はフィールドを削除したい意図
+        unsetFields[key] = "";
+      } else {
+        setFields[key] = val;
+      }
+    });
+
+    // 作成する更新オブジェクト
+    const updateObj: any = {};
+    if (Object.keys(setFields).length > 0) updateObj.$set = setFields;
+    if (Object.keys(unsetFields).length > 0) updateObj.$unset = unsetFields;
+
+    // もし updateObj が空ならエラー/何もしない
+    if (Object.keys(updateObj).length === 0) {
+      // 何も更新する項目がない
+      const current = await MONGO_MODEL.findById(id);
+      return res.json({ data: current });
+    }
+
+    const updated = await MONGO_MODEL.findByIdAndUpdate(id, updateObj, {
       new: true,
       runValidators: true,
     });
+
     if (!updated) throw new NotFoundError(`${name} データが見つかりません`);
     const populated = await MONGO_MODEL.findById(updated._id).populate(
       POPULATE_PATHS
