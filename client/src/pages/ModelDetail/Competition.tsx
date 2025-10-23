@@ -1,4 +1,4 @@
-import { useCompetition } from "../../context/models/competition-context";
+import { useCompetition } from "../../context/models/competition";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

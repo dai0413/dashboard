@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
-import { useReferee } from "../../context/models/referee-context";
+import { useReferee } from "../../context/models/referee";
 import { ModelType } from "../../types/models";
 import { useFilter } from "../../context/filter-context";
 

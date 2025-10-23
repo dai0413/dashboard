@@ -15,7 +15,7 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../../types/field";
-import { useTeam } from "../../context/models/team-context";
+import { useTeam } from "../../context/models/team";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";

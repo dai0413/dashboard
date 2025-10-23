@@ -1,15 +1,15 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { usePlayer } from "./models/player-context";
-import { useTeam } from "./models/team-context";
-import { useCountry } from "./models/country-context";
-import { useNationalMatchSeries } from "./models/national-match-series-context";
+import { usePlayer } from "./models/player";
+import { useTeam } from "./models/team";
+import { useCountry } from "./models/country";
+import { useNationalMatchSeries } from "./models/national-match-series";
 import { FormTypeMap, ModelType } from "../types/models";
 import { convert, OptionsMap, OptionType } from "../utils/createOption";
 import { GetOptions, OptionTable } from "../types/option";
-import { useCompetition } from "./models/competition-context";
-import { useSeason } from "./models/season-context";
-import { useCompetitionStage } from "./models/competition-stage-context";
-import { useStadium } from "./models/stadium-context";
+import { useCompetition } from "./models/competition";
+import { useSeason } from "./models/season";
+import { useCompetitionStage } from "./models/competition-stage";
+import { useStadium } from "./models/stadium";
 import { useMatchFormat } from "./models/match-format";
 
 type OptionsState = {

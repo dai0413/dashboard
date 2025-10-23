@@ -1,4 +1,4 @@
-import { useTransfer } from "../../context/models/transfer-context";
+import { useTransfer } from "../../context/models/transfer";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

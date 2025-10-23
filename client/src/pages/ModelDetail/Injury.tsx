@@ -1,4 +1,4 @@
-import { useInjury } from "../../context/models/injury-context";
+import { useInjury } from "../../context/models/injury";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

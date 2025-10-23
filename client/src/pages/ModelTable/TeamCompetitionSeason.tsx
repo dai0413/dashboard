@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
-import { useTeamCompetitionSeason } from "../../context/models/team-competition-season-context";
+import { useTeamCompetitionSeason } from "../../context/models/team-competition-season";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 

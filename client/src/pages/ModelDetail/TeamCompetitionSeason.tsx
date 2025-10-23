@@ -1,4 +1,4 @@
-import { useTeamCompetitionSeason } from "../../context/models/team-competition-season-context";
+import { useTeamCompetitionSeason } from "../../context/models/team-competition-season";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

@@ -23,7 +23,7 @@ import {
   TeamCompetitionSeason,
   TeamCompetitionSeasonGet,
 } from "../../types/models/team-competition-season";
-import { useCompetition } from "../../context/models/competition-context";
+import { useCompetition } from "../../context/models/competition";
 import { Season, SeasonGet } from "../../types/models/season";
 import {
   CompetitionStage,
@@ -32,7 +32,7 @@ import {
 import { useForm } from "../../context/form-context";
 import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
-import { useMatch } from "../../context/models/match-context";
+import { useMatch } from "../../context/models/match";
 import { useQuery } from "../../context/query-context";
 import { QueryParams } from "../../lib/api/readItems";
 

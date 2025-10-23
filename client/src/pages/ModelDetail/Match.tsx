@@ -1,4 +1,4 @@
-import { useMatch } from "../../context/models/match-context";
+import { useMatch } from "../../context/models/match";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

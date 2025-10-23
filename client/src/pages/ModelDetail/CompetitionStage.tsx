@@ -1,4 +1,4 @@
-import { useCompetitionStage } from "../../context/models/competition-stage-context";
+import { useCompetitionStage } from "../../context/models/competition-stage";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 

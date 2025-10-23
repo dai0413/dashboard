@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { TableContainer } from "../../components/table";
-import { useInjury } from "../../context/models/injury-context";
+import { useInjury } from "../../context/models/injury";
 import { ModelType } from "../../types/models";
 import { useForm } from "../../context/form-context";
 import { useFilter } from "../../context/filter-context";

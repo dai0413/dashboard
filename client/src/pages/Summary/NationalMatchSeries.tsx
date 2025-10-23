@@ -22,7 +22,7 @@ import {
   NationalCallup,
   NationalCallupGet,
 } from "../../types/models/national-callup";
-import { useNationalMatchSeries } from "../../context/models/national-match-series-context";
+import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
