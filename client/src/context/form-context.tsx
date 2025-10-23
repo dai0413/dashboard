@@ -240,6 +240,12 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setIsOpen(true);
     setModelType(model);
     setIsEditing(true);
+
+    if (!newData) {
+      mode === "many"
+        ? setCurrentStep(getBulkSteps(model).length - 1)
+        : setCurrentStep(getSingleSteps(model).length - 1);
+    }
   };
 
   const { resetFilter } = useOptions();

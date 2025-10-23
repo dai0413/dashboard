@@ -35,7 +35,7 @@ const RenderCell = (
   row: Record<string, any>,
   form: boolean,
   linkField?: LinkField[]
-) => {
+): React.ReactNode => {
   if ("element" in row && React.isValidElement(row.element)) {
     if (row.key === header.field) return row.element;
   }
@@ -58,27 +58,25 @@ const RenderCell = (
     if (typeof value === "object" && "id" in value) {
       const id = value.id;
 
-      return id ? (
+      return (
         <Link
           to={`${field.to}/${id}`}
           className="hover:text-blue-600 underline"
         >
           {value.label}
         </Link>
-      ) : (
-        content
+      );
+    } else {
+      // オブジェクトでなく_idをkeyとするもの
+      return (
+        <Link
+          to={`${field.to}/${row._id}`}
+          className="hover:text-blue-600 underline"
+        >
+          {content}
+        </Link>
       );
     }
-
-    // オブジェクトでなく_idをkeyとするもの
-    return (
-      <Link
-        to={`${field.to}/${row._id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {content}
-      </Link>
-    );
   }
 
   return isObject ? value.label : content;
