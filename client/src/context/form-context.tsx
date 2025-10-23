@@ -414,17 +414,9 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     key: K,
     value: FormTypeMap[T][K]
   ) => {
-    const newFormDatas = formDatas.map((item, i) => {
-      if (i !== index) return item;
-
-      // 同じ値を選んだら解除（null）
-      if (item[key] === value) {
-        return { ...item, [key]: null };
-      }
-
-      // 違う値なら更新
-      return { ...item, [key]: value };
-    });
+    const newFormDatas = formDatas.map((item, i) =>
+      i === index ? updateFormValue(item, key, value) : item
+    );
 
     setFormDatas(newFormDatas);
   };
