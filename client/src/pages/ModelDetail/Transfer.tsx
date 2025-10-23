@@ -2,7 +2,7 @@ import { useTransfer } from "../../context/models/transfer-context";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 
-const TransferDetail = () => {
+const Transfer = () => {
   return (
     <Detail
       modelType={ModelType.TRANSFER}
@@ -12,4 +12,4 @@ const TransferDetail = () => {
   );
 };
 
-export default TransferDetail;
+export default Transfer;

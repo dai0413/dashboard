@@ -2,7 +2,7 @@ import { useCountry } from "../../context/models/country-context";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 
-const CountryDetail = () => {
+const Country = () => {
   return (
     <Detail
       modelType={ModelType.COUNTRY}
@@ -12,4 +12,4 @@ const CountryDetail = () => {
   );
 };
 
-export default CountryDetail;
+export default Country;

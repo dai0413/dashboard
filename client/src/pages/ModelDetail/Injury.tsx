@@ -2,7 +2,7 @@ import { useInjury } from "../../context/models/injury-context";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 
-const InjuryDetail = () => {
+const Injury = () => {
   return (
     <Detail
       modelType={ModelType.INJURY}
@@ -12,4 +12,4 @@ const InjuryDetail = () => {
   );
 };
 
-export default InjuryDetail;
+export default Injury;

@@ -2,7 +2,7 @@ import { usePlayer } from "../../context/models/player-context";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 
-const PlayerDetail = () => {
+const Player = () => {
   return (
     <Detail
       modelType={ModelType.PLAYER}
@@ -12,4 +12,4 @@ const PlayerDetail = () => {
   );
 };
 
-export default PlayerDetail;
+export default Player;

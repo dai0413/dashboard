@@ -2,7 +2,7 @@ import { useTeam } from "../../context/models/team-context";
 import { Detail } from "../../components/modals";
 import { ModelType } from "../../types/models";
 
-const TeamDetail = () => {
+const Team = () => {
   return (
     <Detail
       modelType={ModelType.TEAM}
@@ -12,4 +12,4 @@ const TeamDetail = () => {
   );
 };
 
-export default TeamDetail;
+export default Team;
