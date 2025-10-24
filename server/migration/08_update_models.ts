@@ -326,8 +326,33 @@ const runUpdates = async () => {
   //   { $unset: { level: "" } }
   // );
 
-  // // ---  match-format ---
-  // console.log("Updating match-formats...");
+  // ---  match-format ---
+  console.log("Updating match-formats...");
+  const collection = db.collection("matchformats");
+
+  await collection.updateMany({}, [
+    {
+      $set: {
+        period: {
+          $map: {
+            input: "$period",
+            as: "p",
+            in: {
+              period_label: "$$p.period_label",
+              order: "$$p.order",
+              start: {
+                $cond: [{ $eq: ["$$p.start", null] }, "$$REMOVE", "$$p.start"],
+              },
+              end: {
+                $cond: [{ $eq: ["$$p.end", null] }, "$$REMOVE", "$$p.end"],
+              },
+            },
+          },
+        },
+      },
+    },
+  ]);
+
   // await db
   //   .collection("matchformats")
   //   .updateMany(

@@ -86,15 +86,8 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               key={index}
               filterCondition={filterCondition}
               options={{
-                fieldOptions: filterableField.map((f) => ({
-                  ...f,
-                  key: f.key as string,
-                })),
-                valueOptions: getOptions(
-                  filterCondition.key as string,
-                  false,
-                  true
-                ),
+                fieldOptions: filterableField,
+                valueOptions: getOptions(filterCondition.key, false, true),
                 operatorOptions: getOptions("operator", false, true),
               }}
               onChange={{
@@ -143,15 +136,8 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             <FieldRow
               filterCondition={filterCondition}
               options={{
-                fieldOptions: filterableField.map((f) => ({
-                  ...f,
-                  key: f.key as string,
-                })),
-                valueOptions: getOptions(
-                  filterCondition.key as string,
-                  false,
-                  true
-                ),
+                fieldOptions: filterableField,
+                valueOptions: getOptions(filterCondition.key, false, true),
                 operatorOptions: getOptions("operator", false, true),
               }}
               onChange={{

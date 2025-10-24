@@ -12,7 +12,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "前半"),
+    key: "1st",
+    getValue: (d: MatchFormatGet) => periodField(d, "前半"),
     label: "前半",
     type: "string",
     filterable: false,
@@ -20,7 +21,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "後半"),
+    key: "2nd",
+    getValue: (d: MatchFormatGet) => periodField(d, "後半"),
     label: "後半",
     type: "string",
     filterable: false,
@@ -28,7 +30,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "延長前半"),
+    key: "1stEX",
+    getValue: (d: MatchFormatGet) => periodField(d, "延長前半"),
     label: "延長前半",
     type: "string",
     filterable: false,
@@ -36,7 +39,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "延長後半"),
+    key: "2ndEX",
+    getValue: (d: MatchFormatGet) => periodField(d, "延長後半"),
     label: "延長後半",
     type: "string",
     filterable: false,
@@ -44,7 +48,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "3部"),
+    key: "3rdhalf",
+    getValue: (d: MatchFormatGet) => periodField(d, "3部"),
     label: "3部",
     type: "string",
     filterable: false,
@@ -52,7 +57,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "4部"),
+    key: "4thhalf",
+    getValue: (d: MatchFormatGet) => periodField(d, "4部"),
     label: "4部",
     type: "string",
     filterable: false,
@@ -60,7 +66,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "PK"),
+    key: "PK",
+    getValue: (d: MatchFormatGet) => periodField(d, "PK"),
     label: "PK",
     type: "string",
     filterable: false,
@@ -68,7 +75,8 @@ export const matchFormat: FieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: (d: MatchFormatGet) => periodField(d, "ゴールデンボール"),
+    key: "GB",
+    getValue: (d: MatchFormatGet) => periodField(d, "ゴールデンボール"),
     label: "GB",
     type: "string",
     filterable: false,

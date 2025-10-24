@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ModelContext } from "../../types/context";
-import { FormTypeMap } from "../../types/models";
+import { FormTypeMap, ModelType } from "../../types/models";
 import { useEffect } from "react";
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui";
@@ -85,6 +85,19 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
         displayValue =
           typeof value === "undefined" || typeof value === null ? "" : value;
+
+        // match-format対応
+        if (modelType === ModelType.MATCH_FORMAT && key === "period") {
+          const fields = displayableField.filter((fie) => !!fie.getValue);
+
+          fields.forEach((field) => {
+            if (field.getValue)
+              acc[field.key] = {
+                value: field.getValue(selected),
+              };
+          });
+        }
+        //
 
         acc[key] = {
           value: displayValue,

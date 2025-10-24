@@ -32,15 +32,13 @@ const FieldList = (props: Props) => {
 
   fields.forEach((field) => {
     let value;
-    value = typeof field.key === "function" && field.key(data);
+
     value =
-      typeof field.key === "string" &&
       data[field.key as keyof typeof data] &&
       data[field.key as keyof typeof data].value;
 
     let onEdit = undefined;
     onEdit =
-      typeof field.key === "string" &&
       data[field.key as keyof typeof data] &&
       data[field.key as keyof typeof data].onEdit;
 
@@ -93,7 +91,7 @@ const FieldList = (props: Props) => {
 
     const element = (
       <div
-        key={typeof field.key === "string" ? field.key : field.key.toString()}
+        key={field.key}
         className="grid grid-cols-2 items-center border-b py-1"
       >
         <span className="font-semibold">{field?.label ?? field.key}</span>
@@ -102,10 +100,7 @@ const FieldList = (props: Props) => {
           <span
             className={
               //   !newData &&
-              diffColor &&
-              diffKeys &&
-              typeof field.key === "string" &&
-              diffKeys.includes(field.key)
+              diffColor && diffKeys && diffKeys.includes(field.key)
                 ? "text-red-500 font-semibold"
                 : ""
             }

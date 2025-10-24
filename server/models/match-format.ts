@@ -14,11 +14,11 @@ const PeriodSchema = new mongoose.Schema(
     },
     start: {
       type: Number,
-      default: null,
+      default: undefined,
       validate: {
         validator: function (value: number) {
           const doc = this as { start?: number; end?: number };
-          if (value == null || doc.end == null) return true;
+          if (value == undefined || doc.end == undefined) return true;
           return doc.start! <= doc.end!;
         },
         message: "start must be less than or equal to end",
@@ -26,11 +26,11 @@ const PeriodSchema = new mongoose.Schema(
     },
     end: {
       type: Number,
-      default: null,
+      default: undefined,
       validate: {
         validator: function (value: number) {
           const doc = this as { start?: number; end?: number };
-          if (value == null || doc.end == null) return true;
+          if (value == undefined || doc.end == undefined) return true;
           return doc.start! <= doc.end!;
         },
         message: "end must be greater than or equal to start",
