@@ -5,7 +5,7 @@ export type FilterOperator = (typeof operatorOptions)[number]["key"];
 
 // 共通の基本型
 type BaseField = {
-  key: string | ((data: any) => string);
+  key: string;
   label: string;
   type: "string" | "number" | "Date" | "select" | "checkbox" | "datetime-local";
 };
@@ -27,6 +27,7 @@ type SortField = {
 // 詳細画面用
 type DetailField = {
   displayOnDetail: boolean;
+  getValue?: (data: any) => string;
 };
 
 export type FilterableFieldDefinition = BaseField & FilterField;
