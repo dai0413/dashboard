@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { ModelType } from "../../types/models";
@@ -15,7 +15,7 @@ const NationalMatchSeries = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"代表試合シリーズ情報"}
         headers={[
           { label: "名称", field: "name", width: "250px" },

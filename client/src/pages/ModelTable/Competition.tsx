@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useCompetition } from "../../context/models/competition";
 import { ModelType } from "../../types/models";
@@ -15,7 +15,7 @@ const Competition = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"大会情報"}
         headers={[
           { label: "大会名", field: "name" },
