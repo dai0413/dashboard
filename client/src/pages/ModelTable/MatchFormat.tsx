@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useMatchFormat } from "../../context/models/match-format";
 import { ModelType } from "../../types/models";
@@ -16,7 +16,7 @@ const MatchFormat = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"試合フォーマット情報"}
         headers={[
           { label: "大会名", field: "name", width: "150px" },

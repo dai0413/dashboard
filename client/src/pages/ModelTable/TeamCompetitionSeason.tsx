@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useTeamCompetitionSeason } from "../../context/models/team-competition-season";
 import { ModelType } from "../../types/models";
@@ -15,7 +15,7 @@ const TeamCompetitionSeason = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"チームの大会参加記録"}
         headers={[
           { label: "チーム", field: "team" },

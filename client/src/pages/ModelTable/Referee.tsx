@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useReferee } from "../../context/models/referee";
 import { ModelType } from "../../types/models";
@@ -17,7 +17,7 @@ const Referee = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"審判情報"}
         headers={[
           { label: "名前", field: "name" },

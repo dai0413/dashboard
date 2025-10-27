@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useInjury } from "../../context/models/injury";
 import { ModelType } from "../../types/models";
 import { useForm } from "../../context/form-context";
@@ -19,7 +19,7 @@ const Injury = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"負傷情報"}
         headers={[
           { label: "発表日", field: "doa" },

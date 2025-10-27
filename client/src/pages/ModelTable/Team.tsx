@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/table";
 import { useForm } from "../../context/form-context";
 import { useTeam } from "../../context/models/team";
 import { ModelType } from "../../types/models";
@@ -18,7 +18,7 @@ const Team = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <ModelTableContainer
         title={"チーム情報"}
         headers={[
           { label: "チーム名", field: "team" },
