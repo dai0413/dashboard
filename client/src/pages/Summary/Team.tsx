@@ -16,7 +16,7 @@ import {
   SortableFieldDefinition,
 } from "../../types/field";
 import { useTeam } from "../../context/models/team";
-import { readItemsBase } from "../../lib/api";
+import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { Transfer, TransferGet } from "../../types/models/transfer";
@@ -32,7 +32,7 @@ import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { useQuery } from "../../context/query-context";
 import { Season, SeasonGet } from "../../types/models/season";
-import { QueryParams } from "../../lib/api/readItems";
+import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -103,11 +103,9 @@ const Team = () => {
   };
 
   const readSeason = (seasonId: string) =>
-    readItemsBase({
+    readItemBase({
       apiInstance: api,
-      backendRoute: {
-        URL: API_ROUTES.SEASON.DETAIL(seasonId),
-      },
+      backendRoute: API_ROUTES.SEASON.DETAIL(seasonId),
       onSuccess: (item: Season) => {
         setSeason(convert(ModelType.SEASON, item));
       },
@@ -118,8 +116,8 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
       params,
-      onSuccess: (items: Transfer[]) => {
-        setPlayers(convert(ModelType.TRANSFER, items));
+      onSuccess: (resBody: ResBody<Transfer>) => {
+        setPlayers(convert(ModelType.TRANSFER, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "player"),
     });
@@ -129,8 +127,8 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
       params,
-      onSuccess: (items: Transfer[]) => {
-        setFuturePlayers(convert(ModelType.TRANSFER, items));
+      onSuccess: (resBody: ResBody<Transfer>) => {
+        setFuturePlayers(convert(ModelType.TRANSFER, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "future"),
     });
@@ -140,15 +138,15 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
       params,
-      onSuccess: (items: Transfer[]) => {
-        setOnLoan(convert(ModelType.TRANSFER, items));
+      onSuccess: (resBody: ResBody<Transfer>) => {
+        setOnLoan(convert(ModelType.TRANSFER, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "loan"),
     });
 
   const readTransfers = (
     params: QueryParams,
-    onSuccess: (data: Transfer[]) => void,
+    onSuccess: (resBody: ResBody<Transfer>) => void,
     type: "in" | "out"
   ) =>
     readItemsBase({
@@ -164,8 +162,8 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.INJURY.GET_ALL,
       params,
-      onSuccess: (items: Injury[]) => {
-        setInjuries(convert(ModelType.INJURY, items));
+      onSuccess: (resBody: ResBody<Injury>) => {
+        setInjuries(convert(ModelType.INJURY, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "injury"),
     });
@@ -175,9 +173,9 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
       params,
-      onSuccess: (items: TeamCompetitionSeason[]) => {
+      onSuccess: (resBody: ResBody<TeamCompetitionSeason>) => {
         setTeamCompetitionSeason(
-          convert(ModelType.TEAM_COMPETITION_SEASON, items)
+          convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data)
         );
       },
       handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
@@ -188,8 +186,8 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.MATCH.GET_ALL,
       params,
-      onSuccess: (items: Match[]) => {
-        setMatch(convert(ModelType.MATCH, items));
+      onSuccess: (resBody: ResBody<Match>) => {
+        setMatch(convert(ModelType.MATCH, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "match"),
     });
@@ -349,14 +347,15 @@ const Team = () => {
         form: "!更新",
         from_date: seasonDate,
       },
-      (items: Transfer[]) => setInTransfers(convert(ModelType.TRANSFER, items)),
+      (resBody: ResBody<Transfer>) =>
+        setInTransfers(convert(ModelType.TRANSFER, resBody.data)),
       "in"
     );
 
     readTransfers(
       { from_team: id, from_date: seasonDate },
-      (items: Transfer[]) =>
-        setOutTransfers(convert(ModelType.TRANSFER, items)),
+      (resBody: ResBody<Transfer>) =>
+        setOutTransfers(convert(ModelType.TRANSFER, resBody.data)),
       "out"
     );
 

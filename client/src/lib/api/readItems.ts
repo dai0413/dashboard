@@ -16,12 +16,19 @@ export type QueryValue =
 // --- クエリパラメータの型 ---
 export type QueryParams = Record<string, QueryValue>;
 
+export type ResBody<DATA> = {
+  data: DATA[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+};
+
 type ReadItemsParams<R extends CrudRouteWithParams<any>> = {
   apiInstance: AxiosInstance;
   backendRoute: R;
   path?: R["path"];
   params?: QueryParams;
-  onSuccess: (data: any) => void;
+  onSuccess: (data: ResBody<any>) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: ResponseStatus) => void;
 };
@@ -49,7 +56,7 @@ export const readItemsBase = async <
     const res = await apiInstance.get(url, {
       params,
     });
-    onSuccess(res.data.data);
+    onSuccess(res.data);
     alert = { success: true, message: res.data?.message };
   } catch (err: any) {
     const apiError = err.response?.data as APIError;

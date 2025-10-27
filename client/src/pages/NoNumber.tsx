@@ -15,6 +15,7 @@ import {
 } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { useQuery } from "../context/query-context";
+import { ResBody } from "../lib/api/readItems";
 
 const NoNumber = () => {
   const api = useApi();
@@ -43,19 +44,19 @@ const NoNumber = () => {
 
   const competitionParam = [j1, j2, j3].join(",");
 
-  const readCurrentPlayers = () =>
+  const readNoNumberPlayers = () =>
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.AGGREGATE.NO_NUMBER,
       params: { competition: competitionParam, endDate: String(new Date()) },
-      onSuccess: (items: Transfer[]) => {
-        setPlayers(convert(ModelType.TRANSFER, items));
+      onSuccess: (resBody: ResBody<Transfer>) => {
+        setPlayers(convert(ModelType.TRANSFER, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "player"),
     });
 
   useEffect(() => {
-    readCurrentPlayers();
+    readNoNumberPlayers();
   }, []);
 
   const inTransfersOptions = {

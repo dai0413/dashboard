@@ -1,3 +1,4 @@
+import { QueryParams } from "../lib/api/readItems";
 import {
   GettedModelDataMap,
   FormTypeMap,
@@ -14,14 +15,14 @@ export type ModelContext<K extends ModelType> = {
 // CRUD 操作& メタ情報
 export type MetaCrudContext<K extends ModelType> = {
   items: GettedModelDataMap[K][];
+  totalCount: number;
+  page: number;
+  pageSize: number;
   selected: GettedModelDataMap[K] | null;
   setSelected: (id: string) => void;
 
   readItem: (id: string) => Promise<void>;
-  readItems: (
-    params: ReadItemsParamsMap[K],
-    onSuccess?: (items?: ModelDataMap[K][]) => void
-  ) => Promise<void>;
+  readItems: (params: QueryParams) => Promise<void>;
 
   createItem: (formData: FormTypeMap[K]) => Promise<boolean>;
   createItems: (formDatas: FormTypeMap[K][]) => Promise<boolean>;

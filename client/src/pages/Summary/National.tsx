@@ -31,7 +31,7 @@ import { APP_ROUTES } from "../../lib/appRoutes";
 import { Competition, CompetitionGet } from "../../types/models/competition";
 import { useForm } from "../../context/form-context";
 import { useQuery } from "../../context/query-context";
-import { QueryParams } from "../../lib/api/readItems";
+import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -83,8 +83,8 @@ const National = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
       params,
-      onSuccess: (items: NationalMatchSeries[]) => {
-        setSeries(convert(ModelType.NATIONAL_MATCH_SERIES, items));
+      onSuccess: (resBody: ResBody<NationalMatchSeries>) => {
+        setSeries(convert(ModelType.NATIONAL_MATCH_SERIES, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "series"),
     });
@@ -94,8 +94,8 @@ const National = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
       params,
-      onSuccess: (items: NationalCallup[]) => {
-        setCallup(convert(ModelType.NATIONAL_CALLUP, items));
+      onSuccess: (resBody: ResBody<NationalCallup>) => {
+        setCallup(convert(ModelType.NATIONAL_CALLUP, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "callup"),
     });
@@ -105,8 +105,8 @@ const National = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.COMPETITION.GET_ALL,
       params,
-      onSuccess: (items: Competition[]) => {
-        setCompetition(convert(ModelType.COMPETITION, items));
+      onSuccess: (resBody: ResBody<Competition>) => {
+        setCompetition(convert(ModelType.COMPETITION, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "callup"),
     });
