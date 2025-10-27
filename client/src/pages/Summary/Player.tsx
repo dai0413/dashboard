@@ -29,7 +29,7 @@ import {
 } from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useQuery } from "../../context/query-context";
-import { QueryParams } from "../../lib/api/readItems";
+import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -81,8 +81,8 @@ const Player = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.TRANSFER.GET_ALL,
       params,
-      onSuccess: (items: Transfer[]) => {
-        setTransfers(convert(ModelType.TRANSFER, items));
+      onSuccess: (resBody: ResBody<Transfer>) => {
+        setTransfers(convert(ModelType.TRANSFER, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "transfer"),
     });
@@ -92,8 +92,8 @@ const Player = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.INJURY.GET_ALL,
       params,
-      onSuccess: (items: Injury[]) => {
-        setInjuries(convert(ModelType.INJURY, items));
+      onSuccess: (resBody: ResBody<Injury>) => {
+        setInjuries(convert(ModelType.INJURY, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "injury"),
     });
@@ -103,8 +103,8 @@ const Player = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
       params,
-      onSuccess: (items: NationalCallup[]) => {
-        setCallup(convert(ModelType.NATIONAL_CALLUP, items));
+      onSuccess: (resBody: ResBody<NationalCallup>) => {
+        setCallup(convert(ModelType.NATIONAL_CALLUP, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "callup"),
     });

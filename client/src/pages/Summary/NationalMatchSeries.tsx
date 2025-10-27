@@ -27,7 +27,7 @@ import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useQuery } from "../../context/query-context";
-import { QueryParams } from "../../lib/api/readItems";
+import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -72,8 +72,8 @@ const National = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
       params,
-      onSuccess: (items: NationalCallup[]) => {
-        setCallup(convert(ModelType.NATIONAL_CALLUP, items));
+      onSuccess: (resBody: ResBody<NationalCallup>) => {
+        setCallup(convert(ModelType.NATIONAL_CALLUP, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "callup"),
     });

@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useAlert } from "../context/alert-context";
-import { ReadItemsParamsMap } from "../types/api";
 import {
   FormTypeMap,
   GettedModelDataMap,
@@ -27,6 +26,7 @@ import {
   isSortable,
   SortableFieldDefinition,
 } from "../types/field";
+import { QueryParams, ResBody } from "../lib/api/readItems";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
@@ -46,6 +46,10 @@ export function createModelContext<T extends ModelType>(
     const api = useApi();
 
     const [items, setItems] = useState<Get[]>([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(10);
+
     const [selected, setSelectedItem] = useState<Get | null>(null);
 
     const createItems = async (formDatas: Form[]) => {
@@ -77,13 +81,16 @@ export function createModelContext<T extends ModelType>(
       return result;
     };
 
-    const readItems = async (params: ReadItemsParamsMap[T] = {}) =>
+    const readItems = async (params: QueryParams) =>
       readItemsBase({
         apiInstance: api,
         backendRoute: backendRoute.GET_ALL,
         params,
-        onSuccess: (items: Model[]) => {
-          setItems(convert(ContextModelString, items));
+        onSuccess: (resBody: ResBody<Model>) => {
+          setItems(convert(ContextModelString, resBody.data));
+          setTotalCount(resBody.totalCount);
+          setPage(resBody.page);
+          setPageSize(resBody.pageSize);
         },
         handleLoading,
         handleSetAlert,
@@ -210,6 +217,9 @@ export function createModelContext<T extends ModelType>(
 
     const value: MetaCrudContext<T> = {
       items,
+      totalCount,
+      page,
+      pageSize,
       selected,
       setSelected,
       readItem,

@@ -34,7 +34,7 @@ import { Match, MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { useMatch } from "../../context/models/match";
 import { useQuery } from "../../context/query-context";
-import { QueryParams } from "../../lib/api/readItems";
+import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -97,9 +97,9 @@ const Competition = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
       params,
-      onSuccess: (items: TeamCompetitionSeason[]) => {
+      onSuccess: (resBody: ResBody<TeamCompetitionSeason>) => {
         setTeamCompetitionSeason(
-          convert(ModelType.TEAM_COMPETITION_SEASON, items)
+          convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data)
         );
       },
       handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
@@ -110,8 +110,8 @@ const Competition = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.SEASON.GET_ALL,
       params: { competition: competitionId },
-      onSuccess: (items: Season[]) => {
-        setSeason(convert(ModelType.SEASON, items));
+      onSuccess: (resBody: ResBody<Season>) => {
+        setSeason(convert(ModelType.SEASON, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "season"),
     });
@@ -121,8 +121,8 @@ const Competition = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
       params,
-      onSuccess: (items: CompetitionStage[]) => {
-        setCompetitionStage(convert(ModelType.COMPETITION_STAGE, items));
+      onSuccess: (resBody: ResBody<CompetitionStage>) => {
+        setCompetitionStage(convert(ModelType.COMPETITION_STAGE, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "competitionStage"),
     });
@@ -132,8 +132,8 @@ const Competition = () => {
       apiInstance: api,
       backendRoute: API_ROUTES.MATCH.GET_ALL,
       params,
-      onSuccess: (items: Match[]) => {
-        setMatch(convert(ModelType.MATCH, items));
+      onSuccess: (resBody: ResBody<Match>) => {
+        setMatch(convert(ModelType.MATCH, resBody.data));
       },
       handleLoading: (time) => setLoading(time, "match"),
     });
