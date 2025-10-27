@@ -41,6 +41,10 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   // --- GET all ---
   const getAllItems = async (req: Request, res: Response) => {
     try {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
       const sortQuery = parseSort(req.query.sort as string);
 
       const beforeMatch = buildMatchStage(
@@ -62,6 +66,18 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
           ? sortQuery
           : getAllConfig?.sort || { _id: 1 };
 
+      const countResult = await MONGO_MODEL.aggregate([
+        ...getNest(false, beforePaths),
+        ...(Object.keys(beforeMatch).length > 0
+          ? [{ $match: beforeMatch }]
+          : []),
+        ...getNest(false, afterPaths),
+        ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
+        { $count: "totalCount" },
+      ]);
+
+      const totalCount = countResult[0]?.totalCount || 0;
+
       const data = await MONGO_MODEL.aggregate([
         ...getNest(false, beforePaths),
         ...(Object.keys(beforeMatch).length > 0
@@ -74,7 +90,8 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
         Object.keys(getAllConfig.project).length > 0
           ? [{ $project: getAllConfig.project }]
           : []),
-        ...[{ $limit: 100000 }],
+        { $skip: skip },
+        { $limit: limit },
       ]);
 
       const processed = data.map((item) => {
@@ -83,7 +100,12 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
         return convertFun ? convertFun(parsed) : parsed;
       });
 
-      res.status(StatusCodes.OK).json({ data: processed });
+      res.status(StatusCodes.OK).json({
+        data: processed,
+        totalCount: totalCount,
+        page: page,
+        pageSize: limit,
+      });
     } catch (err) {
       console.error(`[${name}] getAll error:`, err);
       res
