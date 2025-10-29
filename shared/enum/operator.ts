@@ -1,6 +1,4 @@
-import { OptionArray } from "../../../types/option";
-
-export const operator = (): OptionArray => [
+export const operator = () => [
   { key: "equals", label: "と等しい" },
   { key: "not-equal", label: "と等しくない" },
   { key: "contains", label: "を含む" },
