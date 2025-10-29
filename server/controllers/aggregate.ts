@@ -41,58 +41,41 @@ const getCurrentLoanPlayersByTeam = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({ data: formattedTransfers });
 };
 
-interface NoNumberQuery {
-  startDate?: string;
-  endDate?: string;
-  competition?: string | string[];
-}
-
-const getNoNumberByCountry = async (
-  req: Request<unknown, unknown, unknown, NoNumberQuery>,
-  res: Response
-) => {
+const getNoNumberByCountry = async (req: Request, res: Response) => {
   try {
-    const { startDate, endDate } = req.query;
-    let { competition } = req.query;
-
-    // competition を配列に正規化
-    let competitions: string[] = [];
-    if (competition) {
-      competitions = Array.isArray(competition)
-        ? competition
-        : competition.split(",");
-    }
-
-    // サービス呼び出し
-    const result = await getNoNumberService(
-      competitions,
-      startDate ?? null,
-      endDate ?? null
-    );
-
-    // フォーマット処理
-    const formattedTransfers = result.map(formatTransfer);
-
-    res.status(StatusCodes.OK).json({ data: formattedTransfers });
+    const result: ResponseDatas = await getNoNumberService(req);
+    res.status(StatusCodes.OK).json(result);
   } catch (error) {
     console.error("Error in getNoNumberByCountry:", error);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: "Failed to fetch data",
-      error:
-        error instanceof Error
-          ? { message: error.message, stack: error.stack }
-          : error,
+      success: false,
+      message: "サーバーエラー",
+      errors: error,
     });
   }
 };
 
+interface ResponseDatas {
+  data: any[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
 const getNoCallUp = async (req: Request, res: Response) => {
-  const countryId = req.params.countryId;
-
-  const result = await getNoCallUpService(countryId);
-
-  const formattedCallUp = result.map(formatNationalCallup);
-  res.status(StatusCodes.OK).json({ data: formattedCallUp });
+  try {
+    console.log("in server receive page", req.query.page);
+    const result: ResponseDatas = await getNoCallUpService(req);
+    console.log("in server page", result.page);
+    res.status(StatusCodes.OK).json(result);
+  } catch (error) {
+    console.error("Error in getNoCallUp:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "サーバーエラー",
+      errors: error,
+    });
+  }
 };
 
 export {

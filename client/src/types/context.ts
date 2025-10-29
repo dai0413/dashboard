@@ -1,11 +1,5 @@
 import { QueryParams } from "../lib/api/readItems";
-import {
-  GettedModelDataMap,
-  FormTypeMap,
-  ModelDataMap,
-  ModelType,
-} from "../types/models";
-import { ReadItemsParamsMap } from "./api";
+import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 import { FilterableFieldDefinition, SortableFieldDefinition } from "./field";
 
 export type ModelContext<K extends ModelType> = {

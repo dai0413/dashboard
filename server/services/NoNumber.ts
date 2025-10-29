@@ -1,13 +1,29 @@
 import mongoose from "mongoose";
 import { TransferModel } from "../models/transfer.ts";
 import { SeasonModel } from "../models/season.ts";
-import { TeamCompetitionSeasonModel } from "../models/team-competition-season.ts";
+import { Request } from "express";
+import { transfer as formatTransfer } from "../utils/format/transfer.ts";
 
-export const getNoNumberService = async (
-  competitionIds: string[] = [],
-  startDate: string | null = null,
-  endDate: string | null = null
-) => {
+export const getNoNumberService = async (req: Request) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const { competition } = req.query;
+
+  const startDate = (req.query.startDate as string) || null;
+  const endDate = (req.query.endDate as string) || null;
+
+  // competition を配列に正規化
+  let competitionIds: string[] = [];
+  if (competition) {
+    competitionIds = Array.isArray(competition)
+      ? (competition as string[])
+      : typeof competition === "string"
+      ? competition.split(",")
+      : [];
+  }
+
   // seson検索
   const seasonQuery: Record<string, any> = {
     competition: {
@@ -108,7 +124,29 @@ export const getNoNumberService = async (
     delete matchStage.from_date;
   }
 
-  const noNumberData = TransferModel.aggregate([
+  const countResult = await TransferModel.aggregate([
+    // to_team の情報を取得
+    {
+      $lookup: {
+        from: "teams",
+        localField: "to_team",
+        foreignField: "_id",
+        as: "to_team",
+      },
+    },
+    { $unwind: { path: "$to_team", preserveNullAndEmptyArrays: true } },
+
+    // coutnryIdのフィルタリング
+    ...[
+      {
+        $match: matchStage,
+      },
+    ],
+
+    { $count: "totalCount" },
+  ]);
+
+  const noNumberData = await TransferModel.aggregate([
     // 最新の移籍が上に来るように並べる
     { $sort: { from_date: -1, _id: -1 } },
 
@@ -151,26 +189,17 @@ export const getNoNumberService = async (
       },
     },
     { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
-
     { $sort: { from_date: -1, _id: -1 } },
+    { $skip: skip },
+    { $limit: limit },
   ]);
 
-  console.log("noNumberData", noNumberData);
+  const responseData = {
+    data: noNumberData.map(formatTransfer),
+    totalCount: countResult[0]?.totalCount || 0,
+    page: page,
+    pageSize: limit,
+  };
 
-  return noNumberData;
+  return responseData;
 };
-
-// const seasons = await SeasonModel.find({
-//   competition: competitionIds.map((id) => new mongoose.Types.ObjectId(id)),
-//   start_date: { $lte: new Date(endDate) },
-//   end_date: { $gte: new Date(startDate) },
-// }).select("_id start_date end_date");
-// const seasonIds = seasons.map((s) => s._id);
-// const teamSeasons = await TeamCompetitionSeasonModel.find({
-//   season: { $in: seasonIds },
-// }).select("team season");
-
-// const seasonTeamPairs = teamSeasons.map((ts) => {
-//   const season = seasons.find((s) => s._id.equals(ts.season));
-//   return { season, team: ts.team.toString() };
-// });
