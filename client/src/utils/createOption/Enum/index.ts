@@ -10,7 +10,6 @@ export { subConfederation } from "./subConfederation";
 export { position } from "./position";
 export { form } from "./form";
 export { genre } from "./genre";
-export { operator } from "./operator";
 export { competitionType } from "./competition_type";
 export { category } from "./category";
 export { level } from "./level";

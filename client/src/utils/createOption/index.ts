@@ -23,7 +23,6 @@ import {
   position,
   form,
   genre,
-  operator,
   competitionType,
   category,
   level,
@@ -32,6 +31,7 @@ import {
   periodLabel,
   result,
 } from "./Enum";
+import { operator } from "../../../../shared/enum/operator";
 
 export enum OptionType {
   OPERATOR = "operator",
