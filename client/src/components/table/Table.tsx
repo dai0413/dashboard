@@ -84,7 +84,9 @@ const RenderCell = (
 
 type TableDataProps<T> = {
   data: T[];
+  totalCount?: number;
   headers: TableHeader[];
+  pageNation: "server" | "client";
 };
 
 type TableLinkProps = {
@@ -95,7 +97,7 @@ type TableLinkProps = {
 type TableUIProps = {
   itemsPerPage?: number;
   currentPage?: number;
-  onPageChange?: (page: number) => void;
+  onPageChange?: ((page: number) => Promise<void>) | ((page: number) => void);
 
   isLoading?: boolean;
   rowSpacing?: "wide" | "narrow";
@@ -125,7 +127,9 @@ type TableProps<T> = TableLinkProps &
 
 const Table = <T extends Record<string, any>>({
   data = [],
+  totalCount,
   headers = [],
+  pageNation = "client",
   linkField,
   detailLink = "",
   rowSpacing = "narrow",
@@ -151,10 +155,25 @@ const Table = <T extends Record<string, any>>({
     [onPageChange]
   );
 
-  const totalPages = itemsPerPage ? Math.ceil(data.length / itemsPerPage) : 1;
-  const paginatedData = itemsPerPage
-    ? data.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
-    : data;
+  const totalPages =
+    data.length === totalCount
+      ? 1
+      : itemsPerPage && totalCount
+      ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
+      : itemsPerPage
+      ? Math.ceil(data.length / itemsPerPage)
+      : 1;
+
+  const paginatedData = useMemo(() => {
+    const targetData =
+      pageNation === "client"
+        ? itemsPerPage
+          ? data.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
+          : data
+        : data;
+
+    return targetData;
+  }, [data, itemsPerPage, pageNum]);
 
   const pages = getPageNumbers(pageNum, totalPages);
 
@@ -305,6 +324,7 @@ const Table = <T extends Record<string, any>>({
                           ...location,
                           pathname: location.pathname.replace(/\/$/, ""),
                         },
+                        currentPage: pageNum,
                       }}
                     >
                       詳細
@@ -337,7 +357,7 @@ const Table = <T extends Record<string, any>>({
           </tbody>
         )}
       </table>
-      {pages.length > 1 && (
+      {pages.length > 1 ? (
         <div className="flex justify-center m-4 space-x-2">
           {pages.map((page, index) =>
             page === "..." ? (
@@ -347,7 +367,9 @@ const Table = <T extends Record<string, any>>({
             ) : (
               <button
                 key={index}
-                onClick={() => pageChange(page)}
+                onClick={() => {
+                  pageChange(page);
+                }}
                 className={`px-3 py-1 border rounded ${
                   pageNum === page ? "bg-blue-500 text-white" : "bg-white"
                 }`}
@@ -357,6 +379,8 @@ const Table = <T extends Record<string, any>>({
             )
           )}
         </div>
+      ) : (
+        <div className="flex justify-center mb-20 space-x-2"></div>
       )}
     </div>
   );

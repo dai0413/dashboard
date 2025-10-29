@@ -21,8 +21,8 @@ import NoNumber from "./pages/NoNumber";
 import AdminDashboard from "./pages/AdminDashboard";
 import NoCallUp from "./pages/NoCallup";
 import NotFound from "./pages/NotFound";
-import models from "./pages/Models";
 import { Summary } from "./routes";
+import { NationalMatchSeries, Transfer } from "./pages/ModelDetail";
 
 const App: React.FC = () => {
   return (
@@ -37,7 +37,7 @@ const App: React.FC = () => {
                     <QueryProvider>
                       <div className="App">
                         <Routes>
-                          {Object.entries(models).map(
+                          {/* {Object.entries(models).map(
                             ([key, { table: Table, detail: Detail }]) => (
                               <Route
                                 path={`/${key}/*`}
@@ -51,7 +51,7 @@ const App: React.FC = () => {
                                 )}
                               />
                             )
-                          )}
+                          )} */}
 
                           <Route
                             path={APP_ROUTES.ADMIN}
@@ -90,21 +90,32 @@ const App: React.FC = () => {
                             }
                           />
                           <Route
-                            path={APP_ROUTES.NO_NUMBER}
+                            path={`/${APP_ROUTES.NO_NUMBER}/*`}
                             element={wrapWithPrivateRoute(
                               <Layout>
                                 <NoNumber />
+                                <Routes>
+                                  <Route path=":id" element={<Transfer />} />
+                                </Routes>
                               </Layout>
                             )}
                           />
+
                           <Route
-                            path={APP_ROUTES.NO_CALLUP}
+                            path={`/${APP_ROUTES.NO_CALLUP}/*`}
                             element={wrapWithPrivateRoute(
                               <Layout>
                                 <NoCallUp />
+                                <Routes>
+                                  <Route
+                                    path=":id"
+                                    element={<NationalMatchSeries />}
+                                  />
+                                </Routes>
                               </Layout>
                             )}
                           />
+
                           {Summary}
 
                           <Route path="*" element={<NotFound />} />

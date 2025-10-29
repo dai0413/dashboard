@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TableContainer } from "../components/table";
+import { CustomTableContainer } from "../components/table";
 import { ModelType } from "../types/models";
 import { useApi } from "../context/api-context";
 import {
@@ -17,18 +17,34 @@ import {
   SortableFieldDefinition,
 } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { useQuery } from "../context/query-context";
+import { QueryParams, ResBody } from "../lib/api/readItems";
 
 const NoCallUp = () => {
   const api = useApi();
-  const { page, setPage } = useQuery();
 
-  const handlePageChange = (page: number) => {
-    setPage("page", page);
+  const handlePageChange = async (page: number) => {
+    setPage(page);
+    readNoCallup({ page: page });
   };
 
   const [data, setData] = useState<NationalMatchSeriesGet[]>([]);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [dataIsLoading, setDataIsLoading] = useState<boolean>(false);
+
+  const readNoCallup = (params: QueryParams) =>
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.AGGREGATE.NO_CALLUP,
+      params,
+      path: japan,
+      onSuccess: (resBody: ResBody<NationalMatchSeries>) => {
+        setData(convert(ModelType.NATIONAL_MATCH_SERIES, resBody.data));
+        setTotalCount(resBody.totalCount);
+        setPage(resBody.page);
+      },
+      handleLoading: (time) => setLoading(time, "data"),
+    });
 
   const isLoadingSetters = {
     data: setDataIsLoading,
@@ -43,19 +59,8 @@ const NoCallUp = () => {
 
   const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
-  const readCurrentPlayers = (_id: string) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.AGGREGATE.NO_CALLUP,
-      path: japan,
-      onSuccess: (items: NationalMatchSeries[]) => {
-        setData(convert(ModelType.NATIONAL_MATCH_SERIES, items));
-      },
-      handleLoading: (time) => setLoading(time, "data"),
-    });
-
   useEffect(() => {
-    readCurrentPlayers(japan);
+    readNoCallup({ page: page });
   }, []);
 
   const inTransfersOptions = {
@@ -75,7 +80,7 @@ const NoCallUp = () => {
 
   return (
     <div className="p-6">
-      <TableContainer
+      <CustomTableContainer
         items={data}
         title="登録メンバーなし"
         headers={[
@@ -87,7 +92,6 @@ const NoCallUp = () => {
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         originalFilterField={inTransfersOptions.filterField}
         originalSortField={inTransfersOptions.sortField}
-        formInitialData={{}}
         itemsLoading={dataIsLoading}
         linkField={[
           {
@@ -95,8 +99,10 @@ const NoCallUp = () => {
             to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
           },
         ]}
-        pageNum={page.page}
+        pageNum={page}
+        totalCount={totalCount}
         handlePageChange={handlePageChange}
+        detailLinkValue={APP_ROUTES.NO_CALLUP}
       />
     </div>
   );

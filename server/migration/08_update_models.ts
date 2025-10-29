@@ -279,20 +279,26 @@ const runUpdates = async () => {
   //   { $unset: { position_group: "" } }
   // );
 
-  // // ---  transfer ---
-  // console.log("Updating transfers...");
-  // await db
-  //   .collection("transfers")
-  //   .updateMany({ from_team_name: null }, { $unset: { from_team_name: "" } });
-  // await db
-  //   .collection("transfers")
-  //   .updateMany({ to_team_name: null }, { $unset: { to_team_name: "" } });
-  // await db
-  //   .collection("transfers")
-  //   .updateMany({ number: null }, { $unset: { number: "" } });
-  // await db
-  //   .collection("transfers")
-  //   .updateMany({ to_date: null }, { $unset: { to_date: "" } });
+  // ---  transfer ---
+  console.log("Updating transfers...");
+  await db
+    .collection("transfers")
+    .updateMany({ from_team_name: null }, { $unset: { from_team_name: "" } });
+  await db
+    .collection("transfers")
+    .updateMany({ to_team_name: null }, { $unset: { to_team_name: "" } });
+  await db
+    .collection("transfers")
+    .updateMany({ from_team: null }, { $unset: { from_team: "" } });
+  await db
+    .collection("transfers")
+    .updateMany({ to_team: null }, { $unset: { to_team: "" } });
+  await db
+    .collection("transfers")
+    .updateMany({ number: null }, { $unset: { number: "" } });
+  await db
+    .collection("transfers")
+    .updateMany({ to_date: null }, { $unset: { to_date: "" } });
 
   // // URL配列の空文字を削除
   // await db
@@ -327,31 +333,31 @@ const runUpdates = async () => {
   // );
 
   // ---  match-format ---
-  console.log("Updating match-formats...");
-  const collection = db.collection("matchformats");
+  // console.log("Updating match-formats...");
+  // const collection = db.collection("matchformats");
 
-  await collection.updateMany({}, [
-    {
-      $set: {
-        period: {
-          $map: {
-            input: "$period",
-            as: "p",
-            in: {
-              period_label: "$$p.period_label",
-              order: "$$p.order",
-              start: {
-                $cond: [{ $eq: ["$$p.start", null] }, "$$REMOVE", "$$p.start"],
-              },
-              end: {
-                $cond: [{ $eq: ["$$p.end", null] }, "$$REMOVE", "$$p.end"],
-              },
-            },
-          },
-        },
-      },
-    },
-  ]);
+  // await collection.updateMany({}, [
+  //   {
+  //     $set: {
+  //       period: {
+  //         $map: {
+  //           input: "$period",
+  //           as: "p",
+  //           in: {
+  //             period_label: "$$p.period_label",
+  //             order: "$$p.order",
+  //             start: {
+  //               $cond: [{ $eq: ["$$p.start", null] }, "$$REMOVE", "$$p.start"],
+  //             },
+  //             end: {
+  //               $cond: [{ $eq: ["$$p.end", null] }, "$$REMOVE", "$$p.end"],
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  // ]);
 
   // await db
   //   .collection("matchformats")
