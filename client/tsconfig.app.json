@@ -19,9 +19,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "../"
   },
-  "include": ["src", "test_data/**/*.ts", "vite-env.d.ts"],
+  "include": ["src", "test_data/**/*.ts", "vite-env.d.ts", "../shared"],
   "declaration": false,
   "emitDeclarationOnly": false
 }
