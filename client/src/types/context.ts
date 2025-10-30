@@ -1,6 +1,9 @@
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "../../../shared/types";
 import { QueryParams } from "../lib/api/readItems";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
-import { FilterableFieldDefinition, SortableFieldDefinition } from "./field";
 
 export type ModelContext<K extends ModelType> = {
   metacrud: MetaCrudContext<K>;

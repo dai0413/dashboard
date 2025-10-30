@@ -1,8 +1,9 @@
+import { FilterableFieldDefinition } from "../../../../shared/types";
 import { OptionArray } from "../../types/option";
 import { InputField, SelectField } from "../field";
 
 type FilterFieldsProps = {
-  type: "string" | "number" | "Date" | "select" | "checkbox";
+  type: FilterableFieldDefinition["type"];
   value: string | number | Date | boolean;
   onChange: (value: string | number | Date | boolean) => void;
   options: OptionArray;

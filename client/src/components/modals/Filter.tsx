@@ -2,9 +2,9 @@ import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
 import { useOptions } from "../../context/options-provider";
 import { Modal } from "../ui";
-import { FilterableFieldDefinition } from "../../types/field";
 import FieldRow from "./Filter/FieldRow";
 import { useEffect } from "react";
+import { FilterableFieldDefinition } from "../../../../shared/types";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];

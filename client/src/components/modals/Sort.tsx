@@ -2,7 +2,7 @@ import { IconButton, LinkButtonGroup } from "../buttons/index";
 import { useSort } from "../../context/sort-context";
 import { useEffect, useMemo } from "react";
 import { Modal } from "../ui/index";
-import { SortableFieldDefinition } from "../../types/field";
+import { SortableFieldDefinition } from "../../../../shared/types";
 
 type ToggleButtonAndLabelProps = {
   ascColor: boolean;

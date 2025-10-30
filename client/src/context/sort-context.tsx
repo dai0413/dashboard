@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { SortableFieldDefinition } from "../types/field";
 import { isLabelObject } from "../utils";
+import { SortableFieldDefinition } from "../../../shared/types";
 
 type SortState = {
   sortConditions: SortableFieldDefinition[];

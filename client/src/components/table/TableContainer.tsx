@@ -5,16 +5,17 @@ import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import { LinkField, TableHeader } from "../../types/types";
-import {
-  FilterableFieldDefinition,
-  SortableFieldDefinition,
-} from "../../types/field";
+
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { useFilter } from "../../context/filter-context";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "../../../../shared/types";
 
 type Base<K extends keyof FormTypeMap> = {
   title?: string;
@@ -146,6 +147,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         reloadFun={"reloadFun" in props ? props.reloadFun : undefined}
       />
       <Table
+        pageNation="client"
         headers={props.headers}
         data={tableData}
         detailLink={detailLink}
