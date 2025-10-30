@@ -31,12 +31,11 @@ type TableContainerProps<K extends keyof FormTypeMap> = ModelBase<K>;
 const ModelTableContainer = <K extends keyof FormTypeMap>(
   props: TableContainerProps<K>
 ) => {
-  const { handleSort, closeSort } = useSort();
-  const { handleFilter, closeFilter } = useFilter();
+  const { closeSort, sortConditions } = useSort();
+  const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
-  const [tableData, setTableData] = useState<any[]>([]);
 
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
 
@@ -53,17 +52,26 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   } = props.contextState.metacrud;
 
   useEffect(() => {
-    setTableData(items);
-  }, [updateTrigger, items]);
+    readItems({
+      page: 1,
+      filters: JSON.stringify(filterConditions),
+      sorts: JSON.stringify(sortConditions),
+    });
+    setPage("page", 1);
+  }, [updateTrigger]);
 
   const tableIsLoading = useMemo(() => isLoading, [isLoading]);
   const filterField = useMemo(() => filterableField, [filterableField]);
   const sortField = useMemo(() => sortableField, [sortableField]);
 
   const handleApplyFilter = () => {
-    // const filterd = handleFilter(items);
-    // const sorted = handleSort(filterd);
-    // setTableData(sorted);
+    readItems({
+      page: 1,
+      filters: JSON.stringify(filterConditions),
+      sorts: JSON.stringify(sortConditions),
+    });
+    setPage("page", 1);
+
     closeFilter();
     closeSort();
   };
@@ -71,7 +79,11 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   const detailLink = ModelRouteMap[props.modelType];
 
   const onPageChange = async (page: number) => {
-    readItems({ page: page });
+    readItems({
+      page: page,
+      filters: JSON.stringify(filterConditions),
+      sorts: JSON.stringify(sortConditions),
+    });
     setPage("page", page);
   };
 

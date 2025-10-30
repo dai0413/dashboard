@@ -14,7 +14,10 @@ export type QueryValue =
   | "not_exists";
 
 // --- クエリパラメータの型 ---
-export type QueryParams = Record<string, QueryValue>;
+export type QueryParams = Record<string, QueryValue> & {
+  filters?: string;
+  sorts?: string;
+};
 
 export type ResBody<DATA> = {
   data: DATA[];

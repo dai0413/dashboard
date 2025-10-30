@@ -7,23 +7,13 @@ import { ControllerConfig } from "../modelsConfig/types/type.ts";
 import { convertObjectIdToString } from "./convertObjectIdToString.ts";
 import z from "zod";
 import { buildMatchStage } from "./buildMatchStage.ts";
-
-const parseSort = (sortParam?: string) => {
-  if (!sortParam) return {};
-
-  const sortFields = sortParam.split(",").map((f) => f.trim());
-  const sortObj: Record<string, 1 | -1> = {};
-
-  for (const field of sortFields) {
-    if (!field) continue;
-    if (field.startsWith("-")) {
-      sortObj[field.slice(1)] = -1;
-    } else {
-      sortObj[field] = 1;
-    }
-  }
-  return sortObj;
-};
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "../../shared/types.ts";
+import { buildMongoFilter } from "./buildFilter.ts";
+import { parseSort } from "./parseSort.ts";
+import { buildJsonSort } from "./buildJsonSort.ts";
 
 const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>
@@ -45,8 +35,44 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       const limit = Number(req.query.limit) || 10;
       const skip = (page - 1) * limit;
 
-      const sortQuery = parseSort(req.query.sort as string);
+      // ===== 🔹 Filters =====
+      let filters: Record<string, any> = {};
+      if (req.query.filters) {
+        filters = buildMongoFilter(
+          JSON.parse(req.query.filters as string) as FilterableFieldDefinition[]
+        );
+      }
 
+      // ===== 🔹 Sort =====
+      let mongoSort: Record<string, 1 | -1> = { _id: 1 };
+
+      let jsonSort: Record<string, 1 | -1> = { _id: 1 };
+      if (req.query.sorts) {
+        jsonSort = buildJsonSort(
+          JSON.parse(req.query.sorts as string) as SortableFieldDefinition[]
+        );
+      }
+
+      let stringSort: Record<string, 1 | -1> = { _id: 1 };
+      if (req.query.sort) {
+        stringSort = parseSort(req.query.sort as string);
+      }
+
+      mongoSort =
+        Object.keys(jsonSort).length > 0
+          ? jsonSort
+          : Object.keys(stringSort).length > 0
+          ? stringSort
+          : getAllConfig?.sort && Object.keys(getAllConfig.sort).length > 0
+          ? getAllConfig.sort
+          : { _id: 1 };
+
+      // 最終フォールバック
+      if (!mongoSort || Object.keys(mongoSort).length === 0) {
+        mongoSort = { _id: 1 };
+      }
+
+      // ===== 🔹 Match Stages =====
       const beforeMatch = buildMatchStage(
         req.query,
         getAllConfig?.query?.filter((q) => !q.populateAfter),
@@ -61,38 +87,31 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
       const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
 
-      const sort =
-        Object.keys(sortQuery).length > 0
-          ? sortQuery
-          : getAllConfig?.sort || { _id: 1 };
-
-      const countResult = await MONGO_MODEL.aggregate([
+      const results = await MONGO_MODEL.aggregate([
         ...getNest(false, beforePaths),
         ...(Object.keys(beforeMatch).length > 0
           ? [{ $match: beforeMatch }]
           : []),
         ...getNest(false, afterPaths),
         ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
-        { $count: "totalCount" },
-      ]);
-
-      const totalCount = countResult[0]?.totalCount || 0;
-
-      const data = await MONGO_MODEL.aggregate([
-        ...getNest(false, beforePaths),
-        ...(Object.keys(beforeMatch).length > 0
-          ? [{ $match: beforeMatch }]
+        ...(filters && Object.keys(filters).length > 0
+          ? [{ $match: filters }]
           : []),
-        ...getNest(false, afterPaths),
-        ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
-        { $sort: sort },
+        { $sort: mongoSort },
         ...(getAllConfig?.project &&
         Object.keys(getAllConfig.project).length > 0
           ? [{ $project: getAllConfig.project }]
           : []),
-        { $skip: skip },
-        { $limit: limit },
+        {
+          $facet: {
+            metadata: [{ $count: "totalCount" }],
+            data: [{ $skip: skip }, { $limit: limit }],
+          },
+        },
       ]);
+
+      const totalCount = results[0]?.metadata?.[0]?.totalCount ?? 0;
+      const data: any[] = results[0]?.data ?? [];
 
       const processed = data.map((item) => {
         const plain = convertObjectIdToString(item);
