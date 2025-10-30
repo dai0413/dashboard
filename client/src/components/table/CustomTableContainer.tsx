@@ -5,16 +5,16 @@ import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import { LinkField, TableHeader } from "../../types/types";
-import {
-  FilterableFieldDefinition,
-  SortableFieldDefinition,
-} from "../../types/field";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
 import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "../../../../shared/types";
 
 type Base<K extends keyof FormTypeMap> = {
   title?: string;

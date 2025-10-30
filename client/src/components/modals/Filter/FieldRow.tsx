@@ -1,8 +1,8 @@
 import { IconButton } from "../../buttons/index";
 import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
-import { FilterableFieldDefinition } from "../../../types/field";
 import { OptionArray } from "../../../types/option";
+import { FilterableFieldDefinition } from "../../../../../shared/types";
 type OptionsProps = {
   fieldOptions: OptionArray;
   valueOptions: OptionArray;

@@ -1,7 +1,10 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { FilterOperator, FilterableFieldDefinition } from "../types/field";
 import { isLabelObject, toDateKey } from "../utils";
 import { useOptions } from "./options-provider";
+import {
+  FilterableFieldDefinition,
+  FilterOperator,
+} from "../../../shared/types";
 
 type FilterState = {
   filterOpen: boolean;

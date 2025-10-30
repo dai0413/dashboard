@@ -1,28 +1,10 @@
-import { operator } from "../../../shared/enum/operator";
-
-const operatorOptions = operator();
-export type FilterOperator = (typeof operatorOptions)[number]["key"];
-
-// 共通の基本型
-type BaseField = {
-  key: string;
-  label: string;
-  type: "string" | "number" | "Date" | "select" | "checkbox" | "datetime-local";
-};
-
-// フィルター用
-type FilterField = {
-  filterable?: boolean;
-  value?: string | number | Date | boolean;
-  operator?: FilterOperator;
-  logic?: "AND" | "OR";
-};
-
-// ソート用
-type SortField = {
-  sortable: boolean;
-  asc?: boolean | null;
-};
+import {
+  BaseField,
+  FilterableFieldDefinition,
+  FilterField,
+  SortableFieldDefinition,
+  SortField,
+} from "../../../shared/types";
 
 // 詳細画面用
 type DetailField = {
@@ -30,8 +12,6 @@ type DetailField = {
   getValue?: (data: any) => string;
 };
 
-export type FilterableFieldDefinition = BaseField & FilterField;
-export type SortableFieldDefinition = BaseField & SortField;
 export type DetailFieldDefinition = BaseField & DetailField;
 
 // 統合型（UIでよく使う）
