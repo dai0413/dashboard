@@ -7,12 +7,7 @@ import { readItemsBase } from "../lib/api";
 import { API_ROUTES } from "../lib/apiRoutes";
 import { convert } from "../lib/convert/DBtoGetted";
 import { fieldDefinition } from "../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../types/field";
+import { isFilterable, isSortable } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { QueryParams, ResBody } from "../lib/api/readItems";
 
@@ -72,18 +67,14 @@ const NoNumber = () => {
 
   const inTransfersOptions = {
     filterField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "to_team"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "to_team")
       : [],
     sortField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "to_team"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "to_team")
       : [],
   };
 

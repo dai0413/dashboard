@@ -10,12 +10,7 @@ import { SelectField } from "../../components/field";
 import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../../types/field";
+import { isFilterable, isSortable } from "../../types/field";
 import { Transfer, TransferGet } from "../../types/models/transfer";
 import { Injury, InjuryGet } from "../../types/models/injury";
 import { readItemsBase } from "../../lib/api";
@@ -125,46 +120,40 @@ const Player = () => {
 
   const transferOptions = {
     filterField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
     sortField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
   };
 
   const injuryOptions = {
     filterField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
+      ? fieldDefinition[ModelType.INJURY]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
     sortField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
+      ? fieldDefinition[ModelType.INJURY]
           .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
   };
 
   const callupOptions = {
     filterField: ModelType.NATIONAL_CALLUP
-      ? (fieldDefinition[ModelType.NATIONAL_CALLUP]
+      ? fieldDefinition[ModelType.NATIONAL_CALLUP]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
     sortField: ModelType.NATIONAL_CALLUP
-      ? (fieldDefinition[ModelType.NATIONAL_CALLUP]
+      ? fieldDefinition[ModelType.NATIONAL_CALLUP]
           .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
   };
 

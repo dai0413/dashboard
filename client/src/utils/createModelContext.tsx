@@ -20,12 +20,7 @@ import {
 } from "../lib/api";
 import { cleanData } from ".";
 import { fieldDefinition } from "../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../types/field";
+import { isFilterable, isSortable } from "../types/field";
 import { QueryParams, ResBody } from "../lib/api/readItems";
 
 export function createModelContext<T extends ModelType>(
@@ -207,13 +202,11 @@ export function createModelContext<T extends ModelType>(
     const handleLoading = (time: "start" | "end") =>
       time === "start" ? setIsLoading(true) : setIsLoading(false);
 
-    const filterableField = fieldDefinition[ContextModelString].filter(
-      isFilterable
-    ) as FilterableFieldDefinition[];
+    const filterableField =
+      fieldDefinition[ContextModelString].filter(isFilterable);
 
-    const sortableField = fieldDefinition[ContextModelString].filter(
-      isSortable
-    ) as SortableFieldDefinition[];
+    const sortableField =
+      fieldDefinition[ContextModelString].filter(isSortable);
 
     const value: MetaCrudContext<T> = {
       items,

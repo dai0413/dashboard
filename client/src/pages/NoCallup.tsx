@@ -10,12 +10,7 @@ import { readItemsBase } from "../lib/api";
 import { API_ROUTES } from "../lib/apiRoutes";
 import { convert } from "../lib/convert/DBtoGetted";
 import { fieldDefinition } from "../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../types/field";
+import { isFilterable, isSortable } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { QueryParams, ResBody } from "../lib/api/readItems";
 
@@ -65,16 +60,14 @@ const NoCallUp = () => {
 
   const inTransfersOptions = {
     filterField: ModelType.NATIONAL_MATCH_SERIES
-      ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+      ? fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "number"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "number")
       : [],
     sortField: ModelType.NATIONAL_MATCH_SERIES
-      ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+      ? fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
           .filter(isSortable)
-          .filter((file) => file.key !== "number") as SortableFieldDefinition[])
+          .filter((file) => file.key !== "number")
       : [],
   };
 

@@ -8,12 +8,7 @@ import { SelectField } from "../../components/field";
 import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../../types/field";
+import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
@@ -101,16 +96,14 @@ const National = () => {
 
   const callupOptions = {
     filterField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
+      ? fieldDefinition[ModelType.INJURY]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
     sortField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
+      ? fieldDefinition[ModelType.INJURY]
           .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
   };
 
