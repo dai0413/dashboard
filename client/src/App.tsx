@@ -23,6 +23,7 @@ import NoCallUp from "./pages/NoCallup";
 import NotFound from "./pages/NotFound";
 import { Summary } from "./routes";
 import { NationalMatchSeries, Transfer } from "./pages/ModelDetail";
+import models from "./pages/Models";
 
 const App: React.FC = () => {
   return (
@@ -37,7 +38,7 @@ const App: React.FC = () => {
                     <QueryProvider>
                       <div className="App">
                         <Routes>
-                          {/* {Object.entries(models).map(
+                          {Object.entries(models).map(
                             ([key, { table: Table, detail: Detail }]) => (
                               <Route
                                 path={`/${key}/*`}
@@ -51,7 +52,7 @@ const App: React.FC = () => {
                                 )}
                               />
                             )
-                          )} */}
+                          )}
 
                           <Route
                             path={APP_ROUTES.ADMIN}
