@@ -9,12 +9,7 @@ import { SelectField } from "../../components/field";
 import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../../types/field";
+import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
@@ -209,63 +204,49 @@ const Team = () => {
 
   const inTransfersOptions = {
     filterField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "to_team"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "to_team")
       : [],
     sortField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "to_team"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "to_team")
       : [],
   };
 
   const outTransfersOptions = {
     filterField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "from_team"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "from_team")
       : [],
     sortField: ModelType.TRANSFER
-      ? (fieldDefinition[ModelType.TRANSFER]
+      ? fieldDefinition[ModelType.TRANSFER]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "from_team"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "from_team")
       : [],
   };
 
   const injuryOptions = {
     filterableField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
+      ? fieldDefinition[ModelType.INJURY]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "player"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
     sortField: ModelType.INJURY
-      ? (fieldDefinition[ModelType.INJURY]
+      ? fieldDefinition[ModelType.INJURY]
           .filter(isSortable)
-          .filter((file) => file.key !== "player") as SortableFieldDefinition[])
+          .filter((file) => file.key !== "player")
       : [],
   };
 
   const matchOptions = {
     filterField: ModelType.MATCH
-      ? (fieldDefinition[ModelType.MATCH].filter(
-          isFilterable
-        ) as FilterableFieldDefinition[])
+      ? fieldDefinition[ModelType.MATCH].filter(isFilterable)
       : [],
     sortField: ModelType.MATCH
-      ? (fieldDefinition[ModelType.MATCH].filter(
-          isSortable
-        ) as SortableFieldDefinition[])
+      ? fieldDefinition[ModelType.MATCH].filter(isSortable)
       : [],
   };
 

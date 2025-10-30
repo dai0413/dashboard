@@ -9,12 +9,7 @@ import { SelectField } from "../../components/field";
 import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../../types/field";
+import { isFilterable, isSortable } from "../../types/field";
 import {
   NationalMatchSeries,
   NationalMatchSeriesGet,
@@ -127,18 +122,14 @@ const National = () => {
 
   const seriesOptions = {
     filterField: ModelType.NATIONAL_MATCH_SERIES
-      ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+      ? fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "country"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "country")
       : [],
     sortField: ModelType.NATIONAL_MATCH_SERIES
-      ? (fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+      ? fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "country"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "country")
       : [],
   };
 
@@ -153,18 +144,14 @@ const National = () => {
 
   const competitionOptions = {
     filterField: ModelType.COMPETITION
-      ? (fieldDefinition[ModelType.COMPETITION]
+      ? fieldDefinition[ModelType.COMPETITION]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "country"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "country")
       : [],
     sortField: ModelType.COMPETITION
-      ? (fieldDefinition[ModelType.COMPETITION]
+      ? fieldDefinition[ModelType.COMPETITION]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "country"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "country")
       : [],
   };
 

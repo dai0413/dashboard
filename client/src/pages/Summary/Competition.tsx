@@ -8,12 +8,7 @@ import { SelectField } from "../../components/field";
 import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import {
-  FilterableFieldDefinition,
-  isFilterable,
-  isSortable,
-  SortableFieldDefinition,
-} from "../../types/field";
+import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
@@ -153,52 +148,40 @@ const Competition = () => {
 
   const teamCompetitionSeasonOptions = {
     filterField: ModelType.TEAM_COMPETITION_SEASON
-      ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+      ? fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "competition"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "competition")
       : [],
     sortField: ModelType.TEAM_COMPETITION_SEASON
-      ? (fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+      ? fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "competition"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "competition")
       : [],
   };
 
   const competitionStageOptions = {
     filterField: ModelType.COMPETITION_STAGE
-      ? (fieldDefinition[ModelType.COMPETITION_STAGE]
+      ? fieldDefinition[ModelType.COMPETITION_STAGE]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "competition"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "competition")
       : [],
     sortField: ModelType.COMPETITION_STAGE
-      ? (fieldDefinition[ModelType.COMPETITION_STAGE]
+      ? fieldDefinition[ModelType.COMPETITION_STAGE]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "competition"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "competition")
       : [],
   };
 
   const matchOptions = {
     filterField: ModelType.MATCH
-      ? (fieldDefinition[ModelType.MATCH]
+      ? fieldDefinition[ModelType.MATCH]
           .filter(isFilterable)
-          .filter(
-            (file) => file.key !== "competition"
-          ) as FilterableFieldDefinition[])
+          .filter((file) => file.key !== "competition")
       : [],
     sortField: ModelType.MATCH
-      ? (fieldDefinition[ModelType.MATCH]
+      ? fieldDefinition[ModelType.MATCH]
           .filter(isSortable)
-          .filter(
-            (file) => file.key !== "competition"
-          ) as SortableFieldDefinition[])
+          .filter((file) => file.key !== "competition")
       : [],
   };
 
