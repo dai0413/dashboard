@@ -5,7 +5,7 @@ import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import { LinkField, TableHeader } from "../../types/types";
-import { FormTypeMap, GettedModelDataMap, ModelType } from "../../types/models";
+import { FormTypeMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
@@ -25,7 +25,7 @@ type Base<K extends keyof FormTypeMap> = {
 };
 
 type Original<K extends keyof FormTypeMap> = Base<K> & {
-  items: GettedModelDataMap[K][];
+  items: any[];
   itemsLoading?: boolean;
   originalFilterField?: FilterableFieldDefinition[];
   originalSortField?: SortableFieldDefinition[];
@@ -35,6 +35,9 @@ type Original<K extends keyof FormTypeMap> = Base<K> & {
   handlePageChange?: (page: number) => Promise<void>;
   uploadFile?: (file: File) => Promise<boolean>;
   reloadFun?: () => Promise<void>;
+  form?: boolean;
+  onClick?: (row: any) => void;
+  selectedKey?: string[];
 };
 
 type TableContainerProps<K extends keyof FormTypeMap> = Original<K>;
@@ -55,24 +58,24 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   handlePageChange,
   uploadFile,
   reloadFun,
+  form,
+  onClick,
+  selectedKey,
 }: TableContainerProps<K>) => {
-  const { handleSort, closeSort } = useSort();
-  const { handleFilter, closeFilter } = useFilter();
+  const { closeSort } = useSort();
+  const { closeFilter } = useFilter();
   const { setPage } = useQuery();
 
   const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
-  const [tableData, setTableData] = useState<any[]>([]);
 
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
 
   useEffect(() => {
-    setTableData(items);
+    handleApplyFilter();
   }, [updateTrigger]);
 
   const handleApplyFilter = async () => {
-    // const filterd = handleFilter(items);
-    // const sorted = handleSort(filterd);
-    // setTableData(sorted);
+    handlePageChange && (await handlePageChange(1));
     closeFilter();
     closeSort();
   };
@@ -125,6 +128,9 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
         isLoading={itemsLoading}
         currentPage={pageNum}
         onPageChange={onPageChange}
+        form={form}
+        onClick={onClick}
+        selectedKey={selectedKey}
       />
     </div>
   );

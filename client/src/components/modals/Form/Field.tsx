@@ -1,14 +1,37 @@
+"use client";
 import { FieldDefinition } from "../../../types/form";
-import { FormTypeMap } from "../../../types/models";
+import { FormTypeMap, ModelType } from "../../../types/models";
 import { useOptions } from "../../../context/options-provider";
-import { Table } from "../../table";
+import { CustomTableContainer } from "../../table";
 import { InputField, SelectField } from "../../field";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
+import { useEffect, useState } from "react";
+import {
+  convert as convertToOption,
+  OptionsMap,
+  OptionType,
+} from "../../../utils/createOption";
+import { OptionArray, OptionTable } from "../../../types/option";
+import { readItemsBase } from "../../../lib/api";
+import { API_ROUTES, CrudRouteWithParams } from "../../../lib/apiRoutes";
+import { useApi } from "../../../context/api-context";
+import { convert } from "../../../lib/convert/DBtoGetted";
+import { QueryParams } from "../../../lib/api/readItems";
+import { fieldDefinition } from "../../../lib/model-fields";
+import {
+  isFilterable,
+  isModelType,
+  isOptionType,
+  isSortable,
+} from "../../../types/field";
+import { useFilter } from "../../../context/filter-context";
+import { useSort } from "../../../context/sort-context";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FieldDefinition<T>;
   formData: FormTypeMap[T];
+  formLabel: Record<string, any>;
   handleFormData: <K extends keyof FormTypeMap[T]>(
     key: K,
     value: FormTypeMap[T][K]
@@ -18,19 +41,11 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
 export const RenderField = <T extends keyof FormTypeMap>({
   field,
   formData,
+  formLabel,
   handleFormData,
 }: RenderFieldProps<T>) => {
   const { multi, key, fieldType, valueType } = field;
   const formDataKey = key as keyof FormTypeMap[T];
-  const { getOptions, updateFilter, filters } = useOptions();
-
-  const inputFieldOnChange = (value: string | number | Date | boolean) => {
-    updateFilter(formDataKey as string, value as string);
-  };
-
-  const inputHandleFormData = (value: string | number | Date | boolean) => {
-    handleFormData(formDataKey, value as any);
-  };
 
   const multhInputHandleFormData = (
     index: number,
@@ -50,18 +65,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
     handleFormData(formDataKey, newValue as FormTypeMap[T][typeof formDataKey]);
   };
 
-  const filteredOptions = getOptions(field.key as string, false, true)?.filter(
-    (option) =>
-      !(
-        (formData[formDataKey] as string[]) ??
-        ([] as FormTypeMap[T][typeof formDataKey])
-      ).includes(option.key)
-  );
-
   const value = get(formData, formDataKey) as string | number | Date;
-  const valueLabel = getOptions(formDataKey as string, false, false).find(
-    (f) => f.key === value
-  )?.key;
 
   const multiInputHandleFormData = (value: string | number | Date) => {
     const selected = value;
@@ -74,39 +78,208 @@ export const RenderField = <T extends keyof FormTypeMap>({
     }
   };
 
-  if (fieldType === "table")
+  function getOptionKey<T extends keyof FormTypeMap>(
+    key: keyof FormTypeMap[T] | string,
+    keyMap: any
+  ): keyof OptionsMap {
+    if (typeof key === "string" && key.includes(".")) {
+      const parts = key.split(".");
+      const last = parts[parts.length - 1];
+      return keyMap[last] ?? (last as keyof OptionsMap);
+    }
+    return keyMap[key as string] ?? (key as keyof OptionsMap);
+  }
+
+  const keyMap: Record<string, keyof OptionsMap> = {
+    citizenship: ModelType.COUNTRY,
+    from_team: ModelType.TEAM,
+    to_team: ModelType.TEAM,
+    home_team: ModelType.TEAM,
+    away_team: ModelType.TEAM,
+    series: ModelType.NATIONAL_MATCH_SERIES,
+    parent_stage: ModelType.COMPETITION_STAGE,
+    competition_stage: ModelType.COMPETITION_STAGE,
+    match_format: ModelType.MATCH_FORMAT,
+  };
+
+  const optionRouteMap: Record<string, CrudRouteWithParams<{}>> = {
+    [ModelType.PLAYER]: API_ROUTES.PLAYER.GET_ALL,
+    [ModelType.TEAM]: API_ROUTES.TEAM.GET_ALL,
+    [ModelType.COUNTRY]: API_ROUTES.COUNTRY.GET_ALL,
+    [ModelType.MATCH_FORMAT]: API_ROUTES.MATCH_FORMAT.GET_ALL,
+    [ModelType.NATIONAL_MATCH_SERIES]: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
+    [ModelType.SEASON]: API_ROUTES.SEASON.GET_ALL,
+    [ModelType.STADIUM]: API_ROUTES.STADIUM.GET_ALL,
+    [ModelType.COMPETITION_STAGE]: API_ROUTES.COMPETITION_STAGE.GET_ALL,
+    [ModelType.COMPETITION]: API_ROUTES.COMPETITION.GET_ALL,
+  };
+
+  const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
+  const [optionTableData, setOptionTableData] = useState<{
+    option: OptionTable;
+    page: number;
+    totalCount: number;
+    isLoading: boolean;
+  } | null>(null);
+
+  const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
+    null
+  );
+
+  const { filterConditions } = useFilter();
+  const { sortConditions } = useSort();
+
+  const handleLoading = (time: "end" | "start"): void => {
+    setOptionTableData((prev) => ({
+      ...(prev ?? { option: { data: [], header: [] }, page: 1, totalCount: 0 }), // fallback
+      isLoading: time === "start",
+    }));
+  };
+
+  const api = useApi();
+
+  async function getOptionData<T extends ModelType>(
+    route: CrudRouteWithParams<unknown>,
+    params: QueryParams,
+    optionKey: T,
+    fieldType: "input" | "select" | "textarea" | "table"
+  ) {
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: route,
+      params,
+      onSuccess: (data) => {
+        const getted = convert(optionKey, data.data);
+
+        const optionTableData = {
+          option: convertToOption(
+            optionKey,
+            getted as OptionsMap[T],
+            true
+          ) as OptionTable,
+          page: data.page,
+          totalCount: data.totalCount,
+          isLoading: false,
+        };
+
+        if (fieldType === "table") {
+          setOptionTableData(optionTableData);
+        } else if (fieldType === "select") {
+          setOptionSelectData(
+            convertToOption(
+              optionKey,
+              getted as OptionsMap[T],
+              false
+            ) as OptionArray
+          );
+        }
+      },
+      handleLoading,
+    });
+  }
+
+  const handlePageChange = async (page: number): Promise<void> => {
+    if (!optionKey) {
+      console.error("optionKeyの不備:", optionKey);
+      return Promise.resolve();
+    }
+    const route = optionRouteMap[optionKey];
+    if (!route) {
+      console.error("optionRouteMapの不備:", optionKey);
+      return Promise.resolve();
+    }
+
+    await getOptionData(
+      route,
+      {
+        page: page,
+        filters: JSON.stringify(filterConditions),
+        sorts: JSON.stringify(sortConditions),
+      },
+      optionKey as ModelType,
+      fieldType
+    );
+  };
+
+  useEffect(() => {
+    if (!key) return;
+    if (key !== optionKey && valueType === "option") {
+      const nextOptionKey = getOptionKey(key, keyMap);
+      setOptionKey(nextOptionKey);
+
+      if (isModelType(nextOptionKey)) {
+        const route = optionRouteMap[nextOptionKey];
+        if (!route) {
+          console.error("optionRouteMapの不備:", nextOptionKey);
+          return;
+        }
+
+        getOptionData(
+          route,
+          {
+            page: 1,
+            filters: JSON.stringify(filterConditions),
+            sorts: JSON.stringify(sortConditions),
+          },
+          nextOptionKey as ModelType,
+          fieldType
+        );
+      } else if (isOptionType(nextOptionKey)) {
+        if (fieldType === "table") {
+          const newData = convertToOption(
+            nextOptionKey,
+            [],
+            true
+          ) as OptionTable;
+          setOptionTableData({
+            option: newData,
+            page: 1,
+            totalCount: newData.data.length,
+            isLoading: false,
+          });
+        } else if (fieldType === "select") {
+          setOptionSelectData(
+            convertToOption(nextOptionKey, [], true) as OptionArray
+          );
+        }
+      } else {
+        console.error("未知のnextOptionKey:", nextOptionKey);
+      }
+    }
+  }, [key]);
+
+  if (fieldType === "table" && optionTableData)
     return (
       <>
         <div className="mb-2 text-gray-700">
-          選択中:{" "}
-          {getOptions(key as string, false, false).find(
-            (f) => f.key === formData[formDataKey]
-          )?.label || "未選択"}
+          選択中: {formLabel[formDataKey as string] || "未選択"}
         </div>
-        <div className="mb-4">
-          <InputField
-            type="text"
-            value={filters[key as string]?.value || ""}
-            onChange={inputFieldOnChange}
-            placeholder="検索"
-          />
-        </div>
-        <Table
-          data={getOptions(key as string, true, true).data}
-          headers={getOptions(key as string, true, true).header}
+        <CustomTableContainer
+          headers={optionTableData.option.header}
+          items={optionTableData.option.data}
+          originalFilterField={
+            optionKey && isModelType(optionKey)
+              ? fieldDefinition[optionKey].filter(isFilterable)
+              : undefined
+          }
+          originalSortField={
+            optionKey && isModelType(optionKey)
+              ? fieldDefinition[optionKey].filter(isSortable)
+              : undefined
+          }
+          itemsLoading={optionTableData.isLoading}
+          pageNum={optionTableData.page}
+          totalCount={optionTableData.totalCount}
           form={true}
-          onClick={(row) => {
-            handleFormData(
-              formDataKey,
-              row.key as FormTypeMap[T][typeof formDataKey]
-            );
+          onClick={(row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
+            handleFormData(formDataKey, row);
           }}
           selectedKey={
             typeof formData[formDataKey] === "string"
               ? [formData[formDataKey]]
               : []
           }
-          itemsPerPage={10}
+          handlePageChange={handlePageChange}
         />
       </>
     );
@@ -166,7 +339,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (multi && fieldType === "select")
+  if (multi && fieldType === "select" && optionSelectData)
     return (
       <>
         {[...((formData[formDataKey] as string[]) ?? [])].map(
@@ -188,7 +361,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                   type={valueType}
                   value={item}
                   onChange={inputArrayHandleFormData}
-                  options={getOptions(key as string, false, true)}
+                  options={optionSelectData}
                   defaultOption="--- 未選択 ---"
                 />
 
@@ -215,7 +388,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           type={valueType}
           value={""}
           onChange={multiInputHandleFormData}
-          options={filteredOptions}
+          options={optionSelectData}
           defaultOption="--- 未選択 ---"
         />
       </>
@@ -262,13 +435,15 @@ export const RenderField = <T extends keyof FormTypeMap>({
       </>
     );
 
-  if (fieldType === "select")
+  if (fieldType === "select" && optionSelectData)
     return (
       <SelectField
         type={valueType}
-        value={valueLabel || ""}
-        onChange={inputHandleFormData}
-        options={getOptions(field.key as string, false, true)}
+        value={value || ""}
+        onChangeObj={(value: Record<string, any>) => {
+          handleFormData(formDataKey, value as any);
+        }}
+        options={optionSelectData}
         defaultOption="--- 未選択 ---"
       />
     );
@@ -278,7 +453,9 @@ export const RenderField = <T extends keyof FormTypeMap>({
       <InputField
         type={valueType}
         value={value}
-        onChange={inputHandleFormData}
+        onChange={(value: string | number | Date | boolean) => {
+          handleFormData(formDataKey, value as any);
+        }}
         placeholder=""
       />
     );

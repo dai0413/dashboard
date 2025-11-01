@@ -11,7 +11,6 @@ import { FieldDefinition, FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
-import { useOptions } from "./options-provider";
 import { useTransfer } from "./models/transfer";
 import { useInjury } from "./models/injury";
 import { usePlayer } from "./models/player";
@@ -33,7 +32,14 @@ import { getSingleSteps } from "../lib/form-steps";
 import { getBulkSteps } from "../lib/form-steps/many";
 import { objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
-import { DetailFieldDefinition, isDisplayOnDetail } from "../types/field";
+import {
+  DetailFieldDefinition,
+  isDisplayOnDetail,
+  isModelType,
+  isSortable,
+} from "../types/field";
+import { useFilter } from "./filter-context";
+import { useSort } from "./sort-context";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FieldDefinition<T>[] | undefined,
@@ -88,6 +94,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
 
   single: {
     formData: FormTypeMap[T];
+    formLabel: Record<string, any>;
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
       value: FormTypeMap[T][K]
@@ -97,6 +104,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
 
   many?: {
     formData: FormTypeMap[T][];
+    formLabels: Record<string, any>[];
     handleFormData: <K extends keyof FormTypeMap[T]>(
       index: number,
       key: K,
@@ -210,8 +218,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     if (newData) {
       setNewData(true);
 
-      initialFormData ? setFormData(initialFormData) : setFormData({});
-      initialFormData ? setFormDatas([initialFormData]) : setFormDatas([]);
+      initialFormData ? setFormData(initialFormData) : resetFormData();
+      initialFormData ? setFormDatas([initialFormData]) : resetFormDatas();
     } else {
       setNewData(false);
       editItem && setFormData(convertGettedToForm(model, editItem));
@@ -248,11 +256,9 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
   };
 
-  const { resetFilter } = useOptions();
-
   const closeForm = () => {
     resetFormData();
-    resetFilter();
+    resetFormDatas();
     setIsOpen(false);
     setModelType(null);
     setCurrentStep(0);
@@ -264,7 +270,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const nextData = () => {
     resetFormData();
-    resetFilter();
+    resetFormDatas();
     setCurrentStep(0);
     resetAlert();
     setIsEditing(true);
@@ -374,7 +380,17 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     setCurrentStep(nextStepIndex);
     resetAlert();
+    resetFilterConditions();
+
+    const sortableField =
+      modelType && isModelType(modelType)
+        ? fieldDefinition[modelType].filter(isSortable)
+        : undefined;
+    sortableField && resetSort(sortableField);
   };
+
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
 
   const prevStep = () => {
     if (!singleStep) return;
@@ -394,52 +410,77 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   ////////////////////////// single data edit //////////////////////////
   const [formData, setFormData] = useState<FormTypeMap[T]>({});
+  const [formLabel, setFormLabel] = useState<Record<string, any>>({});
 
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
     value: FormTypeMap[T][K]
   ) => {
-    setFormData((prev) => updateFormValue(prev, key, value));
+    setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
   };
 
   const resetFormData = () => {
     setFormData({});
+    setFormLabel({});
   };
 
   ////////////////////////// many data edit //////////////////////////
 
   const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
+  const [formLabels, setFormLabels] = useState<Record<string, any>[]>([{}]);
+
+  const resetFormDatas = () => {
+    setFormDatas([]);
+    setFormLabels([]);
+  };
+
   const handleFormData = <K extends keyof FormTypeMap[T]>(
     index: number,
     key: K,
     value: FormTypeMap[T][K]
   ) => {
-    const newFormDatas = formDatas.map((item, i) =>
-      i === index ? updateFormValue(item, key, value) : item
-    );
-
-    setFormDatas(newFormDatas);
+    setFormDatas((prev) => {
+      const newData = prev.map((item, i) =>
+        i === index
+          ? updateFormValue(item, key, value, (updater) =>
+              setFormLabels((prevLabels) => {
+                const arr = [...(prevLabels ?? [])];
+                // 存在チェック：なければ空オブジェクトを入れておく
+                if (!arr[index]) arr[index] = {};
+                arr[index] = updater(arr[index] ?? {});
+                return arr;
+              })
+            )
+          : item
+      );
+      return newData;
+    });
   };
 
   const addFormDatas = (baseCopy: boolean, setPage?: (p: number) => void) => {
-    const base = formData ? { ...formData } : ({} as FormTypeMap[T]);
+    const baseData = formData ? { ...formData } : ({} as FormTypeMap[T]);
+    const baseLabel = formLabel ? { ...formLabel } : {};
 
-    const newFormDatas = [...formDatas, baseCopy ? base : {}];
+    const newFormDatas = [...formDatas, baseCopy ? baseData : {}];
+    const newFormLabels = [...formLabels, baseCopy ? baseLabel : {}];
 
     setFormDatas(newFormDatas);
+    setFormLabels(newFormLabels);
 
     // 件数が 10 の倍数 + 1 のときにページを進める
     const newCount = newFormDatas.length;
     if ((newCount - 1) % 10 === 0 && newCount > 1) {
       const newPage = Math.ceil(newCount / 10);
-      setPage && setPage(newPage);
+      setPage?.(newPage);
     }
   };
 
   const deleteFormDatas = (index: number) => {
     const newFormDatas = formDatas.filter((_d, i) => i !== index);
+    const newFormLabels = formLabels.filter((_d, i) => i !== index);
 
     setFormDatas(newFormDatas);
+    setFormLabels(newFormLabels);
   };
 
   const createFormMenuItems = (
@@ -477,6 +518,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const many = {
     formSteps: bulkStep,
     formData: formDatas,
+    formLabels,
     handleFormData,
     addFormDatas,
     deleteFormDatas,
@@ -506,6 +548,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       formSteps: singleStep,
       formData: formData,
       handleFormData: singleHandleFormData,
+      formLabel,
     },
 
     many,

@@ -5,7 +5,8 @@ type SelectFieldProps = {
   type: "text" | "number" | "date" | "boolean" | "option";
   value: string | number | Date;
   options: OptionArray;
-  onChange: (value: string | number | Date) => void;
+  onChange?: (value: string | number | Date) => void;
+  onChangeObj?: (value: Record<string, any>) => void;
   defaultOption?: string;
 };
 
@@ -14,6 +15,7 @@ const SelectField = ({
   value,
   options,
   onChange,
+  onChangeObj,
   defaultOption,
 }: SelectFieldProps) => {
   const formattedValue =
@@ -23,7 +25,11 @@ const SelectField = ({
     const raw = e.target.value;
     const parsed =
       type === "number" ? Number(raw) : type === "date" ? new Date(raw) : raw;
-    onChange(parsed);
+
+    onChange && onChange(parsed);
+
+    const targetObj = options.find((op) => op.key === raw);
+    onChangeObj && targetObj && onChangeObj(targetObj);
   };
 
   return (

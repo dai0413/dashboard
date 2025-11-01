@@ -5,6 +5,8 @@ import {
   SortableFieldDefinition,
   SortField,
 } from "../../../shared/types";
+import { OptionType } from "../utils/createOption";
+import { ModelType } from "./models";
 
 // 詳細画面用
 type DetailField = {
@@ -34,4 +36,12 @@ export function isDisplayOnDetail(
   f: FieldDefinition
 ): f is DetailFieldDefinition {
   return f.displayOnDetail === true;
+}
+
+export function isModelType(value: string): value is ModelType {
+  return Object.values(ModelType).includes(value as ModelType);
+}
+
+export function isOptionType(value: string): value is OptionType {
+  return Object.values(OptionType).includes(value as OptionType);
 }
