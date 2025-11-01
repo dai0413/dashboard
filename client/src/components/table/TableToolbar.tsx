@@ -221,7 +221,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
           </button>
         )}
 
-        {(staffState.admin || isDev) && (
+        {modelType && (staffState.admin || isDev) && (
           <>
             {/* 右側：新規追加ボタン */}
             <AddButton

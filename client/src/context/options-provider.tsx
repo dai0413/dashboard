@@ -14,24 +14,18 @@ import { useMatchFormat } from "./models/match-format";
 
 type OptionsState = {
   getOptions: GetOptions;
-  updateFilter: (key: string, value: string) => void;
-  filters: { [key: string]: { value: string } };
-  resetFilter: () => void;
 };
 
-const dummyGetOptions = ((_key: string, table?: boolean) => {
+const dummyGetOptions: GetOptions = (async (_key: string, table?: boolean) => {
   if (table) {
     return { header: [], data: [] };
   } else {
     return [];
   }
-}) as GetOptions;
+}) as any;
 
 const OptionContext = createContext<OptionsState>({
   getOptions: dummyGetOptions,
-  updateFilter: () => {},
-  filters: {},
-  resetFilter: () => {},
 });
 
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
@@ -49,47 +43,32 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const resetFilter = () => setFilters({});
 
   const {
-    metacrud: { readItems: readPlayers, items: players },
+    metacrud: { items: players },
   } = usePlayer();
   const {
-    metacrud: { readItems: readTeams, items: teams },
+    metacrud: { items: teams },
   } = useTeam();
   const {
-    metacrud: { readItems: readCountries, items: countries },
+    metacrud: { items: countries },
   } = useCountry();
   const {
-    metacrud: {
-      readItems: readNationalMatchSeries,
-      items: nationalMatchSeries,
-    },
+    metacrud: { items: nationalMatchSeries },
   } = useNationalMatchSeries();
   const {
-    metacrud: { readItems: readCompetitions, items: competitions },
+    metacrud: { items: competitions },
   } = useCompetition();
   const {
-    metacrud: { readItems: readSeasons, items: seasons },
+    metacrud: { items: seasons },
   } = useSeason();
   const {
-    metacrud: { readItems: readCompetitionStages, items: competitionStage },
+    metacrud: { items: competitionStage },
   } = useCompetitionStage();
   const {
-    metacrud: { readItems: readMatchFormat, items: matchFormat },
+    metacrud: { items: matchFormat },
   } = useMatchFormat();
   const {
-    metacrud: { readItems: readStadium, items: stadium },
+    metacrud: { items: stadium },
   } = useStadium();
-
-  useEffect(() => {
-    readPlayers({});
-    readTeams({});
-    readCountries({});
-    readNationalMatchSeries({});
-    readCompetitions({});
-    readSeasons({});
-    readCompetitionStages({});
-    readStadium({});
-    readMatchFormat({});
-  }, []);
 
   type Option = {
     label: string;
@@ -202,7 +181,9 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <OptionContext.Provider
-      value={{ getOptions, updateFilter, filters, resetFilter }}
+      value={{
+        getOptions,
+      }}
     >
       {children}
     </OptionContext.Provider>

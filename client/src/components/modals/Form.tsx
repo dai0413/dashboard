@@ -3,12 +3,8 @@ import { Modal } from "../ui/index";
 import { FormTypeMap } from "../../types/models";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
-import { useOptions } from "../../context/options-provider";
 import { useForm } from "../../context/form-context";
-import { useEffect, useState } from "react";
-import { usePlayer } from "../../context/models/player";
-import { useTeam } from "../../context/models/team";
-import { useAuth } from "../../context/auth-context";
+import { useState } from "react";
 import { RenderField } from "./Form/Field";
 import { RenderManyField } from "./Form/ManyField";
 import { Table } from "../table";
@@ -18,22 +14,18 @@ import { FieldListData } from "../../types/types";
 import { toDateKey } from "../../utils";
 import { DetailFieldDefinition } from "../../types/field";
 import { FormStep } from "../../types/form";
-import { GetOptions } from "../../types/option";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
-  formData: FormTypeMap[T],
+  formLabel: Record<string, any>,
   steps: FormStep<T>[],
-  onEdit: (nextStepIndex: number) => void,
-  getOptions: GetOptions
+  onEdit: (nextStepIndex: number) => void
 ): FieldListData => {
   const data: FieldListData = {};
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
       const value =
-        display.key in formData
-          ? formData[display.key as keyof FormTypeMap[T]]
-          : undefined;
+        display.key in formLabel ? formLabel[display.key] : undefined;
 
       let da: {
         value: string;
@@ -69,13 +61,10 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
             inputField.fieldType === "select" ||
             inputField.fieldType === "table"
           ) {
-            const options = getOptions(inputField.key as string);
             const selected =
               inputField?.multi && Array.isArray(value)
-                ? value
-                    .map((v) => options.find((opt) => opt.key === v)?.label)
-                    .join(", ")
-                : options?.find((opt) => opt.key === value)?.label;
+                ? value.join(", ")
+                : (value as string);
 
             da.value = selected || "未選択";
           }
@@ -127,23 +116,7 @@ const Form = <T extends keyof FormTypeMap>() => {
     modal: { alert, resetAlert },
   } = useAlert();
 
-  const { accessToken } = useAuth();
-
-  const {
-    metacrud: { readItems: readPlayers },
-  } = usePlayer();
-  const {
-    metacrud: { readItems: readTeams },
-  } = useTeam();
   const { page, setPage } = useQuery();
-
-  useEffect(() => {
-    if (!accessToken) return;
-    readPlayers({});
-    readTeams({});
-  }, [accessToken]);
-
-  const { getOptions } = useOptions();
 
   const diffKeys = getDiffKeys ? getDiffKeys() : [];
 
@@ -167,7 +140,7 @@ const Form = <T extends keyof FormTypeMap>() => {
           .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
       ) ?? [];
 
-  const confirmBulkData = (many?.formData ?? [])
+  const confirmBulkData = (many?.formLabels ?? [])
     .map((d) => {
       const row: Record<string, string | number | undefined> = {};
 
@@ -178,9 +151,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         let displayValue: string | number | undefined;
 
         if (h.fieldType === "select" || h.fieldType === "table") {
-          const options = getOptions(key);
-          const selected = options?.find((opt) => opt.key === value);
-          displayValue = selected?.label || "";
+          displayValue = value;
         } else if (h.valueType === "boolean") {
           displayValue = value ? "◯" : "";
         } else {
@@ -202,8 +173,8 @@ const Form = <T extends keyof FormTypeMap>() => {
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
       const value =
-        display.key in single.formData
-          ? single.formData[display.key as keyof FormTypeMap[T]]
+        display.key in single.formLabel
+          ? single.formLabel[display.key]
           : undefined;
 
       let da: {
@@ -240,15 +211,9 @@ const Form = <T extends keyof FormTypeMap>() => {
             inputField.fieldType === "select" ||
             inputField.fieldType === "table"
           ) {
-            const options = getOptions(inputField.key as string);
-            const selected =
-              inputField?.multi && Array.isArray(value)
-                ? value
-                    .map((v) => options.find((opt) => opt.key === v)?.label)
-                    .join(", ")
-                : options?.find((opt) => opt.key === value)?.label;
-
-            da.value = selected || "未選択";
+            da.value = Array.isArray(value)
+              ? value.join(", ")
+              : value || "未選択";
           }
 
           if (inputField.valueType === "date")
@@ -379,10 +344,9 @@ const Form = <T extends keyof FormTypeMap>() => {
                   fields={displayableField}
                   data={convertDisplayField(
                     displayableField,
-                    single.formData,
+                    single.formLabel,
                     steps,
-                    handleStep,
-                    getOptions
+                    handleStep
                   )}
                   diffKeys={diffKeys}
                   diffColor={!newData}
@@ -400,6 +364,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                   {many?.renderConfirmMes(confirmBulkData)}
 
                   <Table
+                    pageNation="client"
                     data={confirmBulkData || []}
                     headers={confirmBulkDataHeaders || []}
                     currentPage={page.formPage}
@@ -426,6 +391,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                   key={field.key as string}
                   field={field}
                   formData={single.formData}
+                  formLabel={single.formLabel}
                   handleFormData={handleFormData}
                 />
               </div>
