@@ -1,117 +1,158 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { usePlayer } from "./models/player";
-import { useTeam } from "./models/team";
-import { useCountry } from "./models/country";
-import { useNationalMatchSeries } from "./models/national-match-series";
+import { createContext, useContext, useState } from "react";
+
 import { FormTypeMap, ModelType } from "../types/models";
-import { convert, OptionsMap, OptionType } from "../utils/createOption";
-import { GetOptions, OptionTable } from "../types/option";
-import { useCompetition } from "./models/competition";
-import { useSeason } from "./models/season";
-import { useCompetitionStage } from "./models/competition-stage";
-import { useStadium } from "./models/stadium";
-import { useMatchFormat } from "./models/match-format";
+import { convert as convertToOption, OptionsMap } from "../utils/createOption";
+import { OptionArray, OptionTable } from "../types/option";
+
+import { useFilter } from "./filter-context";
+import { useSort } from "./sort-context";
+import { API_ROUTES, CrudRouteWithParams } from "../lib/apiRoutes";
+import { QueryParams, readItemsBase } from "../lib/api/readItems";
+import { useApi } from "./api-context";
+import { convert } from "../lib/convert/DBtoGetted";
+import { FieldDefinition } from "../types/form";
+import { isModelType, isOptionType } from "../types/field";
 
 type OptionsState = {
-  getOptions: GetOptions;
+  optionKey: keyof OptionsMap | null;
+  optionTableData: {
+    option: OptionTable;
+    page: number;
+    totalCount: number;
+    isLoading: boolean;
+  } | null;
+  optionSelectData: OptionArray | null;
+  handlePageChange: <T extends ModelType>(
+    page: number,
+    fieldType: FieldDefinition<T>["fieldType"]
+  ) => Promise<void>;
+  updateOption: <T extends ModelType>(
+    key: FieldDefinition<T>["key"],
+    fieldType: FieldDefinition<T>["fieldType"]
+  ) => void;
 };
 
-const dummyGetOptions: GetOptions = (async (_key: string, table?: boolean) => {
-  if (table) {
-    return { header: [], data: [] };
-  } else {
-    return [];
-  }
-}) as any;
-
 const OptionContext = createContext<OptionsState>({
-  getOptions: dummyGetOptions,
+  optionKey: null,
+  optionTableData: null,
+  optionSelectData: null,
+  handlePageChange: () => Promise.resolve(),
+  updateOption: () => {},
 });
 
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
-  const [filters, setFilters] = useState<{ [key: string]: { value: string } }>(
-    {}
+  const optionRouteMap: Record<string, CrudRouteWithParams<{}>> = {
+    [ModelType.PLAYER]: API_ROUTES.PLAYER.GET_ALL,
+    [ModelType.TEAM]: API_ROUTES.TEAM.GET_ALL,
+    [ModelType.COUNTRY]: API_ROUTES.COUNTRY.GET_ALL,
+    [ModelType.MATCH_FORMAT]: API_ROUTES.MATCH_FORMAT.GET_ALL,
+    [ModelType.NATIONAL_MATCH_SERIES]: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
+    [ModelType.SEASON]: API_ROUTES.SEASON.GET_ALL,
+    [ModelType.STADIUM]: API_ROUTES.STADIUM.GET_ALL,
+    [ModelType.COMPETITION_STAGE]: API_ROUTES.COMPETITION_STAGE.GET_ALL,
+    [ModelType.COMPETITION]: API_ROUTES.COMPETITION.GET_ALL,
+  };
+
+  const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
+  const [optionTableData, setOptionTableData] = useState<{
+    option: OptionTable;
+    page: number;
+    totalCount: number;
+    isLoading: boolean;
+  } | null>(null);
+
+  const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
+    null
   );
 
-  const updateFilter = (key: string, value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: { value },
+  const { filterConditions } = useFilter();
+  const { sortConditions } = useSort();
+
+  const handleLoading = (time: "end" | "start"): void => {
+    setOptionTableData((prev) => ({
+      ...(prev ?? { option: { data: [], header: [] }, page: 1, totalCount: 0 }),
+      isLoading: time === "start",
     }));
   };
 
-  const resetFilter = () => setFilters({});
+  const api = useApi();
 
-  const {
-    metacrud: { items: players },
-  } = usePlayer();
-  const {
-    metacrud: { items: teams },
-  } = useTeam();
-  const {
-    metacrud: { items: countries },
-  } = useCountry();
-  const {
-    metacrud: { items: nationalMatchSeries },
-  } = useNationalMatchSeries();
-  const {
-    metacrud: { items: competitions },
-  } = useCompetition();
-  const {
-    metacrud: { items: seasons },
-  } = useSeason();
-  const {
-    metacrud: { items: competitionStage },
-  } = useCompetitionStage();
-  const {
-    metacrud: { items: matchFormat },
-  } = useMatchFormat();
-  const {
-    metacrud: { items: stadium },
-  } = useStadium();
+  async function getOptionData<T extends ModelType>(
+    route: CrudRouteWithParams<unknown>,
+    params: QueryParams,
+    optionKey: T,
+    fieldType: "input" | "select" | "textarea" | "table"
+  ) {
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: route,
+      params,
+      onSuccess: (data) => {
+        const getted = convert(optionKey, data.data);
 
-  type Option = {
-    label: string;
-    key: string;
-    [key: string]: any; // 拡張用（dobなど）
-  };
-  type OptionArray = Option[];
+        const optionTableData = {
+          option: convertToOption(
+            optionKey,
+            getted as OptionsMap[T],
+            true
+          ) as OptionTable,
+          page: data.page,
+          totalCount: data.totalCount,
+          isLoading: false,
+        };
 
-  const dataMap: Partial<OptionsMap> = useMemo(
-    () => ({
-      [ModelType.PLAYER]: players,
-      [ModelType.TEAM]: teams,
-      [ModelType.COUNTRY]: countries,
-      [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
-      [ModelType.COMPETITION_STAGE]: competitionStage,
-      [ModelType.COMPETITION]: competitions,
-      [ModelType.SEASON]: seasons,
-      [ModelType.STADIUM]: stadium,
-      [ModelType.MATCH_FORMAT]: matchFormat,
-      [OptionType.FORM]: [],
-      [OptionType.POSITION]: [],
-      [OptionType.AREA]: [],
-      [OptionType.DISTRICT]: [],
-      [OptionType.CONFEDERATION]: [],
-      [OptionType.SUB_CONFEDERATION]: [],
-      [OptionType.AGE_GROUP]: [],
-      [OptionType.LEFT_REASON]: [],
-      [OptionType.POSITION_GROUP]: [],
-      [OptionType.STATUS]: [],
-      [OptionType.GENRE]: [],
-      [OptionType.OPERATOR]: [],
-    }),
-    [players, teams, countries, nationalMatchSeries]
-  );
+        if (fieldType === "table") {
+          setOptionTableData(optionTableData);
+        } else if (fieldType === "select") {
+          setOptionSelectData(
+            convertToOption(
+              optionKey,
+              getted as OptionsMap[T],
+              false
+            ) as OptionArray
+          );
+        }
+      },
+      handleLoading,
+    });
+  }
 
-  // key から対応する data を取得する関数
-  function getDataForType<T extends keyof OptionsMap>(type: T): OptionsMap[T] {
-    const data = dataMap[type];
-    if (!data) {
-      // 空配列で型を満たす
-      return [] as OptionsMap[T];
+  const handlePageChange = async <T extends ModelType>(
+    page: number,
+    fieldType: FieldDefinition<T>["fieldType"]
+  ): Promise<void> => {
+    if (!optionKey) {
+      console.error("optionKeyの不備:", optionKey);
+      return Promise.resolve();
     }
-    return data;
+    const route = optionRouteMap[optionKey];
+    if (!route) {
+      console.error("optionRouteMapの不備:", optionKey);
+      return Promise.resolve();
+    }
+
+    await getOptionData(
+      route,
+      {
+        page: page,
+        filters: JSON.stringify(filterConditions),
+        sorts: JSON.stringify(sortConditions),
+      },
+      optionKey as ModelType,
+      fieldType
+    );
+  };
+
+  function getOptionKey<T extends keyof FormTypeMap>(
+    key: keyof FormTypeMap[T] | string,
+    keyMap: any
+  ): keyof OptionsMap {
+    if (typeof key === "string" && key.includes(".")) {
+      const parts = key.split(".");
+      const last = parts[parts.length - 1];
+      return keyMap[last] ?? (last as keyof OptionsMap);
+    }
+    return keyMap[key as string] ?? (key as keyof OptionsMap);
   }
 
   const keyMap: Record<string, keyof OptionsMap> = {
@@ -126,63 +167,57 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     match_format: ModelType.MATCH_FORMAT,
   };
 
-  function getOptions(key: string, table?: false): OptionArray;
-  function getOptions(key: string, table: true): OptionTable;
+  const updateOption = <T extends ModelType>(
+    key: FieldDefinition<T>["key"],
+    fieldType: FieldDefinition<T>["fieldType"]
+  ): void => {
+    const nextOptionKey = getOptionKey(key, keyMap);
+    setOptionKey(nextOptionKey);
 
-  function getOptions(
-    key: string,
-    table?: boolean,
-    filter?: boolean
-  ): OptionArray | OptionTable {
-    function getOptionKey<T extends keyof FormTypeMap>(
-      key: keyof FormTypeMap[T] | string,
-      keyMap: any
-    ): keyof OptionsMap {
-      if (typeof key === "string" && key.includes(".")) {
-        const parts = key.split(".");
-        const last = parts[parts.length - 1];
-        return keyMap[last] ?? (last as keyof OptionsMap);
+    if (isModelType(nextOptionKey)) {
+      const route = optionRouteMap[nextOptionKey];
+      if (!route) {
+        console.error("optionRouteMapの不備:", nextOptionKey);
+        return;
       }
-      return keyMap[key as string] ?? (key as keyof OptionsMap);
-    }
 
-    const optionKey = getOptionKey(key, keyMap);
-
-    const data = getDataForType(optionKey);
-
-    if (table === true) {
-      const options = convert(optionKey, data, true);
-
-      if (filter) {
-        const filterValue = filters[key]?.value?.toLowerCase() ?? "";
-        const OptionTable = options as OptionTable;
-        OptionTable.data = OptionTable.data.filter((opt) =>
-          opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
+      getOptionData(
+        route,
+        {
+          page: 1,
+          filters: JSON.stringify(filterConditions),
+          sorts: JSON.stringify(sortConditions),
+        },
+        nextOptionKey as ModelType,
+        fieldType
+      );
+    } else if (isOptionType(nextOptionKey)) {
+      if (fieldType === "table") {
+        const newData = convertToOption(nextOptionKey, [], true) as OptionTable;
+        setOptionTableData({
+          option: newData,
+          page: 1,
+          totalCount: newData.data.length,
+          isLoading: false,
+        });
+      } else if (fieldType === "select") {
+        setOptionSelectData(
+          convertToOption(nextOptionKey, [], true) as OptionArray
         );
-
-        return OptionTable;
       }
-
-      return options;
     } else {
-      const options = convert(optionKey, data, false);
-
-      if (filter) {
-        const optionsArray = options as OptionArray;
-        const filterValue = filters[key]?.value?.toLowerCase() ?? "";
-        return optionsArray.filter((opt) =>
-          opt.label.toLowerCase().replace(/\s+/g, "").includes(filterValue)
-        );
-      }
-
-      return options;
+      console.error("未知のnextOptionKey:", nextOptionKey);
     }
-  }
+  };
 
   return (
     <OptionContext.Provider
       value={{
-        getOptions,
+        optionKey,
+        optionTableData,
+        optionSelectData,
+        handlePageChange,
+        updateOption,
       }}
     >
       {children}
