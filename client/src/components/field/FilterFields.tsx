@@ -6,6 +6,7 @@ type FilterFieldsProps = {
   type: FilterableFieldDefinition["type"];
   value: string | number | Date | boolean;
   onChange: (value: string | number | Date | boolean) => void;
+  onChangeObj?: (value: Record<string, any>) => void;
   options: OptionArray;
 };
 
@@ -13,6 +14,7 @@ const FilterFields = ({
   type,
   value,
   onChange,
+  onChangeObj,
   options,
 }: FilterFieldsProps) => {
   switch (type) {
@@ -41,7 +43,7 @@ const FilterFields = ({
         <SelectField
           type={"text"}
           value={value as string}
-          onChange={onChange}
+          onChangeObj={onChangeObj}
           options={options}
         />
       );

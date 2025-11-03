@@ -5,6 +5,7 @@ import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
 import { useEffect } from "react";
 import { FilterableFieldDefinition } from "../../../../shared/types";
+import { operator } from "../../../../shared/enum/operator";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];
@@ -21,6 +22,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
     filterCondition,
     handleFieldSelect,
     handleFieldValue,
+    handleFieldObjValue,
     handleFieldOperator,
 
     handleEdit,
@@ -32,15 +34,20 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
     isAdding,
     toggleAdding,
 
-    getFilterConditions,
     resetFilterConditions,
   } = useFilter();
 
-  const { getOptions } = useOptions();
+  const { optionSelectData, updateOption } = useOptions();
 
   useEffect(() => {
     resetFilterConditions();
   }, []);
+
+  useEffect(() => {
+    if (!filterCondition) return;
+
+    updateOption(filterCondition["key"], "select");
+  }, [filterCondition]);
 
   return (
     <Modal
@@ -81,17 +88,22 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
           if (!cond.key) return null;
           const isEditing = editingIndex === index;
 
+          const operation = operator().find(
+            (f) => f.key === cond.operator
+          )?.label;
+
           return isEditing ? (
             <FieldRow
               key={index}
               filterCondition={filterCondition}
               options={{
                 fieldOptions: filterableField,
-                valueOptions: getOptions(filterCondition.key, false, true),
-                operatorOptions: getOptions("operator", false, true),
+                valueOptions: optionSelectData || [],
+                operatorOptions: operator(),
               }}
               onChange={{
                 handleFieldValue: handleFieldValue,
+                handleFieldObjValue: handleFieldObjValue,
                 handleFieldOperator: handleFieldOperator,
                 handleFieldSelect: (e) => {
                   const field = filterableField.find((f) => f.key === e);
@@ -108,7 +120,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               key={index}
               className="flex justify-between items-center bg-green-100 px-3 py-2 rounded-md"
             >
-              <span>{getFilterConditions(cond)}</span>
+              <span>{`${cond.label} が ${cond.valueLabel} ${operation}`}</span>
               <div className="space-x-2 flex">
                 <IconButton
                   icon="edit"
@@ -137,11 +149,12 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               filterCondition={filterCondition}
               options={{
                 fieldOptions: filterableField,
-                valueOptions: getOptions(filterCondition.key, false, true),
-                operatorOptions: getOptions("operator", false, true),
+                valueOptions: optionSelectData || [],
+                operatorOptions: operator(),
               }}
               onChange={{
                 handleFieldValue: handleFieldValue,
+                handleFieldObjValue: handleFieldObjValue,
                 handleFieldOperator: handleFieldOperator,
                 handleFieldSelect: (e) => {
                   const field = filterableField.find((f) => f.key === e);
