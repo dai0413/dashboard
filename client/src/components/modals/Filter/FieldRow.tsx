@@ -11,6 +11,7 @@ type OptionsProps = {
 
 type OnchangeProps = {
   handleFieldValue: (value: string | number | Date | boolean) => void;
+  handleFieldObjValue: (value: Record<string, any>) => void;
   handleFieldOperator: (value: string | number | Date | boolean) => void;
   handleFieldSelect: (e: string | number | Date | boolean) => void;
 };
@@ -33,7 +34,12 @@ const FieldRow = ({
   onChange,
   onApply,
 }: FieldRowProps) => {
-  const { handleFieldValue, handleFieldOperator, handleFieldSelect } = onChange;
+  const {
+    handleFieldValue,
+    handleFieldObjValue,
+    handleFieldOperator,
+    handleFieldSelect,
+  } = onChange;
   const { addOnClick, deleteOnClick } = onApply;
   const { fieldOptions, valueOptions, operatorOptions } = options;
 
@@ -53,6 +59,7 @@ const FieldRow = ({
             type={filterCondition.type}
             value={filterCondition.value ? filterCondition.value : ""}
             onChange={handleFieldValue}
+            onChangeObj={handleFieldObjValue}
             options={valueOptions}
           />
         )}

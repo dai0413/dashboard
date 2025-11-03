@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { isLabelObject, toDateKey } from "../utils";
-import { useOptions } from "./options-provider";
+
 import {
   FilterableFieldDefinition,
   FilterOperator,
@@ -17,6 +16,7 @@ type FilterState = {
   resetFilterConditions: () => void;
   handleFieldSelect: (field: FilterableFieldDefinition) => void;
   handleFieldValue: (value: string | number | Date | boolean) => void;
+  handleFieldObjValue: (value: Record<string, any>) => void;
   handleFieldOperator: (value: string | number | Date | boolean) => void;
 
   handleEdit: (index: number) => void;
@@ -28,8 +28,6 @@ type FilterState = {
   editingIndex: number | null;
   isAdding: boolean;
   toggleAdding: () => void;
-
-  getFilterConditions: (filterCondition: FilterableFieldDefinition) => string;
 };
 
 const defaultFilterCondition: FilterableFieldDefinition = {
@@ -51,6 +49,7 @@ const defaultValue: FilterState = {
   resetFilterConditions: () => {},
   handleFieldSelect: () => {},
   handleFieldValue: () => {},
+  handleFieldObjValue: () => {},
   handleFieldOperator: () => {},
 
   handleEdit: () => {},
@@ -62,8 +61,6 @@ const defaultValue: FilterState = {
   editingIndex: null,
   isAdding: false,
   toggleAdding: () => {},
-
-  getFilterConditions: () => "",
 };
 
 const FilterContext = createContext<FilterState>(defaultValue);
@@ -80,40 +77,13 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleAdding = () => setIsAdding((prev) => !prev);
 
-  const { getOptions } = useOptions();
-
   const resetFilterConditions = () => {
     setFilterConditions([]);
   };
 
-  const getFilterConditions = (
-    filterCondition: FilterableFieldDefinition
-  ): string => {
-    if (typeof filterCondition.key !== "string") return "";
-    const nowOperator = getOptions("operator").find(
-      (op) => op.key === filterCondition.operator
-    )?.label;
-
-    const valueOptions = getOptions(filterCondition.key);
-    const valueLabel = valueOptions.find(
-      (item) => item.key === filterCondition.value
-    )?.label;
-    const val = valueLabel ? valueLabel : filterCondition.value;
-
-    const nowValue =
-      filterCondition.operator === "is-empty" ||
-      filterCondition.operator === "is-not-empty"
-        ? ""
-        : filterCondition.type === "Date" && val instanceof Date
-        ? toDateKey(val)
-        : String(val);
-
-    return `${filterCondition.label} が ${nowValue} ${nowOperator}`;
-  };
-
   // add filter contition
   const handleAddCondition = (index?: number) => {
-    const { key, value, label, type, operator } = filterCondition;
+    const { key, value, label, type, operator, valueLabel } = filterCondition;
 
     if (!key) return;
 
@@ -123,6 +93,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       value,
       type,
       operator,
+      valueLabel,
       logic: "AND",
     };
 
@@ -155,134 +126,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   // ---------- add filter ----------
   const handleFilter = (data: any[]): any[] => {
-    return data.filter((item) =>
-      filterConditions.every((cond) => {
-        if (typeof cond.key !== "string") return false;
-        const itemValue = item[cond.key];
-
-        // 配列 string[]に修正
-        let compareValue: string[] = [];
-
-        if (Array.isArray(itemValue)) {
-          // すでに配列の場合 → string に変換
-          compareValue = itemValue.map((v) => String(v));
-        } else if (itemValue && typeof itemValue === "object") {
-          if (isLabelObject(itemValue)) {
-            compareValue = [String(itemValue.label)];
-          } else {
-            compareValue = [JSON.stringify(itemValue)];
-          }
-        } else if (typeof itemValue !== "undefined" && itemValue !== null) {
-          compareValue = [String(itemValue)];
-        }
-
-        const condOptions = getOptions(cond.key);
-        const condValue = condOptions
-          ? condOptions.find((val) => val.key === cond.value)?.label
-          : null;
-        const condVal = condValue ? condValue : cond.value;
-
-        switch (cond.operator) {
-          case "equals":
-            if (cond.type === "Date" && condVal) {
-              return compareValue
-                .map((c) => toDateKey(c))
-                .includes(toDateKey(condVal));
-            }
-            return compareValue.includes(String(condVal));
-
-          case "not-equal":
-            if (cond.type === "Date" && condVal) {
-              return !compareValue
-                .map((c) => toDateKey(c))
-                .includes(toDateKey(condVal));
-            }
-            return !compareValue.includes(String(condVal));
-
-          case "contains":
-            if (typeof condVal === "string") {
-              // compareValue のいずれかが condVal を含む
-              return compareValue.some((val) => val.includes(condVal));
-            }
-            return false;
-
-          case "gte":
-            if (
-              cond.type === "Date" &&
-              condVal &&
-              typeof condVal !== "boolean"
-            ) {
-              return compareValue.some(
-                (val) =>
-                  !isNaN(new Date(val).getTime()) &&
-                  new Date(val) >= new Date(condVal)
-              );
-            }
-            return compareValue.some((val) => Number(val) >= Number(condVal));
-
-          case "lte":
-            if (
-              cond.type === "Date" &&
-              condVal &&
-              typeof condVal !== "boolean"
-            ) {
-              return compareValue.some(
-                (val) =>
-                  !isNaN(new Date(val).getTime()) &&
-                  new Date(val) <= new Date(condVal)
-              );
-            }
-            return compareValue.some((val) => Number(val) <= Number(condVal));
-
-          case "greater":
-            if (
-              cond.type === "Date" &&
-              condVal &&
-              typeof condVal !== "boolean"
-            ) {
-              return compareValue.some(
-                (val) =>
-                  !isNaN(new Date(val).getTime()) &&
-                  new Date(val) > new Date(condVal)
-              );
-            }
-            return compareValue.some((val) => Number(val) > Number(condVal));
-
-          case "less":
-            if (
-              cond.type === "Date" &&
-              condVal &&
-              typeof condVal !== "boolean"
-            ) {
-              return compareValue.some(
-                (val) =>
-                  !isNaN(new Date(val).getTime()) &&
-                  new Date(val) < new Date(condVal)
-              );
-            }
-            return compareValue.some((val) => Number(val) < Number(condVal));
-
-          case "is-empty":
-            return (
-              compareValue === null ||
-              compareValue === undefined ||
-              compareValue.length === 0 ||
-              compareValue.every((val) => val === "")
-            );
-
-          case "is-not-empty":
-            return (
-              compareValue !== null &&
-              compareValue !== undefined &&
-              compareValue.length !== 0 &&
-              compareValue.some((val) => val !== "")
-            );
-
-          default:
-            return true;
-        }
-      })
-    );
+    return data;
   };
 
   // フィルターオープン
@@ -316,6 +160,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       label: field.label,
       type: field.type,
       value: value,
+      valueLabel: value,
       operator: "equals",
     });
   };
@@ -325,6 +170,15 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       ...prev,
       value: value,
     }));
+
+  const handleFieldObjValue = (obj: Record<string, any>): void => {
+    console.log("in handleFieldObjValue getted obj", obj.label);
+    setFilterCondition((prev) => ({
+      ...prev,
+      value: obj.key,
+      valueLabel: obj.label,
+    }));
+  };
 
   const handleFieldOperator = (value: string | number | Date | boolean) => {
     setFilterCondition((prev) => ({
@@ -344,6 +198,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     resetFilterConditions,
     handleFieldSelect,
     handleFieldValue,
+    handleFieldObjValue,
     handleFieldOperator,
 
     handleEdit,
@@ -355,8 +210,6 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     editingIndex,
     isAdding,
     toggleAdding,
-
-    getFilterConditions,
   };
 
   return (

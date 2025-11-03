@@ -21,6 +21,7 @@ export type BaseField = {
 export type FilterField = {
   filterable?: boolean;
   value?: string | number | Date | boolean;
+  valueLabel?: string | number | Date | boolean;
   operator?: FilterOperator;
   logic?: "AND" | "OR";
 };

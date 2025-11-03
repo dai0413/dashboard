@@ -29,7 +29,9 @@ const SelectField = ({
     onChange && onChange(parsed);
 
     const targetObj = options.find((op) => op.key === raw);
-    onChangeObj && targetObj && onChangeObj(targetObj);
+    if (onChangeObj && targetObj) {
+      onChangeObj(targetObj);
+    }
   };
 
   return (
