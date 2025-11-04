@@ -53,27 +53,31 @@ const RenderCell = (
   const field =
     linkField && linkField.find((field) => field.field === header.field);
 
-  if (!form && field) {
-    // オブジェクトでidありのもの
-    if (typeof value === "object" && "id" in value) {
-      const id = value.id;
-
+  // ① オブジェクトでidを持つ場合
+  if (!form && field && typeof value === "object" && value !== null) {
+    if (typeof value.id === "string" && value.id !== "undefined") {
       return (
         <Link
-          to={`${field.to}/${id}`}
+          to={`${field.to}/${value.id}`}
           className="hover:text-blue-600 underline"
         >
-          {value.label}
+          {isObject ? value.label : content}
         </Link>
       );
     } else {
-      // オブジェクトでなく_idをkeyとするもの
+      return isObject ? value.label : content;
+    }
+  }
+
+  // ② row._idを使う場合
+  if (!form && field && value !== null) {
+    if (row._id) {
       return (
         <Link
           to={`${field.to}/${row._id}`}
           className="hover:text-blue-600 underline"
         >
-          {content}
+          {isObject ? value.label : content}
         </Link>
       );
     }
@@ -285,7 +289,7 @@ const Table = <T extends Record<string, any>>({
 
                   return (
                     <td
-                      key={header.field}
+                      key={`${header.field}-${title}`}
                       className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${selectedKey.includes(row.key) ? "bg-blue-100" : ""}
