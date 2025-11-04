@@ -2,6 +2,9 @@ import {
   TeamCompetitionSeason,
   TeamCompetitionSeasonGet,
 } from "../../../types/models/team-competition-season";
+import { competition } from "../CreateLabel/competition";
+import { season } from "../CreateLabel/season";
+import { team } from "../CreateLabel/team";
 
 export const teamCompetitionSeason = (
   t: TeamCompetitionSeason
@@ -9,15 +12,15 @@ export const teamCompetitionSeason = (
   return {
     ...t,
     team: {
-      label: t.team.abbr || t.team.team,
+      label: team(t.team),
       id: t.team._id,
     },
     season: {
-      label: t.season.name,
+      label: season(t.season),
       id: t.season._id,
     },
     competition: {
-      label: t.competition.name,
+      label: competition(t.competition),
       id: t.competition._id,
     },
   };

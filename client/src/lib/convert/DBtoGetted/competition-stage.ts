@@ -3,6 +3,8 @@ import {
   CompetitionStageGet,
 } from "../../../types/models/competition-stage";
 import { stageType } from "../../../utils/createOption/Enum/stageType";
+import { competition } from "../CreateLabel/competition";
+import { season } from "../CreateLabel/season";
 
 export const competitionStage = (t: CompetitionStage): CompetitionStageGet => {
   const CompetitionStageType = stageType().find(
@@ -12,12 +14,12 @@ export const competitionStage = (t: CompetitionStage): CompetitionStageGet => {
   return {
     ...t,
     competition: {
-      label: t.competition?.name ?? "不明",
-      id: t.competition?._id ?? "",
+      label: competition(t.competition),
+      id: t.competition?._id ?? undefined,
     },
     season: {
-      label: t.season?.name ?? "不明",
-      id: t.season?._id ?? "",
+      label: season(t.season),
+      id: t.season?._id ?? undefined,
     },
     stage_type: CompetitionStageType ? CompetitionStageType : "",
   };

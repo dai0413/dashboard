@@ -1,14 +1,16 @@
 import { Transfer, TransferGet } from "../../../types/models/transfer";
+import { player } from "../CreateLabel/player";
+import { team } from "../CreateLabel/team";
 
 export const transfer = (t: Transfer): TransferGet => {
   const from_team = {
-    label: t.from_team ? t.from_team.abbr || t.from_team.team : "",
-    id: t.from_team && "_id" in t.from_team ? t.from_team._id : "",
+    label: t.from_team ? team(t.from_team) : "",
+    id: t.from_team ? t.from_team._id : undefined,
   };
 
   const to_team = {
-    label: t.to_team ? t.to_team.abbr || t.to_team.team : "",
-    id: t.to_team && "_id" in t.to_team ? t.to_team._id : "",
+    label: t.to_team ? team(t.to_team) : "",
+    id: t.to_team ? t.to_team._id : undefined,
   };
 
   return {
@@ -18,8 +20,8 @@ export const transfer = (t: Transfer): TransferGet => {
       typeof t.from_date === "string" ? new Date(t.from_date) : t.from_date,
     to_date: typeof t.to_date === "string" ? new Date(t.to_date) : t.to_date,
     player: {
-      label: t.player?.name ?? "",
-      id: t.player?._id ?? "",
+      label: player(t.player),
+      id: t.player?._id,
     },
     from_team,
     to_team,

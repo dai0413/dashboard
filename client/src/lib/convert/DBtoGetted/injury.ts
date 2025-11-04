@@ -1,4 +1,6 @@
 import { Injury, InjuryGet } from "../../../types/models/injury";
+import { player } from "../CreateLabel/player";
+import { team } from "../CreateLabel/team";
 
 function getInjuryStatus(isInjured: boolean | null | undefined): string | null {
   if (isInjured === true) return "負傷中";
@@ -10,16 +12,16 @@ export const injury = (p: Injury): InjuryGet => ({
   ...p,
   doa: typeof p.doa === "string" ? new Date(p.doa) : p.doa,
   player: {
-    label: p.player?.name ?? "不明",
-    id: p.player?._id ?? "不明",
+    label: player(p.player),
+    id: p.player._id,
   },
   team: {
-    label: p.team ? p.team.abbr || p.team.team : "不明",
-    id: p.team?._id ?? "不明",
+    label: p.team ? team(p.team) : "不明",
+    id: p.team?._id ?? undefined,
   },
   now_team: {
-    label: p.now_team ? p.now_team.abbr || p.now_team.team : "不明",
-    id: p.now_team?._id ?? "不明",
+    label: p.now_team ? team(p.now_team) : "不明",
+    id: p.now_team?._id ?? undefined,
   },
   ttp: p.ttp
     ? p.ttp.map((tt) =>

@@ -3,6 +3,7 @@ import {
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
 import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
+import { country } from "../CreateLabel/country";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeries
@@ -15,8 +16,8 @@ export const nationalMatchSeries = (
       typeof t.joined_at === "string" ? new Date(t.joined_at) : t.joined_at,
     left_at: typeof t.left_at === "string" ? new Date(t.left_at) : t.left_at,
     country: {
-      label: t.country.name ?? "不明",
-      id: t.country._id ?? "",
+      label: country(t.country),
+      id: t.country._id,
     },
     age_group: age_group ? age_group : "",
   };

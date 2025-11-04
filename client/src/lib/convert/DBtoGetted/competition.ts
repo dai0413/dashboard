@@ -3,6 +3,7 @@ import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
 import { category } from "../../../utils/createOption/Enum/category";
 import { competitionType } from "../../../utils/createOption/Enum/competition_type";
 import { level } from "../../../utils/createOption/Enum/level";
+import { country } from "../CreateLabel/country";
 
 export const competition = (t: Competition): CompetitionGet => {
   const CompetitionType = competitionType().find(
@@ -15,12 +16,12 @@ export const competition = (t: Competition): CompetitionGet => {
   return {
     ...t,
     country: {
-      label: t.country?.name ?? "不明",
-      id: t.country?._id ?? "",
+      label: t.country ? country(t.country) : "不明",
+      id: t.country?._id ?? undefined,
     },
     competition_type: CompetitionType ? CompetitionType : "",
-    category: Category ? Category : "",
-    level: Level ? Level : "",
-    age_group: age_group ? age_group : "",
+    category: Category ? Category : undefined,
+    level: Level ? Level : undefined,
+    age_group: age_group ? age_group : undefined,
   };
 };
