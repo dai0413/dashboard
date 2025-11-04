@@ -31,6 +31,7 @@ export const competition: ControllerConfig<
   POPULATE_PATHS: [{ path: "country", collection: "countries" }],
   getAllConfig: {
     sort: { _id: 1 },
+    query: [{ field: "country", type: "ObjectId" }],
   },
   bulk: false,
   download: false,
