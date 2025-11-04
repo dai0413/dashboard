@@ -1,11 +1,12 @@
 import { Stadium, StadiumGet } from "../../../types/models/stadium";
+import { country } from "../CreateLabel/country";
 
 export const stadium = (t: Stadium): StadiumGet => {
   return {
     ...t,
     country: {
-      label: t.country?.name ?? "不明",
-      id: t.country?._id ?? "",
+      label: country(t.country),
+      id: t.country?._id,
     },
   };
 };
