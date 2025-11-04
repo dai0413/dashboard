@@ -12,7 +12,6 @@ type SortState = {
   moveSortConditionDown: (index: number) => void;
   toggleAsc: (key: string, asc: boolean) => void;
 
-  handleSort: (data: any) => any;
   resetSort: (sortableField: SortableFieldDefinition[]) => void;
 
   sortOpen: boolean;
@@ -30,7 +29,6 @@ const defaultValue: SortState = {
   moveSortConditionDown: () => {},
   toggleAsc: () => {},
 
-  handleSort: () => {},
   resetSort: () => {},
 
   sortOpen: false,
@@ -45,48 +43,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
     SortableFieldDefinition[]
   >(defaultValue.sortConditions);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
-
-  // ソート
-  const handleSort = (data: any): any => {
-    const sorted = [...data].sort((a, b) => {
-      for (const { key, asc } of sortConditions) {
-        if (asc === null) continue;
-
-        const aValue = isLabelObject(a[key]) ? a[key].label : a[key];
-        const bValue = isLabelObject(b[key]) ? b[key].label : b[key];
-
-        if (aValue === undefined) return 1;
-        if (bValue === undefined) return -1;
-        if (aValue === bValue) continue;
-
-        if (typeof aValue === "number" && typeof bValue === "number") {
-          return asc ? aValue - bValue : bValue - aValue;
-        }
-
-        // 日付比較
-        const aDate = Date.parse(aValue);
-        const bDate = Date.parse(bValue);
-        const isDateAValid = !isNaN(aDate);
-        const isDateBValid = !isNaN(bDate);
-
-        if (isDateAValid && isDateBValid) {
-          return asc ? aDate - bDate : bDate - aDate;
-        }
-
-        // 文字列比較
-        return asc
-          ? String(aValue).localeCompare(String(bValue), "ja", {
-              numeric: true,
-            })
-          : String(bValue).localeCompare(String(aValue), "ja", {
-              numeric: true,
-            });
-      }
-      return 0;
-    });
-
-    return sorted;
-  };
 
   // リセット
   const resetSort = (sortableField: SortableFieldDefinition[]): void => {
@@ -157,7 +113,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
     moveSortConditionDown,
     toggleAsc,
 
-    handleSort,
     resetSort,
 
     sortOpen,

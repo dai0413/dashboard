@@ -7,7 +7,6 @@ import {
 
 type FilterState = {
   filterOpen: boolean;
-  handleFilter: (data: any) => any;
 
   filterConditions: FilterableFieldDefinition[];
   handleAddCondition: (index?: number) => void;
@@ -40,7 +39,6 @@ const defaultFilterCondition: FilterableFieldDefinition = {
 
 const defaultValue: FilterState = {
   filterOpen: false,
-  handleFilter: () => {},
 
   filterConditions: [],
   handleAddCondition: () => {},
@@ -124,11 +122,6 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setIsAdding(false);
   };
 
-  // ---------- add filter ----------
-  const handleFilter = (data: any[]): any[] => {
-    return data;
-  };
-
   // フィルターオープン
   const openFilter = () => {
     setFilterOpen(true);
@@ -189,7 +182,6 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const value = {
     filterOpen,
-    handleFilter,
 
     filterConditions,
     handleAddCondition,
