@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TableContainer } from "../../components/table";
+import { TableWithFetch } from "../../components/table";
 import { useCountry } from "../../context/models/country";
 import { ModelType } from "../../types/models";
 import { NationalTabItems } from "../../constants/menuItems";
@@ -10,24 +10,9 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import {
-  NationalMatchSeries,
-  NationalMatchSeriesGet,
-} from "../../types/models/national-match-series";
-import { readItemsBase } from "../../lib/api";
-import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
-import { convert } from "../../lib/convert/DBtoGetted";
-import {
-  NationalCallup,
-  NationalCallupGet,
-} from "../../types/models/national-callup";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { Competition, CompetitionGet } from "../../types/models/competition";
 import { useForm } from "../../context/form-context";
-import { useQuery } from "../../context/query-context";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
-
 const Tabs = NationalTabItems.filter(
   (item) =>
     item.icon && item.text && !item.className?.includes("cursor-not-allowed")
@@ -37,14 +22,8 @@ const Tabs = NationalTabItems.filter(
 })) as OptionArray;
 
 const National = () => {
-  const api = useApi();
   const { id } = useParams();
   const { isOpen: formIsOpen } = useForm();
-  const { page, setPage } = useQuery();
-
-  const handlePageChange = (page: number) => {
-    setPage("page", page);
-  };
 
   const [selectedTab, setSelectedTab] = useState("competition");
 
@@ -52,118 +31,16 @@ const National = () => {
     metacrud: { selected, readItem, isLoading },
   } = useCountry();
 
-  const [series, setSeries] = useState<NationalMatchSeriesGet[]>([]);
-  const [seriesIsLoading, setSeriesIsLoading] = useState<boolean>(false);
-  const [callup, setCallup] = useState<NationalCallupGet[]>([]);
-  const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);
-  const [competition, setCompetition] = useState<CompetitionGet[]>([]);
-  const [competitionIsLoading, setCompetitionIsLoading] =
-    useState<boolean>(false);
-
-  const isLoadingSetters = {
-    competition: setCompetitionIsLoading,
-    series: setSeriesIsLoading,
-    callup: setCallupIsLoading,
-  };
-
-  const setLoading = (
-    time: "start" | "end",
-    data: keyof typeof isLoadingSetters
-  ) => {
-    isLoadingSetters[data](time === "start");
-  };
-
-  const readSeries = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<NationalMatchSeries>) => {
-        setSeries(convert(ModelType.NATIONAL_MATCH_SERIES, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "series"),
-    });
-
-  const readCallup = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<NationalCallup>) => {
-        setCallup(convert(ModelType.NATIONAL_CALLUP, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "callup"),
-    });
-
-  const readCompetition = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.COMPETITION.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<Competition>) => {
-        setCompetition(convert(ModelType.COMPETITION, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "callup"),
-    });
-
   useEffect(() => {
     if (!id) return;
     (async () => {
       readItem(id);
-      readSeries({ country: id, sort: "-_id" });
-      readCallup({ "series.country": id, sort: "-series,position,number" });
-      readCompetition({ country: id, sort: "_id" });
     })();
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
   };
-
-  const seriesOptions = {
-    filterField: ModelType.NATIONAL_MATCH_SERIES
-      ? fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "country")
-      : [],
-    sortField: ModelType.NATIONAL_MATCH_SERIES
-      ? fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-          .filter(isSortable)
-          .filter((file) => file.key !== "country")
-      : [],
-  };
-
-  const callupOptions = {
-    filterField: ModelType.NATIONAL_CALLUP
-      ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isFilterable)
-      : [],
-    sortField: ModelType.NATIONAL_CALLUP
-      ? fieldDefinition[ModelType.NATIONAL_CALLUP].filter(isSortable)
-      : [],
-  };
-
-  const competitionOptions = {
-    filterField: ModelType.COMPETITION
-      ? fieldDefinition[ModelType.COMPETITION]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "country")
-      : [],
-    sortField: ModelType.COMPETITION
-      ? fieldDefinition[ModelType.COMPETITION]
-          .filter(isSortable)
-          .filter((file) => file.key !== "country")
-      : [],
-  };
-
-  const seriesFormInitialData = useMemo(() => {
-    if (!id) return {};
-    return { country: id };
-  }, [id]);
-
-  const competitionFormInitialData = useMemo(() => {
-    if (!id) return {};
-    return { country: id };
-  }, [id]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -223,59 +100,71 @@ const National = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "competition" && (
-        <TableContainer
-          items={competition}
+      {selectedTab === "competition" && id && (
+        <TableWithFetch
+          modelType={ModelType.COMPETITION}
           headers={[
             { label: "大会名", field: "name" },
             { label: "大会規模", field: "competition_type", width: "90px" },
             { label: "大会タイプ", field: "category", width: "100px" },
             { label: "年代", field: "age_group", width: "70px" },
           ]}
-          modelType={ModelType.COMPETITION}
-          originalFilterField={competitionOptions.filterField}
-          originalSortField={competitionOptions.sortField}
-          formInitialData={competitionFormInitialData}
-          itemsLoading={competitionIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.COMPETITION.GET_ALL,
+            params: { country: id, sort: "_id" },
+          }}
+          filterField={fieldDefinition[ModelType.COMPETITION]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "country")}
+          sortField={fieldDefinition[ModelType.COMPETITION]
+            .filter(isSortable)
+            .filter((file) => file.key !== "country")}
           linkField={[
             {
               field: "name",
               to: APP_ROUTES.COMPETITION_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          formInitialData={{
+            country: id,
+          }}
         />
       )}
 
-      {selectedTab === "series" && (
-        <TableContainer
-          items={series}
+      {selectedTab === "series" && id && (
+        <TableWithFetch
+          modelType={ModelType.NATIONAL_MATCH_SERIES}
           headers={[
             { label: "名称", field: "name", width: "250px" },
             { label: "年代", field: "age_group", width: "100px" },
             { label: "招集日", field: "joined_at" },
             { label: "解散日", field: "left_at" },
           ]}
-          modelType={ModelType.NATIONAL_MATCH_SERIES}
-          originalFilterField={seriesOptions.filterField}
-          originalSortField={seriesOptions.sortField}
-          formInitialData={seriesFormInitialData}
-          itemsLoading={seriesIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
+            params: { country: id, sort: "-_id" },
+          }}
+          filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "country")}
+          sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+            .filter(isSortable)
+            .filter((file) => file.key !== "country")}
           linkField={[
             {
               field: "name",
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          formInitialData={{
+            country: id,
+          }}
         />
       )}
 
-      {selectedTab === "player" && (
-        <TableContainer
-          items={callup}
+      {selectedTab === "player" && id && (
+        <TableWithFetch
+          modelType={ModelType.NATIONAL_CALLUP}
           headers={[
             { label: "代表試合シリーズ", field: "series", width: "250px" },
             { label: "選手", field: "player" },
@@ -283,10 +172,16 @@ const National = () => {
             { label: "背番号", field: "number", width: "100px" },
             { label: "ポジション", field: "position_group", width: "100px" },
           ]}
-          modelType={ModelType.NATIONAL_CALLUP}
-          originalFilterField={callupOptions.filterField}
-          originalSortField={callupOptions.sortField}
-          itemsLoading={callupIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+            params: { "series.country": id, sort: "-series,position,number" },
+          }}
+          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP].filter(
+            isFilterable
+          )}
+          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP].filter(
+            isSortable
+          )}
           linkField={[
             {
               field: "series",
@@ -297,8 +192,6 @@ const National = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
         />
       )}
     </div>

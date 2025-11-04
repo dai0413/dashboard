@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TableContainer } from "../../components/table";
+import { TableWithFetch } from "../../components/table";
 import { ModelType } from "../../types/models";
 import { CompetitionTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
@@ -14,22 +14,12 @@ import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import {
-  TeamCompetitionSeason,
-  TeamCompetitionSeasonGet,
-} from "../../types/models/team-competition-season";
 import { useCompetition } from "../../context/models/competition";
 import { Season, SeasonGet } from "../../types/models/season";
-import {
-  CompetitionStage,
-  CompetitionStageGet,
-} from "../../types/models/competition-stage";
-import { useForm } from "../../context/form-context";
-import { Match, MatchGet } from "../../types/models/match";
+import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
-import { useMatch } from "../../context/models/match";
-import { useQuery } from "../../context/query-context";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
+import { ResBody } from "../../lib/api/readItems";
+import { Data } from "../../types/types";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -42,12 +32,6 @@ const Tabs = CompetitionTabItems.filter(
 const Competition = () => {
   const api = useApi();
   const { id } = useParams();
-  const { isOpen: formIsOpen } = useForm();
-  const { page, setPage } = useQuery();
-
-  const handlePageChange = (page: number) => {
-    setPage("page", page);
-  };
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
@@ -55,50 +39,12 @@ const Competition = () => {
     metacrud: { selected, readItem, isLoading },
   } = useCompetition();
 
-  const [teamCompetitionSeason, setTeamCompetitionSeason] = useState<
-    TeamCompetitionSeasonGet[]
-  >([]);
-  const [teamCompetitionSeasonIsLoading, setTeamCompetitionSeasonIsLoading] =
-    useState<boolean>(false);
-
-  const [season, setSeason] = useState<SeasonGet[]>([]);
-  const [_seasonIsLoading, setSeasonIsLoading] = useState<boolean>(false);
-
-  const [competitionStage, setCompetitionStage] = useState<
-    CompetitionStageGet[]
-  >([]);
-  const [competitionStageIsLoading, setCompetitionStageIsLoading] =
-    useState<boolean>(false);
-
-  const [match, setMatch] = useState<MatchGet[]>([]);
-  const [matchIsLoading, setMatcIsLoading] = useState<boolean>(false);
-
-  const isLoadingSetters = {
-    teamCompetitionSeason: setTeamCompetitionSeasonIsLoading,
-    season: setSeasonIsLoading,
-    competitionStage: setCompetitionStageIsLoading,
-    match: setMatcIsLoading,
-  };
-
-  const setLoading = (
-    time: "start" | "end",
-    data: keyof typeof isLoadingSetters
-  ) => {
-    isLoadingSetters[data](time === "start");
-  };
-
-  const readTeamCompetitionSeason = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<TeamCompetitionSeason>) => {
-        setTeamCompetitionSeason(
-          convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data)
-        );
-      },
-      handleLoading: (time) => setLoading(time, "teamCompetitionSeason"),
-    });
+  const [season, setSeason] = useState<Data<SeasonGet>>({
+    data: [],
+    page: 1,
+    totalCount: 1,
+    isLoading: false,
+  });
 
   const readSeason = (competitionId: string) =>
     readItemsBase({
@@ -106,31 +52,16 @@ const Competition = () => {
       backendRoute: API_ROUTES.SEASON.GET_ALL,
       params: { competition: competitionId },
       onSuccess: (resBody: ResBody<Season>) => {
-        setSeason(convert(ModelType.SEASON, resBody.data));
+        setSeason({
+          data: convert(ModelType.SEASON, resBody.data),
+          page: resBody.page,
+          totalCount: resBody.totalCount,
+          isLoading: true,
+        });
       },
-      handleLoading: (time) => setLoading(time, "season"),
-    });
-
-  const readCompetitionStage = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<CompetitionStage>) => {
-        setCompetitionStage(convert(ModelType.COMPETITION_STAGE, resBody.data));
+      handleLoading: (time) => {
+        setSeason((prev) => ({ ...prev, isLoading: time === "start" }));
       },
-      handleLoading: (time) => setLoading(time, "competitionStage"),
-    });
-
-  const readMatch = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.MATCH.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<Match>) => {
-        setMatch(convert(ModelType.MATCH, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "match"),
     });
 
   useEffect(() => {
@@ -142,89 +73,30 @@ const Competition = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
-    handlePageChange(1);
     setSelectedTab(value as string);
-  };
-
-  const teamCompetitionSeasonOptions = {
-    filterField: ModelType.TEAM_COMPETITION_SEASON
-      ? fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "competition")
-      : [],
-    sortField: ModelType.TEAM_COMPETITION_SEASON
-      ? fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
-          .filter(isSortable)
-          .filter((file) => file.key !== "competition")
-      : [],
-  };
-
-  const competitionStageOptions = {
-    filterField: ModelType.COMPETITION_STAGE
-      ? fieldDefinition[ModelType.COMPETITION_STAGE]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "competition")
-      : [],
-    sortField: ModelType.COMPETITION_STAGE
-      ? fieldDefinition[ModelType.COMPETITION_STAGE]
-          .filter(isSortable)
-          .filter((file) => file.key !== "competition")
-      : [],
-  };
-
-  const matchOptions = {
-    filterField: ModelType.MATCH
-      ? fieldDefinition[ModelType.MATCH]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "competition")
-      : [],
-    sortField: ModelType.MATCH
-      ? fieldDefinition[ModelType.MATCH]
-          .filter(isSortable)
-          .filter((file) => file.key !== "competition")
-      : [],
   };
 
   const [selectedSeason, setSelectedSeason] = useState<SeasonGet | null>(null);
 
   useEffect(() => {
-    const current = season.find((s) => s.current);
-    let newSeason = current ? current : season[0];
+    const current = season.data.find((s) => s.current);
+    let newSeason = current ? current : season.data[0];
     setSelectedSeason(newSeason);
   }, [season]);
 
-  useEffect(() => {
-    if (!id || !season.length || !selectedSeason) return;
-
-    readTeamCompetitionSeason({
-      competition: id,
-      season: selectedSeason._id,
-    });
-
-    readCompetitionStage({ season: selectedSeason._id });
-    readMatch({
-      season: selectedSeason._id,
-    });
-  }, [selectedSeason?._id, formIsOpen]);
-
   const handleSetSelectedSeason = (id: string | number | Date) => {
-    const selected = season.find((s) => s._id === id) ?? null;
+    const selected = season.data.find((s) => s._id === id) ?? null;
     setSelectedSeason(selected);
   };
 
   const seasonOptions: OptionArray = useMemo(
     () =>
-      season.map((s) => ({
+      season.data.map((s) => ({
         key: s._id,
         label: s.name,
       })),
     [season]
   );
-
-  const formInitialData = useMemo(() => {
-    if (!selectedSeason) return {};
-    return { season: selectedSeason._id };
-  }, [selectedSeason?._id]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -308,47 +180,53 @@ const Competition = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "teamCompetitionSeason" && (
-        <TableContainer
-          items={teamCompetitionSeason}
-          headers={[{ label: "チーム", field: "team" }]}
+      {selectedTab === "teamCompetitionSeason" && id && selectedSeason && (
+        <TableWithFetch
           modelType={ModelType.TEAM_COMPETITION_SEASON}
-          originalFilterField={teamCompetitionSeasonOptions.filterField}
-          originalSortField={teamCompetitionSeasonOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={teamCompetitionSeasonIsLoading}
+          headers={[{ label: "チーム", field: "team" }]}
+          fetch={{
+            apiRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+            params: { competition: id, season: selectedSeason?._id },
+          }}
+          filterField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+            .filter(isSortable)
+            .filter((file) => file.key !== "competition")}
           linkField={[
             {
               field: "team",
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
         />
       )}
 
-      {selectedTab === "competitionStage" && (
-        <TableContainer
-          items={competitionStage}
+      {selectedTab === "competitionStage" && selectedSeason && (
+        <TableWithFetch
+          modelType={ModelType.COMPETITION_STAGE}
           headers={[
             { label: "名前", field: "name", width: "170px" },
             { label: "ステージタイプ", field: "stage_type", width: "100px" },
             { label: "LEG", field: "leg", width: "50px" },
           ]}
-          modelType={ModelType.COMPETITION_STAGE}
-          originalFilterField={competitionStageOptions.filterField}
-          originalSortField={competitionStageOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={competitionStageIsLoading}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          fetch={{
+            apiRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
+            params: { season: selectedSeason?._id },
+          }}
+          filterField={fieldDefinition[ModelType.COMPETITION_STAGE]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.COMPETITION_STAGE]
+            .filter(isSortable)
+            .filter((file) => file.key !== "competition")}
         />
       )}
 
-      {selectedTab === "match" && (
-        <TableContainer
-          items={match}
+      {selectedTab === "match" && selectedSeason && (
+        <TableWithFetch
+          modelType={ModelType.MATCH}
           headers={[
             {
               label: "開催日",
@@ -380,11 +258,16 @@ const Competition = () => {
             },
             { label: "アウェイ", field: "away_team" },
           ]}
-          modelType={ModelType.MATCH}
-          originalFilterField={matchOptions.filterField}
-          originalSortField={matchOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={matchIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.MATCH.GET_ALL,
+            params: { season: selectedSeason?._id },
+          }}
+          filterField={fieldDefinition[ModelType.MATCH]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.MATCH]
+            .filter(isSortable)
+            .filter((file) => file.key !== "competition")}
           linkField={[
             {
               field: "home_team",
@@ -395,14 +278,6 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          uploadFile={useMatch().metacrud.uploadFile}
-          reloadFun={
-            selectedSeason
-              ? () => readMatch({ match: selectedSeason._id })
-              : undefined
-          }
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
         />
       )}
     </div>

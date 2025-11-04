@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TableContainer } from "../../components/table";
+import { TableWithFetch } from "../../components/table";
 import { ModelType } from "../../types/models";
 import { NationalMatchSeriesTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
@@ -9,20 +9,11 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { readItemsBase } from "../../lib/api";
-import { useApi } from "../../context/api-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
-import { convert } from "../../lib/convert/DBtoGetted";
-import {
-  NationalCallup,
-  NationalCallupGet,
-} from "../../types/models/national-callup";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { useQuery } from "../../context/query-context";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -33,45 +24,14 @@ const Tabs = NationalMatchSeriesTabItems.filter(
 })) as OptionArray;
 
 const National = () => {
-  const api = useApi();
   const { id } = useParams();
   const { isOpen: formIsOpen } = useForm();
-  const { page, setPage } = useQuery();
-
-  const handlePageChange = (page: number) => {
-    setPage("page", page);
-  };
 
   const [selectedTab, setSelectedTab] = useState("player");
 
   const {
     metacrud: { selected, readItem, isLoading },
   } = useNationalMatchSeries();
-
-  const [callup, setCallup] = useState<NationalCallupGet[]>([]);
-  const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);
-
-  const isLoadingSetters = {
-    callup: setCallupIsLoading,
-  };
-
-  const setLoading = (
-    time: "start" | "end",
-    data: keyof typeof isLoadingSetters
-  ) => {
-    isLoadingSetters[data](time === "start");
-  };
-
-  const readCallup = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<NationalCallup>) => {
-        setCallup(convert(ModelType.NATIONAL_CALLUP, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "callup"),
-    });
 
   useEffect(() => {
     if (!id) return;
@@ -80,43 +40,9 @@ const National = () => {
     })();
   }, [id, formIsOpen]);
 
-  useEffect(() => {
-    if (!id) return;
-    (async () => {
-      readCallup({
-        series: id,
-        sort: "position,number",
-      });
-    })();
-  }, [selected]);
-
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
   };
-
-  const callupOptions = {
-    filterField: ModelType.INJURY
-      ? fieldDefinition[ModelType.INJURY]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "player")
-      : [],
-    sortField: ModelType.INJURY
-      ? fieldDefinition[ModelType.INJURY]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player")
-      : [],
-  };
-
-  const formInitialData = useMemo(() => {
-    if (!selected) return { series: id };
-    return {
-      series: id,
-      joined_at: selected?.joined_at
-        ? toDateKey(selected?.joined_at)
-        : undefined,
-      left_at: selected?.left_at ? toDateKey(selected?.left_at) : undefined,
-    };
-  }, [id, selected]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -181,9 +107,9 @@ const National = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "player" && (
-        <TableContainer
-          items={callup}
+      {selectedTab === "player" && id && (
+        <TableWithFetch
+          modelType={ModelType.NATIONAL_CALLUP}
           headers={[
             { label: "選手", field: "player" },
             { label: "所属チーム", field: "team" },
@@ -191,11 +117,16 @@ const National = () => {
             { label: "背番号", field: "number" },
             { label: "ポジション", field: "position_group" },
           ]}
-          modelType={ModelType.NATIONAL_CALLUP}
-          originalFilterField={callupOptions.filterField}
-          originalSortField={callupOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={callupIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+            params: { series: id, sort: "position_group,number" },
+          }}
+          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "series")}
+          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]
+            .filter(isSortable)
+            .filter((file) => file.key !== "series")}
           linkField={[
             {
               field: "team",
@@ -206,8 +137,15 @@ const National = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          formInitialData={{
+            series: id,
+            joined_at: selected?.joined_at
+              ? toDateKey(selected?.joined_at)
+              : undefined,
+            left_at: selected?.left_at
+              ? toDateKey(selected?.left_at)
+              : undefined,
+          }}
         />
       )}
     </div>
