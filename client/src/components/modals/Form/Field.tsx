@@ -82,12 +82,12 @@ export const RenderField = <T extends keyof FormTypeMap>({
         <CustomTableContainer
           headers={optionTableData.option.header}
           items={optionTableData.option.data}
-          originalFilterField={
+          filterField={
             optionKey && isModelType(optionKey)
               ? fieldDefinition[optionKey].filter(isFilterable)
               : undefined
           }
-          originalSortField={
+          sortField={
             optionKey && isModelType(optionKey)
               ? fieldDefinition[optionKey].filter(isSortable)
               : undefined
