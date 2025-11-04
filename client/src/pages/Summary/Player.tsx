@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { TableContainer } from "../../components/table";
+import { TableWithFetch } from "../../components/table";
 import { usePlayer } from "../../context/models/player";
 import { toDateKey } from "../../utils";
 import { ModelType } from "../../types/models";
@@ -11,20 +11,9 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { Transfer, TransferGet } from "../../types/models/transfer";
-import { Injury, InjuryGet } from "../../types/models/injury";
-import { readItemsBase } from "../../lib/api";
-import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
-import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
-import {
-  NationalCallup,
-  NationalCallupGet,
-} from "../../types/models/national-callup";
+import { API_ROUTES } from "../../lib/apiRoutes";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { useQuery } from "../../context/query-context";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -35,13 +24,7 @@ const Tabs = PlayerTabItems.filter(
 })) as OptionArray;
 
 const Player = () => {
-  const api = useApi();
   const { id } = useParams();
-  const { page, setPage } = useQuery();
-
-  const handlePageChange = (page: number) => {
-    setPage("page", page);
-  };
 
   const { isOpen: formIsOpen } = useForm();
 
@@ -51,110 +34,15 @@ const Player = () => {
     metacrud: { selected, readItem, isLoading },
   } = usePlayer();
 
-  const [transfers, setTransfers] = useState<TransferGet[]>([]);
-  const [transferIsLoading, setTransferIsLoading] = useState<boolean>(false);
-  const [injuries, setInjuries] = useState<InjuryGet[]>([]);
-  const [injuriesIsLoading, setInjuriesIsLoading] = useState<boolean>(false);
-  const [callup, setCallup] = useState<NationalCallupGet[]>([]);
-  const [callupIsLoading, setCallupIsLoading] = useState<boolean>(false);
-
-  const isLoadingSetters = {
-    transfer: setTransferIsLoading,
-    injury: setInjuriesIsLoading,
-    callup: setCallupIsLoading,
-  };
-
-  const setLoading = (
-    time: "start" | "end",
-    data: keyof typeof isLoadingSetters
-  ) => {
-    isLoadingSetters[data](time === "start");
-  };
-
-  const readTransfers = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<Transfer>) => {
-        setTransfers(convert(ModelType.TRANSFER, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "transfer"),
-    });
-
-  const readInjuries = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.INJURY.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<Injury>) => {
-        setInjuries(convert(ModelType.INJURY, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "injury"),
-    });
-
-  const readCallup = (params: QueryParams) =>
-    readItemsBase({
-      apiInstance: api,
-      backendRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-      params,
-      onSuccess: (resBody: ResBody<NationalCallup>) => {
-        setCallup(convert(ModelType.NATIONAL_CALLUP, resBody.data));
-      },
-      handleLoading: (time) => setLoading(time, "callup"),
-    });
-
   useEffect(() => {
     if (!id) return;
     (async () => {
       await readItem(id);
-      await readTransfers({ player: id });
-      await readInjuries({ player: id });
-      await readCallup({ player: id });
     })();
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
     setSelectedTab(value as string);
-  };
-
-  const transferOptions = {
-    filterField: ModelType.TRANSFER
-      ? fieldDefinition[ModelType.TRANSFER]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "player")
-      : [],
-    sortField: ModelType.TRANSFER
-      ? fieldDefinition[ModelType.TRANSFER]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player")
-      : [],
-  };
-
-  const injuryOptions = {
-    filterField: ModelType.INJURY
-      ? fieldDefinition[ModelType.INJURY]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "player")
-      : [],
-    sortField: ModelType.INJURY
-      ? fieldDefinition[ModelType.INJURY]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player")
-      : [],
-  };
-
-  const callupOptions = {
-    filterField: ModelType.NATIONAL_CALLUP
-      ? fieldDefinition[ModelType.NATIONAL_CALLUP]
-          .filter(isFilterable)
-          .filter((file) => file.key !== "player")
-      : [],
-    sortField: ModelType.NATIONAL_CALLUP
-      ? fieldDefinition[ModelType.NATIONAL_CALLUP]
-          .filter(isSortable)
-          .filter((file) => file.key !== "player")
-      : [],
   };
 
   const formInitialData = useMemo(() => {
@@ -222,20 +110,25 @@ const Player = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "transfer" && (
-        <TableContainer
-          items={transfers}
+      {selectedTab === "transfer" && id && (
+        <TableWithFetch
+          modelType={ModelType.TRANSFER}
           headers={[
             { label: "加入日", field: "from_date" },
             { label: "移籍元", field: "from_team" },
             { label: "移籍先", field: "to_team" },
             { label: "形態", field: "form" },
           ]}
-          modelType={ModelType.TRANSFER}
-          originalFilterField={transferOptions.filterField}
-          originalSortField={transferOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={transferIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            params: { player: id },
+          }}
+          filterField={fieldDefinition[ModelType.TRANSFER]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "player")}
+          sortField={fieldDefinition[ModelType.TRANSFER]
+            .filter(isSortable)
+            .filter((file) => file.key !== "player")}
           linkField={[
             {
               field: "from_team",
@@ -246,58 +139,67 @@ const Player = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          formInitialData={{
+            player: id,
+          }}
         />
       )}
 
-      {selectedTab === "injury" && (
-        <TableContainer
-          items={injuries}
+      {selectedTab === "injury" && id && (
+        <TableWithFetch
+          modelType={ModelType.INJURY}
           headers={[
             { label: "発表日", field: "doa" },
             { label: "所属", field: "team" },
             { label: "負傷箇所・診断結果", field: "injured_part" },
             { label: "全治", field: "ttp" },
           ]}
-          modelType={ModelType.INJURY}
-          originalFilterField={injuryOptions.filterField}
-          originalSortField={injuryOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={injuriesIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.INJURY.GET_ALL,
+            params: { player: id },
+          }}
+          filterField={fieldDefinition[ModelType.INJURY]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "player")}
+          sortField={fieldDefinition[ModelType.INJURY]
+            .filter(isSortable)
+            .filter((file) => file.key !== "player")}
           linkField={[
             {
               field: "team",
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          formInitialData={formInitialData}
         />
       )}
 
-      {selectedTab === "nationality" && (
-        <TableContainer
-          items={callup}
+      {selectedTab === "nationality" && id && (
+        <TableWithFetch
+          modelType={ModelType.NATIONAL_CALLUP}
           headers={[
             { label: "代表試合シリーズ", field: "series" },
             { label: "招集状況", field: "status" },
             { label: "背番号", field: "number" },
             { label: "活動開始日", field: "joined_at" },
           ]}
-          modelType={ModelType.NATIONAL_CALLUP}
-          originalFilterField={callupOptions.filterField}
-          originalSortField={callupOptions.sortField}
-          formInitialData={formInitialData}
-          itemsLoading={callupIsLoading}
+          fetch={{
+            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+            params: { player: id },
+          }}
+          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "player")}
+          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]
+            .filter(isSortable)
+            .filter((file) => file.key !== "player")}
           linkField={[
             {
               field: "series",
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
             },
           ]}
-          pageNum={page.page}
-          handlePageChange={handlePageChange}
+          formInitialData={formInitialData}
         />
       )}
     </div>
