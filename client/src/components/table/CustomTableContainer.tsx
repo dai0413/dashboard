@@ -4,41 +4,36 @@ import Table from "./Table";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { LinkField, TableHeader } from "../../types/types";
 import { FormTypeMap, ModelType } from "../../types/models";
+import { ModelRouteMap } from "../../types/models";
+import { TableBase, TableOperationFields } from "../../types/table";
 
 import { useSort } from "../../context/sort-context";
-import { ModelRouteMap } from "../../types/models";
 import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
-import {
-  FilterableFieldDefinition,
-  SortableFieldDefinition,
-} from "../../../../shared/types";
 
-type Base<K extends keyof FormTypeMap> = {
-  title?: string;
-  headers: TableHeader[];
-  modelType?: ModelType | null;
-  formInitialData?: Partial<FormTypeMap[K]>;
-  linkField?: LinkField[];
-};
-
-type Original<K extends keyof FormTypeMap> = Base<K> & {
-  items: any[];
-  itemsLoading?: boolean;
-  originalFilterField?: FilterableFieldDefinition[];
-  originalSortField?: SortableFieldDefinition[];
-  detailLinkValue?: string | null;
+type TablePage = {
   pageNum: number;
   totalCount?: number;
   handlePageChange?: (page: number) => Promise<void>;
-  uploadFile?: (file: File) => Promise<boolean>;
-  reloadFun?: () => Promise<void>;
+};
+
+type TableForm = {
   form?: boolean;
   onClick?: (row: any) => void;
   selectedKey?: string[];
 };
+
+type Original<K extends ModelType> = TableBase<K> &
+  TableOperationFields &
+  TablePage &
+  TableForm & {
+    items: any[];
+    itemsLoading?: boolean;
+
+    uploadFile?: (file: File) => Promise<boolean>;
+    reloadFun?: () => Promise<void>;
+  };
 
 type TableContainerProps<K extends keyof FormTypeMap> = Original<K>;
 
@@ -50,8 +45,8 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   linkField,
   items,
   itemsLoading,
-  originalFilterField,
-  originalSortField,
+  filterField,
+  sortField,
   detailLinkValue,
   pageNum,
   totalCount,
@@ -97,14 +92,8 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
       )}
 
-      <Filter
-        filterableField={originalFilterField || []}
-        onApply={handleApplyFilter}
-      />
-      <Sort
-        sortableField={originalSortField || []}
-        onApply={handleApplyFilter}
-      />
+      <Filter filterableField={filterField || []} onApply={handleApplyFilter} />
+      <Sort sortableField={sortField || []} onApply={handleApplyFilter} />
       <TableToolbar
         rowSpacing={rowSpacing}
         setRowSpacing={setRowSpacing}

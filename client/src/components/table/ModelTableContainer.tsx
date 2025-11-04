@@ -4,7 +4,6 @@ import Table from "./Table";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { LinkField, TableHeader } from "../../types/types";
 import { FormTypeMap, ModelType } from "../../types/models";
 
 import { useSort } from "../../context/sort-context";
@@ -12,16 +11,12 @@ import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
+import { TableBase } from "../../types/table";
 
-type Base<K extends keyof FormTypeMap> = {
-  title?: string;
-  headers: TableHeader[];
-  modelType?: ModelType | null;
-  formInitialData?: Partial<FormTypeMap[K]>;
-  linkField?: LinkField[];
-};
-
-type ModelBase<K extends keyof FormTypeMap> = Base<K> & {
+type ModelBase<K extends keyof FormTypeMap> = Omit<
+  TableBase<K>,
+  "modelType"
+> & {
   modelType: ModelType;
   contextState: ModelContext<K>;
 };
