@@ -1,17 +1,23 @@
 import { createContext, useContext, useState } from "react";
 
-import { FormTypeMap, ModelType } from "../types/models";
+import { FormTypeMap, ModelDataMap, ModelType } from "../types/models";
 import { convert as convertToOption, OptionsMap } from "../utils/createOption";
+import { convert as createLabel } from "../lib/convert/CreateLabel";
 import { OptionArray, OptionTable } from "../types/option";
 
 import { useFilter } from "./filter-context";
 import { useSort } from "./sort-context";
-import { API_ROUTES, CrudRouteWithParams } from "../lib/apiRoutes";
+import {
+  API_ROUTES,
+  BaseCrudRoutes,
+  CrudRouteWithParams,
+} from "../lib/apiRoutes";
 import { QueryParams, readItemsBase } from "../lib/api/readItems";
 import { useApi } from "./api-context";
 import { convert } from "../lib/convert/DBtoGetted";
 import { FieldDefinition } from "../types/form";
 import { isModelType, isOptionType } from "../types/field";
+import { readItemBase } from "../lib/api";
 
 type OptionsState = {
   optionKey: keyof OptionsMap | null;
@@ -30,6 +36,10 @@ type OptionsState = {
     key: FieldDefinition<T>["key"],
     fieldType: FieldDefinition<T>["fieldType"]
   ) => void;
+  getLabelById: <T extends ModelType>(
+    optionKey: T,
+    id: string
+  ) => Promise<string | undefined>;
 };
 
 const OptionContext = createContext<OptionsState>({
@@ -38,19 +48,20 @@ const OptionContext = createContext<OptionsState>({
   optionSelectData: null,
   handlePageChange: () => Promise.resolve(),
   updateOption: () => {},
+  getLabelById: async () => undefined,
 });
 
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
-  const optionRouteMap: Record<string, CrudRouteWithParams<{}>> = {
-    [ModelType.PLAYER]: API_ROUTES.PLAYER.GET_ALL,
-    [ModelType.TEAM]: API_ROUTES.TEAM.GET_ALL,
-    [ModelType.COUNTRY]: API_ROUTES.COUNTRY.GET_ALL,
-    [ModelType.MATCH_FORMAT]: API_ROUTES.MATCH_FORMAT.GET_ALL,
-    [ModelType.NATIONAL_MATCH_SERIES]: API_ROUTES.NATIONAL_MATCH_SERIES.GET_ALL,
-    [ModelType.SEASON]: API_ROUTES.SEASON.GET_ALL,
-    [ModelType.STADIUM]: API_ROUTES.STADIUM.GET_ALL,
-    [ModelType.COMPETITION_STAGE]: API_ROUTES.COMPETITION_STAGE.GET_ALL,
-    [ModelType.COMPETITION]: API_ROUTES.COMPETITION.GET_ALL,
+  const optionRouteMap: Record<string, BaseCrudRoutes<{}>> = {
+    [ModelType.PLAYER]: API_ROUTES.PLAYER,
+    [ModelType.TEAM]: API_ROUTES.TEAM,
+    [ModelType.COUNTRY]: API_ROUTES.COUNTRY,
+    [ModelType.MATCH_FORMAT]: API_ROUTES.MATCH_FORMAT,
+    [ModelType.NATIONAL_MATCH_SERIES]: API_ROUTES.NATIONAL_MATCH_SERIES,
+    [ModelType.SEASON]: API_ROUTES.SEASON,
+    [ModelType.STADIUM]: API_ROUTES.STADIUM,
+    [ModelType.COMPETITION_STAGE]: API_ROUTES.COMPETITION_STAGE,
+    [ModelType.COMPETITION]: API_ROUTES.COMPETITION,
   };
 
   const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
@@ -76,6 +87,34 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const api = useApi();
+
+  async function getLabelById<T extends ModelType>(
+    optionKey: T,
+    id: string
+  ): Promise<string | undefined> {
+    if (!optionKey) {
+      console.error("optionKeyの不備:", optionKey);
+      return;
+    }
+
+    const route = optionRouteMap[optionKey].DETAIL(id);
+    if (!route) {
+      console.error("optionRouteMapの不備:", optionKey);
+      return;
+    }
+
+    let fetchedItem: string | null = null;
+
+    await readItemBase({
+      apiInstance: api,
+      backendRoute: route,
+      onSuccess: (data: ModelDataMap[T]) => {
+        fetchedItem = createLabel(optionKey, data);
+      },
+    });
+
+    return fetchedItem ?? undefined;
+  }
 
   async function getOptionData<T extends ModelType>(
     route: CrudRouteWithParams<unknown>,
@@ -125,7 +164,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       console.error("optionKeyの不備:", optionKey);
       return Promise.resolve();
     }
-    const route = optionRouteMap[optionKey];
+    const route = optionRouteMap[optionKey].GET_ALL;
     if (!route) {
       console.error("optionRouteMapの不備:", optionKey);
       return Promise.resolve();
@@ -175,7 +214,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     setOptionKey(nextOptionKey);
 
     if (isModelType(nextOptionKey)) {
-      const route = optionRouteMap[nextOptionKey];
+      const route = optionRouteMap[nextOptionKey].GET_ALL;
       if (!route) {
         console.error("optionRouteMapの不備:", nextOptionKey);
         return;
@@ -218,6 +257,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         optionSelectData,
         handlePageChange,
         updateOption,
+        getLabelById,
       }}
     >
       {children}
