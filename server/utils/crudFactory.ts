@@ -46,14 +46,14 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       // ===== 🔹 Sort =====
       let mongoSort: Record<string, 1 | -1> = { _id: 1 };
 
-      let jsonSort: Record<string, 1 | -1> = { _id: 1 };
+      let jsonSort: Record<string, 1 | -1> = {};
       if (req.query.sorts) {
         jsonSort = buildJsonSort(
           JSON.parse(req.query.sorts as string) as SortableFieldDefinition[]
         );
       }
 
-      let stringSort: Record<string, 1 | -1> = { _id: 1 };
+      let stringSort: Record<string, 1 | -1> = {};
       if (req.query.sort) {
         stringSort = parseSort(req.query.sort as string);
       }
