@@ -40,6 +40,7 @@ import {
 } from "../types/field";
 import { useFilter } from "./filter-context";
 import { useSort } from "./sort-context";
+import { useOptions } from "./options-provider";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FieldDefinition<T>[] | undefined,
@@ -204,11 +205,35 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     return diff;
   };
 
-  const openForm = (
+  const { getLabelById } = useOptions();
+
+  async function resolveForeignKeyLabels(
+    initialFormLabel: Record<string, any>
+  ) {
+    const resolved = { ...initialFormLabel };
+
+    for (const key of Object.keys(resolved)) {
+      if (!isModelType(key)) continue;
+      const id = resolved[key];
+      if (!id) continue;
+
+      if (Array.isArray(id)) {
+        resolved[key] = (
+          await Promise.all(id.map((i) => getLabelById(key, i)))
+        ).filter(Boolean);
+      } else {
+        resolved[key] = await getLabelById(key, id);
+      }
+    }
+
+    return resolved;
+  }
+
+  const openForm = async (
     newData: boolean,
     model: T | null,
     editItem?: GettedModelDataMap[T],
-    initialFormData?: object,
+    initialFormData?: FormTypeMap[T],
     many?: boolean
   ) => {
     if (!model) return;
@@ -218,7 +243,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     if (newData) {
       setNewData(true);
 
-      initialFormData ? setFormData(initialFormData) : resetFormData();
+      if (initialFormData) {
+        setFormData(initialFormData);
+        const resolvedLabels = await resolveForeignKeyLabels(initialFormData);
+        setFormLabel(resolvedLabels);
+      } else {
+        resetFormData();
+      }
+
       initialFormData ? setFormDatas([initialFormData]) : resetFormDatas();
     } else {
       setNewData(false);
