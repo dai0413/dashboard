@@ -43,6 +43,8 @@ const Team = () => {
 
   const [selectedTab, setSelectedTab] = useState("player");
 
+  const [reloadKey, setReloadKey] = useState(0);
+
   const {
     metacrud: { selected, readItem, isLoading: teamIsLoading },
   } = useTeam();
@@ -90,13 +92,14 @@ const Team = () => {
   useEffect(() => {
     if (!id) return;
     (async () => {
-      readItem(id);
-      readTeamCompetitionSeason({
+      await readItem(id);
+      await readTeamCompetitionSeason({
         team: id,
         "competition.category": "league",
         "competition.level": "exists",
         getAll: true,
       });
+      setReloadKey((prev) => prev + 1);
     })();
   }, [id]);
 
@@ -250,27 +253,6 @@ const Team = () => {
 
       {/* コンテンツ表示 */}
       {selectedTab === "player" && id && (
-        // <TableContainer
-        //   items={players}
-        //   headers={[
-        //     { label: "背番号", field: "number", width: "70px" },
-        //     { label: "選手", field: "player" },
-        //     { label: "ポジション", field: "position", width: "70px" },
-        //   ]}
-        //   modelType={ModelType.TRANSFER}
-        //   originalFilterField={inTransfersOptions.filterField}
-        //   originalSortField={inTransfersOptions.sortField}
-        //   formInitialData={{ to_team: id }}
-        //   itemsLoading={playersIsLoading}
-        //   linkField={[
-        //     {
-        //       field: "player",
-        //       to: APP_ROUTES.PLAYER_SUMMARY,
-        //     },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
         <TableWithFetch
           modelType={ModelType.TRANSFER}
           headers={[
@@ -300,6 +282,7 @@ const Team = () => {
             },
           ]}
           formInitialData={{ to_team: id }}
+          reloadTrigger={reloadKey}
         />
       )}
 
@@ -341,33 +324,8 @@ const Team = () => {
             },
           ]}
           formInitialData={{ to_team: id }}
+          reloadTrigger={reloadKey}
         />
-        // <TableContainer
-        //   items={futurePlayers}
-        //   headers={[
-        //     { label: "加入日", field: "from_date" },
-        //     { label: "選手", field: "player" },
-        //     { label: "移籍元", field: "from_team" },
-        //     { label: "ポジション", field: "position" },
-        //   ]}
-        //   modelType={ModelType.TRANSFER}
-        //   originalFilterField={inTransfersOptions.filterField}
-        //   originalSortField={inTransfersOptions.sortField}
-        //   formInitialData={{ to_team: id }}
-        //   itemsLoading={futurePlayersIsLoading}
-        //   linkField={[
-        //     {
-        //       field: "player",
-        //       to: APP_ROUTES.PLAYER_SUMMARY,
-        //     },
-        //     {
-        //       field: "from_team",
-        //       to: APP_ROUTES.TEAM_SUMMARY,
-        //     },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
       )}
 
       {selectedTab === "transfer_in" && id && (
@@ -404,33 +362,8 @@ const Team = () => {
             },
           ]}
           formInitialData={{ to_team: id }}
+          reloadTrigger={reloadKey}
         />
-        // <TableContainer
-        //   items={inTransfers}
-        //   headers={[
-        //     { label: "加入日", field: "from_date" },
-        //     { label: "選手", field: "player" },
-        //     { label: "移籍元", field: "from_team" },
-        //     { label: "形態", field: "form" },
-        //   ]}
-        //   modelType={ModelType.TRANSFER}
-        //   originalFilterField={inTransfersOptions.filterField}
-        //   originalSortField={inTransfersOptions.sortField}
-        //   formInitialData={{ to_team: id }}
-        //   itemsLoading={inTransfersIsLoading}
-        //   linkField={[
-        //     {
-        //       field: "player",
-        //       to: APP_ROUTES.PLAYER_SUMMARY,
-        //     },
-        //     {
-        //       field: "from_team",
-        //       to: APP_ROUTES.TEAM_SUMMARY,
-        //     },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
       )}
 
       {selectedTab === "transfer_out" && id && (
@@ -463,33 +396,8 @@ const Team = () => {
             },
           ]}
           formInitialData={{ from_team: id }}
+          reloadTrigger={reloadKey}
         />
-        // <TableContainer
-        //   items={outTransfers}
-        //   headers={[
-        //     { label: "加入日", field: "from_date" },
-        //     { label: "選手", field: "player" },
-        //     { label: "移籍先", field: "to_team" },
-        //     { label: "形態", field: "form" },
-        //   ]}
-        //   modelType={ModelType.TRANSFER}
-        //   originalFilterField={outTransfersOptions.filterField}
-        //   originalSortField={outTransfersOptions.sortField}
-        //   formInitialData={{ from_team: id }}
-        //   itemsLoading={outTransfersIsLoading}
-        //   linkField={[
-        //     {
-        //       field: "player",
-        //       to: APP_ROUTES.PLAYER_SUMMARY,
-        //     },
-        //     {
-        //       field: "to_team",
-        //       to: APP_ROUTES.TEAM_SUMMARY,
-        //     },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
       )}
 
       {selectedTab === "loan" && id && (
@@ -526,33 +434,8 @@ const Team = () => {
             },
           ]}
           formInitialData={{ from_team: id }}
+          reloadTrigger={reloadKey}
         />
-        // <TableContainer
-        //   items={onLoan}
-        //   headers={[
-        //     { label: "加入日", field: "from_date" },
-        //     { label: "選手", field: "player" },
-        //     { label: "移籍先", field: "to_team" },
-        //     { label: "形態", field: "form" },
-        //   ]}
-        //   modelType={ModelType.TRANSFER}
-        //   originalFilterField={outTransfersOptions.filterField}
-        //   originalSortField={outTransfersOptions.sortField}
-        //   formInitialData={{ from_team: id }}
-        //   itemsLoading={onLoanIsLoading}
-        //   linkField={[
-        //     {
-        //       field: "player",
-        //       to: APP_ROUTES.PLAYER_SUMMARY,
-        //     },
-        //     {
-        //       field: "to_team",
-        //       to: APP_ROUTES.TEAM_SUMMARY,
-        //     },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
       )}
 
       {selectedTab === "injury" && id && (
@@ -581,29 +464,8 @@ const Team = () => {
             },
           ]}
           formInitialData={{ team: id }}
+          reloadTrigger={reloadKey}
         />
-        // <TableContainer
-        //   items={injuries}
-        //   headers={[
-        //     { label: "発表日", field: "doa" },
-        //     { label: "選手", field: "player" },
-        //     { label: "負傷箇所・診断結果", field: "injured_part" },
-        //     { label: "全治", field: "ttp" },
-        //   ]}
-        //   modelType={ModelType.INJURY}
-        //   originalFilterField={injuryOptions.filterableField}
-        //   originalSortField={injuryOptions.sortField}
-        //   formInitialData={injuryFormInitialData}
-        //   itemsLoading={injuriesIsLoading}
-        //   linkField={[
-        //     {
-        //       field: "player",
-        //       to: APP_ROUTES.PLAYER_SUMMARY,
-        //     },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
       )}
 
       {selectedTab === "match" && id && (
@@ -663,64 +525,8 @@ const Team = () => {
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
             { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
           ]}
+          reloadTrigger={reloadKey}
         />
-        // <TableContainer
-        //   items={match}
-        //   headers={[
-        //     {
-        //       label: "開催日",
-        //       field: "date",
-        //       getData: (d: MatchGet) =>
-        //         d.date ? toDateKey(new Date(d.date)) : "",
-        //     },
-        //     { label: "大会", field: "competition" },
-        //     { label: "ステージ", field: "competition_stage" },
-        //     { label: "節", field: "match_week", width: "80px" },
-        //     {
-        //       label: "相手",
-        //       field: "vsTeam",
-        //       getData: (d: MatchGet) => {
-        //         const isHome = d.home_team.id === id;
-        //         const vsTeam = isHome ? d.away_team : d.home_team;
-
-        //         return vsTeam;
-        //       },
-        //     },
-        //     {
-        //       label: "結果",
-        //       field: "result",
-        //       getData: (d: MatchGet) => {
-        //         const isHome = d.home_team.id === id;
-        //         const goal = isHome ? d.home_goal : d.away_goal;
-        //         const againstGoal = isHome ? d.away_goal : d.home_goal;
-        //         const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
-        //         const againstPkGoal = isHome ? d.away_pk_goal : d.home_pk_goal;
-
-        //         const score =
-        //           goal !== undefined && againstGoal !== undefined
-        //             ? `${goal}-${againstGoal}`
-        //             : "";
-
-        //         const pk =
-        //           pkGoal !== undefined && againstPkGoal !== undefined
-        //             ? `(${pkGoal}PK${againstPkGoal})`
-        //             : "";
-
-        //         return score + pk;
-        //       },
-        //     },
-        //   ]}
-        //   modelType={ModelType.MATCH}
-        //   originalFilterField={matchOptions.filterField}
-        //   originalSortField={matchOptions.sortField}
-        //   itemsLoading={matchIsLoading}
-        //   linkField={[
-        //     { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
-        //     { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
-        //   ]}
-        //   pageNum={page.page}
-        //   handlePageChange={handlePageChange}
-        // />
       )}
     </div>
   );
