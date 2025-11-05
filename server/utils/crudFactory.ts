@@ -88,33 +88,30 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
       const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
 
-      const results = await MONGO_MODEL.aggregate(
-        [
-          ...getNest(false, beforePaths),
-          ...(Object.keys(beforeMatch).length > 0
-            ? [{ $match: beforeMatch }]
-            : []),
-          ...getNest(false, afterPaths),
-          ...(Object.keys(afterMatch).length > 0
-            ? [{ $match: afterMatch }]
-            : []),
-          ...(filters && Object.keys(filters).length > 0
-            ? [{ $match: filters }]
-            : []),
-          { $sort: mongoSort },
-          ...(getAllConfig?.project &&
-          Object.keys(getAllConfig.project).length > 0
-            ? [{ $project: getAllConfig.project }]
-            : []),
-          {
-            $facet: {
-              metadata: [{ $count: "totalCount" }],
-              data: getAll ? [] : [{ $skip: skip }, { $limit: limit }],
-            },
+      const results = await MONGO_MODEL.aggregate([
+        ...getNest(false, beforePaths),
+        ...(Object.keys(beforeMatch).length > 0
+          ? [{ $match: beforeMatch }]
+          : []),
+        ...getNest(false, afterPaths),
+        ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
+        ...(filters && Object.keys(filters).length > 0
+          ? [{ $match: filters }]
+          : []),
+        ...(getAllConfig?.project &&
+        Object.keys(getAllConfig.project).length > 0
+          ? [{ $project: getAllConfig.project }]
+          : []),
+        {
+          $facet: {
+            metadata: [{ $count: "totalCount" }],
+            data: [
+              { $sort: mongoSort },
+              ...(getAll ? [] : [{ $skip: skip }, { $limit: limit }]),
+            ],
           },
-        ],
-        { allowDiskUse: true }
-      );
+        },
+      ]).allowDiskUse(true);
 
       const data: any[] = results[0]?.data || [];
       const totalCount = results[0]?.metadata?.[0]?.totalCount || data.length;
