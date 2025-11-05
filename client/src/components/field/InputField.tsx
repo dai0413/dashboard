@@ -1,4 +1,4 @@
-import { toDateKey } from "../../utils";
+import { useEffect, useState } from "react";
 
 type InputFieldProps = {
   type: "text" | "number" | "date" | "datetime-local" | "boolean" | "option";
@@ -13,32 +13,59 @@ const InputField = ({
   onChange,
   placeholder,
 }: InputFieldProps) => {
-  function formatDateValue(value: unknown): string {
-    if (typeof value === "string")
-      return value.slice(0, type === "datetime-local" ? 16 : 10);
-    if (value instanceof Date && !isNaN(value.getTime())) {
-      if (type === "datetime-local") {
-        return toDateKey(value, true).replace(" ", "T");
-      }
-      return toDateKey(value);
-    }
-    return "";
-  }
+  const [internalValue, setInternalValue] = useState<string | number | boolean>(
+    () => {
+      if (type === "boolean") return Boolean(value);
 
-  const formattedValue =
-    type === "date" || type === "datetime-local"
-      ? formatDateValue(value)
-      : value;
+      if (type === "date" || type === "datetime-local") {
+        if (typeof value === "string") return value;
+        if (value instanceof Date && !isNaN(value.getTime())) {
+          return type === "datetime-local"
+            ? value.toISOString().slice(0, 16)
+            : value.toISOString().split("T")[0];
+        }
+        return "";
+      }
+
+      return value as string | number | boolean;
+    }
+  );
+
+  useEffect(() => {
+    // 親から値が変わったときは同期
+    if (type === "date" || type === "datetime-local") {
+      if (value instanceof Date && !isNaN(value.getTime())) {
+        setInternalValue(
+          type === "datetime-local"
+            ? value.toISOString().slice(0, 16)
+            : value.toISOString().split("T")[0]
+        );
+      } else if (typeof value === "string") {
+        setInternalValue(value);
+      }
+    } else {
+      setInternalValue(value as any);
+    }
+  }, [value, type]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVal = e.target.value;
+    setInternalValue(newVal);
+
     if (type === "boolean") {
       onChange(e.target.checked);
     } else if (type === "number") {
-      onChange(Number(e.target.value));
+      onChange(Number(newVal));
     } else if (type === "date" || type === "datetime-local") {
-      onChange(new Date(e.target.value));
+      // 入力が完全に yyyy-MM-dd or yyyy-MM-ddTHH:mm 形式になったときのみDate化
+      const isComplete =
+        type === "date"
+          ? /^\d{4}-\d{2}-\d{2}$/.test(newVal)
+          : /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(newVal);
+
+      onChange(isComplete ? new Date(newVal) : newVal);
     } else {
-      onChange(e.target.value);
+      onChange(newVal);
     }
   };
 
@@ -47,8 +74,8 @@ const InputField = ({
       type={type === "boolean" ? "checkbox" : type}
       className="w-full border border-gray-300 rounded px-3 py-2"
       {...(type === "boolean"
-        ? { checked: Boolean(value) }
-        : { value: formattedValue as string | number })}
+        ? { checked: Boolean(internalValue) }
+        : { value: internalValue as string | number })}
       placeholder={placeholder}
       onChange={handleChange}
     />

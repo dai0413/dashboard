@@ -6,23 +6,29 @@ export function updateFormValue<T extends object, K extends keyof T>(
     | ((updater: (prev: Record<string, any>) => Record<string, any>) => void)
     | null
 ): T {
+  // ✅ 空文字またはnullならundefinedに置き換え
+  const normalizedValue = value === "" || value === null ? undefined : value;
+
   if (
-    typeof value === "object" &&
-    value &&
-    "key" in value &&
-    "label" in value
+    typeof normalizedValue === "object" &&
+    normalizedValue &&
+    "key" in normalizedValue &&
+    "label" in normalizedValue
   ) {
     if (setLabels) {
-      setLabels((prev) => ({ ...prev, [key as string]: (value as any).label }));
+      setLabels((prev) => ({
+        ...prev,
+        [key as string]: (normalizedValue as any).label,
+      }));
     }
-    return { ...prev, [key]: (value as any).key };
+    return { ...prev, [key]: (normalizedValue as any).key };
   }
 
   if (setLabels) {
-    setLabels((prev) => ({ ...prev, [key as string]: value }));
+    setLabels((prev) => ({ ...prev, [key as string]: normalizedValue }));
   }
 
-  return { ...prev, [key]: value };
+  return { ...prev, [key]: normalizedValue };
 }
 
 // export function updateNestedValue<T extends object>(
