@@ -20,6 +20,7 @@ type TableWithFetchProps<T extends ModelType> = Omit<
   TableFetch &
   TableOperationFields & {
     modelType: T;
+    reloadTrigger?: number;
   };
 
 const TableWithFetch = <T extends ModelType>({
@@ -32,6 +33,7 @@ const TableWithFetch = <T extends ModelType>({
   linkField = [],
   detailLinkValue,
   formInitialData,
+  reloadTrigger,
 }: TableWithFetchProps<T>) => {
   const api = useApi();
 
@@ -65,7 +67,7 @@ const TableWithFetch = <T extends ModelType>({
 
   useEffect(() => {
     fetchData(params, path);
-  }, [apiRoute, JSON.stringify(params), path]);
+  }, [apiRoute, JSON.stringify(params), path, reloadTrigger]);
 
   const handlePageChange = (page: number) =>
     fetchData({ ...params, page: page }, path);
