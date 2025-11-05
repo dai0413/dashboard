@@ -1,8 +1,8 @@
-import { FieldDefinition } from "../../types/field";
+import { UIFieldDefinition } from "../../types/field";
 import { MatchFormatGet } from "../../types/models/match-format";
 import { periodField } from "../../utils/displayField/periodField";
 
-export const matchFormat: FieldDefinition[] = [
+export const matchFormat: UIFieldDefinition[] = [
   {
     key: "name",
     label: "試合フォーマット",

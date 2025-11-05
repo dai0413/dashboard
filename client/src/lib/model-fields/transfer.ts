@@ -1,6 +1,6 @@
-import { FieldDefinition } from "../../types/field";
+import { UIFieldDefinition } from "../../types/field";
 
-export const transfer: FieldDefinition[] = [
+export const transfer: UIFieldDefinition[] = [
   {
     key: "doa",
     label: "移籍発表日",

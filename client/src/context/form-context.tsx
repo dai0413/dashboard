@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { useAlert } from "./alert-context";
-import { FieldDefinition, FormStep } from "../types/form";
+import { FormFieldDefinition, FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { ModelContext } from "../types/context";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
@@ -43,7 +43,7 @@ import { useSort } from "./sort-context";
 import { useOptions } from "./options-provider";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
-  fields: FieldDefinition<T>[] | undefined,
+  fields: FormFieldDefinition<T>[] | undefined,
   data: FormTypeMap[T] | FormTypeMap[T][]
 ): { success: boolean; message?: string } => {
   if (!fields) return { success: true };

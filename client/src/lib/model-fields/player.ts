@@ -1,6 +1,6 @@
-import { FieldDefinition } from "../../types/field";
+import { UIFieldDefinition } from "../../types/field";
 
-export const player: FieldDefinition[] = [
+export const player: UIFieldDefinition[] = [
   {
     key: "name",
     label: "名前",

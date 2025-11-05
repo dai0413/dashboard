@@ -3,14 +3,6 @@ import { ResponseStatus } from "../types/api";
 
 type StepType = "form" | "confirm";
 
-// export interface FieldDefinition<T> {
-//   key: keyof T;
-//   label: string;
-//   type: FieldType;
-//   options?: { key: string; label: string }[];
-//   required?: boolean;
-// }
-
 type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
 type FieldDefinitionBase<T extends keyof FormTypeMap> = {
@@ -78,7 +70,7 @@ type MultiSelectField<T extends keyof FormTypeMap> = MultiValueField<T> & {
   valueType: "option";
 };
 
-export type FieldDefinition<T extends keyof FormTypeMap> =
+export type FormFieldDefinition<T extends keyof FormTypeMap> =
   | InputField<T>
   | DateField<T>
   | DateTimeLocalField<T>
@@ -93,7 +85,7 @@ export type FieldDefinition<T extends keyof FormTypeMap> =
 export interface FormStep<K extends keyof FormTypeMap> {
   stepLabel: string;
   type: StepType;
-  fields?: FieldDefinition<K>[];
+  fields?: FormFieldDefinition<K>[];
   many?: boolean;
   validate?: (data: FormTypeMap[K]) => ResponseStatus;
   skip?: (data: FormTypeMap[K]) => boolean;
