@@ -1,13 +1,19 @@
-import { FieldDefinition } from "../../../types/form";
-import { FormTypeMap } from "../../../types/models";
-import { useOptions } from "../../../context/options-provider";
 import { CustomTableContainer } from "../../table";
 import { InputField, SelectField } from "../../field";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fieldDefinition } from "../../../lib/model-fields";
 import { isFilterable, isModelType, isSortable } from "../../../types/field";
+import { useFilter } from "../../../context/filter-context";
+import { useSort } from "../../../context/sort-context";
+
+import { FormTypeMap } from "../../../types/models";
+import { OptionsMap } from "../../../utils/createOption";
+import { OptionArray, OptionTable } from "../../../types/option";
+
+import { FieldDefinition } from "../../../types/form";
+import { useOptions } from "../../../context/options-provider";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FieldDefinition<T>;
@@ -25,16 +31,36 @@ export const RenderField = <T extends keyof FormTypeMap>({
   formLabel,
   handleFormData,
 }: RenderFieldProps<T>) => {
-  const {
-    optionKey,
-    optionTableData,
-    optionSelectData,
-    handlePageChange,
-    updateOption,
-  } = useOptions();
-
   const { multi, key, fieldType, valueType } = field;
   const formDataKey = key as keyof FormTypeMap[T];
+  const { updateOption, handlePageChange } = useOptions();
+
+  const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
+  const [optionTableData, setOptionTableData] = useState<{
+    option: OptionTable;
+    page: number;
+    totalCount: number;
+    isLoading: boolean;
+  } | null>(null);
+
+  const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
+    null
+  );
+
+  const { filterConditions } = useFilter();
+  const { sortConditions } = useSort();
+
+  useEffect(() => {
+    if (!key) return;
+    if (valueType !== "option") return;
+    updateOption(
+      key,
+      fieldType,
+      setOptionKey,
+      setOptionTableData,
+      setOptionSelectData
+    );
+  }, [key]);
 
   const multhInputHandleFormData = (
     index: number,
@@ -67,12 +93,6 @@ export const RenderField = <T extends keyof FormTypeMap>({
     }
   };
 
-  useEffect(() => {
-    if (!key) return;
-    if (valueType !== "option") return;
-    updateOption(key, fieldType);
-  }, [key]);
-
   if (fieldType === "table" && optionTableData)
     return (
       <>
@@ -104,7 +124,17 @@ export const RenderField = <T extends keyof FormTypeMap>({
               ? [formData[formDataKey]]
               : []
           }
-          handlePageChange={(page: number) => handlePageChange(page, fieldType)}
+          handlePageChange={(page: number) =>
+            handlePageChange(
+              page,
+              fieldType,
+              filterConditions,
+              sortConditions,
+              optionKey,
+              setOptionTableData,
+              setOptionSelectData
+            )
+          }
         />
       </>
     );

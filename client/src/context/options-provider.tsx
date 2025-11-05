@@ -1,6 +1,11 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext } from "react";
 
-import { FormTypeMap, ModelDataMap, ModelType } from "../types/models";
+import {
+  FormTypeMap,
+  GettedModelDataMap,
+  ModelDataMap,
+  ModelType,
+} from "../types/models";
 import { convert as convertToOption, OptionsMap } from "../utils/createOption";
 import { convert as createLabel } from "../lib/convert/CreateLabel";
 import { OptionArray, OptionTable } from "../types/option";
@@ -18,24 +23,51 @@ import { convert } from "../lib/convert/DBtoGetted";
 import { FieldDefinition } from "../types/form";
 import { isModelType, isOptionType } from "../types/field";
 import { readItemBase } from "../lib/api";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "../../../shared/types";
 
 type OptionsState = {
-  optionKey: keyof OptionsMap | null;
-  optionTableData: {
-    option: OptionTable;
-    page: number;
-    totalCount: number;
-    isLoading: boolean;
-  } | null;
-  optionSelectData: OptionArray | null;
   handlePageChange: <T extends ModelType>(
     page: number,
-    fieldType: FieldDefinition<T>["fieldType"]
+    fieldType: FieldDefinition<T>["fieldType"],
+    filters: FilterableFieldDefinition[],
+    sorts: SortableFieldDefinition[],
+    optionKey: keyof GettedModelDataMap | keyof OptionsMap | null,
+    setOptionTableData: (
+      value: React.SetStateAction<{
+        option: OptionTable;
+        page: number;
+        totalCount: number;
+        isLoading: boolean;
+      } | null>
+    ) => void,
+    setOptionSelectData: (
+      value: React.SetStateAction<OptionArray | null>
+    ) => void
   ) => Promise<void>;
   updateOption: <T extends ModelType>(
     key: FieldDefinition<T>["key"],
-    fieldType: FieldDefinition<T>["fieldType"]
+    fieldType: FieldDefinition<T>["fieldType"],
+    setOptionKey?: (
+      value: React.SetStateAction<
+        keyof GettedModelDataMap | keyof OptionsMap | null
+      >
+    ) => void,
+    setOptionTableData?: (
+      value: React.SetStateAction<{
+        option: OptionTable;
+        page: number;
+        totalCount: number;
+        isLoading: boolean;
+      } | null>
+    ) => void,
+    setOptionSelectData?: (
+      value: React.SetStateAction<OptionArray | null>
+    ) => void
   ) => void;
+
   getLabelById: <T extends ModelType>(
     optionKey: T,
     id: string
@@ -43,9 +75,6 @@ type OptionsState = {
 };
 
 const OptionContext = createContext<OptionsState>({
-  optionKey: null,
-  optionTableData: null,
-  optionSelectData: null,
   handlePageChange: () => Promise.resolve(),
   updateOption: () => {},
   getLabelById: async () => undefined,
@@ -64,22 +93,20 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     [ModelType.COMPETITION]: API_ROUTES.COMPETITION,
   };
 
-  const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
-  const [optionTableData, setOptionTableData] = useState<{
-    option: OptionTable;
-    page: number;
-    totalCount: number;
-    isLoading: boolean;
-  } | null>(null);
-
-  const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
-    null
-  );
-
   const { filterConditions } = useFilter();
   const { sortConditions } = useSort();
 
-  const handleLoading = (time: "end" | "start"): void => {
+  const handleLoading = (
+    time: "end" | "start",
+    setOptionTableData: (
+      value: React.SetStateAction<{
+        option: OptionTable;
+        page: number;
+        totalCount: number;
+        isLoading: boolean;
+      } | null>
+    ) => void
+  ): void => {
     setOptionTableData((prev) => ({
       ...(prev ?? { option: { data: [], header: [] }, page: 1, totalCount: 0 }),
       isLoading: time === "start",
@@ -120,7 +147,18 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     route: CrudRouteWithParams<unknown>,
     params: QueryParams,
     optionKey: T,
-    fieldType: "input" | "select" | "textarea" | "table"
+    fieldType: "input" | "select" | "textarea" | "table",
+    setOptionTableData?: (
+      value: React.SetStateAction<{
+        option: OptionTable;
+        page: number;
+        totalCount: number;
+        isLoading: boolean;
+      } | null>
+    ) => void,
+    setOptionSelectData?: (
+      value: React.SetStateAction<OptionArray | null>
+    ) => void
   ) {
     readItemsBase({
       apiInstance: api,
@@ -141,46 +179,68 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         if (fieldType === "table") {
-          setOptionTableData(optionTableData);
+          setOptionTableData && setOptionTableData(optionTableData);
         } else if (fieldType === "select") {
-          setOptionSelectData(
-            convertToOption(
-              optionKey,
-              getted as OptionsMap[T],
-              false
-            ) as OptionArray
-          );
+          setOptionSelectData &&
+            setOptionSelectData(
+              convertToOption(
+                optionKey,
+                getted as OptionsMap[T],
+                false
+              ) as OptionArray
+            );
         }
       },
-      handleLoading,
+      handleLoading: setOptionTableData
+        ? (time) => handleLoading(time, setOptionTableData)
+        : undefined,
     });
   }
 
-  const handlePageChange = async <T extends ModelType>(
-    page: number,
-    fieldType: FieldDefinition<T>["fieldType"]
-  ): Promise<void> => {
-    if (!optionKey) {
-      console.error("optionKeyの不備:", optionKey);
-      return Promise.resolve();
-    }
-    const route = optionRouteMap[optionKey].GET_ALL;
-    if (!route) {
-      console.error("optionRouteMapの不備:", optionKey);
-      return Promise.resolve();
-    }
+  const handlePageChange = useCallback(
+    async <T extends ModelType>(
+      page: number,
+      fieldType: FieldDefinition<T>["fieldType"],
+      filters: FilterableFieldDefinition[],
+      sorts: SortableFieldDefinition[],
+      optionKey: keyof GettedModelDataMap | keyof OptionsMap | null,
+      setOptionTableData: (
+        value: React.SetStateAction<{
+          option: OptionTable;
+          page: number;
+          totalCount: number;
+          isLoading: boolean;
+        } | null>
+      ) => void,
+      setOptionSelectData: (
+        value: React.SetStateAction<OptionArray | null>
+      ) => void
+    ): Promise<void> => {
+      if (!optionKey) {
+        console.error("optionKeyの不備:", optionKey);
+        return Promise.resolve();
+      }
+      const route = optionRouteMap[optionKey].GET_ALL;
+      if (!route) {
+        console.error("optionRouteMapの不備:", optionKey);
+        return Promise.resolve();
+      }
 
-    await getOptionData(
-      route,
-      {
-        page: page,
-        filters: JSON.stringify(filterConditions),
-        sorts: JSON.stringify(sortConditions),
-      },
-      optionKey as ModelType,
-      fieldType
-    );
-  };
+      await getOptionData(
+        route,
+        {
+          page: page,
+          filters: JSON.stringify(filters),
+          sorts: JSON.stringify(sorts),
+        },
+        optionKey as ModelType,
+        fieldType,
+        setOptionTableData,
+        setOptionSelectData
+      );
+    },
+    [optionRouteMap, getOptionData]
+  );
 
   function getOptionKey<T extends keyof FormTypeMap>(
     key: keyof FormTypeMap[T] | string,
@@ -208,10 +268,26 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updateOption = <T extends ModelType>(
     key: FieldDefinition<T>["key"],
-    fieldType: FieldDefinition<T>["fieldType"]
+    fieldType: FieldDefinition<T>["fieldType"],
+    setOptionKey?: (
+      value: React.SetStateAction<
+        keyof GettedModelDataMap | keyof OptionsMap | null
+      >
+    ) => void,
+    setOptionTableData?: (
+      value: React.SetStateAction<{
+        option: OptionTable;
+        page: number;
+        totalCount: number;
+        isLoading: boolean;
+      } | null>
+    ) => void,
+    setOptionSelectData?: (
+      value: React.SetStateAction<OptionArray | null>
+    ) => void
   ): void => {
     const nextOptionKey = getOptionKey(key, keyMap);
-    setOptionKey(nextOptionKey);
+    setOptionKey && setOptionKey(nextOptionKey);
 
     if (isModelType(nextOptionKey)) {
       const route = optionRouteMap[nextOptionKey].GET_ALL;
@@ -228,21 +304,25 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
           sorts: JSON.stringify(sortConditions),
         },
         nextOptionKey as ModelType,
-        fieldType
+        fieldType,
+        setOptionTableData,
+        setOptionSelectData
       );
     } else if (isOptionType(nextOptionKey)) {
       if (fieldType === "table") {
         const newData = convertToOption(nextOptionKey, [], true) as OptionTable;
-        setOptionTableData({
-          option: newData,
-          page: 1,
-          totalCount: newData.data.length,
-          isLoading: false,
-        });
+        setOptionTableData &&
+          setOptionTableData({
+            option: newData,
+            page: 1,
+            totalCount: newData.data.length,
+            isLoading: false,
+          });
       } else if (fieldType === "select") {
-        setOptionSelectData(
-          convertToOption(nextOptionKey, [], true) as OptionArray
-        );
+        setOptionSelectData &&
+          setOptionSelectData(
+            convertToOption(nextOptionKey, [], true) as OptionArray
+          );
       }
     } else {
       console.error("未知のnextOptionKey:", nextOptionKey);
@@ -252,9 +332,6 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <OptionContext.Provider
       value={{
-        optionKey,
-        optionTableData,
-        optionSelectData,
         handlePageChange,
         updateOption,
         getLabelById,
