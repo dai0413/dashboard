@@ -50,7 +50,7 @@ const Competition = () => {
     readItemsBase({
       apiInstance: api,
       backendRoute: API_ROUTES.SEASON.GET_ALL,
-      params: { competition: competitionId },
+      params: { competition: competitionId, getAll: true },
       onSuccess: (resBody: ResBody<Season>) => {
         setSeason({
           data: convert(ModelType.SEASON, resBody.data),

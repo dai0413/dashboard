@@ -3,7 +3,6 @@ import {
   TeamCompetitionSeasonGet,
 } from "../../../types/models/team-competition-season";
 import { competition } from "../CreateLabel/competition";
-import { season } from "../CreateLabel/season";
 import { team } from "../CreateLabel/team";
 
 export const teamCompetitionSeason = (
@@ -16,7 +15,7 @@ export const teamCompetitionSeason = (
       id: t.team._id,
     },
     season: {
-      label: season(t.season),
+      label: `${competition(t.competition)}-${t.season.name}`,
       id: t.season._id,
     },
     competition: {

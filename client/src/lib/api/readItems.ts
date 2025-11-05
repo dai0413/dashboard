@@ -17,6 +17,7 @@ export type QueryValue =
 export type QueryParams = Record<string, QueryValue> & {
   filters?: string;
   sorts?: string;
+  getAll?: boolean;
 };
 
 export type ResBody<DATA> = {
