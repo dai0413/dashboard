@@ -256,7 +256,7 @@ const Table = <T extends Record<string, any>>({
         {!isLoading && paginatedData.length > 0 && (
           <tbody>
             {paginatedData.map((row, i) => (
-              <tr key={i}>
+              <tr key={row._id ?? row.key ?? i}>
                 {edit && (
                   <th
                     className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -289,7 +289,7 @@ const Table = <T extends Record<string, any>>({
 
                   return (
                     <td
-                      key={`${header.field}-${title}`}
+                      key={`${header.field}`}
                       className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${selectedKey.includes(row.key) ? "bg-blue-100" : ""}
