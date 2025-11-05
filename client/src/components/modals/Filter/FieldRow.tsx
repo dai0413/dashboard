@@ -3,11 +3,9 @@ import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
 import { OptionArray } from "../../../types/option";
 import { FilterableFieldDefinition } from "../../../../../shared/types";
-type OptionsProps = {
-  fieldOptions: OptionArray;
-  valueOptions: OptionArray;
-  operatorOptions: OptionArray;
-};
+import { operator } from "../../../../../shared/enum/operator";
+import { useOptions } from "../../../context/options-provider";
+import { useEffect, useState } from "react";
 
 type OnchangeProps = {
   handleFieldValue: (value: string | number | Date | boolean) => void;
@@ -23,14 +21,14 @@ type OnApplyProps = {
 
 type FieldRowProps = {
   filterCondition: FilterableFieldDefinition;
-  options: OptionsProps;
+  fieldOptions: OptionArray;
   onChange: OnchangeProps;
   onApply: OnApplyProps;
 };
 
 const FieldRow = ({
   filterCondition,
-  options,
+  fieldOptions,
   onChange,
   onApply,
 }: FieldRowProps) => {
@@ -41,7 +39,23 @@ const FieldRow = ({
     handleFieldSelect,
   } = onChange;
   const { addOnClick, deleteOnClick } = onApply;
-  const { fieldOptions, valueOptions, operatorOptions } = options;
+
+  const { updateOption } = useOptions();
+
+  const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!filterCondition.key) return;
+    updateOption(
+      filterCondition.key,
+      "select",
+      undefined,
+      undefined,
+      setOptionSelectData
+    );
+  }, [filterCondition.key]);
 
   return (
     <div className="mb-4 flex justify-between items-center space-x-2">
@@ -60,7 +74,7 @@ const FieldRow = ({
             value={filterCondition.value ? filterCondition.value : ""}
             onChange={handleFieldValue}
             onChangeObj={handleFieldObjValue}
-            options={valueOptions}
+            options={optionSelectData ?? []}
           />
         )}
 
@@ -68,7 +82,7 @@ const FieldRow = ({
         type={"text"}
         value={filterCondition.operator as string}
         onChange={handleFieldOperator}
-        options={operatorOptions}
+        options={operator()}
       />
 
       <div className="space-x-2 flex">

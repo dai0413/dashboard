@@ -162,6 +162,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setFilterCondition((prev) => ({
       ...prev,
       value: value,
+      valueLabel: value,
     }));
 
   const handleFieldObjValue = (obj: Record<string, any>): void => {

@@ -1,6 +1,5 @@
 import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
-import { useOptions } from "../../context/options-provider";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
 import { useEffect } from "react";
@@ -37,17 +36,9 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
     resetFilterConditions,
   } = useFilter();
 
-  const { optionSelectData, updateOption } = useOptions();
-
   useEffect(() => {
     resetFilterConditions();
   }, []);
-
-  useEffect(() => {
-    if (!filterCondition) return;
-
-    updateOption(filterCondition["key"], "select");
-  }, [filterCondition]);
 
   return (
     <Modal
@@ -96,11 +87,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             <FieldRow
               key={index}
               filterCondition={filterCondition}
-              options={{
-                fieldOptions: filterableField,
-                valueOptions: optionSelectData || [],
-                operatorOptions: operator(),
-              }}
+              fieldOptions={filterableField}
               onChange={{
                 handleFieldValue: handleFieldValue,
                 handleFieldObjValue: handleFieldObjValue,
@@ -147,11 +134,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
 
             <FieldRow
               filterCondition={filterCondition}
-              options={{
-                fieldOptions: filterableField,
-                valueOptions: optionSelectData || [],
-                operatorOptions: operator(),
-              }}
+              fieldOptions={filterableField}
               onChange={{
                 handleFieldValue: handleFieldValue,
                 handleFieldObjValue: handleFieldObjValue,
