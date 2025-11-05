@@ -1,6 +1,6 @@
-import { FieldDefinition } from "../../types/field";
+import { UIFieldDefinition } from "../../types/field";
 
-export const nationalCallUp: FieldDefinition[] = [
+export const nationalCallUp: UIFieldDefinition[] = [
   {
     key: "series",
     label: "代表試合シリーズ",

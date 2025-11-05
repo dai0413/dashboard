@@ -20,7 +20,7 @@ import {
 import { QueryParams, readItemsBase } from "../lib/api/readItems";
 import { useApi } from "./api-context";
 import { convert } from "../lib/convert/DBtoGetted";
-import { FieldDefinition } from "../types/form";
+import { FormFieldDefinition } from "../types/form";
 import { isModelType, isOptionType } from "../types/field";
 import { readItemBase } from "../lib/api";
 import {
@@ -31,7 +31,7 @@ import {
 type OptionsState = {
   handlePageChange: <T extends ModelType>(
     page: number,
-    fieldType: FieldDefinition<T>["fieldType"],
+    fieldType: FormFieldDefinition<T>["fieldType"],
     filters: FilterableFieldDefinition[],
     sorts: SortableFieldDefinition[],
     optionKey: keyof GettedModelDataMap | keyof OptionsMap | null,
@@ -48,8 +48,8 @@ type OptionsState = {
     ) => void
   ) => Promise<void>;
   updateOption: <T extends ModelType>(
-    key: FieldDefinition<T>["key"],
-    fieldType: FieldDefinition<T>["fieldType"],
+    key: FormFieldDefinition<T>["key"],
+    fieldType: FormFieldDefinition<T>["fieldType"],
     setOptionKey?: (
       value: React.SetStateAction<
         keyof GettedModelDataMap | keyof OptionsMap | null
@@ -200,7 +200,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const handlePageChange = useCallback(
     async <T extends ModelType>(
       page: number,
-      fieldType: FieldDefinition<T>["fieldType"],
+      fieldType: FormFieldDefinition<T>["fieldType"],
       filters: FilterableFieldDefinition[],
       sorts: SortableFieldDefinition[],
       optionKey: keyof GettedModelDataMap | keyof OptionsMap | null,
@@ -267,8 +267,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updateOption = <T extends ModelType>(
-    key: FieldDefinition<T>["key"],
-    fieldType: FieldDefinition<T>["fieldType"],
+    key: FormFieldDefinition<T>["key"],
+    fieldType: FormFieldDefinition<T>["fieldType"],
     setOptionKey?: (
       value: React.SetStateAction<
         keyof GettedModelDataMap | keyof OptionsMap | null

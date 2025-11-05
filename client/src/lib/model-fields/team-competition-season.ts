@@ -1,6 +1,6 @@
-import { FieldDefinition } from "../../types/field";
+import { UIFieldDefinition } from "../../types/field";
 
-export const teamCompetitionSeason: FieldDefinition[] = [
+export const teamCompetitionSeason: UIFieldDefinition[] = [
   {
     key: "team",
     label: "チーム",

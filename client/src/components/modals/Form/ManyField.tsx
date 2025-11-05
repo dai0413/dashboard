@@ -1,4 +1,4 @@
-import { FieldDefinition } from "../../../types/form";
+import { FormFieldDefinition } from "../../../types/form";
 import { FormTypeMap } from "../../../types/models";
 import { Table } from "../../table";
 import { RenderField } from "./Field";
@@ -9,7 +9,7 @@ import { useQuery } from "../../../context/query-context";
 import { useForm } from "../../../context/form-context";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
-  fields: FieldDefinition<T>[];
+  fields: FormFieldDefinition<T>[];
   isTableOpen: boolean;
   toggleTableOpen: () => void;
 };
@@ -23,7 +23,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
 
   const { page, setPage } = useQuery();
   type Focus = {
-    field: FieldDefinition<T>;
+    field: FormFieldDefinition<T>;
     rowIndex: number;
   };
   const [focus, setFocus] = useState<Focus | null>(null);

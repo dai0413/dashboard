@@ -1,6 +1,6 @@
-import { FieldDefinition } from "../../types/field";
+import { UIFieldDefinition } from "../../types/field";
 
-export const injury: FieldDefinition[] = [
+export const injury: UIFieldDefinition[] = [
   {
     key: "doa",
     label: "発表日",

@@ -17,23 +17,23 @@ type DetailField = {
 export type DetailFieldDefinition = BaseField & DetailField;
 
 // 統合型（UIでよく使う）
-export type FieldDefinition = BaseField &
+export type UIFieldDefinition = BaseField &
   Partial<FilterField> &
   Partial<SortField> &
   Partial<DetailField>;
 
 export function isFilterable(
-  f: FieldDefinition
+  f: UIFieldDefinition
 ): f is FilterableFieldDefinition {
   return f.filterable === true && f.type !== undefined;
 }
 
-export function isSortable(f: FieldDefinition): f is SortableFieldDefinition {
+export function isSortable(f: UIFieldDefinition): f is SortableFieldDefinition {
   return f.sortable === true;
 }
 
 export function isDisplayOnDetail(
-  f: FieldDefinition
+  f: UIFieldDefinition
 ): f is DetailFieldDefinition {
   return f.displayOnDetail === true;
 }

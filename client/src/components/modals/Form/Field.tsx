@@ -12,11 +12,11 @@ import { FormTypeMap } from "../../../types/models";
 import { OptionsMap } from "../../../utils/createOption";
 import { OptionArray, OptionTable } from "../../../types/option";
 
-import { FieldDefinition } from "../../../types/form";
+import { FormFieldDefinition } from "../../../types/form";
 import { useOptions } from "../../../context/options-provider";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
-  field: FieldDefinition<T>;
+  field: FormFieldDefinition<T>;
   formData: FormTypeMap[T];
   formLabel: Record<string, any>;
   handleFormData: <K extends keyof FormTypeMap[T]>(
