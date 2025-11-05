@@ -94,6 +94,8 @@ const Team = () => {
       readTeamCompetitionSeason({
         team: id,
         "competition.category": "league",
+        "competition.level": "exists",
+        getAll: true,
       });
     })();
   }, [id]);
@@ -111,9 +113,10 @@ const Team = () => {
   }, [teamCompetitionSeason]);
 
   useEffect(() => {
-    if (!selectedteamCompetitionSeason?.season.id) return;
+    const seasonId = selectedteamCompetitionSeason?.season.id;
+    if (!seasonId) return;
     (async () => {
-      readSeason(selectedteamCompetitionSeason?.season.id);
+      readSeason(seasonId);
     })();
   }, [selectedteamCompetitionSeason?._id, formIsOpen]);
 
@@ -125,10 +128,12 @@ const Team = () => {
 
   const seasonOptions: OptionArray = useMemo(
     () =>
-      teamCompetitionSeason.data.map((s) => ({
-        key: s._id,
-        label: s.season.label,
-      })),
+      teamCompetitionSeason.data.map((s) => {
+        return {
+          key: s._id,
+          label: s.season.label,
+        };
+      }),
     [teamCompetitionSeason]
   );
 
