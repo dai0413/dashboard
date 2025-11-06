@@ -3,7 +3,7 @@ import z from "zod";
 import {
   TransferResponseSchema,
   TransferPopulatedSchema,
-} from "../../schemas/transfer.schema.ts";
+} from "../../schemas/transfer.schema";
 
 const transfer = (
   data: z.infer<typeof TransferPopulatedSchema>

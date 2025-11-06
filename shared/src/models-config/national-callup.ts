@@ -2,16 +2,16 @@ import z from "zod";
 import {
   NationalCallUpModel,
   INationalCallUp,
-} from "../mongose/national-callup.ts";
+} from "../mongose/national-callup";
 import {
   NationalCallUpZodSchema,
   NationalCallUpType,
   NationalCallUpFormSchema,
   NationalCallUpResponseSchema,
   NationalCallUpPopulatedSchema,
-} from "../schemas/national-callup.schema.ts";
-import { ControllerConfig } from "../types.ts";
-import { nationalCallup as convertFun } from "../utils/format/national-callup.ts";
+} from "../schemas/national-callup.schema";
+import { ControllerConfig } from "../types";
+import { nationalCallup as convertFun } from "../utils/format/national-callup";
 
 export const nationalCallUp: ControllerConfig<
   INationalCallUp,

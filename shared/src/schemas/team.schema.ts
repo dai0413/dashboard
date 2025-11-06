@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { objectId } from "./utils/objectId.ts";
-import { genre } from "../enum/genre.ts";
-import { age_group } from "../enum/age_group.ts";
-import { division } from "../enum/division.ts";
-import { CountryZodSchema } from "./country.schema.ts";
+import { objectId } from "./utils/objectId";
+import { genre } from "../enum/genre";
+import { age_group } from "../enum/age_group";
+import { division } from "../enum/division";
+import { CountryZodSchema } from "./country.schema";
 
 export const TeamZodSchema = z.object({
   _id: objectId,

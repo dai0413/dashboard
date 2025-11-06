@@ -1,14 +1,14 @@
 import z from "zod";
-import { PlayerModel, IPlayer } from "../mongose/player.ts";
+import { PlayerModel, IPlayer } from "../mongose/player";
 import {
   PlayerZodSchema,
   PlayerType,
   PlayerFormSchema,
   PlayerResponseSchema,
   PlayerPopulatedSchema,
-} from "../schemas/player.schema.ts";
-import { ControllerConfig } from "../types.ts";
-import { createPath } from "../utils/createPath.ts";
+} from "../schemas/player.schema";
+import { ControllerConfig } from "../types";
+// import { createPath } from "../utils/createPath";
 
 export const player: ControllerConfig<
   IPlayer,
@@ -54,6 +54,6 @@ export const player: ControllerConfig<
     updatedData: {
       name: "updated_name",
     },
-    testDataPath: createPath("player"),
+    // testDataPath: createPath("player"),
   },
 };

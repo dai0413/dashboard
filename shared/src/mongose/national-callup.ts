@@ -1,8 +1,8 @@
 import mongoose, { Types, Schema, Document, Model, Error } from "mongoose";
-import { NationalCallUpType } from "../schemas/national-callup.schema.ts";
-import { position_group } from "../enum/position_group.ts";
-import { status } from "../enum/status.ts";
-import { left_reason } from "../enum/left_reason.ts";
+import { NationalCallUpType } from "../schemas/national-callup.schema";
+import { position_group } from "../enum/position_group";
+import { status } from "../enum/status";
+import { left_reason } from "../enum/left_reason";
 
 export interface INationalCallUp
   extends Omit<NationalCallUpType, "_id" | "series" | "player" | "team">,

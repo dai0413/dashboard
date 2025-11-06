@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField.ts";
-import { period_label } from "../enum/period_label.ts";
-import { objectId } from "./utils/objectId.ts";
+import { dateField } from "./utils/dateField";
+import { period_label } from "../enum/period_label";
+import { objectId } from "./utils/objectId";
 
 const PeriodZodSchema = z
   .object({

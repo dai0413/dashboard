@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { MatchFormatType } from "../schemas/match-format.schema.ts";
+import { MatchFormatType } from "../schemas/match-format.schema";
 
 export interface IMatchFormat extends Omit<MatchFormatType, "_id">, Document {
   _id: Types.ObjectId;

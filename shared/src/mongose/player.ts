@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { PlayerType } from "../schemas/player.schema.ts";
+import { PlayerType } from "../schemas/player.schema";
 
 export interface IPlayer extends Omit<PlayerType, "_id">, Document {
   _id: Types.ObjectId;

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField.ts";
-import { objectId } from "./utils/objectId.ts";
+import { dateField } from "./utils/dateField";
+import { objectId } from "./utils/objectId";
 
 export const UserZodSchema = z.object({
   _id: objectId,

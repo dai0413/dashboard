@@ -1,7 +1,7 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { MatchType } from "../schemas/match.schema.ts";
+import { MatchType } from "../schemas/match.schema";
 
-import { result } from "../enum/result.ts";
+import { result } from "../enum/result";
 
 export interface IMatch
   extends Omit<

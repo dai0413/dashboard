@@ -2,15 +2,15 @@ import z from "zod";
 import {
   CompetitionStageModel,
   ICompetitionStage,
-} from "../mongose/competition-stage.ts";
+} from "../mongose/competition-stage";
 import {
   CompetitionStageZodSchema,
   CompetitionStageType,
   CompetitionStageFormSchema,
   CompetitionStageResponseSchema,
   CompetitionStagePopulatedSchema,
-} from "../schemas/competition-stage.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/competition-stage.schema";
+import { ControllerConfig } from "../types";
 
 export const competitionStage: ControllerConfig<
   ICompetitionStage,

@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { stage_type } from "../enum/stage_type.ts";
-import { objectId } from "./utils/objectId.ts";
-import { dateField } from "./utils/dateField.ts";
-import { CompetitionZodSchema } from "./competition.schema.ts";
-import { SeasonZodSchema } from "./season.schema.ts";
+import { stage_type } from "../enum/stage_type";
+import { objectId } from "./utils/objectId";
+import { dateField } from "./utils/dateField";
+import { CompetitionZodSchema } from "./competition.schema";
+import { SeasonZodSchema } from "./season.schema";
 
 export const CompetitionStageZodSchema = z
   .object({

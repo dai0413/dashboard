@@ -1,8 +1,8 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { TeamType } from "../schemas/team.schema.ts";
-import { age_group } from "../enum/age_group.ts";
-import { division } from "../enum/division.ts";
-import { genre } from "../enum/genre.ts";
+import { TeamType } from "../schemas/team.schema";
+import { age_group } from "../enum/age_group";
+import { division } from "../enum/division";
+import { genre } from "../enum/genre";
 
 export interface ITeam extends Omit<TeamType, "_id" | "country">, Document {
   _id: Types.ObjectId;

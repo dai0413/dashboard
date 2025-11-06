@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { objectId } from "./utils/objectId.ts";
-import { dateField } from "./utils/dateField.ts";
-import { result } from "../enum/result.ts";
-import { TeamZodSchema } from "./team.schema.ts";
-import { CompetitionZodSchema } from "./competition.schema.ts";
-import { CompetitionStageZodSchema } from "./competition-stage.schema.ts";
-import { SeasonZodSchema } from "./season.schema.ts";
-import { MatchFormatZodSchema } from "./match-format.schema.ts";
-import { StadiumZodSchema } from "./stadium.schema.ts";
+import { objectId } from "./utils/objectId";
+import { dateField } from "./utils/dateField";
+import { result } from "../enum/result";
+import { TeamZodSchema } from "./team.schema";
+import { CompetitionZodSchema } from "./competition.schema";
+import { CompetitionStageZodSchema } from "./competition-stage.schema";
+import { SeasonZodSchema } from "./season.schema";
+import { MatchFormatZodSchema } from "./match-format.schema";
+import { StadiumZodSchema } from "./stadium.schema";
 
 export const MatchZodSchema = z
   .object({

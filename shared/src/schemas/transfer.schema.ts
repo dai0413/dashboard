@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { objectId } from "./utils/objectId.ts";
-import { dateField } from "./utils/dateField.ts";
-import { position } from "../enum/position.ts";
-import { form } from "../enum/form.ts";
-import { PlayerZodSchema } from "./player.schema.ts";
-import { TeamZodSchema } from "./team.schema.ts";
+import { objectId } from "./utils/objectId";
+import { dateField } from "./utils/dateField";
+import { position } from "../enum/position";
+import { form } from "../enum/form";
+import { PlayerZodSchema } from "./player.schema";
+import { TeamZodSchema } from "./team.schema";
 
 export const TransferZodSchema = z
   .object({

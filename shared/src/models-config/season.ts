@@ -1,13 +1,13 @@
 import z from "zod";
-import { SeasonModel, ISeason } from "../mongose/season.ts";
+import { SeasonModel, ISeason } from "../mongose/season";
 import {
   SeasonZodSchema,
   SeasonType,
   SeasonFormSchema,
   SeasonResponseSchema,
   SeasonPopulatedSchema,
-} from "../schemas/season.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/season.schema";
+import { ControllerConfig } from "../types";
 
 export const season: ControllerConfig<
   ISeason,

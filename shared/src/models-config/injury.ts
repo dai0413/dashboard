@@ -1,15 +1,15 @@
 import z from "zod";
-import { InjuryModel, IInjury } from "../mongose/injury.ts";
+import { InjuryModel, IInjury } from "../mongose/injury";
 import {
   InjuryZodSchema,
   InjuryType,
   InjuryFormSchema,
   InjuryResponseSchema,
   InjuryPopulatedSchema,
-} from "../schemas/injury.schema.ts";
+} from "../schemas/injury.schema";
 
-import { injury as convertFun } from "../utils/format/injury.ts";
-import { ControllerConfig, DependencyRefs } from "../types.ts";
+import { injury as convertFun } from "../utils/format/injury";
+import { ControllerConfig, DependencyRefs } from "../types";
 
 export const injury: ControllerConfig<
   IInjury,

@@ -2,7 +2,7 @@ import z from "zod";
 import {
   MatchResponseSchema,
   MatchPopulatedSchema,
-} from "../../schemas/match.schema.ts";
+} from "../../schemas/match.schema";
 
 const match = (
   match: z.infer<typeof MatchPopulatedSchema>

@@ -2,15 +2,15 @@ import z from "zod";
 import {
   TeamCompetitionSeasonModel,
   ITeamCompetitionSeason,
-} from "../mongose/team-competition-season.ts";
+} from "../mongose/team-competition-season";
 import {
   TeamCompetitionSeasonZodSchema,
   TeamCompetitionSeasonType,
   TeamCompetitionSeasonFormSchema,
   TeamCompetitionSeasonResponseSchema,
   TeamCompetitionSeasonPopulatedSchema,
-} from "../schemas/team-competition-season.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/team-competition-season.schema";
+import { ControllerConfig } from "../types";
 
 export const teamCompetitionSeason: ControllerConfig<
   ITeamCompetitionSeason,

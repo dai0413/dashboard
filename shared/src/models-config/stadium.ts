@@ -1,13 +1,13 @@
 import z from "zod";
-import { StadiumModel, IStadium } from "../mongose/stadium.ts";
+import { StadiumModel, IStadium } from "../mongose/stadium";
 import {
   StadiumZodSchema,
   StadiumType,
   StadiumFormSchema,
   StadiumResponseSchema,
   StadiumPopulatedSchema,
-} from "../schemas/stadium.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/stadium.schema";
+import { ControllerConfig } from "../types";
 
 export const stadium: ControllerConfig<
   IStadium,

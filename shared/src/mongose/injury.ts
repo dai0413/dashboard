@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { InjuryType } from "../schemas/injury.schema.ts";
+import { InjuryType } from "../schemas/injury.schema";
 
 export interface IInjury
   extends Omit<InjuryType, "_id" | "team" | "player" | "now_team">,
