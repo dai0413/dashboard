@@ -48,7 +48,7 @@ npm install
 ## 4.ビルド
 
 ```bash
-  npm run build
+  cd shared && npm run build && cd ../client && npm install && npm run build
 ```
 
 生成されたファイルは dist/ディレクトリに出力される
