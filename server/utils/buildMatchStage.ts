@@ -180,7 +180,7 @@ export const buildMatchStage = (
 // };
 
 // const { getAllConfig } = config;
-// import { transfer as config } from "../../shared/models-config/transfer.ts";
+// import { transfer as config } from "../../shared/dist/models-config/transfer.js";
 
 // const beforeMatch = buildMatchStage(
 //   testpath,

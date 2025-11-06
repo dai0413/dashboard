@@ -1,4 +1,4 @@
-import { referee } from "../../../shared/models-config/referee.ts";
+import { referee } from "../../../shared/dist/models-config/referee.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(referee).getAllItems;

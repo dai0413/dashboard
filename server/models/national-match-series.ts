@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { NationalMatchSeriesType } from "../../shared/schemas/national-match-series.schema.ts";
-import { age_group } from "../../shared/enum/age_group.ts";
+import { NationalMatchSeriesType } from "../../shared/dist/schemas/national-match-series.schema.ts";
+import { age_group } from "../../shared/dist/enum/age_group.ts";
 
 export interface INationalMatchSeries
   extends Omit<NationalMatchSeriesType, "_id" | "country" | "matchs">,

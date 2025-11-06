@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 
-import { nationalMatchSeries } from "../../../shared/models-config/national-match-series.ts";
+import { nationalMatchSeries } from "../../../shared/dist/models-config/national-match-series.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 const { MONGO_MODEL } = nationalMatchSeries;
 
@@ -125,7 +125,7 @@ const downloadItems = async (req: Request, res: Response) => {
     const header = `"_id","name","abbr","country","age_group","joined_at","left_at","urls"\n`;
 
     const csvContent = items
-      .map((item) => {
+      .map((item: any) => {
         return `"${item._id}","${item.name}","${item.abbr}","${item.country}","${item.age_group}","${item.joined_at}","${item.left_at}","${item.urls}"`;
       })
       .join("\n");

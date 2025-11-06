@@ -3,7 +3,7 @@ import { Response } from "express";
 
 import { getNest } from "../../utils/getNest.ts";
 
-import { match } from "../../../shared/models-config/match.ts";
+import { match } from "../../../shared/dist/models-config/match.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 import { match as formatMatch } from "../../utils/format/match.ts";
@@ -203,10 +203,10 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
 
         // populate用にIDを集めて find する
         const populatedAdded = await MONGO_MODEL.find({
-          _id: { $in: added.map((a) => a._id) },
+          _id: { $in: added.map((a: any) => a._id) },
         }).populate(getNest(true, POPULATE_PATHS));
 
-        const processed = populatedAdded.map((item) => {
+        const processed = populatedAdded.map((item: any) => {
           const plain = convertObjectIdToString(item);
           const parsed = POPULATED.parse(plain);
           return formatMatch ? formatMatch(parsed) : parsed;

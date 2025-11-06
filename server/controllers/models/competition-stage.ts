@@ -5,7 +5,7 @@ import { NotFoundError, BadRequestError } from "../../errors/index.ts";
 
 import { getNest } from "../../utils/getNest.ts";
 
-import { competitionStage } from "../../../shared/models-config/competition-stage.ts";
+import { competitionStage } from "../../../shared/dist/models-config/competition-stage.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(competitionStage).getAllItems;

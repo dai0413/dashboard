@@ -1,4 +1,4 @@
-import { injury } from "../../../shared/models-config/injury.ts";
+import { injury } from "../../../shared/dist/models-config/injury.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(injury).getAllItems;

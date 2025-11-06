@@ -1,8 +1,8 @@
 import mongoose, { Types, Schema, Document, Model, Error } from "mongoose";
-import { NationalCallUpType } from "../../shared/schemas/national-callup.schema.ts";
-import { position_group } from "../../shared/enum/position_group.ts";
-import { status } from "../../shared/enum/status.ts";
-import { left_reason } from "../../shared/enum/left_reason.ts";
+import { NationalCallUpType } from "../../shared/dist/schemas/national-callup.schema.ts";
+import { position_group } from "../../shared/dist/enum/position_group.ts";
+import { status } from "../../shared/dist/enum/status.ts";
+import { left_reason } from "../../shared/dist/enum/left_reason.ts";
 
 export interface INationalCallUp
   extends Omit<NationalCallUpType, "_id" | "series" | "player" | "team">,

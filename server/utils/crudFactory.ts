@@ -10,7 +10,7 @@ import { buildMatchStage } from "./buildMatchStage.ts";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
-} from "../../shared/types.ts";
+} from "../../shared/dist/types.ts";
 import { buildMongoFilter } from "./buildFilter.ts";
 import { parseSort } from "./parseSort.ts";
 import { buildJsonSort } from "./buildJsonSort.ts";

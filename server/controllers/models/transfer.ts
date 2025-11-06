@@ -1,4 +1,4 @@
-import { transfer } from "../../../shared/models-config/transfer.ts";
+import { transfer } from "../../../shared/dist/models-config/transfer.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(transfer).getAllItems;

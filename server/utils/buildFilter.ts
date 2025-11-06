@@ -10,7 +10,7 @@ const OPERATOR_MAP: Record<string, string> = {
   "is-not-empty": "$exists",
 };
 
-import { FilterableFieldDefinition } from "../../shared/types.ts";
+import { FilterableFieldDefinition } from "../../shared/dist/types.ts";
 
 export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
   if (filters.length === 0) return {};

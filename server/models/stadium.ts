@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { StadiumType } from "../../shared/schemas/stadium.schema.ts";
+import { StadiumType } from "../../shared/dist/schemas/stadium.schema.ts";
 
 export interface IStadium
   extends Omit<StadiumType, "_id" | "country">,

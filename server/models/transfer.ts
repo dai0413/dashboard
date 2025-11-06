@@ -1,7 +1,7 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { TransferType } from "../../shared/schemas/transfer.schema.ts";
-import { position } from "../../shared/enum/position.ts";
-import { form } from "../../shared/enum/form.ts";
+import { TransferType } from "../../shared/dist/schemas/transfer.schema.ts";
+import { position } from "../../shared/dist/enum/position.ts";
+import { form } from "../../shared/dist/enum/form.ts";
 
 export interface ITransfer
   extends Omit<TransferType, "_id" | "from_team" | "to_team" | "player">,

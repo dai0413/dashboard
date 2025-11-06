@@ -10,11 +10,6 @@ import {
 
 import { Request, Response, NextFunction } from "express";
 
-import { user } from "../../shared/models-config/user.ts";
-import { crudFactory } from "../utils/crudFactory.ts";
-
-const { MONGO_MODEL, POPULATE_PATHS, bulk } = user;
-
 const register = async (req: Request, res: Response) => {
   const { user_name, email, password } = req.body;
   if (!user_name || !email || !password) {

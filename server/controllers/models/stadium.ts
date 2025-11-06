@@ -1,4 +1,4 @@
-import { stadium } from "../../../shared/models-config/stadium.ts";
+import { stadium } from "../../../shared/dist/models-config/stadium.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(stadium).getAllItems;

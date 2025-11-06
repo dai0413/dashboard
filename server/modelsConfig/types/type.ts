@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import z from "zod";
 import { ParsedQs } from "qs";
-import { TeamResponseSchema } from "../../../shared/schemas/team.schema.ts";
-import { PlayerResponseSchema } from "../../../shared/schemas/player.schema.ts";
-import { CountryResponseSchema } from "../../../shared/schemas/country.schema.ts";
-import { NationalMatchSeriesResponseSchema } from "../../../shared/schemas/national-match-series.schema.ts";
-import { CompetitionResponseSchema } from "../../../shared/schemas/competition.schema.ts";
-import { SeasonResponseSchema } from "../../../shared/schemas/season.schema.ts";
-import { CompetitionStageResponseSchema } from "../../../shared/schemas/competition-stage.schema.ts";
+import { TeamResponseSchema } from "../../../shared/dist/schemas/team.schema.ts";
+import { PlayerResponseSchema } from "../../../shared/dist/schemas/player.schema.ts";
+import { CountryResponseSchema } from "../../../shared/dist/schemas/country.schema.ts";
+import { NationalMatchSeriesResponseSchema } from "../../../shared/dist/schemas/national-match-series.schema.ts";
+import { CompetitionResponseSchema } from "../../../shared/dist/schemas/competition.schema.ts";
+import { SeasonResponseSchema } from "../../../shared/dist/schemas/season.schema.ts";
+import { CompetitionStageResponseSchema } from "../../../shared/dist/schemas/competition-stage.schema.ts";
 export type PopulatePath = {
   path: string;
   collection?: string;

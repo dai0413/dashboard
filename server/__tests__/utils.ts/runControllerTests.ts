@@ -7,13 +7,13 @@ import {
 } from "../../modelsConfig/types/type.ts";
 import z from "zod";
 
-import { team as teamConfig } from "../../../shared/models-config/team.ts";
-import { player as playerConfig } from "../../../shared/models-config/player.ts";
-import { country as countryConfig } from "../../../shared/models-config/country.ts";
-import { nationalMatchSeries as nationalMatchSeriesConfig } from "../../../shared/models-config/national-match-series.ts";
-import { competition as competitionConfig } from "../../../shared/models-config/competition.ts";
-import { season as seasonConfig } from "../../../shared/models-config/season.ts";
-import { competitionStage as competitionStageConfig } from "../../../shared/models-config/competition-stage.ts";
+import { team as teamConfig } from "../../../shared/dist/models-config/team.js";
+import { player as playerConfig } from "../../../shared/dist/models-config/player.js";
+import { country as countryConfig } from "../../../shared/dist/models-config/country.js";
+import { nationalMatchSeries as nationalMatchSeriesConfig } from "../../../shared/dist/models-config/national-match-series.js";
+import { competition as competitionConfig } from "../../../shared/dist/models-config/competition.js";
+import { season as seasonConfig } from "../../../shared/dist/models-config/season.js";
+import { competitionStage as competitionStageConfig } from "../../../shared/dist/models-config/competition-stage.js";
 
 import mongoose from "mongoose";
 

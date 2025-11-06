@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { SeasonType } from "../../shared/schemas/season.schema.ts";
+import { SeasonType } from "../../shared/dist/schemas/season.schema.ts";
 
 export interface ISeason
   extends Omit<SeasonType, "_id" | "competition">,

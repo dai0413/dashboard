@@ -1,7 +1,7 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { MatchType } from "../../shared/schemas/match.schema.ts";
+import { MatchType } from "../../shared/dist/schemas/match.schema.ts";
 
-import { result } from "../../shared/enum/result.ts";
+import { result } from "../../shared/dist/enum/result.ts";
 
 export interface IMatch
   extends Omit<

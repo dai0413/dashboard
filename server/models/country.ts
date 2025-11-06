@@ -1,9 +1,9 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { CountryType } from "../../shared/schemas/country.schema.ts";
-import { area } from "../../shared/enum/area.ts";
-import { district } from "../../shared/enum/district.ts";
-import { confederation } from "../../shared/enum/confederation.ts";
-import { sub_confederation } from "../../shared/enum/sub_confederation.ts";
+import { CountryType } from "../../shared/dist/schemas/country.schema.ts";
+import { area } from "../../shared/dist/enum/area.ts";
+import { district } from "../../shared/dist/enum/district.ts";
+import { confederation } from "../../shared/dist/enum/confederation.ts";
+import { sub_confederation } from "../../shared/dist/enum/sub_confederation.ts";
 
 export interface ICountry extends Omit<CountryType, "_id">, Document {
   _id: Types.ObjectId;

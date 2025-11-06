@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { UserType } from "../../shared/schemas/user.schema.ts";
+import { UserType } from "../../shared/dist/schemas/user.schema.ts";
 import bcrypt from "bcryptjs";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
 
