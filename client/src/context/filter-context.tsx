@@ -1,9 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
-import {
-  FilterableFieldDefinition,
-  FilterOperator,
-} from "../../../shared/types";
+import { FilterableFieldDefinition, FilterOperator } from "@myorg/shared";
 
 type FilterState = {
   filterOpen: boolean;

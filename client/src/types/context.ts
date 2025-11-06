@@ -1,7 +1,7 @@
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
-} from "../../../shared/types";
+} from "@myorg/shared";
 import { QueryParams } from "../lib/api/readItems";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 

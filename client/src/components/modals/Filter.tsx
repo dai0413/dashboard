@@ -3,8 +3,7 @@ import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
 import { useEffect } from "react";
-import { FilterableFieldDefinition } from "../../../../shared/types";
-import { operator } from "../../../../shared/enum/operator";
+import { FilterableFieldDefinition, operator } from "@myorg/shared";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];

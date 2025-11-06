@@ -4,7 +4,7 @@ import {
   FilterField,
   SortableFieldDefinition,
   SortField,
-} from "../../../shared/types";
+} from "@myorg/shared";
 import { OptionType } from "../utils/createOption";
 import { ModelType } from "./models";
 

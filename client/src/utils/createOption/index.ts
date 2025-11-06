@@ -31,7 +31,7 @@ import {
   periodLabel,
   result,
 } from "./Enum";
-import { operator } from "../../../../shared/enum/operator";
+import { operator } from "@myorg/shared";
 
 export enum OptionType {
   OPERATOR = "operator",

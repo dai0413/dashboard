@@ -26,7 +26,7 @@ import { readItemBase } from "../lib/api";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
-} from "../../../shared/types";
+} from "@myorg/shared";
 
 type OptionsState = {
   handlePageChange: <T extends ModelType>(
