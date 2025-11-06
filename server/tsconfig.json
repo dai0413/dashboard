@@ -6,14 +6,19 @@
     "allowJs": true,
     "checkJs": false,
     "target": "ES2020",
-    "rootDir": "../",
+    "rootDir": "./",
     "outDir": "./dist",
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@myorg/shared": ["../shared/dist/index.ts"],
+      "@myorg/shared/*": ["../shared/dist/*"]
+    }
   },
-  "include": ["**/*.ts", "../shared/**/*.ts"],
+  "include": ["**/*.ts", "../shared/dist/**/*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }
