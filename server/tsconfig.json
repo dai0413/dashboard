@@ -14,23 +14,6 @@
     "noEmit": true,
     "isolatedModules": true
   },
-  "include": [
-    "**/*.ts",
-    "../shared/models-config/competition-stage.ts",
-    "../shared/models-config/competition.ts",
-    "../shared/models-config/country.ts",
-    "../shared/models-config/injury.ts",
-    "../shared/models-config/match-format.ts",
-    "../shared/models-config/match.ts",
-    "../shared/models-config/national-callup.ts",
-    "../shared/models-config/national-match-series.ts",
-    "../shared/models-config/player.ts",
-    "../shared/models-config/referee.ts",
-    "../shared/models-config/season.ts",
-    "../shared/models-config/stadium.ts",
-    "../shared/models-config/team-competition-season.ts",
-    "../shared/models-config/team.ts",
-    "../shared/models-config/transfer.ts"
-  ],
+  "include": ["**/*.ts", "../shared/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
