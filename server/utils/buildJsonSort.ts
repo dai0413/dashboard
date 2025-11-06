@@ -1,4 +1,4 @@
-import { SortableFieldDefinition } from "../../shared/types.ts";
+import { SortableFieldDefinition } from "../../shared/dist/types.ts";
 
 export const buildJsonSort = (sorts: SortableFieldDefinition[] = []) => {
   if (!Array.isArray(sorts) || sorts.length === 0) return {};

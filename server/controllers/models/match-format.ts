@@ -1,4 +1,4 @@
-import { matchFormat } from "../../../shared/models-config/match-format.ts";
+import { matchFormat } from "../../../shared/dist/models-config/match-format.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(matchFormat).getAllItems;

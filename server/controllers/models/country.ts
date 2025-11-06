@@ -1,4 +1,4 @@
-import { country } from "../../../shared/models-config/country.ts";
+import { country } from "../../../shared/dist/models-config/country.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(country).getAllItems;

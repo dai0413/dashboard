@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import moment from "moment";
 import { BadRequestError } from "../../errors/index.ts";
 
-import { player } from "../../../shared/models-config/player.ts";
+import { player } from "../../../shared/dist/models-config/player.js";
 import { DecodedRequest } from "../../types.ts";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
@@ -113,7 +113,7 @@ const checkItem = async (req: Request, res: Response) => {
 
   // 類似選手あり
   if (similar.length > 0) {
-    const existing = similar.map((p) => ({
+    const existing = similar.map((p: any) => ({
       _id: p._id,
       name: p.name,
       en_name: p.en_name || "",
@@ -178,7 +178,7 @@ const downloadItem = async (req: Request, res: Response) => {
     const header = `"player_id","name","en_name","dob","pob"\n`;
 
     const csvContent = data
-      .map((player, index) => {
+      .map((player: any, index: number) => {
         const dob = player.dob ? moment(player.dob).format("YYYY/MM/DD") : ""; // 空でも対応
         return `"${index + 1}","${player.name}","${player.en_name}","${dob}","${
           player.pob

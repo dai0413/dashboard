@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { CompetitionStageType } from "../../shared/schemas/competition-stage.schema.ts";
-import { stage_type } from "../../shared/enum/stage_type.ts";
+import { CompetitionStageType } from "../../shared/dist/schemas/competition-stage.schema.ts";
+import { stage_type } from "../../shared/dist/enum/stage_type.ts";
 
 export interface ICompetitionStage
   extends Omit<

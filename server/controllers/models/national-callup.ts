@@ -1,4 +1,4 @@
-import { nationalCallUp } from "../../../shared/models-config/national-callup.ts";
+import { nationalCallUp } from "../../../shared/dist/models-config/national-callup.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(nationalCallUp).getAllItems;

@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { RefereeType } from "../../shared/schemas/referee.schema.ts";
+import { RefereeType } from "../../shared/dist/schemas/referee.schema.ts";
 
 export interface IReferee
   extends Omit<RefereeType, "_id" | "citizenship" | "player">,

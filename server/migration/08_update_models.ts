@@ -19,13 +19,13 @@
 // 1. .competition を === null →→→　undefined
 // 2. .en_name を === null →→→　undefined
 
-import { area } from "../../shared/enum/area.ts";
-import { district } from "../../shared/enum/district.ts";
-import { confederation } from "../../shared/enum/confederation.ts";
-import { sub_confederation } from "../../shared/enum/sub_confederation.ts";
-import { left_reason } from "../../shared/enum/left_reason.ts";
-import { position_group } from "../../shared/enum/position_group.ts";
-import { level } from "../../shared/enum/level.ts";
+import { area } from "../../shared/dist/enum/area.ts";
+import { district } from "../../shared/dist/enum/district.ts";
+import { confederation } from "../../shared/dist/enum/confederation.ts";
+import { sub_confederation } from "../../shared/dist/enum/sub_confederation.ts";
+import { left_reason } from "../../shared/dist/enum/left_reason.ts";
+import { position_group } from "../../shared/dist/enum/position_group.ts";
+import { level } from "../../shared/dist/enum/level.ts";
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";

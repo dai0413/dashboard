@@ -1,4 +1,4 @@
-import { competition } from "../../../shared/models-config/competition.ts";
+import { competition } from "../../../shared/dist/models-config/competition.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(competition).getAllItems;

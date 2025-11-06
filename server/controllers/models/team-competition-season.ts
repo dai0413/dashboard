@@ -1,4 +1,4 @@
-import { teamCompetitionSeason } from "../../../shared/models-config/team-competition-season.ts";
+import { teamCompetitionSeason } from "../../../shared/dist/models-config/team-competition-season.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(teamCompetitionSeason).getAllItems;

@@ -1,11 +1,4 @@
-import { StatusCodes } from "http-status-codes";
-import mongoose from "mongoose";
-import { Request, Response } from "express";
-import { NotFoundError, BadRequestError } from "../../errors/index.ts";
-
-import { getNest } from "../../utils/getNest.ts";
-
-import { season } from "../../../shared/models-config/season.ts";
+import { season } from "../../../shared/dist/models-config/season.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(season).getAllItems;

@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 
-import { team } from "../../../shared/models-config/team.ts";
+import { team } from "../../../shared/dist/models-config/team.js";
 import { crudFactory } from "../../utils/crudFactory.ts";
 
 const getAllItems = crudFactory(team).getAllItems;
@@ -107,7 +107,7 @@ const downloadItem = async (req: Request, res: Response) => {
     const header = `"id","team","abbr","enTeam","country","genre","jdataid","labalph","transferurl","sofaurl"\n`;
 
     const csvContent = data
-      .map((team) => {
+      .map((team: any) => {
         return `"${team._id}","${team.team}","${team.abbr}","${team.enTeam}","${team.country}","${team.genre}","${team.jdataid}","${team.labalph}","${team.transferurl},"${team.sofaurl}""`;
       })
       .join("\n");
