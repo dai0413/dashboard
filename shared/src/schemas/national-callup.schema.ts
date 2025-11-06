@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { objectId } from "./utils/objectId.ts";
-import { dateField } from "./utils/dateField.ts";
-import { position_group } from "../enum/position_group.ts";
-import { status } from "../enum/status.ts";
-import { left_reason } from "../enum/left_reason.ts";
-import { PlayerZodSchema } from "./player.schema.ts";
-import { NationalMatchSeriesZodSchema } from "./national-match-series.schema.ts";
-import { TeamZodSchema } from "./team.schema.ts";
+import { objectId } from "./utils/objectId";
+import { dateField } from "./utils/dateField";
+import { position_group } from "../enum/position_group";
+import { status } from "../enum/status";
+import { left_reason } from "../enum/left_reason";
+import { PlayerZodSchema } from "./player.schema";
+import { NationalMatchSeriesZodSchema } from "./national-match-series.schema";
+import { TeamZodSchema } from "./team.schema";
 
 export const NationalCallUpZodSchema = z
   .object({

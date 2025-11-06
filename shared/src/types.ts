@@ -1,13 +1,13 @@
 import z from "zod";
 import { ParsedQs } from "qs";
-import { operator } from "./enum/operator.ts";
-import { TeamResponseSchema } from "./schemas/team.schema.ts";
-import { PlayerResponseSchema } from "./schemas/player.schema.ts";
-import { CountryResponseSchema } from "./schemas/country.schema.ts";
-import { NationalMatchSeriesResponseSchema } from "./schemas/national-match-series.schema.ts";
-import { CompetitionResponseSchema } from "./schemas/competition.schema.ts";
-import { SeasonResponseSchema } from "./schemas/season.schema.ts";
-import { CompetitionStageResponseSchema } from "./schemas/competition-stage.schema.ts";
+import { operator } from "./enum/operator";
+import { TeamResponseSchema } from "./schemas/team.schema";
+import { PlayerResponseSchema } from "./schemas/player.schema";
+import { CountryResponseSchema } from "./schemas/country.schema";
+import { NationalMatchSeriesResponseSchema } from "./schemas/national-match-series.schema";
+import { CompetitionResponseSchema } from "./schemas/competition.schema";
+import { SeasonResponseSchema } from "./schemas/season.schema";
+import { CompetitionStageResponseSchema } from "./schemas/competition-stage.schema";
 import mongoose from "mongoose";
 
 const operatorOptions = operator();

@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField.ts";
-import { objectId } from "./utils/objectId.ts";
-import { CountryZodSchema } from "./country.schema.ts";
+import { dateField } from "./utils/dateField";
+import { objectId } from "./utils/objectId";
+import { CountryZodSchema } from "./country.schema";
 
 export const StadiumZodSchema = z.object({
   _id: objectId,

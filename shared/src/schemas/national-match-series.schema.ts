@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { objectId } from "./utils/objectId.ts";
-import { dateField } from "./utils/dateField.ts";
-import { age_group } from "../enum/age_group.ts";
-import { CountryZodSchema } from "./country.schema.ts";
-import { MatchZodSchema } from "./match.schema.ts";
+import { objectId } from "./utils/objectId";
+import { dateField } from "./utils/dateField";
+import { age_group } from "../enum/age_group";
+import { CountryZodSchema } from "./country.schema";
+import { MatchZodSchema } from "./match.schema";
 
 export const NationalMatchSeriesZodSchema = z.object({
   _id: objectId,

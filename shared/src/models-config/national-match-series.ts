@@ -2,15 +2,15 @@ import z from "zod";
 import {
   NationalMatchSeriesModel,
   INationalMatchSeries,
-} from "../mongose/national-match-series.ts";
+} from "../mongose/national-match-series";
 import {
   NationalMatchSeriesZodSchema,
   NationalMatchSeriesType,
   NationalMatchSeriesFormSchema,
   NationalMatchSeriesResponseSchema,
   NationalMatchSeriesPopulatedSchema,
-} from "../schemas/national-match-series.schema.ts";
-import { ControllerConfig, DependencyRefs } from "../types.ts";
+} from "../schemas/national-match-series.schema";
+import { ControllerConfig, DependencyRefs } from "../types";
 
 export const nationalMatchSeries: ControllerConfig<
   INationalMatchSeries,

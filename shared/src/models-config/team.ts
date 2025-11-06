@@ -1,13 +1,13 @@
 import z from "zod";
-import { TeamModel, ITeam } from "../mongose/team.ts";
+import { TeamModel, ITeam } from "../mongose/team";
 import {
   TeamZodSchema,
   TeamType,
   TeamFormSchema,
   TeamResponseSchema,
   TeamPopulatedSchema,
-} from "../schemas/team.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/team.schema";
+import { ControllerConfig } from "../types";
 
 export const team: ControllerConfig<
   ITeam,

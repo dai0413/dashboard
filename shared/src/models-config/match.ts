@@ -1,15 +1,15 @@
 import z from "zod";
-import { MatchModel, IMatch } from "../mongose/match.ts";
+import { MatchModel, IMatch } from "../mongose/match";
 import {
   MatchZodSchema,
   MatchType,
   MatchFormSchema,
   MatchResponseSchema,
   MatchPopulatedSchema,
-} from "../schemas/match.schema.ts";
-import { ControllerConfig } from "../types.ts";
-import { match as convertFun } from "../utils/format/match.ts";
-import { match as customMatch } from "../utils/customMatchStage/match.ts";
+} from "../schemas/match.schema";
+import { ControllerConfig } from "../types";
+import { match as convertFun } from "../utils/format/match";
+import { match as customMatch } from "../utils/customMatchStage/match";
 
 export const match: ControllerConfig<
   IMatch,

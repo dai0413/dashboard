@@ -1,13 +1,13 @@
 import z from "zod";
-import { CountryModel, ICountry } from "../mongose/country.ts";
+import { CountryModel, ICountry } from "../mongose/country";
 import {
   CountryZodSchema,
   CountryType,
   CountryFormSchema,
   CountryResponseSchema,
   CountryPopulatedSchema,
-} from "../schemas/country.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/country.schema";
+import { ControllerConfig } from "../types";
 
 export const country: ControllerConfig<
   ICountry,

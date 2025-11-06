@@ -1,13 +1,13 @@
 import z from "zod";
-import { RefereeModel, IReferee } from "../mongose/referee.ts";
+import { RefereeModel, IReferee } from "../mongose/referee";
 import {
   RefereeZodSchema,
   RefereeType,
   RefereeFormSchema,
   RefereeResponseSchema,
   RefereePopulatedSchema,
-} from "../schemas/referee.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/referee.schema";
+import { ControllerConfig } from "../types";
 
 export const referee: ControllerConfig<
   IReferee,

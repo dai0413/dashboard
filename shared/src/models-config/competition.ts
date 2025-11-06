@@ -1,13 +1,13 @@
 import z from "zod";
-import { CompetitionModel, ICompetition } from "../mongose/competition.ts";
+import { CompetitionModel, ICompetition } from "../mongose/competition";
 import {
   CompetitionZodSchema,
   CompetitionType,
   CompetitionFormSchema,
   CompetitionResponseSchema,
   CompetitionPopulatedSchema,
-} from "../schemas/competition.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/competition.schema";
+import { ControllerConfig } from "../types";
 
 export const competition: ControllerConfig<
   ICompetition,

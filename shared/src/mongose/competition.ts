@@ -1,10 +1,10 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { CompetitionType } from "../schemas/competition.schema.ts";
+import { CompetitionType } from "../schemas/competition.schema";
 
-import { age_group } from "../enum/age_group.ts";
-import { competition_type } from "../enum/competition_type.ts";
-import { category } from "../enum/category.ts";
-import { level } from "../enum/level.ts";
+import { age_group } from "../enum/age_group";
+import { competition_type } from "../enum/competition_type";
+import { category } from "../enum/category";
+import { level } from "../enum/level";
 
 export interface ICompetition
   extends Omit<CompetitionType, "_id" | "country">,

@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { competition_type } from "../enum/competition_type.ts";
-import { objectId } from "./utils/objectId.ts";
-import { category } from "../enum/category.ts";
-import { level } from "../enum/level.ts";
-import { age_group } from "../enum/age_group.ts";
-import { dateField } from "./utils/dateField.ts";
-import { CountryZodSchema } from "./country.schema.ts";
+import { competition_type } from "../enum/competition_type";
+import { objectId } from "./utils/objectId";
+import { category } from "../enum/category";
+import { level } from "../enum/level";
+import { age_group } from "../enum/age_group";
+import { dateField } from "./utils/dateField";
+import { CountryZodSchema } from "./country.schema";
 
 export const CompetitionZodSchema = z.object({
   _id: objectId,

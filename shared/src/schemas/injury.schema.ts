@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField.ts";
-import { objectId } from "./utils/objectId.ts";
-import { TeamZodSchema } from "./team.schema.ts";
-import { PlayerZodSchema } from "./player.schema.ts";
+import { dateField } from "./utils/dateField";
+import { objectId } from "./utils/objectId";
+import { TeamZodSchema } from "./team.schema";
+import { PlayerZodSchema } from "./player.schema";
 
 const ttpPattern = /^(\d+)([dwmy])$|^(\d+)-(\d+)([dwmy])$/i;
 

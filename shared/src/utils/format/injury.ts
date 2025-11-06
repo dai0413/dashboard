@@ -2,7 +2,7 @@ import z from "zod";
 import {
   InjuryResponseSchema,
   InjuryPopulatedSchema,
-} from "../../schemas/injury.schema.ts";
+} from "../../schemas/injury.schema";
 
 const injury = (
   injuryDoc: z.infer<typeof InjuryPopulatedSchema>

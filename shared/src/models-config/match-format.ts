@@ -1,13 +1,13 @@
 import z from "zod";
-import { MatchFormatModel, IMatchFormat } from "../mongose/match-format.ts";
+import { MatchFormatModel, IMatchFormat } from "../mongose/match-format";
 import {
   MatchFormatZodSchema,
   MatchFormatType,
   MatchFormatFormSchema,
   MatchFormatResponseSchema,
   MatchFormatPopulatedSchema,
-} from "../schemas/match-format.schema.ts";
-import { ControllerConfig } from "../types.ts";
+} from "../schemas/match-format.schema";
+import { ControllerConfig } from "../types";
 
 export const matchFormat: ControllerConfig<
   IMatchFormat,

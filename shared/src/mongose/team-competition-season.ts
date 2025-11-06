@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { TeamCompetitionSeasonType } from "../schemas/team-competition-season.schema.ts";
+import { TeamCompetitionSeasonType } from "../schemas/team-competition-season.schema";
 
 export interface ITeamCompetitionSeason
   extends Omit<

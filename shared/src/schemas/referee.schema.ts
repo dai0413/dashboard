@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField.ts";
-import { objectId } from "./utils/objectId.ts";
-import { PlayerZodSchema } from "./player.schema.ts";
-import { CountryZodSchema } from "./country.schema.ts";
+import { dateField } from "./utils/dateField";
+import { objectId } from "./utils/objectId";
+import { PlayerZodSchema } from "./player.schema";
+import { CountryZodSchema } from "./country.schema";
 
 export const RefereeZodSchema = z.object({
   _id: objectId,

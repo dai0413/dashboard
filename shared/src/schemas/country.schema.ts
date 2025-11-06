@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField.ts";
-import { objectId } from "./utils/objectId.ts";
-import { area } from "../enum/area.ts";
-import { district } from "../enum/district.ts";
-import { confederation } from "../enum/confederation.ts";
-import { sub_confederation } from "../enum/sub_confederation.ts";
+import { dateField } from "./utils/dateField";
+import { objectId } from "./utils/objectId";
+import { area } from "../enum/area";
+import { district } from "../enum/district";
+import { confederation } from "../enum/confederation";
+import { sub_confederation } from "../enum/sub_confederation";
 
 export const CountryZodSchema = z.object({
   _id: objectId,

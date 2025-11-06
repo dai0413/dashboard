@@ -1,15 +1,15 @@
 import z from "zod";
-import { TransferModel, ITransfer } from "../mongose/transfer.ts";
+import { TransferModel, ITransfer } from "../mongose/transfer";
 import {
   TransferZodSchema,
   TransferType,
   TransferFormSchema,
   TransferResponseSchema,
   TransferPopulatedSchema,
-} from "../schemas/transfer.schema.ts";
-import { ControllerConfig } from "../types.ts";
-import { transfer as convertFun } from "../utils/format/transfer.ts";
-import { transfer as customMatch } from "../utils/customMatchStage/transfer.ts";
+} from "../schemas/transfer.schema";
+import { ControllerConfig } from "../types";
+import { transfer as convertFun } from "../utils/format/transfer";
+import { transfer as customMatch } from "../utils/customMatchStage/transfer";
 
 export const transfer: ControllerConfig<
   ITransfer,
