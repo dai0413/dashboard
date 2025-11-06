@@ -2,6 +2,7 @@
   "version": "1.2.0",
   "type": "module",
   "dependencies": {
+    "@myorg/shared": "file:../shared/dist",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -20,8 +21,7 @@
     "mongoose": "^8.13.2",
     "mongoose-schema-jsonschema": "^3.0.2",
     "multer": "^2.0.1",
-    "zod": "^4.1.12",
-    "zod-to-json-schema": "^3.24.6"
+    "zod": "^4.1.12"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

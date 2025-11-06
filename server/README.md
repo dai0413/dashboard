@@ -70,5 +70,5 @@ SAMPLE_OUTPUT_MODEL_PATH_INJURY=\test_data\output\failed_injury.csv
 ## 4.ビルド
 
 ```bash
-  npm run start
+  cd shared && npm run build && cd ../server && npm install
 ```
