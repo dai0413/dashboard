@@ -1,18 +1,18 @@
-// import express from "express";
-// const router = express.Router();
+import express from "express";
+const router = express.Router();
 
-// import {
-//   getCurrentPlayersByTeam,
-//   getCurrentLoanPlayersByTeam,
-//   getNoNumberByCountry,
-//   getNoCallUp,
-// } from "../controllers/aggregate.ts";
+import {
+  getCurrentPlayersByTeam,
+  getCurrentLoanPlayersByTeam,
+  getNoNumberByCountry,
+  getNoCallUp,
+} from "../controllers/aggregate.js";
 
-// router.route("/transfer/current-players/:teamId").get(getCurrentPlayersByTeam);
-// router
-//   .route("/transfer/current-loans/:teamId")
-//   .get(getCurrentLoanPlayersByTeam);
-// router.route("/transfer/no-number").get(getNoNumberByCountry);
-// router.route("/national-callup/series-count/:countryId").get(getNoCallUp);
+router.route("/transfer/current-players/:teamId").get(getCurrentPlayersByTeam);
+router
+  .route("/transfer/current-loans/:teamId")
+  .get(getCurrentLoanPlayersByTeam);
+router.route("/transfer/no-number").get(getNoNumberByCountry);
+router.route("/national-callup/series-count/:countryId").get(getNoCallUp);
 
-// export default router;
+export default router;
