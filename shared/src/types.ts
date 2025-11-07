@@ -1,13 +1,13 @@
 import z from "zod";
 import { ParsedQs } from "qs";
 import { operator } from "./enum/operator.js";
-// import { TeamResponseSchema } from "./schemas/team.schema";
-// import { PlayerResponseSchema } from "./schemas/player.schema";
-// import { CountryResponseSchema } from "./schemas/country.schema";
-// import { NationalMatchSeriesResponseSchema } from "./schemas/national-match-series.schema";
-// import { CompetitionResponseSchema } from "./schemas/competition.schema";
-// import { SeasonResponseSchema } from "./schemas/season.schema";
-// import { CompetitionStageResponseSchema } from "./schemas/competition-stage.schema";
+import { TeamResponseSchema } from "./schemas/team.schema.js";
+import { PlayerResponseSchema } from "./schemas/player.schema.js";
+import { CountryResponseSchema } from "./schemas/country.schema.js";
+import { NationalMatchSeriesResponseSchema } from "./schemas/national-match-series.schema.js";
+import { CompetitionResponseSchema } from "./schemas/competition.schema.js";
+import { SeasonResponseSchema } from "./schemas/season.schema.js";
+import { CompetitionStageResponseSchema } from "./schemas/competition-stage.schema.js";
 
 const operatorOptions = operator();
 export type FilterOperator = (typeof operatorOptions)[number]["key"];
@@ -60,13 +60,13 @@ type GetAllQuery = {
 };
 
 export interface DependencyRefs {
-  // team: z.infer<typeof TeamResponseSchema>;
-  // player: z.infer<typeof PlayerResponseSchema>;
-  // country: z.infer<typeof CountryResponseSchema>;
-  // nationalMatchSeries: z.infer<typeof NationalMatchSeriesResponseSchema>;
-  // competition: z.infer<typeof CompetitionResponseSchema>;
-  // season: z.infer<typeof SeasonResponseSchema>;
-  // competitionStage: z.infer<typeof CompetitionStageResponseSchema>;
+  team: z.infer<typeof TeamResponseSchema>;
+  player: z.infer<typeof PlayerResponseSchema>;
+  country: z.infer<typeof CountryResponseSchema>;
+  nationalMatchSeries: z.infer<typeof NationalMatchSeriesResponseSchema>;
+  competition: z.infer<typeof CompetitionResponseSchema>;
+  season: z.infer<typeof SeasonResponseSchema>;
+  competitionStage: z.infer<typeof CompetitionStageResponseSchema>;
 }
 
 export interface ControllerConfig<
