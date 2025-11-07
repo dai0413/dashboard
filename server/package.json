@@ -2,7 +2,7 @@
   "version": "1.2.0",
   "type": "module",
   "dependencies": {
-    "@myorg/shared": "file:../shared",
+    "@myorg/shared": "file:../shared/myorg-shared-1.0.0.tgz",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -26,6 +26,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "dev": "node --loader ts-node/esm app.ts",
+    "build": "tsc -p tsconfig.json",
     "start": "node dist/app.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },
