@@ -23,6 +23,7 @@ const Main = () => {
                 {"移籍情報"}
               </h2>
               <Table
+                pageNation="client"
                 data={transfers}
                 headers={[
                   { label: "発表日", field: "doa" },
@@ -48,6 +49,7 @@ const Main = () => {
               </h2>
 
               <Table
+                pageNation="client"
                 data={injuries}
                 headers={[
                   { label: "発表日", field: "doa" },

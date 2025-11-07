@@ -70,7 +70,7 @@ export interface DependencyRefs {
 }
 
 export interface ControllerConfig<
-  TDoc,
+  _TDoc,
   TData,
   TForm = TData,
   TResponse = TData,

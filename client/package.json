@@ -11,8 +11,8 @@
     "start": "serve -s dist"
   },
   "dependencies": {
-    "@myorg/shared": "file:../shared",
     "@heroicons/react": "^2.2.0",
+    "@myorg/shared": "file:../shared/myorg-shared-1.0.1.tgz",
     "@tailwindcss/postcss": "^4.1.5",
     "@tailwindcss/vite": "^4.1.5",
     "axios": "^1.8.4",
