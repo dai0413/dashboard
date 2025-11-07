@@ -13,11 +13,8 @@
     "skipLibCheck": true,
     "noEmit": true,
     "isolatedModules": true,
-    "baseUrl": ".",
-    "paths": {
-      "@myorg/shared": ["../shared/dist/index.d.ts"]
-    }
+    "baseUrl": "."
   },
-  "include": ["**/*.ts", "../shared/dist/**/*.d.ts"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
