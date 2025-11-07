@@ -1,33 +1,49 @@
-// import { runControllerTests } from "./utils.ts/runControllerTests.ts";
-// import { competitionStage } from "../../shared/dist/models-config/competition-stage.js";
-// import { competition } from "../../shared/dist/models-config/competition.js";
-// import { country } from "../../shared/dist/models-config/country.js";
-// import { injury } from "../../shared/dist/models-config/injury.js";
-// import { matchFormat } from "../../shared/dist/models-config/match-format.js";
-// import { match } from "../../shared/dist/models-config/match.js";
-// import { nationalCallUp } from "../../shared/dist/models-config/national-callup.js";
-// import { nationalMatchSeries } from "../../shared/dist/models-config/national-match-series.js";
-// import { player } from "../../shared/dist/models-config/player.js";
-// import { PlayerModel } from "models/player.ts";
-// import { referee } from "../../shared/dist/models-config/referee.js";
-// import { season } from "../../shared/dist/models-config/season.js";
-// import { stadium } from "../../shared/dist/models-config/stadium.js";
-// import { teamCompetitionSeason } from "../../shared/dist/models-config/team-competition-season.js";
-// import { team } from "../../shared/dist/models-config/team.js";
-// import { transfer } from "../../shared/dist/models-config/transfer.js";
+import { runControllerTests } from "./utils.ts/runControllerTests.js";
+import {
+  player,
+  country,
+  referee,
+  team,
+  stadium,
+  injury,
+  nationalMatchSeries,
+  nationalCallUp,
+  competition,
+  season,
+  competitionStage,
+  matchFormat,
+  teamCompetitionSeason,
+  match,
+  transfer,
+} from "@myorg/shared";
+import { PlayerModel } from "../models/player.js";
+import { TransferModel } from "../models/transfer.js";
+import { CountryModel } from "../models/country.js";
+import { RefereeModel } from "../models/referee.js";
+import { TeamModel } from "../models/team.js";
+import { StadiumModel } from "../models/stadium.js";
+import { InjuryModel } from "../models/injury.js";
+import { NationalMatchSeriesModel } from "../models/national-match-series.js";
+import { NationalCallUpModel } from "../models/national-callup.js";
+import { CompetitionModel } from "../models/competition.js";
+import { SeasonModel } from "../models/season.js";
+import { CompetitionStageModel } from "../models/competition-stage.js";
+import { MatchFormatModel } from "../models/match-format.js";
+import { TeamCompetitionSeasonModel } from "../models/team-competition-season.js";
+import { MatchModel } from "../models/match.js";
 
-// runControllerTests(player(PlayerModel));
-// runControllerTests(country);
-// runControllerTests(referee);
-// runControllerTests(team);
-// runControllerTests(stadium);
-// runControllerTests(injury);
-// runControllerTests(nationalMatchSeries);
-// runControllerTests(nationalCallUp);
-// runControllerTests(competition);
-// runControllerTests(season);
-// runControllerTests(competitionStage);
-// runControllerTests(matchFormat);
-// runControllerTests(teamCompetitionSeason);
-// runControllerTests(match);
-// runControllerTests(transfer(TransferModel));
+runControllerTests(player(PlayerModel));
+runControllerTests(country(CountryModel));
+runControllerTests(referee(RefereeModel));
+runControllerTests(team(TeamModel));
+runControllerTests(stadium(StadiumModel));
+runControllerTests(injury(InjuryModel));
+runControllerTests(nationalMatchSeries(NationalMatchSeriesModel));
+runControllerTests(nationalCallUp(NationalCallUpModel));
+runControllerTests(competition(CompetitionModel));
+runControllerTests(season(SeasonModel));
+runControllerTests(competitionStage(CompetitionStageModel));
+runControllerTests(matchFormat(MatchFormatModel));
+runControllerTests(teamCompetitionSeason(TeamCompetitionSeasonModel));
+runControllerTests(match(MatchModel));
+runControllerTests(transfer(TransferModel));
