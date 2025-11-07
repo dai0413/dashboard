@@ -172,20 +172,3 @@ export const buildMatchStage = (
 // 単一値や複数演算子付きの配列は AND 条件
 
 // $and / $or のネストはサーバーに任せる
-
-// const testpath = {
-//   from_date: "2026-01-31",
-//   to_date: ["2026-01-31", "2025-02-01"],
-//   to_team: "685fe9e1bdafffc53f471930",
-// };
-
-// const { getAllConfig } = config;
-// import { transfer as config } from "../../shared/dist/models-config/transfer.js";
-
-// const beforeMatch = buildMatchStage(
-//   testpath,
-//   getAllConfig?.query?.filter((q) => !q.populateAfter),
-//   getAllConfig?.buildCustomMatch
-// );
-
-// console.log("beforeMatch", JSON.stringify(beforeMatch, null, 2));

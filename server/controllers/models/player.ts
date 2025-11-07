@@ -4,17 +4,18 @@ import { Request, Response } from "express";
 import moment from "moment";
 import { BadRequestError } from "../../errors/index.ts";
 
-import { player } from "../../../shared/dist/models-config/player.js";
+import { player } from "@myorg/shared";
 import { DecodedRequest } from "../../types.ts";
 import { crudFactory } from "../../utils/crudFactory.ts";
+import { PlayerModel } from "../../models/player.ts";
 
-const { MONGO_MODEL, TYPE } = player;
+const { TYPE } = player(PlayerModel);
 
-const getAllItems = crudFactory(player).getAllItems;
-const createItem = crudFactory(player).createItem;
-const getItem = crudFactory(player).getItem;
-const updateItem = crudFactory(player).updateItem;
-const deleteItem = crudFactory(player).deleteItem;
+const getAllItems = crudFactory(player(PlayerModel)).getAllItems;
+const createItem = crudFactory(player(PlayerModel)).createItem;
+const getItem = crudFactory(player(PlayerModel)).getItem;
+const updateItem = crudFactory(player(PlayerModel)).updateItem;
+const deleteItem = crudFactory(player(PlayerModel)).deleteItem;
 
 // const getAllItems = async (req: Request, res: Response) => {
 //   const matchStage = {};
@@ -107,7 +108,7 @@ const checkItem = async (req: Request, res: Response) => {
   }
   const { name, en_name, dob } = req.body;
   // 類似選手検索
-  const similar = await MONGO_MODEL.find({
+  const similar = await PlayerModel.find({
     $or: [{ name: name }, { en_name: en_name }, { dob: dob }],
   });
 
@@ -129,7 +130,7 @@ const checkItem = async (req: Request, res: Response) => {
 };
 
 const uploadItem = async (req: DecodedRequest, res: Response) => {
-  const existingCount = await MONGO_MODEL.countDocuments();
+  const existingCount = await PlayerModel.countDocuments();
   const rows: (typeof TYPE)[] = [];
 
   req.decodedStream
@@ -154,7 +155,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
       }));
 
       try {
-        const addedPlayers = await MONGO_MODEL.insertMany(playersToAdd);
+        const addedPlayers = await PlayerModel.insertMany(playersToAdd);
         res.status(StatusCodes.OK).json({
           message: `${addedPlayers.length}件の選手を追加しました`,
           data: addedPlayers,
@@ -170,7 +171,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
 
 const downloadItem = async (req: Request, res: Response) => {
   try {
-    const data = await MONGO_MODEL.find();
+    const data = await PlayerModel.find();
     if (data.length === 0) {
       return res.status(404).json({ message: "データがありません" });
     }

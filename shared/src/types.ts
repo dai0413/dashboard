@@ -1,6 +1,6 @@
 import z from "zod";
 import { ParsedQs } from "qs";
-import { operator } from "./enum/operator";
+import { operator } from "./enum/operator.js";
 // import { TeamResponseSchema } from "./schemas/team.schema";
 // import { PlayerResponseSchema } from "./schemas/player.schema";
 // import { CountryResponseSchema } from "./schemas/country.schema";

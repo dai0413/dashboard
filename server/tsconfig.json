@@ -15,8 +15,7 @@
     "isolatedModules": true,
     "baseUrl": ".",
     "paths": {
-      "@myorg/shared": ["../shared/dist/index.ts"],
-      "@myorg/shared/*": ["../shared/dist/*"]
+      "@myorg/shared": ["../shared/dist/index.d.ts"]
     }
   },
   "include": ["**/*.ts", "../shared/dist/**/*.d.ts"],
