@@ -1,8 +1,8 @@
-// import express from "express";
-// const router = express.Router();
+import express from "express";
+const router = express.Router();
 
-// import { getTopPageData } from "../controllers/top.ts";
+import { getTopPageData } from "../controllers/top.js";
 
-// router.route("/").get(getTopPageData);
+router.route("/").get(getTopPageData);
 
-// export default router;
+export default router;
