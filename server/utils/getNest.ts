@@ -1,5 +1,5 @@
+import { PopulatePath } from "@myorg/shared";
 import { PipelineStage } from "mongoose";
-import { PopulatePath } from "../modelsConfig/types/type.ts";
 
 // populate 用
 const getPopulateOptions = (POPULATE_PATHS: PopulatePath[]) =>

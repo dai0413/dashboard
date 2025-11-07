@@ -5,8 +5,8 @@ import {
   PlayerFormSchema,
   PlayerResponseSchema,
   PlayerPopulatedSchema,
-} from "../schemas/player.schema";
-import { ControllerConfig } from "../types";
+} from "../schemas/player.schema.js";
+import { ControllerConfig } from "../types.js";
 // import { createPath } from "../utils/createPath";
 
 export function player<TDoc = any, TModel = any>(

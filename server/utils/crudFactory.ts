@@ -3,14 +3,14 @@ import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
 import { NotFoundError, BadRequestError } from "../errors/index.ts";
 import { getNest } from "./getNest.ts";
-import { ControllerConfig } from "../modelsConfig/types/type.ts";
 import { convertObjectIdToString } from "./convertObjectIdToString.ts";
 import z from "zod";
 import { buildMatchStage } from "./buildMatchStage.ts";
 import {
+  ControllerConfig,
   FilterableFieldDefinition,
   SortableFieldDefinition,
-} from "../../shared/dist/types.ts";
+} from "@myorg/shared";
 import { buildMongoFilter } from "./buildFilter.ts";
 import { parseSort } from "./parseSort.ts";
 import { buildJsonSort } from "./buildJsonSort.ts";

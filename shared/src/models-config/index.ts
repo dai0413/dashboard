@@ -6,7 +6,7 @@
 // export * from "./match";
 // export * from "./national-callup";
 // export * from "./national-match-series";
-export * from "./player";
+export * from "./player.js";
 // export * from "./referee";
 // export * from "./season";
 // export * from "./stadium";

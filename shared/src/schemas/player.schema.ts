@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { dateField } from "./utils/dateField";
-import { objectId } from "./utils/objectId";
+import { dateField } from "./utils/dateField.js";
+import { objectId } from "./utils/objectId.js";
 
 export const PlayerZodSchema = z.object({
   _id: objectId,
