@@ -1,20 +1,20 @@
-// import z from "zod";
-// import {
-//   NationalCallUpPopulatedSchema,
-//   NationalCallUpResponseSchema,
-// } from "../../schemas/national-callup.schema";
+import z from "zod";
+import {
+  NationalCallUpPopulatedSchema,
+  NationalCallUpResponseSchema,
+} from "../../schemas/national-callup.schema.js";
 
-// const nationalCallup = (
-//   nationalCallup: z.infer<typeof NationalCallUpPopulatedSchema>
-// ): z.infer<typeof NationalCallUpResponseSchema> => {
-//   const { team, team_name, ...rest } = nationalCallup;
+const nationalCallup = (
+  nationalCallup: z.infer<typeof NationalCallUpPopulatedSchema>
+): z.infer<typeof NationalCallUpResponseSchema> => {
+  const { team, team_name, ...rest } = nationalCallup;
 
-//   const team_obj = team ?? { team: team_name as string };
+  const team_obj = team ?? { team: team_name as string };
 
-//   return {
-//     ...rest,
-//     team: team_obj,
-//   };
-// };
+  return {
+    ...rest,
+    team: team_obj,
+  };
+};
 
-// export { nationalCallup };
+export { nationalCallup };
