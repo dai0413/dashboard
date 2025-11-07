@@ -1,19 +1,19 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
-import { NotFoundError, BadRequestError } from "../errors/index.ts";
-import { getNest } from "./getNest.ts";
-import { convertObjectIdToString } from "./convertObjectIdToString.ts";
+import { NotFoundError, BadRequestError } from "../errors/index.js";
+import { getNest } from "./getNest.js";
+import { convertObjectIdToString } from "./convertObjectIdToString.js";
 import z from "zod";
-import { buildMatchStage } from "./buildMatchStage.ts";
+import { buildMatchStage } from "./buildMatchStage.js";
 import {
   ControllerConfig,
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@myorg/shared";
-import { buildMongoFilter } from "./buildFilter.ts";
-import { parseSort } from "./parseSort.ts";
-import { buildJsonSort } from "./buildJsonSort.ts";
+import { buildMongoFilter } from "./buildFilter.js";
+import { parseSort } from "./parseSort.js";
+import { buildJsonSort } from "./buildJsonSort.js";
 
 const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>

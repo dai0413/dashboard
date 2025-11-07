@@ -1,5 +1,5 @@
 import multer, { FileFilterCallback } from "multer";
-import { BadRequestError } from "../errors/index.ts";
+import { BadRequestError } from "../errors/index.js";
 import { Request } from "express";
 
 // メモリ上で一時保存（ディスクに保存しない）

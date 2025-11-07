@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { CustomAPIError } from "../errors/index.ts";
+import { CustomAPIError } from "../errors/index.js";
 
 export default function errorHandlerMiddleware(
   err: unknown,
