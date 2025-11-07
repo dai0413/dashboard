@@ -1,14 +1,13 @@
 import z from "zod";
 import { ParsedQs } from "qs";
 import { operator } from "./enum/operator";
-import { TeamResponseSchema } from "./schemas/team.schema";
-import { PlayerResponseSchema } from "./schemas/player.schema";
-import { CountryResponseSchema } from "./schemas/country.schema";
-import { NationalMatchSeriesResponseSchema } from "./schemas/national-match-series.schema";
-import { CompetitionResponseSchema } from "./schemas/competition.schema";
-import { SeasonResponseSchema } from "./schemas/season.schema";
-import { CompetitionStageResponseSchema } from "./schemas/competition-stage.schema";
-import mongoose from "mongoose";
+// import { TeamResponseSchema } from "./schemas/team.schema";
+// import { PlayerResponseSchema } from "./schemas/player.schema";
+// import { CountryResponseSchema } from "./schemas/country.schema";
+// import { NationalMatchSeriesResponseSchema } from "./schemas/national-match-series.schema";
+// import { CompetitionResponseSchema } from "./schemas/competition.schema";
+// import { SeasonResponseSchema } from "./schemas/season.schema";
+// import { CompetitionStageResponseSchema } from "./schemas/competition-stage.schema";
 
 const operatorOptions = operator();
 export type FilterOperator = (typeof operatorOptions)[number]["key"];
@@ -61,13 +60,13 @@ type GetAllQuery = {
 };
 
 export interface DependencyRefs {
-  team: z.infer<typeof TeamResponseSchema>;
-  player: z.infer<typeof PlayerResponseSchema>;
-  country: z.infer<typeof CountryResponseSchema>;
-  nationalMatchSeries: z.infer<typeof NationalMatchSeriesResponseSchema>;
-  competition: z.infer<typeof CompetitionResponseSchema>;
-  season: z.infer<typeof SeasonResponseSchema>;
-  competitionStage: z.infer<typeof CompetitionStageResponseSchema>;
+  // team: z.infer<typeof TeamResponseSchema>;
+  // player: z.infer<typeof PlayerResponseSchema>;
+  // country: z.infer<typeof CountryResponseSchema>;
+  // nationalMatchSeries: z.infer<typeof NationalMatchSeriesResponseSchema>;
+  // competition: z.infer<typeof CompetitionResponseSchema>;
+  // season: z.infer<typeof SeasonResponseSchema>;
+  // competitionStage: z.infer<typeof CompetitionStageResponseSchema>;
 }
 
 export interface ControllerConfig<
@@ -85,7 +84,7 @@ export interface ControllerConfig<
     RESPONSE: z.ZodType<TResponse>;
   };
   TYPE: TData;
-  MONGO_MODEL: mongoose.Model<TDoc>;
+  MONGO_MODEL: any | null;
   POPULATE_PATHS: PopulatePath[];
   getAllConfig?: GetAllQuery & { sort?: Record<string, 1 | -1> } & {
     project?: Record<string, 0 | 1>;

@@ -1,77 +1,77 @@
-import { z } from "zod";
-import { stage_type } from "../enum/stage_type";
-import { objectId } from "./utils/objectId";
-import { dateField } from "./utils/dateField";
-import { CompetitionZodSchema } from "./competition.schema";
-import { SeasonZodSchema } from "./season.schema";
+// import { z } from "zod";
+// import { stage_type } from "../enum/stage_type";
+// import { objectId } from "./utils/objectId";
+// import { dateField } from "./utils/dateField";
+// import { CompetitionZodSchema } from "./competition.schema";
+// import { SeasonZodSchema } from "./season.schema";
 
-export const CompetitionStageZodSchema = z
-  .object({
-    _id: objectId,
-    competition: objectId.refine((v) => !!v, {
-      message: "competitionは必須です",
-    }),
-    season: objectId.refine((v) => !!v, {
-      message: "seasonは必須です",
-    }),
-    stage_type: z
-      .enum(stage_type)
-      .refine((v) => !!v, {
-        message: "stage_typeは必須です",
-      })
-      .default("none"),
-    name: z.string().optional(),
-    round_number: z.number().optional(),
-    leg: z.number().optional(),
-    order: z.number().optional(),
-    parent_stage: objectId.optional(),
-    notes: z.string().nonempty().optional(),
-    createdAt: dateField,
-    updatedAt: dateField,
-  })
-  .refine(
-    (data) => {
-      if (data.stage_type === "none") {
-        return (
-          data.name === undefined &&
-          data.round_number === undefined &&
-          data.leg === undefined &&
-          data.order === undefined
-        );
-      }
-      return true;
-    },
-    {
-      message:
-        "stage_typeがnoneのときはname, round_number, leg, orderはundefinedでなければなりません",
-    }
-  );
+// export const CompetitionStageZodSchema = z
+//   .object({
+//     _id: objectId,
+//     competition: objectId.refine((v) => !!v, {
+//       message: "competitionは必須です",
+//     }),
+//     season: objectId.refine((v) => !!v, {
+//       message: "seasonは必須です",
+//     }),
+//     stage_type: z
+//       .enum(stage_type)
+//       .refine((v) => !!v, {
+//         message: "stage_typeは必須です",
+//       })
+//       .default("none"),
+//     name: z.string().optional(),
+//     round_number: z.number().optional(),
+//     leg: z.number().optional(),
+//     order: z.number().optional(),
+//     parent_stage: objectId.optional(),
+//     notes: z.string().nonempty().optional(),
+//     createdAt: dateField,
+//     updatedAt: dateField,
+//   })
+//   .refine(
+//     (data) => {
+//       if (data.stage_type === "none") {
+//         return (
+//           data.name === undefined &&
+//           data.round_number === undefined &&
+//           data.leg === undefined &&
+//           data.order === undefined
+//         );
+//       }
+//       return true;
+//     },
+//     {
+//       message:
+//         "stage_typeがnoneのときはname, round_number, leg, orderはundefinedでなければなりません",
+//     }
+//   );
 
-export type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;
+// export type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;
 
-export const CompetitionStageFormSchema = CompetitionStageZodSchema.omit({
-  _id: true,
-  competition: true,
-  createdAt: true,
-  updatedAt: true,
-});
+// export const CompetitionStageFormSchema = CompetitionStageZodSchema.omit({
+//   _id: true,
+//   competition: true,
+//   createdAt: true,
+//   updatedAt: true,
+// });
 
-export const CompetitionStageResponseSchema = CompetitionStageZodSchema.omit({
-  competition: true,
-  season: true,
-  parent_stage: true,
-}).safeExtend({
-  competition: CompetitionZodSchema,
-  season: SeasonZodSchema,
-  parent_stage: z.array(CompetitionStageZodSchema).optional(),
-});
+// export const CompetitionStageResponseSchema = CompetitionStageZodSchema.omit({
+//   competition: true,
+//   season: true,
+//   parent_stage: true,
+// }).safeExtend({
+//   competition: CompetitionZodSchema,
+//   season: SeasonZodSchema,
+//   parent_stage: z.array(CompetitionStageZodSchema).optional(),
+// });
 
-export const CompetitionStagePopulatedSchema = CompetitionStageZodSchema.omit({
-  competition: true,
-  season: true,
-  parent_stage: true,
-}).safeExtend({
-  competition: CompetitionZodSchema,
-  season: SeasonZodSchema,
-  parent_stage: z.array(CompetitionStageZodSchema).optional(),
-});
+// export const CompetitionStagePopulatedSchema = CompetitionStageZodSchema.omit({
+//   competition: true,
+//   season: true,
+//   parent_stage: true,
+// }).safeExtend({
+//   competition: CompetitionZodSchema,
+//   season: SeasonZodSchema,
+//   parent_stage: z.array(CompetitionStageZodSchema).optional(),
+// });
