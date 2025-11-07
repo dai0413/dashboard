@@ -1,9 +1,9 @@
 import iconv from "iconv-lite";
 import jschardet from "jschardet";
 import { Readable } from "stream";
-import { BadRequestError } from "../errors/index.ts";
+import { BadRequestError } from "../errors/index.js";
 import { NextFunction, Response } from "express";
-import { DecodedRequest } from "../types.ts";
+import { DecodedRequest } from "../types.js";
 
 export default function detectEncoding(
   req: DecodedRequest,

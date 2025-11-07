@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { ParsedQs } from "qs";
-import { BadRequestError } from "../errors/index.ts";
+import { BadRequestError } from "../errors/index.js";
 
 type Operator = ">" | "<" | ">=" | "<=" | "!=" | "=";
 

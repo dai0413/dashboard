@@ -1,9 +1,9 @@
-import CustomAPIError from "./custom-api.ts";
-import UnauthenticatedError from "./unauthenticated.ts";
-import NotFoundError from "./not-found.ts";
-import BadRequestError from "./bad-request.ts";
-import ForbiddenError from "./forbidden.ts";
-import InternalServerError from "./internal-server.ts";
+import CustomAPIError from "./custom-api.js";
+import UnauthenticatedError from "./unauthenticated.js";
+import NotFoundError from "./not-found.js";
+import BadRequestError from "./bad-request.js";
+import ForbiddenError from "./forbidden.js";
+import InternalServerError from "./internal-server.js";
 
 export {
   CustomAPIError,

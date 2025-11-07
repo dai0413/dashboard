@@ -2,12 +2,12 @@ import { StatusCodes } from "http-status-codes";
 import csv from "csv-parser";
 import { Request, Response } from "express";
 import moment from "moment";
-import { BadRequestError } from "../../errors/index.ts";
+import { BadRequestError } from "../../errors/index.js";
 
 import { player } from "@myorg/shared";
-import { DecodedRequest } from "../../types.ts";
-import { crudFactory } from "../../utils/crudFactory.ts";
-import { PlayerModel } from "../../models/player.ts";
+import { DecodedRequest } from "../../types.js";
+import { crudFactory } from "../../utils/crudFactory.js";
+import { PlayerModel } from "../../models/player.js";
 
 const { TYPE } = player(PlayerModel);
 
