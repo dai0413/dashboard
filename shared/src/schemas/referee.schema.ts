@@ -1,41 +1,41 @@
-import { z } from "zod";
-import { dateField } from "./utils/dateField";
-import { objectId } from "./utils/objectId";
-import { PlayerZodSchema } from "./player.schema";
-import { CountryZodSchema } from "./country.schema";
+// import { z } from "zod";
+// import { dateField } from "./utils/dateField";
+// import { objectId } from "./utils/objectId";
+// import { PlayerZodSchema } from "./player.schema";
+// import { CountryZodSchema } from "./country.schema";
 
-export const RefereeZodSchema = z.object({
-  _id: objectId,
-  name: z
-    .string()
-    .nonempty()
-    .refine((v) => !!v, { message: "nameは必須です" }),
-  en_name: z.string().nonempty().optional(),
-  dob: dateField,
-  pob: z.string().nonempty().optional(),
-  citizenship: z.array(objectId).optional(),
-  player: objectId.optional(),
-  transferurl: z.string().nonempty().optional(),
-  sofaurl: z.string().nonempty().optional(),
+// export const RefereeZodSchema = z.object({
+//   _id: objectId,
+//   name: z
+//     .string()
+//     .nonempty()
+//     .refine((v) => !!v, { message: "nameは必須です" }),
+//   en_name: z.string().nonempty().optional(),
+//   dob: dateField,
+//   pob: z.string().nonempty().optional(),
+//   citizenship: z.array(objectId).optional(),
+//   player: objectId.optional(),
+//   transferurl: z.string().nonempty().optional(),
+//   sofaurl: z.string().nonempty().optional(),
 
-  createdAt: dateField,
-  updatedAt: dateField,
-});
+//   createdAt: dateField,
+//   updatedAt: dateField,
+// });
 
-export type RefereeType = z.infer<typeof RefereeZodSchema>;
+// export type RefereeType = z.infer<typeof RefereeZodSchema>;
 
-export const RefereeFormSchema = RefereeZodSchema.omit({
-  _id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+// export const RefereeFormSchema = RefereeZodSchema.omit({
+//   _id: true,
+//   createdAt: true,
+//   updatedAt: true,
+// });
 
-export const RefereeResponseSchema = RefereeZodSchema.extend({
-  citizenship: z.array(CountryZodSchema).default([]),
-  player: PlayerZodSchema.optional(),
-});
+// export const RefereeResponseSchema = RefereeZodSchema.extend({
+//   citizenship: z.array(CountryZodSchema).default([]),
+//   player: PlayerZodSchema.optional(),
+// });
 
-export const RefereePopulatedSchema = RefereeZodSchema.extend({
-  citizenship: z.array(CountryZodSchema).default([]),
-  player: PlayerZodSchema.optional(),
-});
+// export const RefereePopulatedSchema = RefereeZodSchema.extend({
+//   citizenship: z.array(CountryZodSchema).default([]),
+//   player: PlayerZodSchema.optional(),
+// });

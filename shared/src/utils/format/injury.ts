@@ -1,22 +1,22 @@
-import z from "zod";
-import {
-  InjuryResponseSchema,
-  InjuryPopulatedSchema,
-} from "../../schemas/injury.schema";
+// import z from "zod";
+// import {
+//   InjuryResponseSchema,
+//   InjuryPopulatedSchema,
+// } from "../../schemas/injury.schema";
 
-const injury = (
-  injuryDoc: z.infer<typeof InjuryPopulatedSchema>
-): z.infer<typeof InjuryResponseSchema> => {
-  const { team, team_name, ...rest } = injuryDoc;
+// const injury = (
+//   injuryDoc: z.infer<typeof InjuryPopulatedSchema>
+// ): z.infer<typeof InjuryResponseSchema> => {
+//   const { team, team_name, ...rest } = injuryDoc;
 
-  return {
-    ...rest,
-    team: team_name
-      ? {
-          team: team_name,
-        }
-      : team,
-  };
-};
+//   return {
+//     ...rest,
+//     team: team_name
+//       ? {
+//           team: team_name,
+//         }
+//       : team,
+//   };
+// };
 
-export { injury };
+// export { injury };

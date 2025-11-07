@@ -1,37 +1,37 @@
-import { z } from "zod";
-import { dateField } from "./utils/dateField";
-import { objectId } from "./utils/objectId";
-import { CompetitionZodSchema } from "./competition.schema";
+// import { z } from "zod";
+// import { dateField } from "./utils/dateField";
+// import { objectId } from "./utils/objectId";
+// import { CompetitionZodSchema } from "./competition.schema";
 
-export const SeasonZodSchema = z.object({
-  _id: objectId,
-  competition: objectId.refine((v) => !!v, {
-    message: "competitionは必須です",
-  }),
-  name: z
-    .string()
-    .nonempty()
-    .refine((v) => !!v, { message: "nameは必須です" }),
-  start_date: dateField,
-  end_date: dateField,
-  current: z.boolean().optional(),
-  note: z.string().nonempty().optional(),
-  createdAt: dateField,
-  updatedAt: dateField,
-});
+// export const SeasonZodSchema = z.object({
+//   _id: objectId,
+//   competition: objectId.refine((v) => !!v, {
+//     message: "competitionは必須です",
+//   }),
+//   name: z
+//     .string()
+//     .nonempty()
+//     .refine((v) => !!v, { message: "nameは必須です" }),
+//   start_date: dateField,
+//   end_date: dateField,
+//   current: z.boolean().optional(),
+//   note: z.string().nonempty().optional(),
+//   createdAt: dateField,
+//   updatedAt: dateField,
+// });
 
-export type SeasonType = z.infer<typeof SeasonZodSchema>;
+// export type SeasonType = z.infer<typeof SeasonZodSchema>;
 
-export const SeasonFormSchema = SeasonZodSchema.omit({
-  _id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+// export const SeasonFormSchema = SeasonZodSchema.omit({
+//   _id: true,
+//   createdAt: true,
+//   updatedAt: true,
+// });
 
-export const SeasonResponseSchema = SeasonZodSchema.extend({
-  competition: CompetitionZodSchema,
-});
+// export const SeasonResponseSchema = SeasonZodSchema.extend({
+//   competition: CompetitionZodSchema,
+// });
 
-export const SeasonPopulatedSchema = SeasonZodSchema.extend({
-  competition: CompetitionZodSchema,
-});
+// export const SeasonPopulatedSchema = SeasonZodSchema.extend({
+//   competition: CompetitionZodSchema,
+// });
