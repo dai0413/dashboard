@@ -3,7 +3,9 @@
   "compilerOptions": {
     "noEmit": false,
     "allowImportingTsExtensions": false,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./"
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "__tests__"]
 }

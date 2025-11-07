@@ -10,11 +10,11 @@ import {
   deleteItem,
   uploadItem,
   downloadItem,
-} from "../controllers/models/player.ts";
+} from "../controllers/models/player.js";
 
-import upload from "../middleware/upload.ts";
-import detectEncoding from "../middleware/detectEncoding.ts";
-import checkFileExists from "../middleware/checkFileExists.ts";
+import upload from "../middleware/upload.js";
+import detectEncoding from "../middleware/detectEncoding.js";
+import checkFileExists from "../middleware/checkFileExists.js";
 
 router.route("/").get(getAllItems).post(createItem);
 router.route("/check").post(checkItem);

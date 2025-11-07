@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../errors/index.ts";
+import { BadRequestError } from "../errors/index.js";
 
 export default function checkFileExists(
   req: Request,

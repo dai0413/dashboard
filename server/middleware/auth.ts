@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { UnauthenticatedError } from "../errors/index.ts";
+import { UnauthenticatedError } from "../errors/index.js";
 import { NextFunction, Request, Response } from "express";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
