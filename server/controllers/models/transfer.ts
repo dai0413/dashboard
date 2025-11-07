@@ -1,12 +1,12 @@
-// import { TransferModel } from "../../models/transfer.ts";
-// import { transfer } from "../../../shared/dist/models-config/transfer.js";
-// import { crudFactory } from "../../utils/crudFactory.ts";
+import { TransferModel } from "../../models/transfer.js";
+import { transfer } from "@myorg/shared";
+import { crudFactory } from "../../utils/crudFactory.js";
 
-// const getAllItems = crudFactory(transfer(TransferModel)).getAllItems;
-// const createItem = crudFactory(transfer(TransferModel)).createItem;
-// const getItem = crudFactory(transfer(TransferModel)).getItem;
-// const updateItem = crudFactory(transfer(TransferModel)).updateItem;
-// const deleteItem = crudFactory(transfer(TransferModel)).deleteItem;
+const getAllItems = crudFactory(transfer(TransferModel)).getAllItems;
+const createItem = crudFactory(transfer(TransferModel)).createItem;
+const getItem = crudFactory(transfer(TransferModel)).getItem;
+const updateItem = crudFactory(transfer(TransferModel)).updateItem;
+const deleteItem = crudFactory(transfer(TransferModel)).deleteItem;
 
 // const getAllItems = async (req: Request, res: Response) => {
 //   const matchStage = {};
@@ -140,4 +140,4 @@
 //   res.status(StatusCodes.OK).json({ message: "削除しました" });
 // };
 
-// export { getAllItems, createItem, getItem, updateItem, deleteItem };
+export { getAllItems, createItem, getItem, updateItem, deleteItem };
