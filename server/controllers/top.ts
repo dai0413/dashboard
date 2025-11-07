@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { convertObjectIdToString } from "../utils/convertObjectIdToString.js";
 import { buildMatchStage } from "../utils/buildMatchStage.js";
-import { transfer as transferConfig } from "../../shared/dist/models-config/transfer.js";
-import { injury as injuryConfig } from "../../shared/dist/models-config/injury.js";
+import {
+  transfer as transferConfig,
+  injury as injuryConfig,
+} from "@myorg/shared";
 import { getNest } from "../utils/getNest.js";
 import { ParsedQs } from "qs";
 import { ControllerConfig } from "@myorg/shared";
