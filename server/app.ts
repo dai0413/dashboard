@@ -67,7 +67,7 @@ app.use("/api/v1/injury", authmiddleware, injury);
 app.use("/api/v1/national-callup", authmiddleware, nationalCallup);
 app.use("/api/v1/national-match-series", authmiddleware, nationalMatchSeries);
 app.use("/api/v1/player", authmiddleware, player);
-app.use("/api/v1/player", player);
+app.use("/api/v1/player", authmiddleware, player);
 app.use("/api/v1/referee", authmiddleware, referee);
 app.use("/api/v1/season", authmiddleware, season);
 app.use("/api/v1/stadium", authmiddleware, stadium);
