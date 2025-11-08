@@ -31,6 +31,8 @@ import { CompetitionStageModel } from "../models/competition-stage.js";
 import { MatchFormatModel } from "../models/match-format.js";
 import { TeamCompetitionSeasonModel } from "../models/team-competition-season.js";
 import { MatchModel } from "../models/match.js";
+import { match as customMatch } from "utils/customMatchStage/match.js";
+import { transfer as customTransfer } from "utils/customMatchStage/transfer.js";
 
 runControllerTests(player(PlayerModel));
 runControllerTests(country(CountryModel));
@@ -45,5 +47,5 @@ runControllerTests(season(SeasonModel));
 runControllerTests(competitionStage(CompetitionStageModel));
 runControllerTests(matchFormat(MatchFormatModel));
 runControllerTests(teamCompetitionSeason(TeamCompetitionSeasonModel));
-runControllerTests(match(MatchModel));
-runControllerTests(transfer(TransferModel));
+runControllerTests(match(MatchModel, customMatch));
+runControllerTests(transfer(TransferModel, customTransfer));

@@ -1,12 +1,21 @@
 import { TransferModel } from "../../models/transfer.js";
 import { transfer } from "@myorg/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
+import { transfer as customTransfer } from "utils/customMatchStage/transfer.js";
 
-const getAllItems = crudFactory(transfer(TransferModel)).getAllItems;
-const createItem = crudFactory(transfer(TransferModel)).createItem;
-const getItem = crudFactory(transfer(TransferModel)).getItem;
-const updateItem = crudFactory(transfer(TransferModel)).updateItem;
-const deleteItem = crudFactory(transfer(TransferModel)).deleteItem;
+const getAllItems = crudFactory(
+  transfer(TransferModel, customTransfer)
+).getAllItems;
+const createItem = crudFactory(
+  transfer(TransferModel, customTransfer)
+).createItem;
+const getItem = crudFactory(transfer(TransferModel, customTransfer)).getItem;
+const updateItem = crudFactory(
+  transfer(TransferModel, customTransfer)
+).updateItem;
+const deleteItem = crudFactory(
+  transfer(TransferModel, customTransfer)
+).deleteItem;
 
 // const getAllItems = async (req: Request, res: Response) => {
 //   const matchStage = {};

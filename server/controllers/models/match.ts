@@ -12,19 +12,20 @@ import { MatchModel } from "../../models/match.js";
 import { DecodedRequest } from "types.js";
 import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
+import { match as customMatch } from "utils/customMatchStage/match.js";
 
-const getAllItems = crudFactory(match(MatchModel)).getAllItems;
-const createItem = crudFactory(match(MatchModel)).createItem;
-const getItem = crudFactory(match(MatchModel)).getItem;
-const updateItem = crudFactory(match(MatchModel)).updateItem;
-const deleteItem = crudFactory(match(MatchModel)).deleteItem;
+const getAllItems = crudFactory(match(MatchModel, customMatch)).getAllItems;
+const createItem = crudFactory(match(MatchModel, customMatch)).createItem;
+const getItem = crudFactory(match(MatchModel, customMatch)).getItem;
+const updateItem = crudFactory(match(MatchModel, customMatch)).updateItem;
+const deleteItem = crudFactory(match(MatchModel, customMatch)).deleteItem;
 
 const {
   MONGO_MODEL,
   SCHEMA: { POPULATED },
   TYPE,
   POPULATE_PATHS,
-} = match(MatchModel);
+} = match(MatchModel, customMatch);
 
 function parseDateJST(dateStr: string) {
   // CSVの日付フォーマットをパース（例: "1992/9/5 15:00:00"）
