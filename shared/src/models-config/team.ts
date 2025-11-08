@@ -7,9 +7,11 @@ import {
   TeamPopulatedSchema,
 } from "../schemas/team.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function team<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   TeamType,
@@ -31,6 +33,7 @@ export function team<TDoc = any, TModel = any>(
     getAllConfig: {
       query: [{ field: "country", type: "ObjectId" }],
       sort: { _id: 1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: true,

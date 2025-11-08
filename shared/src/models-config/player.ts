@@ -8,9 +8,11 @@ import {
 } from "../schemas/player.schema.js";
 import { ControllerConfig } from "../types.js";
 // import { createPath } from "../utils/createPath";
+import { ParsedQs } from "qs";
 
 export function player<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   PlayerType,
@@ -32,6 +34,7 @@ export function player<TDoc = any, TModel = any>(
     getAllConfig: {
       query: [{ field: "country", type: "ObjectId" }],
       sort: { _id: 1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: true,
     download: true,
