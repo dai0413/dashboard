@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 import { ControllerConfig } from "@myorg/shared";
 import { TransferModel } from "../models/transfer.js";
 import { InjuryModel } from "../models/injury.js";
-import { transfer as customTransfer } from "utils/customMatchStage/transfer.js";
+import { transfer as customTransfer } from "../utils/customMatchStage/transfer.js";
 
 const createData = async <
   TDoc,
