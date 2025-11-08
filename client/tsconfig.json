@@ -5,6 +5,7 @@
     { "path": "./tsconfig.node.json" }
   ],
   "include": ["src", "vite-env.d.ts"],
+  "exclude": ["node_modules", "dist"],
   "compilerOptions": {
     "noUnusedLocals": false,
     "noUnusedParameters": false,
