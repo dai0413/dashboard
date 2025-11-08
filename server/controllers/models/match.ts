@@ -12,7 +12,7 @@ import { MatchModel } from "../../models/match.js";
 import { DecodedRequest } from "types.js";
 import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
-import { match as customMatch } from "utils/customMatchStage/match.js";
+import { match as customMatch } from "../../utils/customMatchStage/match.js";
 
 const getAllItems = crudFactory(match(MatchModel, customMatch)).getAllItems;
 const createItem = crudFactory(match(MatchModel, customMatch)).createItem;
