@@ -7,9 +7,11 @@ import {
   TeamCompetitionSeasonPopulatedSchema,
 } from "../schemas/team-competition-season.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function teamCompetitionSeason<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   TeamCompetitionSeasonType,
@@ -55,6 +57,7 @@ export function teamCompetitionSeason<TDoc = any, TModel = any>(
         },
       ],
       sort: { "season.start_date": -1, _id: -1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

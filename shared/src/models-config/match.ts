@@ -8,10 +8,11 @@ import {
 } from "../schemas/match.schema.js";
 import { ControllerConfig } from "../types.js";
 import { match as convertFun } from "../utils/format/match.js";
-import { match as customMatch } from "../utils/customMatchStage/match.js";
+import { ParsedQs } from "qs";
 
 export function match<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   MatchType,
@@ -46,7 +47,7 @@ export function match<TDoc = any, TModel = any>(
         { field: "date", type: "Date" },
       ],
       sort: { _id: 1 },
-      buildCustomMatch: customMatch,
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

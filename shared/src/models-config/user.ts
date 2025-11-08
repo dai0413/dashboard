@@ -7,9 +7,11 @@ import {
   UserPopulatedSchema,
 } from "../schemas/user.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function user<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   UserType,
@@ -28,6 +30,9 @@ export function user<TDoc = any, TModel = any>(
     TYPE: {} as UserType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
+    getAllConfig: {
+      buildCustomMatch: customMatchFn,
+    },
     bulk: false,
     download: false,
     TEST: {

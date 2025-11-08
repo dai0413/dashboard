@@ -8,10 +8,11 @@ import {
 } from "../schemas/transfer.schema.js";
 import { ControllerConfig } from "../types.js";
 import { transfer as convertFun } from "../utils/format/transfer.js";
-import { transfer as customMatch } from "../utils/customMatchStage/transfer.js";
+import { ParsedQs } from "qs";
 
 export function transfer<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   TransferType,
@@ -44,7 +45,7 @@ export function transfer<TDoc = any, TModel = any>(
         { field: "from_team.age_group", type: "String", populateAfter: true },
         { field: "form", type: "String" },
       ],
-      buildCustomMatch: customMatch,
+      buildCustomMatch: customMatchFn,
       sort: { doa: -1, _id: -1 },
     },
     bulk: false,

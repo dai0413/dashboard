@@ -7,9 +7,11 @@ import {
   RefereePopulatedSchema,
 } from "../schemas/referee.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function referee<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   RefereeType,
@@ -33,6 +35,7 @@ export function referee<TDoc = any, TModel = any>(
     ],
     getAllConfig: {
       sort: { _id: 1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

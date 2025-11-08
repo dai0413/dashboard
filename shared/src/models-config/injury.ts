@@ -9,9 +9,11 @@ import {
 
 import { injury as convertFun } from "../utils/format/injury.js";
 import { ControllerConfig, DependencyRefs } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function injury<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   InjuryType,
@@ -43,6 +45,7 @@ export function injury<TDoc = any, TModel = any>(
         { field: "limit", type: "Number" },
       ],
       sort: { doa: -1, _id: 1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

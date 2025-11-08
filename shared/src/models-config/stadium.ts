@@ -7,9 +7,11 @@ import {
   StadiumPopulatedSchema,
 } from "../schemas/stadium.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function stadium<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   StadiumType,
@@ -30,6 +32,7 @@ export function stadium<TDoc = any, TModel = any>(
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {
       sort: { _id: 1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,
