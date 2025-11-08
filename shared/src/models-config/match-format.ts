@@ -7,9 +7,11 @@ import {
   MatchFormatPopulatedSchema,
 } from "../schemas/match-format.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function matchFormat<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   MatchFormatType,
@@ -30,6 +32,7 @@ export function matchFormat<TDoc = any, TModel = any>(
     POPULATE_PATHS: [],
     getAllConfig: {
       sort: { _id: 1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

@@ -7,9 +7,11 @@ import {
   CompetitionPopulatedSchema,
 } from "../schemas/competition.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function competition<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   CompetitionType,
@@ -31,6 +33,7 @@ export function competition<TDoc = any, TModel = any>(
     getAllConfig: {
       sort: { _id: 1 },
       query: [{ field: "country", type: "ObjectId" }],
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

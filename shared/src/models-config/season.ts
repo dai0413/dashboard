@@ -7,9 +7,11 @@ import {
   SeasonPopulatedSchema,
 } from "../schemas/season.schema.js";
 import { ControllerConfig } from "../types.js";
+import { ParsedQs } from "qs";
 
 export function season<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   SeasonType,
@@ -34,6 +36,7 @@ export function season<TDoc = any, TModel = any>(
         { field: "current", type: "Boolean" },
       ],
       sort: { start_date: -1, _id: -1 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: false,
     download: false,

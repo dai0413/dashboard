@@ -8,9 +8,11 @@ import {
 } from "../schemas/national-callup.schema.js";
 import { ControllerConfig } from "../types.js";
 import { nationalCallup as convertFun } from "../utils/format/national-callup.js";
+import { ParsedQs } from "qs";
 
 export function nationalCallUp<TDoc = any, TModel = any>(
-  mongoModel?: TModel
+  mongoModel?: TModel,
+  customMatchFn?: (query: ParsedQs) => Record<string, any>
 ): ControllerConfig<
   TDoc,
   NationalCallUpType,
@@ -49,6 +51,7 @@ export function nationalCallUp<TDoc = any, TModel = any>(
         _id: -1,
       },
       project: { position_group_order: 0 },
+      buildCustomMatch: customMatchFn,
     },
     bulk: true,
     download: false,
