@@ -67,10 +67,11 @@ const FieldRow = ({
       />
 
       {filterCondition.operator !== "is-empty" &&
-        filterCondition.operator !== "is-not-empty" && (
+        filterCondition.operator !== "is-not-empty" &&
+        !Array.isArray(filterCondition.value) && (
           <FilterFields
             type={filterCondition.type}
-            value={filterCondition.value ? filterCondition.value : ""}
+            value={filterCondition.value ?? ""}
             onChange={handleFieldValue}
             onChangeObj={handleFieldObjValue}
             options={optionSelectData ?? []}
