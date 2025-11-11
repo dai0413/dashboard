@@ -32,7 +32,7 @@ type ReadItemsParams<R extends CrudRouteWithParams<any>> = {
   backendRoute: R;
   path?: R["path"];
   params?: QueryParams;
-  onSuccess: (data: ResBody<any>) => void;
+  onSuccess?: (data: ResBody<any>) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: ResponseStatus) => void;
 };
@@ -48,7 +48,8 @@ export const readItemsBase = async <
   onSuccess,
   handleLoading,
   handleSetAlert,
-}: ReadItemsParams<R>) => {
+  returnResponse = false,
+}: ReadItemsParams<R> & { returnResponse?: boolean }) => {
   handleLoading && handleLoading("start");
   let alert: ResponseStatus = { success: false };
   try {
@@ -60,8 +61,10 @@ export const readItemsBase = async <
     const res = await apiInstance.get(url, {
       params,
     });
-    onSuccess(res.data);
+    onSuccess && onSuccess(res.data);
     alert = { success: true, message: res.data?.message };
+
+    if (returnResponse) return res.data;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -70,6 +73,8 @@ export const readItemsBase = async <
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
+
+    if (returnResponse) throw apiError;
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
