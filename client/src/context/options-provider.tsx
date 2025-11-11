@@ -119,14 +119,16 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     optionKey: T,
     id: string
   ): Promise<string | undefined> {
-    if (!optionKey) {
-      console.error("optionKeyの不備:", optionKey);
+    const key = getOptionKey(optionKey, keyMap);
+
+    if (!isModelType(key)) {
+      console.error("optionKeyの不備:", key);
       return;
     }
 
-    const route = optionRouteMap[optionKey].DETAIL(id);
+    const route = optionRouteMap[key].DETAIL(id);
     if (!route) {
-      console.error("optionRouteMapの不備:", optionKey);
+      console.error("optionRouteMapの不備:", key);
       return;
     }
 
@@ -136,7 +138,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       apiInstance: api,
       backendRoute: route,
       onSuccess: (data: ModelDataMap[T]) => {
-        fetchedItem = createLabel(optionKey, data);
+        fetchedItem = createLabel(key, data);
       },
     });
 
