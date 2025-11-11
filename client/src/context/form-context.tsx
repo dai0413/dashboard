@@ -213,16 +213,15 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     const resolved = { ...initialFormLabel };
 
     for (const key of Object.keys(resolved)) {
-      if (!isModelType(key)) continue;
       const id = resolved[key];
       if (!id) continue;
 
       if (Array.isArray(id)) {
         resolved[key] = (
-          await Promise.all(id.map((i) => getLabelById(key, i)))
+          await Promise.all(id.map((i) => getLabelById(key as ModelType, i)))
         ).filter(Boolean);
       } else {
-        resolved[key] = await getLabelById(key, id);
+        resolved[key] = await getLabelById(key as ModelType, id);
       }
     }
 
@@ -254,7 +253,12 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       initialFormData ? setFormDatas([initialFormData]) : resetFormDatas();
     } else {
       setNewData(false);
-      editItem && setFormData(convertGettedToForm(model, editItem));
+      console.log("editItem", editItem);
+      if (editItem) {
+        setFormData(convertGettedToForm(model, editItem));
+        console.log("resolvedLabels", editItem);
+        setFormLabel(editItem);
+      }
 
       if (model === ModelType.MATCH_FORMAT) {
         const matchFormatEditItem =

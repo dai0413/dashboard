@@ -76,9 +76,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
           const field = fields?.find((f) => f.key === header.field);
           if (!field) return null;
 
-          const value =
-            formLabel &&
-            (formLabel[field.key as string] as string | number | Date);
+          const value = many?.formLabels[rowIndex][field.key as string] ?? "";
 
           if (field.fieldType === "table") {
             return (
