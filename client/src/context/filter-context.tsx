@@ -1,4 +1,11 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 
 import { FilterableFieldDefinition, FilterOperator } from "@myorg/shared";
 
@@ -6,6 +13,7 @@ type FilterState = {
   filterOpen: boolean;
 
   filterConditions: FilterableFieldDefinition[];
+  setFilterConditions: Dispatch<SetStateAction<FilterableFieldDefinition[]>>;
   handleAddCondition: (index?: number) => void;
 
   filterCondition: FilterableFieldDefinition;
@@ -30,7 +38,7 @@ const defaultFilterCondition: FilterableFieldDefinition = {
   key: "",
   label: "",
   type: "string",
-  value: "",
+  value: [""],
   operator: "equals",
 };
 
@@ -38,6 +46,7 @@ const defaultValue: FilterState = {
   filterOpen: false,
 
   filterConditions: [],
+  setFilterConditions: () => {},
   handleAddCondition: () => {},
 
   filterCondition: defaultFilterCondition,
@@ -149,8 +158,8 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       key: field.key,
       label: field.label,
       type: field.type,
-      value: value,
-      valueLabel: value,
+      value: [value],
+      valueLabel: [value],
       operator: "equals",
     });
   };
@@ -158,8 +167,8 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
   const handleFieldValue = (value: string | number | Date | boolean) =>
     setFilterCondition((prev) => ({
       ...prev,
-      value: value,
-      valueLabel: value,
+      value: [value],
+      valueLabel: [value],
     }));
 
   const handleFieldObjValue = (obj: Record<string, any>): void => {
@@ -182,6 +191,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     filterOpen,
 
     filterConditions,
+    setFilterConditions,
     handleAddCondition,
 
     filterCondition,

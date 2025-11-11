@@ -11,6 +11,7 @@ const OPERATOR_MAP: Record<string, string> = {
 };
 
 import { FilterableFieldDefinition } from "@myorg/shared";
+import { Types } from "mongoose";
 
 export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
   if (filters.length === 0) return {};
@@ -24,40 +25,48 @@ export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
 
     let condition: Record<string, any>;
 
-    // ✅ 1. valueのない empty 系は先に処理して return する
     if (f.operator === "is-empty") {
       condition = { [f.key]: { $exists: false } };
     } else if (f.operator === "is-not-empty") {
       condition = { [f.key]: { $exists: true } };
     } else {
-      // ✅ 2. それ以外は value を利用
-      let value = f.value;
-      if (value === undefined || value === null) continue;
+      let value: any = f.value;
+      if (!value || (Array.isArray(value) && value.length === 0)) continue;
 
-      // 3. 型に応じて変換
-      switch (f.type) {
-        case "Date":
-          value = new Date(value as string);
-          break;
-        case "number":
-          if (typeof value === "string") value = Number(value);
-          break;
-        case "string":
-        case "select":
-        case "checkbox":
-        case "datetime-local":
-        default:
-          break;
+      // 型変換処理
+      const convertValue = (v: any) => {
+        switch (f.type) {
+          case "Date":
+            return new Date(v);
+          case "number":
+            return typeof v === "string" ? Number(v) : v;
+          case "string":
+          case "select":
+            if (typeof v === "string" && /^[0-9a-fA-F]{24}$/.test(v)) {
+              return new Types.ObjectId(v);
+            }
+            return v;
+          default:
+            return v;
+        }
+      };
+
+      if (Array.isArray(value)) {
+        value = value.map(convertValue);
+      } else {
+        value = convertValue(value);
       }
 
+      // operator ごとの処理
       if (f.operator === "contains") {
-        if (typeof value === "string") {
-          condition = { [f.key]: { [op]: String(f.value), $options: "i" } };
-        } else {
-          condition = { [f.key]: { [op]: value } };
-        }
-      } else if (f.operator === "in" && Array.isArray(value)) {
-        condition = { [f.key]: { [op]: value } };
+        const regexValue = Array.isArray(value) ? value[0] : value;
+        condition =
+          typeof regexValue === "string"
+            ? { [f.key]: { [op]: regexValue, $options: "i" } }
+            : { [f.key]: { [op]: regexValue } };
+      } else if (Array.isArray(value)) {
+        // ✅ value が配列なら自動で $in に変換
+        condition = { [f.key]: { $in: value } };
       } else {
         condition = { [f.key]: { [op]: value } };
       }
@@ -70,13 +79,8 @@ export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
     }
   }
 
-  if (orConditions.length > 0 && andConditions.length > 0) {
+  if (orConditions.length > 0 && andConditions.length > 0)
     return { $and: [...andConditions, { $or: orConditions }] };
-  } else if (orConditions.length > 0) {
-    return { $or: orConditions };
-  } else {
-    return andConditions.length > 1
-      ? { $and: andConditions }
-      : andConditions[0];
-  }
+  if (orConditions.length > 0) return { $or: orConditions };
+  return andConditions.length > 1 ? { $and: andConditions } : andConditions[0];
 };
