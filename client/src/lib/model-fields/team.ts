@@ -28,7 +28,7 @@ export const team: UIFieldDefinition[] = [
   {
     key: "country",
     label: "国名",
-    type: "string",
+    type: "select",
     filterable: true,
     sortable: true,
     displayOnDetail: true,

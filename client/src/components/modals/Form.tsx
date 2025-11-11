@@ -238,17 +238,17 @@ const Form = <T extends keyof FormTypeMap>() => {
         <>
           {steps && steps.length !== 0 ? (
             <>
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">
+              <h3 className="text-xl font-semibold text-gray-700 mb-1">
                 {newData ? "新規データ作成" : "既存データ編集"}
               </h3>
 
               <div>
-                <div className="mb-4 text-sm text-gray-500">
+                <div className="mb-1 text-sm text-gray-500">
                   ステップ {currentStep + 1} / {steps.length}：
                   {steps[currentStep].stepLabel}
                 </div>
 
-                <div className="flex space-x-2 mb-4">
+                <div className="flex space-x-2">
                   {steps.map((_, index) => (
                     <div
                       key={index}
@@ -271,7 +271,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         </>
       }
       footer={
-        <div className="mt-4">
+        <div>
           {isTableOpen ? (
             <LinkButtonGroup
               deny={{
