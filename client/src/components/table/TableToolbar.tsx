@@ -17,6 +17,7 @@ import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
+import Badges from "./Badges";
 
 type AddButtonProps = {
   menuItems: { label: string; onClick: () => void }[];
@@ -80,6 +81,7 @@ type TableToolbarProps<K extends keyof FormTypeMap> = {
   formInitialData?: Partial<FormTypeMap[K]>;
   handleUpdateTrigger?: () => void;
   reloadFun?: () => Promise<void>;
+  openBadges?: boolean;
 };
 
 const TableToolbar = <K extends keyof FormTypeMap>({
@@ -91,6 +93,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   formInitialData,
   handleUpdateTrigger,
   reloadFun,
+  openBadges,
 }: TableToolbarProps<K>) => {
   const { openFilter } = useFilter();
   const { openSort } = useSort();
@@ -161,97 +164,100 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     : [];
 
   return (
-    <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
-      {/* 左側：フィルター・行間・ソート */}
-      <div className="flex items-center gap-x-4">
-        {/* 行間操作ボタン */}
-        <div className="flex">
+    <>
+      <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
+        {/* 左側：フィルター・行間・ソート */}
+        <div className="flex items-center gap-x-4">
+          {/* 行間操作ボタン */}
+          <div className="flex">
+            <button
+              onClick={() => setRowSpacing("wide")}
+              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+                rowSpacing === "wide"
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
+            >
+              <Bars2Icon className="w-6 h-6" />
+              <span className="hidden md:inline">広い</span>
+            </button>
+            <button
+              onClick={() => setRowSpacing("narrow")}
+              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+                rowSpacing === "narrow"
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
+            >
+              <Bars3Icon className="w-6 h-6" />
+              <span className="hidden md:inline">狭い</span>
+            </button>
+          </div>
+
+          {/* フィルターを開くボタン */}
           <button
-            onClick={() => setRowSpacing("wide")}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-              rowSpacing === "wide"
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
+            className="cursor-pointer flex items-center gap-x-2"
+            onClick={() => openFilter()}
           >
-            <Bars2Icon className="w-6 h-6" />
-            <span className="hidden md:inline">広い</span>
+            <FunnelIcon className="w-6 h-6" />
+            <span className="hidden md:inline">フィルター</span>
           </button>
+
+          {/* ソートを開くボタン */}
           <button
-            onClick={() => setRowSpacing("narrow")}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-              rowSpacing === "narrow"
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
+            className="cursor-pointer flex items-center gap-x-2"
+            onClick={() => openSort()}
           >
-            <Bars3Icon className="w-6 h-6" />
-            <span className="hidden md:inline">狭い</span>
+            <AdjustmentsVerticalIcon className="w-6 h-6" />
+            <span className="hidden md:inline">ソート</span>
           </button>
         </div>
 
-        {/* フィルターを開くボタン */}
-        <button
-          className="cursor-pointer flex items-center gap-x-2"
-          onClick={() => openFilter()}
-        >
-          <FunnelIcon className="w-6 h-6" />
-          <span className="hidden md:inline">フィルター</span>
-        </button>
+        <div className="flex items-center gap-x-4">
+          {/* リロード */}
+          {reloadFun && (
+            <button
+              className="cursor-pointer flex items-center gap-x-2"
+              onClick={reloadFun}
+            >
+              <ArrowPathIcon className="w-6 h-6" />
+              <span className="hidden md:inline">リロード</span>
+            </button>
+          )}
 
-        {/* ソートを開くボタン */}
-        <button
-          className="cursor-pointer flex items-center gap-x-2"
-          onClick={() => openSort()}
-        >
-          <AdjustmentsVerticalIcon className="w-6 h-6" />
-          <span className="hidden md:inline">ソート</span>
-        </button>
-      </div>
-
-      <div className="flex items-center gap-x-4">
-        {/* リロード */}
-        {reloadFun && (
-          <button
-            className="cursor-pointer flex items-center gap-x-2"
-            onClick={reloadFun}
-          >
-            <ArrowPathIcon className="w-6 h-6" />
-            <span className="hidden md:inline">リロード</span>
-          </button>
-        )}
-
-        {modelType && (staffState.admin || isDev) && (
-          <>
-            {/* 右側：新規追加ボタン */}
-            <AddButton
-              menuItems={menuItems}
-              dropdownRef={dropdownRef}
-              isAddOpen={isAddOpen}
-              setIsAddOpen={setIsAddOpen}
-            />
-            {/* 右側：フォルダーボタン */}
-            {(uploadFile || downloadFile) && (
-              <div
-                ref={dropdownRef}
-                className="relative inline-block text-left"
-              >
-                <button
-                  onClick={() => SetIsFolderOpen(!isFolderOpen)}
-                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                  type="button"
+          {modelType && (staffState.admin || isDev) && (
+            <>
+              {/* 右側：新規追加ボタン */}
+              <AddButton
+                menuItems={menuItems}
+                dropdownRef={dropdownRef}
+                isAddOpen={isAddOpen}
+                setIsAddOpen={setIsAddOpen}
+              />
+              {/* 右側：フォルダーボタン */}
+              {(uploadFile || downloadFile) && (
+                <div
+                  ref={dropdownRef}
+                  className="relative inline-block text-left"
                 >
-                  <FolderPlusIcon className="w-8 h-8" />
-                  <span className="hidden md:inline">CSV</span>
-                </button>
+                  <button
+                    onClick={() => SetIsFolderOpen(!isFolderOpen)}
+                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                    type="button"
+                  >
+                    <FolderPlusIcon className="w-8 h-8" />
+                    <span className="hidden md:inline">CSV</span>
+                  </button>
 
-                {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
-              </div>
-            )}
-          </>
-        )}
+                  {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+        {openBadges && <Badges handleUpdateTrigger={handleUpdateTrigger} />}
       </div>
-    </div>
+    </>
   );
 };
 

@@ -135,6 +135,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
               setOptionSelectData
             )
           }
+          openBadges={optionKey === "team"}
         />
       </>
     );

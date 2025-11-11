@@ -33,6 +33,7 @@ type Original<K extends ModelType> = TableBase<K> &
 
     uploadFile?: (file: File) => Promise<boolean>;
     reloadFun?: () => Promise<void>;
+    openBadges?: boolean;
   };
 
 type TableContainerProps<K extends keyof FormTypeMap> = Original<K>;
@@ -56,6 +57,7 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   form,
   onClick,
   selectedKey,
+  openBadges,
 }: TableContainerProps<K>) => {
   const { closeSort } = useSort();
   const { closeFilter } = useFilter();
@@ -104,6 +106,7 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
           setUpdateTrigger((prev) => !prev);
         }}
         reloadFun={reloadFun}
+        openBadges={openBadges}
       />
       <Table
         data={items}
