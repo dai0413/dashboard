@@ -57,35 +57,40 @@ const FieldRow = ({
   }, [filterCondition.key]);
 
   return (
-    <div className="mb-4 flex justify-between items-center space-x-2">
+    <div className="mb-4 grid grid-cols-3 gap-3 items-center">
+      {/* フィールド選択 */}
       <SelectField
-        type={"text"}
+        type="text"
         value={filterCondition.key}
         onChange={handleFieldSelect}
         options={fieldOptions}
         defaultOption="-- 項目を選択 --"
       />
 
+      {/* 値入力 */}
       {filterCondition.operator !== "is-empty" &&
-        filterCondition.operator !== "is-not-empty" &&
-        !Array.isArray(filterCondition.value) && (
-          <FilterFields
-            type={filterCondition.type}
-            value={filterCondition.value ?? ""}
-            onChange={handleFieldValue}
-            onChangeObj={handleFieldObjValue}
-            options={optionSelectData ?? []}
-          />
-        )}
+      filterCondition.operator !== "is-not-empty" &&
+      filterCondition.value?.length === 1 ? (
+        <FilterFields
+          type={filterCondition.type}
+          value={filterCondition.value[0] ?? ""}
+          onChange={handleFieldValue}
+          onChangeObj={handleFieldObjValue}
+          options={optionSelectData ?? []}
+        />
+      ) : (
+        <div></div>
+      )}
 
-      <SelectField
-        type={"text"}
-        value={filterCondition.operator as string}
-        onChange={handleFieldOperator}
-        options={operator()}
-      />
+      {/* 演算子選択 + ボタン */}
+      <div className="flex items-center gap-2">
+        <SelectField
+          type="text"
+          value={filterCondition.operator as string}
+          onChange={handleFieldOperator}
+          options={operator()}
+        />
 
-      <div className="space-x-2 flex">
         <IconButton icon="add" onClick={addOnClick} color="blue" />
         <IconButton icon="delete" onClick={deleteOnClick} color="red" />
       </div>
