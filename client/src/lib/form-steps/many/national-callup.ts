@@ -1,6 +1,6 @@
-import { FormStep } from "../../../types/form";
+import { FormStep, FormUpdatePair } from "../../../types/form";
 import { ModelType } from "../../../types/models";
-import { NationalCallupForm } from "../../../types/models/national-callup";
+import { currentTransfer } from "../utils/onChange/currentTransfer";
 
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
@@ -119,20 +119,58 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       },
     ],
     many: true,
-    validate: (formData: NationalCallupForm) => {
-      if (Boolean(formData.team) && Boolean(formData.team_name)) {
+    validate: (formData) => {
+      if (!formData.team && !formData.team_name) {
         return {
           success: false,
           message: "チームを選択、または入力してください",
         };
       }
 
-      const isValid = Boolean(formData.team) || Boolean(formData.team_name);
+      if (
+        formData.status &&
+        formData.status !== "joined" &&
+        !formData.left_reason
+      ) {
+        console.log("error left_reason data", formData);
+        return {
+          success: false,
+          message: "離脱理由を入力してください",
+        };
+      }
 
       return {
-        success: isValid,
-        message: isValid ? "" : "移籍元、移籍先少なくとも1つ選択してください",
+        success: true,
+        message: "",
       };
+    },
+    onChange: async (formData, api) => {
+      const latest = await currentTransfer(formData, api);
+
+      let obj: FormUpdatePair = [];
+      if (typeof latest === "string") {
+        obj.push({
+          key: "team_name",
+          value: latest,
+        });
+      } else if (typeof latest === "object") {
+        obj.push({
+          key: "team",
+          value: latest,
+        });
+      }
+
+      if (formData.status) {
+        if (formData.status === "declined") {
+          obj.push({ key: "joined_at", value: undefined });
+          obj.push({ key: "left_at", value: undefined });
+        } else if (formData.status === "withdrawn") {
+          obj.push({ key: "left_at", value: undefined });
+        } else if (formData.status === "joined") {
+          obj.push({ key: "left_reason", value: undefined });
+        }
+      }
+      return obj;
     },
   },
 ];

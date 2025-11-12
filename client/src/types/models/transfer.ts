@@ -44,6 +44,6 @@ export type TransferGet = Omit<Transfer, "player" | "from_team" | "to_team"> & {
   // from_date: string;
   // to_date: string | null;
   player: Label;
-  from_team: Label;
-  to_team: Label;
+  from_team: Label | null;
+  to_team: Label | null;
 };

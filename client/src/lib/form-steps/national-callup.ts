@@ -1,5 +1,6 @@
-import { FormStep } from "../../types/form";
-import { ModelType } from "../../types/models";
+import { FormStep, FormUpdatePair } from "../../types/form";
+import { FormTypeMap, ModelType } from "../../types/models";
+import { currentTransfer } from "./utils/onChange/currentTransfer";
 
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
@@ -27,6 +28,24 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         required: true,
       },
     ],
+    onChange: async (formData, api) => {
+      const latest = await currentTransfer(formData, api);
+
+      let obj: FormUpdatePair = [];
+      if (typeof latest === "string") {
+        obj.push({
+          key: "team_name",
+          value: latest,
+        });
+      } else if (typeof latest === "object") {
+        obj.push({
+          key: "team",
+          value: latest,
+        });
+      }
+
+      return obj;
+    },
   },
   {
     stepLabel: "選手のチームを選択",
@@ -148,5 +167,32 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         valueType: "option",
       },
     ],
+    validate: (formData) => {
+      if (formData.status !== "joined" && !formData.left_reason) {
+        return {
+          success: false,
+          message: "離脱理由を入力してください",
+        };
+      }
+
+      return {
+        success: true,
+        message: "",
+      };
+    },
+    onChange: async (formData: FormTypeMap[ModelType.NATIONAL_CALLUP]) => {
+      let obj: FormUpdatePair = [];
+      if (formData.status) {
+        if (formData.status === "declined") {
+          obj.push({ key: "joined_at", value: undefined });
+          obj.push({ key: "left_at", value: undefined });
+        } else if (formData.status === "withdrawn") {
+          obj.push({ key: "left_at", value: undefined });
+        } else if (formData.status === "joined") {
+          obj.push({ key: "left_reason", value: undefined });
+        }
+      }
+      return obj;
+    },
   },
 ];
