@@ -41,6 +41,7 @@ import {
 import { useFilter } from "./filter-context";
 import { useSort } from "./sort-context";
 import { useOptions } from "./options-provider";
+import { useApi } from "./api-context";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -121,7 +122,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
 
   steps: {
     currentStep: number;
-    nextStep: () => void;
+    nextStep: () => Promise<void>;
     prevStep: () => void;
     nextData: () => void;
     sendData: () => Promise<void>;
@@ -134,6 +135,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     modelType: T,
     formInitialData: Partial<FormTypeMap[T]>
   ) => any[];
+  autoFill: () => Promise<void>;
 };
 
 export const FormModalContext = createContext<
@@ -167,6 +169,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const {
     modal: { handleSetAlert, resetAlert },
   } = useAlert();
+
+  const api = useApi();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modelType, setModelType] = useState<T | null>(null);
@@ -253,10 +257,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       initialFormData ? setFormDatas([initialFormData]) : resetFormDatas();
     } else {
       setNewData(false);
-      console.log("editItem", editItem);
       if (editItem) {
         setFormData(convertGettedToForm(model, editItem));
-        console.log("resolvedLabels", editItem);
         setFormLabel(editItem);
       }
 
@@ -373,7 +375,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     return false;
   };
 
-  const nextStep = () => {
+  const nextStep = async (): Promise<void> => {
     const current =
       mode === "single" ? singleStep[currentStep] : bulkStep[currentStep];
 
@@ -384,7 +386,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
     if (!requiredCheck.success) {
       handleSetAlert(requiredCheck);
-      return false;
     }
 
     // --- validate 関数によるバリデーション ---
@@ -397,6 +398,17 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       } else {
         const valid = current.validate(checkData);
         if (!valid.success) return handleSetAlert(valid);
+      }
+    }
+
+    // --- onChange 関数による値変更 ---
+    if (current.onChange) {
+      if (!Array.isArray(checkData)) {
+        const datas = await current.onChange(checkData, api);
+
+        datas.forEach((da) => {
+          singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
+        });
       }
     }
 
@@ -546,6 +558,22 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     return menuItems;
   };
+  // ////////////////////////////////////////////////////// //
+  const autoFill = async (): Promise<void> => {
+    const current =
+      mode === "single" ? singleStep[currentStep] : bulkStep[currentStep];
+
+    if (current?.onChange) {
+      for (const [dataIndex, formData] of formDatas.entries()) {
+        if (!formData) continue;
+        const updatePaires = await current.onChange(formData, api);
+
+        for (const da of updatePaires) {
+          handleFormData(dataIndex, da.key as keyof FormTypeMap[T], da.value);
+        }
+      }
+    }
+  };
 
   const renderer: (
     confirmData: Record<string, string | number | undefined>[]
@@ -601,6 +629,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     displayableField,
     getDiffKeys,
     createFormMenuItems,
+    autoFill,
   };
 
   return (

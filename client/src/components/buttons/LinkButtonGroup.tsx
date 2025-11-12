@@ -4,7 +4,9 @@ import LinkButton from "./LinkButton";
 type LinkButtonProps = {
   text: string;
   color?: "green" | "red" | "gray";
-  onClick?: (data?: any[] | string) => void;
+  onClick?:
+    | ((data?: any[] | string) => void)
+    | ((data?: any[] | string) => Promise<void>);
   to?: string;
   disabled?: boolean;
 };
