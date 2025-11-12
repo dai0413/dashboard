@@ -1,5 +1,8 @@
 import { Team } from "../../../types/models/team";
 
 export const team = (t: Team): string => {
-  return `${t.abbr}` || `${t.team}` || `${t.enTeam}` || "";
+  if (t.abbr) return t.abbr;
+  if (t.team) return t.team;
+  if (t.enTeam) return t.enTeam;
+  return "";
 };

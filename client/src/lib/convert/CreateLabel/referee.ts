@@ -1,5 +1,5 @@
 import { Referee } from "../../../types/models/referee";
 
 export const referee = (p: Referee): string => {
-  return p.name || p.en_name || "";
+  return p.name;
 };
