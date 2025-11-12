@@ -220,7 +220,7 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
   ];
 
   return (
-    <div className="flex items-center gap-x-4">
+    <div className="flex items-center gap-x-1">
       {competitionTabs.map((tab) => {
         return (
           <button
@@ -229,7 +229,7 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
               setSelectTab((prev) => (prev === tab.key ? null : tab.key));
               tab.onClick();
             }}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+            className={`cursor-pointer flex items-center p-1 border rounded-md ${
               tab.onMark
                 ? "bg-blue-500 text-white"
                 : "border-gray-400 text-gray-700"

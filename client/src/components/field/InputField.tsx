@@ -111,8 +111,11 @@ const InputField = ({
 
   const { seasonStart, seasonEnd, nextSeasonStart } = getSeasonDates();
 
+  const inputButton =
+    mode === "single" && (type === "date" || type === "datetime-local");
+
   return (
-    <div className="flex items-center gap-x-4 mb-1">
+    <div className={`flex items-center gap-x-4 ${inputButton ? "" : "w-full"}`}>
       <input
         type={type === "boolean" ? "checkbox" : type}
         className="w-full border border-gray-300 rounded px-3 py-2"
@@ -122,7 +125,7 @@ const InputField = ({
         placeholder={placeholder}
         onChange={handleChange}
       />
-      {mode === "single" && (type === "date" || type === "datetime-local") && (
+      {inputButton && (
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
