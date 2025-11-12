@@ -9,7 +9,7 @@ import { TeamZodSchema } from "./team.schema.js";
 export const TransferZodSchema = z
   .object({
     _id: objectId,
-    doa: dateField.refine((v) => !!v, { message: "doaは必須です" }),
+    doa: dateField,
     from_team: objectId.optional(),
     from_team_name: z.string().nonempty().optional(),
     to_team: objectId.optional(),

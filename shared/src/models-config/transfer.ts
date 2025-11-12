@@ -48,7 +48,7 @@ export function transfer<TDoc = any, TModel = any>(
       buildCustomMatch: customMatchFn,
       sort: { doa: -1, _id: -1 },
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: (deps) => [

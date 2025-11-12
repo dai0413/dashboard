@@ -14,7 +14,6 @@ const TransferSchema: Schema<ITransfer> = new Schema<ITransfer, any, ITransfer>(
   {
     doa: {
       type: Date,
-      required: true,
     },
     from_team: {
       type: mongoose.Schema.Types.ObjectId,
