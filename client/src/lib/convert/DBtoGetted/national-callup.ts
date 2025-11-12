@@ -2,6 +2,7 @@ import {
   NationalCallup,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
+import { Label } from "../../../types/types";
 import { leftReason } from "../../../utils/createOption/Enum/leftReason";
 import { status } from "../../../utils/createOption/Enum/status";
 import { nationalMatchSeries } from "../CreateLabel/national-match-series";
@@ -13,6 +14,16 @@ export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
   const left_reason = leftReason().find(
     (item) => item.key === t.left_reason
   )?.label;
+
+  let newTeam: Label = { id: undefined, label: "" };
+
+  if ("team" in t && t.team) {
+    if (t.team._id) {
+      newTeam = { label: team(t.team), id: t.team._id };
+    } else {
+      newTeam = { label: t.team.team, id: undefined };
+    }
+  }
 
   return {
     ...t,
@@ -27,10 +38,7 @@ export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
       label: player(t.player),
       id: t.player._id,
     },
-    team: {
-      label: team(t.team),
-      id: t.team._id,
-    },
+    team: newTeam,
     status: statusOptions ? statusOptions : "",
     left_reason: left_reason ? left_reason : "",
   };
