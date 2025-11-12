@@ -97,6 +97,10 @@ export const TeamTabItems: IconButtonProps[] = [
     icon: "match",
     text: "試合",
   },
+  {
+    icon: "line-plot",
+    text: "勝点推移",
+  },
 ];
 
 export const NationalTabItems: IconButtonProps[] = [

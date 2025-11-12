@@ -528,6 +528,8 @@ const Team = () => {
           reloadTrigger={reloadKey}
         />
       )}
+
+      {selectedTab === "line-plot" && id && <a></a>}
     </div>
   );
 };
