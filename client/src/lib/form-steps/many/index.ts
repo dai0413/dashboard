@@ -5,6 +5,7 @@ import { player } from "./player";
 import { nationalCallUp } from "./national-callup";
 import { teamCompetitionSeason } from "./team-competition-season";
 import { competitionStage } from "./competition-stage";
+import { transfer } from "./transfer";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
@@ -19,6 +20,10 @@ const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.TEAM_COMPETITION_SEASON]: [
     ...teamCompetitionSeason,
     createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),
+  ],
+  [ModelType.TRANSFER]: [
+    ...transfer,
+    createConfirmationStep<ModelType.TRANSFER>(),
   ],
 };
 

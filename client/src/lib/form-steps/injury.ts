@@ -16,18 +16,18 @@ export const injury: FormStep<ModelType.INJURY>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const latest = await currentTransfer(formData, api);
+      const { to_team, to_team_name } = await currentTransfer(formData, api);
 
       let obj: FormUpdatePair = [];
-      if (typeof latest === "string") {
+      if (to_team_name) {
         obj.push({
           key: "team_name",
-          value: latest,
+          value: to_team_name,
         });
-      } else if (typeof latest === "object") {
+      } else if (to_team) {
         obj.push({
           key: "team",
-          value: latest,
+          value: to_team,
         });
       }
 
