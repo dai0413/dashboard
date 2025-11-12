@@ -1,5 +1,6 @@
 import { FormTypeMap } from "./models";
 import { ResponseStatus } from "../types/api";
+import { AxiosInstance } from "axios";
 
 type StepType = "form" | "confirm";
 
@@ -82,12 +83,20 @@ export type FormFieldDefinition<T extends keyof FormTypeMap> =
   | MultiSelectField<T>
   | TableField<T>;
 
+export type FormUpdatePair = {
+  key: string;
+  value: any;
+}[];
+
 export interface FormStep<K extends keyof FormTypeMap> {
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
   many?: boolean;
   validate?: (data: FormTypeMap[K]) => ResponseStatus;
+  onChange?:
+    | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
+    | ((data: FormTypeMap[K]) => FormUpdatePair);
   skip?: (data: FormTypeMap[K]) => boolean;
 }
 
