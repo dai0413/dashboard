@@ -4,12 +4,24 @@ import { readItemsBase, ResBody } from "../../../api/readItems";
 import { Transfer } from "../../../../types/models/transfer";
 import { API_ROUTES } from "../../../apiRoutes";
 import { convert } from "../../../convert/DBtoGetted";
+import { position } from "../../../../utils/createOption/Enum/position";
+
+const positionOptions = position();
+type Position = (typeof positionOptions)[number] | null;
+
+type Response = {
+  to_team?: { label: any; key: string };
+  to_team_name?: string;
+  position?: Position[];
+};
 
 export const currentTransfer = async <T extends ModelType>(
   formData: FormTypeMap[T],
   api: AxiosInstance
-): Promise<{ label: any; key: string } | string | null> => {
-  if (!("player" in formData) || !formData.player) return null;
+): Promise<Response> => {
+  if (!("player" in formData) || !formData.player) return {};
+
+  let response: Response = {};
 
   const currentTransfer: ResBody<Transfer> = await readItemsBase({
     apiInstance: api,
@@ -23,12 +35,19 @@ export const currentTransfer = async <T extends ModelType>(
 
     if (latest.to_team) {
       if (latest.to_team.id) {
-        return { label: latest.to_team.label, key: latest.to_team.id };
+        response.to_team = {
+          label: latest.to_team.label,
+          key: latest.to_team.id,
+        };
       } else {
-        return latest.to_team.label;
+        response.to_team_name = latest.to_team.label;
       }
+    }
+
+    if (latest.position) {
+      response.position = latest.position;
     }
   }
 
-  return null;
+  return response;
 };

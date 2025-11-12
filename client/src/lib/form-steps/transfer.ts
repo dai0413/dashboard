@@ -16,18 +16,27 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const latest = await currentTransfer(formData, api);
+      const { to_team, to_team_name, position } = await currentTransfer(
+        formData,
+        api
+      );
 
       let obj: FormUpdatePair = [];
-      if (typeof latest === "string") {
+      if (to_team_name) {
         obj.push({
           key: "from_team_name",
-          value: latest,
+          value: to_team_name,
         });
-      } else if (typeof latest === "object") {
+      } else if (to_team) {
         obj.push({
           key: "from_team",
-          value: latest,
+          value: to_team,
+        });
+      }
+      if (position) {
+        obj.push({
+          key: "position",
+          value: position,
         });
       }
 
