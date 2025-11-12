@@ -40,7 +40,7 @@ import {
 } from "../types/field";
 import { useFilter } from "./filter-context";
 import { useSort } from "./sort-context";
-import { useOptions } from "./options-provider";
+import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
@@ -218,7 +218,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     for (const key of Object.keys(resolved)) {
       const id = resolved[key];
-      if (!id) continue;
+      if (!id || !isModelType(getOptionKey(key))) continue;
 
       if (Array.isArray(id)) {
         resolved[key] = (
@@ -248,18 +248,23 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
       if (initialFormData) {
         setFormData(initialFormData);
+        setFormDatas([initialFormData]);
         const resolvedLabels = await resolveForeignKeyLabels(initialFormData);
         setFormLabel(resolvedLabels);
+        setFormLabels([resolvedLabels]);
       } else {
         resetFormData();
+        resetFormDatas();
       }
-
-      initialFormData ? setFormDatas([initialFormData]) : resetFormDatas();
     } else {
       setNewData(false);
       if (editItem) {
-        setFormData(convertGettedToForm(model, editItem));
-        setFormLabel(editItem);
+        const newFormData = convertGettedToForm(model, editItem);
+        setFormData(newFormData);
+
+        const resolvedLabels = await resolveForeignKeyLabels(newFormData);
+
+        setFormLabel(resolvedLabels);
       }
 
       if (model === ModelType.MATCH_FORMAT) {
