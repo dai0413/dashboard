@@ -1,5 +1,6 @@
-import { FormStep } from "../../types/form";
+import { FormStep, FormUpdatePair } from "../../types/form";
 import { ModelType } from "../../types/models";
+import { currentTransfer } from "./utils/onChange/currentTransfer";
 
 export const injury: FormStep<ModelType.INJURY>[] = [
   {
@@ -14,6 +15,24 @@ export const injury: FormStep<ModelType.INJURY>[] = [
         required: true,
       },
     ],
+    onChange: async (formData, api) => {
+      const latest = await currentTransfer(formData, api);
+
+      let obj: FormUpdatePair = [];
+      if (typeof latest === "string") {
+        obj.push({
+          key: "team_name",
+          value: latest,
+        });
+      } else if (typeof latest === "object") {
+        obj.push({
+          key: "team",
+          value: latest,
+        });
+      }
+
+      return obj;
+    },
   },
   {
     stepLabel: "チームを選択",
