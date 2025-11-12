@@ -124,7 +124,7 @@ const Player = () => {
           ]}
           fetch={{
             apiRoute: API_ROUTES.TRANSFER.GET_ALL,
-            params: { player: id },
+            params: { player: id, sort: "-from_date" },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
             .filter(isFilterable)

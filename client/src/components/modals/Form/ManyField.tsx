@@ -4,7 +4,7 @@ import { Table } from "../../table";
 import { RenderField } from "./Field";
 import { useState } from "react";
 import { TableHeader } from "../../../types/types";
-import { IconTextButton } from "../../buttons";
+import { IconButton, IconTextButton } from "../../buttons";
 import { useQuery } from "../../../context/query-context";
 import { useForm } from "../../../context/form-context";
 
@@ -80,22 +80,19 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
 
           if (field.fieldType === "table") {
             return (
-              <>
-                <button
-                  type="button"
-                  className={`text-gray-500 bg-green-100 hover:bg-green-200 font-medium rounded-full text-sm px-3 py-1 text-center mx-2`}
-                  onClick={() => {
-                    toggleTableOpen();
-                    setFocus({
-                      field: field,
-                      rowIndex: rowIndex,
-                    });
-                  }}
-                >
-                  編集
-                </button>
-                {value || "未選択"}
-              </>
+              <IconButton
+                icon="edit"
+                color="gray"
+                text={value || "未選択"}
+                onClick={() => {
+                  toggleTableOpen();
+                  setFocus({
+                    field: field,
+                    rowIndex: rowIndex,
+                  });
+                }}
+                className="text-gray-500"
+              />
             );
           } else
             return (
