@@ -80,6 +80,29 @@ const OptionContext = createContext<OptionsState>({
   getLabelById: async () => undefined,
 });
 
+const keyMap: Record<string, keyof OptionsMap> = {
+  citizenship: ModelType.COUNTRY,
+  from_team: ModelType.TEAM,
+  to_team: ModelType.TEAM,
+  home_team: ModelType.TEAM,
+  away_team: ModelType.TEAM,
+  series: ModelType.NATIONAL_MATCH_SERIES,
+  parent_stage: ModelType.COMPETITION_STAGE,
+  competition_stage: ModelType.COMPETITION_STAGE,
+  match_format: ModelType.MATCH_FORMAT,
+};
+
+export function getOptionKey<T extends keyof FormTypeMap>(
+  key: keyof FormTypeMap[T] | string
+): keyof OptionsMap {
+  if (typeof key === "string" && key.includes(".")) {
+    const parts = key.split(".");
+    const last = parts[parts.length - 1];
+    return keyMap[last] ?? (last as keyof OptionsMap);
+  }
+  return keyMap[key as string] ?? (key as keyof OptionsMap);
+}
+
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const optionRouteMap: Record<string, BaseCrudRoutes<{}>> = {
     [ModelType.PLAYER]: API_ROUTES.PLAYER,
@@ -119,7 +142,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     optionKey: T,
     id: string
   ): Promise<string | undefined> {
-    const key = getOptionKey(optionKey, keyMap);
+    const key = getOptionKey(optionKey);
 
     if (!isModelType(key)) {
       console.error("optionKeyの不備:", key);
@@ -244,30 +267,6 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     [optionRouteMap, getOptionData]
   );
 
-  function getOptionKey<T extends keyof FormTypeMap>(
-    key: keyof FormTypeMap[T] | string,
-    keyMap: any
-  ): keyof OptionsMap {
-    if (typeof key === "string" && key.includes(".")) {
-      const parts = key.split(".");
-      const last = parts[parts.length - 1];
-      return keyMap[last] ?? (last as keyof OptionsMap);
-    }
-    return keyMap[key as string] ?? (key as keyof OptionsMap);
-  }
-
-  const keyMap: Record<string, keyof OptionsMap> = {
-    citizenship: ModelType.COUNTRY,
-    from_team: ModelType.TEAM,
-    to_team: ModelType.TEAM,
-    home_team: ModelType.TEAM,
-    away_team: ModelType.TEAM,
-    series: ModelType.NATIONAL_MATCH_SERIES,
-    parent_stage: ModelType.COMPETITION_STAGE,
-    competition_stage: ModelType.COMPETITION_STAGE,
-    match_format: ModelType.MATCH_FORMAT,
-  };
-
   const updateOption = <T extends ModelType>(
     key: FormFieldDefinition<T>["key"],
     fieldType: FormFieldDefinition<T>["fieldType"],
@@ -288,7 +287,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       value: React.SetStateAction<OptionArray | null>
     ) => void
   ): void => {
-    const nextOptionKey = getOptionKey(key, keyMap);
+    const nextOptionKey = getOptionKey(key);
     setOptionKey && setOptionKey(nextOptionKey);
 
     if (isModelType(nextOptionKey)) {
