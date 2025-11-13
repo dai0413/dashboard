@@ -47,6 +47,10 @@ const FieldList = (props: Props) => {
 
     if (isLabelObject(value)) displayValue = value.label || "";
 
+    if (typeof displayValue === "boolean") {
+      displayValue = displayValue ? "TRUE" : "FALSE";
+    }
+
     // // 日付フォーマット
     displayValue =
       field.type === "Date" &&

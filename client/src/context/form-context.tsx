@@ -42,6 +42,7 @@ import { useFilter } from "./filter-context";
 import { useSort } from "./sort-context";
 import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
+import { getDefault } from "../lib/default-formData";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -247,9 +248,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       setNewData(true);
 
       if (initialFormData) {
-        setFormData(initialFormData);
-        setFormDatas([initialFormData]);
-        const resolvedLabels = await resolveForeignKeyLabels(initialFormData);
+        const data = { ...getDefault(model), ...initialFormData };
+
+        setFormData(data);
+        setFormDatas([data]);
+        const resolvedLabels = await resolveForeignKeyLabels(data);
         setFormLabel(resolvedLabels);
         setFormLabels([resolvedLabels]);
       } else {
@@ -259,7 +262,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     } else {
       setNewData(false);
       if (editItem) {
-        const newFormData = convertGettedToForm(model, editItem);
+        const newFormData = {
+          ...getDefault(model),
+          ...convertGettedToForm(model, editItem),
+        };
         setFormData(newFormData);
 
         const resolvedLabels = await resolveForeignKeyLabels(newFormData);
@@ -270,9 +276,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       if (model === ModelType.MATCH_FORMAT) {
         const matchFormatEditItem =
           editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
-        const dat =
-          editItem &&
-          convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem);
+        const dat = editItem && {
+          ...getDefault(ModelType.MATCH_FORMAT),
+          ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
+        };
         const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
         dat ? setFormDatas(periodArray) : setFormDatas([]);
 
@@ -323,7 +330,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const sendData = async () => {
     let result: boolean = false;
-    if (!modelContext) return;
+    if (!modelContext || !modelType) return;
 
     if (mode === "single") {
       let item: FormTypeMap[T];
@@ -347,7 +354,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
           Object.entries(formData).filter(([key]) => difKeys.includes(key))
         );
 
-        result = await modelContext?.metacrud.updateItem(updated);
+        result = await modelContext?.metacrud.updateItem({
+          ...getDefault(modelType),
+          ...updated,
+        });
       }
 
       setCurrentStep((prev) =>
