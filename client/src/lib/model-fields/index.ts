@@ -14,6 +14,7 @@ import { stadium } from "./stadium";
 import { competitionStage } from "./competition-stage";
 import { matchFormat } from "./match-format";
 import { match } from "./match";
+import { playerRegistration } from "./player-registration";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
@@ -24,6 +25,7 @@ export const fieldDefinition = {
   [ModelType.MATCH]: match,
   [ModelType.NATIONAL_CALLUP]: nationalCallUp,
   [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
+  [ModelType.PLAYER_REGISTRATION]: playerRegistration,
   [ModelType.PLAYER]: player,
   [ModelType.REFEREE]: referee,
   [ModelType.SEASON]: season,

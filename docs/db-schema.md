@@ -7,16 +7,17 @@
   - [4. 移籍(transfer)](#4-移籍transfer)
   - [5. 怪我(injury)](#5-怪我injury)
   - [6. 国(country)](#6-国country)
-  - [7. 代表試合シリーズ(NationalMatchSeries)](#7-代表試合シリーズnationalmatchseries)
-  - [8. 代表召集リスト(NationalCallUp)](#8-代表召集リストnationalcallup)
+  - [7. 代表試合シリーズ(National-Match-Series)](#7-代表試合シリーズnational-match-series)
+  - [8. 代表召集リスト(National-Callup)](#8-代表召集リストnational-callup)
   - [9. 審判(referee)](#9-審判referee)
   - [10. 大会(Competition)](#10-大会competition)
   - [11. シーズン(Season)](#11-シーズンseason)
-  - [12. チームの大会参加記録(TeamCompetitionSeason)](#12-チームの大会参加記録teamcompetitionseason)
+  - [12. チームの大会参加記録(Team-Competition-Season)](#12-チームの大会参加記録team-competition-season)
   - [13. スタジアム(Stadium)](#13-スタジアムstadium)
-  - [14. 大会ステージ(CompetitionStage)](#14-大会ステージcompetitionstage)
-  - [15. 試合フォーマット(match_format)](#15-試合フォーマットmatch_format)
+  - [14. 大会ステージ(Competition-Stage)](#14-大会ステージcompetition-stage)
+  - [15. 試合フォーマット(Match-Format)](#15-試合フォーマットmatch-format)
   - [16. 試合(Match)](#16-試合match)
+  - [17. 選手登録(Player-Registration)](#17-選手登録player-registration)
 
 ## 1. ユーザー(user)
 
@@ -151,7 +152,7 @@
 
 ※ `iso3`, `name`, の組み合わせユニーク
 
-## 7. 代表試合シリーズ(NationalMatchSeries)
+## 7. 代表試合シリーズ(National-Match-Series)
 
 | フィールド | 型         | 日本語     | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
 | ---------- | ---------- | ---------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
@@ -176,7 +177,7 @@
 
 ※ `country`, `age_group`, `joined_at`, の組み合わせユニーク
 
-## 8. 代表召集リスト(NationalCallUp)
+## 8. 代表召集リスト(National-Callup)
 
 | フィールド          | 型       | 日本語         | require | undefined | 外部参照            | enum | default  | not in form | その他規則 |
 | ------------------- | -------- | -------------- | ------- | --------- | ------------------- | ---- | -------- | ----------- | ---------- |
@@ -280,7 +281,7 @@
 ※1 例 "2023","2023-2024"
 ※competition, start_date, の組み合わせユニーク
 
-## 12. チームの大会参加記録(TeamCompetitionSeason)
+## 12. チームの大会参加記録(Team-Competition-Season)
 
 | フィールド  | 型       | 日本語   | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
 | ----------- | -------- | -------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
@@ -312,7 +313,7 @@
 - transferurl はユニーク
 - sofaurl はユニーク
 
-## 14. 大会ステージ(CompetitionStage)
+## 14. 大会ステージ(Competition-Stage)
 
 | フィールド   | 型       | 日本語               | require | undefined | 外部参照         | enum        | default | not in form | その他規則 |
 | ------------ | -------- | -------------------- | ------- | --------- | ---------------- | ----------- | ------- | ----------- | ---------- |
@@ -338,7 +339,7 @@
 
 ※ season 入力で　 competition 自動入力
 
-## 15. 試合フォーマット(match_format)
+## 15. 試合フォーマット(Match-Format)
 
 | フィールド | 型                                            | 日本語 | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
 | ---------- | --------------------------------------------- | ------ | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
@@ -379,24 +380,24 @@
 | season            | 外部キー | シーズン         | true    |           | Season           |      | true    | true        |                       |
 | home_team         | 外部キー | ホーム           | true    |           | Team             |      |         |             |                       |
 | away_team         | 外部キー | アウェイ         | true    |           | Team             |      |         |             |                       |
-| match_format      | 外部キー | 試合フォーマット |         | false     | MatchFormat      |      |         |             |                       |
-| stadium           | 外部キー | スタジアム       |         | false     | Stadium          |      |         |             |                       |
-| play_time         | 数字     | プレイ時間       |         | false     |                  |      | true    | true        | match_format から計算 |
-| date              | 日付     | 開催日           |         | false     |                  |      |         |             |                       |
-| audience          | 数字     | 観客数           |         | false     |                  |      |         |             |                       |
-| home_goal         | 数字     | ホーム得点       |         | false     |                  |      |         |             |                       |
-| away_goal         | 数字     | アウェイ得点     |         | false     |                  |      |         |             |                       |
-| home_pk_goal      | 数字     | ホーム PK 得点   |         | false     |                  |      |         |             |                       |
-| away_pk_goal      | 数字     | アウェイ PK 得点 |         | false     |                  |      |         |             |                       |
-| result            | 文字列   | 試合結果         |         | false     |                  | ※2   | true    | true        | 得点から計算          |
-| match_week        | 数字     | 節               |         | false     |                  |      |         |             |                       |
-| weather           | 文字列   | 天気             |         | false     |                  |      |         |             |                       |
-| temperature       | 数字     | 気温             |         | false     |                  |      |         |             |                       |
-| humidity          | 数字     | 湿度             |         | false     |                  |      |         |             |                       |
-| transferurl       | 文字列   | transfer         |         | false     | unique           |      |         |             |                       |
-| sofaurl           | 文字列   | sofa             |         | false     | unique           |      |         |             |                       |
-| urls              | [文字列] | urls             |         | false     |                  |      |         |             |                       |
-| old_id            | 文字列   | 旧 match_id      |         | false     | unique           |      | true    |             |                       |
+| match_format      | 外部キー | 試合フォーマット |         | true      | MatchFormat      |      |         |             |                       |
+| stadium           | 外部キー | スタジアム       |         | true      | Stadium          |      |         |             |                       |
+| play_time         | 数字     | プレイ時間       |         | true      |                  |      | true    | true        | match_format から計算 |
+| date              | 日付     | 開催日           |         | true      |                  |      |         |             |                       |
+| audience          | 数字     | 観客数           |         | true      |                  |      |         |             |                       |
+| home_goal         | 数字     | ホーム得点       |         | true      |                  |      |         |             |                       |
+| away_goal         | 数字     | アウェイ得点     |         | true      |                  |      |         |             |                       |
+| home_pk_goal      | 数字     | ホーム PK 得点   |         | true      |                  |      |         |             |                       |
+| away_pk_goal      | 数字     | アウェイ PK 得点 |         | true      |                  |      |         |             |                       |
+| result            | 文字列   | 試合結果         |         | true      |                  | ※2   | true    | true        | 得点から計算          |
+| match_week        | 数字     | 節               |         | true      |                  |      |         |             |                       |
+| weather           | 文字列   | 天気             |         | true      |                  |      |         |             |                       |
+| temperature       | 数字     | 気温             |         | true      |                  |      |         |             |                       |
+| humidity          | 数字     | 湿度             |         | true      |                  |      |         |             |                       |
+| transferurl       | 文字列   | transfer         |         | true      | unique           |      |         |             |                       |
+| sofaurl           | 文字列   | sofa             |         | true      | unique           |      |         |             |                       |
+| urls              | [文字列] | urls             |         | true      |                  |      |         |             |                       |
+| old_id            | 文字列   | 旧 match_id      |         | true      | unique           |      | true    |             |                       |
 
 ※2 'home' | 'away' | 'draw'
 
@@ -410,3 +411,38 @@
 - transferurl はユニーク
 - sofaurl はユニーク
 - old_id はユニーク
+
+## 17. 選手登録(Player-Registration)
+
+| フィールド          | 型       | 日本語         | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
+| ------------------- | -------- | -------------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
+| date                | 日付     | 開催日         |         | true      |             |      |         |             |            |
+| season              | 外部キー | シーズン       | true    |           | Season      |      |         |             |            |
+| competition         | 外部キー | 大会           | true    |           | Competition |      |         | true        |            |
+| player              | 外部キー | 選手           | true    |           | Player      |      |         |             |            |
+| team                | 外部キー | チーム         | true    |           | Team        |      |         |             |            |
+| number              | 数字     | 背番号         |         | true      |             |      |         |             |            |
+| position_group      | 文字列   | ポジション     |         | true      |             | ※1   |         |             |            |
+| name                | 文字列   | 名前           | true    |           |             |      |         |             |            |
+| en_name             | 文字列   | 英語名         |         | true      |             |      |         |             |            |
+| registration_type   | 文字列   | 登録・抹消     | true    |           |             | ※2   |         |             |            |
+| height              | 数字     | 身長           |         | true      |             |      |         |             |            |
+| weight              | 数字     | 体重           |         | true      |             |      |         |             |            |
+| homegrown           | 真偽値   | ホームグロウン |         | true      |             |      | false   |             |            |
+| registration_status | 文字列   | 登録状況       | true    |           |             | ※3   |         | true        |            |
+| note                | 文字列   | 備考           |         | true      |             |      |         |             |            |
+
+※1 `GK` | `DF` | `MF` | `FW` | `MF/FW`
+※2 `register` | `deregister`
+※3 `active` | `terminated`
+
+※date, season, player, team , registration_type, の組み合わせユニーク
+
+※season を入力で competition を自動入力
+
+※ `registration_type` === `register` がきたとき
+season, player, が一致する data から最新の`registration_status` を `active`に, それ以外は`terminated`
+※ `registration_type` === `deregister` がきたとき
+season, player, が一致する data から送られてきた日付より前のデータの`registration_status` を `terminated`に
+
+※name , en_name は未入力のとき player モデルから取得

@@ -18,6 +18,7 @@ import { stadium } from "./stadium";
 import { competitionStage } from "./competition-stage";
 import { matchFormat } from "./match-format";
 import { match } from "./match";
+import { playerRegistration } from "./player-registration";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -58,6 +59,10 @@ const convertMap: {
   [ModelType.NATIONAL_MATCH_SERIES]: {
     single: nationalMatchSeries,
     multiple: (data) => data.map(nationalMatchSeries),
+  },
+  [ModelType.PLAYER_REGISTRATION]: {
+    single: playerRegistration,
+    multiple: (data) => data.map(playerRegistration),
   },
   [ModelType.PLAYER]: {
     single: player,

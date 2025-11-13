@@ -55,6 +55,7 @@ import referee from "./routes/referee.js";
 import season from "./routes/season.js";
 import stadium from "./routes/stadium.js";
 import teamCompetitionSeason from "./routes/team-competition-season.js";
+import playerRegistration from "./routes/player-registration.js";
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/aggregate", authmiddleware, aggregate);
@@ -66,6 +67,7 @@ app.use("/api/v1/match", authmiddleware, match);
 app.use("/api/v1/injury", authmiddleware, injury);
 app.use("/api/v1/national-callup", authmiddleware, nationalCallup);
 app.use("/api/v1/national-match-series", authmiddleware, nationalMatchSeries);
+app.use("/api/v1/player-registration", authmiddleware, playerRegistration);
 app.use("/api/v1/player", authmiddleware, player);
 app.use("/api/v1/player", authmiddleware, player);
 app.use("/api/v1/referee", authmiddleware, referee);

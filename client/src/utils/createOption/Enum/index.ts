@@ -16,3 +16,5 @@ export { level } from "./level";
 export { stageType } from "./stageType";
 export { periodLabel } from "./period-label";
 export { result } from "./result";
+export { registrationType } from "./registration_type";
+export { registrationStatus } from "./registration_status";

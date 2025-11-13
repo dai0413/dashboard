@@ -26,6 +26,7 @@ import { useStadium } from "./models/stadium";
 import { useCompetitionStage } from "./models/competition-stage";
 import { useMatchFormat } from "./models/match-format";
 import { useMatch } from "./models/match";
+import { usePlayerRegistration } from "./models/player-registration";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
 import { getSingleSteps } from "../lib/form-steps";
@@ -160,6 +161,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
+    [ModelType.PLAYER_REGISTRATION]: usePlayerRegistration(),
     [ModelType.REFEREE]: useReferee(),
     [ModelType.SEASON]: useSeason(),
     [ModelType.STADIUM]: useStadium(),

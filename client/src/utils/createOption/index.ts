@@ -30,6 +30,7 @@ import {
   division,
   periodLabel,
   result,
+  registrationType,
 } from "./Enum";
 import { operator } from "@myorg/shared";
 
@@ -55,6 +56,7 @@ export enum OptionType {
   DIVISION = "division",
   PERIOD_LABEL = "period_label",
   RESULT = "result",
+  REGISTRATION_TYPE = "registration_type",
 }
 
 type OptionMap = {
@@ -79,6 +81,7 @@ type OptionMap = {
   [OptionType.DIVISION]: OptionArray;
   [OptionType.PERIOD_LABEL]: OptionArray;
   [OptionType.RESULT]: OptionArray;
+  [OptionType.REGISTRATION_TYPE]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -136,6 +139,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.DIVISION]: () => division(),
   [OptionType.PERIOD_LABEL]: () => periodLabel(),
   [OptionType.RESULT]: () => result(),
+  [OptionType.REGISTRATION_TYPE]: () => registrationType(),
 };
 
 // 実装

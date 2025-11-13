@@ -30,6 +30,7 @@
 | `/api/v1/match-format`            | 試合フォーマット | [match-format.md](./api/match-format.md)                       |
 | `/api/v1/national-callup`         | 代表招集         | 　[national-callup.md](./api/national-callup.md)               |
 | `/api/v1/national-match-series`   | 代表試合シリーズ | 　[national-match-series.md](./api/national-match-series.md)   |
+| `/api/v1/player-registration`     | 選手登録         |                                                                |
 | `/api/v1/player`                  | 選手             | [player.md](./api/player.md)                                   |
 | `/api/v1/referee`                 | 審判             | 　[referee.md](./api/referee.md)                               |
 | `/api/v1/season`                  | シーズン         | 　[season.md](./api/season.md)                                 |

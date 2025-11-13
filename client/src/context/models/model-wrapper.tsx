@@ -14,6 +14,7 @@ import { StadiumProvider } from "./stadium";
 import { CompetitionStageProvider } from "./competition-stage";
 import { MatchFormatProvider } from "./match-format";
 import { MatchProvider } from "./match";
+import { PlayerRegistrationProvider } from "./player-registration";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -28,13 +29,17 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                     <MatchProvider>
                       <TeamCompetitionSeasonProvider>
                         <PlayerProvider>
-                          <RefereeProvider>
-                            <NationalCallupProvider>
-                              <InjuryProvider>
-                                <TransferProvider>{children}</TransferProvider>
-                              </InjuryProvider>
-                            </NationalCallupProvider>
-                          </RefereeProvider>
+                          <PlayerRegistrationProvider>
+                            <RefereeProvider>
+                              <NationalCallupProvider>
+                                <InjuryProvider>
+                                  <TransferProvider>
+                                    {children}
+                                  </TransferProvider>
+                                </InjuryProvider>
+                              </NationalCallupProvider>
+                            </RefereeProvider>
+                          </PlayerRegistrationProvider>
                         </PlayerProvider>
                       </TeamCompetitionSeasonProvider>
                     </MatchProvider>

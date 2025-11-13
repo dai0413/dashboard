@@ -30,6 +30,11 @@ import {
 } from "./competition-stage";
 import { MatchFormat, MatchFormatForm, MatchFormatGet } from "./match-format";
 import { Match, MatchForm, MatchGet } from "./match";
+import {
+  PlayerRegistration,
+  PlayerRegistrationForm,
+  PlayerRegistrationGet,
+} from "./player-registration";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -40,6 +45,7 @@ export enum ModelType {
   MATCH = "match",
   NATIONAL_CALLUP = "national-callup",
   NATIONAL_MATCH_SERIES = "national-match-series",
+  PLAYER_REGISTRATION = "player-registration",
   PLAYER = "player",
   REFEREE = "referee",
   SEASON = "season",
@@ -58,6 +64,7 @@ export type ModelDataMap = {
   [ModelType.MATCH]: Match;
   [ModelType.NATIONAL_CALLUP]: NationalCallup;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeries;
+  [ModelType.PLAYER_REGISTRATION]: PlayerRegistration;
   [ModelType.PLAYER]: Player;
   [ModelType.REFEREE]: Referee;
   [ModelType.SEASON]: Season;
@@ -76,6 +83,7 @@ export type GettedModelDataMap = {
   [ModelType.MATCH]: MatchGet;
   [ModelType.NATIONAL_CALLUP]: NationalCallupGet;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesGet;
+  [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationGet;
   [ModelType.PLAYER]: PlayerGet;
   [ModelType.REFEREE]: RefereeGet;
   [ModelType.SEASON]: SeasonGet;
@@ -94,6 +102,7 @@ export type FormTypeMap = {
   [ModelType.MATCH]: MatchForm;
   [ModelType.NATIONAL_CALLUP]: NationalCallupForm;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesForm;
+  [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationForm;
   [ModelType.PLAYER]: PlayerForm;
   [ModelType.REFEREE]: RefereeForm;
   [ModelType.SEASON]: SeasonForm;
@@ -112,6 +121,7 @@ export const ModelRouteMap = {
   [ModelType.MATCH]: APP_ROUTES.MATCH,
   [ModelType.NATIONAL_CALLUP]: APP_ROUTES.NATIONAL_CALLUP,
   [ModelType.NATIONAL_MATCH_SERIES]: APP_ROUTES.NATIONAL_MATCH_SERIES,
+  [ModelType.PLAYER_REGISTRATION]: APP_ROUTES.PLAYER_REGISTRATION,
   [ModelType.PLAYER]: APP_ROUTES.PLAYER,
   [ModelType.REFEREE]: APP_ROUTES.REFEREE,
   [ModelType.SEASON]: APP_ROUTES.SEASON,

@@ -13,6 +13,8 @@ export * from "./operator.js";
 export * from "./period_label.js";
 export * from "./position.js";
 export * from "./position_group.js";
+export * from "./registration_type.js";
+export * from "./registration_status.js";
 export * from "./result.js";
 export * from "./stage_type.js";
 export * from "./status.js";

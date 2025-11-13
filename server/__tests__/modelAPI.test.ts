@@ -14,6 +14,7 @@ import {
   teamCompetitionSeason,
   match,
   transfer,
+  playerRegistration,
 } from "@myorg/shared";
 import { runControllerTests } from "../dist/test-utils/runControllerTests.js";
 
@@ -32,6 +33,7 @@ import { CompetitionStageModel } from "../dist/models/competition-stage.js";
 import { MatchFormatModel } from "../dist/models/match-format.js";
 import { TeamCompetitionSeasonModel } from "../dist/models/team-competition-season.js";
 import { MatchModel } from "../dist/models/match.js";
+import { PlayerRegistrationModel } from "../dist/models/player-registration.js";
 import { match as customMatch } from "../dist/utils/customMatchStage/match.js";
 import { transfer as customTransfer } from "../dist/utils/customMatchStage/transfer.js";
 
@@ -50,3 +52,4 @@ runControllerTests(matchFormat(MatchFormatModel));
 runControllerTests(teamCompetitionSeason(TeamCompetitionSeasonModel));
 runControllerTests(match(MatchModel, customMatch));
 runControllerTests(transfer(TransferModel, customTransfer));
+runControllerTests(playerRegistration(PlayerRegistrationModel));
