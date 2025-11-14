@@ -25,7 +25,9 @@ import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { Season, SeasonGet } from "../../types/models/season";
 import { QueryParams, ResBody } from "../../lib/api/readItems";
-import { Data } from "../../types/types";
+import { Data, TeamMatch } from "../../types/types";
+import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
+import PointLine from "./Team/PointLine";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -35,13 +37,20 @@ const Tabs = TeamTabItems.filter(
   label: item.text as string,
 })) as OptionArray;
 
+type SeasonDates = {
+  startDate: string | undefined;
+  endDate: string | undefined;
+  oneYearLater: string | undefined;
+  seasonRange: string[];
+};
+
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
 
   const { isOpen: formIsOpen } = useForm();
 
-  const [selectedTab, setSelectedTab] = useState("player");
+  const [selectedTab, setSelectedTab] = useState("line-plot");
 
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -140,7 +149,7 @@ const Team = () => {
     [teamCompetitionSeason]
   );
 
-  const seasonDates = useMemo(() => {
+  const seasonDates: SeasonDates = useMemo(() => {
     if (!season)
       return {
         startDate: undefined,
@@ -173,6 +182,57 @@ const Team = () => {
 
     return { startDate, endDate, oneYearLater, seasonRange };
   }, [season]);
+
+  const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
+  const [plotData, setPlotData] = useState<{
+    label: string[];
+    value: number[];
+  }>({ label: [], value: [] });
+
+  async function readMatchs(id: string, seasonId: string): Promise<MatchGet[]> {
+    const res = await readItemsBase({
+      apiInstance: api,
+      backendRoute: API_ROUTES.MATCH.GET_ALL,
+      params: { team: id, season: seasonId, getAll: true, sort: "date" },
+      returnResponse: true,
+    });
+
+    if (!res) return [];
+
+    const data = convert(ModelType.MATCH, res.data);
+
+    return data;
+  }
+
+  const readPlotData = async (id: string, seasonId: string) => {
+    const matchs = await readMatchs(id, seasonId);
+    const teamMatchs = convertMatchToTeamMatch(matchs, id);
+
+    setTeamMatchs(teamMatchs);
+
+    const labels = teamMatchs.map((match) =>
+      match.match_week ? `w-${match.match_week}` : ""
+    );
+
+    let total = 0;
+    const cumulativePoints = teamMatchs.map((d) => {
+      const point = d.result === "勝ち" ? 3 : d.result === "分け" ? 1 : 0;
+      total += point;
+      return total;
+    });
+
+    setPlotData({ label: labels, value: cumulativePoints });
+  };
+
+  useEffect(() => {
+    if (
+      !id ||
+      !selectedteamCompetitionSeason ||
+      !selectedteamCompetitionSeason.season.id
+    )
+      return;
+    readPlotData(id, selectedteamCompetitionSeason.season.id);
+  }, [id, selectedteamCompetitionSeason]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -529,7 +589,9 @@ const Team = () => {
         />
       )}
 
-      {selectedTab === "line-plot" && id && <a></a>}
+      {selectedTab === "line-plot" && id && plotData.value.length > 0 && (
+        <PointLine teamMatchs={teamMatchs} plotData={plotData} />
+      )}
     </div>
   );
 };
