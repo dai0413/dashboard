@@ -489,6 +489,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setFormLabel({});
   };
 
+  // useEffect(
+  //   () => console.log("formData", formData, "formLabel", formLabel),
+  //   [formData, formLabel]
+  // );
+
   ////////////////////////// many data edit //////////////////////////
 
   const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);

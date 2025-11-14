@@ -87,6 +87,8 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
         }
       }
 
+      console.log("displayValue", display.key, da);
+
       data[display.key] = da;
     }
   });
@@ -159,7 +161,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         }
 
         if (value === null || value === undefined) {
-          displayValue = "";
+          displayValue = undefined;
         }
 
         row[key] = displayValue;
