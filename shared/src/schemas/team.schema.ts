@@ -21,6 +21,7 @@ export const TeamZodSchema = z.object({
   labalph: z.string().optional(),
   transferurl: z.string().nonempty().optional(),
   sofaurl: z.string().nonempty().optional(),
+  old_id: z.string().optional(),
   createdAt: z
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),

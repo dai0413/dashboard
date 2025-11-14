@@ -22,6 +22,7 @@ export type Team = {
   labalph?: string;
   transferurl?: string;
   sofaurl?: string;
+  old_id?: string;
 };
 
 type TeamPost = Omit<Team, "_id" | "country"> & {

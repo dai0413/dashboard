@@ -22,6 +22,7 @@ const TeamSchema: Schema<ITeam> = new Schema<ITeam, any, ITeam>(
     labalph: { type: String },
     transferurl: { type: String },
     sofaurl: { type: String },
+    old_id: { type: String },
   },
   { timestamps: true }
 );
