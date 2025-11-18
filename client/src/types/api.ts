@@ -42,6 +42,7 @@ export type ReadItemsParamsMap = {
   [ModelType.NATIONAL_MATCH_SERIES]: {
     country?: string;
   };
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: {};
   [ModelType.PLAYER_REGISTRATION]: {};
   [ModelType.PLAYER]: {};
   [ModelType.REFEREE]: {};

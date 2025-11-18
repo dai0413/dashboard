@@ -6,6 +6,7 @@ export * from "./match-format.js";
 export * from "./match.js";
 export * from "./national-callup.js";
 export * from "./national-match-series.js";
+export * from "./player-registration-history.js";
 export * from "./player-registration.js";
 export * from "./player.js";
 export * from "./referee.js";

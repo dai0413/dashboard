@@ -58,6 +58,12 @@ const models: {
     icon: "transfer",
   },
   {
+    model: "PlayerRegistrationHistory",
+    desc: "選手の大会参加記録履歴",
+    link: APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
+    icon: "transfer",
+  },
+  {
     model: "Referee",
     desc: "審判",
     link: APP_ROUTES.REFEREE,

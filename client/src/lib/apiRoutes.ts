@@ -37,6 +37,9 @@ type Model = {
   PLAYER_REGISTRATION: BaseCrudRoutes<
     ReadItemsParamsMap[ModelType.PLAYER_REGISTRATION]
   >;
+  PLAYER_REGISTRATION_HISTORY: BaseCrudRoutes<
+    ReadItemsParamsMap[ModelType.PLAYER_REGISTRATION_HISTORY]
+  >;
   PLAYER: BaseCrudRoutes<ReadItemsParamsMap[ModelType.PLAYER]> & {
     CHECK: string;
   };
@@ -147,6 +150,16 @@ export const API_ROUTES: Model & {
       `${API_BASE_URL}/national-match-series/${id}`,
     DELETE: (id: string | number) =>
       `${API_BASE_URL}/national-match-series/${id}`,
+  },
+  PLAYER_REGISTRATION_HISTORY: {
+    GET_ALL: { URL: `${API_BASE_URL}/player-registration-history` },
+    CREATE: `${API_BASE_URL}/player-registration-history`,
+    DETAIL: (id: string | number) =>
+      `${API_BASE_URL}/player-registration-history/${id}`,
+    UPDATE: (id: string | number) =>
+      `${API_BASE_URL}/player-registration-history/${id}`,
+    DELETE: (id: string | number) =>
+      `${API_BASE_URL}/player-registration-history/${id}`,
   },
   PLAYER_REGISTRATION: {
     GET_ALL: { URL: `${API_BASE_URL}/player-registration` },

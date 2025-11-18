@@ -21,3 +21,4 @@ export { default as Player } from "./Player";
 export { default as Team } from "./Team";
 export { default as Transfer } from "./Transfer";
 export { default as PlayerRegistrationDetail } from "./PlayerRegistration";
+export { default as PlayerRegistrationHistoryDetail } from "./PlayerRegistrationHistory";

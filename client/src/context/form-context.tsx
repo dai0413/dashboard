@@ -44,6 +44,7 @@ import { useSort } from "./sort-context";
 import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
+import { usePlayerRegistrationHistory } from "./models/player-registration-history";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -161,6 +162,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
+    [ModelType.PLAYER_REGISTRATION_HISTORY]: usePlayerRegistrationHistory(),
     [ModelType.PLAYER_REGISTRATION]: usePlayerRegistration(),
     [ModelType.REFEREE]: useReferee(),
     [ModelType.SEASON]: useSeason(),
@@ -429,6 +431,13 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       }
     }
 
+    if (current.filterConditions) {
+      const getCondition = await current.filterConditions(formData, api);
+      setFilterConditions(getCondition);
+    } else {
+      resetFilterConditions();
+    }
+
     if (!singleStep) {
       return;
     }
@@ -445,7 +454,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     setCurrentStep(nextStepIndex);
     resetAlert();
-    resetFilterConditions();
 
     const sortableField =
       modelType && isModelType(modelType)
@@ -454,7 +462,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     sortableField && resetSort(sortableField);
   };
 
-  const { resetFilterConditions } = useFilter();
+  const { setFilterConditions, resetFilterConditions } = useFilter();
+
   const { resetSort } = useSort();
 
   const prevStep = () => {

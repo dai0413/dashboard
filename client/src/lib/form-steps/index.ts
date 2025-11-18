@@ -16,7 +16,8 @@ import { stadium } from "./stadium";
 import { competitionStage } from "./competition-stage";
 import { matchFormat } from "./match-format";
 import { match } from "./match";
-import { playerRegistration } from "./player-registration";
+// import { playerRegistration } from "./player-registration";
+import { playerRegistrationHistory } from "./player-registration-history";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
@@ -45,10 +46,14 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
     ...nationalMatchSeries,
     createConfirmationStep<ModelType.NATIONAL_MATCH_SERIES>(),
   ],
-  [ModelType.PLAYER_REGISTRATION]: [
-    ...playerRegistration,
-    createConfirmationStep<ModelType.PLAYER_REGISTRATION>(),
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: [
+    ...playerRegistrationHistory,
+    createConfirmationStep<ModelType.PLAYER_REGISTRATION_HISTORY>(),
   ],
+  // [ModelType.PLAYER_REGISTRATION]: [
+  //   ...playerRegistration,
+  //   createConfirmationStep<ModelType.PLAYER_REGISTRATION>(),
+  // ],
   [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
   [ModelType.REFEREE]: [
     ...referee,

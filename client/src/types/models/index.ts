@@ -35,6 +35,11 @@ import {
   PlayerRegistrationForm,
   PlayerRegistrationGet,
 } from "./player-registration";
+import {
+  PlayerRegistrationHistory,
+  PlayerRegistrationHistoryForm,
+  PlayerRegistrationHistoryGet,
+} from "./player-registration-history";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -45,6 +50,7 @@ export enum ModelType {
   MATCH = "match",
   NATIONAL_CALLUP = "national-callup",
   NATIONAL_MATCH_SERIES = "national-match-series",
+  PLAYER_REGISTRATION_HISTORY = "player-registration-history",
   PLAYER_REGISTRATION = "player-registration",
   PLAYER = "player",
   REFEREE = "referee",
@@ -64,6 +70,7 @@ export type ModelDataMap = {
   [ModelType.MATCH]: Match;
   [ModelType.NATIONAL_CALLUP]: NationalCallup;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeries;
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistory;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistration;
   [ModelType.PLAYER]: Player;
   [ModelType.REFEREE]: Referee;
@@ -83,6 +90,7 @@ export type GettedModelDataMap = {
   [ModelType.MATCH]: MatchGet;
   [ModelType.NATIONAL_CALLUP]: NationalCallupGet;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesGet;
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistoryGet;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationGet;
   [ModelType.PLAYER]: PlayerGet;
   [ModelType.REFEREE]: RefereeGet;
@@ -102,6 +110,7 @@ export type FormTypeMap = {
   [ModelType.MATCH]: MatchForm;
   [ModelType.NATIONAL_CALLUP]: NationalCallupForm;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesForm;
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistoryForm;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationForm;
   [ModelType.PLAYER]: PlayerForm;
   [ModelType.REFEREE]: RefereeForm;
@@ -121,6 +130,8 @@ export const ModelRouteMap = {
   [ModelType.MATCH]: APP_ROUTES.MATCH,
   [ModelType.NATIONAL_CALLUP]: APP_ROUTES.NATIONAL_CALLUP,
   [ModelType.NATIONAL_MATCH_SERIES]: APP_ROUTES.NATIONAL_MATCH_SERIES,
+  [ModelType.PLAYER_REGISTRATION_HISTORY]:
+    APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
   [ModelType.PLAYER_REGISTRATION]: APP_ROUTES.PLAYER_REGISTRATION,
   [ModelType.PLAYER]: APP_ROUTES.PLAYER,
   [ModelType.REFEREE]: APP_ROUTES.REFEREE,

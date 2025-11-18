@@ -15,6 +15,7 @@ import { competitionStage } from "./competition-stage";
 import { matchFormat } from "./match-format";
 import { match } from "./match";
 import { playerRegistration } from "./player-registration";
+import { playerRegistrationHistory } from "./player-registration-history";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => string;
@@ -55,6 +56,10 @@ const convertMap: {
   [ModelType.NATIONAL_MATCH_SERIES]: {
     single: nationalMatchSeries,
     multiple: (data) => data.map(nationalMatchSeries),
+  },
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: {
+    single: playerRegistrationHistory,
+    multiple: (data) => data.map(playerRegistrationHistory),
   },
   [ModelType.PLAYER_REGISTRATION]: {
     single: playerRegistration,

@@ -18,6 +18,7 @@
   - [15. 試合フォーマット(Match-Format)](#15-試合フォーマットmatch-format)
   - [16. 試合(Match)](#16-試合match)
   - [17. 選手登録(Player-Registration)](#17-選手登録player-registration)
+  - [18. 選手登録履歴(Player-RegistrationHistory)](#18-選手登録履歴player-registrationhistory)
 
 ## 1. ユーザー(user)
 
@@ -414,23 +415,27 @@
 
 ## 17. 選手登録(Player-Registration)
 
-| フィールド          | 型       | 日本語         | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
-| ------------------- | -------- | -------------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
-| date                | 日付     | 開催日         |         | true      |             |      |         |             |            |
-| season              | 外部キー | シーズン       | true    |           | Season      |      |         |             |            |
-| competition         | 外部キー | 大会           | true    |           | Competition |      |         | true        |            |
-| player              | 外部キー | 選手           | true    |           | Player      |      |         |             |            |
-| team                | 外部キー | チーム         | true    |           | Team        |      |         |             |            |
-| number              | 数字     | 背番号         |         | true      |             |      |         |             |            |
-| position_group      | 文字列   | ポジション     |         | true      |             | ※1   |         |             |            |
-| name                | 文字列   | 名前           | true    |           |             |      |         |             |            |
-| en_name             | 文字列   | 英語名         |         | true      |             |      |         |             |            |
-| registration_type   | 文字列   | 登録・抹消     | true    |           |             | ※2   |         |             |            |
-| height              | 数字     | 身長           |         | true      |             |      |         |             |            |
-| weight              | 数字     | 体重           |         | true      |             |      |         |             |            |
-| homegrown           | 真偽値   | ホームグロウン |         | true      |             |      | false   |             |            |
-| registration_status | 文字列   | 登録状況       | true    |           |             | ※3   |         | true        |            |
-| note                | 文字列   | 備考           |         | true      |             |      |         |             |            |
+18. 選手登録履歴(Player-RegistrationHistory)から自動更新するモデル
+
+| フィールド           | 型       | 日本語         | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
+| -------------------- | -------- | -------------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
+| date                 | 日付     | 開催日         |         | true      |             |      |         |             |            |
+| season               | 外部キー | シーズン       | true    |           | Season      |      |         |             |            |
+| competition          | 外部キー | 大会           | true    |           | Competition |      |         | true        |            |
+| player               | 外部キー | 選手           | true    |           | Player      |      |         |             |            |
+| team                 | 外部キー | チーム         | true    |           | Team        |      |         |             |            |
+| number               | 数字     | 背番号         |         | true      |             |      |         |             |            |
+| position_group       | 文字列   | ポジション     |         | true      |             | ※1   |         |             |            |
+| name                 | 文字列   | 名前           | true    |           |             |      |         |             |            |
+| en_name              | 文字列   | 英語名         |         | true      |             |      |         |             |            |
+| registration_type    | 文字列   | 登録・抹消     | true    |           |             | ※2   |         |             |            |
+| height               | 数字     | 身長           |         | true      |             |      |         |             |            |
+| weight               | 数字     | 体重           |         | true      |             |      |         |             |            |
+| homegrown            | 真偽値   | ホームグロウン |         | true      |             |      | false   |             |            |
+| registration_status  | 文字列   | 登録状況       | true    |           |             | ※3   |         | true        |            |
+| isTypeTwo            | 真偽値   | 2 種登録       |         | true      |             |      | false   |             |            |
+| isSpecialDesignation | 真偽値   | 特別指定       |         | true      |             |      | false   |             |            |
+| note                 | 文字列   | 備考           |         | true      |             |      |         |             |            |
 
 ※1 `GK` | `DF` | `MF` | `FW` | `MF/FW`
 ※2 `register` | `deregister`
@@ -438,11 +443,50 @@
 
 ※date, season, player, team , registration_type, の組み合わせユニーク
 
-※season を入力で competition を自動入力
+※4 `registration_type` === `register` がきたとき
+season, player, が一致する data を探す、　そのうち最新データの`registration_status` を `active`に, それ以外データは`terminated`
+※5 `registration_type` === `deregister` がきたとき
+season, player, が一致する data を探す、　そのうち送られてきた`date`より前のデータの`registration_status` を `terminated`に
 
-※ `registration_type` === `register` がきたとき
-season, player, が一致する data から最新の`registration_status` を `active`に, それ以外は`terminated`
-※ `registration_type` === `deregister` がきたとき
-season, player, が一致する data から送られてきた日付より前のデータの`registration_status` を `terminated`に
+[Player-RegistrationHistory] register ----→ [Player-Registration (registration_type === `register`)作成 + ※4]
+
+[Player-RegistrationHistory] update ------→ [Player-Registration に差分適用]
+
+[Player-RegistrationHistory] deregister --→ [Player-Registration (registration_type === `deregister`)作成 + ※5]
+
+## 18. 選手登録履歴(Player-RegistrationHistory)
+
+| フィールド        | 型           | 日本語           | require                                                  | undefined | 外部参照    | enum | default | not in form | その他規則 |
+| ----------------- | ------------ | ---------------- | -------------------------------------------------------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
+| date              | 日付         | 開催日           |                                                          | true      |             |      |         |             |            |
+| season            | 外部キー     | シーズン         | true                                                     |           | Season      |      |         |             |            |
+| competition       | 外部キー     | 大会             | true                                                     |           | Competition |      |         | true        |            |
+| player            | 外部キー     | 選手             | true                                                     |           | Player      |      |         |             |            |
+| team              | 外部キー     | チーム           | true                                                     |           | Team        |      |         |             |            |
+| registration_type | 文字列       | 登録・抹消・変更 | true                                                     |           |             | ※2   |         |             |            |
+| changes           | オブジェクト | 変更点           | `registration_type` === `register`, `change` のとき true | true      |             |      |         |             |            |
+
+changes は以下の通り
+
+| フィールド           | 型     | 日本語         | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
+| -------------------- | ------ | -------------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
+| number               | 数字   | 背番号         |         | true      |          |      |         |             |            |
+| position_group       | 文字列 | ポジション     |         | true      |          | ※1   |         |             |            |
+| name                 | 文字列 | 名前           | true    |           |          |      |         |             |            |
+| en_name              | 文字列 | 英語名         |         | true      |          |      |         |             |            |
+| height               | 数字   | 身長           |         | true      |          |      |         |             |            |
+| weight               | 数字   | 体重           |         | true      |          |      |         |             |            |
+| homegrown            | 真偽値 | ホームグロウン |         | true      |          |      | false   |             |            |
+| isTypeTwo            | 真偽値 | 2 種登録       |         | true      |          |      | false   |             |            |
+| isSpecialDesignation | 真偽値 | 特別指定       |         | true      |          |      | false   |             |            |
+| note                 | 文字列 | 備考           |         | true      |          |      |         |             |            |
+
+※1 `GK` | `DF` | `MF` | `FW` | `MF/FW`
+※2 `register` | `deregister` | `change`
+※3 `active` | `terminated`
+
+※date, season, player, team , registration_type, の組み合わせユニーク
+
+※season を入力で competition を自動入力
 
 ※name , en_name は未入力のとき player モデルから取得

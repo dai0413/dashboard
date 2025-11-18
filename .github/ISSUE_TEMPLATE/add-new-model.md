@@ -41,7 +41,7 @@ assignees: ""
 ### 3-1. API ルートのドキュメント作成
 
 - [ ] `docs/README.md` にルート概要を追加。
-- [ ] `docs/api/` に詳細な API 仕様 (`POST`, `GET`, `PUT`, `DELETE` など) を記述。
+- [ ] （`docs/api/` に詳細な API 仕様 (`POST`, `GET`, `PUT`, `DELETE` など) を記述。）
 
 ### 3-2. コントローラー作成
 
@@ -96,12 +96,14 @@ assignees: ""
 
 - [ ] `docs/route/index.md`にルートまとめ
 - [ ] `client/src/pages/ModelTable/` に新しいモデル用の一覧ページを作成。
+- [ ] `client/src/pages/ModelTable/index.ts` にまとめ。
 
 ---
 
 ## 7. 詳細ページ作成
 
 - [ ] `client/src/pages/ModelDetail/` にモデルの詳細表示ページを作成。
+- [ ] `client/src/pages/ModelDetail/index.ts` にまとめ。
 - [ ] `client/src/pages/Models`にまとめる
 
 ---
