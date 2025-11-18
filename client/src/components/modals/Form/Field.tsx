@@ -56,6 +56,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
     updateOption(
       key,
       fieldType,
+      filterConditions,
+      sortConditions,
       setOptionKey,
       setOptionTableData,
       setOptionSelectData

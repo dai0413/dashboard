@@ -17,6 +17,7 @@ export interface SendingFilter {
   operator: FilterOperator;
   value?: string | number | boolean | Date | string[];
   logic: "AND" | "OR";
+  editByAdmin?: boolean;
 }
 
 // 共通の基本型

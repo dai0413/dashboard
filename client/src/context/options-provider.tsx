@@ -10,8 +10,6 @@ import { convert as convertToOption, OptionsMap } from "../utils/createOption";
 import { convert as createLabel } from "../lib/convert/CreateLabel";
 import { OptionArray, OptionTable } from "../types/option";
 
-import { useFilter } from "./filter-context";
-import { useSort } from "./sort-context";
 import {
   API_ROUTES,
   BaseCrudRoutes,
@@ -50,6 +48,8 @@ type OptionsState = {
   updateOption: <T extends ModelType>(
     key: FormFieldDefinition<T>["key"],
     fieldType: FormFieldDefinition<T>["fieldType"],
+    filters: FilterableFieldDefinition[],
+    sorts: SortableFieldDefinition[],
     setOptionKey?: (
       value: React.SetStateAction<
         keyof GettedModelDataMap | keyof OptionsMap | null
@@ -115,9 +115,6 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     [ModelType.COMPETITION_STAGE]: API_ROUTES.COMPETITION_STAGE,
     [ModelType.COMPETITION]: API_ROUTES.COMPETITION,
   };
-
-  const { filterConditions } = useFilter();
-  const { sortConditions } = useSort();
 
   const handleLoading = (
     time: "end" | "start",
@@ -270,6 +267,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const updateOption = <T extends ModelType>(
     key: FormFieldDefinition<T>["key"],
     fieldType: FormFieldDefinition<T>["fieldType"],
+    filters: FilterableFieldDefinition[],
+    sorts: SortableFieldDefinition[],
     setOptionKey?: (
       value: React.SetStateAction<
         keyof GettedModelDataMap | keyof OptionsMap | null
@@ -301,8 +300,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         route,
         {
           page: 1,
-          filters: JSON.stringify(filterConditions),
-          sorts: JSON.stringify(sortConditions),
+          filters: JSON.stringify(filters),
+          sorts: JSON.stringify(sorts),
         },
         nextOptionKey as ModelType,
         fieldType,

@@ -4,6 +4,7 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -17,7 +18,7 @@ type FilterState = {
   handleAddCondition: (index?: number) => void;
 
   filterCondition: FilterableFieldDefinition;
-  resetFilterConditions: () => void;
+  resetFilterConditions: (all?: boolean) => void;
   handleFieldSelect: (field: FilterableFieldDefinition) => void;
   handleFieldValue: (value: string | number | Date | boolean) => void;
   handleFieldObjValue: (value: Record<string, any>) => void;
@@ -81,9 +82,17 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleAdding = () => setIsAdding((prev) => !prev);
 
-  const resetFilterConditions = () => {
+  const resetFilterConditions = (adminOnly?: boolean) => {
+    if (adminOnly)
+      return setFilterConditions((prev) => prev.filter((p) => p.editByAdmin));
+
     setFilterConditions([]);
   };
+
+  useEffect(
+    () => console.log("filterConditions", filterConditions),
+    [filterConditions]
+  );
 
   // add filter contition
   const handleAddCondition = (index?: number) => {

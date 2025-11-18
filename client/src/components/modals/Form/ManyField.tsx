@@ -128,7 +128,8 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
         </div>
 
         <div>
-          {modelType === ModelType.NATIONAL_CALLUP && (
+          {(modelType === ModelType.NATIONAL_CALLUP ||
+            modelType === ModelType.TRANSFER) && (
             <IconTextButton icon="edit" color="gray" onClick={autoFill}>
               自動入力
             </IconTextButton>

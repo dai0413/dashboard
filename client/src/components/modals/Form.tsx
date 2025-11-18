@@ -14,6 +14,7 @@ import { FieldListData } from "../../types/types";
 import { toDateKey } from "../../utils";
 import { DetailFieldDefinition } from "../../types/field";
 import { FormStep } from "../../types/form";
+import { get } from "lodash";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -24,8 +25,10 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
   const data: FieldListData = {};
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
-      const value =
-        display.key in formLabel ? formLabel[display.key] : undefined;
+      get(formLabel, display.key);
+      const value = get(formLabel, display.key)
+        ? get(formLabel, display.key)
+        : undefined;
 
       let da: {
         value: string;
@@ -86,8 +89,6 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
           }
         }
       }
-
-      console.log("displayValue", display.key, da);
 
       data[display.key] = da;
     }

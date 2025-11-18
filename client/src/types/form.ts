@@ -1,6 +1,7 @@
 import { FormTypeMap } from "./models";
 import { ResponseStatus } from "../types/api";
 import { AxiosInstance } from "axios";
+import { FilterableFieldDefinition } from "@myorg/shared";
 
 type StepType = "form" | "confirm";
 
@@ -12,6 +13,7 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   required?: boolean;
   width?: string;
   multi?: boolean;
+  update?: boolean;
 };
 
 type MultiValueField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
@@ -97,6 +99,12 @@ export interface FormStep<K extends keyof FormTypeMap> {
   onChange?:
     | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
     | ((data: FormTypeMap[K]) => FormUpdatePair);
+  filterConditions?:
+    | ((
+        data: FormTypeMap[K],
+        api: AxiosInstance
+      ) => Promise<FilterableFieldDefinition[]>)
+    | ((data: FormTypeMap[K]) => Promise<FilterableFieldDefinition[]>);
   skip?: (data: FormTypeMap[K]) => boolean;
 }
 
