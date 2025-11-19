@@ -18,6 +18,8 @@ import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
 import Badges from "./Badges";
+import { getSingleSteps } from "../../lib/form-steps";
+import { getBulkSteps } from "../../lib/form-steps/many";
 
 type AddButtonProps = {
   menuItems: { label: string; onClick: () => void }[];
@@ -163,6 +165,10 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     ? createFormMenuItems(modelType, formInitialData ? formInitialData : {})
     : [];
 
+  const hasFormSteps: boolean = modelType
+    ? getSingleSteps(modelType).length > 0 || getBulkSteps(modelType).length > 0
+    : false;
+
   return (
     <>
       <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
@@ -228,12 +234,14 @@ const TableToolbar = <K extends keyof FormTypeMap>({
           {modelType && (staffState.admin || isDev) && (
             <>
               {/* 右側：新規追加ボタン */}
-              <AddButton
-                menuItems={menuItems}
-                dropdownRef={dropdownRef}
-                isAddOpen={isAddOpen}
-                setIsAddOpen={setIsAddOpen}
-              />
+              {hasFormSteps && (
+                <AddButton
+                  menuItems={menuItems}
+                  dropdownRef={dropdownRef}
+                  isAddOpen={isAddOpen}
+                  setIsAddOpen={setIsAddOpen}
+                />
+              )}
               {/* 右側：フォルダーボタン */}
               {(uploadFile || downloadFile) && (
                 <div
