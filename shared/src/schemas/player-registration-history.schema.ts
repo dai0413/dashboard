@@ -26,18 +26,20 @@ export const PlayerRegistrationHistoryZodSchema = z.object({
   registration_type: z
     .enum(registration_type)
     .refine((v) => !!v, { message: "registration_typeは必須です" }),
-  changes: z.object({
-    number: z.number().optional(),
-    position_group: z.enum(position_group).optional(),
-    name: z.string().nonempty().optional(),
-    en_name: z.string().nonempty().optional(),
-    height: z.number().optional(),
-    weight: z.number().optional(),
-    homegrown: z.boolean().default(false),
-    isTypeTwo: z.boolean().default(false),
-    isSpecialDesignation: z.boolean().default(false),
-    note: z.string().nonempty().optional(),
-  }),
+  changes: z
+    .object({
+      number: z.number().optional(),
+      position_group: z.enum(position_group).optional(),
+      name: z.string().nonempty().optional(),
+      en_name: z.string().nonempty().optional(),
+      height: z.number().optional(),
+      weight: z.number().optional(),
+      homegrown: z.boolean().optional(),
+      isTypeTwo: z.boolean().optional(),
+      isSpecialDesignation: z.boolean().optional(),
+      note: z.string().nonempty().optional(),
+    })
+    .optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });

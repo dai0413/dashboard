@@ -3,8 +3,6 @@ import { injury } from "./injury";
 import { nationalCallup } from "./national-callup";
 import { team } from "./team";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../../types/models";
-import { playerRegistration } from "./play-registration";
-import { playerRegistrationHistory } from "./play-registration-history";
 
 const defaultDatamap: Partial<
   Record<ModelType, FormTypeMap[ModelType] | GettedModelDataMap[ModelType]>
@@ -12,8 +10,6 @@ const defaultDatamap: Partial<
   [ModelType.COMPETITION_STAGE]: competitionStage,
   [ModelType.INJURY]: injury,
   [ModelType.NATIONAL_CALLUP]: nationalCallup,
-  [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory,
-  [ModelType.PLAYER_REGISTRATION]: playerRegistration,
   [ModelType.TEAM]: team,
 };
 
