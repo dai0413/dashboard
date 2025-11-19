@@ -5,8 +5,7 @@ import { TeamCompetitionSeason } from "../../types/models/team-competition-seaso
 import { readItemBase, readItemsBase } from "../api";
 import { API_ROUTES } from "../apiRoutes";
 import { convert } from "../convert/DBtoGetted";
-import { currentTransfer } from "./utils/onChange/currentTransfer";
-import { PlayerRegistrationHistory } from "../../types/models/player-registration-history";
+import { PlayerRegistration } from "../../types/models/player-registration";
 
 export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
   [
@@ -25,6 +24,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           label: "登録・抹消",
           fieldType: "select",
           valueType: "option",
+          required: true,
         },
       ],
     },
@@ -102,12 +102,12 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
             returnResponse: true,
           });
 
-          const playerRegistrationHistory = convert(
-            ModelType.PLAYER_REGISTRATION_HISTORY,
-            resBody.data as PlayerRegistrationHistory[]
+          const playerRegistration = convert(
+            ModelType.PLAYER_REGISTRATION,
+            resBody.data as PlayerRegistration[]
           );
 
-          const players = playerRegistrationHistory.map((t) => t.player);
+          const players = playerRegistration.map((t) => t.player);
           const filterCondition: FilterableFieldDefinition = {
             key: "_id",
             label: "選手",
@@ -119,8 +119,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
             valueLabel: players.map((t) => t.label),
             editByAdmin: true,
           };
-
-          console.log("new filterCondition", filterCondition);
 
           return [filterCondition];
         }
@@ -142,10 +140,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
       onChange: async (formData, api) => {
         let obj: FormUpdatePair = [];
         if (!formData.player) return [];
-        if (
-          formData.registration_type === "register" ||
-          formData.registration_type === "change"
-        ) {
+        if (formData.registration_type === "register") {
           // name, en_name の設定
           const res = await readItemBase({
             apiInstance: api,
@@ -168,21 +163,48 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
               value: en_name,
             });
           }
+        }
 
-          // teamの設定
-          const { to_team } = await currentTransfer(formData, api);
-          if (to_team) {
-            obj.push({
-              key: "team",
-              value: to_team,
-            });
+        if (formData.registration_type === "deregister") {
+          if (!formData.season || !formData.team) return [];
+          const res = await readItemsBase({
+            apiInstance: api,
+            backendRoute: API_ROUTES.PLAYER_REGISTRATION_HISTORY.GET_ALL,
+            params: {
+              limit: 1,
+              sort: "date",
+              season: formData.season,
+              team: formData.team,
+              player: formData.player,
+              registration_type: "register",
+            },
+            returnResponse: true,
+          });
+
+          const { changes } = convert(
+            ModelType.PLAYER_REGISTRATION_HISTORY,
+            res.data[0]
+          );
+
+          function flattenChanges(changes: Record<string, any>) {
+            return Object.entries(changes).map(([key, value]) => ({
+              key: `changes.${key}`,
+              value,
+            }));
+          }
+
+          if (changes) {
+            const result = flattenChanges(changes);
+            console.log("result", result);
+            obj.push(...result);
           }
         }
+
         return obj;
       },
     },
     {
-      stepLabel: "登録or抹消・日付・背番号・POS.・名前・英名・身長・体重を入力",
+      stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",
       type: "form",
       fields: [
         {
@@ -247,6 +269,27 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           valueType: "text",
         },
       ],
+      validate: (formData) => {
+        if (formData.registration_type === "register") {
+          if (!formData.changes?.name) {
+            return {
+              success: false,
+              message: "名前は必須です",
+            };
+          }
+        } else if (formData.registration_type === "change") {
+          if (!formData.changes) {
+            return {
+              success: false,
+              message: "変更点がありません",
+            };
+          }
+        }
+
+        return {
+          success: true,
+        };
+      },
       skip: (data) => {
         return data.registration_type === "deregister";
       },
