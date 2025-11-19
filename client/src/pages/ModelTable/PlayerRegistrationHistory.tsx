@@ -23,9 +23,11 @@ const PlayerRegistrationHistory = () => {
         headers={[
           { label: "日付", field: "date" },
           { label: "選手", field: "player" },
+          { label: "ポジション", field: "position_group" },
           { label: "大会", field: "competition" },
           { label: "シーズン", field: "season" },
           { label: "登録・抹消", field: "registration_type" },
+          { label: "状況", field: "registration_status" },
         ]}
         contextState={playerRegistrationHistoryContext}
         modelType={ModelType.PLAYER_REGISTRATION_HISTORY}

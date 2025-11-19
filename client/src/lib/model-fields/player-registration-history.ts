@@ -42,7 +42,7 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     displayOnDetail: true,
   },
   {
-    key: "changes.registration_type",
+    key: "registration_type",
     label: "登録・抹消",
     type: "select",
     filterable: true,
@@ -56,6 +56,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.number ? `${base}${data.changes.number}` : "";
+    },
   },
   {
     key: "changes.position_group",
@@ -64,6 +71,15 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.position_group
+        ? `${base}${data.changes.position_group}`
+        : "";
+    },
   },
   {
     key: "changes.name",
@@ -72,6 +88,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.name ? `${base}${data.changes.name}` : "";
+    },
   },
   {
     key: "changes.en_name",
@@ -80,6 +103,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.en_name ? `${base}${data.changes.en_name}` : "";
+    },
   },
   {
     key: "changes.height",
@@ -88,6 +118,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.height ? `${base}${data.changes.height}` : "";
+    },
   },
   {
     key: "changes.weight",
@@ -96,6 +133,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.weight ? `${base}${data.changes.weight}` : "";
+    },
   },
   {
     key: "changes.homegrown",
@@ -104,6 +148,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.homegrown ? `${base}${data.changes.homegrown}` : "";
+    },
   },
   {
     key: "changes.isTypeTwo",
@@ -112,6 +163,13 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.isTypeTwo ? `${base}${data.changes.isTypeTwo}` : "";
+    },
   },
   {
     key: "changes.isSpecialDesignation",
@@ -120,6 +178,15 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.isSpecialDesignation
+        ? `${base}${data.changes.isSpecialDesignation}`
+        : "";
+    },
   },
   {
     key: "changes.note",
@@ -128,5 +195,12 @@ export const playerRegistrationHistory: UIFieldDefinition[] = [
     filterable: false,
     sortable: false,
     displayOnDetail: true,
+    getValue: (data) => {
+      let base: string = "";
+      if (data.registration_type === "変更") {
+        base = "変更後→→→";
+      }
+      return data.changes.note ? `${base}${data.changes.note}` : "";
+    },
   },
 ];

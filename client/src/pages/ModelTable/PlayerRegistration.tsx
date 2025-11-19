@@ -23,6 +23,7 @@ const PlayerRegistration = () => {
         headers={[
           { label: "日付", field: "date" },
           { label: "選手", field: "player" },
+          { label: "ポジション", field: "position_group" },
           { label: "大会", field: "competition" },
           { label: "シーズン", field: "season" },
           { label: "登録・抹消", field: "registration_type" },
