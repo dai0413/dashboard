@@ -13,7 +13,8 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   required?: boolean;
   width?: string;
   multi?: boolean;
-  update?: boolean;
+  // update?: boolean;
+  overwriteByMany?: boolean;
 };
 
 type MultiValueField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {

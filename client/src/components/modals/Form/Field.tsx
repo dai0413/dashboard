@@ -23,6 +23,7 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
     key: K,
     value: FormTypeMap[T][K]
   ) => void;
+  supportButton?: boolean;
 };
 
 export const RenderField = <T extends keyof FormTypeMap>({
@@ -30,6 +31,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
   formData,
   formLabel,
   handleFormData,
+  supportButton,
 }: RenderFieldProps<T>) => {
   const { multi, key, fieldType, valueType } = field;
   const formDataKey = key as keyof FormTypeMap[T];
@@ -315,6 +317,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           handleFormData(formDataKey, value as any);
         }}
         placeholder=""
+        supportButton={supportButton}
       />
     );
 };

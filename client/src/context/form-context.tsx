@@ -102,12 +102,15 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     formLabel: Record<string, any>;
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
-      value: FormTypeMap[T][K]
+      value: FormTypeMap[T][K],
+      overwriteByMany?: boolean
     ) => void;
     formSteps: FormStep<T>[];
   };
 
   many?: {
+    bulkCommonData: FormTypeMap[T];
+    bulkCommonLabel: Record<string, any>;
     formData: FormTypeMap[T][];
     formLabels: Record<string, any>[];
     handleFormData: <K extends keyof FormTypeMap[T]>(
@@ -380,6 +383,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     if (result) setIsEditing(false);
   };
 
+  const [bulkCommonData, setBulkCommonData] = useState<FormTypeMap[T]>({});
+  const [bulkCommonLabel, setBulkCommonLabel] = useState<Record<string, any>>(
+    {}
+  );
+
   const stepSkip = (next: number) => {
     const current = singleStep[next];
 
@@ -431,11 +439,28 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       }
     }
 
+    // --- table の filter操作
     if (current.filterConditions) {
       const getCondition = await current.filterConditions(formData, api);
       setFilterConditions(getCondition);
     } else {
       resetFilterConditions();
+    }
+
+    // --- many入力時の共通要素
+    if (mode === "many" && bulkCommonData && current.fields) {
+      current.fields.forEach((field) => {
+        if (field.overwriteByMany) {
+          const valueKey = field.key as keyof FormTypeMap[T];
+          const value = bulkCommonData[valueKey];
+
+          if (value) {
+            formDatas.forEach((_formData, index) => {
+              handleFormData(index, valueKey, value);
+            });
+          }
+        }
+      });
     }
 
     if (!singleStep) {
@@ -488,8 +513,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
-    value: FormTypeMap[T][K]
+    value: FormTypeMap[T][K],
+    overwriteByMany?: boolean
   ) => {
+    if (overwriteByMany) {
+      return setBulkCommonData((prev) =>
+        updateFormValue(prev, key, value, setBulkCommonLabel)
+      );
+    }
     setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
   };
 
@@ -537,8 +568,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const addFormDatas = (baseCopy: boolean, setPage?: (p: number) => void) => {
-    const baseData = formData ? { ...formData } : ({} as FormTypeMap[T]);
-    const baseLabel = formLabel ? { ...formLabel } : {};
+    // const baseData = formData ? { ...formData } : ({} as FormTypeMap[T]);
+    // const baseLabel = formLabel ? { ...formLabel } : {};
+
+    const baseData = bulkCommonData ? { ...bulkCommonData } : {};
+    const baseLabel = bulkCommonLabel ? { ...bulkCommonLabel } : {};
 
     const newFormDatas = [...formDatas, baseCopy ? baseData : {}];
     const newFormLabels = [...formLabels, baseCopy ? baseLabel : {}];
@@ -611,6 +645,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
 
   const many = {
+    bulkCommonData,
+    bulkCommonLabel,
     formSteps: bulkStep,
     formData: formDatas,
     formLabels,

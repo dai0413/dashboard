@@ -7,6 +7,7 @@ type InputFieldProps = {
   value: string | number | Date | boolean;
   onChange: (value: string | number | Date | boolean) => void;
   placeholder?: string;
+  supportButton?: boolean;
 };
 
 // 日付だけのinput用: その日のローカル0時に固定
@@ -52,6 +53,7 @@ const InputField = ({
   value,
   onChange,
   placeholder,
+  supportButton,
 }: InputFieldProps) => {
   const { mode } = useForm();
   const [internalValue, setInternalValue] = useState<string | number | boolean>(
@@ -112,7 +114,7 @@ const InputField = ({
   const { seasonStart, seasonEnd, nextSeasonStart } = getSeasonDates();
 
   const inputButton =
-    mode === "single" && (type === "date" || type === "datetime-local");
+    supportButton && (type === "date" || type === "datetime-local");
 
   return (
     <div className={`flex items-center gap-x-4 ${inputButton ? "" : "w-full"}`}>

@@ -393,9 +393,20 @@ const Form = <T extends keyof FormTypeMap>() => {
                 <RenderField
                   key={field.key as string}
                   field={field}
-                  formData={single.formData}
-                  formLabel={single.formLabel}
-                  handleFormData={handleFormData}
+                  formData={
+                    field.overwriteByMany
+                      ? many?.bulkCommonData || {}
+                      : single.formData
+                  }
+                  formLabel={
+                    field.overwriteByMany
+                      ? many?.bulkCommonLabel || {}
+                      : single.formLabel
+                  }
+                  handleFormData={(key, value) =>
+                    handleFormData(key, value, field.overwriteByMany)
+                  }
+                  supportButton={!steps[currentStep].many}
                 />
               </div>
             ))
