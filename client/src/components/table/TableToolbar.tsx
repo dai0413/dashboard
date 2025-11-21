@@ -18,8 +18,7 @@ import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
 import Badges from "./Badges";
-import { getSingleSteps } from "../../lib/form-steps";
-import { getBulkSteps } from "../../lib/form-steps/many";
+import { hasSteps } from "../../lib/form-steps";
 
 type AddButtonProps = {
   menuItems: { label: string; onClick: () => void }[];
@@ -165,9 +164,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     ? createFormMenuItems(modelType, formInitialData ? formInitialData : {})
     : [];
 
-  const hasFormSteps: boolean = modelType
-    ? getSingleSteps(modelType).length > 0 || getBulkSteps(modelType).length > 0
-    : false;
+  const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
 
   return (
     <>

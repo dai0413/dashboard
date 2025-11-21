@@ -14,8 +14,7 @@ import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
-import { getSingleSteps } from "../../lib/form-steps";
-import { getBulkSteps } from "../../lib/form-steps/many";
+import { hasSteps } from "../../lib/form-steps";
 
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
@@ -81,9 +80,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
     }
   };
 
-  const hasFormSteps: boolean = modelType
-    ? getSingleSteps(modelType).length > 0 || getBulkSteps(modelType).length > 0
-    : false;
+  const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
 
   const fieldListData: FieldListData = selected
     ? Object.entries(selected).reduce<FieldListData>((acc, [key, value]) => {

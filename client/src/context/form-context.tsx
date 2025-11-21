@@ -29,8 +29,7 @@ import { useMatch } from "./models/match";
 import { usePlayerRegistration } from "./models/player-registration";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
-import { getSingleSteps } from "../lib/form-steps";
-import { getBulkSteps } from "../lib/form-steps/many";
+import { getSteps } from "../lib/form-steps";
 import { objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
 import {
@@ -192,8 +191,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [bulkStep, setBulkStep] = useState<FormStep<T>[]>([]);
 
   useEffect(() => {
-    setSingleStep(modelType ? getSingleSteps(modelType) : []);
-    setBulkStep(modelType ? getBulkSteps(modelType) : []);
+    setSingleStep(modelType ? getSteps(modelType, false) : []);
+    setBulkStep(modelType ? getSteps(modelType, true) : []);
   }, [modelType]);
 
   const modelContext = useMemo(() => {
@@ -308,8 +307,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     if (!newData) {
       mode === "many"
-        ? setCurrentStep(getBulkSteps(model).length - 1)
-        : setCurrentStep(getSingleSteps(model).length - 1);
+        ? setCurrentStep(getSteps(model, true).length - 1)
+        : setCurrentStep(getSteps(model, false).length - 1);
     }
   };
 
@@ -600,8 +599,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     model: T,
     formInitialData: Partial<FormTypeMap[T]>
   ) => {
-    const singleStep = getSingleSteps(model);
-    const bulkStep = getBulkSteps(model);
+    const singleStep = getSteps(model, false);
+    const bulkStep = getSteps(model, true);
 
     const hasSingle = singleStep && singleStep.length > 0;
     const hasBulk = bulkStep && bulkStep.length > 0;
