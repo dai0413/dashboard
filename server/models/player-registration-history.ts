@@ -5,7 +5,7 @@ import {
 } from "@myorg/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { PlayerRegistrationModel } from "./player-registration.js";
-import { PlayerModel } from "./player.js";
+import { asyncRegistration } from "../utils/async/applyHistoryRecord.js";
 
 export interface IPlayerRegistrationHistory
   extends Omit<
@@ -173,90 +173,10 @@ PlayerRegistrationHistorySchema.pre("save", async function (next) {
     }
   }
 
-  if (this.registration_type === "register") {
-    await handleRegister(this);
-  } else if (this.registration_type === "change") {
-    await handleChange(this);
-  } else if (this.registration_type === "deregister") {
-    await handleDeregister(this);
-  }
+  await asyncRegistration(this);
 
   next();
 });
-
-async function handleRegister(prh: IPlayerRegistrationHistory) {
-  // ① 新規 PR を作成
-  const newReg = await PlayerRegistrationModel.create({
-    date: prh.date,
-    season: prh.season,
-    competition: prh.competition,
-    player: prh.player,
-    team: prh.team,
-    registration_type: "register",
-    ...prh.changes, // number, name, etc.
-    registration_status: "active",
-  });
-
-  // ② 同一 season & player の PR を取得
-  const regs = await PlayerRegistrationModel.find({
-    season: prh.season,
-    player: prh.player,
-  }).sort({ date: 1 });
-
-  // ③ 最も新しい PR を active、それ以外を terminated
-  for (let i = 0; i < regs.length; i++) {
-    regs[i].registration_status =
-      i === regs.length - 1 ? "active" : "terminated";
-    await regs[i].save();
-  }
-
-  return newReg;
-}
-
-async function handleChange(prh: IPlayerRegistrationHistory) {
-  const latest = await PlayerRegistrationModel.findOne({
-    season: prh.season,
-    player: prh.player,
-    team: prh.team,
-  }).sort({ date: -1 });
-
-  if (!latest) return;
-
-  // 差分を適用
-  if (prh.changes && Object.keys(prh.changes).length > 0) {
-    // _$set で差分だけを更新_
-    await PlayerRegistrationModel.updateOne(
-      { _id: latest._id },
-      { $set: prh.changes }
-    );
-  }
-
-  return;
-}
-
-async function handleDeregister(prh: IPlayerRegistrationHistory) {
-  // ① deregister データを新規作成
-  await PlayerRegistrationModel.create({
-    date: prh.date,
-    season: prh.season,
-    competition: prh.competition,
-    player: prh.player,
-    team: prh.team,
-    ...prh.changes, // number, name, etc.
-    registration_type: "deregister",
-    registration_status: "terminated",
-  });
-
-  // ② 同一 season & player の PR のうち、prh.date より前のものを terminated
-  await PlayerRegistrationModel.updateMany(
-    {
-      season: prh.season,
-      player: prh.player,
-      date: { $lte: prh.date },
-    },
-    { $set: { registration_status: "terminated" } }
-  );
-}
 
 async function normalizeDate(updateOrDoc: any) {
   if (!updateOrDoc?.date) return;
@@ -314,6 +234,17 @@ PlayerRegistrationHistorySchema.post("findOneAndUpdate", async function (doc) {
     console.error("PlayerRegistration full sync error on update:", err);
   }
 });
+
+PlayerRegistrationHistorySchema.post(
+  "insertMany",
+  async function (
+    docs: IPlayerRegistrationHistory[] & { _id: Types.ObjectId }[]
+  ) {
+    for (const doc of docs) {
+      await asyncRegistration(doc);
+    }
+  }
+);
 
 export const PlayerRegistrationHistoryModel: Model<IPlayerRegistrationHistory> =
   mongoose.model<IPlayerRegistrationHistory>(

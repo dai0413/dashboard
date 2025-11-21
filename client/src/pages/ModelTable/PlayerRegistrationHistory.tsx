@@ -23,7 +23,19 @@ const PlayerRegistrationHistory = () => {
         headers={[
           { label: "日付", field: "date" },
           { label: "選手", field: "player" },
-          { label: "ポジション", field: "position_group" },
+          {
+            label: "ポジション",
+            field: "changes.position_group",
+            getData: (data) => {
+              let base: string = "";
+              if (data.registration_type === "変更") {
+                base = "変更後→→→";
+              }
+              return data.changes.position_group
+                ? `${base}${data.changes.position_group}`
+                : "";
+            },
+          },
           { label: "大会", field: "competition" },
           { label: "シーズン", field: "season" },
           { label: "登録・抹消", field: "registration_type" },
