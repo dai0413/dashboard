@@ -1,6 +1,8 @@
 import { FormStep, FormUpdatePair } from "../../../types/form";
 import { ModelType } from "../../../types/models";
-import { currentTransfer } from "../utils/onChange/currentTransfer";
+import { setDate } from "../utils/onChange/national-callup/setDate";
+import { setTeam } from "../utils/onChange/national-callup/setTeam";
+import { teamCheck } from "../utils/validate/teamCheck";
 
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
@@ -119,58 +121,13 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       },
     ],
     many: true,
-    validate: (formData) => {
-      if (!formData.team && !formData.team_name) {
-        return {
-          success: false,
-          message: "チームを選択、または入力してください",
-        };
-      }
-
-      if (
-        formData.status &&
-        formData.status !== "joined" &&
-        !formData.left_reason
-      ) {
-        console.log("error left_reason data", formData);
-        return {
-          success: false,
-          message: "離脱理由を入力してください",
-        };
-      }
-
-      return {
-        success: true,
-        message: "",
-      };
-    },
+    validate: (formData) => teamCheck(formData, "team", "team_name"),
     onChange: async (formData, api) => {
-      const { to_team, to_team_name } = await currentTransfer(formData, api);
+      const teamObj = await setTeam(formData, api);
+      const dateobj = setDate(formData);
 
-      let obj: FormUpdatePair = [];
-      if (to_team_name) {
-        obj.push({
-          key: "team_name",
-          value: to_team_name,
-        });
-      } else if (to_team) {
-        obj.push({
-          key: "team",
-          value: to_team,
-        });
-      }
-
-      if (formData.status) {
-        if (formData.status === "declined") {
-          obj.push({ key: "joined_at", value: undefined });
-          obj.push({ key: "left_at", value: undefined });
-        } else if (formData.status === "withdrawn") {
-          obj.push({ key: "left_at", value: undefined });
-        } else if (formData.status === "joined") {
-          obj.push({ key: "left_reason", value: undefined });
-        }
-      }
-      return obj;
+      const mainobj: FormUpdatePair = [...teamObj, ...dateobj];
+      return mainobj;
     },
   },
 ];

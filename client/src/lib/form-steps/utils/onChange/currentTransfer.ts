@@ -15,18 +15,35 @@ type Response = {
   position?: Position[];
 };
 
-export const currentTransfer = async <T extends ModelType>(
-  formData: FormTypeMap[T],
-  api: AxiosInstance
-): Promise<Response> => {
+type CurrentTransfer<T extends ModelType> = {
+  formData: FormTypeMap[T];
+  api: AxiosInstance;
+  from_date?: string;
+  form?: string;
+};
+
+export const currentTransfer = async <T extends ModelType>({
+  formData,
+  api,
+  from_date,
+  form,
+}: CurrentTransfer<T>): Promise<Response> => {
   if (!("player" in formData) || !formData.player) return {};
 
   let response: Response = {};
 
+  const params = {
+    player: formData.player,
+    sort: "-from_date",
+    limit: 1,
+    ...(from_date !== undefined && { from_date: `<=${from_date}` }),
+    ...(form !== undefined && { form }),
+  };
+
   const currentTransfer: ResBody<Transfer> = await readItemsBase({
     apiInstance: api,
     backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-    params: { player: formData.player, sort: "-from_date", limit: 1 },
+    params,
     returnResponse: true,
   });
 

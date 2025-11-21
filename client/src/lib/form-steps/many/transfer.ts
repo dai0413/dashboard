@@ -1,8 +1,36 @@
-import { FormStep, FormUpdatePair } from "../../../types/form";
+import { FormStep } from "../../../types/form";
 import { ModelType } from "../../../types/models";
-import { currentTransfer } from "../utils/onChange/currentTransfer";
+import { setTeam } from "../utils/onChange/transfer/setTeam";
+import { teamCheck } from "../utils/validate/teamCheck";
 
 export const transfer: FormStep<ModelType.TRANSFER>[] = [
+  {
+    stepLabel: "共通要素を入力",
+    type: "form",
+    fields: [
+      {
+        key: "doa",
+        label: "移籍発表日",
+        fieldType: "input",
+        valueType: "date",
+        overwriteByMany: true,
+      },
+      {
+        key: "from_date",
+        label: "新チーム加入日",
+        fieldType: "input",
+        valueType: "date",
+        overwriteByMany: true,
+      },
+      {
+        key: "form",
+        label: "移籍形態",
+        fieldType: "select",
+        valueType: "option",
+        overwriteByMany: true,
+      },
+    ],
+  },
   {
     stepLabel: "選手を選択",
     type: "form",
@@ -87,55 +115,12 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
     ],
     many: true,
     validate: (formData) => {
-      if (Boolean(formData.from_team) && Boolean(formData.from_team_name)) {
-        return {
-          success: false,
-          message: "移籍元はチームを選択、または入力してください",
-        };
-      }
-
-      if (Boolean(formData.to_team) && Boolean(formData.to_team_name)) {
-        return {
-          success: false,
-          message: "移籍先はチームを選択、または入力してください",
-        };
-      }
-
-      const isValid =
-        Boolean(formData.from_team) ||
-        Boolean(formData.from_team_name) ||
-        Boolean(formData.to_team) ||
-        Boolean(formData.to_team_name);
-
-      return {
-        success: isValid,
-        message: isValid ? "" : "移籍元、移籍先少なくとも1つ選択してください",
-      };
+      const check1 = teamCheck(formData, "from_team", "from_team_name");
+      if (!check1.success) return check1;
+      return teamCheck(formData, "to_team", "to_team_name");
     },
     onChange: async (formData, api) => {
-      const { to_team, to_team_name, position } = await currentTransfer(
-        formData,
-        api
-      );
-
-      let obj: FormUpdatePair = [];
-      if (to_team_name) {
-        obj.push({
-          key: "from_team_name",
-          value: to_team_name,
-        });
-      } else if (to_team) {
-        obj.push({
-          key: "from_team",
-          value: to_team,
-        });
-      }
-      if (position) {
-        obj.push({
-          key: "position",
-          value: position,
-        });
-      }
+      const obj = setTeam(formData, api);
 
       return obj;
     },

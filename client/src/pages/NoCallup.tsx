@@ -1,6 +1,7 @@
 import { TableWithFetch } from "../components/table";
 import { ModelType } from "../types/models";
 import { API_ROUTES } from "../lib/apiRoutes";
+import { APP_ROUTES } from "../lib/appRoutes";
 
 const NoCallUp = () => {
   const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
@@ -19,6 +20,12 @@ const NoCallUp = () => {
           { label: "国名", field: "country", width: "100px" },
           { label: "年代", field: "age_group", width: "100px" },
           { label: "招集日", field: "joined_at" },
+        ]}
+        linkField={[
+          {
+            field: "name",
+            to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+          },
         ]}
       />
     </div>

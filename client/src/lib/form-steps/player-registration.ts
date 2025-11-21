@@ -59,7 +59,7 @@ export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
       }
 
       // teamの設定
-      const { to_team } = await currentTransfer(formData, api);
+      const { to_team } = await currentTransfer({ formData, api });
       if (to_team) {
         obj.push({
           key: "team",

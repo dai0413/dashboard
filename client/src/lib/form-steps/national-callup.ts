@@ -1,6 +1,9 @@
-import { FormStep, FormUpdatePair } from "../../types/form";
-import { FormTypeMap, ModelType } from "../../types/models";
-import { currentTransfer } from "./utils/onChange/currentTransfer";
+import { FormStep } from "../../types/form";
+import { ModelType } from "../../types/models";
+import { setDate } from "./utils/onChange/national-callup/setDate";
+import { setTeam } from "./utils/onChange/national-callup/setTeam";
+import { leftReasonCheck } from "./utils/validate/national-callup/leftReasonCheck";
+import { teamCheck } from "./utils/validate/teamCheck";
 
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
@@ -29,20 +32,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const { to_team, to_team_name } = await currentTransfer(formData, api);
-
-      let obj: FormUpdatePair = [];
-      if (to_team_name) {
-        obj.push({
-          key: "team_name",
-          value: to_team_name,
-        });
-      } else if (to_team) {
-        obj.push({
-          key: "team",
-          value: to_team,
-        });
-      }
+      const obj = await setTeam(formData, api);
 
       return obj;
     },
@@ -64,19 +54,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         valueType: "text",
       },
     ],
-    validate: (formData) => {
-      if (Boolean(formData.team) && Boolean(formData.team_name)) {
-        return {
-          success: false,
-          message: "チームを選択、または入力してください",
-        };
-      }
-
-      return {
-        success: true,
-        message: "",
-      };
-    },
+    validate: (formData) => teamCheck(formData, "team", "team_name"),
   },
   {
     stepLabel: "日付",
@@ -167,31 +145,9 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         valueType: "option",
       },
     ],
-    validate: (formData) => {
-      if (formData.status !== "joined" && !formData.left_reason) {
-        return {
-          success: false,
-          message: "離脱理由を入力してください",
-        };
-      }
-
-      return {
-        success: true,
-        message: "",
-      };
-    },
-    onChange: async (formData: FormTypeMap[ModelType.NATIONAL_CALLUP]) => {
-      let obj: FormUpdatePair = [];
-      if (formData.status) {
-        if (formData.status === "declined") {
-          obj.push({ key: "joined_at", value: undefined });
-          obj.push({ key: "left_at", value: undefined });
-        } else if (formData.status === "withdrawn") {
-          obj.push({ key: "left_at", value: undefined });
-        } else if (formData.status === "joined") {
-          obj.push({ key: "left_reason", value: undefined });
-        }
-      }
+    validate: (formData) => leftReasonCheck(formData),
+    onChange: async (formData, _api) => {
+      const obj = setDate(formData);
       return obj;
     },
   },

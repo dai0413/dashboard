@@ -17,10 +17,11 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const { to_team, to_team_name, position } = await currentTransfer(
+      const { to_team, to_team_name, position } = await currentTransfer({
         formData,
-        api
-      );
+        api,
+        form: "!満了",
+      });
 
       let obj: FormUpdatePair = [];
       if (to_team_name) {
@@ -46,7 +47,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
     filterConditions: async (formData, api) => {
       if (!formData.player) return [];
 
-      const { to_team } = await currentTransfer(formData, api);
+      const { to_team } = await currentTransfer({ formData, api });
 
       if (to_team && to_team.key) {
         const filterCondition: FilterableFieldDefinition = {
