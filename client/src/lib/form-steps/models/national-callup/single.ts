@@ -3,7 +3,7 @@ import { ModelType } from "../../../../types/models";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
 import { leftReasonCheck } from "./validate/leftReasonCheck";
-import { teamCheck } from "../../utils/validate/teamCheck";
+import { teamCheck } from "./validate/teamCheck";
 
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
@@ -32,7 +32,11 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const obj = await setTeam(formData, api);
+      const obj = await setTeam(
+        formData,
+        api,
+        formData.joined_at ? formData.joined_at : undefined
+      );
 
       return obj;
     },

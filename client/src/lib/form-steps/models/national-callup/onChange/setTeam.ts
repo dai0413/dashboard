@@ -5,9 +5,15 @@ import { NationalCallupForm } from "../../../../../types/models/national-callup"
 
 export async function setTeam(
   formData: Partial<NationalCallupForm>,
-  api: AxiosInstance
+  api: AxiosInstance,
+  from_date?: string
 ): Promise<FormUpdatePair> {
-  const { to_team, to_team_name } = await currentTransfer({ formData, api });
+  const { to_team, to_team_name } = await currentTransfer({
+    formData,
+    api,
+    form: "!満了",
+    from_date,
+  });
 
   let obj: FormUpdatePair = [];
   if (to_team_name) {

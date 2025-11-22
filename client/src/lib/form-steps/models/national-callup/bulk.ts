@@ -2,7 +2,7 @@ import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
-import { teamCheck } from "../../utils/validate/teamCheck";
+import { teamCheck } from "./validate/teamCheck";
 
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
@@ -15,8 +15,31 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         fieldType: "table",
         valueType: "option",
         required: true,
+        overwriteByMany: true,
       },
     ],
+    onChange: async (formData, _api) => {
+      let obj: FormUpdatePair = [];
+      const {} = formData;
+
+      console.log("formData", formData);
+
+      if (formData.joined_at) {
+        obj.push({
+          key: "joined_at",
+          value: formData.joined_at,
+        });
+      }
+
+      if (formData.left_at) {
+        obj.push({
+          key: "left_at",
+          value: formData.left_at,
+        });
+      }
+
+      return obj;
+    },
   },
   {
     stepLabel: "選手を選択",
@@ -123,7 +146,11 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     many: true,
     validate: (formData) => teamCheck(formData, "team", "team_name"),
     onChange: async (formData, api) => {
-      const teamObj = await setTeam(formData, api);
+      const teamObj = await setTeam(
+        formData,
+        api,
+        formData.joined_at ? formData.joined_at : undefined
+      );
       const dateobj = setDate(formData);
 
       const mainobj: FormUpdatePair = [...teamObj, ...dateobj];
