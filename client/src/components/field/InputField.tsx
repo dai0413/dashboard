@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { CalendarDays, CalendarClock, CalendarRange } from "lucide-react";
 import { useForm } from "../../context/form-context";
+import { getSeasonDates } from "../../utils/getSeasonDates";
 
 type InputFieldProps = {
   type: "text" | "number" | "date" | "datetime-local" | "boolean" | "option";
@@ -8,37 +9,6 @@ type InputFieldProps = {
   onChange: (value: string | number | Date | boolean) => void;
   placeholder?: string;
   supportButton?: boolean;
-};
-
-// 日付だけのinput用: その日のローカル0時に固定
-const localDate = (year: number, month: number, day: number) => {
-  // 月は0始まりなので month - 1
-  const d = new Date(year, month - 1, day);
-  d.setHours(0, 0, 0, 0);
-  return d;
-};
-
-// === シーズン境界計算関数 ===
-const getSeasonDates = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-
-  let seasonStart: Date;
-  let seasonEnd: Date;
-  let nextSeasonStart: Date;
-
-  if (month >= 2) {
-    seasonStart = localDate(year, 2, 1);
-    seasonEnd = localDate(year + 1, 1, 31);
-    nextSeasonStart = localDate(year + 1, 2, 1);
-  } else {
-    seasonStart = localDate(year - 1, 2, 1);
-    seasonEnd = localDate(year, 1, 31);
-    nextSeasonStart = localDate(year, 2, 1);
-  }
-
-  return { seasonStart, seasonEnd, nextSeasonStart };
 };
 
 const formatLocalDate = (date: Date) => {
