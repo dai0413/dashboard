@@ -1,7 +1,7 @@
 import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setTeam } from "./onChange/setTeam";
-import { teamCheck } from "../../utils/validate/teamCheck";
+import { teamCheck } from "./validate/teamCheck";
 
 export const transfer: FormStep<ModelType.TRANSFER>[] = [
   {
@@ -71,7 +71,6 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         label: "移籍発表日",
         fieldType: "input",
         valueType: "date",
-        required: true,
       },
       {
         key: "from_date",
@@ -114,11 +113,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       },
     ],
     many: true,
-    validate: (formData) => {
-      const check1 = teamCheck(formData, "from_team", "from_team_name");
-      if (!check1.success) return check1;
-      return teamCheck(formData, "to_team", "to_team_name");
-    },
+    validate: (formData) => teamCheck(formData),
     onChange: async (formData, api) => {
       const obj = setTeam(formData, api);
 

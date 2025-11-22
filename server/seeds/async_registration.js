@@ -34,17 +34,24 @@ async function rebuildPlayerRegistrationFromHistory() {
 
 const url = process.env.MONGODB_URI;
 
-const start = async () => {
+async function start() {
   try {
-    if (url) {
-      // connectDB
-      await connectDB(url);
-
-      await rebuildPlayerRegistrationFromHistory();
+    if (!url) {
+      console.error("❌ MONGODB_URI が設定されていません");
+      process.exit(1);
     }
+
+    await connectDB(url);
+    console.log("MongoDB 接続完了");
+
+    await rebuildPlayerRegistrationFromHistory();
   } catch (error) {
-    console.log(error);
+    console.error(error);
+  } finally {
+    await mongoose.connection.close();
+    console.log("DB 接続をクローズしました");
+    process.exit(0);
   }
-};
+}
 
 start();

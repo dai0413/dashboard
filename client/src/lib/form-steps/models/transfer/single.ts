@@ -1,13 +1,22 @@
 import { FilterableFieldDefinition } from "@myorg/shared";
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
+import { setFromDate } from "./onChange/setFromDate";
+import { setTeam } from "./onChange/setTeam";
+import { teamCheck } from "./validate/teamCheck";
 
 export const transfer: FormStep<ModelType.TRANSFER>[] = [
   {
-    stepLabel: "選手を選択",
+    stepLabel: "移籍形態・選手を選択",
     type: "form",
     fields: [
+      {
+        key: "form",
+        label: "移籍形態",
+        fieldType: "select",
+        valueType: "option",
+      },
       {
         key: "player",
         label: "選手",
@@ -17,32 +26,11 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const { to_team, to_team_name, position } = await currentTransfer({
-        formData,
-        api,
-        form: "!満了",
-      });
+      const teamObj = await setTeam(formData, api);
 
-      let obj: FormUpdatePair = [];
-      if (to_team_name) {
-        obj.push({
-          key: "from_team_name",
-          value: to_team_name,
-        });
-      } else if (to_team) {
-        obj.push({
-          key: "from_team",
-          value: to_team,
-        });
-      }
-      if (position) {
-        obj.push({
-          key: "position",
-          value: position,
-        });
-      }
+      const from_dateObj = setFromDate(formData);
 
-      return obj;
+      return [...teamObj, ...from_dateObj];
     },
     filterConditions: async (formData, api) => {
       if (!formData.player) return [];
@@ -101,32 +89,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         valueType: "text",
       },
     ],
-    validate: (formData) => {
-      if (Boolean(formData.from_team) && Boolean(formData.from_team_name)) {
-        return {
-          success: false,
-          message: "移籍元はチームを選択、または入力してください",
-        };
-      }
-
-      if (Boolean(formData.to_team) && Boolean(formData.to_team_name)) {
-        return {
-          success: false,
-          message: "移籍先はチームを選択、または入力してください",
-        };
-      }
-
-      const isValid =
-        Boolean(formData.from_team) ||
-        Boolean(formData.from_team_name) ||
-        Boolean(formData.to_team) ||
-        Boolean(formData.to_team_name);
-
-      return {
-        success: isValid,
-        message: isValid ? "" : "移籍元、移籍先少なくとも1つ選択してください",
-      };
-    },
+    validate: (formData) => teamCheck(formData),
   },
   {
     stepLabel: "日付を入力",
@@ -137,7 +100,6 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         label: "移籍発表日",
         fieldType: "input",
         valueType: "date",
-        required: true,
       },
       {
         key: "from_date",
@@ -158,12 +120,6 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
     stepLabel: "移籍形態・背番号・ポジションを入力",
     type: "form",
     fields: [
-      {
-        key: "form",
-        label: "移籍形態",
-        fieldType: "select",
-        valueType: "option",
-      },
       {
         key: "number",
         label: "背番号",

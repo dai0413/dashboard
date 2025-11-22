@@ -4,8 +4,8 @@ import { Team } from "./team";
 import { position } from "../../utils/createOption/Enum/position";
 import { form } from "../../utils/createOption/Enum/form";
 
-const positionOptions = position();
-const formOptions = form();
+const positionOptions = position().map((item) => item.key);
+const formOptions = form().map((item) => item.key);
 type Position = (typeof positionOptions)[number] | null;
 type Form = (typeof formOptions)[number] | null;
 
