@@ -258,9 +258,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
         setFormData(data);
         setFormDatas([data]);
+        setBulkCommonData(data);
         const resolvedLabels = await resolveForeignKeyLabels(data);
         setFormLabel(resolvedLabels);
         setFormLabels([resolvedLabels]);
+        setBulkCommonLabel(resolvedLabels);
       } else {
         resetFormData();
         resetFormDatas();
@@ -411,7 +413,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     // --- 必須チェック ---
     const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
     if (!requiredCheck.success) {
-      handleSetAlert(requiredCheck);
+      return handleSetAlert(requiredCheck);
     }
 
     // --- validate 関数によるバリデーション ---
@@ -430,9 +432,9 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     // --- onChange 関数による値変更 ---
     if (current.onChange) {
       if (!Array.isArray(checkData)) {
-        const datas = await current.onChange(checkData, api);
+        const updatePaires = await current.onChange(checkData, api);
 
-        datas.forEach((da) => {
+        updatePaires.forEach((da) => {
           singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
         });
       }
@@ -528,11 +530,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setFormLabel({});
   };
 
-  // useEffect(
-  //   () => console.log("formData", formData, "formLabel", formLabel),
-  //   [formData, formLabel]
-  // );
-
   ////////////////////////// many data edit //////////////////////////
 
   const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
@@ -541,6 +538,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const resetFormDatas = () => {
     setFormDatas([]);
     setFormLabels([]);
+    setBulkCommonData({});
+    setBulkCommonLabel({});
   };
 
   const handleFormData = <K extends keyof FormTypeMap[T]>(
