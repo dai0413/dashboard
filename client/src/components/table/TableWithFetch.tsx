@@ -12,6 +12,8 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { QueryParams, ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
 import { TableBase, TableFetch, TableOperationFields } from "../../types/table";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 type TableWithFetchProps<T extends ModelType> = Omit<
   TableBase<T>,
@@ -36,6 +38,8 @@ const TableWithFetch = <T extends ModelType>({
   reloadTrigger,
 }: TableWithFetchProps<T>) => {
   const api = useApi();
+  const { filterConditions } = useFilter();
+  const { sortConditions } = useSort();
 
   const [data, setData] = useState<Data<GettedModelDataMap[T]>>({
     data: [],
@@ -51,7 +55,11 @@ const TableWithFetch = <T extends ModelType>({
     readItemsBase({
       apiInstance: api,
       backendRoute: apiRoute,
-      params,
+      params: {
+        ...params,
+        filters: JSON.stringify(filterConditions),
+        sorts: JSON.stringify(sortConditions),
+      },
       path,
       onSuccess: (resBody: ResBody<ModelDataMap[T]>) =>
         setData({

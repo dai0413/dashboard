@@ -82,10 +82,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleAdding = () => setIsAdding((prev) => !prev);
 
-  const resetFilterConditions = (adminOnly?: boolean) => {
-    if (adminOnly)
-      return setFilterConditions((prev) => prev.filter((p) => p.editByAdmin));
-
+  const resetFilterConditions = () => {
     setFilterConditions([]);
   };
 

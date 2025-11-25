@@ -65,7 +65,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
             .map((t) => t.id)
             .filter((id): id is string => Boolean(id)),
           valueLabel: teams.map((t) => t.label),
-          editByAdmin: true,
         };
 
         return [filterCondition];
@@ -117,7 +116,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
               .map((t) => t.id)
               .filter((id): id is string => Boolean(id)),
             valueLabel: players.map((t) => t.label),
-            editByAdmin: true,
           };
 
           return [filterCondition];

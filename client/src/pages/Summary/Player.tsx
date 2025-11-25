@@ -15,6 +15,8 @@ import { useForm } from "../../context/form-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -26,7 +28,8 @@ const Tabs = PlayerTabItems.filter(
 
 const Player = () => {
   const { id } = useParams();
-
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("transfer");
@@ -46,6 +49,8 @@ const Player = () => {
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    resetFilterConditions();
+    resetSort([]);
     setSelectedTab(value as string);
   };
 

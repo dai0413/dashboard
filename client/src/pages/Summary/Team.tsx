@@ -27,6 +27,8 @@ import { Season, SeasonGet } from "../../types/models/season";
 import { QueryParams, ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -39,7 +41,8 @@ const Tabs = TeamTabItems.filter(
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
-
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("player");
@@ -105,6 +108,8 @@ const Team = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    resetFilterConditions();
+    resetSort([]);
     setSelectedTab(value as string);
   };
 
@@ -534,7 +539,7 @@ const Team = () => {
         <TableWithFetch
           modelType={ModelType.PLAYER_REGISTRATION}
           headers={[
-            { label: "シーズン", field: "season" },
+            { label: "ポジション", field: "position_group" },
             {
               label: "背番号",
               field: "number",
