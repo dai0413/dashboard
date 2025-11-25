@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import connectDB from "../dist/db/connect.js";
-
+import mongoose from "mongoose";
 import { PlayerModel } from "../dist/models/player.js";
 import { TeamModel } from "../dist/models/team.js";
 import { SeasonModel } from "../dist/models/season.js";

@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { IPlayerRegistrationHistory } from "../../models/player-registration-history.js";
 import { PlayerRegistrationModel } from "../../models/player-registration.js";
 
@@ -27,18 +28,7 @@ async function handleRegister(prh: IPlayerRegistrationHistory) {
     registration_status: "active",
   });
 
-  // ② 同一 season & player の PR を取得
-  const regs = await PlayerRegistrationModel.find({
-    season: prh.season,
-    player: prh.player,
-  }).sort({ date: 1 });
-
-  // ③ 最も新しい PR を active、それ以外を terminated
-  for (let i = 0; i < regs.length; i++) {
-    regs[i].registration_status =
-      i === regs.length - 1 ? "active" : "terminated";
-    await regs[i].save();
-  }
+  await reconcileLatestRegisterActive(prh.season, prh.player);
 
   return newReg;
 }
@@ -77,13 +67,43 @@ async function handleDeregister(prh: IPlayerRegistrationHistory) {
     registration_status: "terminated",
   });
 
-  // ② 同一 season & player の PR のうち、prh.date より前のものを terminated
-  await PlayerRegistrationModel.updateMany(
-    {
-      season: prh.season,
-      player: prh.player,
-      date: { $lte: prh.date },
-    },
-    { $set: { registration_status: "terminated" } }
-  );
+  await reconcileLatestRegisterActive(prh.season, prh.player);
+}
+
+async function reconcileLatestRegisterActive(
+  season: Types.ObjectId | string,
+  player: Types.ObjectId | string
+) {
+  // 全件取得（date昇順）
+  const regs = await PlayerRegistrationModel.find({
+    season,
+    player,
+  })
+    .sort({ date: 1 })
+    .lean();
+
+  if (regs.length === 0) return;
+
+  // 最新の register を探す（存在しなければ active はない）
+  const registers = regs.filter((r) => r.registration_type === "register");
+  const latestRegister =
+    registers.length > 0
+      ? registers[registers.length - 1]._id.toString()
+      : null;
+
+  const bulkOps = regs.map((r) => {
+    const shouldBe =
+      latestRegister && r._id.toString() === latestRegister
+        ? "active"
+        : "terminated";
+
+    return {
+      updateOne: {
+        filter: { _id: r._id },
+        update: { $set: { registration_status: shouldBe } },
+      },
+    };
+  });
+
+  await PlayerRegistrationModel.bulkWrite(bulkOps);
 }
