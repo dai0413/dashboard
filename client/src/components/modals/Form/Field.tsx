@@ -272,7 +272,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                 type={valueType}
                 value={item}
                 onChange={onChange}
-                placeholder="検索"
+                placeholder=""
               />
 
               <button
