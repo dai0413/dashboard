@@ -271,7 +271,7 @@ const Team = () => {
             params: {
               from_date: seasonDates.seasonRange,
               to_team: id,
-              sort: "number",
+              sort: "position_group_order,number",
               form: ["!期限付き満了"],
             },
           }}

@@ -299,23 +299,34 @@ const Competition = () => {
           modelType={ModelType.PLAYER_REGISTRATION}
           headers={[
             { label: "チーム", field: "team" },
+            { label: "ポジション", field: "position_group", width: "100px" },
             {
               label: "背番号",
               field: "number",
               getData: (data: PlayerRegistrationGet) => {
                 return data.number ? String(data.number) : "";
               },
+              width: "80px",
             },
             { label: "選手", field: "player" },
-            { label: "登録中・抹消済", field: "registration_status" },
             {
-              label: "2種・特別指定",
+              label: "抹消",
+              field: "registration_status",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.registration_status === "抹消済み") return "済";
+                return "";
+              },
+              width: "80px",
+            },
+            {
+              label: "2種特指",
               field: "special_type",
               getData: (data: PlayerRegistrationGet) => {
                 if (data.isSpecialDesignation) return "特別指定";
                 if (data.isTypeTwo) return "2種";
                 return "";
               },
+              width: "100px",
             },
           ]}
           fetch={{
@@ -323,7 +334,7 @@ const Competition = () => {
             params: {
               season: selectedSeason._id,
               registration_type: "register",
-              sort: "team,number",
+              sort: "team,position_group_order,number",
             },
           }}
           filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]

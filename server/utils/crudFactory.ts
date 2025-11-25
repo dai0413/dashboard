@@ -14,6 +14,8 @@ import {
 import { buildMongoFilter } from "./buildFilter.js";
 import { parseSort } from "./parseSort.js";
 import { buildJsonSort } from "./buildJsonSort.js";
+import { addPositionGroup } from "../order/position.js";
+import { addPositionGroupOrder } from "../order/position_group.js";
 
 const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>
@@ -88,6 +90,9 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
       const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
 
+      const needsPositionSort =
+        mongoSort && mongoSort.hasOwnProperty("position_group_order");
+
       const results = await MONGO_MODEL.aggregate([
         ...getNest(false, beforePaths),
         ...(Object.keys(beforeMatch).length > 0
@@ -106,7 +111,12 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
           $facet: {
             metadata: [{ $count: "totalCount" }],
             data: [
+              ...(needsPositionSort ? [addPositionGroup] : []),
+              ...(needsPositionSort ? [addPositionGroupOrder] : []),
               { $sort: mongoSort },
+              ...(needsPositionSort
+                ? [{ $project: { position_group_order: 0 } }]
+                : []),
               ...(getAll ? [] : [{ $skip: skip }, { $limit: limit }]),
             ],
           },
