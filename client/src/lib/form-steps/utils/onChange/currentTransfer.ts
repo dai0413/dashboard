@@ -5,14 +5,20 @@ import { Transfer } from "../../../../types/models/transfer";
 import { API_ROUTES } from "../../../apiRoutes";
 import { convert } from "../../../convert/DBtoGetted";
 import { position } from "../../../../utils/createOption/Enum/position";
+import { form } from "../../../../utils/createOption/Enum/form";
 
-const positionOptions = position();
+const positionOptions = position().map((item) => item.key);
+const formOptions = form().map((item) => item.key);
 type Position = (typeof positionOptions)[number] | null;
+type Form = (typeof formOptions)[number] | null;
 
 type Response = {
+  from_team?: { label: any; key: string };
+  from_team_name?: string;
   to_team?: { label: any; key: string };
   to_team_name?: string;
   position?: Position[];
+  form?: Form;
 };
 
 type CurrentTransfer<T extends ModelType> = {
@@ -61,8 +67,23 @@ export const currentTransfer = async <T extends ModelType>({
       }
     }
 
+    if (latest.from_team) {
+      if (latest.from_team.id) {
+        response.from_team = {
+          label: latest.from_team.label,
+          key: latest.from_team.id,
+        };
+      } else {
+        response.from_team_name = latest.from_team.label;
+      }
+    }
+
     if (latest.position) {
       response.position = latest.position;
+    }
+
+    if (latest.form) {
+      response.form = latest.form;
     }
   }
 

@@ -50,7 +50,6 @@ export const injury: FormStep<ModelType.INJURY>[] = [
           type: "select",
           value: [to_team.key],
           valueLabel: [to_team.label],
-          editByAdmin: true,
         };
 
         return [filterCondition];

@@ -37,21 +37,20 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
 
       const { to_team } = await currentTransfer({ formData, api });
 
+      let filterCondition: FilterableFieldDefinition[] = [];
+
       if (to_team && to_team.key) {
-        const filterCondition: FilterableFieldDefinition = {
+        filterCondition.push({
           key: "_id",
           label: "チーム",
           operator: "equals",
           type: "select",
           value: [to_team.key],
           valueLabel: [to_team.label],
-          editByAdmin: true,
-        };
-
-        return [filterCondition];
+        });
       }
 
-      return [];
+      return filterCondition;
     },
   },
   {
@@ -71,6 +70,26 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         valueType: "text",
       },
     ],
+    filterConditions: async (formData, api) => {
+      if (!formData.player) return [];
+
+      const { from_team } = await currentTransfer({ formData, api });
+
+      let filterCondition: FilterableFieldDefinition[] = [];
+
+      if (from_team && from_team.key) {
+        filterCondition.push({
+          key: "_id",
+          label: "チーム",
+          operator: "equals",
+          type: "select",
+          value: [from_team.key],
+          valueLabel: [from_team.label],
+        });
+      }
+
+      return filterCondition;
+    },
   },
   {
     stepLabel: "移籍先を選択",
