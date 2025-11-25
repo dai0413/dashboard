@@ -41,6 +41,7 @@ export function playerRegistrationHistory<TDoc = any, TModel = any>(
         { field: "competition", type: "ObjectId" },
         { field: "player", type: "ObjectId" },
         { field: "team", type: "ObjectId" },
+        { field: "date", type: "Date" },
       ],
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,

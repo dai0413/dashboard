@@ -20,6 +20,7 @@ import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
+import { PlayerRegistrationGet } from "../../types/models/player-registration";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -281,6 +282,54 @@ const Competition = () => {
             {
               field: "away_team",
               to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
+          reloadTrigger={reloadKey}
+        />
+      )}
+
+      {selectedTab === "registration" && selectedSeason && (
+        <TableWithFetch
+          modelType={ModelType.PLAYER_REGISTRATION}
+          headers={[
+            { label: "チーム", field: "team" },
+            {
+              label: "背番号",
+              field: "number",
+              getData: (data: PlayerRegistrationGet) => {
+                return data.number ? String(data.number) : "";
+              },
+            },
+            { label: "選手", field: "player" },
+            { label: "登録中・抹消済", field: "registration_status" },
+            {
+              label: "2種・特別指定",
+              field: "special_type",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.isSpecialDesignation) return "特別指定";
+                if (data.isTypeTwo) return "2種";
+                return "";
+              },
+            },
+          ]}
+          fetch={{
+            apiRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            params: {
+              season: selectedSeason._id,
+              registration_type: "register",
+              sort: "team,number",
+            },
+          }}
+          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isSortable)
+            .filter((file) => file.key !== "competition")}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
           reloadTrigger={reloadKey}

@@ -26,6 +26,7 @@ import { toDateKey } from "../../utils";
 import { Season, SeasonGet } from "../../types/models/season";
 import { QueryParams, ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
+import { PlayerRegistrationGet } from "../../types/models/player-registration";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -524,6 +525,55 @@ const Team = () => {
           linkField={[
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
             { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
+          ]}
+          reloadTrigger={reloadKey}
+        />
+      )}
+
+      {selectedTab === "registration" && id && (
+        <TableWithFetch
+          modelType={ModelType.PLAYER_REGISTRATION}
+          headers={[
+            { label: "シーズン", field: "season" },
+            {
+              label: "背番号",
+              field: "number",
+              getData: (data: PlayerRegistrationGet) => {
+                return data.number ? String(data.number) : "";
+              },
+            },
+            { label: "選手", field: "player" },
+            { label: "登録中・抹消済", field: "registration_status" },
+            {
+              label: "2種・特別指定",
+              field: "special_type",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.isSpecialDesignation) return "特別指定";
+                if (data.isTypeTwo) return "2種";
+                return "";
+              },
+            },
+          ]}
+          fetch={{
+            apiRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            params: {
+              team: id,
+              date: seasonDates.seasonRange,
+              registration_type: "register",
+              sort: "number,date",
+            },
+          }}
+          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "team")}
+          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isSortable)
+            .filter((file) => file.key !== "team")}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
+            },
           ]}
           reloadTrigger={reloadKey}
         />

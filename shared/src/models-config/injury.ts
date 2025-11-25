@@ -47,7 +47,7 @@ export function injury<TDoc = any, TModel = any>(
       sort: { doa: -1, _id: 1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: (deps: DependencyRefs) => [

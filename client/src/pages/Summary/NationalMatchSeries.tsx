@@ -61,6 +61,20 @@ const National = () => {
                 selected.left_at && toDateKey(selected.left_at)
               }`}
             </div>
+            <div className="text-sm text-gray-500">
+              {selected.urls.map((url, index) => {
+                return (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    link-{index + 1}
+                  </a>
+                );
+              })}
+            </div>
           </div>
         </div>
       ) : (

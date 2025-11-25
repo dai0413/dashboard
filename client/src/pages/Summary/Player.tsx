@@ -14,6 +14,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useForm } from "../../context/form-context";
 import { API_ROUTES } from "../../lib/apiRoutes";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { PlayerRegistrationGet } from "../../types/models/player-registration";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -202,6 +203,50 @@ const Player = () => {
             {
               field: "series",
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+            },
+          ]}
+          formInitialData={formInitialData}
+          reloadTrigger={reloadKey}
+        />
+      )}
+
+      {selectedTab === "registration" && id && (
+        <TableWithFetch
+          modelType={ModelType.PLAYER_REGISTRATION}
+          headers={[
+            { label: "シーズン", field: "season" },
+            { label: "大会", field: "competition" },
+            { label: "日付", field: "date" },
+            { label: "チーム", field: "team" },
+            { label: "登録・抹消", field: "registration_type" },
+            { label: "登録・抹消", field: "registration_status" },
+            {
+              label: "2種・特別指定",
+              field: "special_type",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.isSpecialDesignation) return "特別指定";
+                if (data.isTypeTwo) return "2種";
+                return "";
+              },
+            },
+          ]}
+          fetch={{
+            apiRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            params: {
+              player: id,
+              sort: "-date,-competition,-registration_type",
+            },
+          }}
+          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "player")}
+          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isSortable)
+            .filter((file) => file.key !== "player")}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
           formInitialData={formInitialData}
