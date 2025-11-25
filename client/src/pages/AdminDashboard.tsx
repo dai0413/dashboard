@@ -49,19 +49,19 @@ const models: {
     model: "TeamCompetitionSeason",
     desc: "チームの大会参加記録",
     link: APP_ROUTES.TEAM_COMPETITION_SEASON,
-    icon: "transfer",
+    icon: "registration",
   },
   {
     model: "PlayerRegistration",
     desc: "選手の大会参加記録",
     link: APP_ROUTES.PLAYER_REGISTRATION,
-    icon: "transfer",
+    icon: "registration",
   },
   {
     model: "PlayerRegistrationHistory",
     desc: "選手の大会参加記録履歴",
     link: APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
-    icon: "transfer",
+    icon: "registration",
   },
   {
     model: "Referee",

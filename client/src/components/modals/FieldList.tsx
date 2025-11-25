@@ -75,7 +75,6 @@ const FieldList = (props: Props) => {
       typeof value !== "string" &&
       value !== "未入力"
     ) {
-      console.log("value", value);
       const urls = Array.isArray(value) ? value : [value];
       const validUrls = urls.filter(
         (u) => typeof u === "string" && u.trim() !== ""
