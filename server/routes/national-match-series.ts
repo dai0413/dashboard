@@ -9,9 +9,17 @@ import {
   deleteItem,
   downloadItems,
 } from "../controllers/models/national-match-series.js";
+import { API_PATHS } from "../api-paths.js";
 
-router.route("/").get(getAllItems).post(createItem);
-router.route("/download").get(downloadItems);
-router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
+router
+  .route(API_PATHS.NATIONAL_MATCH_SERIES.ROOT)
+  .get(getAllItems)
+  .post(createItem);
+router.route(API_PATHS.NATIONAL_MATCH_SERIES.DOWNLOAD).get(downloadItems);
+router
+  .route(API_PATHS.NATIONAL_MATCH_SERIES.DETAIL())
+  .patch(updateItem)
+  .delete(deleteItem)
+  .get(getItem);
 
 export default router;

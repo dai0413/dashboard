@@ -8,8 +8,13 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/match-format.js";
+import { API_PATHS } from "../api-paths.js";
 
-router.route("/").get(getAllItems).post(createItem);
-router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
+router.route(API_PATHS.MATCH_FORMAT.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.MATCH_FORMAT.DETAIL())
+  .patch(updateItem)
+  .delete(deleteItem)
+  .get(getItem);
 
 export default router;

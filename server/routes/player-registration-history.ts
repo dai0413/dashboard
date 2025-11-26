@@ -8,8 +8,16 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/player-registration-history.js";
+import { API_PATHS } from "../api-paths.js";
 
-router.route("/").get(getAllItems).post(createItem);
-router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
+router
+  .route(API_PATHS.PLAYER_REGISTRATION_HISTORY.ROOT)
+  .get(getAllItems)
+  .post(createItem);
+router
+  .route(API_PATHS.PLAYER_REGISTRATION_HISTORY.DETAIL())
+  .patch(updateItem)
+  .delete(deleteItem)
+  .get(getItem);
 
 export default router;

@@ -7,12 +7,17 @@ import {
   getNoNumberByCountry,
   getNoCallUp,
 } from "../controllers/aggregate.js";
+import { API_PATHS } from "../api-paths.js";
 
-router.route("/transfer/current-players/:teamId").get(getCurrentPlayersByTeam);
 router
-  .route("/transfer/current-loans/:teamId")
+  .route(API_PATHS.AGGREGATE.TRANSFER.CURRENT_PLAYERS_BY_TEAM(`:teamId`))
+  .get(getCurrentPlayersByTeam);
+router
+  .route(API_PATHS.AGGREGATE.TRANSFER.CURRENT_LOANS_BY_TEAM(`:teamId`))
   .get(getCurrentLoanPlayersByTeam);
-router.route("/transfer/no-number").get(getNoNumberByCountry);
-router.route("/national-callup/series-count/:countryId").get(getNoCallUp);
+router.route(API_PATHS.AGGREGATE.TRANSFER.NO_NUMBER).get(getNoNumberByCountry);
+router
+  .route(API_PATHS.AGGREGATE.NATIONAL_CALLUP.SERIES_COUNT(":countryId"))
+  .get(getNoCallUp);
 
 export default router;
