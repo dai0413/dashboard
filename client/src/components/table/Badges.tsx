@@ -4,13 +4,13 @@ import { ageGroup } from "../../utils/createOption/Enum";
 import { TeamCompetitionSeason } from "../../types/models/team-competition-season";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { FilterableFieldDefinition } from "@myorg/shared";
 import { objectIsEqual } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { ModelType } from "../../types/models";
 import { useState } from "react";
+import { API_PATHS } from "../../lib/api-paths";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -108,13 +108,13 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
     const season = await readItemsBase({
       apiInstance: api,
       params: { competition: competitionId, current: true },
-      backendRoute: API_ROUTES.SEASON.GET_ALL,
+      backendRoute: API_PATHS.SEASON.ROOT,
       returnResponse: true,
     });
     const resBody = await readItemsBase({
       apiInstance: api,
       params: { getAll: true, season: season.data[0]._id },
-      backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+      backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       returnResponse: true,
     });
 

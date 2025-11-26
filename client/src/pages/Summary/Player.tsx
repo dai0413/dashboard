@@ -12,7 +12,7 @@ import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { useForm } from "../../context/form-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "../../lib/api-paths";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useFilter } from "../../context/filter-context";
@@ -129,7 +129,7 @@ const Player = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: { player: id, sort: "-from_date" },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
@@ -165,7 +165,7 @@ const Player = () => {
             { label: "全治", field: "ttp" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.INJURY.GET_ALL,
+            apiRoute: API_PATHS.INJURY.ROOT,
             params: { player: id },
           }}
           filterField={fieldDefinition[ModelType.INJURY]
@@ -195,7 +195,7 @@ const Player = () => {
             { label: "活動開始日", field: "joined_at" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+            apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
             params: { player: id },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
@@ -236,7 +236,7 @@ const Player = () => {
             },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             params: {
               player: id,
               sort: "-date,-competition,-registration_type",

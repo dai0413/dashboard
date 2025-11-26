@@ -1,10 +1,10 @@
 import { ModelType } from "../../types/models";
 
-import { API_ROUTES } from "../../lib/apiRoutes";
 import { createModelContext } from "../../utils/createModelContext";
+import { API_PATHS } from "../../lib/api-paths";
 
 const ContextModelString = ModelType.COMPETITION;
-const backendRoute = API_ROUTES.COMPETITION;
+const backendRoute = API_PATHS.COMPETITION;
 
 const { useMetaCrud: useCompetition, MetaCrudProvider: CompetitionProvider } =
   createModelContext(ContextModelString, backendRoute);

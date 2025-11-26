@@ -9,7 +9,7 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "../../lib/api-paths";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
@@ -141,7 +141,7 @@ const National = () => {
             { label: "ポジション", field: "position_group" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+            apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
             params: { series: id, sort: "position_group_order,number" },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]

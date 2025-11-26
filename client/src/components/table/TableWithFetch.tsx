@@ -7,7 +7,6 @@ import {
 } from "../../types/models";
 import { useApi } from "../../context/api-context";
 import { readItemsBase } from "../../lib/api";
-import { CrudRouteWithParams } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { QueryParams, ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
@@ -29,7 +28,7 @@ const TableWithFetch = <T extends ModelType>({
   title,
   modelType,
   headers,
-  fetch: { apiRoute, path, params },
+  fetch: { apiRoute, params },
   filterField = [],
   sortField = [],
   linkField = [],
@@ -48,10 +47,7 @@ const TableWithFetch = <T extends ModelType>({
     isLoading: false,
   });
 
-  const fetchData = (
-    params?: QueryParams,
-    path?: CrudRouteWithParams<any>["path"]
-  ) =>
+  const fetchData = (params?: QueryParams) =>
     readItemsBase({
       apiInstance: api,
       backendRoute: apiRoute,
@@ -60,8 +56,7 @@ const TableWithFetch = <T extends ModelType>({
         filters: JSON.stringify(filterConditions),
         sorts: JSON.stringify(sortConditions),
       },
-      path,
-      onSuccess: (resBody: ResBody<ModelDataMap[T]>) =>
+      onSuccess: (resBody: ResBody<ModelDataMap[T][]>) =>
         setData({
           data: convert(modelType, resBody.data),
           totalCount: resBody.totalCount,
@@ -74,11 +69,11 @@ const TableWithFetch = <T extends ModelType>({
     });
 
   useEffect(() => {
-    fetchData(params, path);
-  }, [apiRoute, JSON.stringify(params), path, reloadTrigger]);
+    fetchData(params);
+  }, [apiRoute, JSON.stringify(params), reloadTrigger]);
 
   const handlePageChange = (page: number) =>
-    fetchData({ ...params, page: page }, path);
+    fetchData({ ...params, page: page });
 
   return (
     <CustomTableContainer
@@ -93,7 +88,7 @@ const TableWithFetch = <T extends ModelType>({
       pageNum={data.page}
       totalCount={data.totalCount}
       handlePageChange={handlePageChange}
-      reloadFun={() => fetchData(params, path)}
+      reloadFun={() => fetchData(params)}
       detailLinkValue={detailLinkValue}
       formInitialData={formInitialData}
     />

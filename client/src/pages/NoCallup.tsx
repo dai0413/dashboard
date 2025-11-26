@@ -1,7 +1,7 @@
 import { TableWithFetch } from "../components/table";
 import { ModelType } from "../types/models";
-import { API_ROUTES } from "../lib/apiRoutes";
 import { APP_ROUTES } from "../lib/appRoutes";
+import { API_PATHS } from "../lib/api-paths";
 
 const NoCallUp = () => {
   const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
@@ -11,8 +11,7 @@ const NoCallUp = () => {
       <TableWithFetch
         title="登録メンバーなし"
         fetch={{
-          apiRoute: API_ROUTES.AGGREGATE.NO_CALLUP,
-          path: japan,
+          apiRoute: API_PATHS.AGGREGATE.NATIONAL_CALLUP.SERIES_COUNT(japan),
         }}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         headers={[

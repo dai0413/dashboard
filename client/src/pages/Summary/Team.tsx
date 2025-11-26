@@ -13,7 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "../../lib/api-paths";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
@@ -67,7 +67,7 @@ const Team = () => {
   const readSeason = (seasonId: string) =>
     readItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.SEASON.DETAIL(seasonId),
+      backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
       onSuccess: (item: Season) => {
         setSeason(convert(ModelType.SEASON, item));
       },
@@ -76,9 +76,9 @@ const Team = () => {
   const readTeamCompetitionSeason = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+      backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       params,
-      onSuccess: (resBody: ResBody<TeamCompetitionSeason>) => {
+      onSuccess: (resBody: ResBody<TeamCompetitionSeason[]>) => {
         setTeamCompetitionSeason({
           data: convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data),
           page: resBody.page,
@@ -267,7 +267,7 @@ const Team = () => {
             { label: "ポジション", field: "position", width: "70px" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               from_date: seasonDates.seasonRange,
               to_team: id,
@@ -302,7 +302,7 @@ const Team = () => {
             { label: "ポジション", field: "position" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               from_date: [
                 `>${seasonDates.endDate}`,
@@ -344,7 +344,7 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               to_team: id,
               form: "!更新",
@@ -382,7 +382,7 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: { from_team: id, from_date: seasonDates.seasonRange },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
@@ -416,7 +416,7 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               from_team: id,
               form: ["期限付き", "育成型期限付き"],
@@ -454,7 +454,7 @@ const Team = () => {
             { label: "全治", field: "ttp" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.INJURY.GET_ALL,
+            apiRoute: API_PATHS.INJURY.ROOT,
             params: { team: id, doa: seasonDates.seasonRange },
           }}
           filterField={fieldDefinition[ModelType.INJURY]
@@ -522,7 +522,7 @@ const Team = () => {
             },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.MATCH.GET_ALL,
+            apiRoute: API_PATHS.MATCH.ROOT,
             params: { team: id, date: seasonDates.seasonRange, sort: "date" },
           }}
           filterField={fieldDefinition[ModelType.MATCH].filter(isFilterable)}
@@ -560,7 +560,7 @@ const Team = () => {
             },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             params: {
               team: id,
               date: seasonDates.seasonRange,

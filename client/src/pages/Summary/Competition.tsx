@@ -11,7 +11,7 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "../../lib/api-paths";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useCompetition } from "../../context/models/competition";
@@ -56,9 +56,9 @@ const Competition = () => {
   const readSeason = (competitionId: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.SEASON.GET_ALL,
+      backendRoute: API_PATHS.SEASON.ROOT,
       params: { competition: competitionId, getAll: true },
-      onSuccess: (resBody: ResBody<Season>) => {
+      onSuccess: (resBody: ResBody<Season[]>) => {
         setSeason({
           data: convert(ModelType.SEASON, resBody.data),
           page: resBody.page,
@@ -195,7 +195,7 @@ const Competition = () => {
           modelType={ModelType.TEAM_COMPETITION_SEASON}
           headers={[{ label: "チーム", field: "team" }]}
           fetch={{
-            apiRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+            apiRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
             params: { competition: id, season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
@@ -223,7 +223,7 @@ const Competition = () => {
             { label: "LEG", field: "leg", width: "50px" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
+            apiRoute: API_PATHS.COMPETITION_STAGE.ROOT,
             params: { season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.COMPETITION_STAGE]
@@ -271,7 +271,7 @@ const Competition = () => {
             { label: "アウェイ", field: "away_team" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.MATCH.GET_ALL,
+            apiRoute: API_PATHS.MATCH.ROOT,
             params: { season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.MATCH]
@@ -330,7 +330,7 @@ const Competition = () => {
             },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             params: {
               season: selectedSeason._id,
               registration_type: "register",

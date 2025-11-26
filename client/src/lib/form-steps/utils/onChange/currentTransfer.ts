@@ -2,10 +2,10 @@ import { AxiosInstance } from "axios";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemsBase, ResBody } from "../../../api/readItems";
 import { Transfer } from "../../../../types/models/transfer";
-import { API_ROUTES } from "../../../apiRoutes";
 import { convert } from "../../../convert/DBtoGetted";
 import { position } from "../../../../utils/createOption/Enum/position";
 import { form } from "../../../../utils/createOption/Enum/form";
+import { API_PATHS } from "../../../api-paths";
 
 const positionOptions = position().map((item) => item.key);
 const formOptions = form().map((item) => item.key);
@@ -46,9 +46,9 @@ export const currentTransfer = async <T extends ModelType>({
     ...(form !== undefined && { form }),
   };
 
-  const currentTransfer: ResBody<Transfer> = await readItemsBase({
+  const currentTransfer: ResBody<Transfer[]> = await readItemsBase({
     apiInstance: api,
-    backendRoute: API_ROUTES.TRANSFER.GET_ALL,
+    backendRoute: API_PATHS.TRANSFER.ROOT,
     params,
     returnResponse: true,
   });

@@ -1,9 +1,9 @@
 import { TableWithFetch } from "../components/table";
 import { ModelType } from "../types/models";
-import { API_ROUTES } from "../lib/apiRoutes";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
+import { API_PATHS } from "../lib/api-paths";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -17,7 +17,7 @@ const NoNumber = () => {
       <TableWithFetch
         title="背番号なし"
         fetch={{
-          apiRoute: API_ROUTES.AGGREGATE.NO_NUMBER,
+          apiRoute: API_PATHS.AGGREGATE.TRANSFER.NO_NUMBER,
           params: {
             competition: competitionParam,
             endDate: String(new Date()),

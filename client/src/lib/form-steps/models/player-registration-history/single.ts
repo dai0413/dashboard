@@ -3,9 +3,9 @@ import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { readItemBase, readItemsBase } from "../../../api";
-import { API_ROUTES } from "../../../apiRoutes";
 import { convert } from "../../../convert/DBtoGetted";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
+import { API_PATHS } from "../../../api-paths";
 
 export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
   [
@@ -46,7 +46,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
         const resBody = await readItemsBase({
           apiInstance: api,
           params: { getAll: true, season: formData.season },
-          backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+          backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
           returnResponse: true,
         });
 
@@ -97,7 +97,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
               team: formData.team,
               season: formData.season,
             },
-            backendRoute: API_ROUTES.PLAYER_REGISTRATION.GET_ALL,
+            backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             returnResponse: true,
           });
 
@@ -142,7 +142,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           // name, en_name の設定
           const res = await readItemBase({
             apiInstance: api,
-            backendRoute: API_ROUTES.PLAYER.DETAIL(formData.player),
+            backendRoute: API_PATHS.PLAYER.DETAIL(formData.player),
             returnResponse: true,
           });
 
@@ -167,7 +167,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           if (!formData.season || !formData.team) return [];
           const res = await readItemsBase({
             apiInstance: api,
-            backendRoute: API_ROUTES.PLAYER_REGISTRATION_HISTORY.GET_ALL,
+            backendRoute: API_PATHS.PLAYER_REGISTRATION_HISTORY.ROOT,
             params: {
               limit: 1,
               sort: "date",

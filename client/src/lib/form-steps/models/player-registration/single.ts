@@ -1,7 +1,7 @@
 import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
-import { API_ROUTES } from "../../../apiRoutes";
+import { API_PATHS } from "../../../api-paths";
 import { convert } from "../../../convert/DBtoGetted";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
@@ -38,7 +38,7 @@ export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
       // name, en_name の設定
       const res = await readItemBase({
         apiInstance: api,
-        backendRoute: API_ROUTES.PLAYER.DETAIL(formData.player),
+        backendRoute: API_PATHS.PLAYER.DETAIL(formData.player),
         returnResponse: true,
       });
 
