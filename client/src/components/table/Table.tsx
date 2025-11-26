@@ -389,7 +389,7 @@ const Table = <T extends Record<string, any>>({
           )}
         </div>
       ) : (
-        <div className="flex justify-center mb-20 space-x-2"></div>
+        <div className="flex justify-center mb-5 space-x-2"></div>
       )}
     </div>
   );
