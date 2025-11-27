@@ -122,12 +122,10 @@ InjurySchema.pre("save", function (next) {
 
 InjurySchema.index(
   {
+    doa: 1,
     team: 1,
     team_name: 1,
     player: 1,
-    doi: 1,
-    dos: 1,
-    injured_part: 1,
   },
   { unique: true }
 );
