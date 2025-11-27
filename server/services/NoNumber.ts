@@ -3,8 +3,21 @@ import { TransferModel } from "../models/transfer.js";
 import { SeasonModel } from "../models/season.js";
 import { Request } from "express";
 import { transfer as formatTransfer } from "../utils/format/transfer.js";
+import { TransferResponseSchema } from "@myorg/shared";
+import z from "zod";
 
-export const getNoNumberService = async (req: Request) => {
+type ResBody<DATA> = {
+  data: DATA;
+  totalCount?: number;
+  page?: number;
+  pageSize?: number;
+};
+
+type ResponseData = z.infer<typeof TransferResponseSchema>;
+
+export const getNoNumberService = async (
+  req: Request
+): Promise<ResBody<ResponseData[]>> => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
@@ -194,8 +207,10 @@ export const getNoNumberService = async (req: Request) => {
     { $limit: limit },
   ]);
 
+  const formatData: ResponseData[] = noNumberData.map(formatTransfer);
+
   const responseData = {
-    data: noNumberData.map(formatTransfer),
+    data: formatData,
     totalCount: countResult[0]?.totalCount || 0,
     page: page,
     pageSize: limit,

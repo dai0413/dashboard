@@ -43,7 +43,17 @@ export default function errorHandlerMiddleware(
     customError.msg = err.message;
   }
 
-  return res.status(customError.statusCode).json({
+  const errorResponse: APIError = {
     error: { message: customError.msg, code: customError.statusCode },
-  });
+  };
+
+  return res.status(customError.statusCode).json(errorResponse);
 }
+
+type APIError = {
+  error?: {
+    code?: number;
+    message?: string;
+    errors?: any;
+  };
+};

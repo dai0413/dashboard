@@ -140,9 +140,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       });
     } catch (err) {
       console.error(`[${name}] getAll error:`, err);
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: (err as Error).message });
+      throw new BadRequestError();
     }
   };
 
