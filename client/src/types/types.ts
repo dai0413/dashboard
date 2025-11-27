@@ -22,10 +22,3 @@ export type FieldListData = Record<
     onEdit?: () => void;
   }
 >;
-
-export type Data<D extends Record<string, any>> = {
-  data: D[];
-  page: number;
-  totalCount: number;
-  isLoading: boolean;
-};
