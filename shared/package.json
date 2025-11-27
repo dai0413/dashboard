@@ -13,16 +13,6 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./enum/*": {
-      "import": "./dist/enum/*",
-      "require": "./dist/enum/*",
-      "types": "./dist/enum/*"
-    },
-    "./types/*": {
-      "import": "./dist/types/*",
-      "require": "./dist/types/*",
-      "types": "./dist/types/*"
     }
   },
   "scripts": {
