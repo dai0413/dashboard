@@ -6,7 +6,7 @@ import {
   StadiumResponseSchema,
   StadiumPopulatedSchema,
 } from "../schemas/stadium.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function stadium<TDoc = any, TModel = any>(

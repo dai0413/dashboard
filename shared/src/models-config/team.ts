@@ -6,7 +6,7 @@ import {
   TeamResponseSchema,
   TeamPopulatedSchema,
 } from "../schemas/team.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function team<TDoc = any, TModel = any>(

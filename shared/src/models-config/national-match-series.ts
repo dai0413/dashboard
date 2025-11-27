@@ -6,7 +6,7 @@ import {
   NationalMatchSeriesResponseSchema,
   NationalMatchSeriesPopulatedSchema,
 } from "../schemas/national-match-series.schema.js";
-import { ControllerConfig, DependencyRefs } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function nationalMatchSeries<TDoc = any, TModel = any>(
@@ -38,7 +38,7 @@ export function nationalMatchSeries<TDoc = any, TModel = any>(
     bulk: false,
     download: true,
     TEST: {
-      sampleData: (deps: DependencyRefs) => [
+      sampleData: (deps) => [
         {
           name: "親善試合14年11月",
           country: deps.country._id,

@@ -6,7 +6,7 @@ import {
   PlayerRegistrationResponseSchema,
   PlayerRegistrationPopulatedSchema,
 } from "../schemas/player-registration.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function playerRegistration<TDoc = any, TModel = any>(

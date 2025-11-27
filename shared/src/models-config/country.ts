@@ -6,7 +6,7 @@ import {
   CountryResponseSchema,
   CountryPopulatedSchema,
 } from "../schemas/country.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function country<TDoc = any, TModel = any>(

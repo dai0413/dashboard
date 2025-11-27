@@ -6,7 +6,7 @@ import {
   MatchFormatResponseSchema,
   MatchFormatPopulatedSchema,
 } from "../schemas/match-format.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function matchFormat<TDoc = any, TModel = any>(

@@ -6,7 +6,7 @@ import {
   PlayerResponseSchema,
   PlayerPopulatedSchema,
 } from "../schemas/player.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 // import { createPath } from "../utils/createPath";
 import { ParsedQs } from "qs";
 

@@ -6,7 +6,7 @@ import {
   UserResponseSchema,
   UserPopulatedSchema,
 } from "../schemas/user.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function user<TDoc = any, TModel = any>(

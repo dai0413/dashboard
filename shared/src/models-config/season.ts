@@ -6,7 +6,7 @@ import {
   SeasonResponseSchema,
   SeasonPopulatedSchema,
 } from "../schemas/season.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function season<TDoc = any, TModel = any>(

@@ -6,7 +6,7 @@ import {
   MatchResponseSchema,
   MatchPopulatedSchema,
 } from "../schemas/match.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { match as convertFun } from "../utils/format/match.js";
 import { ParsedQs } from "qs";
 

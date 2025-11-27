@@ -6,7 +6,7 @@ import {
   CompetitionResponseSchema,
   CompetitionPopulatedSchema,
 } from "../schemas/competition.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function competition<TDoc = any, TModel = any>(

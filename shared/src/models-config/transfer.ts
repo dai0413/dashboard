@@ -6,7 +6,7 @@ import {
   TransferResponseSchema,
   TransferPopulatedSchema,
 } from "../schemas/transfer.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { transfer as convertFun } from "../utils/format/transfer.js";
 import { ParsedQs } from "qs";
 

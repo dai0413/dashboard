@@ -6,7 +6,7 @@ import {
   RefereeResponseSchema,
   RefereePopulatedSchema,
 } from "../schemas/referee.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function referee<TDoc = any, TModel = any>(

@@ -6,7 +6,7 @@ import {
   TeamCompetitionSeasonResponseSchema,
   TeamCompetitionSeasonPopulatedSchema,
 } from "../schemas/team-competition-season.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function teamCompetitionSeason<TDoc = any, TModel = any>(
