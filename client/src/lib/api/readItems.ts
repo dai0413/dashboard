@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { APIError, ResponseStatus } from "../../types/api";
+import { APIError, AlertStatus } from "../../types/alert";
 
 // --- 比較演算子をサポートする値型 ---
 export type QueryValue =
@@ -32,7 +32,7 @@ type ReadItemsParams = {
   params?: QueryParams;
   onSuccess?: (data: ResBody<any>) => void;
   handleLoading?: (time: "start" | "end") => void;
-  handleSetAlert?: (value: ResponseStatus) => void;
+  handleSetAlert?: (value: AlertStatus) => void;
 };
 
 export const readItemsBase = async ({
@@ -45,7 +45,7 @@ export const readItemsBase = async ({
   returnResponse = false,
 }: ReadItemsParams & { returnResponse?: boolean }) => {
   handleLoading && handleLoading("start");
-  let alert: ResponseStatus = { success: false };
+  let alert: AlertStatus = { success: false };
   try {
     const res = await apiInstance.get(backendRoute, {
       params,

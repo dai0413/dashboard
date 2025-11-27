@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { APIError, ResponseStatus } from "../../types/api";
+import { APIError, AlertStatus } from "../../types/alert";
 
 type DeleteParams = {
   apiInstance: AxiosInstance;
@@ -7,7 +7,7 @@ type DeleteParams = {
   onAfterDelete: () => void;
 
   handleLoading?: (time: "start" | "end") => void;
-  handleSetAlert?: (value: ResponseStatus) => void;
+  handleSetAlert?: (value: AlertStatus) => void;
 };
 
 export const deleteItemBase = async ({
@@ -19,7 +19,7 @@ export const deleteItemBase = async ({
 }: DeleteParams) => {
   handleLoading && handleLoading("start");
   let result: boolean;
-  let alert: ResponseStatus = { success: false };
+  let alert: AlertStatus = { success: false };
   try {
     const res = await apiInstance.delete(backendRoute);
     onAfterDelete();

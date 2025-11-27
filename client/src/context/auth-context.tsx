@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useAlert } from "./alert-context";
-import { APIError, ResponseStatus } from "../types/api";
+import { APIError, AlertStatus } from "../types/alert";
 import { API_PATHS } from "../lib/api-paths";
 import { useApi } from "./api-context";
 
@@ -52,7 +52,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string
   ): Promise<boolean> => {
     setLoading(true);
-    let alert: ResponseStatus = { success: false };
+    let alert: AlertStatus = { success: false };
     try {
       const res = await api.post(API_PATHS.AUTH.REGISTER, {
         user_name,
@@ -81,7 +81,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
-    let alert: ResponseStatus = { success: false };
+    let alert: AlertStatus = { success: false };
     try {
       const res = await api.post(API_PATHS.AUTH.LOGIN, {
         email,
@@ -113,7 +113,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    let alert: ResponseStatus = { success: false };
+    let alert: AlertStatus = { success: false };
     try {
       const res = await api.post(API_PATHS.AUTH.LOGOUT, {});
       console.log(res);

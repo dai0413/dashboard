@@ -1,5 +1,5 @@
 import { FormTypeMap } from "./models";
-import { ResponseStatus } from "../types/api";
+import { AlertStatus } from "./alert";
 import { AxiosInstance } from "axios";
 import { FilterableFieldDefinition } from "@myorg/shared";
 
@@ -96,7 +96,7 @@ export interface FormStep<K extends keyof FormTypeMap> {
   type: StepType;
   fields?: FormFieldDefinition<K>[];
   many?: boolean;
-  validate?: (data: FormTypeMap[K]) => ResponseStatus;
+  validate?: (data: FormTypeMap[K]) => AlertStatus;
   onChange?:
     | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
     | ((data: FormTypeMap[K]) => FormUpdatePair);

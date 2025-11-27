@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { APIError, ResponseStatus } from "../../types/api";
+import { APIError, AlertStatus } from "../../types/alert";
 
 type UploadParams = {
   apiInstance: AxiosInstance;
@@ -7,7 +7,7 @@ type UploadParams = {
   data: File;
   onAfterUpload: (item: any) => void;
   handleLoading?: (time: "start" | "end") => void;
-  handleSetAlert?: (value: ResponseStatus) => void;
+  handleSetAlert?: (value: AlertStatus) => void;
 };
 
 export const uploadFileBase = async ({
@@ -23,7 +23,7 @@ export const uploadFileBase = async ({
       message: "データ送信中",
     });
   let result: boolean;
-  let alert: ResponseStatus = { success: false };
+  let alert: AlertStatus = { success: false };
   const formData = new FormData();
   formData.append("file", data);
 

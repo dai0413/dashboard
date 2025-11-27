@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { APIError, ResponseStatus } from "../../types/api";
+import { APIError, AlertStatus } from "../../types/alert";
 
 type ReadItemParams = {
   apiInstance: AxiosInstance;
@@ -7,7 +7,7 @@ type ReadItemParams = {
   onSuccess?: (data: any) => void;
 
   handleLoading?: (time: "start" | "end") => void;
-  handleSetAlert?: (value: ResponseStatus) => void;
+  handleSetAlert?: (value: AlertStatus) => void;
   returnResponse?: boolean;
 };
 
@@ -20,7 +20,7 @@ export const readItemBase = async ({
   returnResponse,
 }: ReadItemParams) => {
   handleLoading && handleLoading("start");
-  let alert: ResponseStatus = { success: false };
+  let alert: AlertStatus = { success: false };
   try {
     const res = await apiInstance.get(backendRoute);
     onSuccess && onSuccess(res.data.data);

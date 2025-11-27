@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { APIError, ResponseStatus } from "../../types/api";
+import { APIError, AlertStatus } from "../../types/alert";
 
 type CreateParams = {
   apiInstance: AxiosInstance;
@@ -7,7 +7,7 @@ type CreateParams = {
   data: object;
   onAfterCreate: (item: any) => void;
   handleLoading?: (time: "start" | "end") => void;
-  handleSetAlert?: (value: ResponseStatus) => void;
+  handleSetAlert?: (value: AlertStatus) => void;
 };
 
 export const createItemBase = async ({
@@ -19,7 +19,7 @@ export const createItemBase = async ({
   handleSetAlert,
 }: CreateParams) => {
   handleLoading && handleLoading("start");
-  let alert: ResponseStatus = { success: false };
+  let alert: AlertStatus = { success: false };
   let result: boolean;
   try {
     const res = await apiInstance.post(backendRoute, data);
