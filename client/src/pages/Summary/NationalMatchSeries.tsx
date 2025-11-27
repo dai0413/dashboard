@@ -9,7 +9,7 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { API_PATHS } from "../../lib/api-paths";
+import { API_PATHS } from "@myorg/shared";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";

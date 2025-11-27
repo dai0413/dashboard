@@ -3,7 +3,7 @@ import { ModelType } from "../types/models";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { API_PATHS } from "../lib/api-paths";
+import { API_PATHS } from "@myorg/shared";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;

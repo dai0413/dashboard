@@ -3,15 +3,8 @@ import { TransferModel } from "../models/transfer.js";
 import { SeasonModel } from "../models/season.js";
 import { Request } from "express";
 import { transfer as formatTransfer } from "../utils/format/transfer.js";
-import { TransferResponseSchema } from "@myorg/shared";
+import { ResBody, TransferResponseSchema } from "@myorg/shared";
 import z from "zod";
-
-type ResBody<DATA> = {
-  data: DATA;
-  totalCount?: number;
-  page?: number;
-  pageSize?: number;
-};
 
 type ResponseData = z.infer<typeof TransferResponseSchema>;
 

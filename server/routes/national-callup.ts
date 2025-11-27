@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/national-callup.js";
-import { API_PATHS } from "../api-paths.js";
+import { API_PATHS } from "@myorg/shared";
 
 router.route(API_PATHS.NATIONAL_CALLUP.ROOT).get(getAllItems).post(createItem);
 router

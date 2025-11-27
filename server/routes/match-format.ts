@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/match-format.js";
-import { API_PATHS } from "../api-paths.js";
+import { API_PATHS } from "@myorg/shared";
 
 router.route(API_PATHS.MATCH_FORMAT.ROOT).get(getAllItems).post(createItem);
 router

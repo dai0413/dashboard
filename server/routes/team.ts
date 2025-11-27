@@ -9,7 +9,7 @@ import {
   deleteItem,
   downloadItem,
 } from "../controllers/models/team.js";
-import { API_PATHS } from "../api-paths.js";
+import { API_PATHS } from "@myorg/shared";
 
 router.route(API_PATHS.TEAM.ROOT).get(getAllItems).post(createItem);
 router.route(API_PATHS.TEAM.DOWNLOAD).get(downloadItem);

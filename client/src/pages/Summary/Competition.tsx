@@ -11,18 +11,18 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_PATHS } from "../../lib/api-paths";
+import { API_PATHS } from "@myorg/shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useCompetition } from "../../context/models/competition";
 import { Season, SeasonGet } from "../../types/models/season";
 import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
-import { ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import { ResBody } from "@myorg/shared";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -61,8 +61,8 @@ const Competition = () => {
       onSuccess: (resBody: ResBody<Season[]>) => {
         setSeason({
           data: convert(ModelType.SEASON, resBody.data),
-          page: resBody.page,
-          totalCount: resBody.totalCount,
+          page: resBody.page ? resBody.page : 1,
+          totalCount: resBody.totalCount ? resBody.totalCount : 1,
           isLoading: true,
         });
       },

@@ -4,10 +4,9 @@ import { Transfer, TransferGet } from "../types/models/transfer";
 import { Injury, InjuryGet } from "../types/models/injury";
 import { convert } from "../lib/convert/DBtoGetted";
 import { useAlert } from "./alert-context";
-import { API_PATHS } from "../lib/api-paths";
+import { API_PATHS, ResBody } from "@myorg/shared";
 import { readItemsBase } from "../lib/api";
 import { useApi } from "./api-context";
-import { ResBody } from "../lib/api/readItems";
 
 type TopPageStage = {
   isLoading: boolean;

@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/team-competition-season.js";
-import { API_PATHS } from "../api-paths.js";
+import { API_PATHS } from "@myorg/shared";
 
 router
   .route(API_PATHS.TEAM_COMPETITION_SEASON.ROOT)

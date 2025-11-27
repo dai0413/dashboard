@@ -9,7 +9,7 @@ import {
   deleteItem,
   downloadItems,
 } from "../controllers/models/national-match-series.js";
-import { API_PATHS } from "../api-paths.js";
+import { API_PATHS } from "@myorg/shared";
 
 router
   .route(API_PATHS.NATIONAL_MATCH_SERIES.ROOT)

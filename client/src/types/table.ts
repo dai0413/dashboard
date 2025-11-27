@@ -1,8 +1,8 @@
 import {
   FilterableFieldDefinition,
+  QueryParams,
   SortableFieldDefinition,
 } from "@myorg/shared";
-import { QueryParams } from "../lib/api/readItems";
 import { FormTypeMap, ModelType } from "./models";
 import { LinkField, TableHeader } from "./types";
 

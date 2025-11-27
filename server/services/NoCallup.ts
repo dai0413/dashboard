@@ -2,15 +2,8 @@ import { Request } from "express";
 import mongoose from "mongoose";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";
 import { nationalCallup as formatNationalCallup } from "../utils/format/national-callup.js";
-import { NationalCallUpResponseSchema } from "@myorg/shared";
+import { NationalCallUpResponseSchema, ResBody } from "@myorg/shared";
 import z from "zod";
-
-type ResBody<DATA> = {
-  data: DATA;
-  totalCount?: number;
-  page?: number;
-  pageSize?: number;
-};
 
 type ResponseData = z.infer<typeof NationalCallUpResponseSchema>;
 

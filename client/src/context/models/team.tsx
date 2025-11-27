@@ -1,5 +1,5 @@
 import { ModelType } from "../../types/models";
-import { API_PATHS } from "../../lib/api-paths";
+import { API_PATHS } from "@myorg/shared";
 import { createModelContext } from "../../utils/createModelContext";
 
 const ContextModelString = ModelType.TEAM;

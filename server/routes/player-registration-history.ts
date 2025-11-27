@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/player-registration-history.js";
-import { API_PATHS } from "../api-paths.js";
+import { API_PATHS } from "@myorg/shared";
 
 router
   .route(API_PATHS.PLAYER_REGISTRATION_HISTORY.ROOT)

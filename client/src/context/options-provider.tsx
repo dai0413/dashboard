@@ -10,18 +10,19 @@ import { convert as convertToOption, OptionsMap } from "../utils/createOption";
 import { convert as createLabel } from "../lib/convert/CreateLabel";
 import { OptionArray, OptionTable } from "../types/option";
 
-import { BaseCrudRoutes } from "../lib/apiRoutes";
-import { QueryParams, readItemsBase } from "../lib/api/readItems";
+import { BaseCrudRoutes } from "../types/baseCrudRoutes";
+import { readItemsBase } from "../lib/api/readItems";
 import { useApi } from "./api-context";
 import { convert } from "../lib/convert/DBtoGetted";
 import { FormFieldDefinition } from "../types/form";
 import { isModelType, isOptionType } from "../types/field";
 import { readItemBase } from "../lib/api";
 import {
+  API_PATHS,
   FilterableFieldDefinition,
+  QueryParams,
   SortableFieldDefinition,
 } from "@myorg/shared";
-import { API_PATHS } from "../lib/api-paths";
 
 type OptionsState = {
   handlePageChange: <T extends ModelType>(
@@ -33,8 +34,8 @@ type OptionsState = {
     setOptionTableData: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -55,8 +56,8 @@ type OptionsState = {
     setOptionTableData?: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -118,8 +119,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     setOptionTableData: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void
@@ -170,8 +171,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     setOptionTableData?: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -226,8 +227,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       setOptionTableData: (
         value: React.SetStateAction<{
           option: OptionTable;
-          page: number;
-          totalCount: number;
+          page?: number;
+          totalCount?: number;
           isLoading: boolean;
         } | null>
       ) => void,
@@ -274,8 +275,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     setOptionTableData?: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,

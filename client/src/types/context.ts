@@ -1,8 +1,8 @@
 import {
   FilterableFieldDefinition,
+  QueryParams,
   SortableFieldDefinition,
 } from "@myorg/shared";
-import { QueryParams } from "../lib/api/readItems";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 
 export type ModelContext<K extends ModelType> = {

@@ -8,11 +8,11 @@ import {
 import { useApi } from "../../context/api-context";
 import { readItemsBase } from "../../lib/api";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
-import { Data } from "../../types/types";
 import { TableBase, TableFetch, TableOperationFields } from "../../types/table";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import { QueryParams, ResBody } from "@myorg/shared";
+import { Data } from "../../types/types";
 
 type TableWithFetchProps<T extends ModelType> = Omit<
   TableBase<T>,
@@ -59,8 +59,8 @@ const TableWithFetch = <T extends ModelType>({
       onSuccess: (resBody: ResBody<ModelDataMap[T][]>) =>
         setData({
           data: convert(modelType, resBody.data),
-          totalCount: resBody.totalCount,
-          page: resBody.page,
+          totalCount: resBody.totalCount ? resBody.totalCount : 1,
+          page: resBody.page ? resBody.page : 1,
           isLoading: false,
         }),
       handleLoading: (time) => {

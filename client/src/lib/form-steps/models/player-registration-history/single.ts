@@ -5,7 +5,7 @@ import { TeamCompetitionSeason } from "../../../../types/models/team-competition
 import { readItemBase, readItemsBase } from "../../../api";
 import { convert } from "../../../convert/DBtoGetted";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
-import { API_PATHS } from "../../../api-paths";
+import { API_PATHS } from "@myorg/shared";
 
 export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
   [

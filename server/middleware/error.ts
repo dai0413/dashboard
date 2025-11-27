@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { CustomAPIError } from "../errors/index.js";
+import { APIError } from "@myorg/shared";
 
 export default function errorHandlerMiddleware(
   err: unknown,
@@ -49,11 +50,3 @@ export default function errorHandlerMiddleware(
 
   return res.status(customError.statusCode).json(errorResponse);
 }
-
-type APIError = {
-  error?: {
-    code?: number;
-    message?: string;
-    errors?: any;
-  };
-};

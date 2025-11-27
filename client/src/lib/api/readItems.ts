@@ -1,30 +1,6 @@
 import { AxiosInstance } from "axios";
-import { APIError, AlertStatus } from "../../types/alert";
-
-// --- 比較演算子をサポートする値型 ---
-export type QueryValue =
-  | string
-  | number
-  | boolean
-  | Date
-  | `${">" | "<" | ">=" | "<=" | "!=" | "="}${string | number}`
-  | Array<string | number | boolean | Date>
-  | "exists"
-  | "not_exists";
-
-// --- クエリパラメータの型 ---
-export type QueryParams = Record<string, QueryValue> & {
-  filters?: string;
-  sorts?: string;
-  getAll?: boolean;
-};
-
-export type ResBody<DATA> = {
-  data: DATA;
-  totalCount: number;
-  page: number;
-  pageSize: number;
-};
+import { AlertStatus } from "../../types/alert";
+import { APIError, ResBody, QueryParams } from "@myorg/shared";
 
 type ReadItemsParams = {
   apiInstance: AxiosInstance;

@@ -13,7 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_PATHS } from "../../lib/api-paths";
+import { API_PATHS } from "@myorg/shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
@@ -24,11 +24,11 @@ import {
 import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { Season, SeasonGet } from "../../types/models/season";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import { QueryParams, ResBody } from "@myorg/shared";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -81,8 +81,8 @@ const Team = () => {
       onSuccess: (resBody: ResBody<TeamCompetitionSeason[]>) => {
         setTeamCompetitionSeason({
           data: convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data),
-          page: resBody.page,
-          totalCount: resBody.totalCount,
+          page: resBody.page ? resBody.page : 1,
+          totalCount: resBody.totalCount ? resBody.totalCount : 1,
           isLoading: true,
         });
       },

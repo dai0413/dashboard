@@ -10,7 +10,7 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { API_PATHS } from "../../lib/api-paths";
+import { API_PATHS } from "@myorg/shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useForm } from "../../context/form-context";
 import { useFilter } from "../../context/filter-context";

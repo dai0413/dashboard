@@ -6,7 +6,7 @@ import {
   ModelDataMap,
   ModelType,
 } from "../types/models";
-import { BaseCrudRoutes } from "../lib/apiRoutes";
+import { BaseCrudRoutes } from "../types/baseCrudRoutes";
 import { convert } from "../lib/convert/DBtoGetted";
 import { MetaCrudContext } from "../types/context";
 import { useApi } from "../context/api-context";
@@ -21,7 +21,7 @@ import {
 import { cleanData } from ".";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
-import { QueryParams, ResBody } from "../lib/api/readItems";
+import { QueryParams, ResBody } from "@myorg/shared";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
@@ -83,9 +83,9 @@ export function createModelContext<T extends ModelType>(
         params,
         onSuccess: (resBody: ResBody<Model[]>) => {
           setItems(convert(ContextModelString, resBody.data));
-          setTotalCount(resBody.totalCount);
-          setPage(resBody.page);
-          setPageSize(resBody.pageSize);
+          setTotalCount(resBody.totalCount ? resBody.totalCount : 1);
+          setPage(resBody.page ? resBody.page : 1);
+          setPageSize(resBody.pageSize ? resBody.pageSize : 1);
         },
         handleLoading,
         handleSetAlert,

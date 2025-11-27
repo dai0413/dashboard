@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
-import { APIError, AlertStatus } from "../../types/alert";
+import { AlertStatus } from "../../types/alert";
+import { APIError } from "@myorg/shared";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;

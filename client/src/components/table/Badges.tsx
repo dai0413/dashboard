@@ -5,12 +5,11 @@ import { TeamCompetitionSeason } from "../../types/models/team-competition-seaso
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { FilterableFieldDefinition } from "@myorg/shared";
+import { API_PATHS, FilterableFieldDefinition } from "@myorg/shared";
 import { objectIsEqual } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { ModelType } from "../../types/models";
 import { useState } from "react";
-import { API_PATHS } from "../../lib/api-paths";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
