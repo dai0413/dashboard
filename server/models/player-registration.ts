@@ -1,8 +1,9 @@
 import {
+  getKey,
   PlayerRegistrationType,
-  position_group,
-  registration_status,
-  registration_type,
+  registrationStatus,
+  positionGroup,
+  registrationType,
 } from "@myorg/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
@@ -47,14 +48,14 @@ const PlayerRegistrationSchema: Schema<IPlayerRegistration> = new Schema<
       required: true,
     },
     number: { type: Number },
-    position_group: { type: String, enum: position_group },
+    position_group: { type: String, enum: getKey(positionGroup()) },
     name: { type: String },
     en_name: { type: String },
-    registration_type: { type: String, enum: registration_type },
+    registration_type: { type: String, enum: getKey(registrationType()) },
     height: { type: Number },
     weight: { type: Number },
     homegrown: { type: Boolean },
-    registration_status: { type: String, enum: registration_status },
+    registration_status: { type: String, enum: getKey(registrationStatus()) },
     isTypeTwo: { type: Boolean },
     isSpecialDesignation: { type: Boolean },
     note: { type: String },

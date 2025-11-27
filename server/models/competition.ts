@@ -1,9 +1,10 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 import {
-  age_group,
+  getKey,
+  ageGroup,
   category,
-  competition_type,
+  competitionType,
   CompetitionType,
   level,
 } from "@myorg/shared";
@@ -25,10 +26,10 @@ const CompetitionSchema: Schema<ICompetition> = new Schema<
     abbr: { type: String },
     en_name: { type: String },
     country: { type: Schema.Types.ObjectId, ref: "Country" },
-    competition_type: { type: String, enum: competition_type },
-    category: { type: String, enum: category },
-    level: { type: String, enum: level },
-    age_group: { type: String, enum: age_group },
+    competition_type: { type: String, enum: getKey(competitionType()) },
+    category: { type: String, enum: getKey(category()) },
+    level: { type: String, enum: getKey(level()) },
+    age_group: { type: String, enum: getKey(ageGroup()) },
     official_match: { type: Boolean },
     transferurl: { type: String },
     sofaurl: { type: String },

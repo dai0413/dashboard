@@ -1,4 +1,4 @@
-export const confederation = [
+const ConfederationOptions = [
   "AFC",
   "UEFA",
   "CAF",
@@ -7,3 +7,6 @@ export const confederation = [
   "CONMEBOL",
   "FSMFA",
 ];
+
+export const confederation = () =>
+  ConfederationOptions.map((a) => ({ key: a, label: a }));

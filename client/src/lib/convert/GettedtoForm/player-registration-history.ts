@@ -1,9 +1,9 @@
+import { registrationType } from "@myorg/shared";
 import {
   PlayerRegistrationHistoryForm,
   PlayerRegistrationHistoryGet,
 } from "../../../types/models/player-registration-history";
 import { toDateKey } from "../../../utils";
-import { registrationType } from "../../../utils/createOption/Enum/registration_type";
 
 export const playerRegistrationHistory = (
   t: PlayerRegistrationHistoryGet

@@ -1,8 +1,8 @@
+import { stageType } from "@myorg/shared";
 import {
   CompetitionStage,
   CompetitionStageGet,
 } from "../../../types/models/competition-stage";
-import { stageType } from "../../../utils/createOption/Enum/stageType";
 import { competition } from "../CreateLabel/competition";
 import { season } from "../CreateLabel/season";
 

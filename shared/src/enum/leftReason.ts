@@ -1,6 +1,4 @@
-import { OptionArray } from "../../../types/option";
-
-export const leftReason = (): OptionArray => [
+export const leftReason = () => [
   { key: "injury", label: "怪我" },
   { key: "condition", label: "コンディション" },
   { key: "club", label: "クラブ" },

@@ -1,7 +1,8 @@
 import {
+  getKey,
   PlayerRegistrationHistoryType,
-  position_group,
-  registration_type,
+  positionGroup,
+  registrationType,
 } from "@myorg/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { PlayerRegistrationModel } from "./player-registration.js";
@@ -44,10 +45,10 @@ const PlayerRegistrationHistorySchema: Schema<IPlayerRegistrationHistory> =
         ref: "Team",
         required: true,
       },
-      registration_type: { type: String, enum: registration_type },
+      registration_type: { type: String, enum: getKey(registrationType()) },
       changes: {
         number: { type: Number },
-        position_group: { type: String, enum: position_group },
+        position_group: { type: String, enum: getKey(positionGroup()) },
         name: { type: String },
         en_name: { type: String },
         height: { type: Number },

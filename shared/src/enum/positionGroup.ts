@@ -1,6 +1,4 @@
-import { OptionArray } from "../../../types/option";
-
-export const positionGroup = (): OptionArray => [
+export const positionGroup = () => [
   { key: "GK", label: "GK" },
   { key: "DF", label: "DF" },
   { key: "MF", label: "MF" },

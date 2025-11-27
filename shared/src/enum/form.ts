@@ -1,4 +1,4 @@
-export const form = [
+export const FormOptions = [
   "完全",
   "期限付き",
   "期限付き延長",
@@ -17,3 +17,5 @@ export const form = [
   "更新",
   "内定解除",
 ];
+
+export const form = () => FormOptions.map((a) => ({ key: a, label: a }));

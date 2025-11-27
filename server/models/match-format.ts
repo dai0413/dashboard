@@ -1,4 +1,4 @@
-import { MatchFormatType } from "@myorg/shared";
+import { MatchFormatType, getKey, periodLabel } from "@myorg/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IMatchFormat extends Omit<MatchFormatType, "_id">, Document {
@@ -10,7 +10,7 @@ const PeriodSchema = new mongoose.Schema(
     period_label: {
       type: String,
       required: true,
-      enum: ["1H", "2H", "ET1", "ET2", "3H", "4H", "PK", "GB"],
+      enum: getKey(periodLabel()),
     },
     start: {
       type: Number,

@@ -1,5 +1,5 @@
+import { ageGroup, genre } from "@myorg/shared";
 import { TeamForm, TeamGet } from "../../../types/models/team";
-import { genre, ageGroup } from "../../../utils/createOption/Enum/";
 
 export const team = (t: TeamGet): TeamForm => {
   const genreOptions = genre().find((item) => item.label === t.genre)?.key;

@@ -1,8 +1,8 @@
+import { periodLabel } from "@myorg/shared";
 import {
   MatchFormat,
   MatchFormatGet,
 } from "../../../types/models/match-format";
-import { periodLabel } from "../../../utils/createOption/Enum/";
 
 const periodLabelOptions = periodLabel();
 

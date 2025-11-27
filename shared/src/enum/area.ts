@@ -1,4 +1,4 @@
-export const area = [
+const AreaOptions = [
   "アジア",
   "ヨーロッパ",
   "アフリカ",
@@ -8,3 +8,5 @@ export const area = [
   "南アメリカ",
   "ミクロネシア",
 ];
+
+export const area = () => AreaOptions.map((a) => ({ key: a, label: a }));

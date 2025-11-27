@@ -1,4 +1,4 @@
-import { age_group, division, genre, TeamType } from "@myorg/shared";
+import { getKey, ageGroup, division, genre, TeamType } from "@myorg/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface ITeam extends Omit<TeamType, "_id" | "country">, Document {
@@ -15,9 +15,9 @@ const TeamSchema: Schema<ITeam> = new Schema<ITeam, any, ITeam>(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Country",
     },
-    genre: { type: String, enum: genre },
-    age_group: { type: String, enum: age_group },
-    division: { type: String, enum: division, default: "1st" },
+    genre: { type: String, enum: getKey(genre()) },
+    age_group: { type: String, enum: getKey(ageGroup()) },
+    division: { type: String, enum: getKey(division()), default: "1st" },
     jdataid: { type: Number },
     labalph: { type: String },
     transferurl: { type: String },

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { CompetitionStageType, stage_type } from "@myorg/shared";
+import { getKey, CompetitionStageType, stageType } from "@myorg/shared";
 
 export interface ICompetitionStage
   extends Omit<
@@ -31,7 +31,7 @@ const CompetitionStageSchema: Schema<ICompetitionStage> = new Schema<
     },
     stage_type: {
       type: String,
-      enum: stage_type,
+      enum: getKey(stageType()),
       default: "none",
       required: true,
     },

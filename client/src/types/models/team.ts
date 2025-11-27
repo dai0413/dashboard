@@ -1,4 +1,4 @@
-import { ageGroup, division, genre } from "../../utils/createOption/Enum";
+import { ageGroup, division, genre } from "@myorg/shared";
 import { Label } from "../types";
 import { Country } from "./country";
 

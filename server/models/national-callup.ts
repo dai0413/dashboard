@@ -1,7 +1,8 @@
 import {
-  left_reason,
+  getKey,
+  leftReason,
   NationalCallUpType,
-  position_group,
+  positionGroup,
   status,
 } from "@myorg/shared";
 import mongoose, { Types, Schema, Document, Model, Error } from "mongoose";
@@ -39,14 +40,14 @@ const NationalCallUpSchema: Schema<INationalCallUp> = new Schema<
     joined_at: { type: Date },
     left_at: { type: Date },
     number: { type: Number },
-    position_group: { type: String, enum: position_group },
+    position_group: { type: String, enum: getKey(positionGroup()) },
     is_captain: { type: Boolean, default: false, required: true },
     is_overage: { type: Boolean, default: false, required: true },
     is_backup: { type: Boolean, default: false, required: true },
     is_training_partner: { type: Boolean, default: false, required: true },
     is_additional_call: { type: Boolean, default: false, required: true },
-    status: { type: String, enum: status, default: "joined" },
-    left_reason: { type: String, enum: left_reason },
+    status: { type: String, enum: getKey(status()), default: "joined" },
+    left_reason: { type: String, enum: getKey(leftReason()) },
   },
   { timestamps: true }
 );

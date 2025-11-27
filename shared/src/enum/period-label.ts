@@ -1,6 +1,4 @@
-import { OptionArray } from "../../../types/option";
-
-export const periodLabel = (): OptionArray => [
+export const periodLabel = () => [
   { key: "1H", label: "前半" },
   { key: "2H", label: "後半" },
   { key: "ET1", label: "延長前半" },

@@ -31,8 +31,8 @@ import {
   periodLabel,
   result,
   registrationType,
-} from "./Enum";
-import { operator } from "@myorg/shared";
+  operator,
+} from "@myorg/shared";
 
 export enum OptionType {
   OPERATOR = "operator",

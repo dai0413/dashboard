@@ -1,4 +1,4 @@
-export const level = [
+const levelOptions = [
   `1部`,
   `2部`,
   `3部`,
@@ -13,3 +13,5 @@ export const level = [
   `地域予選`,
   `世界大会`,
 ];
+
+export const level = () => levelOptions.map((a) => ({ key: a, label: a }));

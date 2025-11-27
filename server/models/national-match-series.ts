@@ -1,4 +1,4 @@
-import { age_group, NationalMatchSeriesType } from "@myorg/shared";
+import { getKey, ageGroup, NationalMatchSeriesType } from "@myorg/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface INationalMatchSeries
@@ -22,7 +22,7 @@ const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
       ref: "Country",
       required: true,
     },
-    age_group: { type: String, enum: age_group },
+    age_group: { type: String, enum: getKey(ageGroup()) },
     matchs: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Match",

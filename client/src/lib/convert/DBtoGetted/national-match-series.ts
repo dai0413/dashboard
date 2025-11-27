@@ -1,8 +1,8 @@
+import { ageGroup } from "@myorg/shared";
 import {
   NationalMatchSeries,
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
-import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
 import { country } from "../CreateLabel/country";
 
 export const nationalMatchSeries = (

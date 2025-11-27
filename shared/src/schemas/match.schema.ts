@@ -8,6 +8,7 @@ import { CompetitionStageZodSchema } from "./competition-stage.schema.js";
 import { SeasonZodSchema } from "./season.schema.js";
 import { MatchFormatZodSchema } from "./match-format.schema.js";
 import { StadiumZodSchema } from "./stadium.schema.js";
+import { getKey } from "../utils/getKey.js";
 
 export const MatchZodSchema = z
   .object({
@@ -37,7 +38,7 @@ export const MatchZodSchema = z
     away_goal: z.number().optional(),
     home_pk_goal: z.number().optional(),
     away_pk_goal: z.number().optional(),
-    result: z.enum(result).optional(),
+    result: z.enum(getKey(result())).optional(),
     match_week: z.number().optional(),
     weather: z.string().nonempty().optional(),
     temperature: z.number().optional(),

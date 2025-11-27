@@ -1,14 +1,28 @@
 {
   "name": "@myorg/shared",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./enum/*": {
+      "import": "./dist/enum/*",
+      "require": "./dist/enum/*",
+      "types": "./dist/enum/*"
+    },
+    "./types/*": {
+      "import": "./dist/types/*",
+      "require": "./dist/types/*",
+      "types": "./dist/types/*"
     }
   },
   "scripts": {

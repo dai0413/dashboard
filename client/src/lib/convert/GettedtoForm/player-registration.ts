@@ -1,10 +1,9 @@
+import { registrationStatus, registrationType } from "@myorg/shared";
 import {
   PlayerRegistrationForm,
   PlayerRegistrationGet,
 } from "../../../types/models/player-registration";
 import { toDateKey } from "../../../utils";
-import { registrationType } from "../../../utils/createOption/Enum/registration_type";
-import { registrationStatus } from "../../../utils/createOption/Enum/registration_status";
 
 export const playerRegistration = (
   t: PlayerRegistrationGet

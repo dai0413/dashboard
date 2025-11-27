@@ -1,4 +1,4 @@
-export const sub_confederation = [
+const SubConfederationOptions = [
   "CAFA",
   "UNAF",
   "COSAFA",
@@ -13,3 +13,6 @@ export const sub_confederation = [
   "NAFU",
   "EAFF",
 ];
+
+export const subConfederation = () =>
+  SubConfederationOptions.map((a) => ({ key: a, label: a }));

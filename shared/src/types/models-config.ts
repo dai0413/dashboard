@@ -23,7 +23,7 @@ type GetAllQuery = {
   buildCustomMatch?: (query: ParsedQs) => Record<string, any>;
 };
 
-interface DependencyRefs {
+export interface DependencyRefs {
   team: z.infer<typeof TeamResponseSchema>;
   player: z.infer<typeof PlayerResponseSchema>;
   country: z.infer<typeof CountryResponseSchema>;

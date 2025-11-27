@@ -1,6 +1,4 @@
-import { OptionArray } from "../../../types/option";
-
-export const stageType = (): OptionArray => [
+export const stageType = () => [
   { key: "none", label: "なし" },
   { key: "1st", label: "1stステージ" },
   { key: "2nd", label: "2ndステージ" },

@@ -1,4 +1,4 @@
-import { MatchType, result } from "@myorg/shared";
+import { MatchType, result, getKey } from "@myorg/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IMatch
@@ -69,7 +69,7 @@ const MatchSchema: Schema<IMatch> = new Schema<IMatch, any, IMatch>(
     away_goal: { type: Number },
     home_pk_goal: { type: Number },
     away_pk_goal: { type: Number },
-    result: { type: String, enum: result },
+    result: { type: String, enum: getKey(result()) },
     match_week: { type: Number },
     weather: { type: String },
     temperature: { type: Number },

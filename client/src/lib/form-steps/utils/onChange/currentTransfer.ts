@@ -3,9 +3,7 @@ import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api/readItems";
 import { Transfer } from "../../../../types/models/transfer";
 import { convert } from "../../../convert/DBtoGetted";
-import { position } from "../../../../utils/createOption/Enum/position";
-import { form } from "../../../../utils/createOption/Enum/form";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS, form, position } from "@myorg/shared";
 import { ResBody } from "@myorg/shared";
 
 const positionOptions = position().map((item) => item.key);

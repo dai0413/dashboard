@@ -1,3 +1,4 @@
+import { registrationStatus, registrationType } from "@myorg/shared";
 import {
   PlayerRegistration,
   PlayerRegistrationGet,
@@ -6,8 +7,6 @@ import { competition } from "../CreateLabel/competition";
 import { player } from "../CreateLabel/player";
 import { season } from "../CreateLabel/season";
 import { team } from "../CreateLabel/team";
-import { registrationType } from "../../../utils/createOption/Enum/registration_type";
-import { registrationStatus } from "../../../utils/createOption/Enum/registration_status";
 
 export const playerRegistration = (
   t: PlayerRegistration

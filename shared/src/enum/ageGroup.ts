@@ -1,6 +1,4 @@
-import { OptionArray } from "../../../types/option";
-
-export const ageGroup = (): OptionArray => [
+export const ageGroup = () => [
   { key: "full", label: "A" },
   { key: "u17", label: "u17" },
   { key: "u18", label: "u18" },

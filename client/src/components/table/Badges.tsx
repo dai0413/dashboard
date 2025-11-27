@@ -1,11 +1,10 @@
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable } from "../../types/field";
-import { ageGroup } from "../../utils/createOption/Enum";
 import { TeamCompetitionSeason } from "../../types/models/team-competition-season";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { API_PATHS, FilterableFieldDefinition } from "@myorg/shared";
+import { ageGroup, API_PATHS, FilterableFieldDefinition } from "@myorg/shared";
 import { objectIsEqual } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { ModelType } from "../../types/models";

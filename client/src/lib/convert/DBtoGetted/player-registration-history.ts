@@ -1,3 +1,4 @@
+import { registrationType } from "@myorg/shared";
 import {
   PlayerRegistrationHistory,
   PlayerRegistrationHistoryGet,
@@ -6,7 +7,6 @@ import { competition } from "../CreateLabel/competition";
 import { player } from "../CreateLabel/player";
 import { season } from "../CreateLabel/season";
 import { team } from "../CreateLabel/team";
-import { registrationType } from "../../../utils/createOption/Enum/registration_type";
 
 export const playerRegistrationHistory = (
   t: PlayerRegistrationHistory

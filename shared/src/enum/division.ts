@@ -1,1 +1,5 @@
-export const division = ["1st", "2nd", "3rd"];
+export const division = () => [
+  { key: "1st", label: "1st" },
+  { key: "2nd", label: "2nd" },
+  { key: "3rd", label: "3rd" },
+];

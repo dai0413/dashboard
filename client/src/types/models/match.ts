@@ -1,4 +1,4 @@
-import { result } from "../../utils/createOption/Enum";
+import { result } from "@myorg/shared";
 import { Label } from "../types";
 import { Competition } from "./competition";
 import { CompetitionStage } from "./competition-stage";

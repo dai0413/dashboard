@@ -4,9 +4,10 @@ import { objectId } from "./utils/objectId.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { SeasonZodSchema } from "./season.schema.js";
 import { CompetitionZodSchema } from "./competition.schema.js";
-import { position_group } from "../enum/position_group.js";
-import { registration_type } from "../enum/registration_type.js";
+import { positionGroup } from "../enum/positionGroup.js";
+import { registrationType } from "../enum/registration_type.js";
 import { PlayerZodSchema } from "./player.schema.js";
+import { getKey } from "../utils/getKey.js";
 
 export const PlayerRegistrationHistoryZodSchema = z.object({
   _id: objectId,
@@ -24,12 +25,12 @@ export const PlayerRegistrationHistoryZodSchema = z.object({
     message: "teamは必須です",
   }),
   registration_type: z
-    .enum(registration_type)
+    .enum(getKey(registrationType()))
     .refine((v) => !!v, { message: "registration_typeは必須です" }),
   changes: z
     .object({
       number: z.number().optional(),
-      position_group: z.enum(position_group).optional(),
+      position_group: z.enum(getKey(positionGroup())).optional(),
       name: z.string().nonempty().optional(),
       en_name: z.string().nonempty().optional(),
       height: z.number().optional(),
