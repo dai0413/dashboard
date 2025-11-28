@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError, ResBody, QueryParams } from "@myorg/shared";
+import { DataResoonse } from "../../types/api";
 
 type ReadItemsParams = {
   apiInstance: AxiosInstance;
@@ -29,7 +30,7 @@ export const readItemsBase = async ({
     onSuccess && onSuccess(res.data);
     alert = { success: true, message: res.data?.message };
 
-    if (returnResponse) return res.data;
+    if (returnResponse) return res.data as DataResoonse;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 

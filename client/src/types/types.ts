@@ -1,3 +1,5 @@
+import { MatchGet } from "./models/match";
+
 export type TableHeader = {
   label: string;
   field: string;
@@ -28,4 +30,23 @@ export type Data<D extends Record<string, any>> = {
   page: number;
   totalCount: number;
   isLoading: boolean;
+};
+
+export type TeamMatch = Omit<
+  MatchGet,
+  | "home_team"
+  | "away_team"
+  | "home_goal"
+  | "away_goal"
+  | "home_pk_goal"
+  | "away_pk_goal"
+  | "result"
+> & {
+  team: Label;
+  against_team: Label;
+  goal?: number;
+  against_goal?: number;
+  pk_goal?: number;
+  against_pk_goal?: number;
+  result?: "勝ち" | "負け" | "分け";
 };

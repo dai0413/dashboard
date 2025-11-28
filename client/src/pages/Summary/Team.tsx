@@ -13,7 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS, QueryParams, ResBody } from "@myorg/shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
@@ -24,11 +24,10 @@ import {
 import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { Season, SeasonGet } from "../../types/models/season";
-import { Data } from "../../types/types";
-import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { Data, TeamMatch } from "../../types/types";
+import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
-import { QueryParams, ResBody } from "@myorg/shared";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -38,6 +37,13 @@ const Tabs = TeamTabItems.filter(
   label: item.text as string,
 })) as OptionArray;
 
+type SeasonDates = {
+  startDate: string | undefined;
+  endDate: string | undefined;
+  oneYearLater: string | undefined;
+  seasonRange: string[];
+};
+
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
@@ -45,7 +51,7 @@ const Team = () => {
   const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
-  const [selectedTab, setSelectedTab] = useState("player");
+  const [selectedTab, setSelectedTab] = useState("line-plot");
 
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -146,7 +152,7 @@ const Team = () => {
     [teamCompetitionSeason]
   );
 
-  const seasonDates = useMemo(() => {
+  const seasonDates: SeasonDates = useMemo(() => {
     if (!season)
       return {
         startDate: undefined,
@@ -179,6 +185,57 @@ const Team = () => {
 
     return { startDate, endDate, oneYearLater, seasonRange };
   }, [season]);
+
+  const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
+  const [plotData, setPlotData] = useState<{
+    label: string[];
+    value: number[];
+  }>({ label: [], value: [] });
+
+  async function readMatchs(id: string, seasonId: string): Promise<MatchGet[]> {
+    const res = await readItemsBase({
+      apiInstance: api,
+      backendRoute: API_PATHS.MATCH.ROOT,
+      params: { team: id, season: seasonId, getAll: true, sort: "date" },
+      returnResponse: true,
+    });
+
+    if (!res) return [];
+
+    const data = convert(ModelType.MATCH, res.data);
+
+    return data;
+  }
+
+  const readPlotData = async (id: string, seasonId: string) => {
+    const matchs = await readMatchs(id, seasonId);
+    const teamMatchs = convertMatchToTeamMatch(matchs, id);
+
+    setTeamMatchs(teamMatchs);
+
+    const labels = teamMatchs.map((match) =>
+      match.match_week ? `w-${match.match_week}` : ""
+    );
+
+    let total = 0;
+    const cumulativePoints = teamMatchs.map((d) => {
+      const point = d.result === "勝ち" ? 3 : d.result === "分け" ? 1 : 0;
+      total += point;
+      return total;
+    });
+
+    setPlotData({ label: labels, value: cumulativePoints });
+  };
+
+  useEffect(() => {
+    if (
+      !id ||
+      !selectedteamCompetitionSeason ||
+      !selectedteamCompetitionSeason.season.id
+    )
+      return;
+    readPlotData(id, selectedteamCompetitionSeason.season.id);
+  }, [id, selectedteamCompetitionSeason]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -530,55 +587,6 @@ const Team = () => {
           linkField={[
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
             { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
-          ]}
-          reloadTrigger={reloadKey}
-        />
-      )}
-
-      {selectedTab === "registration" && id && (
-        <TableWithFetch
-          modelType={ModelType.PLAYER_REGISTRATION}
-          headers={[
-            { label: "ポジション", field: "position_group" },
-            {
-              label: "背番号",
-              field: "number",
-              getData: (data: PlayerRegistrationGet) => {
-                return data.number ? String(data.number) : "";
-              },
-            },
-            { label: "選手", field: "player" },
-            { label: "登録中・抹消済", field: "registration_status" },
-            {
-              label: "2種・特別指定",
-              field: "special_type",
-              getData: (data: PlayerRegistrationGet) => {
-                if (data.isSpecialDesignation) return "特別指定";
-                if (data.isTypeTwo) return "2種";
-                return "";
-              },
-            },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
-            params: {
-              team: id,
-              date: seasonDates.seasonRange,
-              registration_type: "register",
-              sort: "number,date",
-            },
-          }}
-          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "team")}
-          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
-            .filter(isSortable)
-            .filter((file) => file.key !== "team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
           ]}
           reloadTrigger={reloadKey}
         />
