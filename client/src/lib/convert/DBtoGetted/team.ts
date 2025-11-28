@@ -1,5 +1,5 @@
+import { ageGroup, genre } from "@myorg/shared";
 import { Team, TeamGet } from "../../../types/models/team";
-import { ageGroup, genre } from "../../../utils/createOption/Enum";
 import { country } from "../CreateLabel/country";
 
 export const team = (t: Team): TeamGet => {

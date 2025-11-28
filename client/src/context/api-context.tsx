@@ -1,17 +1,5 @@
-// hooks/useApi.ts
 import axios from "axios";
-// import { API_ROUTES } from "../lib/apiRoutes";
-// import { APP_ROUTES } from "../lib/appRoutes";
 import { useAuth } from "./auth-context";
-
-// let refreshPromise: Promise<string> | null = null;
-
-// const skipRetry = (url?: string) =>
-//   [
-//     API_ROUTES.AUTH.LOGIN,
-//     API_ROUTES.AUTH.REGISTER,
-//     API_ROUTES.AUTH.REFRESH,
-//   ].some((skip) => url?.endsWith(skip));
 
 export const useApi = () => {
   const { accessToken /*refresh*/ } = useAuth();

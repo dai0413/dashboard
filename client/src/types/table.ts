@@ -1,9 +1,8 @@
 import {
   FilterableFieldDefinition,
+  QueryParams,
   SortableFieldDefinition,
 } from "@myorg/shared";
-import { QueryParams } from "../lib/api/readItems";
-import { CrudRouteWithParams } from "../lib/apiRoutes";
 import { FormTypeMap, ModelType } from "./models";
 import { LinkField, TableHeader } from "./types";
 
@@ -17,8 +16,7 @@ export type TableBase<K extends ModelType> = {
 
 export type TableFetch = {
   fetch: {
-    apiRoute: CrudRouteWithParams<any>;
-    path?: CrudRouteWithParams<any>["path"];
+    apiRoute: string;
     params?: QueryParams;
   };
 };

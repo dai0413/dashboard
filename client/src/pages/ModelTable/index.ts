@@ -5,6 +5,8 @@ export { default as Injury } from "./Injury";
 export { default as MatchFormat } from "./MatchFormat";
 export { default as Match } from "./Match";
 export { default as Player } from "./Player";
+export { default as PlayerRegistrationHistory } from "./PlayerRegistrationHistory";
+export { default as PlayerRegistration } from "./PlayerRegistration";
 export { default as Referee } from "./Referee";
 export { default as Season } from "./Season";
 export { default as Stadium } from "./Stadium";

@@ -1,12 +1,10 @@
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable } from "../../types/field";
-import { ageGroup } from "../../utils/createOption/Enum";
 import { TeamCompetitionSeason } from "../../types/models/team-competition-season";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { FilterableFieldDefinition } from "@myorg/shared";
+import { ageGroup, API_PATHS, FilterableFieldDefinition } from "@myorg/shared";
 import { objectIsEqual } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { ModelType } from "../../types/models";
@@ -108,15 +106,19 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
     const season = await readItemsBase({
       apiInstance: api,
       params: { competition: competitionId, current: true },
-      backendRoute: API_ROUTES.SEASON.GET_ALL,
+      backendRoute: API_PATHS.SEASON.ROOT,
       returnResponse: true,
     });
+    if (!season) return;
+
     const resBody = await readItemsBase({
       apiInstance: api,
       params: { getAll: true, season: season.data[0]._id },
-      backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+      backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       returnResponse: true,
     });
+
+    if (!resBody) return;
 
     const teamCompetitionSeason = convert(
       ModelType.TEAM_COMPETITION_SEASON,

@@ -47,6 +47,10 @@ const FieldList = (props: Props) => {
 
     if (isLabelObject(value)) displayValue = value.label || "";
 
+    if (typeof displayValue === "boolean") {
+      displayValue = displayValue ? "TRUE" : "FALSE";
+    }
+
     // // 日付フォーマット
     displayValue =
       field.type === "Date" &&
@@ -66,7 +70,11 @@ const FieldList = (props: Props) => {
     }
 
     // URLの処理
-    if (field.label === "URL") {
+    if (
+      field.label === "URL" &&
+      typeof value !== "string" &&
+      value !== "未入力"
+    ) {
       const urls = Array.isArray(value) ? value : [value];
       const validUrls = urls.filter(
         (u) => typeof u === "string" && u.trim() !== ""

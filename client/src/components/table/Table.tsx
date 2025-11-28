@@ -195,7 +195,9 @@ const Table = <T extends Record<string, any>>({
                 key={header.field}
                 className="px-4 py-2 border"
                 style={
-                  header.width ? { width: header.width } : { width: "150px" }
+                  header.width
+                    ? { width: header.width }
+                    : { width: `${renderFieldCell ? "200px" : "150px"}` }
                 }
               >
                 {header.label}
@@ -300,9 +302,12 @@ const Table = <T extends Record<string, any>>({
                           ? "border-2 border-blue-700"
                           : ""
                       }
+
                     `}
                       title={title}
-                      style={{ width: "150px" }}
+                      style={{
+                        width: `${renderFieldCell ? "200px" : "150px"}`,
+                      }}
                     >
                       {edit
                         ? renderFieldCell &&
@@ -384,7 +389,7 @@ const Table = <T extends Record<string, any>>({
           )}
         </div>
       ) : (
-        <div className="flex justify-center mb-20 space-x-2"></div>
+        <div className="flex justify-center mb-5 space-x-2"></div>
       )}
     </div>
   );

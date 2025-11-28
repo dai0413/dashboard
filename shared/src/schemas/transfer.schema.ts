@@ -5,6 +5,7 @@ import { position } from "../enum/position.js";
 import { form } from "../enum/form.js";
 import { PlayerZodSchema } from "./player.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
+import { getKey } from "../utils/getKey.js";
 
 export const TransferZodSchema = z
   .object({
@@ -15,8 +16,8 @@ export const TransferZodSchema = z
     to_team: objectId.optional(),
     to_team_name: z.string().nonempty().optional(),
     player: objectId.refine((v) => !!v, { message: "playerは必須です" }),
-    position: z.array(z.enum(position)).optional(),
-    form: z.enum(form).optional(),
+    position: z.array(z.enum(getKey(position()))).optional(),
+    form: z.enum(getKey(form())).optional(),
     number: z.number().optional(),
     from_date: dateField.refine((v) => !!v, { message: "from_dateは必須です" }),
     to_date: dateField,

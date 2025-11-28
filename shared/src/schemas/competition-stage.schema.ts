@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { stage_type } from "../enum/stage_type.js";
+import { stageType } from "../enum/stageType.js";
+import { getKey } from "../utils/getKey.js";
 import { objectId } from "./utils/objectId.js";
 import { dateField } from "./utils/dateField.js";
 import { CompetitionZodSchema } from "./competition.schema.js";
@@ -15,7 +16,7 @@ export const CompetitionStageZodSchema = z
       message: "seasonは必須です",
     }),
     stage_type: z
-      .enum(stage_type)
+      .enum(getKey(stageType()))
       .refine((v) => !!v, {
         message: "stage_typeは必須です",
       })

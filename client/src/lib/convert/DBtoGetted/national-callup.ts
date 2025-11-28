@@ -1,10 +1,9 @@
+import { leftReason, status } from "@myorg/shared";
 import {
   NationalCallup,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
 import { Label } from "../../../types/types";
-import { leftReason } from "../../../utils/createOption/Enum/leftReason";
-import { status } from "../../../utils/createOption/Enum/status";
 import { nationalMatchSeries } from "../CreateLabel/national-match-series";
 import { player } from "../CreateLabel/player";
 import { team } from "../CreateLabel/team";

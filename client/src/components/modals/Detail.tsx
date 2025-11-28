@@ -14,6 +14,7 @@ import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
+import { hasSteps } from "../../lib/form-steps";
 
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
@@ -79,6 +80,8 @@ const DetailModal = <K extends keyof FormTypeMap>({
     }
   };
 
+  const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
+
   const fieldListData: FieldListData = selected
     ? Object.entries(selected).reduce<FieldListData>((acc, [key, value]) => {
         let displayValue: any;
@@ -97,7 +100,21 @@ const DetailModal = <K extends keyof FormTypeMap>({
               };
           });
         }
-        //
+        // player-registration-history対応
+        if (
+          modelType === ModelType.PLAYER_REGISTRATION_HISTORY &&
+          key === "changes"
+        ) {
+          const fields = displayableField.filter((fie) => !!fie.getValue);
+
+          fields.forEach((field) => {
+            if (field.getValue) {
+              acc[field.key] = {
+                value: field.getValue(selected),
+              };
+            }
+          });
+        }
 
         acc[key] = {
           value: displayValue,
@@ -114,6 +131,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
         <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
       }
       footer={
+        hasFormSteps &&
         (staffState.admin || isDev) && (
           <LinkButtonGroup
             reset={{

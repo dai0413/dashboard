@@ -1,10 +1,11 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import {
+  getKey,
   area,
   confederation,
   CountryType,
   district,
-  sub_confederation,
+  subConfederation,
 } from "@myorg/shared";
 
 export interface ICountry extends Omit<CountryType, "_id">, Document {
@@ -17,10 +18,10 @@ const CountrySchema = new Schema<ICountry, any, ICountry>(
     en_name: { type: String },
     iso3: { type: String, set: (v: string) => v?.toUpperCase() },
     fifa_code: { type: String, set: (v: string) => v?.toUpperCase() },
-    area: { type: String, enum: area },
-    district: { type: String, enum: district },
-    confederation: { type: String, enum: confederation },
-    sub_confederation: { type: String, enum: sub_confederation },
+    area: { type: String, enum: getKey(area()) },
+    district: { type: String, enum: getKey(district()) },
+    confederation: { type: String, enum: getKey(confederation()) },
+    sub_confederation: { type: String, enum: getKey(subConfederation()) },
     established_year: { type: Number },
     fifa_member_year: { type: Number },
     association_member_year: { type: Number },

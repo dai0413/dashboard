@@ -1,12 +1,12 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { GettedModelDataMap, ModelType } from "../types/models";
-import { API_ROUTES } from "../lib/apiRoutes";
-import { APIError, ResponseStatus } from "../types/api";
-import axios from "axios";
 import { Transfer, TransferGet } from "../types/models/transfer";
 import { Injury, InjuryGet } from "../types/models/injury";
 import { convert } from "../lib/convert/DBtoGetted";
 import { useAlert } from "./alert-context";
+import { API_PATHS, ResBody } from "@myorg/shared";
+import { readItemsBase } from "../lib/api";
+import { useApi } from "./api-context";
 
 type TopPageStage = {
   isLoading: boolean;
@@ -24,38 +24,36 @@ const defaultValue: TopPageStage = {
 const TopPageContext = createContext<TopPageStage>(defaultValue);
 
 const TopPageProvider = ({ children }: { children: ReactNode }) => {
+  const api = useApi();
   const {
     modal: { handleSetAlert },
   } = useAlert();
 
-  const [isLoading, _SetIsloading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [transfers, setTransfers] = useState<TransferGet[]>([]);
   const [injuries, setInjuries] = useState<InjuryGet[]>([]);
 
+  const handleLoading = (time: "start" | "end"): void => {
+    time === "start" ? setIsLoading(true) : setIsLoading(false);
+  };
+
   const readItems = async (limit?: number) => {
-    let alert: ResponseStatus = { success: false };
-    try {
-      const res = await axios.get(API_ROUTES.TOP_PAGE.GET, {
-        params: { limit },
-      });
-      const transfers = res.data.transferData as Transfer[];
-      const injuries = res.data.injuryData as Injury[];
+    readItemsBase({
+      apiInstance: api,
+      backendRoute: API_PATHS.TOP_PAGE.GET,
+      params: limit ? { limit } : {},
+      onSuccess: (
+        data: ResBody<{ transferData: Transfer[]; injuryData: Injury[] }>
+      ) => {
+        const transfers = data.data.transferData as Transfer[];
+        const injuries = data.data.injuryData as Injury[];
 
-      setTransfers(convert(ModelType.TRANSFER, transfers));
-      setInjuries(convert(ModelType.INJURY, injuries));
-
-      alert = { success: true, message: res.data?.message };
-    } catch (err: any) {
-      const apiError = err.response?.data as APIError;
-
-      alert = {
-        success: false,
-        errors: apiError.error?.errors,
-        message: apiError.error?.message,
-      };
-    } finally {
-      handleSetAlert(alert);
-    }
+        setTransfers(convert(ModelType.TRANSFER, transfers));
+        setInjuries(convert(ModelType.INJURY, injuries));
+      },
+      handleLoading: handleLoading,
+      handleSetAlert: handleSetAlert,
+    });
   };
 
   const value = { isLoading, transfers, injuries, readItems };

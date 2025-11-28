@@ -11,15 +11,18 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "@myorg/shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useCompetition } from "../../context/models/competition";
 import { Season, SeasonGet } from "../../types/models/season";
 import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
-import { ResBody } from "../../lib/api/readItems";
 import { Data } from "../../types/types";
+import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
+import { ResBody } from "@myorg/shared";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -32,6 +35,8 @@ const Tabs = CompetitionTabItems.filter(
 const Competition = () => {
   const api = useApi();
   const { id } = useParams();
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
@@ -51,13 +56,13 @@ const Competition = () => {
   const readSeason = (competitionId: string) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.SEASON.GET_ALL,
+      backendRoute: API_PATHS.SEASON.ROOT,
       params: { competition: competitionId, getAll: true },
-      onSuccess: (resBody: ResBody<Season>) => {
+      onSuccess: (resBody: ResBody<Season[]>) => {
         setSeason({
           data: convert(ModelType.SEASON, resBody.data),
-          page: resBody.page,
-          totalCount: resBody.totalCount,
+          page: resBody.page ? resBody.page : 1,
+          totalCount: resBody.totalCount ? resBody.totalCount : 1,
           isLoading: true,
         });
       },
@@ -76,6 +81,8 @@ const Competition = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    resetFilterConditions();
+    resetSort([]);
     setSelectedTab(value as string);
   };
 
@@ -188,7 +195,7 @@ const Competition = () => {
           modelType={ModelType.TEAM_COMPETITION_SEASON}
           headers={[{ label: "チーム", field: "team" }]}
           fetch={{
-            apiRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+            apiRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
             params: { competition: id, season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
@@ -216,7 +223,7 @@ const Competition = () => {
             { label: "LEG", field: "leg", width: "50px" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.COMPETITION_STAGE.GET_ALL,
+            apiRoute: API_PATHS.COMPETITION_STAGE.ROOT,
             params: { season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.COMPETITION_STAGE]
@@ -264,7 +271,7 @@ const Competition = () => {
             { label: "アウェイ", field: "away_team" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.MATCH.GET_ALL,
+            apiRoute: API_PATHS.MATCH.ROOT,
             params: { season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.MATCH]
@@ -281,6 +288,65 @@ const Competition = () => {
             {
               field: "away_team",
               to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
+          reloadTrigger={reloadKey}
+        />
+      )}
+
+      {selectedTab === "registration" && selectedSeason && (
+        <TableWithFetch
+          modelType={ModelType.PLAYER_REGISTRATION}
+          headers={[
+            { label: "チーム", field: "team" },
+            { label: "ポジション", field: "position_group", width: "100px" },
+            {
+              label: "背番号",
+              field: "number",
+              getData: (data: PlayerRegistrationGet) => {
+                return data.number ? String(data.number) : "";
+              },
+              width: "80px",
+            },
+            { label: "選手", field: "player" },
+            {
+              label: "抹消",
+              field: "registration_status",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.registration_status === "抹消済み") return "済";
+                return "";
+              },
+              width: "80px",
+            },
+            {
+              label: "2種特指",
+              field: "special_type",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.isSpecialDesignation) return "特別指定";
+                if (data.isTypeTwo) return "2種";
+                return "";
+              },
+              width: "100px",
+            },
+          ]}
+          fetch={{
+            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
+            params: {
+              season: selectedSeason._id,
+              registration_type: "register",
+              sort: "team,position_group_order,number",
+            },
+          }}
+          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isSortable)
+            .filter((file) => file.key !== "competition")}
+          linkField={[
+            {
+              field: "player",
+              to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
           reloadTrigger={reloadKey}

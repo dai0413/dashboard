@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { objectId } from "./utils/objectId.js";
 import { dateField } from "./utils/dateField.js";
-import { age_group } from "../enum/age_group.js";
+import { ageGroup } from "../enum/ageGroup.js";
 import { CountryZodSchema } from "./country.schema.js";
 import { MatchZodSchema } from "./match.schema.js";
+import { getKey } from "../utils/getKey.js";
 
 export const NationalMatchSeriesZodSchema = z.object({
   _id: objectId,
@@ -13,7 +14,7 @@ export const NationalMatchSeriesZodSchema = z.object({
     .refine((v) => !!v, { message: "nameは必須です" }),
   abbr: z.string().nonempty().optional(),
   country: objectId.refine((v) => !!v, { message: "countryは必須です" }),
-  age_group: z.enum(age_group).optional(),
+  age_group: z.enum(getKey(ageGroup())).optional(),
   matches: z.array(objectId).optional(),
   joined_at: dateField.optional(),
   left_at: dateField.optional(),

@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import axios from "axios";
 import { useAlert } from "./alert-context";
-import { API_ROUTES } from "../lib/apiRoutes";
-import { APIError, ResponseStatus } from "../types/api";
+import { AlertStatus } from "../types/alert";
+import { APIError, API_PATHS } from "@myorg/shared";
+import { useApi } from "./api-context";
 
 type AuthState = {
   accessToken: string | null;
@@ -44,6 +44,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const {
     main: { handleSetAlert },
   } = useAlert();
+  const api = useApi();
 
   const register = async (
     user_name: string,
@@ -51,9 +52,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string
   ): Promise<boolean> => {
     setLoading(true);
-    let alert: ResponseStatus = { success: false };
+    let alert: AlertStatus = { success: false };
     try {
-      const res = await axios.post(API_ROUTES.AUTH.REGISTER, {
+      const res = await api.post(API_PATHS.AUTH.REGISTER, {
         user_name,
         email,
         password,
@@ -80,13 +81,16 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
-    let alert: ResponseStatus = { success: false };
+    let alert: AlertStatus = { success: false };
     try {
-      const res = await axios.post(API_ROUTES.AUTH.LOGIN, { email, password });
+      const res = await api.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
       setAccessToken(res.data?.accessToken);
       setStaffState({ admin: res.data?.admin, is_staff: res.data?.is_staff });
 
-      axios.defaults.headers.common[
+      api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${res.data.accessToken}`;
 
@@ -109,11 +113,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
-    let alert: ResponseStatus = { success: false };
+    let alert: AlertStatus = { success: false };
     try {
-      const res = await axios.post(API_ROUTES.AUTH.LOGOUT, {});
+      const res = await api.post(API_PATHS.AUTH.LOGOUT, {});
       console.log(res);
-      axios.defaults.headers.common["Authorization"] = "";
+      api.defaults.headers.common["Authorization"] = "";
       setAccessToken(null);
       alert = { success: true, message: res.data?.message };
     } catch (err: any) {

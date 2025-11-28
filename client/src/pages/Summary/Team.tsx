@@ -13,7 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS, QueryParams, ResBody } from "@myorg/shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
@@ -24,8 +24,10 @@ import {
 import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { Season, SeasonGet } from "../../types/models/season";
-import { QueryParams, ResBody } from "../../lib/api/readItems";
-import { Data } from "../../types/types";
+import { Data, TeamMatch } from "../../types/types";
+import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -35,13 +37,21 @@ const Tabs = TeamTabItems.filter(
   label: item.text as string,
 })) as OptionArray;
 
+type SeasonDates = {
+  startDate: string | undefined;
+  endDate: string | undefined;
+  oneYearLater: string | undefined;
+  seasonRange: string[];
+};
+
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
-
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
-  const [selectedTab, setSelectedTab] = useState("player");
+  const [selectedTab, setSelectedTab] = useState("line-plot");
 
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -63,7 +73,7 @@ const Team = () => {
   const readSeason = (seasonId: string) =>
     readItemBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.SEASON.DETAIL(seasonId),
+      backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
       onSuccess: (item: Season) => {
         setSeason(convert(ModelType.SEASON, item));
       },
@@ -72,13 +82,13 @@ const Team = () => {
   const readTeamCompetitionSeason = (params: QueryParams) =>
     readItemsBase({
       apiInstance: api,
-      backendRoute: API_ROUTES.TEAM_COMPETITION_SEASON.GET_ALL,
+      backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       params,
-      onSuccess: (resBody: ResBody<TeamCompetitionSeason>) => {
+      onSuccess: (resBody: ResBody<TeamCompetitionSeason[]>) => {
         setTeamCompetitionSeason({
           data: convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data),
-          page: resBody.page,
-          totalCount: resBody.totalCount,
+          page: resBody.page ? resBody.page : 1,
+          totalCount: resBody.totalCount ? resBody.totalCount : 1,
           isLoading: true,
         });
       },
@@ -104,6 +114,8 @@ const Team = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    resetFilterConditions();
+    resetSort([]);
     setSelectedTab(value as string);
   };
 
@@ -140,7 +152,7 @@ const Team = () => {
     [teamCompetitionSeason]
   );
 
-  const seasonDates = useMemo(() => {
+  const seasonDates: SeasonDates = useMemo(() => {
     if (!season)
       return {
         startDate: undefined,
@@ -173,6 +185,57 @@ const Team = () => {
 
     return { startDate, endDate, oneYearLater, seasonRange };
   }, [season]);
+
+  const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
+  const [plotData, setPlotData] = useState<{
+    label: string[];
+    value: number[];
+  }>({ label: [], value: [] });
+
+  async function readMatchs(id: string, seasonId: string): Promise<MatchGet[]> {
+    const res = await readItemsBase({
+      apiInstance: api,
+      backendRoute: API_PATHS.MATCH.ROOT,
+      params: { team: id, season: seasonId, getAll: true, sort: "date" },
+      returnResponse: true,
+    });
+
+    if (!res) return [];
+
+    const data = convert(ModelType.MATCH, res.data);
+
+    return data;
+  }
+
+  const readPlotData = async (id: string, seasonId: string) => {
+    const matchs = await readMatchs(id, seasonId);
+    const teamMatchs = convertMatchToTeamMatch(matchs, id);
+
+    setTeamMatchs(teamMatchs);
+
+    const labels = teamMatchs.map((match) =>
+      match.match_week ? `w-${match.match_week}` : ""
+    );
+
+    let total = 0;
+    const cumulativePoints = teamMatchs.map((d) => {
+      const point = d.result === "勝ち" ? 3 : d.result === "分け" ? 1 : 0;
+      total += point;
+      return total;
+    });
+
+    setPlotData({ label: labels, value: cumulativePoints });
+  };
+
+  useEffect(() => {
+    if (
+      !id ||
+      !selectedteamCompetitionSeason ||
+      !selectedteamCompetitionSeason.season.id
+    )
+      return;
+    readPlotData(id, selectedteamCompetitionSeason.season.id);
+  }, [id, selectedteamCompetitionSeason]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -261,11 +324,11 @@ const Team = () => {
             { label: "ポジション", field: "position", width: "70px" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               from_date: seasonDates.seasonRange,
               to_team: id,
-              sort: "number",
+              sort: "position_group_order,number",
               form: ["!期限付き満了"],
             },
           }}
@@ -296,7 +359,7 @@ const Team = () => {
             { label: "ポジション", field: "position" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               from_date: [
                 `>${seasonDates.endDate}`,
@@ -338,7 +401,7 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               to_team: id,
               form: "!更新",
@@ -376,7 +439,7 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: { from_team: id, from_date: seasonDates.seasonRange },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
@@ -410,7 +473,7 @@ const Team = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: {
               from_team: id,
               form: ["期限付き", "育成型期限付き"],
@@ -448,7 +511,7 @@ const Team = () => {
             { label: "全治", field: "ttp" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.INJURY.GET_ALL,
+            apiRoute: API_PATHS.INJURY.ROOT,
             params: { team: id, doa: seasonDates.seasonRange },
           }}
           filterField={fieldDefinition[ModelType.INJURY]
@@ -516,7 +579,7 @@ const Team = () => {
             },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.MATCH.GET_ALL,
+            apiRoute: API_PATHS.MATCH.ROOT,
             params: { team: id, date: seasonDates.seasonRange, sort: "date" },
           }}
           filterField={fieldDefinition[ModelType.MATCH].filter(isFilterable)}

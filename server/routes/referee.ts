@@ -8,8 +8,13 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/referee.js";
+import { API_PATHS } from "@myorg/shared";
 
-router.route("/").get(getAllItems).post(createItem);
-router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
+router.route(API_PATHS.REFEREE.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.REFEREE.DETAIL())
+  .patch(updateItem)
+  .delete(deleteItem)
+  .get(getItem);
 
 export default router;

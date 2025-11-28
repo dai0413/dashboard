@@ -1,10 +1,9 @@
+import { leftReason, status } from "@myorg/shared";
 import {
   NationalCallupForm,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
 import { toDateKey } from "../../../utils";
-import { leftReason } from "../../../utils/createOption/Enum/leftReason";
-import { status } from "../../../utils/createOption/Enum/status";
 
 export const nationalCallup = (t: NationalCallupGet): NationalCallupForm => {
   const statusOptions = status().find((item) => item.label === t.status)?.key;

@@ -2,8 +2,14 @@ import { Request } from "express";
 import mongoose from "mongoose";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";
 import { nationalCallup as formatNationalCallup } from "../utils/format/national-callup.js";
+import { NationalCallUpResponseSchema, ResBody } from "@myorg/shared";
+import z from "zod";
 
-export const getNoCallUpService = async (req: Request) => {
+type ResponseData = z.infer<typeof NationalCallUpResponseSchema>;
+
+export const getNoCallUpService = async (
+  req: Request
+): Promise<ResBody<ResponseData[]>> => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
@@ -69,8 +75,10 @@ export const getNoCallUpService = async (req: Request) => {
     { $limit: limit },
   ]);
 
+  const formatData: ResponseData[] = data.map(formatNationalCallup);
+
   const responseData = {
-    data: data.map(formatNationalCallup),
+    data: formatData,
     totalCount: countResult[0]?.totalCount || 0,
     page: page,
     pageSize: limit,

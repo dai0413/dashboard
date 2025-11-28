@@ -1,34 +1,60 @@
 import { AxiosInstance } from "axios";
 import { FormTypeMap, ModelType } from "../../../../types/models";
-import { readItemsBase, ResBody } from "../../../api/readItems";
+import { readItemsBase } from "../../../api/readItems";
 import { Transfer } from "../../../../types/models/transfer";
-import { API_ROUTES } from "../../../apiRoutes";
 import { convert } from "../../../convert/DBtoGetted";
-import { position } from "../../../../utils/createOption/Enum/position";
+import { API_PATHS, form, position } from "@myorg/shared";
+import { ResBody } from "@myorg/shared";
 
-const positionOptions = position();
+const positionOptions = position().map((item) => item.key);
+const formOptions = form().map((item) => item.key);
 type Position = (typeof positionOptions)[number] | null;
+type Form = (typeof formOptions)[number] | null;
 
 type Response = {
+  from_team?: { label: any; key: string };
+  from_team_name?: string;
   to_team?: { label: any; key: string };
   to_team_name?: string;
   position?: Position[];
+  form?: Form;
 };
 
-export const currentTransfer = async <T extends ModelType>(
-  formData: FormTypeMap[T],
-  api: AxiosInstance
-): Promise<Response> => {
+type CurrentTransfer<T extends ModelType> = {
+  formData: FormTypeMap[T];
+  api: AxiosInstance;
+  from_date?: string;
+  form?: string;
+};
+
+export const currentTransfer = async <T extends ModelType>({
+  formData,
+  api,
+  from_date,
+  form,
+}: CurrentTransfer<T>): Promise<Response> => {
   if (!("player" in formData) || !formData.player) return {};
 
   let response: Response = {};
 
-  const currentTransfer: ResBody<Transfer> = await readItemsBase({
+  const params = {
+    player: formData.player,
+    sort: "-from_date",
+    limit: 1,
+    ...(from_date !== undefined && { from_date: `<=${from_date}` }),
+    ...(form !== undefined && { form }),
+  };
+
+  const currentTransferData = await readItemsBase({
     apiInstance: api,
-    backendRoute: API_ROUTES.TRANSFER.GET_ALL,
-    params: { player: formData.player, sort: "-from_date", limit: 1 },
+    backendRoute: API_PATHS.TRANSFER.ROOT,
+    params,
     returnResponse: true,
   });
+
+  if (!currentTransferData) return {}
+
+  const currentTransfer: ResBody<Transfer[]> = currentTransferData
 
   if (currentTransfer.data.length > 0) {
     const latest = convert(ModelType.TRANSFER, currentTransfer.data[0]);
@@ -44,8 +70,23 @@ export const currentTransfer = async <T extends ModelType>(
       }
     }
 
+    if (latest.from_team) {
+      if (latest.from_team.id) {
+        response.from_team = {
+          label: latest.from_team.label,
+          key: latest.from_team.id,
+        };
+      } else {
+        response.from_team_name = latest.from_team.label;
+      }
+    }
+
     if (latest.position) {
       response.position = latest.position;
+    }
+
+    if (latest.form) {
+      response.form = latest.form;
     }
   }
 

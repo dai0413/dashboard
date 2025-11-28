@@ -1,5 +1,5 @@
 import { FormFieldDefinition } from "../../../types/form";
-import { FormTypeMap, ModelType } from "../../../types/models";
+import { FormTypeMap } from "../../../types/models";
 import { Table } from "../../table";
 import { RenderField } from "./Field";
 import { useState } from "react";
@@ -19,7 +19,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
   isTableOpen,
   toggleTableOpen,
 }: RenderFieldProps<T>) => {
-  const { many, mode, modelType, autoFill } = useForm<T>();
+  const { many, mode, autoFill } = useForm<T>();
 
   const { page, setPage } = useQuery();
   type Focus = {
@@ -128,7 +128,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
         </div>
 
         <div>
-          {modelType === ModelType.NATIONAL_CALLUP && (
+          {autoFill && (
             <IconTextButton icon="edit" color="gray" onClick={autoFill}>
               自動入力
             </IconTextButton>

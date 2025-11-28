@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
+import { getKey } from "../utils/getKey.js";
 import { area } from "../enum/area.js";
 import { district } from "../enum/district.js";
 import { confederation } from "../enum/confederation.js";
-import { sub_confederation } from "../enum/sub_confederation.js";
+import { subConfederation } from "../enum/subConfederation.js";
 
 export const CountryZodSchema = z.object({
   _id: objectId,
@@ -23,10 +24,10 @@ export const CountryZodSchema = z.object({
     .nonempty()
     .optional()
     .transform((val) => val?.toUpperCase()),
-  area: z.enum(area).optional(),
-  district: z.enum(district).optional(),
-  confederation: z.enum(confederation).optional(),
-  sub_confederation: z.enum(sub_confederation).optional(),
+  area: z.enum(getKey(area())).optional(),
+  district: z.enum(getKey(district())).optional(),
+  confederation: z.enum(getKey(confederation())).optional(),
+  sub_confederation: z.enum(getKey(subConfederation())).optional(),
   established_year: z.number().optional(),
   fifa_member_year: z.number().optional(),
   association_member_year: z.number().optional(),

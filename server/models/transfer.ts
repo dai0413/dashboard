@@ -1,4 +1,4 @@
-import { form, position, TransferType } from "@myorg/shared";
+import { getKey, form, position, TransferType } from "@myorg/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface ITransfer
@@ -36,11 +36,11 @@ const TransferSchema: Schema<ITransfer> = new Schema<ITransfer, any, ITransfer>(
     },
     position: {
       type: [String],
-      enum: position,
+      enum: getKey(position()),
     },
     form: {
       type: String,
-      enum: form,
+      enum: getKey(form()),
     },
     number: {
       type: Number,

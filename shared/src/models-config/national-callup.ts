@@ -6,7 +6,7 @@ import {
   NationalCallUpResponseSchema,
   NationalCallUpPopulatedSchema,
 } from "../schemas/national-callup.schema.js";
-import { ControllerConfig } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { nationalCallup as convertFun } from "../utils/format/national-callup.js";
 import { ParsedQs } from "qs";
 

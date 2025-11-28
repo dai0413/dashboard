@@ -1,6 +1,4 @@
-import { leftReason } from "../../utils/createOption/Enum/leftReason";
-import { positionGroup } from "../../utils/createOption/Enum/positionGroup";
-import { status } from "../../utils/createOption/Enum/status";
+import { leftReason, positionGroup, status } from "@myorg/shared";
 import { Label } from "../types";
 import { NationalMatchSeries } from "./national-match-series";
 import { Player } from "./player";

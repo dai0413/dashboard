@@ -42,38 +42,23 @@ const getCurrentLoanPlayersByTeam = async (req: Request, res: Response) => {
 
 const getNoNumberByCountry = async (req: Request, res: Response) => {
   try {
-    const result: ResponseDatas = await getNoNumberService(req);
+    const result = await getNoNumberService(req);
     res.status(StatusCodes.OK).json(result);
   } catch (error) {
     console.error("Error in getNoNumberByCountry:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: "サーバーエラー",
-      errors: error,
-    });
+
+    throw new Error("サーバーエラー");
   }
 };
 
-interface ResponseDatas {
-  data: any[];
-  totalCount: number;
-  page: number;
-  pageSize: number;
-}
-
 const getNoCallUp = async (req: Request, res: Response) => {
   try {
-    console.log("in server receive page", req.query.page);
-    const result: ResponseDatas = await getNoCallUpService(req);
-    console.log("in server page", result.page);
+    const result = await getNoCallUpService(req);
     res.status(StatusCodes.OK).json(result);
   } catch (error) {
-    console.error("Error in getNoCallUp:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: "サーバーエラー",
-      errors: error,
-    });
+    console.error("Error in getNoNumberByCountry:", error);
+
+    throw new Error("サーバーエラー");
   }
 };
 

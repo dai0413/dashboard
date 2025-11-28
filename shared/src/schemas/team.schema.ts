@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { objectId } from "./utils/objectId.js";
 import { genre } from "../enum/genre.js";
-import { age_group } from "../enum/age_group.js";
+import { ageGroup } from "../enum/ageGroup.js";
 import { division } from "../enum/division.js";
 import { CountryZodSchema } from "./country.schema.js";
+import { getKey } from "../utils/getKey.js";
 
 export const TeamZodSchema = z.object({
   _id: objectId,
@@ -14,13 +15,14 @@ export const TeamZodSchema = z.object({
   abbr: z.string().nonempty().optional(),
   enTeam: z.string().nonempty().optional(),
   country: objectId.optional(),
-  genre: z.enum(genre).optional(),
-  age_group: z.enum(age_group).optional(),
-  division: z.enum(division).default("1st").optional(),
+  genre: z.enum(getKey(genre())).optional(),
+  age_group: z.enum(getKey(ageGroup())).optional(),
+  division: z.enum(getKey(division())).default("1st").optional(),
   jdataid: z.number().optional(),
   labalph: z.string().optional(),
   transferurl: z.string().nonempty().optional(),
   sofaurl: z.string().nonempty().optional(),
+  old_id: z.string().optional(),
   createdAt: z
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),

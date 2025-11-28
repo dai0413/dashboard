@@ -1,8 +1,6 @@
+import { ageGroup, category, competitionType, level } from "@myorg/shared";
 import { Competition, CompetitionGet } from "../../../types/models/competition";
-import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
-import { category } from "../../../utils/createOption/Enum/category";
-import { competitionType } from "../../../utils/createOption/Enum/competition_type";
-import { level } from "../../../utils/createOption/Enum/level";
+
 import { country } from "../CreateLabel/country";
 
 export const competition = (t: Competition): CompetitionGet => {

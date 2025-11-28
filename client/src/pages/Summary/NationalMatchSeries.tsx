@@ -9,11 +9,13 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "@myorg/shared";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { toDateKey } from "../../utils";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -25,6 +27,8 @@ const Tabs = NationalMatchSeriesTabItems.filter(
 
 const National = () => {
   const { id } = useParams();
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("player");
@@ -44,6 +48,8 @@ const National = () => {
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    resetFilterConditions();
+    resetSort([]);
     setSelectedTab(value as string);
   };
 
@@ -60,6 +66,20 @@ const National = () => {
               {`${selected.joined_at && toDateKey(selected.joined_at)}~~~${
                 selected.left_at && toDateKey(selected.left_at)
               }`}
+            </div>
+            <div className="text-sm text-gray-500">
+              {selected.urls.map((url, index) => {
+                return (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    link-{index + 1}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -121,8 +141,8 @@ const National = () => {
             { label: "ポジション", field: "position_group" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
-            params: { series: id, sort: "position_group,number" },
+            apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
+            params: { series: id, sort: "position_group_order,number" },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
             .filter(isFilterable)

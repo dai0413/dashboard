@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
-import { APIError, ResponseStatus } from "../../types/api";
+import { AlertStatus } from "../../types/alert";
+import { APIError } from "@myorg/shared";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;
@@ -7,7 +8,7 @@ type UpdateParams = {
   data: object;
   onAfterUpdate: (item: any) => void;
   handleLoading?: (time: "start" | "end") => void;
-  handleSetAlert?: (value: ResponseStatus) => void;
+  handleSetAlert?: (value: AlertStatus) => void;
 };
 
 export const updateItemBase = async ({
@@ -19,7 +20,7 @@ export const updateItemBase = async ({
   handleSetAlert,
 }: UpdateParams) => {
   handleLoading && handleLoading("start");
-  let alert: ResponseStatus = { success: false };
+  let alert: AlertStatus = { success: false };
   let result = false;
   try {
     const res = await apiInstance.patch(backendRoute, data);

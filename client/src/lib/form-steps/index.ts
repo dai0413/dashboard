@@ -1,72 +1,18 @@
 import { ModelType } from "../../types/models";
-import { createConfirmationStep } from "./confirmationStep";
-import { transfer } from "./transfer";
-import { player } from "./player";
-import { injury } from "./injury";
-import { team } from "./team";
-import { country } from "./country";
-import { nationalMatchSeries } from "./national-match-series";
-import { nationalCallUp } from "./national-callup";
 import { FormStep } from "../../types/form";
-import { referee } from "./referee";
-import { competition } from "./competition";
-import { season } from "./season";
-import { teamCompetitionSeason } from "./team-competition-season";
-import { stadium } from "./stadium";
-import { competitionStage } from "./competition-stage";
-import { matchFormat } from "./match-format";
-import { match } from "./match";
+import { getBulkSteps } from "./bulk";
+import { getSingleSteps } from "./single";
 
-export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
-  [ModelType.COMPETITION_STAGE]: [
-    ...competitionStage,
-    createConfirmationStep<ModelType.COMPETITION_STAGE>(),
-  ],
-  [ModelType.COMPETITION]: [
-    ...competition,
-    createConfirmationStep<ModelType.COMPETITION>(),
-  ],
-  [ModelType.COUNTRY]: [
-    ...country,
-    createConfirmationStep<ModelType.COUNTRY>(),
-  ],
-  [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
-  [ModelType.MATCH]: [...match, createConfirmationStep<ModelType.MATCH>()],
-  [ModelType.MATCH_FORMAT]: [
-    ...matchFormat,
-    createConfirmationStep<ModelType.MATCH_FORMAT>(),
-  ],
-  [ModelType.NATIONAL_CALLUP]: [
-    ...nationalCallUp,
-    createConfirmationStep<ModelType.NATIONAL_CALLUP>(),
-  ],
-  [ModelType.NATIONAL_MATCH_SERIES]: [
-    ...nationalMatchSeries,
-    createConfirmationStep<ModelType.NATIONAL_MATCH_SERIES>(),
-  ],
-  [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
-  [ModelType.REFEREE]: [
-    ...referee,
-    createConfirmationStep<ModelType.REFEREE>(),
-  ],
-  [ModelType.SEASON]: [...season, createConfirmationStep<ModelType.SEASON>()],
-  [ModelType.STADIUM]: [
-    ...stadium,
-    createConfirmationStep<ModelType.STADIUM>(),
-  ],
-  [ModelType.TEAM_COMPETITION_SEASON]: [
-    ...teamCompetitionSeason,
-    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),
-  ],
-  [ModelType.TEAM]: [...team, createConfirmationStep<ModelType.TEAM>()],
-  [ModelType.TRANSFER]: [
-    ...transfer,
-    createConfirmationStep<ModelType.TRANSFER>(),
-  ],
+export const getSteps = <T extends ModelType>(
+  modelType: T,
+  bulk?: boolean
+): FormStep<T>[] => {
+  return bulk ? getBulkSteps(modelType) : getSingleSteps(modelType);
 };
 
-export const getSingleSteps = <T extends ModelType>(
-  modelType: T
-): FormStep<T>[] => {
-  return (steps[modelType] as FormStep<T>[] | undefined) ?? [];
+export const hasSteps = <T extends ModelType>(modelType: T): boolean => {
+  const bulk = getBulkSteps(modelType);
+  const single = getSingleSteps(modelType);
+
+  return bulk.length > 0 || single.length > 0;
 };

@@ -14,6 +14,7 @@ import { FieldListData } from "../../types/types";
 import { toDateKey } from "../../utils";
 import { DetailFieldDefinition } from "../../types/field";
 import { FormStep } from "../../types/form";
+import { get } from "lodash";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -24,8 +25,10 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
   const data: FieldListData = {};
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
-      const value =
-        display.key in formLabel ? formLabel[display.key] : undefined;
+      get(formLabel, display.key);
+      const value = get(formLabel, display.key)
+        ? get(formLabel, display.key)
+        : undefined;
 
       let da: {
         value: string;
@@ -159,7 +162,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         }
 
         if (value === null || value === undefined) {
-          displayValue = "";
+          displayValue = undefined;
         }
 
         row[key] = displayValue;
@@ -390,9 +393,20 @@ const Form = <T extends keyof FormTypeMap>() => {
                 <RenderField
                   key={field.key as string}
                   field={field}
-                  formData={single.formData}
-                  formLabel={single.formLabel}
-                  handleFormData={handleFormData}
+                  formData={
+                    field.overwriteByMany
+                      ? many?.bulkCommonData || {}
+                      : single.formData
+                  }
+                  formLabel={
+                    field.overwriteByMany
+                      ? many?.bulkCommonLabel || {}
+                      : single.formLabel
+                  }
+                  handleFormData={(key, value) =>
+                    handleFormData(key, value, field.overwriteByMany)
+                  }
+                  supportButton={!steps[currentStep].many}
                 />
               </div>
             ))

@@ -1,4 +1,4 @@
-export const district = [
+const DistrictOptions = [
   "中央アジア",
   "北ヨーロッパ",
   "南ヨーロッパ",
@@ -35,3 +35,6 @@ export const district = [
   "大西洋",
   "北部アフリカ",
 ];
+
+export const district = () =>
+  DistrictOptions.map((a) => ({ key: a, label: a }));

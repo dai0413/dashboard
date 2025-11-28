@@ -1,15 +1,15 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { ResponseStatus } from "../types/api";
+import { AlertStatus } from "../types/alert";
 
 type AlertState = {
   main: {
-    alert: ResponseStatus;
-    handleSetAlert: (value: ResponseStatus) => void;
+    alert: AlertStatus;
+    handleSetAlert: (value: AlertStatus) => void;
     resetAlert: () => void;
   };
   modal: {
-    alert: ResponseStatus;
-    handleSetAlert: (value: ResponseStatus) => void;
+    alert: AlertStatus;
+    handleSetAlert: (value: AlertStatus) => void;
     resetAlert: () => void;
   };
 };
@@ -30,20 +30,20 @@ const defaultValue: AlertState = {
 const AlertContext = createContext<AlertState>(defaultValue);
 
 const AlertProvider = ({ children }: { children: ReactNode }) => {
-  const [mainAlert, setMainAlert] = useState<ResponseStatus>(
+  const [mainAlert, setMainAlert] = useState<AlertStatus>(
     defaultValue.main.alert
   );
 
-  const MainHandleSetAlert = (value: ResponseStatus) => {
+  const MainHandleSetAlert = (value: AlertStatus) => {
     setMainAlert(value);
   };
   const MainResetAlert = () => MainHandleSetAlert(defaultValue.modal.alert);
 
-  const [modalAlert, setModalAlert] = useState<ResponseStatus>(
+  const [modalAlert, setModalAlert] = useState<AlertStatus>(
     defaultValue.modal.alert
   );
 
-  const ModalHandleSetAlert = (value: ResponseStatus) => {
+  const ModalHandleSetAlert = (value: AlertStatus) => {
     setModalAlert(value);
   };
   const ModalResetAlert = () => ModalHandleSetAlert(defaultValue.modal.alert);

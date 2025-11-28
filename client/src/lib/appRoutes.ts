@@ -15,6 +15,8 @@ export const APP_ROUTES = {
   MATCH: "/match",
   NATIONAL_CALLUP: "/national-callup",
   NATIONAL_MATCH_SERIES: "/national-match-series",
+  PLAYER_REGISTRATION_HISTORY: "/player-registration-history",
+  PLAYER_REGISTRATION: "/player-registration",
   PLAYER: "/player",
   REFEREE: "/referee",
   SEASON: "/season",

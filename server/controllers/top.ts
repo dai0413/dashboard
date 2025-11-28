@@ -75,9 +75,9 @@ const getTopPageData = async (req: Request, res: Response) => {
   );
   const injuryData = await createData(injuryConfig(InjuryModel), req.query);
 
-  res
-    .status(StatusCodes.OK)
-    .json({ transferData: transferData, injuryData: injuryData });
+  res.status(StatusCodes.OK).json({
+    data: { transferData: transferData, injuryData: injuryData },
+  });
 };
 
 export { getTopPageData };

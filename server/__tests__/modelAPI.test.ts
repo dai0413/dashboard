@@ -1,4 +1,3 @@
-import { runControllerTests } from "./utils.ts/runControllerTests.js";
 import {
   player,
   country,
@@ -15,24 +14,30 @@ import {
   teamCompetitionSeason,
   match,
   transfer,
+  playerRegistration,
+  playerRegistrationHistory,
 } from "@myorg/shared";
-import { PlayerModel } from "../models/player.js";
-import { TransferModel } from "../models/transfer.js";
-import { CountryModel } from "../models/country.js";
-import { RefereeModel } from "../models/referee.js";
-import { TeamModel } from "../models/team.js";
-import { StadiumModel } from "../models/stadium.js";
-import { InjuryModel } from "../models/injury.js";
-import { NationalMatchSeriesModel } from "../models/national-match-series.js";
-import { NationalCallUpModel } from "../models/national-callup.js";
-import { CompetitionModel } from "../models/competition.js";
-import { SeasonModel } from "../models/season.js";
-import { CompetitionStageModel } from "../models/competition-stage.js";
-import { MatchFormatModel } from "../models/match-format.js";
-import { TeamCompetitionSeasonModel } from "../models/team-competition-season.js";
-import { MatchModel } from "../models/match.js";
-import { match as customMatch } from "../utils/customMatchStage/match.js";
-import { transfer as customTransfer } from "../utils/customMatchStage/transfer.js";
+import { runControllerTests } from "../dist/test-utils/runControllerTests.js";
+
+import { PlayerModel } from "../dist/models/player.js";
+import { TransferModel } from "../dist/models/transfer.js";
+import { CountryModel } from "../dist/models/country.js";
+import { RefereeModel } from "../dist/models/referee.js";
+import { TeamModel } from "../dist/models/team.js";
+import { StadiumModel } from "../dist/models/stadium.js";
+import { InjuryModel } from "../dist/models/injury.js";
+import { NationalMatchSeriesModel } from "../dist/models/national-match-series.js";
+import { NationalCallUpModel } from "../dist/models/national-callup.js";
+import { CompetitionModel } from "../dist/models/competition.js";
+import { SeasonModel } from "../dist/models/season.js";
+import { CompetitionStageModel } from "../dist/models/competition-stage.js";
+import { MatchFormatModel } from "../dist/models/match-format.js";
+import { TeamCompetitionSeasonModel } from "../dist/models/team-competition-season.js";
+import { MatchModel } from "../dist/models/match.js";
+import { PlayerRegistrationModel } from "../dist/models/player-registration.js";
+import { PlayerRegistrationHistoryModel } from "../dist/models/player-registration-history.js";
+import { match as customMatch } from "../dist/utils/customMatchStage/match.js";
+import { transfer as customTransfer } from "../dist/utils/customMatchStage/transfer.js";
 
 runControllerTests(player(PlayerModel));
 runControllerTests(country(CountryModel));
@@ -49,3 +54,5 @@ runControllerTests(matchFormat(MatchFormatModel));
 runControllerTests(teamCompetitionSeason(TeamCompetitionSeasonModel));
 runControllerTests(match(MatchModel, customMatch));
 runControllerTests(transfer(TransferModel, customTransfer));
+runControllerTests(playerRegistration(PlayerRegistrationModel));
+runControllerTests(playerRegistrationHistory(PlayerRegistrationHistoryModel));

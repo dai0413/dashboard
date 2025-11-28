@@ -19,6 +19,8 @@ import {
   ClipboardDocumentListIcon,
   WrenchScrewdriverIcon,
   TrophyIcon,
+  IdentificationIcon,
+  ServerStackIcon,
 } from "@heroicons/react/24/solid";
 import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
@@ -48,7 +50,9 @@ export type Icon =
   | "setting"
   | "competition"
   | "competitionStage"
-  | "teamCompetitionSeason";
+  | "teamCompetitionSeason"
+  | "registration"
+  | "line-plot";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -126,7 +130,7 @@ const IconButton: React.FC<IconButtonProps> = ({
       case "series":
         return <FolderOpenIcon className={iconClass} />;
       case "match":
-        return <PresentationChartLineIcon className={iconClass} />;
+        return <ServerStackIcon className={iconClass} />;
       case "tournament":
         return <RectangleGroupIcon className={iconClass} />;
       case "team":
@@ -139,7 +143,10 @@ const IconButton: React.FC<IconButtonProps> = ({
       case "competition":
       case "competitionStage":
         return <TrophyIcon className={iconClass} />;
-
+      case "registration":
+        return <IdentificationIcon className={iconClass} />;
+      case "line-plot":
+        return <PresentationChartLineIcon className={iconClass} />;
       default:
         return null;
     }

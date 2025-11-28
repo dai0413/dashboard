@@ -1,9 +1,9 @@
+import { ageGroup } from "@myorg/shared";
 import {
   NationalMatchSeriesForm,
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
 import { toDateKey } from "../../../utils";
-import { ageGroup } from "../../../utils/createOption/Enum/ageGroup";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeriesGet

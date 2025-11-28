@@ -1,10 +1,10 @@
 import { ModelType } from "../../types/models";
 
-import { API_ROUTES } from "../../lib/apiRoutes";
 import { createModelContext } from "../../utils/createModelContext";
+import { API_PATHS } from "@myorg/shared";
 
 const ContextModelString = ModelType.COUNTRY;
-const backendRoute = API_ROUTES.COUNTRY;
+const backendRoute = API_PATHS.COUNTRY;
 
 const { useMetaCrud: useCountry, MetaCrudProvider: CountryProvider } =
   createModelContext(ContextModelString, backendRoute);

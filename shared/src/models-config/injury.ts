@@ -8,7 +8,7 @@ import {
 } from "../schemas/injury.schema.js";
 
 import { injury as convertFun } from "../utils/format/injury.js";
-import { ControllerConfig, DependencyRefs } from "../types.js";
+import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
 export function injury<TDoc = any, TModel = any>(
@@ -47,10 +47,10 @@ export function injury<TDoc = any, TModel = any>(
       sort: { doa: -1, _id: 1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
-      sampleData: (deps: DependencyRefs) => [
+      sampleData: (deps) => [
         {
           doa: new Date("2030/07/22"),
           team: deps.team._id,

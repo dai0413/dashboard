@@ -1,7 +1,7 @@
+import { stageType } from "@myorg/shared";
 import { Label } from "../types";
 import { Competition } from "./competition";
 import { Season } from "./season";
-import { stageType } from "../../utils/createOption/Enum/stageType";
 
 const StageTypeOptions = stageType().map((item) => item.key);
 

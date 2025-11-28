@@ -6,7 +6,7 @@ import {
   ModelDataMap,
   ModelType,
 } from "../types/models";
-import { BaseCrudRoutes } from "../lib/apiRoutes";
+import { BaseCrudRoutes } from "../types/baseCrudRoutes";
 import { convert } from "../lib/convert/DBtoGetted";
 import { MetaCrudContext } from "../types/context";
 import { useApi } from "../context/api-context";
@@ -21,7 +21,7 @@ import {
 import { cleanData } from ".";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
-import { QueryParams, ResBody } from "../lib/api/readItems";
+import { QueryParams, ResBody } from "@myorg/shared";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
@@ -50,7 +50,7 @@ export function createModelContext<T extends ModelType>(
     const createItems = async (formDatas: Form[]) => {
       const result = createItemBase({
         apiInstance: api,
-        backendRoute: backendRoute.CREATE,
+        backendRoute: backendRoute.ROOT,
         data: cleanData(formDatas),
         onAfterCreate: (item: Model[]) => {
           const createItems = convert(ContextModelString, item);
@@ -65,7 +65,7 @@ export function createModelContext<T extends ModelType>(
     const createItem = async (formData: Form) => {
       const result = createItemBase({
         apiInstance: api,
-        backendRoute: backendRoute.CREATE,
+        backendRoute: backendRoute.ROOT,
         data: cleanData(formData),
         onAfterCreate: (item: Model) => {
           setItems((prev) => [...prev, convert(ContextModelString, item)]);
@@ -76,20 +76,21 @@ export function createModelContext<T extends ModelType>(
       return result;
     };
 
-    const readItems = async (params: QueryParams) =>
+    const readItems = async (params: QueryParams) => {
       readItemsBase({
         apiInstance: api,
-        backendRoute: backendRoute.GET_ALL,
+        backendRoute: backendRoute.ROOT,
         params,
-        onSuccess: (resBody: ResBody<Model>) => {
+        onSuccess: (resBody: ResBody<Model[]>) => {
           setItems(convert(ContextModelString, resBody.data));
-          setTotalCount(resBody.totalCount);
-          setPage(resBody.page);
-          setPageSize(resBody.pageSize);
+          setTotalCount(resBody.totalCount ? resBody.totalCount : 1);
+          setPage(resBody.page ? resBody.page : 1);
+          setPageSize(resBody.pageSize ? resBody.pageSize : 1);
         },
         handleLoading,
         handleSetAlert,
       });
+    };
 
     const readItem = async (id: string) =>
       readItemBase({
@@ -105,7 +106,7 @@ export function createModelContext<T extends ModelType>(
     const deleteItem = async (id: string) => {
       const result = deleteItemBase({
         apiInstance: api,
-        backendRoute: backendRoute.DELETE(id),
+        backendRoute: backendRoute.DETAIL(id),
         onAfterDelete: () => {
           setItems((prev) => prev.filter((t) => t._id !== id));
           setSelected();
@@ -124,7 +125,7 @@ export function createModelContext<T extends ModelType>(
 
       const result = updateItemBase({
         apiInstance: api,
-        backendRoute: backendRoute.UPDATE(id),
+        backendRoute: backendRoute.DETAIL(id),
         data: updated,
         onAfterUpdate: (updatedItem: Model) => {
           setItems((prev) =>

@@ -26,15 +26,25 @@ const positionToGroup = {
 export const addPositionGroup = {
   $addFields: {
     position_group: {
-      $let: {
-        vars: { map: positionToGroup },
-        in: {
-          $getField: {
-            field: { $arrayElemAt: ["$position", 0] },
-            input: "$$map",
+      $ifNull: [
+        "$position_group", // 既にあるならそのまま使う
+        {
+          $let: {
+            vars: { map: positionToGroup },
+            in: {
+              $getField: {
+                field: {
+                  $ifNull: [
+                    { $arrayElemAt: ["$position", 0] },
+                    "__UNKNOWN__", // fallback
+                  ],
+                },
+                input: "$$map",
+              },
+            },
           },
         },
-      },
+      ],
     },
   },
 };

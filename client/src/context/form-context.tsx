@@ -26,10 +26,10 @@ import { useStadium } from "./models/stadium";
 import { useCompetitionStage } from "./models/competition-stage";
 import { useMatchFormat } from "./models/match-format";
 import { useMatch } from "./models/match";
+import { usePlayerRegistration } from "./models/player-registration";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
-import { getSingleSteps } from "../lib/form-steps";
-import { getBulkSteps } from "../lib/form-steps/many";
+import { getSteps } from "../lib/form-steps";
 import { objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
 import {
@@ -42,6 +42,8 @@ import { useFilter } from "./filter-context";
 import { useSort } from "./sort-context";
 import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
+import { getDefault } from "../lib/default-formData";
+import { usePlayerRegistrationHistory } from "./models/player-registration-history";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -99,12 +101,15 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     formLabel: Record<string, any>;
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
-      value: FormTypeMap[T][K]
+      value: FormTypeMap[T][K],
+      overwriteByMany?: boolean
     ) => void;
     formSteps: FormStep<T>[];
   };
 
   many?: {
+    bulkCommonData: FormTypeMap[T];
+    bulkCommonLabel: Record<string, any>;
     formData: FormTypeMap[T][];
     formLabels: Record<string, any>[];
     handleFormData: <K extends keyof FormTypeMap[T]>(
@@ -159,6 +164,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
     [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
     [ModelType.PLAYER]: usePlayer(),
+    [ModelType.PLAYER_REGISTRATION_HISTORY]: usePlayerRegistrationHistory(),
+    [ModelType.PLAYER_REGISTRATION]: usePlayerRegistration(),
     [ModelType.REFEREE]: useReferee(),
     [ModelType.SEASON]: useSeason(),
     [ModelType.STADIUM]: useStadium(),
@@ -184,8 +191,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [bulkStep, setBulkStep] = useState<FormStep<T>[]>([]);
 
   useEffect(() => {
-    setSingleStep(modelType ? getSingleSteps(modelType) : []);
-    setBulkStep(modelType ? getBulkSteps(modelType) : []);
+    setSingleStep(modelType ? getSteps(modelType, false) : []);
+    setBulkStep(modelType ? getSteps(modelType, true) : []);
   }, [modelType]);
 
   const modelContext = useMemo(() => {
@@ -247,11 +254,15 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       setNewData(true);
 
       if (initialFormData) {
-        setFormData(initialFormData);
-        setFormDatas([initialFormData]);
-        const resolvedLabels = await resolveForeignKeyLabels(initialFormData);
+        const data = { ...getDefault(model), ...initialFormData };
+
+        setFormData(data);
+        setFormDatas([data]);
+        setBulkCommonData(data);
+        const resolvedLabels = await resolveForeignKeyLabels(data);
         setFormLabel(resolvedLabels);
         setFormLabels([resolvedLabels]);
+        setBulkCommonLabel(resolvedLabels);
       } else {
         resetFormData();
         resetFormDatas();
@@ -259,7 +270,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     } else {
       setNewData(false);
       if (editItem) {
-        const newFormData = convertGettedToForm(model, editItem);
+        const newFormData = {
+          ...getDefault(model),
+          ...convertGettedToForm(model, editItem),
+        };
         setFormData(newFormData);
 
         const resolvedLabels = await resolveForeignKeyLabels(newFormData);
@@ -270,9 +284,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       if (model === ModelType.MATCH_FORMAT) {
         const matchFormatEditItem =
           editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
-        const dat =
-          editItem &&
-          convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem);
+        const dat = editItem && {
+          ...getDefault(ModelType.MATCH_FORMAT),
+          ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
+        };
         const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
         dat ? setFormDatas(periodArray) : setFormDatas([]);
 
@@ -294,8 +309,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     if (!newData) {
       mode === "many"
-        ? setCurrentStep(getBulkSteps(model).length - 1)
-        : setCurrentStep(getSingleSteps(model).length - 1);
+        ? setCurrentStep(getSteps(model, true).length - 1)
+        : setCurrentStep(getSteps(model, false).length - 1);
     }
   };
 
@@ -323,7 +338,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const sendData = async () => {
     let result: boolean = false;
-    if (!modelContext) return;
+    if (!modelContext || !modelType) return;
 
     if (mode === "single") {
       let item: FormTypeMap[T];
@@ -347,7 +362,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
           Object.entries(formData).filter(([key]) => difKeys.includes(key))
         );
 
-        result = await modelContext?.metacrud.updateItem(updated);
+        result = await modelContext?.metacrud.updateItem({
+          ...getDefault(modelType),
+          ...updated,
+        });
       }
 
       setCurrentStep((prev) =>
@@ -365,6 +383,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     if (result) setIsEditing(false);
   };
+
+  const [bulkCommonData, setBulkCommonData] = useState<FormTypeMap[T]>({});
+  const [bulkCommonLabel, setBulkCommonLabel] = useState<Record<string, any>>(
+    {}
+  );
 
   const stepSkip = (next: number) => {
     const current = singleStep[next];
@@ -390,7 +413,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     // --- 必須チェック ---
     const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
     if (!requiredCheck.success) {
-      handleSetAlert(requiredCheck);
+      return handleSetAlert(requiredCheck);
     }
 
     // --- validate 関数によるバリデーション ---
@@ -409,12 +432,36 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     // --- onChange 関数による値変更 ---
     if (current.onChange) {
       if (!Array.isArray(checkData)) {
-        const datas = await current.onChange(checkData, api);
+        const updatePaires = await current.onChange(checkData, api);
 
-        datas.forEach((da) => {
+        updatePaires.forEach((da) => {
           singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
         });
       }
+    }
+
+    // --- table の filter操作
+    if (current.filterConditions) {
+      const getCondition = await current.filterConditions(formData, api);
+      setFilterConditions(getCondition);
+    } else {
+      resetFilterConditions();
+    }
+
+    // --- many入力時の共通要素
+    if (mode === "many" && bulkCommonData && current.fields) {
+      current.fields.forEach((field) => {
+        if (field.overwriteByMany) {
+          const valueKey = field.key as keyof FormTypeMap[T];
+          const value = bulkCommonData[valueKey];
+
+          if (value) {
+            formDatas.forEach((_formData, index) => {
+              handleFormData(index, valueKey, value);
+            });
+          }
+        }
+      });
     }
 
     if (!singleStep) {
@@ -433,7 +480,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     setCurrentStep(nextStepIndex);
     resetAlert();
-    resetFilterConditions();
 
     const sortableField =
       modelType && isModelType(modelType)
@@ -442,7 +488,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     sortableField && resetSort(sortableField);
   };
 
-  const { resetFilterConditions } = useFilter();
+  const { setFilterConditions, resetFilterConditions } = useFilter();
+
   const { resetSort } = useSort();
 
   const prevStep = () => {
@@ -467,8 +514,14 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
-    value: FormTypeMap[T][K]
+    value: FormTypeMap[T][K],
+    overwriteByMany?: boolean
   ) => {
+    if (overwriteByMany) {
+      return setBulkCommonData((prev) =>
+        updateFormValue(prev, key, value, setBulkCommonLabel)
+      );
+    }
     setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
   };
 
@@ -485,6 +538,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const resetFormDatas = () => {
     setFormDatas([]);
     setFormLabels([]);
+    setBulkCommonData({});
+    setBulkCommonLabel({});
   };
 
   const handleFormData = <K extends keyof FormTypeMap[T]>(
@@ -511,8 +566,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const addFormDatas = (baseCopy: boolean, setPage?: (p: number) => void) => {
-    const baseData = formData ? { ...formData } : ({} as FormTypeMap[T]);
-    const baseLabel = formLabel ? { ...formLabel } : {};
+    // const baseData = formData ? { ...formData } : ({} as FormTypeMap[T]);
+    // const baseLabel = formLabel ? { ...formLabel } : {};
+
+    const baseData = bulkCommonData ? { ...bulkCommonData } : {};
+    const baseLabel = bulkCommonLabel ? { ...bulkCommonLabel } : {};
 
     const newFormDatas = [...formDatas, baseCopy ? baseData : {}];
     const newFormLabels = [...formLabels, baseCopy ? baseLabel : {}];
@@ -540,8 +598,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     model: T,
     formInitialData: Partial<FormTypeMap[T]>
   ) => {
-    const singleStep = getSingleSteps(model);
-    const bulkStep = getBulkSteps(model);
+    const singleStep = getSteps(model, false);
+    const bulkStep = getSteps(model, true);
 
     const hasSingle = singleStep && singleStep.length > 0;
     const hasBulk = bulkStep && bulkStep.length > 0;
@@ -585,6 +643,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
 
   const many = {
+    bulkCommonData,
+    bulkCommonLabel,
     formSteps: bulkStep,
     formData: formDatas,
     formLabels,

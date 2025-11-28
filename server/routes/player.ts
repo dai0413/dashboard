@@ -11,22 +11,26 @@ import {
   uploadItem,
   downloadItem,
 } from "../controllers/models/player.js";
-
+import { API_PATHS } from "@myorg/shared";
 import upload from "../middleware/upload.js";
 import detectEncoding from "../middleware/detectEncoding.js";
 import checkFileExists from "../middleware/checkFileExists.js";
 
-router.route("/").get(getAllItems).post(createItem);
-router.route("/check").post(checkItem);
+router.route(API_PATHS.PLAYER.ROOT).get(getAllItems).post(createItem);
+router.route(API_PATHS.PLAYER.CHECK).post(checkItem);
 router
-  .route("/upload")
+  .route(API_PATHS.PLAYER.UPLOAD)
   .post(
     upload.single("file"),
     checkFileExists,
     detectEncoding as unknown as RequestHandler,
     uploadItem as unknown as RequestHandler
   );
-router.route("/download").get(downloadItem);
-router.route("/:id").patch(updateItem).delete(deleteItem).get(getItem);
+router.route(API_PATHS.PLAYER.DOWNLOAD).get(downloadItem);
+router
+  .route(API_PATHS.PLAYER.DETAIL())
+  .patch(updateItem)
+  .delete(deleteItem)
+  .get(getItem);
 
 export default router;

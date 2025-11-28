@@ -1,4 +1,4 @@
-import { periodLabel } from "../../utils/createOption/Enum";
+import { periodLabel } from "@myorg/shared";
 
 const periodlabelOptions = periodLabel().map((p) => p.key);
 type PeriodLabel = (typeof periodlabelOptions)[number];

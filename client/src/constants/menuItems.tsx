@@ -66,6 +66,10 @@ export const PlayerTabItems: IconButtonProps[] = [
     icon: "nationality",
     text: "代表歴",
   },
+  {
+    icon: "registration",
+    text: "選手登録",
+  },
 ];
 
 export const TeamTabItems: IconButtonProps[] = [
@@ -96,6 +100,14 @@ export const TeamTabItems: IconButtonProps[] = [
   {
     icon: "match",
     text: "試合",
+  },
+  {
+    icon: "registration",
+    text: "選手登録",
+  },
+  {
+    icon: "line-plot",
+    text: "勝点推移",
   },
 ];
 
@@ -145,8 +157,7 @@ export const CompetitionTabItems: IconButtonProps[] = [
     text: "試合",
   },
   {
-    icon: "player",
-    text: "選手",
-    className: "cursor-not-allowed",
+    icon: "registration",
+    text: "選手登録",
   },
 ];

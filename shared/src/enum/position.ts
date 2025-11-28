@@ -1,4 +1,4 @@
-export const position = [
+const PositionOptions = [
   "GK",
   "DF",
   "CB",
@@ -27,3 +27,5 @@ export const position = [
   "CF",
   "FW",
 ];
+export const position = () =>
+  PositionOptions.map((a) => ({ key: a, label: a }));

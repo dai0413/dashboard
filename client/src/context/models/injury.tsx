@@ -1,10 +1,10 @@
 import { ModelType } from "../../types/models";
 
-import { API_ROUTES } from "../../lib/apiRoutes";
 import { createModelContext } from "../../utils/createModelContext";
+import { API_PATHS } from "@myorg/shared";
 
 const ContextModelString = ModelType.INJURY;
-const backendRoute = API_ROUTES.INJURY;
+const backendRoute = API_PATHS.INJURY;
 
 const { useMetaCrud: useInjury, MetaCrudProvider: InjuryProvider } =
   createModelContext(ContextModelString, backendRoute);

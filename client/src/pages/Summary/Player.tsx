@@ -12,8 +12,11 @@ import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { useForm } from "../../context/form-context";
-import { API_ROUTES } from "../../lib/apiRoutes";
+import { API_PATHS } from "@myorg/shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -25,7 +28,8 @@ const Tabs = PlayerTabItems.filter(
 
 const Player = () => {
   const { id } = useParams();
-
+  const { resetFilterConditions } = useFilter();
+  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("transfer");
@@ -45,6 +49,8 @@ const Player = () => {
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
+    resetFilterConditions();
+    resetSort([]);
     setSelectedTab(value as string);
   };
 
@@ -123,7 +129,7 @@ const Player = () => {
             { label: "形態", field: "form" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.TRANSFER.GET_ALL,
+            apiRoute: API_PATHS.TRANSFER.ROOT,
             params: { player: id, sort: "-from_date" },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
@@ -159,7 +165,7 @@ const Player = () => {
             { label: "全治", field: "ttp" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.INJURY.GET_ALL,
+            apiRoute: API_PATHS.INJURY.ROOT,
             params: { player: id },
           }}
           filterField={fieldDefinition[ModelType.INJURY]
@@ -189,7 +195,7 @@ const Player = () => {
             { label: "活動開始日", field: "joined_at" },
           ]}
           fetch={{
-            apiRoute: API_ROUTES.NATIONAL_CALLUP.GET_ALL,
+            apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
             params: { player: id },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
@@ -202,6 +208,50 @@ const Player = () => {
             {
               field: "series",
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+            },
+          ]}
+          formInitialData={formInitialData}
+          reloadTrigger={reloadKey}
+        />
+      )}
+
+      {selectedTab === "registration" && id && (
+        <TableWithFetch
+          modelType={ModelType.PLAYER_REGISTRATION}
+          headers={[
+            { label: "シーズン", field: "season" },
+            { label: "大会", field: "competition" },
+            { label: "日付", field: "date" },
+            { label: "チーム", field: "team" },
+            { label: "登録・抹消", field: "registration_type" },
+            { label: "登録・抹消", field: "registration_status" },
+            {
+              label: "2種・特別指定",
+              field: "special_type",
+              getData: (data: PlayerRegistrationGet) => {
+                if (data.isSpecialDesignation) return "特別指定";
+                if (data.isTypeTwo) return "2種";
+                return "";
+              },
+            },
+          ]}
+          fetch={{
+            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
+            params: {
+              player: id,
+              sort: "-date,-competition,-registration_type",
+            },
+          }}
+          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isFilterable)
+            .filter((file) => file.key !== "player")}
+          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            .filter(isSortable)
+            .filter((file) => file.key !== "player")}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
           formInitialData={formInitialData}

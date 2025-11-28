@@ -15,6 +15,8 @@ import {
   Transfer,
   NationalCallup,
   NationalMatchSeries,
+  PlayerRegistration,
+  PlayerRegistrationHistory,
 } from "./ModelTable";
 import {
   CompetitionStageDetail,
@@ -32,9 +34,15 @@ import {
   TransferDetail,
   NationalCallupDetail,
   NationalMatchSeriesDetail,
+  PlayerRegistrationDetail,
+  PlayerRegistrationHistoryDetail,
 } from "./ModelDetail";
+import { JSX } from "react";
 
-const models = {
+const models: Record<
+  ModelType,
+  { table: () => JSX.Element; detail: () => JSX.Element }
+> = {
   [ModelType.COMPETITION_STAGE]: {
     table: CompetitionStage,
     detail: CompetitionStageDetail,
@@ -44,6 +52,14 @@ const models = {
   [ModelType.INJURY]: { table: Injury, detail: InjuryDetail },
   [ModelType.MATCH_FORMAT]: { table: MatchFormat, detail: MatchFormatDetail },
   [ModelType.MATCH]: { table: Match, detail: MatchDetail },
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: {
+    table: PlayerRegistrationHistory,
+    detail: PlayerRegistrationHistoryDetail,
+  },
+  [ModelType.PLAYER_REGISTRATION]: {
+    table: PlayerRegistration,
+    detail: PlayerRegistrationDetail,
+  },
   [ModelType.PLAYER]: { table: Player, detail: PlayerDetail },
   [ModelType.REFEREE]: { table: Referee, detail: RefereeDetail },
   [ModelType.SEASON]: { table: Season, detail: SeasonDetail },

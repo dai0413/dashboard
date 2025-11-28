@@ -2,7 +2,6 @@ import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
-import { useEffect } from "react";
 import { FilterableFieldDefinition, operator } from "@myorg/shared";
 
 type FilterProps = {
@@ -34,10 +33,6 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
 
     resetFilterConditions,
   } = useFilter();
-
-  useEffect(() => {
-    resetFilterConditions();
-  }, []);
 
   return (
     <Modal

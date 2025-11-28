@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { objectId } from "./utils/objectId.js";
 import { dateField } from "./utils/dateField.js";
-import { position_group } from "../enum/position_group.js";
+import { positionGroup } from "../enum/positionGroup.js";
 import { status } from "../enum/status.js";
-import { left_reason } from "../enum/left_reason.js";
+import { leftReason } from "../enum/leftReason.js";
 import { PlayerZodSchema } from "./player.schema.js";
 import { NationalMatchSeriesZodSchema } from "./national-match-series.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
+import { getKey } from "../utils/getKey.js";
 
 export const NationalCallUpZodSchema = z
   .object({
@@ -22,14 +23,14 @@ export const NationalCallUpZodSchema = z
     joined_at: dateField,
     left_at: dateField,
     number: z.number().optional(),
-    position_group: z.enum(position_group).optional(),
+    position_group: z.enum(getKey(positionGroup())).optional(),
     is_captain: z.boolean().default(false),
     is_overage: z.boolean().default(false),
     is_backup: z.boolean().default(false),
     is_training_partner: z.boolean().default(false),
     is_additional_call: z.boolean().default(false),
-    status: z.enum(status).default("joined"),
-    left_reason: z.enum(left_reason).optional(),
+    status: z.enum(getKey(status())).default("joined"),
+    left_reason: z.enum(getKey(leftReason())).optional(),
     createdAt: dateField,
     updatedAt: dateField,
   })

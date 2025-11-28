@@ -10,21 +10,17 @@ import { convert as convertToOption, OptionsMap } from "../utils/createOption";
 import { convert as createLabel } from "../lib/convert/CreateLabel";
 import { OptionArray, OptionTable } from "../types/option";
 
-import { useFilter } from "./filter-context";
-import { useSort } from "./sort-context";
-import {
-  API_ROUTES,
-  BaseCrudRoutes,
-  CrudRouteWithParams,
-} from "../lib/apiRoutes";
-import { QueryParams, readItemsBase } from "../lib/api/readItems";
+import { BaseCrudRoutes } from "../types/baseCrudRoutes";
+import { readItemsBase } from "../lib/api/readItems";
 import { useApi } from "./api-context";
 import { convert } from "../lib/convert/DBtoGetted";
 import { FormFieldDefinition } from "../types/form";
 import { isModelType, isOptionType } from "../types/field";
 import { readItemBase } from "../lib/api";
 import {
+  API_PATHS,
   FilterableFieldDefinition,
+  QueryParams,
   SortableFieldDefinition,
 } from "@myorg/shared";
 
@@ -38,8 +34,8 @@ type OptionsState = {
     setOptionTableData: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -50,6 +46,8 @@ type OptionsState = {
   updateOption: <T extends ModelType>(
     key: FormFieldDefinition<T>["key"],
     fieldType: FormFieldDefinition<T>["fieldType"],
+    filters: FilterableFieldDefinition[],
+    sorts: SortableFieldDefinition[],
     setOptionKey?: (
       value: React.SetStateAction<
         keyof GettedModelDataMap | keyof OptionsMap | null
@@ -58,8 +56,8 @@ type OptionsState = {
     setOptionTableData?: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -104,28 +102,25 @@ export function getOptionKey<T extends keyof FormTypeMap>(
 }
 
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
-  const optionRouteMap: Record<string, BaseCrudRoutes<{}>> = {
-    [ModelType.PLAYER]: API_ROUTES.PLAYER,
-    [ModelType.TEAM]: API_ROUTES.TEAM,
-    [ModelType.COUNTRY]: API_ROUTES.COUNTRY,
-    [ModelType.MATCH_FORMAT]: API_ROUTES.MATCH_FORMAT,
-    [ModelType.NATIONAL_MATCH_SERIES]: API_ROUTES.NATIONAL_MATCH_SERIES,
-    [ModelType.SEASON]: API_ROUTES.SEASON,
-    [ModelType.STADIUM]: API_ROUTES.STADIUM,
-    [ModelType.COMPETITION_STAGE]: API_ROUTES.COMPETITION_STAGE,
-    [ModelType.COMPETITION]: API_ROUTES.COMPETITION,
+  const optionRouteMap: Record<string, BaseCrudRoutes> = {
+    [ModelType.PLAYER]: API_PATHS.PLAYER,
+    [ModelType.TEAM]: API_PATHS.TEAM,
+    [ModelType.COUNTRY]: API_PATHS.COUNTRY,
+    [ModelType.MATCH_FORMAT]: API_PATHS.MATCH_FORMAT,
+    [ModelType.NATIONAL_MATCH_SERIES]: API_PATHS.NATIONAL_MATCH_SERIES,
+    [ModelType.SEASON]: API_PATHS.SEASON,
+    [ModelType.STADIUM]: API_PATHS.STADIUM,
+    [ModelType.COMPETITION_STAGE]: API_PATHS.COMPETITION_STAGE,
+    [ModelType.COMPETITION]: API_PATHS.COMPETITION,
   };
-
-  const { filterConditions } = useFilter();
-  const { sortConditions } = useSort();
 
   const handleLoading = (
     time: "end" | "start",
     setOptionTableData: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void
@@ -169,15 +164,15 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   async function getOptionData<T extends ModelType>(
-    route: CrudRouteWithParams<unknown>,
+    route: string,
     params: QueryParams,
     optionKey: T,
     fieldType: "input" | "select" | "textarea" | "table",
     setOptionTableData?: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -195,7 +190,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         const optionTableData = {
           option: convertToOption(
             optionKey,
-            getted as OptionsMap[T],
+            getted as unknown as OptionsMap[T],
             true
           ) as OptionTable,
           page: data.page,
@@ -210,7 +205,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
             setOptionSelectData(
               convertToOption(
                 optionKey,
-                getted as OptionsMap[T],
+                getted as unknown as OptionsMap[T],
                 false
               ) as OptionArray
             );
@@ -232,8 +227,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       setOptionTableData: (
         value: React.SetStateAction<{
           option: OptionTable;
-          page: number;
-          totalCount: number;
+          page?: number;
+          totalCount?: number;
           isLoading: boolean;
         } | null>
       ) => void,
@@ -245,7 +240,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         console.error("optionKeyの不備:", optionKey);
         return Promise.resolve();
       }
-      const route = optionRouteMap[optionKey].GET_ALL;
+      const route = optionRouteMap[optionKey].ROOT;
       if (!route) {
         console.error("optionRouteMapの不備:", optionKey);
         return Promise.resolve();
@@ -270,6 +265,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
   const updateOption = <T extends ModelType>(
     key: FormFieldDefinition<T>["key"],
     fieldType: FormFieldDefinition<T>["fieldType"],
+    filters: FilterableFieldDefinition[],
+    sorts: SortableFieldDefinition[],
     setOptionKey?: (
       value: React.SetStateAction<
         keyof GettedModelDataMap | keyof OptionsMap | null
@@ -278,8 +275,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     setOptionTableData?: (
       value: React.SetStateAction<{
         option: OptionTable;
-        page: number;
-        totalCount: number;
+        page?: number;
+        totalCount?: number;
         isLoading: boolean;
       } | null>
     ) => void,
@@ -291,7 +288,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
     setOptionKey && setOptionKey(nextOptionKey);
 
     if (isModelType(nextOptionKey)) {
-      const route = optionRouteMap[nextOptionKey].GET_ALL;
+      const route = optionRouteMap[nextOptionKey].ROOT;
       if (!route) {
         console.error("optionRouteMapの不備:", nextOptionKey);
         return;
@@ -301,8 +298,8 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
         route,
         {
           page: 1,
-          filters: JSON.stringify(filterConditions),
-          sorts: JSON.stringify(sortConditions),
+          filters: JSON.stringify(filters),
+          sorts: JSON.stringify(sorts),
         },
         nextOptionKey as ModelType,
         fieldType,

@@ -4,6 +4,7 @@ export type Player = {
   en_name: string | null;
   dob: Date | null;
   pob: string | null;
+  old_id?: string;
 };
 
 type PlayerPost = Omit<Player, "_id" | "dob"> & {

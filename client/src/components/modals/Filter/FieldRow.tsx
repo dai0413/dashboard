@@ -5,6 +5,8 @@ import { OptionArray } from "../../../types/option";
 import { FilterableFieldDefinition, operator } from "@myorg/shared";
 import { useOptions } from "../../../context/options-provider";
 import { useEffect, useState } from "react";
+import { useFilter } from "../../../context/filter-context";
+import { useSort } from "../../../context/sort-context";
 
 type OnchangeProps = {
   handleFieldValue: (value: string | number | Date | boolean) => void;
@@ -45,11 +47,16 @@ const FieldRow = ({
     null
   );
 
+  const { filterConditions } = useFilter();
+  const { sortConditions } = useSort();
+
   useEffect(() => {
     if (!filterCondition.key) return;
     updateOption(
       filterCondition.key,
       "select",
+      filterConditions,
+      sortConditions,
       undefined,
       undefined,
       setOptionSelectData

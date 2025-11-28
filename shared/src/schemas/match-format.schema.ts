@@ -1,11 +1,12 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
-import { period_label } from "../enum/period_label.js";
+import { periodLabel } from "../enum/period-label.js";
 import { objectId } from "./utils/objectId.js";
+import { getKey } from "../utils/getKey.js";
 
 const PeriodZodSchema = z
   .object({
-    period_label: z.enum(period_label).refine((v) => !!v, {
+    period_label: z.enum(getKey(periodLabel())).refine((v) => !!v, {
       message: "period_labelは必須です",
     }),
     start: z.number().optional(),
