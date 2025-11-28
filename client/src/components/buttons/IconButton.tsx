@@ -51,7 +51,7 @@ export type Icon =
   | "competition"
   | "competitionStage"
   | "teamCompetitionSeason"
-  | "registration";
+  | "registration"
   | "line-plot";
 
 export type IconButtonProps = {
