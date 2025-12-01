@@ -1,7 +1,7 @@
 {
   "name": "client",
   "private": true,
-  "version": "1.4.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "install:dev": "npm install --no-save file:../shared/myorg-shared-1.0.7.tgz",
