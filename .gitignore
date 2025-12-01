@@ -4,4 +4,6 @@ test_data/
 sample_data/
 dist/
 shared/*.tgz
-.npmrc
+shared/.npmrc
+client/.npmrc
+server/.npmrc
