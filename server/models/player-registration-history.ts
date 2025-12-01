@@ -3,7 +3,7 @@ import {
   PlayerRegistrationHistoryType,
   positionGroup,
   registrationType,
-} from "@dai0413/shared";
+} from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { PlayerRegistrationModel } from "./player-registration.js";
 import { asyncRegistration } from "../utils/async/applyHistoryRecord.js";

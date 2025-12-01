@@ -3,7 +3,7 @@ import z from "zod";
 import {
   TransferResponseSchema,
   TransferPopulatedSchema,
-} from "@dai0413/shared";
+} from "@dai0413/myorg-shared";
 
 const transfer = (
   data: z.infer<typeof TransferPopulatedSchema>

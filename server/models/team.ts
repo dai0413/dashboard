@@ -1,4 +1,10 @@
-import { getKey, ageGroup, division, genre, TeamType } from "@dai0413/shared";
+import {
+  getKey,
+  ageGroup,
+  division,
+  genre,
+  TeamType,
+} from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface ITeam extends Omit<TeamType, "_id" | "country">, Document {

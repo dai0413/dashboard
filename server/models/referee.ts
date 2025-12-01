@@ -1,4 +1,4 @@
-import { RefereeType } from "@dai0413/shared";
+import { RefereeType } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IReferee

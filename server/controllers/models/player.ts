@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import moment from "moment";
 import { BadRequestError } from "../../errors/index.js";
 
-import { player } from "@dai0413/shared";
+import { player } from "@dai0413/myorg-shared";
 import { DecodedRequest } from "../../types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { PlayerModel } from "../../models/player.js";

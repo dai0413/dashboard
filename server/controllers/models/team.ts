@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 
-import { team } from "@dai0413/shared";
+import { team } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { TeamModel } from "../../models/team.js";
 

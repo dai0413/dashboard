@@ -1,4 +1,4 @@
-import { country } from "@dai0413/shared";
+import { country } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { CountryModel } from "../../models/country.js";
 

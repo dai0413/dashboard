@@ -1,4 +1,4 @@
-import { PopulatePath } from "@dai0413/shared";
+import { PopulatePath } from "@dai0413/myorg-shared";
 import { PipelineStage } from "mongoose";
 
 // populate 用

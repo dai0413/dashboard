@@ -1,5 +1,8 @@
 import z from "zod";
-import { MatchResponseSchema, MatchPopulatedSchema } from "@dai0413/shared";
+import {
+  MatchResponseSchema,
+  MatchPopulatedSchema,
+} from "@dai0413/myorg-shared";
 
 const match = (
   match: z.infer<typeof MatchPopulatedSchema>

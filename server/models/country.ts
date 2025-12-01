@@ -6,7 +6,7 @@ import {
   CountryType,
   district,
   subConfederation,
-} from "@dai0413/shared";
+} from "@dai0413/myorg-shared";
 
 export interface ICountry extends Omit<CountryType, "_id">, Document {
   _id: Types.ObjectId;

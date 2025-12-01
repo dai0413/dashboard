@@ -1,4 +1,4 @@
-import { SortableFieldDefinition } from "@dai0413/shared";
+import { SortableFieldDefinition } from "@dai0413/myorg-shared";
 
 export const buildJsonSort = (sorts: SortableFieldDefinition[] = []) => {
   if (!Array.isArray(sorts) || sorts.length === 0) return {};

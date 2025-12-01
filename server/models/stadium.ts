@@ -1,4 +1,4 @@
-import { StadiumType } from "@dai0413/shared";
+import { StadiumType } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IStadium

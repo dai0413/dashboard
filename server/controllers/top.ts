@@ -5,10 +5,10 @@ import { buildMatchStage } from "../utils/buildMatchStage.js";
 import {
   transfer as transferConfig,
   injury as injuryConfig,
-} from "@dai0413/shared";
+} from "@dai0413/myorg-shared";
 import { getNest } from "../utils/getNest.js";
 import { ParsedQs } from "qs";
-import { ControllerConfig } from "@dai0413/shared";
+import { ControllerConfig } from "@dai0413/myorg-shared";
 import { TransferModel } from "../models/transfer.js";
 import { InjuryModel } from "../models/injury.js";
 import { transfer as customTransfer } from "../utils/customMatchStage/transfer.js";

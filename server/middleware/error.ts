@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { CustomAPIError } from "../errors/index.js";
-import { APIError } from "@dai0413/shared";
+import { APIError } from "@dai0413/myorg-shared";
 
 export default function errorHandlerMiddleware(
   err: unknown,

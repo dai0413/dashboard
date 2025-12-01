@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/injury.js";
-import { API_PATHS } from "@dai0413/shared";
+import { API_PATHS } from "@dai0413/myorg-shared";
 
 router.route(API_PATHS.INJURY.ROOT).get(getAllItems).post(createItem);
 router

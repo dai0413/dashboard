@@ -7,7 +7,7 @@ import {
   getNoNumberByCountry,
   getNoCallUp,
 } from "../controllers/aggregate.js";
-import { API_PATHS } from "@dai0413/shared";
+import { API_PATHS } from "@dai0413/myorg-shared";
 
 router
   .route(API_PATHS.AGGREGATE.TRANSFER.CURRENT_PLAYERS_BY_TEAM(`:teamId`))

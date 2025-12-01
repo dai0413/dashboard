@@ -1,4 +1,4 @@
-import { injury } from "@dai0413/shared";
+import { injury } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { InjuryModel } from "../../models/injury.js";
 
