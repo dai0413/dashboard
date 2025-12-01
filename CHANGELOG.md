@@ -93,3 +93,38 @@
 - `team-summary/:id`の内定タブの表示データ修正
   - `to_team`が一致する`transfer`モデルを取得
 - その他軽微な修正
+
+## v1.4.0 #80
+
+### 追加
+
+- server にて crud 処理のテスト導入
+- server, client での共通要素は shared に配置
+- zod を使ったモデル定義
+
+- モデル追加
+  - `Referee`
+  - `Competition`
+  - `Season`
+  - `TeamCompetitionSeason`
+  - `Stadium`
+  - `CompetitionStage`
+  - `MatchFormat`
+  - `Match`
+  - `Player-registration`
+  - `Player-RegistrationHistory`
+  -
+- 新規ページ追加
+  - `competition-summary/:id`
+
+### 改良
+
+- フォーム
+  - スキップ機能
+  - 多数データバリデーション機能
+
+### 修正
+
+- スマホサイズフッター
+- モーダルサイズ
+- ログイン後のローディング表示
