@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import { FilterableFieldDefinition, FilterOperator } from "@myorg/shared";
+import { FilterableFieldDefinition, FilterOperator } from ""@dai0413/myorg-shared";
 
 type FilterState = {
   filterOpen: boolean;

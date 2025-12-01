@@ -1,4 +1,4 @@
-import { leftReason, positionGroup, status } from "@myorg/shared";
+import { leftReason, positionGroup, status } from ""@dai0413/myorg-shared";
 import { Label } from "../types";
 import { NationalMatchSeries } from "./national-match-series";
 import { Player } from "./player";

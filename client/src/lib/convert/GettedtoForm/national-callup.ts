@@ -1,4 +1,4 @@
-import { leftReason, status } from "@myorg/shared";
+import { leftReason, status } from ""@dai0413/myorg-shared";
 import {
   NationalCallupForm,
   NationalCallupGet,

@@ -1,4 +1,4 @@
-import { stageType } from "@myorg/shared";
+import { stageType } from ""@dai0413/myorg-shared";
 import {
   CompetitionStage,
   CompetitionStageGet,

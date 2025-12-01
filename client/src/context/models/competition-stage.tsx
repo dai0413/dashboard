@@ -1,4 +1,4 @@
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from ""@dai0413/myorg-shared";
 import { ModelType } from "../../types/models";
 
 import { createModelContext } from "../../utils/createModelContext";

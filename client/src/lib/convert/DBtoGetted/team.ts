@@ -1,4 +1,4 @@
-import { ageGroup, genre } from "@myorg/shared";
+import { ageGroup, genre } from ""@dai0413/myorg-shared";
 import { Team, TeamGet } from "../../../types/models/team";
 import { country } from "../CreateLabel/country";
 

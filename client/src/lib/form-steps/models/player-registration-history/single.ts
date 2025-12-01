@@ -1,11 +1,11 @@
-import { FilterableFieldDefinition } from "@myorg/shared";
+import { FilterableFieldDefinition } from ""@dai0413/myorg-shared";
 import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { readItemBase, readItemsBase } from "../../../api";
 import { convert } from "../../../convert/DBtoGetted";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from ""@dai0413/myorg-shared";
 
 export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
   [

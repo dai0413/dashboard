@@ -1,7 +1,7 @@
 import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from ""@dai0413/myorg-shared";
 import { convert } from "../../../convert/DBtoGetted";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 

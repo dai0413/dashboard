@@ -1,7 +1,7 @@
 import {
   PlayerRegistrationHistoryPopulatedSchema,
   PlayerRegistrationHistoryFormSchema,
-} from "@myorg/shared";
+} from ""@dai0413/myorg-shared";
 import { Label } from "../types";
 import z from "zod";
 import { Season } from "./season";

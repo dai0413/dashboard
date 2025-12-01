@@ -1,4 +1,4 @@
-import { ageGroup, division, genre } from "@myorg/shared";
+import { ageGroup, division, genre } from ""@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Country } from "./country";
 

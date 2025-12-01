@@ -4,7 +4,7 @@ import { TeamCompetitionSeason } from "../../types/models/team-competition-seaso
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { ageGroup, API_PATHS, FilterableFieldDefinition } from "@myorg/shared";
+import { ageGroup, API_PATHS, FilterableFieldDefinition } from ""@dai0413/myorg-shared";
 import { objectIsEqual } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { ModelType } from "../../types/models";

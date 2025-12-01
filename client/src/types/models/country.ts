@@ -1,4 +1,4 @@
-import { area, confederation, district, subConfederation } from "@myorg/shared";
+import { area, confederation, district, subConfederation } from ""@dai0413/myorg-shared";
 
 const areaOptions = area().map((a) => a.label);
 const districtOptions = district().map((a) => a.label);

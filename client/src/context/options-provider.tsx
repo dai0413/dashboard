@@ -22,7 +22,7 @@ import {
   FilterableFieldDefinition,
   QueryParams,
   SortableFieldDefinition,
-} from "@myorg/shared";
+} from ""@dai0413/myorg-shared";
 
 type OptionsState = {
   handlePageChange: <T extends ModelType>(

@@ -11,7 +11,7 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from ""@dai0413/myorg-shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useCompetition } from "../../context/models/competition";
@@ -22,7 +22,7 @@ import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
-import { ResBody } from "@myorg/shared";
+import { ResBody } from ""@dai0413/myorg-shared";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>

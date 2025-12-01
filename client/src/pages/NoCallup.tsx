@@ -1,7 +1,7 @@
 import { TableWithFetch } from "../components/table";
 import { ModelType } from "../types/models";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from ""@dai0413/myorg-shared";
 
 const NoCallUp = () => {
   const japan = import.meta.env.VITE_JPN_COUNTRY_ID;

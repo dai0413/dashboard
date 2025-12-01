@@ -1,4 +1,4 @@
-import { stageType } from "@myorg/shared";
+import { stageType } from ""@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Competition } from "./competition";
 import { Season } from "./season";

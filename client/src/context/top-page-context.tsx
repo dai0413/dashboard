@@ -4,7 +4,7 @@ import { Transfer, TransferGet } from "../types/models/transfer";
 import { Injury, InjuryGet } from "../types/models/injury";
 import { convert } from "../lib/convert/DBtoGetted";
 import { useAlert } from "./alert-context";
-import { API_PATHS, ResBody } from "@myorg/shared";
+import { API_PATHS, ResBody } from ""@dai0413/myorg-shared";
 import { readItemsBase } from "../lib/api";
 import { useApi } from "./api-context";
 

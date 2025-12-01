@@ -2,7 +2,7 @@ import { IconButton } from "../../buttons/index";
 import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
 import { OptionArray } from "../../../types/option";
-import { FilterableFieldDefinition, operator } from "@myorg/shared";
+import { FilterableFieldDefinition, operator } from ""@dai0413/myorg-shared";
 import { useOptions } from "../../../context/options-provider";
 import { useEffect, useState } from "react";
 import { useFilter } from "../../../context/filter-context";

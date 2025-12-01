@@ -1,4 +1,4 @@
-import { ageGroup, category, competitionType, level } from "@myorg/shared";
+import { ageGroup, category, competitionType, level } from ""@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Country } from "./country";
 

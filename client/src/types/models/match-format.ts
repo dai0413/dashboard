@@ -1,4 +1,4 @@
-import { periodLabel } from "@myorg/shared";
+import { periodLabel } from ""@dai0413/myorg-shared";
 
 const periodlabelOptions = periodLabel().map((p) => p.key);
 type PeriodLabel = (typeof periodlabelOptions)[number];

@@ -1,4 +1,4 @@
-import { ageGroup, genre } from "@myorg/shared";
+import { ageGroup, genre } from ""@dai0413/myorg-shared";
 import { TeamForm, TeamGet } from "../../../types/models/team";
 
 export const team = (t: TeamGet): TeamForm => {

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { SortableFieldDefinition } from "@myorg/shared";
+import { SortableFieldDefinition } from ""@dai0413/myorg-shared";
 
 type SortState = {
   sortConditions: SortableFieldDefinition[];
