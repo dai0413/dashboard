@@ -50,6 +50,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           returnResponse: true,
         });
 
+        if (!resBody) return [];
+
         const teamCompetitionSeason = convert(
           ModelType.TEAM_COMPETITION_SEASON,
           resBody.data as TeamCompetitionSeason[]
@@ -100,6 +102,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
             backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             returnResponse: true,
           });
+
+          if (!resBody) return [];
 
           const playerRegistration = convert(
             ModelType.PLAYER_REGISTRATION,
@@ -178,6 +182,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
             },
             returnResponse: true,
           });
+
+          if (!res) return [];
 
           const { changes } = convert(
             ModelType.PLAYER_REGISTRATION_HISTORY,
