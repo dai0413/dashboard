@@ -4,11 +4,13 @@
   "version": "1.4.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "install:dev": "npm install file:../shared/myorg-shared-1.0.7.tgz",
+    "install:prod": "npm install @dai0413/myorg-shared",
+    "dev": "npm run install:dev && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve -s dist"
+    "start": "npm run install:prod && serve -s dist"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

@@ -1,6 +1,9 @@
 {
-  "name": "@myorg/shared",
+  "name": "@dai0413/myorg-shared",
   "version": "1.0.7",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
