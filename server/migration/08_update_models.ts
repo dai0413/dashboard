@@ -22,9 +22,9 @@
 import { area } from "@myorg/shared";
 import { district } from "@myorg/shared";
 import { confederation } from "@myorg/shared";
-import { sub_confederation } from "@myorg/shared";
-import { left_reason } from "@myorg/shared";
-import { position_group } from "@myorg/shared";
+import { subConfederation } from "@myorg/shared";
+import { leftReason } from "@myorg/shared";
+import { positionGroup } from "@myorg/shared";
 import { level } from "@myorg/shared";
 
 import mongoose from "mongoose";

@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.4.0",
   "type": "module",
   "dependencies": {
     "@myorg/shared": "file:../shared/myorg-shared-1.0.7.tgz",
