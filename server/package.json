@@ -33,7 +33,6 @@
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },
   "devDependencies": {
-    "@dai0413/shared": "file:../shared/myorg-shared-1.0.7.tgz",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

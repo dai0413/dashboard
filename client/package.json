@@ -31,7 +31,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@dai0413/shared": "file:../shared/myorg-shared-1.0.7.tgz",
     "@babel/parser": "^7.28.0",
     "@babel/types": "^7.28.1",
     "@eslint/js": "^9.22.0",
