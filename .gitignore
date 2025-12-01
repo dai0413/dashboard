@@ -5,4 +5,3 @@ sample_data/
 dist/
 shared/*.tgz
 shared/.npmrc
-client/.npmrc
