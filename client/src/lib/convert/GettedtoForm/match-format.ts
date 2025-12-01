@@ -1,4 +1,4 @@
-import { periodLabel } from ""@dai0413/myorg-shared";
+import { periodLabel } from "@dai0413/myorg-shared";
 import {
   MatchFormatForm,
   MatchFormatGet,

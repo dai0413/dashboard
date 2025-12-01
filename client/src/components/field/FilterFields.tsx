@@ -1,4 +1,4 @@
-import { FilterableFieldDefinition } from ""@dai0413/myorg-shared";
+import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import { OptionArray } from "../../types/option";
 import { InputField, SelectField } from "../field";
 

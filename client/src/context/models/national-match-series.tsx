@@ -1,7 +1,7 @@
 import { ModelType } from "../../types/models";
 
 import { createModelContext } from "../../utils/createModelContext";
-import { API_PATHS } from ""@dai0413/myorg-shared";
+import { API_PATHS } from "@dai0413/myorg-shared";
 
 const ContextModelString = ModelType.NATIONAL_MATCH_SERIES;
 const backendRoute = API_PATHS.NATIONAL_MATCH_SERIES;

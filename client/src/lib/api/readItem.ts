@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError } from ""@dai0413/myorg-shared";
+import { APIError } from "@dai0413/myorg-shared";
 
 type ReadItemParams = {
   apiInstance: AxiosInstance;

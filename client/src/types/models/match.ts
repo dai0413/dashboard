@@ -1,4 +1,4 @@
-import { result } from ""@dai0413/myorg-shared";
+import { result } from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Competition } from "./competition";
 import { CompetitionStage } from "./competition-stage";

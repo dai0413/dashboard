@@ -11,7 +11,7 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { TableBase, TableFetch, TableOperationFields } from "../../types/table";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
-import { QueryParams, ResBody } from ""@dai0413/myorg-shared";
+import { QueryParams, ResBody } from "@dai0413/myorg-shared";
 import { Data } from "../../types/types";
 
 type TableWithFetchProps<T extends ModelType> = Omit<

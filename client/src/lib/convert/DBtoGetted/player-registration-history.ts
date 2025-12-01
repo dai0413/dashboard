@@ -1,4 +1,4 @@
-import { registrationType } from ""@dai0413/myorg-shared";
+import { registrationType } from "@dai0413/myorg-shared";
 import {
   PlayerRegistrationHistory,
   PlayerRegistrationHistoryGet,

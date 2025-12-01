@@ -2,7 +2,7 @@ import {
   FilterableFieldDefinition,
   QueryParams,
   SortableFieldDefinition,
-} from ""@dai0413/myorg-shared";
+} from "@dai0413/myorg-shared";
 import { FormTypeMap, ModelType } from "./models";
 import { LinkField, TableHeader } from "./types";
 

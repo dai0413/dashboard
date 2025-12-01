@@ -3,8 +3,8 @@ import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api/readItems";
 import { Transfer } from "../../../../types/models/transfer";
 import { convert } from "../../../convert/DBtoGetted";
-import { API_PATHS, form, position } from ""@dai0413/myorg-shared";
-import { ResBody } from ""@dai0413/myorg-shared";
+import { API_PATHS, form, position } from "@dai0413/myorg-shared";
+import { ResBody } from "@dai0413/myorg-shared";
 
 const positionOptions = position().map((item) => item.key);
 const formOptions = form().map((item) => item.key);
@@ -52,9 +52,9 @@ export const currentTransfer = async <T extends ModelType>({
     returnResponse: true,
   });
 
-  if (!currentTransferData) return {}
+  if (!currentTransferData) return {};
 
-  const currentTransfer: ResBody<Transfer[]> = currentTransferData
+  const currentTransfer: ResBody<Transfer[]> = currentTransferData;
 
   if (currentTransfer.data.length > 0) {
     const latest = convert(ModelType.TRANSFER, currentTransfer.data[0]);

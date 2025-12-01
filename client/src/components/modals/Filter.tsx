@@ -2,7 +2,7 @@ import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
-import { FilterableFieldDefinition, operator } from ""@dai0413/myorg-shared";
+import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];

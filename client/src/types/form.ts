@@ -1,7 +1,7 @@
 import { FormTypeMap } from "./models";
 import { AlertStatus } from "./alert";
 import { AxiosInstance } from "axios";
-import { FilterableFieldDefinition } from ""@dai0413/myorg-shared";
+import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 
 type StepType = "form" | "confirm";
 

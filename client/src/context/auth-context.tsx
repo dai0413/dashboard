@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useAlert } from "./alert-context";
 import { AlertStatus } from "../types/alert";
-import { APIError, API_PATHS } from ""@dai0413/myorg-shared";
+import { APIError, API_PATHS } from "@dai0413/myorg-shared";
 import { useApi } from "./api-context";
 
 type AuthState = {

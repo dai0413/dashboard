@@ -32,7 +32,7 @@ import {
   result,
   registrationType,
   operator,
-} from ""@dai0413/myorg-shared";
+} from "@dai0413/myorg-shared";
 
 export enum OptionType {
   OPERATOR = "operator",

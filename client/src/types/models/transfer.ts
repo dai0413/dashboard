@@ -1,4 +1,4 @@
-import { form, position } from ""@dai0413/myorg-shared";
+import { form, position } from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Player } from "./player";
 import { Team } from "./team";

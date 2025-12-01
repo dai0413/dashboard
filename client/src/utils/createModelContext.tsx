@@ -21,7 +21,7 @@ import {
 import { cleanData } from ".";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
-import { QueryParams, ResBody } from ""@dai0413/myorg-shared";
+import { QueryParams, ResBody } from "@dai0413/myorg-shared";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,

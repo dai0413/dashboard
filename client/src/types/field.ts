@@ -4,7 +4,7 @@ import {
   FilterField,
   SortableFieldDefinition,
   SortField,
-} from ""@dai0413/myorg-shared";
+} from "@dai0413/myorg-shared";
 import { OptionType } from "../utils/createOption";
 import { ModelType } from "./models";
 

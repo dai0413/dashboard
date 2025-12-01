@@ -2,7 +2,7 @@ import {
   FilterableFieldDefinition,
   QueryParams,
   SortableFieldDefinition,
-} from ""@dai0413/myorg-shared";
+} from "@dai0413/myorg-shared";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 
 export type ModelContext<K extends ModelType> = {

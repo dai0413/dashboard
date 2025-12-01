@@ -1,4 +1,4 @@
-import { FilterableFieldDefinition } from ""@dai0413/myorg-shared";
+import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";

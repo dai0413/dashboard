@@ -1,4 +1,4 @@
-import { ageGroup } from ""@dai0413/myorg-shared";
+import { ageGroup } from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Country } from "./country";
 

@@ -13,7 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_PATHS, QueryParams, ResBody } from ""@dai0413/myorg-shared";
+import { API_PATHS, QueryParams, ResBody } from "@dai0413/myorg-shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
