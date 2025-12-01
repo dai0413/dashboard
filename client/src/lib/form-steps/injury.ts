@@ -16,7 +16,10 @@ export const injury: FormStep<ModelType.INJURY>[] = [
       },
     ],
     onChange: async (formData, api) => {
-      const { to_team, to_team_name } = await currentTransfer(formData, api);
+      const { to_team, to_team_name } = await currentTransfer({
+        formData,
+        api,
+      });
 
       let obj: FormUpdatePair = [];
       if (to_team_name) {

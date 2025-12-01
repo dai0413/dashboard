@@ -28,6 +28,7 @@ import { Data, TeamMatch } from "../../types/types";
 import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import PointLine from "./Team/PointLine";
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -590,6 +591,10 @@ const Team = () => {
           ]}
           reloadTrigger={reloadKey}
         />
+      )}
+
+      {selectedTab === "line-plot" && id && (
+        <PointLine teamMatchs={teamMatchs} plotData={plotData} />
       )}
     </div>
   );

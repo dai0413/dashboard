@@ -47,7 +47,7 @@ const TableWithFetch = <T extends ModelType>({
     isLoading: false,
   });
 
-  const fetchData = (params?: QueryParams) =>
+  const fetchData = (params?: QueryParams) => {
     readItemsBase({
       apiInstance: api,
       backendRoute: apiRoute,
@@ -67,12 +67,13 @@ const TableWithFetch = <T extends ModelType>({
         setData((prev) => ({ ...prev, isLoading: time === "start" }));
       },
     });
+  };
 
   useEffect(() => {
     fetchData(params);
   }, [apiRoute, JSON.stringify(params), reloadTrigger]);
 
-  const handlePageChange = (page: number) =>
+  const handlePageChange = async (page: number) =>
     fetchData({ ...params, page: page });
 
   return (
@@ -88,7 +89,7 @@ const TableWithFetch = <T extends ModelType>({
       pageNum={data.page}
       totalCount={data.totalCount}
       handlePageChange={handlePageChange}
-      reloadFun={() => fetchData(params)}
+      reloadFun={async () => fetchData(params)}
       detailLinkValue={detailLinkValue}
       formInitialData={formInitialData}
     />
