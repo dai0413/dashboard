@@ -16,7 +16,7 @@ import {
   transfer,
   playerRegistration,
   playerRegistrationHistory,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 import { runControllerTests } from "../dist/test-utils/runControllerTests.js";
 
 import { PlayerModel } from "../dist/models/player.js";

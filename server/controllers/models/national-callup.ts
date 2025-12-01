@@ -1,4 +1,4 @@
-import { nationalCallUp } from "@myorg/shared";
+import { nationalCallUp } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { NationalCallUpModel } from "../../models/national-callup.js";
 

@@ -1,5 +1,5 @@
 import z from "zod";
-import { MatchResponseSchema, MatchPopulatedSchema } from "@myorg/shared";
+import { MatchResponseSchema, MatchPopulatedSchema } from "@dai0413/shared";
 
 const match = (
   match: z.infer<typeof MatchPopulatedSchema>

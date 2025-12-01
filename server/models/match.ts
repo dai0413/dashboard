@@ -1,4 +1,4 @@
-import { MatchType, result, getKey } from "@myorg/shared";
+import { MatchType, result, getKey } from "@dai0413/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IMatch

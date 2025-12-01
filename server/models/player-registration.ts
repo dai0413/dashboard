@@ -4,7 +4,7 @@ import {
   registrationStatus,
   positionGroup,
   registrationType,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface IPlayerRegistration

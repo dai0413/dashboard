@@ -19,13 +19,13 @@
 // 1. .competition を === null →→→　undefined
 // 2. .en_name を === null →→→　undefined
 
-import { area } from "@myorg/shared";
-import { district } from "@myorg/shared";
-import { confederation } from "@myorg/shared";
-import { subConfederation } from "@myorg/shared";
-import { leftReason } from "@myorg/shared";
-import { positionGroup } from "@myorg/shared";
-import { level } from "@myorg/shared";
+import { area } from "@dai0413/shared";
+import { district } from "@dai0413/shared";
+import { confederation } from "@dai0413/shared";
+import { subConfederation } from "@dai0413/shared";
+import { leftReason } from "@dai0413/shared";
+import { positionGroup } from "@dai0413/shared";
+import { level } from "@dai0413/shared";
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";

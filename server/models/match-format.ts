@@ -1,4 +1,4 @@
-import { MatchFormatType, getKey, periodLabel } from "@myorg/shared";
+import { MatchFormatType, getKey, periodLabel } from "@dai0413/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IMatchFormat extends Omit<MatchFormatType, "_id">, Document {

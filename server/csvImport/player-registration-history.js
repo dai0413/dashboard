@@ -14,7 +14,7 @@ import { SeasonModel } from "../dist/models/season.js";
 import { PlayerRegistrationHistoryModel } from "../dist/models/player-registration-history.js";
 import { parseBoolean } from "./utils/parseBoolean.js";
 import { parseObjectId } from "./utils/parseObjectId.js";
-import { PlayerRegistrationHistoryFormSchema } from "@myorg/shared";
+import { PlayerRegistrationHistoryFormSchema } from "@dai0413/shared";
 
 function parseDateToUTC(val) {
   if (!val) return null;

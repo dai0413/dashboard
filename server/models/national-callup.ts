@@ -4,7 +4,7 @@ import {
   NationalCallUpType,
   positionGroup,
   status,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 import mongoose, { Types, Schema, Document, Model, Error } from "mongoose";
 
 export interface INationalCallUp

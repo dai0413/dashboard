@@ -1,4 +1,4 @@
-import { season } from "@myorg/shared";
+import { season } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { SeasonModel } from "../../models/season.js";
 

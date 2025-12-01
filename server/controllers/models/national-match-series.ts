@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 
-import { nationalMatchSeries } from "@myorg/shared";
+import { nationalMatchSeries } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { NationalMatchSeriesModel } from "../../models/national-match-series.js";
 const { MONGO_MODEL } = nationalMatchSeries(NationalMatchSeriesModel);

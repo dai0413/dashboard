@@ -1,4 +1,4 @@
-import { teamCompetitionSeason } from "@myorg/shared";
+import { teamCompetitionSeason } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { TeamCompetitionSeasonModel } from "../../models/team-competition-season.js";
 

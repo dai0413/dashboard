@@ -1,7 +1,7 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
-import { UserType } from "@myorg/shared";
+import { UserType } from "@dai0413/shared";
 
 export interface IUser extends Omit<UserType, "_id">, Document {
   _id: Types.ObjectId;

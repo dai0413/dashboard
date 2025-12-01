@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { getKey, CompetitionStageType, stageType } from "@myorg/shared";
+import { getKey, CompetitionStageType, stageType } from "@dai0413/shared";
 
 export interface ICompetitionStage
   extends Omit<

@@ -1,4 +1,4 @@
-import { playerRegistration } from "@myorg/shared";
+import { playerRegistration } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { PlayerRegistrationModel } from "../../models/player-registration.js";
 

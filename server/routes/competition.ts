@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/competition.js";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from "@dai0413/shared";
 
 router.route(API_PATHS.COMPETITION.ROOT).get(getAllItems).post(createItem);
 router

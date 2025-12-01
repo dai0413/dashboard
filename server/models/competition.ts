@@ -7,7 +7,7 @@ import {
   competitionType,
   CompetitionType,
   level,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 
 export interface ICompetition
   extends Omit<CompetitionType, "_id" | "country">,

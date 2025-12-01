@@ -1,4 +1,4 @@
-import { referee } from "@myorg/shared";
+import { referee } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { RefereeModel } from "../../models/referee.js";
 

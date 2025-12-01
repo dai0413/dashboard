@@ -1,4 +1,4 @@
-import { getKey, ageGroup, NationalMatchSeriesType } from "@myorg/shared";
+import { getKey, ageGroup, NationalMatchSeriesType } from "@dai0413/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface INationalMatchSeries

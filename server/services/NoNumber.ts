@@ -3,7 +3,7 @@ import { TransferModel } from "../models/transfer.js";
 import { SeasonModel } from "../models/season.js";
 import { Request } from "express";
 import { transfer as formatTransfer } from "../utils/format/transfer.js";
-import { ResBody, TransferResponseSchema } from "@myorg/shared";
+import { ResBody, TransferResponseSchema } from "@dai0413/shared";
 import z from "zod";
 
 type ResponseData = z.infer<typeof TransferResponseSchema>;

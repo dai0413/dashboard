@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
 } from "../controllers/models/season.js";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from "@dai0413/shared";
 
 router.route(API_PATHS.SEASON.ROOT).get(getAllItems).post(createItem);
 router

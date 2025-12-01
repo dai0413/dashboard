@@ -1,5 +1,5 @@
 import { TransferModel } from "../../models/transfer.js";
-import { transfer } from "@myorg/shared";
+import { transfer } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { transfer as customTransfer } from "../../utils/customMatchStage/transfer.js";
 

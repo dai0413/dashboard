@@ -1,4 +1,4 @@
-import { SeasonType } from "@myorg/shared";
+import { SeasonType } from "@dai0413/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface ISeason

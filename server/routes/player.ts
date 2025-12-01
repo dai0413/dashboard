@@ -11,7 +11,7 @@ import {
   uploadItem,
   downloadItem,
 } from "../controllers/models/player.js";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from "@dai0413/shared";
 import upload from "../middleware/upload.js";
 import detectEncoding from "../middleware/detectEncoding.js";
 import checkFileExists from "../middleware/checkFileExists.js";

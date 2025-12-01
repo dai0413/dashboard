@@ -10,7 +10,7 @@ import {
   ControllerConfig,
   FilterableFieldDefinition,
   SortableFieldDefinition,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 import { buildMongoFilter } from "./buildFilter.js";
 import { parseSort } from "./parseSort.js";
 import { buildJsonSort } from "./buildJsonSort.js";

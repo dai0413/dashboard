@@ -1,4 +1,4 @@
-import { getKey, form, position, TransferType } from "@myorg/shared";
+import { getKey, form, position, TransferType } from "@dai0413/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface ITransfer

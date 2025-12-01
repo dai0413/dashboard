@@ -1,5 +1,5 @@
 import z from "zod";
-import { InjuryResponseSchema, InjuryPopulatedSchema } from "@myorg/shared";
+import { InjuryResponseSchema, InjuryPopulatedSchema } from "@dai0413/shared";
 
 const injury = (
   injuryDoc: z.infer<typeof InjuryPopulatedSchema>

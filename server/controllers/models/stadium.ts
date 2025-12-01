@@ -1,4 +1,4 @@
-import { stadium } from "@myorg/shared";
+import { stadium } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { StadiumModel } from "../../models/stadium.js";
 

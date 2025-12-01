@@ -2,6 +2,7 @@
   "version": "1.4.0",
   "type": "module",
   "dependencies": {
+    "@dai0413/myorg-shared": "^1.0.7",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -23,7 +24,7 @@
     "zod": "^4.1.12"
   },
   "scripts": {
-    "install:dev": "npm install file:../shared/myorg-shared-1.0.7.tgz",
+    "install:dev": "npm install --no-save file:../shared/myorg-shared-1.0.7.tgz",
     "install:prod": "npm install @dai0413/myorg-shared",
     "typecheck": "tsc --noEmit",
     "dev": "npm run install:dev && node --loader ts-node/esm app.ts",
@@ -32,6 +33,7 @@
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },
   "devDependencies": {
+    "@dai0413/shared": "file:../shared/myorg-shared-1.0.7.tgz",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",

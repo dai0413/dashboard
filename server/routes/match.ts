@@ -13,7 +13,7 @@ import {
 import upload from "../middleware/upload.js";
 import detectEncoding from "../middleware/detectEncoding.js";
 import checkFileExists from "../middleware/checkFileExists.js";
-import { API_PATHS } from "@myorg/shared";
+import { API_PATHS } from "@dai0413/shared";
 
 router.route(API_PATHS.MATCH.ROOT).get(getAllItems).post(createItem);
 router

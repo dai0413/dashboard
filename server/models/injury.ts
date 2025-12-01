@@ -1,4 +1,4 @@
-import { InjuryType } from "@myorg/shared";
+import { InjuryType } from "@dai0413/shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IInjury

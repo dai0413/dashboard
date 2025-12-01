@@ -1,4 +1,4 @@
-import { TeamCompetitionSeasonType } from "@myorg/shared";
+import { TeamCompetitionSeasonType } from "@dai0413/shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface ITeamCompetitionSeason

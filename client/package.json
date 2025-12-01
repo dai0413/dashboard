@@ -4,7 +4,7 @@
   "version": "1.4.0",
   "type": "module",
   "scripts": {
-    "install:dev": "npm install file:../shared/myorg-shared-1.0.7.tgz",
+    "install:dev": "npm install --no-save file:../shared/myorg-shared-1.0.7.tgz",
     "install:prod": "npm install @dai0413/myorg-shared",
     "dev": "npm run install:dev && vite",
     "build": "tsc -b && vite build",
@@ -13,6 +13,7 @@
     "start": "npm run install:prod && serve -s dist"
   },
   "dependencies": {
+    "@dai0413/myorg-shared": "^1.0.7",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.1.5",
     "@tailwindcss/vite": "^4.1.5",
@@ -30,6 +31,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@dai0413/shared": "file:../shared/myorg-shared-1.0.7.tgz",
     "@babel/parser": "^7.28.0",
     "@babel/types": "^7.28.1",
     "@eslint/js": "^9.22.0",

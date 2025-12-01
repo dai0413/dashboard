@@ -2,7 +2,7 @@ import z from "zod";
 import {
   NationalCallUpResponseSchema,
   NationalCallUpPopulatedSchema,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 
 const nationalCallup = (
   nationalCallup: z.infer<typeof NationalCallUpPopulatedSchema>

@@ -15,7 +15,7 @@ import {
   competition as competitionConfig,
   season as seasonConfig,
   competitionStage as competitionStageConfig,
-} from "@myorg/shared";
+} from "@dai0413/shared";
 import { TeamModel } from "../models/team.js";
 import { CountryModel } from "../models/country.js";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";

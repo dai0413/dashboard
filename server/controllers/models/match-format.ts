@@ -1,4 +1,4 @@
-import { matchFormat } from "@myorg/shared";
+import { matchFormat } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { MatchFormatModel } from "../../models/match-format.js";
 

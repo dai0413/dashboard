@@ -1,4 +1,4 @@
-import { competitionStage } from "@myorg/shared";
+import { competitionStage } from "@dai0413/shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { CompetitionStageModel } from "../../models/competition-stage.js";
 

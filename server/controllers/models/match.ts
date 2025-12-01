@@ -7,7 +7,7 @@ import { match as formatMatch } from "../../utils/format/match.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import csv from "csv-parser";
 import { fromZonedTime } from "date-fns-tz";
-import { match } from "@myorg/shared";
+import { match } from "@dai0413/shared";
 import { MatchModel } from "../../models/match.js";
 import { DecodedRequest } from "types.js";
 import { getNest } from "../../utils/getNest.js";

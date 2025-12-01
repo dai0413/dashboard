@@ -1,6 +1,9 @@
 import z from "zod";
 
-import { TransferResponseSchema, TransferPopulatedSchema } from "@myorg/shared";
+import {
+  TransferResponseSchema,
+  TransferPopulatedSchema,
+} from "@dai0413/shared";
 
 const transfer = (
   data: z.infer<typeof TransferPopulatedSchema>
