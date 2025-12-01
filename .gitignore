@@ -6,4 +6,3 @@ dist/
 shared/*.tgz
 shared/.npmrc
 client/.npmrc
-server/.npmrc
