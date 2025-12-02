@@ -348,6 +348,10 @@ const Competition = () => {
               field: "player",
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
           ]}
           reloadTrigger={reloadKey}
         />

@@ -321,9 +321,8 @@ const Team = () => {
         <TableWithFetch
           modelType={ModelType.TRANSFER}
           headers={[
-            { label: "背番号", field: "number", width: "70px" },
-            { label: "選手", field: "player" },
             { label: "ポジション", field: "position", width: "70px" },
+            { label: "選手", field: "player" },
           ]}
           fetch={{
             apiRoute: API_PATHS.TRANSFER.ROOT,

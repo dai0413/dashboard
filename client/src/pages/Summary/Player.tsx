@@ -253,6 +253,7 @@ const Player = () => {
               field: "team",
               to: APP_ROUTES.TEAM_SUMMARY,
             },
+            { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
           ]}
           formInitialData={formInitialData}
           reloadTrigger={reloadKey}
