@@ -21,7 +21,10 @@ const PlayerRegistrationHistory = () => {
       <ModelTableContainer
         title={"選手登録情報履歴"}
         headers={[
+          { label: "大会", field: "competition" },
+          { label: "シーズン", field: "season" },
           { label: "日付", field: "date" },
+          { label: "チーム", field: "team" },
           { label: "選手", field: "player" },
           {
             label: "ポジション",
@@ -36,8 +39,6 @@ const PlayerRegistrationHistory = () => {
                 : "";
             },
           },
-          { label: "大会", field: "competition" },
-          { label: "シーズン", field: "season" },
           { label: "登録・抹消", field: "registration_type" },
           { label: "状況", field: "registration_status" },
         ]}
@@ -45,8 +46,12 @@ const PlayerRegistrationHistory = () => {
         modelType={ModelType.PLAYER_REGISTRATION_HISTORY}
         linkField={[
           {
-            field: "name",
-            to: APP_ROUTES.PLAYER,
+            field: "player",
+            to: APP_ROUTES.PLAYER_SUMMARY,
+          },
+          {
+            field: "team",
+            to: APP_ROUTES.TEAM_SUMMARY,
           },
         ]}
       />

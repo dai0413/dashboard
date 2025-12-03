@@ -21,11 +21,11 @@ const PlayerRegistration = () => {
       <ModelTableContainer
         title={"選手登録情報"}
         headers={[
-          { label: "日付", field: "date" },
-          { label: "選手", field: "player" },
-          { label: "ポジション", field: "position_group" },
           { label: "大会", field: "competition" },
           { label: "シーズン", field: "season" },
+          { label: "日付", field: "date" },
+          { label: "チーム", field: "team" },
+          { label: "選手", field: "player" },
           { label: "登録・抹消", field: "registration_type" },
           { label: "状況", field: "registration_status" },
         ]}
@@ -33,8 +33,12 @@ const PlayerRegistration = () => {
         modelType={ModelType.PLAYER_REGISTRATION}
         linkField={[
           {
-            field: "name",
-            to: APP_ROUTES.PLAYER,
+            field: "player",
+            to: APP_ROUTES.PLAYER_SUMMARY,
+          },
+          {
+            field: "team",
+            to: APP_ROUTES.TEAM_SUMMARY,
           },
         ]}
       />
