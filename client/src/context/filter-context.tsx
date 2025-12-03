@@ -175,7 +175,6 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }));
 
   const handleFieldObjValue = (obj: Record<string, any>): void => {
-    console.log("in handleFieldObjValue getted obj", obj.label);
     setFilterCondition((prev) => ({
       ...prev,
       value: obj.key,

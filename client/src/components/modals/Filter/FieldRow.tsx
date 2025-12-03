@@ -65,42 +65,45 @@ const FieldRow = ({
 
   return (
     <div className="mb-4 grid grid-cols-3 gap-3 items-center">
-      {/* フィールド選択 */}
-      <SelectField
-        type="text"
-        value={filterCondition.key}
-        onChange={handleFieldSelect}
-        options={fieldOptions}
-        defaultOption="-- 項目を選択 --"
-      />
+      {filterCondition.value?.map((f) => {
+        return (
+          <>
+            {/* フィールド選択 */}
+            <SelectField
+              type="text"
+              value={filterCondition.key}
+              onChange={handleFieldSelect}
+              options={fieldOptions}
+              defaultOption="-- 項目を選択 --"
+            />
+            {/* 値入力 */}
+            {filterCondition.operator !== "is-empty" &&
+            filterCondition.operator !== "is-not-empty" ? (
+              <FilterFields
+                type={filterCondition.type}
+                value={f ? f : ""}
+                onChange={handleFieldValue}
+                onChangeObj={handleFieldObjValue}
+                options={optionSelectData ?? []}
+              />
+            ) : (
+              <div></div>
+            )}
+            {/* 演算子選択 + ボタン */}
+            <div className="flex items-center gap-2">
+              <SelectField
+                type="text"
+                value={filterCondition.operator as string}
+                onChange={handleFieldOperator}
+                options={operator()}
+              />
 
-      {/* 値入力 */}
-      {filterCondition.operator !== "is-empty" &&
-      filterCondition.operator !== "is-not-empty" &&
-      filterCondition.value?.length === 1 ? (
-        <FilterFields
-          type={filterCondition.type}
-          value={filterCondition.value[0] ?? ""}
-          onChange={handleFieldValue}
-          onChangeObj={handleFieldObjValue}
-          options={optionSelectData ?? []}
-        />
-      ) : (
-        <div></div>
-      )}
-
-      {/* 演算子選択 + ボタン */}
-      <div className="flex items-center gap-2">
-        <SelectField
-          type="text"
-          value={filterCondition.operator as string}
-          onChange={handleFieldOperator}
-          options={operator()}
-        />
-
-        <IconButton icon="add" onClick={addOnClick} color="blue" />
-        <IconButton icon="delete" onClick={deleteOnClick} color="red" />
-      </div>
+              <IconButton icon="add" onClick={addOnClick} color="blue" />
+              <IconButton icon="delete" onClick={deleteOnClick} color="red" />
+            </div>
+          </>
+        );
+      })}
     </div>
   );
 };
