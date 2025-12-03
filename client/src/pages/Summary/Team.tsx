@@ -256,6 +256,7 @@ const Team = () => {
                 }
                 options={seasonOptions}
                 onChange={handleSetSelectedSeason}
+                defaultOption="登録シーズンなし"
               />
             </div>
           </div>
@@ -319,9 +320,11 @@ const Team = () => {
       {/* コンテンツ表示 */}
       {selectedTab === "player" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に所属した選手`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に所属した選手`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -357,9 +360,11 @@ const Team = () => {
 
       {selectedTab === "future_in" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に加入予定の選手`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に加入予定の選手`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -404,9 +409,11 @@ const Team = () => {
 
       {selectedTab === "transfer_in" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に加入した選手`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に加入した選手`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -447,9 +454,11 @@ const Team = () => {
 
       {selectedTab === "transfer_out" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に退団した選手`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に退団した選手`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -486,9 +495,11 @@ const Team = () => {
 
       {selectedTab === "loan" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に期限付き移籍した選手`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に期限付き移籍した選手`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -529,9 +540,11 @@ const Team = () => {
 
       {selectedTab === "injury" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に発表された負傷者`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に発表された負傷者`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.INJURY}
             headers={[
@@ -564,9 +577,11 @@ const Team = () => {
 
       {selectedTab === "match" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に開催された試合`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に開催された試合`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.MATCH}
             headers={[
@@ -632,9 +647,11 @@ const Team = () => {
 
       {selectedTab === "registration" && id && (
         <>
-          <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に出場登録された選手`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${seasonDates.startDate}~~~${seasonDates.endDate}に出場登録された選手`}
+            </div>
+          )}
           <TableWithFetch
             modelType={ModelType.PLAYER_REGISTRATION}
             headers={[
@@ -686,9 +703,11 @@ const Team = () => {
 
       {selectedTab === "line-plot" && id && (
         <>
-          <div className="text-gray-600">
-            {`${selectedteamCompetitionSeason?.season.label} ${selectedteamCompetitionSeason?.team.label} の勝点推移`}
-          </div>
+          {season && (
+            <div className="text-gray-600">
+              {`${selectedteamCompetitionSeason?.season.label} ${selectedteamCompetitionSeason?.team.label} の勝点推移`}
+            </div>
+          )}
           <PointLine teamMatchs={teamMatchs} plotData={plotData} />
         </>
       )}
