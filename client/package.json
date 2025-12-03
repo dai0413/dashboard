@@ -6,7 +6,7 @@
   "scripts": {
     "install:prod": "npm install @dai0413/myorg-shared",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm info @dai0413/myorg-shared version && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "npm run install:prod && serve -s dist"
