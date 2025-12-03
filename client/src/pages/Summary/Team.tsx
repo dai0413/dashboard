@@ -53,7 +53,7 @@ const Team = () => {
   const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
-  const [selectedTab, setSelectedTab] = useState("line-plot");
+  const [selectedTab, setSelectedTab] = useState("player");
 
   const [reloadKey, setReloadKey] = useState(0);
 
@@ -318,332 +318,379 @@ const Team = () => {
 
       {/* コンテンツ表示 */}
       {selectedTab === "player" && id && (
-        <TableWithFetch
-          modelType={ModelType.TRANSFER}
-          headers={[
-            { label: "ポジション", field: "position", width: "70px" },
-            { label: "選手", field: "player" },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.TRANSFER.ROOT,
-            params: {
-              from_date: seasonDates.seasonRange,
-              to_team: id,
-              sort: "position_group_order,number",
-              form: ["!期限付き満了"],
-            },
-          }}
-          filterField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "to_team")}
-          sortField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isSortable)
-            .filter((file) => file.key !== "to_team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-          ]}
-          formInitialData={{ to_team: id }}
-          reloadTrigger={reloadKey}
-        />
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に所属した選手`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.TRANSFER}
+            headers={[
+              { label: "ポジション", field: "position", width: "70px" },
+              { label: "選手", field: "player" },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.TRANSFER.ROOT,
+              params: {
+                from_date: seasonDates.seasonRange,
+                to_team: id,
+                sort: "position_group_order,number",
+                form: ["!期限付き満了"],
+              },
+            }}
+            filterField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "to_team")}
+            sortField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isSortable)
+              .filter((file) => file.key !== "to_team")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+            ]}
+            formInitialData={{ to_team: id }}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "future_in" && id && (
-        <TableWithFetch
-          modelType={ModelType.TRANSFER}
-          headers={[
-            { label: "加入日", field: "from_date" },
-            { label: "選手", field: "player" },
-            { label: "移籍元", field: "from_team" },
-            { label: "ポジション", field: "position" },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.TRANSFER.ROOT,
-            params: {
-              from_date: [
-                `>${seasonDates.endDate}`,
-                `<${seasonDates.oneYearLater}`,
-              ].filter((t) => t !== undefined),
-              to_team: id,
-              "from_team.age_group": "!full",
-              from_team: `exists`,
-            },
-          }}
-          filterField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "to_team")}
-          sortField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isSortable)
-            .filter((file) => file.key !== "to_team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-            {
-              field: "from_team",
-              to: APP_ROUTES.TEAM_SUMMARY,
-            },
-          ]}
-          formInitialData={{ to_team: id }}
-          reloadTrigger={reloadKey}
-        />
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に加入予定の選手`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.TRANSFER}
+            headers={[
+              { label: "加入日", field: "from_date" },
+              { label: "選手", field: "player" },
+              { label: "移籍元", field: "from_team" },
+              { label: "ポジション", field: "position" },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.TRANSFER.ROOT,
+              params: {
+                from_date: [
+                  `>${seasonDates.endDate}`,
+                  `<${seasonDates.oneYearLater}`,
+                ].filter((t) => t !== undefined),
+                to_team: id,
+                "from_team.age_group": "!full",
+                from_team: `exists`,
+              },
+            }}
+            filterField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "to_team")}
+            sortField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isSortable)
+              .filter((file) => file.key !== "to_team")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+              {
+                field: "from_team",
+                to: APP_ROUTES.TEAM_SUMMARY,
+              },
+            ]}
+            formInitialData={{ to_team: id }}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "transfer_in" && id && (
-        <TableWithFetch
-          modelType={ModelType.TRANSFER}
-          headers={[
-            { label: "加入日", field: "from_date" },
-            { label: "選手", field: "player" },
-            { label: "移籍元", field: "from_team" },
-            { label: "形態", field: "form" },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.TRANSFER.ROOT,
-            params: {
-              to_team: id,
-              form: "!更新",
-              from_date: seasonDates.seasonRange,
-            },
-          }}
-          filterField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "to_team")}
-          sortField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isSortable)
-            .filter((file) => file.key !== "to_team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-            {
-              field: "from_team",
-              to: APP_ROUTES.TEAM_SUMMARY,
-            },
-          ]}
-          formInitialData={{ to_team: id }}
-          reloadTrigger={reloadKey}
-        />
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に加入した選手`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.TRANSFER}
+            headers={[
+              { label: "加入日", field: "from_date" },
+              { label: "選手", field: "player" },
+              { label: "移籍元", field: "from_team" },
+              { label: "形態", field: "form" },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.TRANSFER.ROOT,
+              params: {
+                to_team: id,
+                form: "!更新",
+                from_date: seasonDates.seasonRange,
+              },
+            }}
+            filterField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "to_team")}
+            sortField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isSortable)
+              .filter((file) => file.key !== "to_team")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+              {
+                field: "from_team",
+                to: APP_ROUTES.TEAM_SUMMARY,
+              },
+            ]}
+            formInitialData={{ to_team: id }}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "transfer_out" && id && (
-        <TableWithFetch
-          modelType={ModelType.TRANSFER}
-          headers={[
-            { label: "加入日", field: "from_date" },
-            { label: "選手", field: "player" },
-            { label: "移籍先", field: "to_team" },
-            { label: "形態", field: "form" },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.TRANSFER.ROOT,
-            params: { from_team: id, from_date: seasonDates.seasonRange },
-          }}
-          filterField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "from_team")}
-          sortField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isSortable)
-            .filter((file) => file.key !== "from_team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-            {
-              field: "to_team",
-              to: APP_ROUTES.TEAM_SUMMARY,
-            },
-          ]}
-          formInitialData={{ from_team: id }}
-          reloadTrigger={reloadKey}
-        />
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に退団した選手`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.TRANSFER}
+            headers={[
+              { label: "加入日", field: "from_date" },
+              { label: "選手", field: "player" },
+              { label: "移籍先", field: "to_team" },
+              { label: "形態", field: "form" },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.TRANSFER.ROOT,
+              params: { from_team: id, from_date: seasonDates.seasonRange },
+            }}
+            filterField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "from_team")}
+            sortField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isSortable)
+              .filter((file) => file.key !== "from_team")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+              {
+                field: "to_team",
+                to: APP_ROUTES.TEAM_SUMMARY,
+              },
+            ]}
+            formInitialData={{ from_team: id }}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "loan" && id && (
-        <TableWithFetch
-          modelType={ModelType.TRANSFER}
-          headers={[
-            { label: "加入日", field: "from_date" },
-            { label: "選手", field: "player" },
-            { label: "移籍先", field: "to_team" },
-            { label: "形態", field: "form" },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.TRANSFER.ROOT,
-            params: {
-              from_team: id,
-              form: ["期限付き", "育成型期限付き"],
-              from_date: seasonDates.seasonRange,
-            },
-          }}
-          filterField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "to_team")}
-          sortField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isSortable)
-            .filter((file) => file.key !== "to_team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-            {
-              field: "to_team",
-              to: APP_ROUTES.TEAM_SUMMARY,
-            },
-          ]}
-          formInitialData={{ from_team: id }}
-          reloadTrigger={reloadKey}
-        />
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に期限付き移籍した選手`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.TRANSFER}
+            headers={[
+              { label: "加入日", field: "from_date" },
+              { label: "選手", field: "player" },
+              { label: "移籍先", field: "to_team" },
+              { label: "形態", field: "form" },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.TRANSFER.ROOT,
+              params: {
+                from_team: id,
+                form: ["期限付き", "育成型期限付き"],
+                from_date: seasonDates.seasonRange,
+              },
+            }}
+            filterField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "to_team")}
+            sortField={fieldDefinition[ModelType.TRANSFER]
+              .filter(isSortable)
+              .filter((file) => file.key !== "to_team")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+              {
+                field: "to_team",
+                to: APP_ROUTES.TEAM_SUMMARY,
+              },
+            ]}
+            formInitialData={{ from_team: id }}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "injury" && id && (
-        <TableWithFetch
-          modelType={ModelType.INJURY}
-          headers={[
-            { label: "発表日", field: "doa" },
-            { label: "選手", field: "player" },
-            { label: "負傷箇所・診断結果", field: "injured_part" },
-            { label: "全治", field: "ttp" },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.INJURY.ROOT,
-            params: { team: id, doa: seasonDates.seasonRange },
-          }}
-          filterField={fieldDefinition[ModelType.INJURY]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "player")}
-          sortField={fieldDefinition[ModelType.INJURY]
-            .filter(isSortable)
-            .filter((file) => file.key !== "player")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-          ]}
-          formInitialData={{ team: id }}
-          reloadTrigger={reloadKey}
-        />
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に発表された負傷者`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.INJURY}
+            headers={[
+              { label: "発表日", field: "doa" },
+              { label: "選手", field: "player" },
+              { label: "負傷箇所・診断結果", field: "injured_part" },
+              { label: "全治", field: "ttp" },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.INJURY.ROOT,
+              params: { team: id, doa: seasonDates.seasonRange },
+            }}
+            filterField={fieldDefinition[ModelType.INJURY]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "player")}
+            sortField={fieldDefinition[ModelType.INJURY]
+              .filter(isSortable)
+              .filter((file) => file.key !== "player")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+            ]}
+            formInitialData={{ team: id }}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "match" && id && (
-        <TableWithFetch
-          modelType={ModelType.MATCH}
-          headers={[
-            {
-              label: "開催日",
-              field: "date",
-              getData: (d: MatchGet) =>
-                d.date ? toDateKey(new Date(d.date)) : "",
-            },
-            { label: "大会", field: "competition" },
-            { label: "ステージ", field: "competition_stage" },
-            { label: "節", field: "match_week", width: "80px" },
-            {
-              label: "相手",
-              field: "vsTeam",
-              getData: (d: MatchGet) => {
-                const isHome = d.home_team.id === id;
-                const vsTeam = isHome ? d.away_team : d.home_team;
-
-                return vsTeam;
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に開催された試合`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.MATCH}
+            headers={[
+              {
+                label: "開催日",
+                field: "date",
+                getData: (d: MatchGet) =>
+                  d.date ? toDateKey(new Date(d.date)) : "",
               },
-            },
-            {
-              label: "結果",
-              field: "result",
-              getData: (d: MatchGet) => {
-                const isHome = d.home_team.id === id;
-                const goal = isHome ? d.home_goal : d.away_goal;
-                const againstGoal = isHome ? d.away_goal : d.home_goal;
-                const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
-                const againstPkGoal = isHome ? d.away_pk_goal : d.home_pk_goal;
+              { label: "大会", field: "competition" },
+              { label: "ステージ", field: "competition_stage" },
+              { label: "節", field: "match_week", width: "80px" },
+              {
+                label: "相手",
+                field: "vsTeam",
+                getData: (d: MatchGet) => {
+                  const isHome = d.home_team.id === id;
+                  const vsTeam = isHome ? d.away_team : d.home_team;
 
-                const score =
-                  goal !== undefined && againstGoal !== undefined
-                    ? `${goal}-${againstGoal}`
-                    : "";
-
-                const pk =
-                  pkGoal !== undefined && againstPkGoal !== undefined
-                    ? `(${pkGoal}PK${againstPkGoal})`
-                    : "";
-
-                return score + pk;
+                  return vsTeam;
+                },
               },
-            },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.MATCH.ROOT,
-            params: { team: id, date: seasonDates.seasonRange, sort: "date" },
-          }}
-          filterField={fieldDefinition[ModelType.MATCH].filter(isFilterable)}
-          sortField={fieldDefinition[ModelType.MATCH].filter(isSortable)}
-          linkField={[
-            { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
-            { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
-          ]}
-          reloadTrigger={reloadKey}
-        />
+              {
+                label: "結果",
+                field: "result",
+                getData: (d: MatchGet) => {
+                  const isHome = d.home_team.id === id;
+                  const goal = isHome ? d.home_goal : d.away_goal;
+                  const againstGoal = isHome ? d.away_goal : d.home_goal;
+                  const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
+                  const againstPkGoal = isHome
+                    ? d.away_pk_goal
+                    : d.home_pk_goal;
+
+                  const score =
+                    goal !== undefined && againstGoal !== undefined
+                      ? `${goal}-${againstGoal}`
+                      : "";
+
+                  const pk =
+                    pkGoal !== undefined && againstPkGoal !== undefined
+                      ? `(${pkGoal}PK${againstPkGoal})`
+                      : "";
+
+                  return score + pk;
+                },
+              },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.MATCH.ROOT,
+              params: { team: id, date: seasonDates.seasonRange, sort: "date" },
+            }}
+            filterField={fieldDefinition[ModelType.MATCH].filter(isFilterable)}
+            sortField={fieldDefinition[ModelType.MATCH].filter(isSortable)}
+            linkField={[
+              { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
+              { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
+            ]}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "registration" && id && (
-        <TableWithFetch
-          modelType={ModelType.PLAYER_REGISTRATION}
-          headers={[
-            { label: "シーズン", field: "season" },
-            {
-              label: "背番号",
-              field: "number",
-              getData: (data: PlayerRegistrationGet) => {
-                return data.number ? String(data.number) : "";
+        <>
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に出場登録された選手`}
+          </div>
+          <TableWithFetch
+            modelType={ModelType.PLAYER_REGISTRATION}
+            headers={[
+              { label: "シーズン", field: "season" },
+              {
+                label: "背番号",
+                field: "number",
+                getData: (data: PlayerRegistrationGet) => {
+                  return data.number ? String(data.number) : "";
+                },
               },
-            },
-            { label: "選手", field: "player" },
-            { label: "登録中・抹消済", field: "registration_status" },
-            {
-              label: "2種・特別指定",
-              field: "special_type",
-              getData: (data: PlayerRegistrationGet) => {
-                if (data.isSpecialDesignation) return "特別指定";
-                if (data.isTypeTwo) return "2種";
-                return "";
+              { label: "選手", field: "player" },
+              { label: "登録中・抹消済", field: "registration_status" },
+              {
+                label: "2種・特別指定",
+                field: "special_type",
+                getData: (data: PlayerRegistrationGet) => {
+                  if (data.isSpecialDesignation) return "特別指定";
+                  if (data.isTypeTwo) return "2種";
+                  return "";
+                },
               },
-            },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
-            params: {
-              team: id,
-              date: seasonDates.seasonRange,
-              registration_type: "register",
-              sort: "number,date",
-            },
-          }}
-          filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
-            .filter(isFilterable)
-            .filter((file) => file.key !== "team")}
-          sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
-            .filter(isSortable)
-            .filter((file) => file.key !== "team")}
-          linkField={[
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
-            },
-          ]}
-          reloadTrigger={reloadKey}
-        />
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
+              params: {
+                team: id,
+                date: seasonDates.seasonRange,
+                registration_type: "register",
+                sort: "number,date",
+              },
+            }}
+            filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+              .filter(isFilterable)
+              .filter((file) => file.key !== "team")}
+            sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+              .filter(isSortable)
+              .filter((file) => file.key !== "team")}
+            linkField={[
+              {
+                field: "player",
+                to: APP_ROUTES.PLAYER_SUMMARY,
+              },
+            ]}
+            reloadTrigger={reloadKey}
+          />
+        </>
       )}
 
       {selectedTab === "line-plot" && id && (
-        <PointLine teamMatchs={teamMatchs} plotData={plotData} />
+        <>
+          <div className="text-gray-600">
+            {`${selectedteamCompetitionSeason?.season.label} ${selectedteamCompetitionSeason?.team.label} の勝点推移`}
+          </div>
+          <PointLine teamMatchs={teamMatchs} plotData={plotData} />
+        </>
       )}
     </div>
   );
