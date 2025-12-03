@@ -26,7 +26,6 @@ const Transfer = () => {
           { label: "移籍元", field: "from_team" },
           { label: "移籍先", field: "to_team" },
           { label: "形態", field: "form" },
-          { label: "背番号", field: "number", width: "100px" },
           { label: "加入日", field: "from_date" },
         ]}
         contextState={transferContext}

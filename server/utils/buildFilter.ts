@@ -52,9 +52,17 @@ export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
       };
 
       if (Array.isArray(value)) {
-        value = value.map(convertValue);
+        if (f.operator === "equals") {
+          value = value.map(convertValue);
+          condition = { [f.key]: { $in: value } };
+        } else {
+          // $gt / $lt / $gte / $lte など
+          value = convertValue(value[0]);
+          condition = { [f.key]: { [op]: value } };
+        }
       } else {
         value = convertValue(value);
+        condition = { [f.key]: { [op]: value } };
       }
 
       // operator ごとの処理
@@ -64,8 +72,7 @@ export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
           typeof regexValue === "string"
             ? { [f.key]: { [op]: regexValue, $options: "i" } }
             : { [f.key]: { [op]: regexValue } };
-      } else if (Array.isArray(value)) {
-        // ✅ value が配列なら自動で $in に変換
+      } else if (f.operator === "equals" && Array.isArray(value)) {
         condition = { [f.key]: { $in: value } };
       } else {
         condition = { [f.key]: { [op]: value } };
