@@ -4,6 +4,7 @@ import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
 import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
 import { OptionArray } from "../../types/option";
+import { toDateKey } from "../../utils";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];
@@ -112,7 +113,12 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               key={index}
               className="flex justify-between items-center bg-green-100 px-3 py-2 rounded-md"
             >
-              <span>{`${cond.label} が ${cond.valueLabel} ${operation}`}</span>
+              {/* cond.valueLabel instanceof Date ? toDateKey(cond.valueLabel) : cond.valueLabel */}
+              <span>{`${cond.label} が ${
+                cond.type === "Date"
+                  ? cond.valueLabel?.map((label) => toDateKey(label))
+                  : cond.valueLabel
+              } ${operation}`}</span>
               <div className="space-x-2 flex">
                 <IconButton
                   icon="edit"

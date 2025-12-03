@@ -52,6 +52,32 @@ export const buildMongoFilter = (filters: FilterableFieldDefinition[] = []) => {
       };
 
       if (Array.isArray(value)) {
+        // --- 日付の equals は「日付一致」判定(時刻除く)に変換 ---
+        if (f.operator === "equals" && f.type === "Date") {
+          if (!f.value) continue;
+          const raw = f.value[0];
+          const dt = new Date(raw as string); // 送られたのは "UTC"
+
+          // --- JST の日付を取りたい ---
+          const jst = new Date(dt.getTime() + 9 * 60 * 60 * 1000); // UTC→JST
+
+          const year = jst.getFullYear();
+          const month = jst.getMonth();
+          const date = jst.getDate();
+
+          // JST の 00:00 を UTC に戻す
+          const start = new Date(Date.UTC(year, month, date, 0, 0, 0));
+          const end = new Date(Date.UTC(year, month, date + 1, 0, 0, 0));
+
+          const condition = { [f.key]: { $gte: start, $lt: end } };
+
+          if (f.logic === "OR") orConditions.push(condition);
+          else andConditions.push(condition);
+
+          continue;
+        }
+
+        // equals（Date 以外）
         if (f.operator === "equals") {
           value = value.map(convertValue);
           condition = { [f.key]: { $in: value } };
