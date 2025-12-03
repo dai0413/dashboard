@@ -3,33 +3,128 @@
 - [データベース設計](#データベース設計)
   - [1. ユーザー(user)](#1-ユーザーuser)
   - [2. チーム(team)](#2-チームteam)
+    - [フィールド一覧](#フィールド一覧)
+    - [ENUM](#enum)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose)
   - [3. 選手(player)](#3-選手player)
+    - [フィールド一覧](#フィールド一覧-1)
   - [4. 移籍(transfer)](#4-移籍transfer)
+    - [フィールド一覧](#フィールド一覧-2)
+    - [ENUM](#enum-1)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-1)
+    - [バリデーション(zod)](#バリデーションzod)
   - [5. 怪我(injury)](#5-怪我injury)
+    - [フィールド一覧](#フィールド一覧-3)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-2)
+    - [バリデーション(zod)](#バリデーションzod-1)
+    - [自動入力(server)](#自動入力server)
   - [6. 国(country)](#6-国country)
+    - [フィールド一覧](#フィールド一覧-4)
+    - [ENUM](#enum-2)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-3)
   - [7. 代表試合シリーズ(National-Match-Series)](#7-代表試合シリーズnational-match-series)
+    - [フィールド一覧](#フィールド一覧-5)
+    - [ENUM](#enum-3)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-4)
   - [8. 代表召集リスト(National-Callup)](#8-代表召集リストnational-callup)
+    - [フィールド一覧](#フィールド一覧-6)
+    - [ENUM](#enum-4)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-5)
+    - [バリデーション(zod)](#バリデーションzod-2)
   - [9. 審判(referee)](#9-審判referee)
+    - [フィールド一覧](#フィールド一覧-7)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-6)
   - [10. 大会(Competition)](#10-大会competition)
+    - [フィールド一覧](#フィールド一覧-8)
+    - [ENUM](#enum-5)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-7)
   - [11. シーズン(Season)](#11-シーズンseason)
+    - [フィールド一覧](#フィールド一覧-9)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-8)
+    - [備考](#備考)
   - [12. チームの大会参加記録(Team-Competition-Season)](#12-チームの大会参加記録team-competition-season)
+    - [フィールド一覧](#フィールド一覧-10)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-9)
+    - [自動入力(client)](#自動入力client)
   - [13. スタジアム(Stadium)](#13-スタジアムstadium)
+    - [フィールド一覧](#フィールド一覧-11)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-10)
   - [14. 大会ステージ(Competition-Stage)](#14-大会ステージcompetition-stage)
+    - [フィールド一覧](#フィールド一覧-12)
+    - [ENUM](#enum-6)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-11)
+    - [バリデーション(zod)](#バリデーションzod-3)
+    - [自動入力(client)](#自動入力client-1)
+    - [備考](#備考-1)
   - [15. 試合フォーマット(Match-Format)](#15-試合フォーマットmatch-format)
+    - [フィールド一覧](#フィールド一覧-13)
+    - [period の型](#period-の型)
+    - [ENUM](#enum-7)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-12)
   - [16. 試合(Match)](#16-試合match)
+    - [フィールド一覧](#フィールド一覧-14)
+    - [ENUM](#enum-8)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-13)
+    - [自動入力(client)](#自動入力client-2)
   - [17. 選手登録(Player-Registration)](#17-選手登録player-registration)
+    - [フィールド一覧](#フィールド一覧-15)
+    - [ENUM](#enum-9)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-14)
+    - [自動入力(client)](#自動入力client-3)
   - [18. 選手登録履歴(Player-RegistrationHistory)](#18-選手登録履歴player-registrationhistory)
+    - [フィールド一覧](#フィールド一覧-16)
+    - [ENUM](#enum-10)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-15)
+    - [バリデーション(zod)](#バリデーションzod-4)
+    - [自動入力(client)](#自動入力client-4)
   - [19. 試合イベント(Match-Event-Type)](#19-試合イベントmatch-event-type)
+    - [フィールド一覧](#フィールド一覧-17)
+    - [ENUM](#enum-11)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-16)
+    - [備考](#備考-2)
   - [20. フォーメーション(Formation)](#20-フォーメーションformation)
-  - [21. 監督・コーチ(Manager)](#21-監督コーチmanager)
+    - [フィールド一覧](#フィールド一覧-18)
+    - [ENUM](#enum-12)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-17)
+    - [バリデーション(zod)](#バリデーションzod-5)
+  - [21. 監督・コーチ(Staff)](#21-監督コーチstaff)
+    - [フィールド一覧](#フィールド一覧-19)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-18)
+    - [自動入力(client)](#自動入力client-5)
   - [22. 選手の出場履歴(Player-Appearance)](#22-選手の出場履歴player-appearance)
-  - [23. 監督・コーチの出場履歴(Manager-Appearance)](#23-監督コーチの出場履歴manager-appearance)
-  - [24. 選手の試合イベントログ](#24-選手の試合イベントログ)
-  - [25. 監督・コーチの試合イベントログ](#25-監督コーチの試合イベントログ)
-  - [26. 試合でのフォーメーション](#26-試合でのフォーメーション)
+    - [フィールド一覧](#フィールド一覧-20)
+    - [ENUM](#enum-13)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-19)
+  - [23. 監督・コーチの出場履歴(Staff-Appearance)](#23-監督コーチの出場履歴staff-appearance)
+    - [フィールド一覧](#フィールド一覧-21)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-20)
+    - [備考](#備考-3)
+  - [24. 選手の試合イベントログ(Player-Match-Event-Log)](#24-選手の試合イベントログplayer-match-event-log)
+    - [フィールド一覧](#フィールド一覧-22)
+    - [ENUM](#enum-14)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-21)
+    - [バリデーション(zod)](#バリデーションzod-6)
+    - [バリデーション(client)](#バリデーションclient)
+    - [自動入力(client)](#自動入力client-6)
+    - [入力時注意](#入力時注意)
+    - [備考](#備考-4)
+  - [25. 監督・コーチの試合イベントログ(Staff-Match-Event-Log)](#25-監督コーチの試合イベントログstaff-match-event-log)
+    - [フィールド一覧](#フィールド一覧-23)
+    - [ENUM](#enum-15)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-22)
+    - [バリデーション(zod)](#バリデーションzod-7)
+    - [バリデーション(client)](#バリデーションclient-1)
+    - [自動入力(client)](#自動入力client-7)
+    - [入力時注意](#入力時注意-1)
+  - [26. 試合でのフォーメーション(Match-Team-Formation)](#26-試合でのフォーメーションmatch-team-formation)
+    - [フィールド一覧](#フィールド一覧-24)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-23)
+  - [今後](#今後)
   - [. 出場停止](#-出場停止)
   - [. 監督キャリア](#-監督キャリア)
   - [. ポジション](#-ポジション)
+
+---
 
 ## 1. ユーザー(user)
 
@@ -43,323 +138,484 @@
 | admin      | 真偽値 | false | 管理者権限の有無           | デフォルト(false)           |
 | is_staff   | 真偽値 | false | スタッフ権限の有無         | デフォルト(false)           |
 
+---
+
 ## 2. チーム(team)
 
-| フィールド  | 型     | 日本語        | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ----------- | ------ | ------------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| team        | 文字列 | チーム名      | true    | false     |          |      |         |             |            |
-| abbr        | 文字列 | 略称          | false   | true      |          |      |         |             |            |
-| enTeam      | 文字列 | 英名          | false   | true      |          |      |         |             |            |
-| country     | 文字列 | 国名          | false   | true      | Country  |      |         |             |            |
-| genre       | 文字列 | ジャンル      | false   | true      |          | ※1   |         |             |            |
-| age_group   | 文字列 | 年代          | false   | true      |          | ※2   |         |             |            |
-| division    | 文字列 | 2nd, 3rd など | false   | true      |          | ※3   | 1st     |             |            |
-| jdataid     | 数字   | j.data.id     | false   | true      |          |      |         |             |            |
-| labalph     | 文字列 | lab.alph      | false   | true      |          |      |         |             |            |
-| transferurl | 文字列 | transfer      | false   | true      |          |      |         |             |            |
-| sofaurl     | 文字列 | sofa          | false   | true      |          |      |         |             |            |
+### フィールド一覧
 
-※1 `club` | `national`
+| フィールド  | 型                | 日本語        | require | default |
+| ----------- | ----------------- | ------------- | ------- | ------- |
+| team        | 文字列            | チーム名      | true    |         |
+| abbr        | 文字列            | 略称          |         |         |
+| enTeam      | 文字列            | 英名          |         |         |
+| country     | 外部キー(Country) | 国名          |         |         |
+| genre       | 文字列            | ジャンル      |         |         |
+| age_group   | 文字列            | 年代          |         |         |
+| division    | 文字列            | 2nd, 3rd など |         | 1st     |
+| jdataid     | 数字              | j.data.id     |         |         |
+| labalph     | 文字列            | lab.alph      |         |         |
+| transferurl | 文字列            | transfer      |         |         |
+| sofaurl     | 文字列            | sofa          |         |         |
 
-※2 年代
+### ENUM
 
-- `full`（フル代表）
-- `u17` ～ `u24`（各年代別代表）
-- `high_school`（高校選抜）
-- `university`（大学選抜）
-- `youth`（ユース選抜）
--
+- **genre**: `club` | `national`
+- **age_group**: `full` | `u17` ～ `u24` | `high_school` | `university` | `youth`
+- **division**: `1st` |`2nd` | `3rd`
 
-※3 `1st` |`2nd` | `3rd`
+### 組み合わせ (Mongoose)
 
-※4 制約
+- `transferurl` は **ユニーク**
+- `sofaurl` は **ユニーク**
 
-- transferurl はユニーク
-- sofaurl はユニーク
+---
 
 ## 3. 選手(player)
 
-| フィールド | 型     | 日本語   | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------- | ------ | -------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name       | 文字列 | 名前     | true    |           |          |      |         |             |            |
-| en_name    | 文字列 | 英語名   |         | true      |          |      |         |             |            |
-| dob        | 日付   | 生年月日 |         | true      |          |      |         |             |            |
-| pob        | 文字列 | 出身地   |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※name, en_name, dob いずれか一致してたら確認させる
+| フィールド | 型     | 日本語   | require | default |
+| ---------- | ------ | -------- | ------- | ------- |
+| name       | 文字列 | 名前     | true    |         |
+| en_name    | 文字列 | 英語名   |         |         |
+| dob        | 日付   | 生年月日 |         |         |
+| pob        | 文字列 | 出身地   |         |         |
+
+---
 
 ## 4. 移籍(transfer)
 
-| フィールド     | 型       | 日本語     | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| -------------- | -------- | ---------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| doa            | 日付     | 発表日     | true    |           |          |      |         |             |            |
-| from_team      | 外部キー | 所属元     |         | true      | Team     |      |         |             |            |
-| from_team_name | 文字列   | 所属元     |         | true      |          |      |         |             |            |
-| to_team        | 外部キー | 移籍先     |         | true      | Team     |      |         |             |            |
-| to_team_name   | 文字列   | 移籍先     |         | true      |          |      |         |             |            |
-| player         | 外部キー | 選手       | true    |           | Player   |      |         |             |            |
-| position       | [文字列] | ポジション |         | true      |          | ※1   |         |             |            |
-| form           | 文字列   | 形態       |         | true      |          | ※2   |         |             |            |
-| number         | 数字     | 背番号     |         | true      |          |      |         |             |            |
-| from_date      | 日付     | 移籍日     | true    | true      |          |      |         |             |            |
-| to_date        | 日付     | 満了日     |         | true      |          |      |         |             |            |
-| URL            | [URL]    | URL        |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※1 GK | DF | CB | RCB | LCB | SB | RSB | LSB | WB | RWB | LWB | MF | CM | DM | OM | WG | RSH | LSH | RWG | LWG | CF | FW
+| フィールド     | 型               | 日本語     | require | default |
+| -------------- | ---------------- | ---------- | ------- | ------- |
+| doa            | 日付             | 発表日     |         |         |
+| from_team      | 外部キー(Team)   | 所属元     |         |         |
+| from_team_name | 文字列           | 所属元     |         |         |
+| to_team        | 外部キー(Team)   | 移籍先     |         |         |
+| to_team_name   | 文字列           | 移籍先     |         |         |
+| player         | 外部キー(Player) | 選手       | true    |         |
+| position       | [文字列]         | ポジション |         |         |
+| form           | 文字列           | 形態       |         |         |
+| number         | 数字             | 背番号     |         |         |
+| from_date      | 日付             | 移籍日     | true    |         |
+| to_date        | 日付             | 満了日     |         |         |
+| URL            | [URL]            | URL        |         |         |
 
-※2 完全 | 期限付き | 期限付き満了 | 期限付き解除 | 育成型期限付き | 育成型期限付き満了 | 育成型期限付き解除 | 満了 | 退団 | 引退 | 期限付き延長 | 育成型期限付き延長 | 契約解除 | 復帰 | 離脱 | 更新
+### ENUM
 
-※ from_team or from_team_name どちらかを入力
-※ to_team or to_team_name どちらかを入力
-※ from_team , from_team_name, to_team_name , player, form, from_date, to_date の組み合わせユニーク
-※ to_date は from_date より後
+- **position**:
+  `GK` | `DF` | `CB` | `RCB` | `LCB` | `SB` | `RSB` | `LSB` |
+  `WB` | `RWB` | `LWB` | `MF` | `CM` | `DM` | `OM` |
+  `WG` | `RSH` | `LSH` | `RWG` | `LWG` | `CF` | `FW`
+- **form**:  
+  `完全` | `期限付き` | `期限付き満了` | `期限付き解除` |  
+  `育成型期限付き` | `育成型期限付き満了` | `育成型期限付き解除` |  
+  `満了` | `退団` | `引退` |  
+  `期限付き延長` | `育成型期限付き延長` |  
+  `契約解除` | `復帰` | `離脱` | `更新`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `from_team`（任意）
+- `from_team_name`（任意）
+- `to_team`（任意）
+- `to_team_name`（任意）
+- `player`
+- `form`（任意）
+- `from_date`
+- `to_date`（任意）
+
+### バリデーション(zod)
+
+- **from 系 または to 系 少なくとも一方は入力**
+- **from_team または from_team_name どちらかを入力**
+- **to_team または to_team_name どちらかを入力**
+- **to_date は from_date より後**
+
+---
 
 ## 5. 怪我(injury)
 
-| フィールド   | 型       | 日本語             | require | undefined | 外部参照 | enum | default | not in form | その他規則              |
-| ------------ | -------- | ------------------ | ------- | --------- | -------- | ---- | ------- | ----------- | ----------------------- |
-| doa          | 日付     | 公式発表           | true    |           |          |      |         |             |                         |
-| team         | 外部キー | チーム             |         | true      | Team     |      |         |             |                         |
-| team_name    | 文字列   | チーム             |         | true      |          | ※3   |         |             |                         |
-| now_team     | 外部キー | 現所属             |         | true      | Team     |      |         |             |                         |
-| player       | 外部キー | 選手               | true    |           | Player   |      |         |             |                         |
-| doi          | 日付     | 負傷日             |         | true      |          |      |         |             |                         |
-| dos          | 日付     | 手術日             |         | true      |          |      |         |             |                         |
-| injured_part | [文字列] | 負傷箇所・診断結果 |         | true      |          |      |         |             |                         |
-| is_injured   | 真偽値   | 負傷中             |         | true      |          |      | true    |             |                         |
-| ttp          | 文字列   | 全治期間※1         |         | true      |          |      |         |             | 数字 + d or w or m or y |
-| erd          | 日付     | 復帰予測※2         |         | true      |          |      |         | true        |                         |
-| URL          | [URL]    |                    |         | true      |          |      |         |             |                         |
+### フィールド一覧
 
-※1 例） 1d , 1w, 10w-15w, 2m-3m, 10w-5m
+| フィールド   | 型               | 日本語             | require | default |
+| ------------ | ---------------- | ------------------ | ------- | ------- |
+| doa          | 日付             | 公式発表           | true    |         |
+| team         | 外部キー(Team)   | チーム             |         |         |
+| team_name    | 文字列           | チーム             |         |         |
+| now_team     | 外部キー(Team)   | 現所属             |         |         |
+| player       | 外部キー(Player) | 選手               | true    |         |
+| doi          | 日付             | 負傷日             |         |         |
+| dos          | 日付             | 手術日             |         |         |
+| injured_part | [文字列]         | 負傷箇所・診断結果 |         |         |
+| is_injured   | 真偽値           | 負傷中             |         | true    |
+| ttp          | 文字列           | 全治期間※1         |         |         |
+| erd          | 日付             | 復帰予測※2         |         |         |
+| URL          | [URL]            |                    |         |         |
 
-※2 erd の値が null かつ ttp の値が null でないときは,doi または dos を基準に ttp 用いて計算。
+### 組み合わせ (Mongoose)
 
-※3 team or team_name を入力
+以下の組み合わせで **ユニーク** とする：
 
-※ team, team_name, player, doi, dos , injured_part の組み合わせユニーク
-※ erd は doi , dos より後
+- `team`（任意）
+- `team_name`（任意）
+- `player`
+- `doi`（任意）
+- `dos`（任意）
+- `injured_part`（任意）
+
+### バリデーション(zod)
+
+- **team または team_name どちらかを入力**
+- **erd は doi , dos より後**
+- **ttp は `数字 + d or w or m or y` で入力**
+  例） 1d , 1w, 10w-15w, 2m-3m, 10w-5m
+
+### 自動入力(server)
+
+- **erd の自動生成**
+  - erd の値が undefined かつ ttp の値が undefined でないとき
+    doi または dos を基準に ttp を用いて計算
+
+---
 
 ## 6. 国(country)
 
-| フィールド              | 型     | 日本語             | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ----------------------- | ------ | ------------------ | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name                    | 文字列 | 名前               | true    |           |          |      |         |             |            |
-| en_name                 | 文字列 | 英語名             |         | true      |          |      |         |             |            |
-| iso3                    | 文字列 | 英 3 文字コード    |         | true      |          |      |         |             |            |
-| fifa_code               | 文字列 | 英 3 文字コード    |         | true      |          |      |         |             |            |
-| area                    | 文字列 | 地域               |         | true      |          | ※1   |         |             |            |
-| district                | 文字列 | 詳細地域           |         | true      |          | ※2   |         |             |            |
-| confederation           | 文字列 | 所属地域協会       |         | true      |          | ※3   |         |             |            |
-| sub_confederation       | 文字列 | 所属詳細地域協会   |         | true      |          | ※4   |         |             |            |
-| established_year        | 数字   | 協会成立年         |         | true      |          |      |         |             |            |
-| fifa_member_year        | 数字   | FIFA 加入年        |         | true      |          |      |         |             |            |
-| association_member_year | 数字   | 地域協会加入年     |         | true      |          |      |         |             |            |
-| district_member_year    | 数字   | 詳細地域協会加入年 |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※1 アジア, ヨーロッパ, アフリカ, オセアニア, 北アメリカ, 南極, 南アメリカ, ミクロネシア
-※2 中央アジア, 北ヨーロッパ, 南ヨーロッパ, 北アフリカ, ポリネシア, 南部アフリカ, カリブ海, 南極大陸, 南アメリカ大陸, 西アジア, オーストラリア大陸, 中央ヨーロッパ, 中東, 南アジア, 東ヨーロッパ, 西ヨーロッパ, 中央アメリカ, 西アフリカ, 北大西洋, 東南アジア, 東アフリカ, 中央アフリカ, 北アメリカ大陸, 中部アフリカ, 東アジア, 東部アフリカ, 南大西洋, メラネシア, インド洋および南極大陸, ミクロネシア, インド洋, 東南アフリカ, オセアニア大陸, 大西洋, 北部アフリカ
-※3 AFC, UEFA, CAF, OFC, CONCACAF, CONMEBOL, FSMFA
-※4 CAFA,UNAF,COSAFA,CFU,AFF,WAFF,SAFF,UNCAF,WAFU,CECAFA,UNIFFAC,NAFU,EAFF
+| フィールド              | 型     | 日本語             | require | default |
+| ----------------------- | ------ | ------------------ | ------- | ------- |
+| name                    | 文字列 | 名前               | true    |         |
+| en_name                 | 文字列 | 英語名             |         |         |
+| iso3                    | 文字列 | 英 3 文字コード    |         |         |
+| fifa_code               | 文字列 | 英 3 文字コード    |         |         |
+| area                    | 文字列 | 地域               |         |         |
+| district                | 文字列 | 詳細地域           |         |         |
+| confederation           | 文字列 | 所属地域協会       |         |         |
+| sub_confederation       | 文字列 | 所属詳細地域協会   |         |         |
+| established_year        | 数字   | 協会成立年         |         |         |
+| fifa_member_year        | 数字   | FIFA 加入年        |         |         |
+| association_member_year | 数字   | 地域協会加入年     |         |         |
+| district_member_year    | 数字   | 詳細地域協会加入年 |         |         |
 
-※ `iso3`, `name`, の組み合わせユニーク
+### ENUM
+
+- **area**: `アジア` | `ヨーロッパ` | `アフリカ` | `オセアニア` | `北アメリカ` | `南極` | `南アメリカ` | `ミクロネシア`
+- **district**:  
+  `中央アジア` | `北ヨーロッパ` | `南ヨーロッパ` | `北アフリカ` | `ポリネシア` |  
+  `南部アフリカ` | `カリブ海` | `南極大陸` | `南アメリカ大陸` | `西アジア` |  
+  `オーストラリア大陸` | `中央ヨーロッパ` | `中東` | `南アジア` | `東ヨーロッパ` |  
+  `西ヨーロッパ` | `中央アメリカ` | `西アフリカ` | `北大西洋` | `東南アジア` |  
+  `東アフリカ` | `中央アフリカ` | `北アメリカ大陸` | `中部アフリカ` | `東アジア` |  
+  `東部アフリカ` | `南大西洋` | `メラネシア` | `インド洋および南極大陸` |  
+  `ミクロネシア` | `インド洋` | `東南アフリカ` | `オセアニア大陸` | `大西洋` | `北部アフリカ`
+- **confederation**: `AFC` | `UEFA` | `CAF` | `OFC` | `CONCACAF` | `CONMEBOL` | `FSMFA`
+- **sub_confederation**:  
+  `CAFA` | `UNAF` | `COSAFA` | `CFU` | `AFF` | `WAFF` | `SAFF` |  
+  `UNCAF` | `WAFU` | `CECAFA` | `UNIFFAC` | `NAFU` | `EAFF`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `iso3`（任意）
+- `name`
+
+---
 
 ## 7. 代表試合シリーズ(National-Match-Series)
 
-| フィールド | 型         | 日本語     | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------- | ---------- | ---------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name       | 文字列     | シリーズ名 | true    |           |          |      |         |             |            |
-| abbr       | 文字列     | 略称       |         | true      |          |      |         |             |            |
-| country    | 外部キー   | 国         | true    |           | Country  |      |         |             |            |
-| age_group  | 文字列     | 年代       |         | true      |          | ※1   |         |             |            |
-| matches    | [外部キー] | 試合       |         | true      | Match    |      |         |             |            |
-| joined_at  | 日付       | 合流日     |         | true      |          |      |         |             |            |
-| left_at    | 日付       | 離脱日     |         | true      |          |      |         |             |            |
-| urls       | [URL]      | URL        |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※1 age_group の ENUM 値
+| フィールド | 型                | 日本語     | require | default |
+| ---------- | ----------------- | ---------- | ------- | ------- |
+| name       | 文字列            | シリーズ名 | true    |         |
+| abbr       | 文字列            | 略称       |         |         |
+| country    | 外部キー(Country) | 国         | true    |         |
+| age_group  | 文字列            | 年代       |         |         |
+| matches    | [外部キー(Match)] | 試合       |         |         |
+| joined_at  | 日付              | 合流日     |         |         |
+| left_at    | 日付              | 離脱日     |         |         |
+| urls       | [URL]             | URL        |         |         |
 
-以下のような代表クラスを指定：
+### ENUM
 
-- `full`（フル代表）
-- `u17` ～ `u24`（各年代別代表）
-- `high_school`（高校選抜）
-- `university`（大学選抜）
-- `youth`（ユース選抜）
+- **age_group**: `full` | `u17` ～ `u24` | `high_school` | `university` | `youth`
 
-※ `country`, `age_group`, `joined_at`, の組み合わせユニーク
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `country`
+- `age_group`（任意）
+- `joined_at`（任意）
+
+---
 
 ## 8. 代表召集リスト(National-Callup)
 
-| フィールド          | 型       | 日本語         | require | undefined | 外部参照            | enum | default  | not in form | その他規則 |
-| ------------------- | -------- | -------------- | ------- | --------- | ------------------- | ---- | -------- | ----------- | ---------- |
-| series              | 外部キー | 試合シリーズ   | true    |           | NationalMatchSeries |      |          |             |            |
-| player              | 外部キー | 選手           | true    |           | Player              |      |          |             |            |
-| team                | 外部キー | 所属チーム     |         | true      | Team                |      |          |             |            |
-| team_name           | 文字列   | 所属チーム     |         | true      |                     |      |          |             |            |
-| joined_at           | 日付     | 合流日         |         | true      |                     |      |          |             |            |
-| left_at             | 日付     | 離脱日         |         | true      |                     |      |          |             |            |
-| number              | 数字     | 背番号         |         | true      |                     |      |          |             |            |
-| position_group      | 文字列   | ポジション     |         | true      |                     | ※1   |          |             |            |
-| is_captain          | 真偽値   | キャプテン     | true    |           |                     |      | false    |             |            |
-| is_overage          | 真偽値   | オーバーエイジ | true    |           |                     |      | false    |             |            |
-| is_backup           | 真偽値   | バックアップ   | true    |           |                     |      | false    |             |            |
-| is_training_partner | 真偽値   | パートナー     | true    |           |                     |      | false    |             |            |
-| is_additional_call  | 真偽値   | 追加招集       | true    |           |                     |      | false    |             |            |
-| status              | 文字列   | 招集状況       | true    |           |                     | ※2   | `joined` |             |            |
-| left_reason         | 文字列   | 離脱理由       | false   | true      |                     | ※3   |          |             |            |
+### フィールド一覧
 
-※1 `GK` | `DF` | `MF` | `FW` | `MF/FW`
-※2 `called` | `joined` | `declined` | `withdrawn`
-`joined` : 全期間参加
-`declined` : 事前辞退
-`withdrawn` : 途中離脱
-※3 `injury` | `personal` | `management` | `club` | `other` | `condition` | `suspension` | `transfer`
+| フィールド          | 型                            | 日本語         | require | default  |
+| ------------------- | ----------------------------- | -------------- | ------- | -------- |
+| series              | 外部キー(NationalMatchSeries) | 試合シリーズ   | true    |          |
+| player              | 外部キー(Player)              | 選手           | true    |          |
+| team                | 外部キー(Team)                | 所属チーム     |         |          |
+| team_name           | 文字列                        | 所属チーム     |         |          |
+| joined_at           | 日付                          | 合流日         |         |          |
+| left_at             | 日付                          | 離脱日         |         |          |
+| number              | 数字                          | 背番号         |         |          |
+| position_group      | 文字列                        | ポジション     |         |          |
+| is_captain          | 真偽値                        | キャプテン     | true    | false    |
+| is_overage          | 真偽値                        | オーバーエイジ | true    | false    |
+| is_backup           | 真偽値                        | バックアップ   | true    | false    |
+| is_training_partner | 真偽値                        | パートナー     | true    | false    |
+| is_additional_call  | 真偽値                        | 追加招集       | true    | false    |
+| status              | 文字列                        | 招集状況       | true    | `joined` |
+| left_reason         | 文字列                        | 離脱理由       |         |          |
 
-※ `team` or `team_name` を入力
-※ `series`, `player`, の組み合わせユニーク
+### ENUM
 
-※ `status` == `decliend`のときは `joinjed_at`, `left_at` は `undefined`
+- **position_group**: `GK` | `DF` | `MF` | `FW` | `MF/FW`
+- **status**: `called` | `joined` | `declined` | `withdrawn`
+- **left_reason**:
+  `injury` | `personal` | `management` | `club` |
+  `other` | `condition` | `suspension` | `transfer`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `series`
+- `player`
+
+### バリデーション(zod)
+
+- **team または team_name どちらかを入力**
+- **status == decliend のときは joinjed_at と left_at は undefined**
+
+---
 
 ## 9. 審判(referee)
 
-| フィールド  | 型         | 日本語   | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ----------- | ---------- | -------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name        | 文字列     | 名前     | true    |           |          |      |         |             |            |
-| en_name     | 文字列     | 英名     |         | true      |          |      |         |             |            |
-| dob         | 日付       | 生年月日 |         | true      |          |      |         |             |            |
-| pob         | 文字列     | 出身地   |         | true      |          |      |         |             |            |
-| citizenship | [外部キー] | 国籍     |         | true      | Country  |      |         |             |            |
-| player      | 外部キー   | 選手     |         | true      | Player   |      |         |             |            |
-| transferurl | 文字列     | transfer |         | true      |          |      |         |             |            |
-| sofaurl     | 文字列     | sofa     |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-- transferurl はユニーク
-- sofaurl はユニーク
+| フィールド  | 型                  | 日本語   | require | default |
+| ----------- | ------------------- | -------- | ------- | ------- |
+| name        | 文字列              | 名前     | true    |         |
+| en_name     | 文字列              | 英名     |         |         |
+| dob         | 日付                | 生年月日 |         |         |
+| pob         | 文字列              | 出身地   |         |         |
+| citizenship | [外部キー(Country)] | 国籍     |         |         |
+| player      | 外部キー(Player)    | 選手     |         |         |
+| transferurl | 文字列              | transfer |         |         |
+| sofaurl     | 文字列              | sofa     |         |         |
+
+### 組み合わせ (Mongoose)
+
+- `transferurl` は **ユニーク**
+- `sofaurl` は **ユニーク**
+
+以下の組み合わせで **ユニーク** とする：
+
+- `country`
+- `age_group`（任意）
+- `joined_at`（任意）
+
+---
 
 ## 10. 大会(Competition)
 
-| フィールド       | 型       | 日本語     | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------------- | -------- | ---------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name             | 文字列   | 大会名     | true    |           |          |      |         |             |            |
-| abbr             | 文字列   | 略称       |         | true      |          |      |         |             |            |
-| en_name          | 文字列   | 英名       |         | true      |          |      |         |             |            |
-| country          | 外部キー | 国         |         | true      | Country  |      |         |             |            |
-| competition_type | 文字列   | 大会規模   | true    |           |          | ※1   |         |             |            |
-| category         | 文字列   | 大会タイプ |         | true      |          | ※2   |         |             |            |
-| level?           | 文字列   | 大会レベル |         | true      |          | ※3   |         |             |            |
-| age_group?       | 文字列   | 年代       |         | true      |          | ※4   |         |             |            |
-| official_match?  | 真偽値   | 公式戦     |         | true      |          |      |         |             |            |
-| transferurl?     | 文字列   | transfer   |         | true      |          |      |         |             |            |
-| sofaurl?         | 文字列   | sofa       |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※1 `club` | `national` | `other`
-※2 `league` | `cup` | `po` | `friendly` | `qualification`
-※3
+| フィールド       | 型                | 日本語     | require | default |
+| ---------------- | ----------------- | ---------- | ------- | ------- |
+| name             | 文字列            | 大会名     | true    |         |
+| abbr             | 文字列            | 略称       |         |         |
+| en_name          | 文字列            | 英名       |         |         |
+| country          | 外部キー(Country) | 国         |         |         |
+| competition_type | 文字列            | 大会規模   | true    |         |
+| category         | 文字列            | 大会タイプ |         |         |
+| level?           | 文字列            | 大会レベル |         |         |
+| age_group?       | 文字列            | 年代       |         |         |
+| official_match?  | 真偽値            | 公式戦     |         |         |
+| transferurl?     | 文字列            | transfer   |         |         |
+| sofaurl?         | 文字列            | sofa       |         |         |
 
-- `1部` ~ `6部`
-- `リーグカップ`
-- `国内カップ戦`
-- `国内スーパーカップ`
-- `入れ替え`
-- `地域大会`
-- `地域予選`
-- `世界大会`
+### ENUM
 
-※4 年代
+- **competition_type**: `club` | `national` | `other`
+- **category**: `league` | `cup` | `po` | `friendly` | `qualification`
+- **level**:
+  `1部` ~ `6部` | `リーグカップ` | `国内カップ戦` | `国内スーパーカップ` |
+  `入れ替え` | `地域大会` | `地域予選`| `世界大会`
+- **age_group**: `full` | `u17` ～ `u24` | `high_school` | `university` | `youth`
 
-- `full`（フル代表）
-- `u17` ～ `u24`（各年代別代表）
-- `high_school`（高校選抜）
-- `university`（大学選抜）
-- `youth`（ユース選抜）
+### 組み合わせ (Mongoose)
 
-※name, country, の組み合わせユニーク
+- `transferurl` は **ユニーク**
+- `sofaurl` は **ユニーク**
 
-- transferurl はユニーク
-- sofaurl はユニーク
+以下の組み合わせで **ユニーク** とする：
+
+- `name`
+- `country`（任意）
+- `joined_at`（任意）
+
+---
 
 ## 11. シーズン(Season)
 
-| フィールド  | 型       | 日本語           | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
-| ----------- | -------- | ---------------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
-| competition | 外部キー | 大会             | true    |           | Competition |      |         |             |            |
-| name        | 文字列   | 名称             | true    |           |             | ※1   |         |             |            |
-| start_date  | 日付     | シーズン開始日   |         | true      |             |      |         |             |            |
-| end_date    | 日付     | シーズン終了日   |         | true      |             |      |         |             |            |
-| current     | 真偽値   | 現在のシーズンか |         | true      |             |      |         |             |            |
-| note        | 文字列   | 備考             |         | true      |             |      |         |             |            |
+### フィールド一覧
 
-※1 例 "2023","2023-2024"
-※competition, start_date, の組み合わせユニーク
+| フィールド  | 型                    | 日本語           | require | default |
+| ----------- | --------------------- | ---------------- | ------- | ------- |
+| competition | 外部キー(Competition) | 大会             | true    |         |
+| name        | 文字列                | 名称             | true    |         |
+| start_date  | 日付                  | シーズン開始日   |         |         |
+| end_date    | 日付                  | シーズン終了日   |         |         |
+| current     | 真偽値                | 現在のシーズンか |         |         |
+| note        | 文字列                | 備考             |         |         |
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `competition`
+- `start_date`（任意）
+
+### 備考
+
+- `name` の 例 "2023","2023-2024"
+
+---
 
 ## 12. チームの大会参加記録(Team-Competition-Season)
 
-| フィールド  | 型       | 日本語   | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
-| ----------- | -------- | -------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
-| team        | 外部キー | チーム   | true    |           | Team        |      |         |             |            |
-| season      | 外部キー | シーズン | true    |           | Season      |      |         |             |            |
-| competition | 外部キー | 大会     | true    |           | Competition |      |         | true        |            |
-| note        | 文字列   | 備考     |         | true      |             |      |         |             |            |
+### フィールド一覧
 
-※team, season,competition の組み合わせユニーク
+| フィールド  | 型                    | 日本語   | require | default |
+| ----------- | --------------------- | -------- | ------- | ------- |
+| team        | 外部キー(Team)        | チーム   | true    |         |
+| season      | 外部キー(Season)      | シーズン | true    |         |
+| competition | 外部キー(Competition) | 大会     | true    |         |
+| note        | 文字列                | 備考     |         |         |
 
-※ season 入力で　 competition 自動入力
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `team`
+- `season`
+- `competition`
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+- **competition の自動生成**
+  - `season`モデルから取得
+
+---
 
 ## 13. スタジアム(Stadium)
 
-| フィールド   | 型       | 日本語   | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ------------ | -------- | -------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name         | 文字列   | 名前     | true    |           |          |      |         |             |            |
-| abbr         | 文字列   | 略称     |         | true      |          |      |         |             |            |
-| en_name      | 文字列   | 英語名   |         | true      |          |      |         |             |            |
-| alt_names    | [文字列] | 別名     |         | true      |          |      |         |             |            |
-| alt_abbrs    | [文字列] | 別略称   |         | true      |          |      |         |             |            |
-| alt_en_names | [文字列] | 別英語名 |         | true      |          |      |         |             |            |
-| country      | 外部キー | 国       |         | true      | Country  |      |         |             |            |
-| transferurl  | 文字列   | transfer |         | true      |          |      |         |             |            |
-| sofaurl      | 文字列   | sofa     |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※country, name, の組み合わせユニーク
+| フィールド   | 型                | 日本語   | require | default |
+| ------------ | ----------------- | -------- | ------- | ------- |
+| name         | 文字列            | 名前     | true    |         |
+| abbr         | 文字列            | 略称     |         |         |
+| en_name      | 文字列            | 英語名   |         |         |
+| alt_names    | [文字列]          | 別名     |         |         |
+| alt_abbrs    | [文字列]          | 別略称   |         |         |
+| alt_en_names | [文字列]          | 別英語名 |         |         |
+| country      | 外部キー(Country) | 国       |         |         |
+| transferurl  | 文字列            | transfer |         |         |
+| sofaurl      | 文字列            | sofa     |         |         |
 
-- transferurl はユニーク
-- sofaurl はユニーク
+### 組み合わせ (Mongoose)
+
+- `transferurl` は **ユニーク**
+- `sofaurl` は **ユニーク**
+
+以下の組み合わせで **ユニーク** とする：
+
+- `name`
+- `country`（任意）
+
+---
 
 ## 14. 大会ステージ(Competition-Stage)
 
-| フィールド   | 型       | 日本語               | require | undefined | 外部参照         | enum        | default | not in form | その他規則 |
-| ------------ | -------- | -------------------- | ------- | --------- | ---------------- | ----------- | ------- | ----------- | ---------- |
-| competition  | 外部キー | 大会                 | true    |           |                  | Competition |         | true        |            |
-| season       | 外部キー | シーズン             | true    |           | Season           |             |         |             |            |
-| stage_type   | 文字列   | ステージタイプ       | true    |           |                  | ※1          |         |             |            |
-| name         | 文字列   | ステージ名           |         | true      |                  |             |         |             | ※2         |
-| round_number | 数字     | 数字で表すラウンド   |         | true      |                  |             |         |             | ※3         |
-| leg          | 数字     | 第 1 戦、第 2 戦など |         | true      |                  |             |         |             |            |
-| order        | 数字     | 表示順               |         | true      |                  |             |         |             |            |
-| parent_stage | 外部キー | 親ステージ           |         | true      | CompetitionStage |             |         |             | ※4         |
-| notes        | 文字列   | 備考                 |         | true      |                  |             |         |             |            |
+### フィールド一覧
 
-※1 `none` | `group_stage`| `round`| `quarter_final`| `semi_final`| `final` | `other`
-※2 (例: "準決勝", "決勝", "Group Stage A")
-※3 (例: 1=1 回戦, 2=2 回戦)
+| フィールド   | 型                         | 日本語               | require | default |
+| ------------ | -------------------------- | -------------------- | ------- | ------- |
+| competition  | 外部キー(Competition)      | 大会                 | true    |         |
+| season       | 外部キー(Season)           | シーズン             | true    |         |
+| stage_type   | 文字列                     | ステージタイプ       | true    |         |
+| name         | 文字列                     | ステージ名           |         |         |
+| round_number | 数字                       | 数字で表すラウンド   |         |         |
+| leg          | 数字                       | 第 1 戦、第 2 戦など |         |         |
+| order        | 数字                       | 表示順               |         |         |
+| parent_stage | 外部キー(CompetitionStage) | 親ステージ           |         |         |
+| notes        | 文字列                     | 備考                 |         |         |
 
-※4 同じ competition/season 内のステージだけ親にできる
+### ENUM
 
-※competition, season, stage_type, round_number, leg の組み合わせユニーク
+- **stage_type**: `none` | `group_stage`| `round`| `quarter_final` | `semi_final`| `final` | `other`
 
-※stage_type == `none` のときは name, round_number, leg, order, が undefined
+### 組み合わせ (Mongoose)
 
-※ season 入力で　 competition 自動入力
+以下の組み合わせで **ユニーク** とする：
+
+- `competition`
+- `season`
+- `stage_type`
+- `round_number`（任意）
+- `leg`（任意）
+
+### バリデーション(zod)
+
+- **stage_type == none のときは name, round_number, leg, order, が undefined**
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+- **competition の自動生成**
+  - `season`モデルから取得
+
+### 備考
+
+- `name` の例 (例: "準決勝", "決勝", "Group Stage A")
+- `round_number` の例 (例: 1=1 回戦, 2=2 回戦)
+
+※ parent_stage は 同じ competition/season 内のステージだけ親にできる
+
+---
 
 ## 15. 試合フォーマット(Match-Format)
 
-| フィールド | 型                                                   | 日本語 | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------- | ---------------------------------------------------- | ------ | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name       | 名前                                                 | 名前   | true    |           |          |      |         |             |            |
-| period     | [{period_label : 文字列, start : 数字 , end : 数字}] |        |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※ period_label は※1 から選択
-※1 `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
+| フィールド | 型   | 日本語 | require | default |
+| ---------- | ---- | ------ | ------- | ------- |
+| name       | 名前 | 名前   | true    |         |
+| period     | 配列 |        |         |         |
+
+### period の型
+
+- {period_label : 文字列, start : 数字 , end : 数字}
+
+### ENUM
+
+- **period_label**: `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
 
 - 例 1 "match_format": [
   { "period_label": "1H", "start": 0, "end": 45 },
@@ -380,84 +636,141 @@
   { "period_label": "3H", "start": 60, "end": 90 }
   ]
 
-- name は unique
-- period は unique
+### 組み合わせ (Mongoose)
+
+- `name` は **ユニーク**
+- `period` は **ユニーク**
+
+---
 
 ## 16. 試合(Match)
 
-| フィールド        | 型       | 日本語           | require | undefined | 外部参照         | enum | default | not in form | その他規則            |
-| ----------------- | -------- | ---------------- | ------- | --------- | ---------------- | ---- | ------- | ----------- | --------------------- |
-| competition       | 外部キー | 大会             | true    |           | Competition      |      | true    | true        |                       |
-| competition-stage | 外部キー | ステージ         | true    |           | CompetitionStage |      |         |             |                       |
-| season            | 外部キー | シーズン         | true    |           | Season           |      | true    | true        |                       |
-| home_team         | 外部キー | ホーム           | true    |           | Team             |      |         |             |                       |
-| away_team         | 外部キー | アウェイ         | true    |           | Team             |      |         |             |                       |
-| match_format      | 外部キー | 試合フォーマット |         | true      | MatchFormat      |      |         |             |                       |
-| stadium           | 外部キー | スタジアム       |         | true      | Stadium          |      |         |             |                       |
-| play_time         | 数字     | プレイ時間       |         | true      |                  |      | true    | true        | match_format から計算 |
-| date              | 日付     | 開催日           |         | true      |                  |      |         |             |                       |
-| audience          | 数字     | 観客数           |         | true      |                  |      |         |             |                       |
-| home_goal         | 数字     | ホーム得点       |         | true      |                  |      |         |             |                       |
-| away_goal         | 数字     | アウェイ得点     |         | true      |                  |      |         |             |                       |
-| home_pk_goal      | 数字     | ホーム PK 得点   |         | true      |                  |      |         |             |                       |
-| away_pk_goal      | 数字     | アウェイ PK 得点 |         | true      |                  |      |         |             |                       |
-| result            | 文字列   | 試合結果         |         | true      |                  | ※2   | true    | true        | 得点から計算          |
-| match_week        | 数字     | 節               |         | true      |                  |      |         |             |                       |
-| weather           | 文字列   | 天気             |         | true      |                  |      |         |             |                       |
-| temperature       | 数字     | 気温             |         | true      |                  |      |         |             |                       |
-| humidity          | 数字     | 湿度             |         | true      |                  |      |         |             |                       |
-| transferurl       | 文字列   | transfer         |         | true      | unique           |      |         |             |                       |
-| sofaurl           | 文字列   | sofa             |         | true      | unique           |      |         |             |                       |
-| urls              | [文字列] | urls             |         | true      |                  |      |         |             |                       |
-| old_id            | 文字列   | 旧 match_id      |         | true      | unique           |      | true    |             |                       |
+### フィールド一覧
 
-※2 'home' | 'away' | 'draw'
+| フィールド        | 型                         | 日本語           | require | default |
+| ----------------- | -------------------------- | ---------------- | ------- | ------- |
+| competition       | 外部キー(Competition)      | 大会             | true    |         |
+| competition-stage | 外部キー(CompetitionStage) | ステージ         | true    |         |
+| season            | 外部キー(Season)           | シーズン         | true    |         |
+| home_team         | 外部キー(Team)             | ホーム           | true    |         |
+| away_team         | 外部キー(Team)             | アウェイ         | true    |         |
+| match_format      | 外部キー(MatchFormat)      | 試合フォーマット |         |         |
+| stadium           | 外部キー(Stadium)          | スタジアム       |         |         |
+| play_time         | 数字                       | プレイ時間       |         |         |
+| date              | 日付                       | 開催日           |         |         |
+| audience          | 数字                       | 観客数           |         |         |
+| home_goal         | 数字                       | ホーム得点       |         |         |
+| away_goal         | 数字                       | アウェイ得点     |         |         |
+| home_pk_goal      | 数字                       | ホーム PK 得点   |         |         |
+| away_pk_goal      | 数字                       | アウェイ PK 得点 |         |         |
+| result            | 文字列                     | 試合結果         |         |         |
+| match_week        | 数字                       | 節               |         |         |
+| weather           | 文字列                     | 天気             |         |         |
+| temperature       | 数字                       | 気温             |         |         |
+| humidity          | 数字                       | 湿度             |         |         |
+| transferurl       | 文字列                     | transfer         |         |         |
+| sofaurl           | 文字列                     | sofa             |         |         |
+| urls              | [文字列]                   | urls             |         |         |
+| old_id            | 文字列                     | 旧 match_id      |         |         |
 
-※competition, competition_stage, home_team, away_team, date , の組み合わせユニーク
-※competition, competition_stage, home_team, away_team, match_week , の組み合わせユニーク
+### ENUM
 
-※competition_stage を入力で competition , season を自動入力
-※match_format 　を入力で　 play_time 　を自動入力
-※goal から result を自動入力
+- **result**: `home` | `away` | `draw`
 
-- transferurl はユニーク
-- sofaurl はユニーク
-- old_id はユニーク
+### 組み合わせ (Mongoose)
+
+- `transferurl` は **ユニーク**
+- `sofaurl` は **ユニーク**
+- `old_id` は **ユニーク**
+
+以下の組み合わせで **ユニーク** とする：
+
+- `competition`
+- `competition_stage`
+- `home_team`
+- `away_team`
+- `date`（任意）
+
+以下の組み合わせで **ユニーク** とする：
+
+- `competition`
+- `competition_stage`
+- `home_team`
+- `away_team`
+- `match_week`（任意）
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+  - `season`
+  - `play_time`
+  - `result`
+- **competition の自動生成**
+  - `competition_stage`モデルから取得
+- **season の自動生成**
+  - `competition_stage`モデルから取得
+- **play_time の自動生成**
+  - `※match_format`モデルから取得
+- **result の自動生成**
+  - `※goal, pk_goal`から計算
+
+---
 
 ## 17. 選手登録(Player-Registration)
 
 18. 選手登録履歴(Player-RegistrationHistory)から自動更新するモデル
 
-| フィールド           | 型       | 日本語         | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
-| -------------------- | -------- | -------------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
-| date                 | 日付     | 開催日         |         | true      |             |      |         |             |            |
-| season               | 外部キー | シーズン       | true    |           | Season      |      |         |             |            |
-| competition          | 外部キー | 大会           | true    |           | Competition |      |         | true        |            |
-| player               | 外部キー | 選手           | true    |           | Player      |      |         |             |            |
-| team                 | 外部キー | チーム         | true    |           | Team        |      |         |             |            |
-| number               | 数字     | 背番号         |         | true      |             |      |         |             |            |
-| position_group       | 文字列   | ポジション     |         | true      |             | ※1   |         |             |            |
-| name                 | 文字列   | 名前           | true    |           |             |      |         |             |            |
-| en_name              | 文字列   | 英語名         |         | true      |             |      |         |             |            |
-| registration_type    | 文字列   | 登録・抹消     | true    |           |             | ※2   |         |             |            |
-| height               | 数字     | 身長           |         | true      |             |      |         |             |            |
-| weight               | 数字     | 体重           |         | true      |             |      |         |             |            |
-| homegrown            | 真偽値   | ホームグロウン |         | true      |             |      |         |             |            |
-| registration_status  | 文字列   | 登録状況       | true    |           |             | ※3   |         | true        |            |
-| isTypeTwo            | 真偽値   | 2 種登録       |         | true      |             |      |         |             |            |
-| isSpecialDesignation | 真偽値   | 特別指定       |         | true      |             |      |         |             |            |
-| note                 | 文字列   | 備考           |         | true      |             |      |         |             |            |
+### フィールド一覧
 
-※1 `GK` | `DF` | `MF` | `FW` | `MF/FW`
-※2 `register` | `deregister`
-※3 `active` | `terminated`
+| フィールド           | 型                    | 日本語         | require | default |
+| -------------------- | --------------------- | -------------- | ------- | ------- |
+| date                 | 日付                  | 開催日         |         |         |
+| season               | 外部キー(Season)      | シーズン       | true    |         |
+| competition          | 外部キー(Competition) | 大会           | true    |         |
+| player               | 外部キー(Player)      | 選手           | true    |         |
+| team                 | 外部キー(Team)        | チーム         | true    |         |
+| number               | 数字                  | 背番号         |         |         |
+| position_group       | 文字列                | ポジション     |         |         |
+| name                 | 文字列                | 名前           | true    |         |
+| en_name              | 文字列                | 英語名         |         |         |
+| registration_type    | 文字列                | 登録・抹消     | true    |         |
+| height               | 数字                  | 身長           |         |         |
+| weight               | 数字                  | 体重           |         |         |
+| homegrown            | 真偽値                | ホームグロウン |         |         |
+| registration_status  | 文字列                | 登録状況       | true    |         |
+| isTypeTwo            | 真偽値                | 2 種登録       |         |         |
+| isSpecialDesignation | 真偽値                | 特別指定       |         |         |
+| note                 | 文字列                | 備考           |         |         |
 
-※date, season, player, team , registration_type, の組み合わせユニーク
+### ENUM
 
-※4 `registration_type` === `register` がきたとき
-season, player, が一致する data を探す、　そのうち最新データの`registration_status` を `active`に, それ以外データは`terminated`
-※5 `registration_type` === `deregister` がきたとき
-season, player, が一致する data を探す、　そのうち送られてきた`date`より前のデータの`registration_status` を `terminated`に
+- **position_group**: `GK` | `DF` | `MF` | `FW` | `MF/FW`
+- **registration_type**: `register` | `deregister`
+- **registration_status**: `active` | `terminated`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `date`
+- `season`
+- `player`
+- `team`
+- `registration_type`
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+  - `registration_status`
+- **competition の自動生成**
+  - `season`モデルから取得
+- **registration_status の自動生成**
+  - `registration_type` === `register` がきたとき `season`, `player`, が一致する data を探す
+    そのうち最新データの`registration_status` を `active`に, それ以外データは`terminated`
+  - `registration_type` === `deregister` がきたとき `season`, `player`, が一致する data を探す
+    そのうち送られてきた`date`より前のデータの`registration_status` を `terminated`に
 
 [Player-RegistrationHistory] register ----→ [Player-Registration (registration_type === `register`)作成 + ※4]
 
@@ -465,208 +778,363 @@ season, player, が一致する data を探す、　そのうち送られてき�
 
 [Player-RegistrationHistory] deregister --→ [Player-Registration (registration_type === `deregister`)作成 + ※5]
 
+---
+
 ## 18. 選手登録履歴(Player-RegistrationHistory)
 
-| フィールド        | 型           | 日本語           | require | undefined | 外部参照    | enum | default | not in form | その他規則 |
-| ----------------- | ------------ | ---------------- | ------- | --------- | ----------- | ---- | ------- | ----------- | ---------- |
-| date              | 日付         | 開催日           |         | true      |             |      |         |             |            |
-| season            | 外部キー     | シーズン         | true    |           | Season      |      |         |             |            |
-| competition       | 外部キー     | 大会             | true    |           | Competition |      |         | true        |            |
-| player            | 外部キー     | 選手             | true    |           | Player      |      |         |             |            |
-| team              | 外部キー     | チーム           | true    |           | Team        |      |         |             |            |
-| registration_type | 文字列       | 登録・抹消・変更 | true    |           |             | ※2   |         |             |            |
-| changes           | オブジェクト | 変更点           | ※5      | true      |             |      |         |             |            |
+### フィールド一覧
 
-changes は以下の通り
+| フィールド        | 型                    | 日本語           | require | default |
+| ----------------- | --------------------- | ---------------- | ------- | ------- |
+| date              | 日付                  | 開催日           |         |         |
+| season            | 外部キー(Season)      | シーズン         | true    |         |
+| competition       | 外部キー(Competition) | 大会             | true    |         |
+| player            | 外部キー(Player)      | 選手             | true    |         |
+| team              | 外部キー(Team)        | チーム           | true    |         |
+| registration_type | 文字列                | 登録・抹消・変更 | true    |         |
+| changes           | オブジェクト          | 変更点           |         |         |
 
-| フィールド           | 型     | 日本語         | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| -------------------- | ------ | -------------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| number               | 数字   | 背番号         |         | true      |          |      |         |             |            |
-| position_group       | 文字列 | ポジション     |         | true      |          | ※1   |         |             |            |
-| name                 | 文字列 | 名前           | ※4      |           |          |      |         |             |            |
-| en_name              | 文字列 | 英語名         |         | true      |          |      |         |             |            |
-| height               | 数字   | 身長           |         | true      |          |      |         |             |            |
-| weight               | 数字   | 体重           |         | true      |          |      |         |             |            |
-| homegrown            | 真偽値 | ホームグロウン |         | true      |          |      |         |             |            |
-| isTypeTwo            | 真偽値 | 2 種登録       |         | true      |          |      |         |             |            |
-| isSpecialDesignation | 真偽値 | 特別指定       |         | true      |          |      |         |             |            |
-| note                 | 文字列 | 備考           |         | true      |          |      |         |             |            |
+- changes は以下の通り
 
-※1 `GK` | `DF` | `MF` | `FW` | `MF/FW`
-※2 `register` | `deregister` | `change`
-※3 `active` | `terminated`
+| フィールド           | 型     | 日本語         | require | default |
+| -------------------- | ------ | -------------- | ------- | ------- |
+| number               | 数字   | 背番号         |         |         |
+| position             | 文字列 | ポジション     |         |         |
+| name                 | 文字列 | 名前           |         |         |
+| en_name              | 文字列 | 英語名         |         |         |
+| height               | 数字   | 身長           |         |         |
+| weight               | 数字   | 体重           |         |         |
+| homegrown            | 真偽値 | ホームグロウン |         |         |
+| isTypeTwo            | 真偽値 | 2 種登録       |         |         |
+| isSpecialDesignation | 真偽値 | 特別指定       |         |         |
+| note                 | 文字列 | 備考           |         |         |
 
-※date, season, player, team , registration_type, の組み合わせユニーク
+### ENUM
 
-※season を入力で competition を自動入力
+- **position_group**: `GK` | `DF` | `MF` | `FW` | `MF/FW`
+- **registration_type**: `register` | `deregister`
 
-※name , en_name は未入力のとき player モデルから取得
+### 組み合わせ (Mongoose)
 
-※4 register のときは name 必須
+以下の組み合わせで **ユニーク** とする：
 
-※ deregister のときは 直前データの changes 採用
+- `date`
+- `season`
+- `player`
+- `team`
+- `registration_type`
 
-※5 change のときは changes が require
+### バリデーション(zod)
+
+- **registration_type === register の時**
+  → `name` は 必須
+- **registration_type === change の時**
+  → `changes` は 必須
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+- **competition の自動生成**
+  - `season`モデルから取得
+- **player , en_name の自動生成**
+  - `player`モデルから取得
+- **changes の自動生成**
+  - `registration_type` === `deregister` 　の時 `season` , `team` , `player` が一致する直前データの `changes` を採用
+
+---
 
 ## 19. 試合イベント(Match-Event-Type)
 
-| フィールド | 型     | 日本語         | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------- | ------ | -------------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name       | 文字列 | 名前           | true    |           |          |      |         |             |            |
-| en_name    | 文字列 | 英名           | true    |           |          |      |         |             |            |
-| abbr       | 文字列 | 略称           | true    |           |          |      |         |             |            |
-| event_type | 文字列 | イベントタイプ | true    |           |          | ※1   |         |             |            |
+### フィールド一覧
 
-※1 `card` | `goal-assist` | `substitution`
-※ データ例 イエロー,レッド, イエロー 2 枚退場, 途中出場 , 途中交代, 得点 , アシスト, オウンゴール
+| フィールド | 型     | 日本語         | require | default |
+| ---------- | ------ | -------------- | ------- | ------- |
+| name       | 文字列 | 名前           | true    |         |
+| en_name    | 文字列 | 英名           | true    |         |
+| abbr       | 文字列 | 略称           | true    |         |
+| event_type | 文字列 | イベントタイプ | true    |         |
 
-- name はユニーク
-- en_name はユニーク
-- abbr はユニーク
+### ENUM
+
+- **event_type**: `card` | `goal-assist` | `substitution`
+
+### 組み合わせ (Mongoose)
+
+- `name` は **ユニーク**
+- `en_name` は **ユニーク**
+- `abbr` は **ユニーク**
+
+### 備考
+
+- 例: イエロー,レッド, イエロー 2 枚退場, 途中出場 , 途中交代, 得点 , アシスト, オウンゴール
+
+---
 
 ## 20. フォーメーション(Formation)
 
-| フィールド         | 型       | 日本語     | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ------------------ | -------- | ---------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name               | 文字列   | 名前       | true    |           |          |      |         |             |            |
-| position_formation | [文字列] | ポジション | true    |           |          | ※1   |         |             | 長さ 11    |
+### フィールド一覧
 
-※1 GK | CB | LCB | RCB | RSB | LSB | LWB | RWB | DM | LCM | RCM | RIH | LIH | LSH | RSH | OM | LST | RST | RWG | LWG | RCF | LCF | CF
+| フィールド         | 型       | 日本語     | require | default |
+| ------------------ | -------- | ---------- | ------- | ------- |
+| name               | 文字列   | 名前       | true    |         |
+| position_formation | [文字列] | ポジション | true    |         |
 
-※position_formation の 11 の組み合わせユニーク
+### ENUM
 
-## 21. 監督・コーチ(Manager)
+- **position_formation**:
+  `GK` | `CB` | `LCB` | `RCB` | `RSB` | `LSB` | `LWB` | `RWB` |
+  `DM` | `LCM` | `RCM` | `RIH` | `LIH` | `LSH` | `RSH` |
+  `OM` | `LST` | `RST` | `RWG` | `LWG` | `RCF` | `LCF` | `CF`
 
-| フィールド | 型       | 日本語   | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------- | -------- | -------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| name       | 文字列   | 名前     | true    |           |          |      |         |             |            |
-| en_name    | 文字列   | 英語名   |         | true      |          |      |         |             |            |
-| dob        | 日付     | 生年月日 |         | true      |          |      |         |             |            |
-| pob        | 文字列   | 出身地   |         | true      |          |      |         |             |            |
-| player     | 外部キー | 選手     |         | true      | Player   |      |         |             |            |
+### 組み合わせ (Mongoose)
 
-- player はユニーク
+- `position_formation` の **組み合わせユニーク**
+
+### バリデーション(zod)
+
+- `position_formation` の 組み合わせユニーク
+- `position_formation`の長さ 11
+
+---
+
+## 21. 監督・コーチ(Staff)
+
+### フィールド一覧
+
+| フィールド | 型               | 日本語      | require | default |
+| ---------- | ---------------- | ----------- | ------- | ------- |
+| name       | 文字列           | 名前        | true    |         |
+| en_name    | 文字列           | 英語名      |         |         |
+| dob        | 日付             | 生年月日    |         |         |
+| pob        | 文字列           | 出身地      |         |         |
+| player     | 外部キー(Player) | 選手        |         |         |
+| old_id     | 文字列           | 旧 match_id |         |         |
+
+### 組み合わせ (Mongoose)
+
+- `player` は **ユニーク**
+- `old_id` は **ユニーク**
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `old_id`
+
+---
 
 ## 22. 選手の出場履歴(Player-Appearance)
 
-| フィールド  | 型       | 日本語     | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ----------- | -------- | ---------- | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| match       | 外部キー | 試合       | true    |           | Match    |      |         |             |            |
-| player      | 外部キー | 選手       | true    |           | Player   |      |         |             |            |
-| team        | 外部キー | チーム     | true    |           | Team     |      |         |             |            |
-| number      | 数字     | 背番号     |         | true      |          |      |         |             |            |
-| play_status | 文字列   | ステータス |         | true      |          | ※1   |         |             |            |
-| position    | 文字列   | ポジション |         | true      |          | ※2   |         |             |            |
-| time        | 数字     | プレイ時間 |         | true      |          |      |         |             |            |
+### フィールド一覧
 
-※1 `start` | `sub` | `bench`
-※2 GK | DF | CB | RCB | LCB | SB | RSB | LSB | WB | RWB | LWB | MF | CM | DM | OM | WG | RSH | LSH | RWG | LWG | CF | FW
+| フィールド  | 型               | 日本語     | require | default |
+| ----------- | ---------------- | ---------- | ------- | ------- |
+| match       | 外部キー(Match)  | 試合       | true    |         |
+| player      | 外部キー(Player) | 選手       | true    |         |
+| team        | 外部キー(Team)   | チーム     | true    |         |
+| number      | 数字             | 背番号     |         |         |
+| play_status | 文字列           | ステータス |         |         |
+| position    | 文字列           | ポジション |         |         |
+| time        | 数字             | プレイ時間 |         |         |
 
-※match, player, の組み合わせユニーク
-※一つの match に対して 複数同一 player 禁止
+### ENUM
 
-## 23. 監督・コーチの出場履歴(Manager-Appearance)
+- **play_status**: `start` | `sub` | `bench`
+- **position**:
+  `GK` | `DF` | `CB` | `RCB` | `LCB` | `SB` | `RSB` | `LSB` |
+  `WB` | `RWB` | `LWB` | `MF` | `CM` | `DM` | `OM` |
+  `WG` | `RSH` | `LSH` | `RWG` | `LWG` | `CF` | `FW`
 
-| フィールド | 型       | 日本語 | require | undefined | 外部参照 | enum | default | not in form | その他規則 |
-| ---------- | -------- | ------ | ------- | --------- | -------- | ---- | ------- | ----------- | ---------- |
-| match      | 外部キー | 試合   | true    |           | Match    |      |         |             |            |
-| manager    | 外部キー | 監督   | true    |           | Manager  |      |         |             |            |
-| team       | 外部キー | チーム | true    |           | Team     |      |         |             |            |
-| role       | 文字列   | 役割   |         | true      |          |      |         |             | ※1         |
+### 組み合わせ (Mongoose)
 
-※match, manager, の組み合わせユニーク
-※一つの match に対して 複数同一 manager 禁止
-※1 例）監督・コーチ・通訳など
+以下の組み合わせで**ユニーク**とする:
 
-## 24. 選手の試合イベントログ
+- `match`
+- `player`
 
-| フィールド     | 型       | 日本語               | require | undefined | 外部参照       | enum | default | not in form | その他規則                                   |
-| -------------- | -------- | -------------------- | ------- | --------- | -------------- | ---- | ------- | ----------- | -------------------------------------------- |
-| match          | 外部キー | 試合                 | true    |           | Match          |      |         |             |                                              |
-| team           | 外部キー | チーム               | true    |           | Team           |      |         |             |                                              |
-| matchEventType | 外部キー | イベントタイプ       | true    |           | MatchEventType |      |         |             |                                              |
-| player         | 外部キー | 選手                 |         | true      | Player         |      |         |             |                                              |
-| player_name    | 文字列   | 選手名               |         | true      |                |      |         |             |                                              |
-| time           | 数字     | 時間                 |         | true      |                |      |         |             | 試合全体のうちの時間(後半 20 分は 65 と入力) |
-| add_time       | 数字     | 追加タイム           |         | true      |                |      |         |             |                                              |
-| special_time   | 文字列   | ハーフタイム・試合後 |         | true      |                | ※1   |         |             |                                              |
-| period_label   | 文字列   | 前後半               |         | true      |                | ※2   |         | true        |                                              |
-| time_name      | 文字列   | 文字列時間           |         | true      |                |      |         | true        |                                              |
-| order          | 数字     | 順番                 |         | true      |                |      |         |             |                                              |
+---
 
-※1 `BT` | `HT` | `FT`
-※2 `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
+## 23. 監督・コーチの出場履歴(Staff-Appearance)
 
-※ match, player, ?player_name, ?time_name, metch_event, ?order の組み合わせユニーク
-※ player or player_name どちらかを入力 matchEventType がオウンゴール以外のときどちらか必須
-※ matchEventType がオウンゴール以外のときは player 必須
-※ オウンゴールについて player は失点した選手,　チームは得点したチームにする
-※ order 入力時は time, add_time, special_time を undefined
-※ special_time 入力時は time, add_time , order を undefined
-※ time , add_time を入力で time_name を自動入力 `${time}` or `${time}+${add_time}`
-※ time, add_time を入力で periold_label を自動入力
-match モデルの match_format フィールド内の periold フィールド から time が当てはまる periold_label を取得する
-(例: match から得られる match_format の period が
-{
-"period": [
-{"period_label": "1H","order": 1,"start": 0,"end": 45},
-{"period_label": "2H","order": 2,"start": 45,"end": 90}
-],
-}
-このとき time : 65 と入力されたら
-start - end 間に 65 があるオブジェクトを探す
-そのオブジェクトの periold_label を periold_label に入力
-periold_label : `2H`
-)
+### フィールド一覧
 
-※ 今後 order を PK 系イベントだけ require にする（matchEventType に依存）
+| フィールド | 型       | 日本語          | require | default |
+| ---------- | -------- | --------------- | ------- | ------- |
+| match      | 外部キー | 試合 (Match)    | true    |         |
+| staff      | 外部キー | スタッフ(Staff) | true    |         |
+| team       | 外部キー | チーム (Team)   | true    |         |
+| role       | 文字列   | 役割            |         |         |
 
-## 25. 監督・コーチの試合イベントログ
+### 組み合わせ (Mongoose)
 
-| フィールド     | 型       | 日本語               | require | undefined | 外部参照       | enum | default | not in form | その他規則                                   |
-| -------------- | -------- | -------------------- | ------- | --------- | -------------- | ---- | ------- | ----------- | -------------------------------------------- |
-| match          | 外部キー | 試合                 | true    |           | Match          |      |         |             |                                              |
-| team           | 外部キー | チーム               | true    |           | Team           |      |         |             |                                              |
-| matchEventType | 外部キー | イベントタイプ       | true    |           | MatchEventType |      |         |             | card 系のみ                                  |
-| manager        | 外部キー | 監督                 |         | true      | Manager        |      |         |             |                                              |
-| manager_name   | 文字列   | 監督名               |         | true      |                |      |         |             |                                              |
-| time           | 数字     | 時間                 |         | true      |                |      |         |             | 試合全体のうちの時間(後半 20 分は 65 と入力) |
-| add_time       | 数字     | 追加タイム           |         | true      |                |      |         |             |                                              |
-| special_time   | 文字列   | ハーフタイム・試合後 |         | true      |                | ※1   |         |             |                                              |
-| period_label   | 文字列   | 前後半               |         | true      |                | ※2   |         | true        |                                              |
-| time_name      | 文字列   | 文字列時間           |         | true      |                |      |         | true        |                                              |
+以下の組み合わせで**ユニーク**とする:
 
-※1 `BT` | `HT` | `FT`
-※2 `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
+- `match`
+- `staff`
 
-※ match, manager, ?manager_name, ?time_name, metch_event, ?order の組み合わせユニーク
-※ manager or manager_name どちらかを入力
-※ special_time 入力時は time, add_time , order を undefined
-※ time , add_time を入力で time_name を自動入力 `${time}` or `${time}+${add_time}`
-※ time, add_time を入力で periold_label を自動入力
-match モデルの match_format フィールド内の periold フィールド から time が当てはまる periold_label を取得する
-(例: match から得られる match_format の period が
-{
-"period": [
-{"period_label": "1H","order": 1,"start": 0,"end": 45},
-{"period_label": "2H","order": 2,"start": 45,"end": 90}
-],
-}
-このとき time : 65 と入力されたら
-start - end 間に 65 があるオブジェクトを探す
-そのオブジェクトの periold_label を periold_label に入力
-periold_label : `2H`
-)
+### 備考
 
-## 26. 試合でのフォーメーション
+- `role`の例 監督・コーチ・通訳など
 
-| フィールド | 型       | 日本語           | require | undefined | 外部参照  | enum | default | not in form | その他規則 |
-| ---------- | -------- | ---------------- | ------- | --------- | --------- | ---- | ------- | ----------- | ---------- |
-| match      | 外部キー | 試合             | true    |           | Match     |      |         |             |            |
-| team       | 外部キー | チーム           | true    |           | Team      |      |         |             |            |
-| formation  | 外部キー | フォーメーション | true    |           | Formation |      |         |             |            |
+---
 
-※match, team の組み合わせユニーク
+## 24. 選手の試合イベントログ(Player-Match-Event-Log)
+
+### フィールド一覧
+
+| フィールド     | 型                        | 日本語         | require | default |
+| -------------- | ------------------------- | -------------- | ------- | ------- |
+| match          | 外部キー(Match)           | 試合           | true    |         |
+| team           | 外部キー (Team)           | チーム         | true    |         |
+| matchEventType | 外部キー (MatchEventType) | イベントタイプ | true    |         |
+| player         | 外部キー (Player)         | 選手           |         |         |
+| player_name    | 文字列                    | 選手名         |         |         |
+| time           | 数字                      | 時間           |         |         |
+| add_time       | 数字                      | 追加タイム     |         |         |
+| special_time   | 文字列(ENUM)              | 特別時間       |         |         |
+| period_label   | 文字列(ENUM)              | 前後半         |         |         |
+| time_name      | 文字列                    | 文字列時間     |         |         |
+| order          | 数字                      | 順番           |         |         |
+
+### ENUM
+
+- **special_time**: `BT` | `HT` | `FT`
+- **period_label**: `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `match`
+- `player`
+- `player_name`（任意）
+- `time_name`（任意）
+- `match_event`
+- `order`（任意）
+
+### バリデーション(zod)
+
+- **order 入力時**  
+  → `time`, `add_time`, `special_time` は `undefined`
+- **special_time 入力時**  
+  → `time`, `add_time`, `order` は `undefined`
+
+### バリデーション(client)
+
+- **player または player_name どちらかを入力** (matchEventType がオウンゴール以外のとき)
+- **player 必須** (matchEventType がオウンゴール以外のとき)
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `time_name`
+  - `period_label`
+- **time_name の自動生成**
+  - `${time}` or `${time}+${add_time}`
+- **period_label の自動生成**
+  - match モデルの match_format フィールド内の periold フィールド から time が当てはまる periold_label を取得する
+    (例: match から得られる match_format の period が
+    `{"period": [{"period_label": "1H","order": 1,"start": 0,"end": 45},{"period_label": "2H","order": 2,"start": 45,"end": 90}],}`)
+    ①：このとき time : 65 と入力されたら
+    ②：start - end 間に 65 があるオブジェクトを探す
+    ③：そのオブジェクトの periold_label を periold_label に入力
+    ④：periold_label : `2H`
+
+### 入力時注意
+
+- オウンゴールについて `player` は失点した選手,　チームは得点したチームにする
+- `time`は試合全体のうちの時間(後半 20 分は 65 と入力)
+
+### 備考
+
+- 今後 order を PK 系イベントだけ require にする（matchEventType に依存）
+
+---
+
+## 25. 監督・コーチの試合イベントログ(Staff-Match-Event-Log)
+
+### フィールド一覧
+
+| フィールド     | 型                       | 日本語         | require | default |
+| -------------- | ------------------------ | -------------- | ------- | ------- |
+| match          | 外部キー(Match)          | 試合           | true    |         |
+| team           | 外部キー(Team)           | チーム         | true    |         |
+| matchEventType | 外部キー(MatchEventType) | イベントタイプ | true    |         |
+| staff          | 外部キー(Staff)          | 監督           |         |         |
+| staff_name     | 文字列                   | 監督名         |         |         |
+| time           | 数字                     | 時間           |         |         |
+| add_time       | 数字                     | 追加タイム     |         |         |
+| special_time   | 文字列                   | 特別時間       |         |         |
+| period_label   | 文字列                   | 前後半         |         |         |
+| time_name      | 文字列                   | 文字列時間     |         |         |
+
+### ENUM
+
+- **special_time**: `BT` | `HT` | `FT`
+- **period_label**: `1H` | `2H` | `ET1` | `ET2` | `3H` | `PK `| `GB`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `match`
+- `staff`
+- `staff_name`（任意）
+- `time_name`（任意）
+- `match_event`
+
+### バリデーション(zod)
+
+- **staff または staff_name どちらかを入力**
+- **special_time 入力時**  
+  → `time`, `add_time` は `undefined`
+
+### バリデーション(client)
+
+- `matchEventType`は card 系のみ入力可能
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `time_name`
+  - `period_label`
+- **time_name の自動生成**
+  - `${time}` or `${time}+${add_time}`
+- **period_label の自動生成**
+  - match モデルの match_format フィールド内の periold フィールド から time が当てはまる periold_label を取得する
+    (例: match から得られる match_format の period が
+    `{"period": [{"period_label": "1H","order": 1,"start": 0,"end": 45},{"period_label": "2H","order": 2,"start": 45,"end": 90}],}`)
+    ①：このとき time : 65 と入力されたら
+    ②：start - end 間に 65 があるオブジェクトを探す
+    ③：そのオブジェクトの periold_label を periold_label に入力
+    ④：periold_label : `2H`
+
+### 入力時注意
+
+- `time`は試合全体のうちの時間(後半 20 分は 65 と入力)
+
+---
+
+## 26. 試合でのフォーメーション(Match-Team-Formation)
+
+### フィールド一覧
+
+| フィールド | 型                  | 日本語           | require | default |
+| ---------- | ------------------- | ---------------- | ------- | ------- |
+| match      | 外部キー(Match)     | 試合             | true    |         |
+| team       | 外部キー(Team)      | チーム           | true    |         |
+| formation  | 外部キー(Formation) | フォーメーション | true    |         |
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `match`
+- `team`
+
+---
+
+## 今後
 
 ## . 出場停止
 
