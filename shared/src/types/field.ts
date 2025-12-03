@@ -20,6 +20,7 @@ export type BaseField = {
 
 // フィルター用
 export type FilterField = {
+  filterKey?: string;
   filterable?: boolean;
   value?: (string | number | Date | boolean)[];
   valueLabel?: (string | number | Date | boolean)[];
