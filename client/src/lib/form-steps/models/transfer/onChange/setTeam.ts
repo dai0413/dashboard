@@ -15,16 +15,31 @@ export async function setTeam(
     });
 
   let obj: FormUpdatePair = [];
-  if (to_team_name) {
-    obj.push({
-      key: "from_team_name",
-      value: to_team_name,
-    });
-  } else if (to_team) {
-    obj.push({
-      key: "from_team",
-      value: to_team,
-    });
+
+  if (formData.form === "更新") {
+    if (to_team_name) {
+      obj.push({
+        key: "to_team_name",
+        value: to_team_name,
+      });
+    } else if (to_team) {
+      obj.push({
+        key: "to_team",
+        value: to_team,
+      });
+    }
+  } else {
+    if (to_team_name) {
+      obj.push({
+        key: "from_team_name",
+        value: to_team_name,
+      });
+    } else if (to_team) {
+      obj.push({
+        key: "from_team",
+        value: to_team,
+      });
+    }
   }
 
   if (position) {

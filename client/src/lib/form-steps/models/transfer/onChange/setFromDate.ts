@@ -14,5 +14,10 @@ export function setFromDate(formData: Partial<TransferForm>): FormUpdatePair {
     obj.push({ key: "from_date", value: seasonEnd });
   }
 
+  if (formData.form === "更新") {
+    const { nextSeasonStart } = getSeasonDates();
+    obj.push({ key: "from_date", value: nextSeasonStart });
+  }
+
   return obj;
 }

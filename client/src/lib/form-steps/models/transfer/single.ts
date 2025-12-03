@@ -90,6 +90,9 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
 
       return filterCondition;
     },
+    skip: (formData) => {
+      return formData.form === "更新";
+    },
   },
   {
     stepLabel: "移籍先を選択",
