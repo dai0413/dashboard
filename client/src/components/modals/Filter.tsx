@@ -3,6 +3,7 @@ import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
 import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
+import { OptionArray } from "../../types/option";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];
@@ -33,6 +34,14 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
 
     resetFilterConditions,
   } = useFilter();
+
+  const fieldOptions: OptionArray = filterableField.map((f) => {
+    return {
+      ...f,
+      key: f.filterKey ? f.filterKey : f.key,
+      label: f.label,
+    };
+  });
 
   return (
     <Modal
@@ -81,13 +90,15 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             <FieldRow
               key={index}
               filterCondition={filterCondition}
-              fieldOptions={filterableField}
+              fieldOptions={fieldOptions}
               onChange={{
                 handleFieldValue: handleFieldValue,
                 handleFieldObjValue: handleFieldObjValue,
                 handleFieldOperator: handleFieldOperator,
                 handleFieldSelect: (e) => {
-                  const field = filterableField.find((f) => f.key === e);
+                  const field = filterableField.find((f) =>
+                    f.filterKey ? f.filterKey === e : f.key === e
+                  );
                   field && handleFieldSelect(field);
                 },
               }}
@@ -128,13 +139,15 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
 
             <FieldRow
               filterCondition={filterCondition}
-              fieldOptions={filterableField}
+              fieldOptions={fieldOptions}
               onChange={{
                 handleFieldValue: handleFieldValue,
                 handleFieldObjValue: handleFieldObjValue,
                 handleFieldOperator: handleFieldOperator,
                 handleFieldSelect: (e) => {
-                  const field = filterableField.find((f) => f.key === e);
+                  const field = filterableField.find((f) =>
+                    f.filterKey ? f.filterKey === e : f.key === e
+                  );
                   field && handleFieldSelect(field);
                 },
               }}

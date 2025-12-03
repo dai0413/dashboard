@@ -3,16 +3,18 @@ import { UIFieldDefinition } from "../../types/field";
 export const competitionStage: UIFieldDefinition[] = [
   {
     key: "competition",
+    filterKey: "competition.name",
     label: "大会名",
-    type: "select",
+    type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
   },
   {
     key: "season",
+    filterKey: "season.name",
     label: "シーズン",
-    type: "select",
+    type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
@@ -61,8 +63,8 @@ export const competitionStage: UIFieldDefinition[] = [
     key: "parent_stage",
     label: "親要素",
     type: "select",
-    filterable: true,
-    sortable: true,
+    filterable: false,
+    sortable: false,
     displayOnDetail: true,
   },
   {

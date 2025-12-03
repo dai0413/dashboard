@@ -11,6 +11,7 @@ export const transfer: UIFieldDefinition[] = [
   },
   {
     key: "from_team",
+    filterKey: "from_team.team",
     label: "移籍元",
     type: "string",
     filterable: true,
@@ -19,6 +20,7 @@ export const transfer: UIFieldDefinition[] = [
   },
   {
     key: "to_team",
+    filterKey: "to_team.team",
     label: "移籍先",
     type: "string",
     filterable: true,
@@ -27,6 +29,7 @@ export const transfer: UIFieldDefinition[] = [
   },
   {
     key: "player",
+    filterKey: "player.name",
     label: "選手",
     type: "string",
     filterable: true,

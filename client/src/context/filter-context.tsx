@@ -4,7 +4,6 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -89,11 +88,6 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     setFilterConditions([]);
   };
 
-  useEffect(
-    () => console.log("filterConditions", filterConditions),
-    [filterConditions]
-  );
-
   // add filter contition
   const handleAddCondition = (index?: number) => {
     const { key, value, label, type, operator, valueLabel } = filterCondition;
@@ -164,7 +158,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setFilterCondition({
-      key: field.key,
+      key: field.filterKey ? field.filterKey : field.key,
       label: field.label,
       type: field.type,
       value: [value],

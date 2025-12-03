@@ -43,8 +43,9 @@ export const referee: UIFieldDefinition[] = [
   },
   {
     key: "player",
+    filterKey: "player.name",
     label: "選手",
-    type: "select",
+    type: "string",
     filterable: false,
     sortable: false,
     displayOnDetail: true,

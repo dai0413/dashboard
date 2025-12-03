@@ -19,8 +19,9 @@ export const nationalMatchSeries: UIFieldDefinition[] = [
   },
   {
     key: "country",
+    filterKey: "country.name",
     label: "国",
-    type: "select",
+    type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,

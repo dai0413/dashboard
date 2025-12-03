@@ -3,6 +3,7 @@ import { UIFieldDefinition } from "../../types/field";
 export const nationalCallUp: UIFieldDefinition[] = [
   {
     key: "series",
+    filterKey: "series.name",
     label: "代表試合シリーズ",
     type: "string",
     filterable: true,
@@ -11,6 +12,7 @@ export const nationalCallUp: UIFieldDefinition[] = [
   },
   {
     key: "player",
+    filterKey: "player.name",
     label: "選手",
     type: "string",
     filterable: true,
@@ -19,6 +21,7 @@ export const nationalCallUp: UIFieldDefinition[] = [
   },
   {
     key: "team",
+    filterKey: "team.team",
     label: "チーム",
     type: "string",
     filterable: true,

@@ -11,6 +11,7 @@ export const injury: UIFieldDefinition[] = [
   },
   {
     key: "team",
+    filterKey: "team.team",
     label: "チーム",
     type: "string",
     filterable: true,
@@ -19,6 +20,7 @@ export const injury: UIFieldDefinition[] = [
   },
   {
     key: "now_team",
+    filterKey: "team.team",
     label: "現所属",
     type: "string",
     filterable: true,
@@ -27,6 +29,7 @@ export const injury: UIFieldDefinition[] = [
   },
   {
     key: "player",
+    filterKey: "player.name",
     label: "選手",
     type: "string",
     filterable: true,

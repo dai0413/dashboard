@@ -3,6 +3,7 @@ import { UIFieldDefinition } from "../../types/field";
 export const season: UIFieldDefinition[] = [
   {
     key: "competition",
+    filterKey: "competition.name",
     label: "大会名",
     type: "string",
     filterable: true,
