@@ -4,11 +4,12 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "install:prod": "npm install @dai0413/myorg-shared",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve -s dist"
+    "start": "npm run install:prod && serve -s dist"
   },
   "dependencies": {
     "@dai0413/myorg-shared": "^1.0.7",
