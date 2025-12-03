@@ -1,5 +1,20 @@
-## v1.0.8
+# client / server 共通要素パッケージ
 
-### types/field.ts 拡張
+フロントエンド（client）とバックエンド（server）で共通して使用する **型定義・ユーティリティ・定数** をまとめたパッケージです。
 
-- FilterField に filterKey を追加, key と異なる文字列で filter を操作
+`@dai0413/myorg-shared` を利用することで、両側で同じ型・仕様を共有し、  
+API の整合性や UI / Logic の共通化を容易にします。
+
+---
+
+## 📦 インストール
+
+```bash
+npm install @dai0413/myorg-shared
+```
+
+---
+
+## 更新履歴
+
+詳細はこちら → [CHANGELOG.md](./CHANGELOG.md)
