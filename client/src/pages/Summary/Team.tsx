@@ -362,7 +362,7 @@ const Team = () => {
         <>
           {season && (
             <div className="text-gray-600">
-              {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に加入予定の選手`}
+              {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に日本国内育成年代チームから加入予定の選手`}
             </div>
           )}
           <TableWithFetch

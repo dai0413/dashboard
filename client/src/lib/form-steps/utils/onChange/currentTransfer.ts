@@ -39,7 +39,7 @@ export const currentTransfer = async <T extends ModelType>({
 
   const params = {
     player: formData.player,
-    sort: "-from_date",
+    sort: "-from_date,-_id",
     limit: 1,
     ...(from_date !== undefined && { from_date: `<=${from_date}` }),
     ...(form !== undefined && { form }),
