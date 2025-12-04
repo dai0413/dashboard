@@ -1,0 +1,27 @@
+const PositionFormationOptions = [
+  "GK",
+  "CB",
+  "LCB",
+  "RCB",
+  "RSB",
+  "LSB",
+  "LWB",
+  "RWB",
+  "DM",
+  "LCM",
+  "RCM",
+  "RIH",
+  "LIH",
+  "LSH",
+  "RSH",
+  "OM",
+  "LST",
+  "RST",
+  "RWG",
+  "LWG",
+  "RCF",
+  "LCF",
+  "CF",
+];
+export const position_formation = () =>
+  PositionFormationOptions.map((a) => ({ key: a, label: a }));
