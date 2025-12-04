@@ -26,14 +26,29 @@ export const API_PATHS = {
     DETAIL: (id: string | number = ":id") => `/country/${id}`,
   },
 
+  FORMATION: {
+    ROOT: "/formation",
+    DETAIL: (id: string | number = ":id") => `/formation/${id}`,
+  },
+
   INJURY: {
     ROOT: "/injury",
     DETAIL: (id: string | number = ":id") => `/injury/${id}`,
   },
 
+  MATCH_EVENT_TYPE: {
+    ROOT: "/match-event-type",
+    DETAIL: (id: string | number = ":id") => `/match-event-type/${id}`,
+  },
+
   MATCH_FORMAT: {
     ROOT: "/match-format",
     DETAIL: (id: string | number = ":id") => `/match-format/${id}`,
+  },
+
+  MATCH_TEAM_FORMATION: {
+    ROOT: "/match-team-formation",
+    DETAIL: (id: string | number = ":id") => `/match-team-formation/${id}`,
   },
 
   MATCH: {
@@ -51,6 +66,16 @@ export const API_PATHS = {
     ROOT: "/national-match-series",
     DOWNLOAD: "/national-match-series/download",
     DETAIL: (id: string | number = ":id") => `/national-match-series/${id}`,
+  },
+
+  PLAYER_APPEARANCE: {
+    ROOT: "/player-appearance",
+    DETAIL: (id: string | number = ":id") => `/player-appearance/${id}`,
+  },
+
+  PLAYER_MATCH_EVENT_LOG: {
+    ROOT: "/player-match-event-log",
+    DETAIL: (id: string | number = ":id") => `/player-match-event-log/${id}`,
   },
 
   PLAYER_REGISTRATION_HISTORY: {
@@ -85,6 +110,21 @@ export const API_PATHS = {
   STADIUM: {
     ROOT: "/stadium",
     DETAIL: (id: string | number = ":id") => `/stadium/${id}`,
+  },
+
+  STAFF_APPEARANCE: {
+    ROOT: "/staff-appearance",
+    DETAIL: (id: string | number = ":id") => `/staff-appearance/${id}`,
+  },
+
+  STAFF_MATCH_EVENT_LOG: {
+    ROOT: "/staff-match-event-log",
+    DETAIL: (id: string | number = ":id") => `/staff-match-event-log/${id}`,
+  },
+
+  STAFF: {
+    ROOT: "/staff",
+    DETAIL: (id: string | number = ":id") => `/staff/${id}`,
   },
 
   TEAM_COMPETITION_SEASON: {
