@@ -7,6 +7,10 @@ import { NationalMatchSeriesResponseSchema } from "../schemas/national-match-ser
 import { CompetitionResponseSchema } from "../schemas/competition.schema.js";
 import { SeasonResponseSchema } from "../schemas/season.schema.js";
 import { CompetitionStageResponseSchema } from "../schemas/competition-stage.schema.js";
+import { MatchResponseSchema } from "../schemas/match.schema.js";
+import { StaffResponseSchema } from "../schemas/staff.schema.js";
+import { MatchEventTypeResponseSchema } from "../schemas/match-event-type.schema.js";
+import { FormationResponseSchema } from "../schemas/formation.schema.js";
 
 export type PopulatePath = {
   path: string;
@@ -31,6 +35,10 @@ export interface DependencyRefs {
   competition: z.infer<typeof CompetitionResponseSchema>;
   season: z.infer<typeof SeasonResponseSchema>;
   competitionStage: z.infer<typeof CompetitionStageResponseSchema>;
+  match: z.infer<typeof MatchResponseSchema>;
+  staff: z.infer<typeof StaffResponseSchema>;
+  matchEventType: z.infer<typeof MatchEventTypeResponseSchema>;
+  formation: z.infer<typeof FormationResponseSchema>;
 }
 
 export interface ControllerConfig<

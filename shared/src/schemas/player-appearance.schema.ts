@@ -18,7 +18,7 @@ export const PlayerAppearanceZodSchema = z.object({
   }),
   number: z.number().optional(),
   play_status: z.enum(getKey(play_status())).optional(),
-  position: z.array(z.enum(getKey(position()))).optional(),
+  position: z.enum(getKey(position())).optional(),
   time: z.number().optional(),
   createdAt: dateField,
   updatedAt: dateField,
