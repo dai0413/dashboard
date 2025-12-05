@@ -21,6 +21,7 @@ export function matchEventType<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match-event-type",
+    collection_name: "matcheventtypes",
     SCHEMA: {
       DATA: MatchEventTypeZodSchema,
       FORM: MatchEventTypeFormSchema,

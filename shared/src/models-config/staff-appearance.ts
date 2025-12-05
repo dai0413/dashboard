@@ -21,6 +21,7 @@ export function staffAppearance<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "staff-appearance",
+    collection_name: "staffappearances",
     SCHEMA: {
       DATA: StaffAppearanceZodSchema,
       FORM: StaffAppearanceFormSchema,
@@ -49,9 +50,9 @@ export function staffAppearance<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          match: deps.match._id,
-          staff: deps.staff._id,
-          team: deps.team._id,
+          match: deps.match[0]._id,
+          staff: deps.staff[0]._id,
+          team: deps.team[0]._id,
           role: "head",
         },
       ],

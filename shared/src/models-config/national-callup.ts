@@ -22,6 +22,7 @@ export function nationalCallUp<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "national-callup",
+    collection_name: "nationalcallups",
     SCHEMA: {
       DATA: NationalCallUpZodSchema,
       FORM: NationalCallUpFormSchema,
@@ -58,9 +59,9 @@ export function nationalCallUp<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          series: deps.nationalMatchSeries._id,
-          player: deps.player._id,
-          team: deps.team._id,
+          series: deps.nationalMatchSeries[0]._id,
+          player: deps.player[0]._id,
+          team: deps.team[0]._id,
           is_captain: false,
           is_overage: false,
           is_backup: false,

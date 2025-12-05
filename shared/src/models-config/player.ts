@@ -22,6 +22,7 @@ export function player<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player",
+    collection_name: "players",
     SCHEMA: {
       DATA: PlayerZodSchema,
       FORM: PlayerFormSchema,

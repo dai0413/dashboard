@@ -21,6 +21,7 @@ export function teamCompetitionSeason<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "team-competition-season",
+    collection_name: "teamcompetitionseasons",
     SCHEMA: {
       DATA: TeamCompetitionSeasonZodSchema,
       FORM: TeamCompetitionSeasonFormSchema,
@@ -64,16 +65,16 @@ export function teamCompetitionSeason<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          team: deps.team._id,
-          season: deps.season._id,
+          team: deps.team[0]._id,
+          season: deps.season[0]._id,
         },
         {
-          team: deps.team._id,
-          season: deps.season._id,
+          team: deps.team[1]._id,
+          season: deps.season[0]._id,
         },
         {
-          team: deps.team._id,
-          season: deps.season._id,
+          team: deps.team[2]._id,
+          season: deps.season[0]._id,
         },
       ],
       updatedData: {

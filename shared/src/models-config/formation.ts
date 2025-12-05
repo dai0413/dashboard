@@ -21,6 +21,7 @@ export function formation<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "formation",
+    collection_name: "formations",
     SCHEMA: {
       DATA: FormationZodSchema,
       FORM: FormationFormSchema,
@@ -38,7 +39,7 @@ export function formation<TDoc = any, TModel = any>(
       },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: [

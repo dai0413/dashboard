@@ -21,6 +21,7 @@ export function staffMatchEvengLog<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "staff-match-event-log",
+    collection_name: "staffmatcheventlogs",
     SCHEMA: {
       DATA: StaffMatchEventLogZodSchema,
       FORM: StaffMatchEventLogFormSchema,
@@ -50,10 +51,10 @@ export function staffMatchEvengLog<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          match: deps.match._id,
-          team: deps.team._id,
-          matchEventType: deps.matchEventType._id,
-          staff: deps.staff._id,
+          match: deps.match[0]._id,
+          team: deps.team[0]._id,
+          matchEventType: deps.matchEventType[0]._id,
+          staff: deps.staff[0]._id,
           time: 10,
         },
       ],

@@ -22,6 +22,7 @@ export function transfer<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "transfer",
+    collection_name: "transfers",
     SCHEMA: {
       DATA: TransferZodSchema,
       FORM: TransferFormSchema,
@@ -55,23 +56,23 @@ export function transfer<TDoc = any, TModel = any>(
         {
           doa: new Date("2030/07/22"),
           from_team_name: "original team",
-          player: deps.player._id,
+          player: deps.player[0]._id,
           position: ["GK"],
           form: "完全",
           from_date: new Date("2025/07/12"),
         },
         {
           doa: new Date("2030/07/28"),
-          to_team: deps.team._id,
-          player: deps.player._id,
+          to_team: deps.team[0]._id,
+          player: deps.player[0]._id,
           position: ["GK"],
           form: "完全",
           from_date: new Date("2025/07/12"),
         },
         {
           doa: new Date("2030/08/01"),
-          from_team: deps.team._id,
-          player: deps.player._id,
+          from_team: deps.team[0]._id,
+          player: deps.player[0]._id,
           position: ["GK"],
           form: "完全",
           from_date: new Date("2025/07/12"),

@@ -21,6 +21,7 @@ export function nationalMatchSeries<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "national-match-series",
+    collection_name: "nationalmatchseries",
     SCHEMA: {
       DATA: NationalMatchSeriesZodSchema,
       FORM: NationalMatchSeriesFormSchema,
@@ -35,16 +36,23 @@ export function nationalMatchSeries<TDoc = any, TModel = any>(
       sort: { joined_at: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: true,
     TEST: {
-      sampleData: (deps) => [
-        {
-          name: "親善試合14年11月",
-          country: deps.country._id,
-          age_group: "full",
-        },
-      ],
+      sampleData: (deps) => {
+        return [
+          {
+            name: "親善試合14年11月",
+            country: deps.country[0]._id,
+            age_group: "full",
+          },
+          {
+            name: "親善試合14年12月",
+            country: deps.country[0]._id,
+            age_group: "full",
+          },
+        ];
+      },
       updatedData: {
         name: "updated_name",
       },

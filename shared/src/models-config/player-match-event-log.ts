@@ -21,6 +21,7 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player-match-event-log",
+    collection_name: "playermatcheventlogs",
     SCHEMA: {
       DATA: PlayerMatchEventLogZodSchema,
       FORM: PlayerMatchEventLogFormSchema,
@@ -50,10 +51,10 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          match: deps.match._id,
-          team: deps.team._id,
-          matchEventType: deps.matchEventType._id,
-          player: deps.player._id,
+          match: deps.match[0]._id,
+          team: deps.team[0]._id,
+          matchEventType: deps.matchEventType[0]._id,
+          player: deps.player[0]._id,
           time: 10,
         },
       ],

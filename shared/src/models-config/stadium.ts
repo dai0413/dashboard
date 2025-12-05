@@ -21,6 +21,7 @@ export function stadium<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "stadium",
+    collection_name: "stadia",
     SCHEMA: {
       DATA: StadiumZodSchema,
       FORM: StadiumFormSchema,

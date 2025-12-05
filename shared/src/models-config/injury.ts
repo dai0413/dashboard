@@ -23,6 +23,7 @@ export function injury<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "injury",
+    collection_name: "injuries",
     SCHEMA: {
       DATA: InjuryZodSchema,
       FORM: InjuryFormSchema,
@@ -53,8 +54,8 @@ export function injury<TDoc = any, TModel = any>(
       sampleData: (deps) => [
         {
           doa: new Date("2030/07/22"),
-          team: deps.team._id,
-          player: deps.player._id,
+          team: deps.team[0]._id,
+          player: deps.player[0]._id,
           doi: new Date("2025/07/12"),
           injured_part: ["膝"],
           ttp: ["1d"],

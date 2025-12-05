@@ -21,6 +21,7 @@ export function playerAppearance<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player-appearance",
+    collection_name: "playerappearances",
     SCHEMA: {
       DATA: PlayerAppearanceZodSchema,
       FORM: PlayerAppearanceFormSchema,
@@ -51,9 +52,9 @@ export function playerAppearance<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          match: deps.match._id,
-          player: deps.player._id,
-          team: deps.team._id,
+          match: deps.match[0]._id,
+          player: deps.player[0]._id,
+          team: deps.team[0]._id,
           number: 1,
           play_status: "start",
           position: "GK",

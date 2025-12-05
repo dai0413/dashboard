@@ -21,6 +21,7 @@ export function playerRegistrationHistory<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player-registration-history",
+    collection_name: "playerregistrationhistories",
     SCHEMA: {
       DATA: PlayerRegistrationHistoryZodSchema,
       FORM: PlayerRegistrationHistoryFormSchema,
@@ -51,10 +52,28 @@ export function playerRegistrationHistory<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          date: new Date("2025/08/01"),
-          season: deps.season._id,
-          player: deps.player._id,
-          team: deps.team._id,
+          date: new Date("2025/05/01"),
+          season: deps.season[0]._id,
+          player: deps.player[0]._id,
+          team: deps.team[0]._id,
+          registration_type: "register",
+          changes: {
+            number: 1,
+            position_group: "GK",
+            name: "test",
+            en_name: "en_test",
+            height: 180,
+            weight: 100,
+            homegrown: true,
+            isTypeTwo: false,
+            isSpecialDesignation: false,
+          },
+        },
+        {
+          date: new Date("2025/02/01"),
+          season: deps.season[0]._id,
+          player: deps.player[1]._id,
+          team: deps.team[1]._id,
           registration_type: "register",
           changes: {
             number: 1,

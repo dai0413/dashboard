@@ -22,6 +22,7 @@ export function match<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match",
+    collection_name: "matches",
     SCHEMA: {
       DATA: MatchZodSchema,
       FORM: MatchFormSchema,
@@ -49,26 +50,26 @@ export function match<TDoc = any, TModel = any>(
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: (deps) => [
         {
-          competition_stage: deps.competitionStage._id,
-          home_team: deps.team._id,
-          away_team: deps.team._id,
+          competition_stage: deps.competitionStage[0]._id,
+          home_team: deps.team[0]._id,
+          away_team: deps.team[1]._id,
           match_week: 1,
         },
         {
-          competition_stage: deps.competitionStage._id,
-          home_team: deps.team._id,
-          away_team: deps.team._id,
+          competition_stage: deps.competitionStage[1]._id,
+          home_team: deps.team[0]._id,
+          away_team: deps.team[1]._id,
           match_week: 2,
         },
         {
-          competition_stage: deps.competitionStage._id,
-          home_team: deps.team._id,
-          away_team: deps.team._id,
+          competition_stage: deps.competitionStage[2]._id,
+          home_team: deps.team[0]._id,
+          away_team: deps.team[1]._id,
           match_week: 3,
         },
       ],

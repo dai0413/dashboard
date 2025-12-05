@@ -21,6 +21,7 @@ export function competitionStage<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "competition-stage",
+    collection_name: "competitionstages",
     SCHEMA: {
       DATA: CompetitionStageZodSchema,
       FORM: CompetitionStageFormSchema,
@@ -43,17 +44,17 @@ export function competitionStage<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          season: deps.season._id,
+          season: deps.season[0]._id,
           stage_type: "quarter_final",
           order: 0,
         },
         {
-          season: deps.season._id,
+          season: deps.season[1]._id,
           stage_type: "1st",
           order: 1,
         },
         {
-          season: deps.season._id,
+          season: deps.season[2]._id,
           stage_type: "semi_final",
           order: 2,
         },

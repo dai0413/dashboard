@@ -21,6 +21,7 @@ export function staff<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "staff",
+    collection_name: "staffs",
     SCHEMA: {
       DATA: StaffZodSchema,
       FORM: StaffFormSchema,

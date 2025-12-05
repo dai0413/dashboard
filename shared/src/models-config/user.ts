@@ -21,6 +21,7 @@ export function user<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "user",
+    collection_name: "users",
     SCHEMA: {
       DATA: UserZodSchema,
       FORM: UserFormSchema,

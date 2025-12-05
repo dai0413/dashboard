@@ -21,6 +21,7 @@ export function season<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "season",
+    collection_name: "seasons",
     SCHEMA: {
       DATA: SeasonZodSchema,
       FORM: SeasonFormSchema,
@@ -38,20 +39,20 @@ export function season<TDoc = any, TModel = any>(
       sort: { start_date: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: (deps) => [
         {
-          competition: deps.competition._id,
+          competition: deps.competition[0]._id,
           name: "2025-0",
         },
         {
-          competition: deps.competition._id,
+          competition: deps.competition[0]._id,
           name: "2025-1",
         },
         {
-          competition: deps.competition._id,
+          competition: deps.competition[0]._id,
           name: "2025-2",
         },
       ],

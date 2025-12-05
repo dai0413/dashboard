@@ -28,17 +28,17 @@ type GetAllQuery = {
 };
 
 export interface DependencyRefs {
-  team: z.infer<typeof TeamResponseSchema>;
-  player: z.infer<typeof PlayerResponseSchema>;
-  country: z.infer<typeof CountryResponseSchema>;
-  nationalMatchSeries: z.infer<typeof NationalMatchSeriesResponseSchema>;
-  competition: z.infer<typeof CompetitionResponseSchema>;
-  season: z.infer<typeof SeasonResponseSchema>;
-  competitionStage: z.infer<typeof CompetitionStageResponseSchema>;
-  match: z.infer<typeof MatchResponseSchema>;
-  staff: z.infer<typeof StaffResponseSchema>;
-  matchEventType: z.infer<typeof MatchEventTypeResponseSchema>;
-  formation: z.infer<typeof FormationResponseSchema>;
+  team: z.infer<typeof TeamResponseSchema>[];
+  player: z.infer<typeof PlayerResponseSchema>[];
+  country: z.infer<typeof CountryResponseSchema>[];
+  nationalMatchSeries: z.infer<typeof NationalMatchSeriesResponseSchema>[];
+  competition: z.infer<typeof CompetitionResponseSchema>[];
+  season: z.infer<typeof SeasonResponseSchema>[];
+  competitionStage: z.infer<typeof CompetitionStageResponseSchema>[];
+  match: z.infer<typeof MatchResponseSchema>[];
+  staff: z.infer<typeof StaffResponseSchema>[];
+  matchEventType: z.infer<typeof MatchEventTypeResponseSchema>[];
+  formation: z.infer<typeof FormationResponseSchema>[];
 }
 
 export interface ControllerConfig<
@@ -49,6 +49,7 @@ export interface ControllerConfig<
   TPopulated = TData
 > {
   name: string;
+  collection_name: string;
   SCHEMA: {
     DATA: z.ZodType<TData>;
     FORM: z.ZodType<TForm>;
@@ -65,7 +66,7 @@ export interface ControllerConfig<
   download?: boolean;
   TEST: {
     sampleData: TForm[] | ((deps: DependencyRefs) => TForm[]);
-    updatedData: Partial<TForm>;
+    updatedData: Partial<TForm> | ((deps: DependencyRefs) => Partial<TForm>);
     testDataPath?: string;
   };
   convertFun?: (data: TPopulated) => TResponse;

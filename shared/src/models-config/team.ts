@@ -21,6 +21,7 @@ export function team<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "team",
+    collection_name: "teams",
     SCHEMA: {
       DATA: TeamZodSchema,
       FORM: TeamFormSchema,
@@ -35,7 +36,7 @@ export function team<TDoc = any, TModel = any>(
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: true,
     TEST: {
       sampleData: [
@@ -46,14 +47,12 @@ export function team<TDoc = any, TModel = any>(
           division: "1st",
         },
         {
-          team: "TEAM-1",
-          enTeam: "Urawa Reds",
+          team: "TEAM-2",
           genre: "club",
           division: "1st",
         },
         {
-          team: "TEAM-1",
-          enTeam: "Urawa Reds",
+          team: "TEAM-3",
           genre: "club",
           division: "1st",
         },

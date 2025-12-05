@@ -21,6 +21,7 @@ export function matchTeamFormation<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match-team-formation",
+    collection_name: "matchteamformations",
     SCHEMA: {
       DATA: MatchTeamFormationZodSchema,
       FORM: MatchTeamFormationFormSchema,
@@ -48,12 +49,12 @@ export function matchTeamFormation<TDoc = any, TModel = any>(
     TEST: {
       sampleData: (deps) => [
         {
-          match: deps.match._id,
-          team: deps.team._id,
-          formation: deps.formation._id,
+          match: deps.match[0]._id,
+          team: deps.team[0]._id,
+          formation: deps.formation[0]._id,
         },
       ],
-      updatedData: {},
+      updatedData: (deps) => ({ formation: deps.formation[0]._id }),
     },
   };
 }

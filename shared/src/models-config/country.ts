@@ -21,6 +21,7 @@ export function country<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "country",
+    collection_name: "countries",
     SCHEMA: {
       DATA: CountryZodSchema,
       FORM: CountryFormSchema,
@@ -34,7 +35,7 @@ export function country<TDoc = any, TModel = any>(
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: [

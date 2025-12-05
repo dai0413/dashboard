@@ -21,6 +21,7 @@ export function referee<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "referee",
+    collection_name: "referees",
     SCHEMA: {
       DATA: RefereeZodSchema,
       FORM: RefereeFormSchema,

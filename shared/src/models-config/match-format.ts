@@ -21,6 +21,7 @@ export function matchFormat<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match-format",
+    collection_name: "matchformats",
     SCHEMA: {
       DATA: MatchFormatZodSchema,
       FORM: MatchFormatFormSchema,

@@ -21,6 +21,7 @@ export function competition<TDoc = any, TModel = any>(
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "competition",
+    collection_name: "competitions",
     SCHEMA: {
       DATA: CompetitionZodSchema,
       FORM: CompetitionFormSchema,
@@ -35,14 +36,14 @@ export function competition<TDoc = any, TModel = any>(
       query: [{ field: "country", type: "ObjectId" }],
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: (deps) => [
         {
           name: "Ｊ１リーグ",
           abbr: "J1",
-          country: deps.country._id,
+          country: deps.country[0]._id,
           competition_type: "club",
           category: "league",
           level: "1部",
@@ -52,7 +53,7 @@ export function competition<TDoc = any, TModel = any>(
         {
           name: "Ｊ２リーグ",
           abbr: "J2",
-          country: deps.country._id,
+          country: deps.country[0]._id,
           competition_type: "club",
           category: "league",
           level: "2部",
@@ -62,7 +63,7 @@ export function competition<TDoc = any, TModel = any>(
         {
           name: "Ｊ３リーグ",
           abbr: "J3",
-          country: deps.country._id,
+          country: deps.country[0]._id,
           competition_type: "club",
           category: "league",
           level: "3部",
