@@ -16,44 +16,47 @@ import { MatchFormatProvider } from "./match-format";
 import { MatchProvider } from "./match";
 import { PlayerRegistrationProvider } from "./player-registration";
 import { PlayerRegistrationHistoryProvider } from "./player-registration-history";
+import { MatchEventTypeProvider } from "./match-event-type";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
-    <MatchFormatProvider>
-      <CountryProvider>
-        <StadiumProvider>
-          <CompetitionProvider>
-            <SeasonProvider>
-              <CompetitionStageProvider>
-                <NationalMatchSeriesProvider>
-                  <TeamProvider>
-                    <MatchProvider>
-                      <TeamCompetitionSeasonProvider>
-                        <PlayerProvider>
-                          <PlayerRegistrationProvider>
-                            <PlayerRegistrationHistoryProvider>
-                              <RefereeProvider>
-                                <NationalCallupProvider>
-                                  <InjuryProvider>
-                                    <TransferProvider>
-                                      {children}
-                                    </TransferProvider>
-                                  </InjuryProvider>
-                                </NationalCallupProvider>
-                              </RefereeProvider>
-                            </PlayerRegistrationHistoryProvider>
-                          </PlayerRegistrationProvider>
-                        </PlayerProvider>
-                      </TeamCompetitionSeasonProvider>
-                    </MatchProvider>
-                  </TeamProvider>
-                </NationalMatchSeriesProvider>
-              </CompetitionStageProvider>
-            </SeasonProvider>
-          </CompetitionProvider>
-        </StadiumProvider>
-      </CountryProvider>
-    </MatchFormatProvider>
+    <MatchEventTypeProvider>
+      <MatchFormatProvider>
+        <CountryProvider>
+          <StadiumProvider>
+            <CompetitionProvider>
+              <SeasonProvider>
+                <CompetitionStageProvider>
+                  <NationalMatchSeriesProvider>
+                    <TeamProvider>
+                      <MatchProvider>
+                        <TeamCompetitionSeasonProvider>
+                          <PlayerProvider>
+                            <PlayerRegistrationProvider>
+                              <PlayerRegistrationHistoryProvider>
+                                <RefereeProvider>
+                                  <NationalCallupProvider>
+                                    <InjuryProvider>
+                                      <TransferProvider>
+                                        {children}
+                                      </TransferProvider>
+                                    </InjuryProvider>
+                                  </NationalCallupProvider>
+                                </RefereeProvider>
+                              </PlayerRegistrationHistoryProvider>
+                            </PlayerRegistrationProvider>
+                          </PlayerProvider>
+                        </TeamCompetitionSeasonProvider>
+                      </MatchProvider>
+                    </TeamProvider>
+                  </NationalMatchSeriesProvider>
+                </CompetitionStageProvider>
+              </SeasonProvider>
+            </CompetitionProvider>
+          </StadiumProvider>
+        </CountryProvider>
+      </MatchFormatProvider>
+    </MatchEventTypeProvider>
   );
 };
 

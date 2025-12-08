@@ -2,6 +2,7 @@ export { default as CompetitionStage } from "./CompetitionStage";
 export { default as Competition } from "./Competition";
 export { default as Country } from "./Country";
 export { default as Injury } from "./Injury";
+export { default as MatchEventType } from "./MatchEventType";
 export { default as MatchFormat } from "./MatchFormat";
 export { default as Match } from "./Match";
 export { default as Player } from "./Player";

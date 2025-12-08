@@ -26,6 +26,9 @@ type Model = {
   COMPETITION: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COMPETITION]>;
   COUNTRY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.COUNTRY]>;
   INJURY: BaseCrudRoutes<ReadItemsParamsMap[ModelType.INJURY]>;
+  MATCH_EVENT_TYPE: BaseCrudRoutes<
+    ReadItemsParamsMap[ModelType.MATCH_EVENT_TYPE]
+  >;
   MATCH_FORMAT: BaseCrudRoutes<ReadItemsParamsMap[ModelType.MATCH_FORMAT]>;
   MATCH: BaseCrudRoutes<ReadItemsParamsMap[ModelType.MATCH]>;
   NATIONAL_CALLUP: BaseCrudRoutes<
@@ -111,6 +114,13 @@ export const API_ROUTES: Model & {
     DETAIL: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/injury/${id}`,
+  },
+  MATCH_EVENT_TYPE: {
+    GET_ALL: { URL: `${API_BASE_URL}/match-event-type` },
+    CREATE: `${API_BASE_URL}/match-event-type`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/match-event-type/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/match-event-type/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/match-event-type/${id}`,
   },
   MATCH_FORMAT: {
     GET_ALL: { URL: `${API_BASE_URL}/match-format` },

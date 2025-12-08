@@ -16,6 +16,7 @@ import { matchFormat } from "./match-format";
 import { match } from "./match";
 import { playerRegistration } from "./player-registration";
 import { playerRegistrationHistory } from "./player-registration-history";
+import { matchEventType } from "./match-event-type";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => string;
@@ -40,6 +41,10 @@ const convertMap: {
   [ModelType.INJURY]: {
     single: injury,
     multiple: (data) => data.map(injury),
+  },
+  [ModelType.MATCH_EVENT_TYPE]: {
+    single: matchEventType,
+    multiple: (data) => data.map(matchEventType),
   },
   [ModelType.MATCH]: {
     single: match,

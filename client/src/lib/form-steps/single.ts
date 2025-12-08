@@ -18,6 +18,7 @@ import { matchFormat } from "./models/match-format/single";
 import { match } from "./models/match/single";
 // import { playerRegistration } from "./models/player-registration";
 import { playerRegistrationHistory } from "./models/player-registration-history/single";
+import { matchEventType } from "./models/match-event-type/single";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
@@ -33,6 +34,10 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
     createConfirmationStep<ModelType.COUNTRY>(),
   ],
   [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
+  [ModelType.MATCH_EVENT_TYPE]: [
+    ...matchEventType,
+    createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(),
+  ],
   [ModelType.MATCH]: [...match, createConfirmationStep<ModelType.MATCH>()],
   [ModelType.MATCH_FORMAT]: [
     ...matchFormat,

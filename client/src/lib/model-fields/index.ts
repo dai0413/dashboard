@@ -16,12 +16,14 @@ import { matchFormat } from "./match-format";
 import { match } from "./match";
 import { playerRegistration } from "./player-registration";
 import { playerRegistrationHistory } from "./player-registration-history";
+import { matchEventType } from "./match-event-type";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
   [ModelType.COMPETITION]: competition,
   [ModelType.COUNTRY]: country,
   [ModelType.INJURY]: injury,
+  [ModelType.MATCH_EVENT_TYPE]: matchEventType,
   [ModelType.MATCH_FORMAT]: matchFormat,
   [ModelType.MATCH]: match,
   [ModelType.NATIONAL_CALLUP]: nationalCallUp,

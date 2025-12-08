@@ -44,6 +44,7 @@ import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { usePlayerRegistrationHistory } from "./models/player-registration-history";
+import { useMatchEventType } from "./models/match-event-type";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -159,6 +160,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.COMPETITION_STAGE]: useCompetitionStage(),
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.MATCH_EVENT_TYPE]: useMatchEventType(),
     [ModelType.MATCH_FORMAT]: useMatchFormat(),
     [ModelType.MATCH]: useMatch(),
     [ModelType.NATIONAL_CALLUP]: useNationalCallup(),

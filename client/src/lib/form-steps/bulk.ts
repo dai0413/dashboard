@@ -7,6 +7,7 @@ import { teamCompetitionSeason } from "./models/team-competition-season/bulk";
 import { competitionStage } from "./models/competition-stage/bulk";
 import { transfer } from "./models/transfer/bulk";
 import { injury } from "./models/injury/bulk";
+import { matchEventType } from "./models/match-event-type/bulk";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
@@ -26,6 +27,10 @@ const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.TRANSFER]: [
     ...transfer,
     createConfirmationStep<ModelType.TRANSFER>(),
+  ],
+  [ModelType.MATCH_EVENT_TYPE]: [
+    ...matchEventType,
+    createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(),
   ],
 };
 

@@ -40,12 +40,18 @@ import {
   PlayerRegistrationHistoryForm,
   PlayerRegistrationHistoryGet,
 } from "./player-registration-history";
+import {
+  MatchEventType,
+  MatchEventTypeForm,
+  MatchEventTypeGet,
+} from "./match-event-type";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
   COMPETITION = "competition",
   COUNTRY = "country",
   INJURY = "injury",
+  MATCH_EVENT_TYPE = "match-event-type",
   MATCH_FORMAT = "match-format",
   MATCH = "match",
   NATIONAL_CALLUP = "national-callup",
@@ -66,6 +72,7 @@ export type ModelDataMap = {
   [ModelType.COMPETITION]: Competition;
   [ModelType.COUNTRY]: Country;
   [ModelType.INJURY]: Injury;
+  [ModelType.MATCH_EVENT_TYPE]: MatchEventType;
   [ModelType.MATCH_FORMAT]: MatchFormat;
   [ModelType.MATCH]: Match;
   [ModelType.NATIONAL_CALLUP]: NationalCallup;
@@ -86,6 +93,7 @@ export type GettedModelDataMap = {
   [ModelType.COMPETITION]: CompetitionGet;
   [ModelType.COUNTRY]: CountryGet;
   [ModelType.INJURY]: InjuryGet;
+  [ModelType.MATCH_EVENT_TYPE]: MatchEventTypeGet;
   [ModelType.MATCH_FORMAT]: MatchFormatGet;
   [ModelType.MATCH]: MatchGet;
   [ModelType.NATIONAL_CALLUP]: NationalCallupGet;
@@ -106,6 +114,7 @@ export type FormTypeMap = {
   [ModelType.COMPETITION]: CompetitionForm;
   [ModelType.COUNTRY]: CountryForm;
   [ModelType.INJURY]: InjuryForm;
+  [ModelType.MATCH_EVENT_TYPE]: MatchEventTypeForm;
   [ModelType.MATCH_FORMAT]: MatchFormatForm;
   [ModelType.MATCH]: MatchForm;
   [ModelType.NATIONAL_CALLUP]: NationalCallupForm;
@@ -126,6 +135,7 @@ export const ModelRouteMap = {
   [ModelType.COMPETITION]: APP_ROUTES.COMPETITION,
   [ModelType.COUNTRY]: APP_ROUTES.COUNTRY,
   [ModelType.INJURY]: APP_ROUTES.INJURY,
+  [ModelType.MATCH_EVENT_TYPE]: APP_ROUTES.MATCH_EVENT_TYPE,
   [ModelType.MATCH_FORMAT]: APP_ROUTES.MATCH_FORMAT,
   [ModelType.MATCH]: APP_ROUTES.MATCH,
   [ModelType.NATIONAL_CALLUP]: APP_ROUTES.NATIONAL_CALLUP,

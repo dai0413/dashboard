@@ -111,6 +111,12 @@ const models: {
     link: APP_ROUTES.MATCH_FORMAT,
     icon: "setting",
   },
+  {
+    model: "MatchEventType",
+    desc: "試合イベント",
+    link: APP_ROUTES.MATCH_EVENT_TYPE,
+    icon: "setting",
+  },
 ];
 
 const AdminDashboard = () => {
