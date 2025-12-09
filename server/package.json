@@ -2,7 +2,7 @@
   "version": "2.0.2",
   "type": "module",
   "dependencies": {
-    "@dai0413/myorg-shared": "^1.1.1",
+    "@dai0413/myorg-shared": "^1.2.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
