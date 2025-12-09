@@ -10,6 +10,7 @@ export const APP_ROUTES = {
   COMPETITION_STAGE: "/competition-stage",
   COMPETITION: "/competition",
   COUNTRY: "/country",
+  FORMATION: "/formation",
   INJURY: "/injury",
   MATCH_EVENT_TYPE: "/match-event-type",
   MATCH_FORMAT: "/match-format",

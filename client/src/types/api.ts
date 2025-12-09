@@ -29,6 +29,7 @@ export type ReadItemsParamsMap = {
     country?: string;
   };
   [ModelType.COUNTRY]: {};
+  [ModelType.FORMATION]: {};
   [ModelType.MATCH_EVENT_TYPE]: {};
   [ModelType.MATCH_FORMAT]: {};
   [ModelType.MATCH]: {

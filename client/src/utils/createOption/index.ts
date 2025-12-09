@@ -33,6 +33,7 @@ import {
   registrationType,
   operator,
   event_type,
+  position_formation,
 } from "@dai0413/myorg-shared";
 
 export enum OptionType {
@@ -59,6 +60,7 @@ export enum OptionType {
   RESULT = "result",
   REGISTRATION_TYPE = "registration_type",
   EVENT_TYPE = "event_type",
+  POSITION_FORMATION = "position_formation",
 }
 
 type OptionMap = {
@@ -85,6 +87,7 @@ type OptionMap = {
   [OptionType.RESULT]: OptionArray;
   [OptionType.REGISTRATION_TYPE]: OptionArray;
   [OptionType.EVENT_TYPE]: OptionArray;
+  [OptionType.POSITION_FORMATION]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -144,6 +147,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [OptionType.RESULT]: () => result(),
   [OptionType.REGISTRATION_TYPE]: () => registrationType(),
   [OptionType.EVENT_TYPE]: () => event_type(),
+  [OptionType.POSITION_FORMATION]: () => position_formation(),
 };
 
 // 実装

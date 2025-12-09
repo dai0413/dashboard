@@ -16,3 +16,4 @@ export { default as Team } from "./Team";
 export { default as Transfer } from "./Transfer";
 export { default as NationalCallup } from "./NationalCallup";
 export { default as NationalMatchSeries } from "./NationalMatchSeries";
+export { default as Formation } from "./Formation";

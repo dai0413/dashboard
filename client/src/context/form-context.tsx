@@ -45,6 +45,7 @@ import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { usePlayerRegistrationHistory } from "./models/player-registration-history";
 import { useMatchEventType } from "./models/match-event-type";
+import { useFormation } from "./models/formation";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -160,6 +161,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.COMPETITION_STAGE]: useCompetitionStage(),
     [ModelType.COUNTRY]: useCountry(),
     [ModelType.INJURY]: useInjury(),
+    [ModelType.FORMATION]: useFormation(),
     [ModelType.MATCH_EVENT_TYPE]: useMatchEventType(),
     [ModelType.MATCH_FORMAT]: useMatchFormat(),
     [ModelType.MATCH]: useMatch(),
@@ -514,6 +516,8 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [formData, setFormData] = useState<FormTypeMap[T]>({});
   const [formLabel, setFormLabel] = useState<Record<string, any>>({});
 
+  // useEffect(() => console.log("formData", formData), [formData]);
+
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
     value: FormTypeMap[T][K],
@@ -528,8 +532,12 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   };
 
   const resetFormData = () => {
-    setFormData({});
-    setFormLabel({});
+    setFormData(
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+    );
+    setFormLabel(
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+    );
   };
 
   ////////////////////////// many data edit //////////////////////////
@@ -538,10 +546,18 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const [formLabels, setFormLabels] = useState<Record<string, any>[]>([{}]);
 
   const resetFormDatas = () => {
-    setFormDatas([]);
-    setFormLabels([]);
-    setBulkCommonData({});
-    setBulkCommonLabel({});
+    setFormDatas([
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
+    ]);
+    setFormLabels([
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
+    ]);
+    setBulkCommonData(
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+    );
+    setBulkCommonLabel(
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+    );
   };
 
   const handleFormData = <K extends keyof FormTypeMap[T]>(

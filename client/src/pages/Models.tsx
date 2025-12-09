@@ -18,6 +18,7 @@ import {
   PlayerRegistration,
   PlayerRegistrationHistory,
   MatchEventType,
+  Formation,
 } from "./ModelTable";
 import {
   CompetitionStageDetail,
@@ -38,6 +39,7 @@ import {
   PlayerRegistrationDetail,
   PlayerRegistrationHistoryDetail,
   MatchEventTypeDetail,
+  FormationDetail,
 } from "./ModelDetail";
 import { JSX } from "react";
 
@@ -51,6 +53,7 @@ const models: Record<
   },
   [ModelType.COMPETITION]: { table: Competition, detail: CompetitionDetail },
   [ModelType.COUNTRY]: { table: Country, detail: CountryDetail },
+  [ModelType.FORMATION]: { table: Formation, detail: FormationDetail },
   [ModelType.INJURY]: { table: Injury, detail: InjuryDetail },
   [ModelType.MATCH_EVENT_TYPE]: {
     table: MatchEventType,

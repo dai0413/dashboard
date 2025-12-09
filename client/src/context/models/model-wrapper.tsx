@@ -17,6 +17,7 @@ import { MatchProvider } from "./match";
 import { PlayerRegistrationProvider } from "./player-registration";
 import { PlayerRegistrationHistoryProvider } from "./player-registration-history";
 import { MatchEventTypeProvider } from "./match-event-type";
+import { FormationProvider } from "./formation";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -38,7 +39,9 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                                   <NationalCallupProvider>
                                     <InjuryProvider>
                                       <TransferProvider>
-                                        {children}
+                                        <FormationProvider>
+                                          {children}
+                                        </FormationProvider>
                                       </TransferProvider>
                                     </InjuryProvider>
                                   </NationalCallupProvider>

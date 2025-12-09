@@ -88,6 +88,12 @@ const models: {
     icon: "injury",
   },
   {
+    model: "Formation",
+    desc: "フォーメーション",
+    link: APP_ROUTES.FORMATION,
+    icon: "setting",
+  },
+  {
     model: "Stadium",
     desc: "スタジアム",
     link: APP_ROUTES.STADIUM,
