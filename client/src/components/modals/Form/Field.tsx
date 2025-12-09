@@ -33,7 +33,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
   handleFormData,
   supportButton,
 }: RenderFieldProps<T>) => {
-  const { multi, key, fieldType, valueType } = field;
+  const { multi, key, fieldType, valueType, uniqueInArray, lengthInArray } =
+    field;
   const formDataKey = key as keyof FormTypeMap[T];
   const { updateOption, handlePageChange } = useOptions();
 
@@ -198,6 +199,64 @@ export const RenderField = <T extends keyof FormTypeMap>({
         ))}
       </>
     );
+
+  if (multi && fieldType === "select" && optionSelectData && uniqueInArray) {
+    let options = optionSelectData;
+    const selected = (formData[formDataKey] as string[]).filter(
+      (v) => v !== ""
+    );
+    if (uniqueInArray && Array.isArray(selected)) {
+      options = optionSelectData.filter((item) => {
+        return !selected.includes(item.key);
+      });
+    }
+
+    const getUniqueOptions = (index: number) => {
+      const used = new Set(selected.slice(0, index));
+      return optionSelectData.filter((item) => !used.has(item.key));
+    };
+
+    return (
+      <>
+        {[...((formData[formDataKey] as string[]) ?? [])].map(
+          (item: string, index: number) => {
+            const inputArrayHandleFormData = (
+              value: string | number | Date
+            ) => {
+              const newValue = [...(formData[formDataKey] as string[])];
+              newValue[index] = String(value);
+              handleFormData(
+                formDataKey,
+                newValue as FormTypeMap[T][typeof formDataKey]
+              );
+            };
+
+            return (
+              <div key={index} className="flex items-center space-x-2 mb-2">
+                <SelectField
+                  type={valueType}
+                  value={item}
+                  onChange={inputArrayHandleFormData}
+                  options={getUniqueOptions(index)}
+                  defaultOption="--- 未選択 ---"
+                />
+              </div>
+            );
+          }
+        )}
+
+        {!lengthInArray && (
+          <SelectField
+            type={valueType}
+            value={""}
+            onChange={multiInputHandleFormData}
+            options={options}
+            defaultOption="--- 未選択 ---"
+          />
+        )}
+      </>
+    );
+  }
 
   if (multi && fieldType === "select" && optionSelectData)
     return (
