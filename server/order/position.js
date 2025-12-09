@@ -21,28 +21,64 @@ const positionToGroup = {
   LWG: "FW",
   CF: "FW",
   FW: "FW",
+  "MF/FW": "MF/FW",
+  FP: "FP",
 };
 
 export const addPositionGroup = {
-  $addFields: {
-    position_group: {
-      $ifNull: [
-        "$position_group", // 既にあるならそのまま使う
+  $replaceRoot: {
+    newRoot: {
+      $mergeObjects: [
+        "$$ROOT",
         {
-          $let: {
-            vars: { map: positionToGroup },
-            in: {
-              $getField: {
-                field: {
-                  $ifNull: [
-                    { $arrayElemAt: ["$position", 0] },
-                    "__UNKNOWN__", // fallback
-                  ],
+          $cond: [
+            {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: { $objectToArray: positionToGroup },
+                      as: "item",
+                      cond: {
+                        $eq: ["$$item.k", { $arrayElemAt: ["$position", 0] }],
+                      },
+                    },
+                  },
                 },
-                input: "$$map",
+                0,
+              ],
+            },
+            {
+              // マッチした場合だけ追加
+              position_group: {
+                $let: {
+                  vars: {
+                    found: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: { $objectToArray: positionToGroup },
+                            as: "item",
+                            cond: {
+                              $eq: [
+                                "$$item.k",
+                                { $arrayElemAt: ["$position", 0] },
+                              ],
+                            },
+                          },
+                        },
+                        0,
+                      ],
+                    },
+                  },
+                  in: "$$found.v",
+                },
               },
             },
-          },
+            {
+              // マッチしなければ空（＝フィールド追加しない）
+            },
+          ],
         },
       ],
     },

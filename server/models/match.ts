@@ -125,7 +125,12 @@ MatchSchema.index(
     away_team: 1,
     date: 1,
   },
-  { unique: true }
+  {
+    unique: true,
+    partialFilterExpression: {
+      date: { $exists: true }, // date があるときだけ unique 適用
+    },
+  }
 );
 
 MatchSchema.index(
@@ -136,7 +141,12 @@ MatchSchema.index(
     away_team: 1,
     match_week: 1,
   },
-  { unique: true }
+  {
+    unique: true,
+    partialFilterExpression: {
+      match_week: { $exists: true }, // match_week があるときのみ unique
+    },
+  }
 );
 
 // --- 共通ユーティリティ ---
