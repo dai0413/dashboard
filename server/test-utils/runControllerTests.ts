@@ -15,6 +15,10 @@ import {
   competition as competitionConfig,
   season as seasonConfig,
   competitionStage as competitionStageConfig,
+  match as matchConfig,
+  staff as staffConfig,
+  matchEventType as matchEventTypeConfig,
+  formation as formationConfig,
 } from "@dai0413/myorg-shared";
 import { TeamModel } from "../models/team.js";
 import { CountryModel } from "../models/country.js";
@@ -23,6 +27,11 @@ import { CompetitionModel } from "../models/competition.js";
 import { SeasonModel } from "../models/season.js";
 import { CompetitionStageModel } from "../models/competition-stage.js";
 import { PlayerModel } from "../models/player.js";
+import { MatchModel } from "../models/match.js";
+import { MatchEventTypeModel } from "../models/match-event-type.js";
+import { StaffModel } from "../models/staff.js";
+import { FormationModel } from "../models/formation.js";
+import { PlayerRegistrationModel } from "../models/player-registration.js";
 
 const ROUTE_BASE = process.env.ROUTE_BASE;
 
@@ -44,13 +53,16 @@ export async function setupDependencies(): Promise<DependencyRefs> {
         : config.TEST.sampleData;
     const res = await request(app)
       .post(`${ROUTE_BASE}${config.name}`)
-      .send(sample[0]);
+      .send(sample);
 
     if (res.statusCode !== 201 || !res.body?.data) {
       throw new Error(`Failed to create ${config.name}: ${res.text}`);
     }
 
-    deps[config.name] = res.body.data;
+    const toCamel = (str: string) =>
+      str.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+
+    deps[toCamel(config.name)] = res.body.data;
     return res.body.data;
   };
 
@@ -65,6 +77,12 @@ export async function setupDependencies(): Promise<DependencyRefs> {
   const competitionStage = await postAndGetData(
     competitionStageConfig(CompetitionStageModel)
   );
+  const match = await postAndGetData(matchConfig(MatchModel));
+  const matchEventType = await postAndGetData(
+    matchEventTypeConfig(MatchEventTypeModel)
+  );
+  const staff = await postAndGetData(staffConfig(StaffModel));
+  const formation = await postAndGetData(formationConfig(FormationModel));
 
   return {
     team,
@@ -74,6 +92,10 @@ export async function setupDependencies(): Promise<DependencyRefs> {
     competition,
     season,
     competitionStage,
+    match,
+    staff,
+    matchEventType,
+    formation,
   };
 }
 
@@ -99,6 +121,7 @@ export function runControllerTests<
   const populateKeys = POPULATE_PATHS.map((path) => path.path);
   let created: TRes;
   let sample: TForm[];
+  let updated: Partial<TForm>;
 
   describe(`${name.toUpperCase()} API`, () => {
     beforeAll(async () => {
@@ -122,13 +145,18 @@ export function runControllerTests<
         sample = sampleData as TForm[];
       }
 
+      if (typeof updatedData === "function") {
+        updated = updatedData(deps);
+      } else {
+        updated = updatedData;
+      }
+
       // これから追加のDBをリセット
       if (mongoose.connection.db) {
         const collections = await mongoose.connection.db.collections();
-        const target = config.name.split("-").join(""); // 対象の1コレクション名
 
         for (const collection of collections) {
-          if (collection.collectionName.startsWith(target)) {
+          if (collection.collectionName === config.collection_name) {
             // console.log(
             //   `🧹 Deleting documents in: ${collection.collectionName}`
             // );
@@ -175,13 +203,13 @@ export function runControllerTests<
     it(`PUT ${route}/:id should update a ${name}`, async () => {
       const id = created._id;
 
-      const res = await request(app).patch(`${route}/${id}`).send(updatedData);
+      const res = await request(app).patch(`${route}/${id}`).send(updated);
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("message");
       expect(res.body).toHaveProperty("data");
       expect(res.body.message).toBe("編集しました");
 
-      const expected = { ...sample[0], ...updatedData } as TForm;
+      const expected = { ...sample[0], ...updated } as TForm;
 
       const parsedData = RESPONSE.parse(res.body.data);
       validateParsedData(parsedData, expected, populateKeys);
@@ -221,6 +249,7 @@ export function runControllerTests<
 
     bulk &&
       it(`POST ${route} should create new ${name}s `, async () => {
+        await PlayerRegistrationModel.deleteMany({});
         const res = await request(app).post(route).send(sample);
         expect(res.statusCode).toBe(201);
         expect(res.body).toHaveProperty("message");

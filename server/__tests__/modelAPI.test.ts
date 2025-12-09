@@ -16,6 +16,8 @@ import {
   transfer,
   playerRegistration,
   playerRegistrationHistory,
+  matchEventType,
+  formation,
 } from "@dai0413/myorg-shared";
 import { runControllerTests } from "../dist/test-utils/runControllerTests.js";
 
@@ -36,6 +38,8 @@ import { TeamCompetitionSeasonModel } from "../dist/models/team-competition-seas
 import { MatchModel } from "../dist/models/match.js";
 import { PlayerRegistrationModel } from "../dist/models/player-registration.js";
 import { PlayerRegistrationHistoryModel } from "../dist/models/player-registration-history.js";
+import { MatchEventTypeModel } from "../dist/models/match-event-type.js";
+import { FormationModel } from "../dist/models/formation.js";
 import { match as customMatch } from "../dist/utils/customMatchStage/match.js";
 import { transfer as customTransfer } from "../dist/utils/customMatchStage/transfer.js";
 
@@ -56,3 +60,5 @@ runControllerTests(match(MatchModel, customMatch));
 runControllerTests(transfer(TransferModel, customTransfer));
 runControllerTests(playerRegistration(PlayerRegistrationModel));
 runControllerTests(playerRegistrationHistory(PlayerRegistrationHistoryModel));
+runControllerTests(matchEventType(MatchEventTypeModel));
+runControllerTests(formation(FormationModel));
