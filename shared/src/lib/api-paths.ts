@@ -124,6 +124,7 @@ export const API_PATHS = {
 
   STAFF: {
     ROOT: "/staff",
+    DOWNLOAD: "/staff/download",
     DETAIL: (id: string | number = ":id") => `/staff/${id}`,
   },
 
