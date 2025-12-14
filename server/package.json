@@ -27,7 +27,7 @@
     "typecheck": "tsc --noEmit",
     "dev": "node --loader ts-node/esm app.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/app.js",
+    "start": "node -e \"console.log(require('@dai0413/myorg-shared/package.json').version)\" && node dist/app.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },
   "devDependencies": {
