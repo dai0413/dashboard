@@ -24,11 +24,10 @@
     "zod": "^4.1.12"
   },
   "scripts": {
-    "install:prod": "npm install @dai0413/myorg-shared",
     "typecheck": "tsc --noEmit",
     "dev": "node --loader ts-node/esm app.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start": "npm run install:prod && node dist/app.js",
+    "start": "node dist/app.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },
   "devDependencies": {
