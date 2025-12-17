@@ -19,6 +19,7 @@ import {
   PlayerRegistrationHistory,
   MatchEventType,
   Formation,
+  Staff,
 } from "./ModelTable";
 import {
   CompetitionStageDetail,
@@ -40,6 +41,7 @@ import {
   PlayerRegistrationHistoryDetail,
   MatchEventTypeDetail,
   FormationDetail,
+  StaffDetail,
 } from "./ModelDetail";
 import { JSX } from "react";
 
@@ -73,6 +75,7 @@ const models: Record<
   [ModelType.REFEREE]: { table: Referee, detail: RefereeDetail },
   [ModelType.SEASON]: { table: Season, detail: SeasonDetail },
   [ModelType.STADIUM]: { table: Stadium, detail: StadiumDetail },
+  [ModelType.STAFF]: { table: Staff, detail: StaffDetail },
   [ModelType.TEAM_COMPETITION_SEASON]: {
     table: TeamCompetitionSeason,
     detail: TeamCompetitionSeasonDetail,

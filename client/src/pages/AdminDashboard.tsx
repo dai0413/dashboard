@@ -22,6 +22,12 @@ const models: {
     icon: "player",
   },
   {
+    model: "Staff",
+    desc: "監督・コーチ",
+    link: APP_ROUTES.STAFF,
+    icon: "player",
+  },
+  {
     model: "Competition",
     desc: "大会",
     link: APP_ROUTES.COMPETITION,

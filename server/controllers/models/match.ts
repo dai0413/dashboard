@@ -5,8 +5,8 @@ import { crudFactory } from "../../utils/crudFactory.js";
 
 import { match as formatMatch } from "../../utils/format/match.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
+import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 import csv from "csv-parser";
-import { fromZonedTime } from "date-fns-tz";
 import { match } from "@dai0413/myorg-shared";
 import { MatchModel } from "../../models/match.js";
 import { DecodedRequest } from "types.js";
@@ -26,13 +26,6 @@ const {
   TYPE,
   POPULATE_PATHS,
 } = match(MatchModel, customMatch);
-
-function parseDateJST(dateStr: string) {
-  // CSVの日付フォーマットをパース（例: "1992/9/5 15:00:00"）
-  // JSTとして解釈し、UTCに変換したDateを返す
-  if (!dateStr) return undefined;
-  return fromZonedTime(new Date(dateStr), "Asia/Tokyo");
-}
 
 // const getAllItems = async (req: Request, res: Response) => {
 //   const matchStage: Record<string, any> = {};

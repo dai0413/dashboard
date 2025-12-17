@@ -46,6 +46,7 @@ import {
   MatchEventTypeGet,
 } from "./match-event-type";
 import { Formation, FormationForm, FormationGet } from "./formation";
+import { Staff, StaffForm, StaffGet } from "./staff";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -64,6 +65,7 @@ export enum ModelType {
   REFEREE = "referee",
   SEASON = "season",
   STADIUM = "stadium",
+  STAFF = "staff",
   TEAM_COMPETITION_SEASON = "team-competition-season",
   TEAM = "team",
   TRANSFER = "transfer",
@@ -86,6 +88,7 @@ export type ModelDataMap = {
   [ModelType.REFEREE]: Referee;
   [ModelType.SEASON]: Season;
   [ModelType.STADIUM]: Stadium;
+  [ModelType.STAFF]: Staff;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeason;
   [ModelType.TEAM]: Team;
   [ModelType.TRANSFER]: Transfer;
@@ -108,6 +111,7 @@ export type GettedModelDataMap = {
   [ModelType.REFEREE]: RefereeGet;
   [ModelType.SEASON]: SeasonGet;
   [ModelType.STADIUM]: StadiumGet;
+  [ModelType.STAFF]: StaffGet;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonGet;
   [ModelType.TEAM]: TeamGet;
   [ModelType.TRANSFER]: TransferGet;
@@ -130,6 +134,7 @@ export type FormTypeMap = {
   [ModelType.REFEREE]: RefereeForm;
   [ModelType.SEASON]: SeasonForm;
   [ModelType.STADIUM]: StadiumForm;
+  [ModelType.STAFF]: StaffForm;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonForm;
   [ModelType.TEAM]: TeamForm;
   [ModelType.TRANSFER]: TransferForm;
@@ -153,6 +158,7 @@ export const ModelRouteMap = {
   [ModelType.REFEREE]: APP_ROUTES.REFEREE,
   [ModelType.SEASON]: APP_ROUTES.SEASON,
   [ModelType.STADIUM]: APP_ROUTES.STADIUM,
+  [ModelType.STAFF]: APP_ROUTES.STAFF,
   [ModelType.TEAM_COMPETITION_SEASON]: APP_ROUTES.TEAM_COMPETITION_SEASON,
   [ModelType.TEAM]: APP_ROUTES.TEAM,
   [ModelType.TRANSFER]: APP_ROUTES.TRANSFER,

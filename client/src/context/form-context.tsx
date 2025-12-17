@@ -46,6 +46,7 @@ import { getDefault } from "../lib/default-formData";
 import { usePlayerRegistrationHistory } from "./models/player-registration-history";
 import { useMatchEventType } from "./models/match-event-type";
 import { useFormation } from "./models/formation";
+import { useStaff } from "./models/staff";
 
 const checkRequiredFields = <T extends keyof FormTypeMap>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -173,6 +174,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     [ModelType.REFEREE]: useReferee(),
     [ModelType.SEASON]: useSeason(),
     [ModelType.STADIUM]: useStadium(),
+    [ModelType.STAFF]: useStaff(),
     [ModelType.TEAM_COMPETITION_SEASON]: useTeamCompetitionSeason(),
     [ModelType.TEAM]: useTeam(),
     [ModelType.TRANSFER]: useTransfer(),

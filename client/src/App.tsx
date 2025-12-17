@@ -22,7 +22,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NoCallUp from "./pages/NoCallup";
 import NotFound from "./pages/NotFound";
 import { Summary } from "./routes";
-import { NationalMatchSeries, Transfer } from "./pages/ModelDetail";
+import { NationalMatchSeriesDetail, TransferDetail } from "./pages/ModelDetail";
 import models from "./pages/Models";
 
 const App: React.FC = () => {
@@ -96,7 +96,10 @@ const App: React.FC = () => {
                               <Layout>
                                 <NoNumber />
                                 <Routes>
-                                  <Route path=":id" element={<Transfer />} />
+                                  <Route
+                                    path=":id"
+                                    element={<TransferDetail />}
+                                  />
                                 </Routes>
                               </Layout>
                             )}
@@ -110,7 +113,7 @@ const App: React.FC = () => {
                                 <Routes>
                                   <Route
                                     path=":id"
-                                    element={<NationalMatchSeries />}
+                                    element={<NationalMatchSeriesDetail />}
                                   />
                                 </Routes>
                               </Layout>

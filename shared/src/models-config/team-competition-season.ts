@@ -60,7 +60,7 @@ export function teamCompetitionSeason<TDoc = any, TModel = any>(
       sort: { "season.start_date": -1, _id: -1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: (deps) => [

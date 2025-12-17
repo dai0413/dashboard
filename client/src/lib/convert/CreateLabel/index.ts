@@ -18,6 +18,7 @@ import { playerRegistration } from "./player-registration";
 import { playerRegistrationHistory } from "./player-registration-history";
 import { matchEventType } from "./match-event-type";
 import { formation } from "./formation";
+import { staff } from "./staff";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => string;
@@ -90,6 +91,10 @@ const convertMap: {
   [ModelType.STADIUM]: {
     single: stadium,
     multiple: (data) => data.map(stadium),
+  },
+  [ModelType.STAFF]: {
+    single: staff,
+    multiple: (data) => data.map(staff),
   },
   [ModelType.TEAM_COMPETITION_SEASON]: {
     single: teamCompetitionSeason,

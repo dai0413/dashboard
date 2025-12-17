@@ -18,6 +18,7 @@ import { PlayerRegistrationProvider } from "./player-registration";
 import { PlayerRegistrationHistoryProvider } from "./player-registration-history";
 import { MatchEventTypeProvider } from "./match-event-type";
 import { FormationProvider } from "./formation";
+import { StaffProvider } from "./staff";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -33,21 +34,23 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                       <MatchProvider>
                         <TeamCompetitionSeasonProvider>
                           <PlayerProvider>
-                            <PlayerRegistrationProvider>
-                              <PlayerRegistrationHistoryProvider>
-                                <RefereeProvider>
-                                  <NationalCallupProvider>
-                                    <InjuryProvider>
-                                      <TransferProvider>
-                                        <FormationProvider>
-                                          {children}
-                                        </FormationProvider>
-                                      </TransferProvider>
-                                    </InjuryProvider>
-                                  </NationalCallupProvider>
-                                </RefereeProvider>
-                              </PlayerRegistrationHistoryProvider>
-                            </PlayerRegistrationProvider>
+                            <StaffProvider>
+                              <PlayerRegistrationProvider>
+                                <PlayerRegistrationHistoryProvider>
+                                  <RefereeProvider>
+                                    <NationalCallupProvider>
+                                      <InjuryProvider>
+                                        <TransferProvider>
+                                          <FormationProvider>
+                                            {children}
+                                          </FormationProvider>
+                                        </TransferProvider>
+                                      </InjuryProvider>
+                                    </NationalCallupProvider>
+                                  </RefereeProvider>
+                                </PlayerRegistrationHistoryProvider>
+                              </PlayerRegistrationProvider>
+                            </StaffProvider>
                           </PlayerProvider>
                         </TeamCompetitionSeasonProvider>
                       </MatchProvider>

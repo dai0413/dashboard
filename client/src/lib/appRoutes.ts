@@ -23,6 +23,7 @@ export const APP_ROUTES = {
   REFEREE: "/referee",
   SEASON: "/season",
   STADIUM: "/stadium",
+  STAFF: "/staff",
   TEAM_COMPETITION_SEASON: "/team-competition-season",
   TEAM: "/team",
   TRANSFER: "/transfer",

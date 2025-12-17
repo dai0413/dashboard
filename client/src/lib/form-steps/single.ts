@@ -20,6 +20,7 @@ import { match } from "./models/match/single";
 import { playerRegistrationHistory } from "./models/player-registration-history/single";
 import { matchEventType } from "./models/match-event-type/single";
 import { formation } from "./models/formation/single";
+import { staff } from "./models/staff/single";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
@@ -74,6 +75,7 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
     ...stadium,
     createConfirmationStep<ModelType.STADIUM>(),
   ],
+  [ModelType.STAFF]: [...staff, createConfirmationStep<ModelType.STAFF>()],
   [ModelType.TEAM_COMPETITION_SEASON]: [
     ...teamCompetitionSeason,
     createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),

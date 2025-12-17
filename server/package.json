@@ -2,7 +2,7 @@
   "version": "2.0.2",
   "type": "module",
   "dependencies": {
-    "@dai0413/myorg-shared": "^1.2.2",
+    "@dai0413/myorg-shared": "1.2.3",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -24,11 +24,10 @@
     "zod": "^4.1.12"
   },
   "scripts": {
-    "install:prod": "npm install @dai0413/myorg-shared",
     "typecheck": "tsc --noEmit",
     "dev": "node --loader ts-node/esm app.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start": "npm run install:prod && node dist/app.js",
+    "start": "node dist/app.js",
     "test": "set NODE_OPTIONS=--experimental-vm-modules && jest --runInBand"
   },
   "devDependencies": {

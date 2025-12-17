@@ -44,6 +44,7 @@ type Model = {
   REFEREE: BaseCrudRoutes<ReadItemsParamsMap[ModelType.REFEREE]>;
   SEASON: BaseCrudRoutes<ReadItemsParamsMap[ModelType.SEASON]>;
   STADIUM: BaseCrudRoutes<ReadItemsParamsMap[ModelType.STADIUM]>;
+  STAFF: BaseCrudRoutes<ReadItemsParamsMap[ModelType.STAFF]>;
   TEAM_COMPETITION_SEASON: BaseCrudRoutes<
     ReadItemsParamsMap[ModelType.TEAM_COMPETITION_SEASON]
   >;
@@ -193,6 +194,13 @@ export const API_ROUTES: Model & {
     DETAIL: (id: string | number) => `${API_BASE_URL}/stadium/${id}`,
     UPDATE: (id: string | number) => `${API_BASE_URL}/stadium/${id}`,
     DELETE: (id: string | number) => `${API_BASE_URL}/stadium/${id}`,
+  },
+  STAFF: {
+    GET_ALL: { URL: `${API_BASE_URL}/staff` },
+    CREATE: `${API_BASE_URL}/staff`,
+    DETAIL: (id: string | number) => `${API_BASE_URL}/staff/${id}`,
+    UPDATE: (id: string | number) => `${API_BASE_URL}/staff/${id}`,
+    DELETE: (id: string | number) => `${API_BASE_URL}/staff/${id}`,
   },
   TEAM_COMPETITION_SEASON: {
     GET_ALL: {

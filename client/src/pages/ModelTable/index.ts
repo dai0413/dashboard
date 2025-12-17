@@ -11,6 +11,7 @@ export { default as PlayerRegistration } from "./PlayerRegistration";
 export { default as Referee } from "./Referee";
 export { default as Season } from "./Season";
 export { default as Stadium } from "./Stadium";
+export { default as Staff } from "./Staff";
 export { default as TeamCompetitionSeason } from "./TeamCompetitionSeason";
 export { default as Team } from "./Team";
 export { default as Transfer } from "./Transfer";
