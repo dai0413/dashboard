@@ -30,7 +30,10 @@ export function staff<TDoc = any, TModel = any>(
     },
     TYPE: {} as StaffType,
     MONGO_MODEL: mongoModel ?? null,
-    POPULATE_PATHS: [{ path: "player", collection: "players" }],
+    POPULATE_PATHS: [
+      { path: "player", collection: "players" },
+      { path: "citizenship", collection: "countries", isArray: true },
+    ],
     getAllConfig: {
       query: [{ field: "player", type: "ObjectId" }],
       sort: { _id: -1 },

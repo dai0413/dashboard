@@ -26,6 +26,14 @@ export const staff: UIFieldDefinition[] = [
     displayOnDetail: true,
   },
   {
+    key: "citizenship",
+    label: "国籍",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
     key: "pob",
     label: "出身地",
     type: "string",

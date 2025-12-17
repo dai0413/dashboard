@@ -11,6 +11,10 @@ const StaffSchema: Schema<IStaff> = new Schema(
     name: { type: String, required: true },
     en_name: { type: String },
     dob: { type: Date },
+    citizenship: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Country",
+    },
     pob: { type: String },
     player: { type: Schema.Types.ObjectId, ref: "Player" },
     old_id: { type: String },

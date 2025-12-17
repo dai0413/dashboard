@@ -7,17 +7,27 @@ const getPopulateOptions = (POPULATE_PATHS: PopulatePath[]) =>
 
 // aggregate 用
 const getAggregateLookups = (POPULATE_PATHS: PopulatePath[]): PipelineStage[] =>
-  POPULATE_PATHS.flatMap(({ path, collection }) => [
-    {
+  POPULATE_PATHS.flatMap(({ path, collection, isArray }) => {
+    const lookup: PipelineStage.Lookup = {
       $lookup: {
         from: collection!,
         localField: path,
         foreignField: "_id",
         as: path,
       },
-    },
-    { $unwind: { path: `$${path}`, preserveNullAndEmptyArrays: true } },
-  ]);
+    };
+
+    // 配列参照 → unwind しない
+    if (isArray) {
+      return [lookup];
+    }
+
+    // 単数参照 → unwind
+    return [
+      lookup,
+      { $unwind: { path: `$${path}`, preserveNullAndEmptyArrays: true } },
+    ];
+  });
 
 // 関数オーバーロードで返す型を明確にする
 export function getNest(

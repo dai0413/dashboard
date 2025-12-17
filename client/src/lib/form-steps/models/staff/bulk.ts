@@ -29,6 +29,13 @@ export const staff: FormStep<ModelType.STAFF>[] = [
         width: "200px",
       },
       {
+        key: "citizenship",
+        label: "国籍",
+        fieldType: "table",
+        valueType: "option",
+        multi: true,
+      },
+      {
         key: "pob",
         label: "出身地",
         fieldType: "input",

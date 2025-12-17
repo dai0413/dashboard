@@ -31,7 +31,7 @@ export function referee<TDoc = any, TModel = any>(
     TYPE: {} as RefereeType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
-      { path: "citizenship", collection: "countries" },
+      { path: "citizenship", collection: "countries", isArray: true },
       { path: "player", collection: "players" },
     ],
     getAllConfig: {

@@ -16,6 +16,7 @@ export type PopulatePath = {
   path: string;
   collection?: string;
   matchBefore?: boolean;
+  isArray?: boolean;
 };
 
 type GetAllQuery = {

@@ -6,6 +6,7 @@ import csv from "csv-parser";
 import { staff } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { StaffModel } from "../../models/staff.js";
+import { CountryModel } from "../../models/country.js";
 import { DecodedRequest } from "types.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
@@ -32,12 +33,21 @@ const downloadItems = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "データがありません" });
     }
 
-    const header = `"name","en_name","dob","pob","player","old_id"\n`;
+    const header = `"name","en_name","dob","citizenship","manager_id"\n`;
 
     const csvContent = data
-      .map((item: any, index: number) => {
-        const dob = item.dob ? moment(item.dob).format("YYYY/MM/DD") : ""; // 空でも対応
-        return `"${item._id}","${item.name}","${item.en_name}","${dob}",","${item.pob}","${item.player}","${item.old_id}"`;
+      .map((item: any) => {
+        const dob = item.dob ? moment(item.dob).format("YYYY/MM/DD") : "";
+
+        const citizenship = item.citizenship?.length
+          ? item.citizenship
+              .map((c: any) => (typeof c === "string" ? c : c.name))
+              .join(",")
+          : "";
+
+        return `"${item.name}","${
+          item.en_name ?? ""
+        }","${dob}","${citizenship}","${item.old_id ?? ""}"`;
       })
       .join("\n");
 
@@ -53,7 +63,13 @@ const downloadItems = async (req: Request, res: Response) => {
 };
 
 const uploadItem = async (req: DecodedRequest, res: Response) => {
-  const rows: (typeof TYPE)[] = [];
+  const rows: (typeof TYPE & {
+    manager_id?: string;
+    citizenship?: string;
+  })[] = [];
+
+  const countries = await CountryModel.find({});
+  const countryMap = new Map(countries.map((c) => [c.name, c._id]));
 
   req.decodedStream
     .pipe(
@@ -65,14 +81,25 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
       rows.push(row);
     })
     .on("end", async () => {
-      const toAdd = rows.map((row) => ({
-        name: row.name,
-        en_name: row.en_name ? row.en_name : undefined,
-        dob: row.dob ? parseDateJST(row.dob as unknown as string) : undefined,
-        pob: row.pob ? row.pob : undefined,
-        player: parseObjectId(row.player),
-        old_id: row.old_id ? row.old_id : undefined,
-      }));
+      const toAdd = rows.map((row) => {
+        const citizenshipIds =
+          row.citizenship !== "" && row.citizenship
+            ? row.citizenship
+                .split(",")
+                .map((name) => countryMap.get(name.trim()))
+                .filter(Boolean)
+            : undefined;
+
+        return {
+          name: row.name,
+          en_name: row.en_name ? row.en_name : undefined,
+          citizenship: citizenshipIds,
+          dob: row.dob ? parseDateJST(row.dob as unknown as string) : undefined,
+          pob: row.pob ? row.pob : undefined,
+          player: row.player ? parseObjectId(row.player) : undefined,
+          old_id: row.manager_id ? row.manager_id : undefined,
+        };
+      });
 
       try {
         const added = await MONGO_MODEL.insertMany(toAdd, { ordered: false });

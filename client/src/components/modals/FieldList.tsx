@@ -63,9 +63,24 @@ const FieldList = (props: Props) => {
         : displayValue;
 
     // // 配列の処理
-    if (value && Array.isArray(value)) {
-      if (typeof value[0] === "string") {
-        displayValue = value.filter((u) => u.trim() !== "").join(", ");
+    if (Array.isArray(value)) {
+      if (value.every((v): v is string => typeof v === "string")) {
+        displayValue = value
+          .map((v) => v.trim())
+          .filter((v) => v !== "")
+          .join(", ");
+      } else if (
+        value.every(
+          (v): v is { label: string } =>
+            typeof v === "object" &&
+            v !== null &&
+            "label" in v &&
+            typeof (v as any).label === "string"
+        )
+      ) {
+        displayValue = value.map((v) => v.label).join(", ");
+      } else {
+        displayValue = String(value);
       }
     }
 
@@ -134,6 +149,8 @@ const FieldList = (props: Props) => {
       inputElements.push(element);
     }
   });
+
+  console.log("inputElements", inputElements);
 
   return (
     <div className="space-y-2 text-sm text-gray-700">
