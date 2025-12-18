@@ -61,6 +61,12 @@ export const team: FormStep<ModelType.TEAM>[] = [
         fieldType: "select",
         valueType: "option",
       },
+      {
+        key: "old_id",
+        label: "旧id",
+        fieldType: "input",
+        valueType: "text",
+      },
     ],
   },
   {

@@ -19,7 +19,7 @@ export const stadium: UIFieldDefinition[] = [
   },
   {
     key: "en_name",
-    label: "名前",
+    label: "英名",
     type: "string",
     filterable: true,
     sortable: true,

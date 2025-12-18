@@ -150,8 +150,6 @@ const FieldList = (props: Props) => {
     }
   });
 
-  console.log("inputElements", inputElements);
-
   return (
     <div className="space-y-2 text-sm text-gray-700">
       {isForm && (

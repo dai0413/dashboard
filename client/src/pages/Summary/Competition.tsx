@@ -211,6 +211,9 @@ const Competition = () => {
             },
           ]}
           reloadTrigger={reloadKey}
+          formInitialData={{
+            season: selectedSeason?._id,
+          }}
         />
       )}
 
@@ -233,6 +236,9 @@ const Competition = () => {
             .filter(isSortable)
             .filter((file) => file.key !== "competition")}
           reloadTrigger={reloadKey}
+          formInitialData={{
+            season: selectedSeason?._id,
+          }}
         />
       )}
 
