@@ -480,8 +480,10 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     );
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    while (stepSkip(nextStepIndex) && nextStepIndex < singleStep.length - 1) {
-      nextStepIndex++;
+    if (mode === "single") {
+      while (stepSkip(nextStepIndex) && nextStepIndex < singleStep.length - 1) {
+        nextStepIndex++;
+      }
     }
 
     setCurrentStep(nextStepIndex);
