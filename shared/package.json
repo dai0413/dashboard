@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },

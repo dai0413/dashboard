@@ -131,6 +131,7 @@ export const API_PATHS = {
 
   TEAM_COMPETITION_SEASON: {
     ROOT: "/team-competition-season",
+    UPLOAD: "/team-competition-season/upload",
     DOWNLOAD: "/team-competition-season/download",
     DETAIL: (id: string | number = ":id") => `/team-competition-season/${id}`,
   },
