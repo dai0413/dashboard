@@ -4,16 +4,39 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
 import { useEffect, useState } from "react";
 import { fieldDefinition } from "../../../lib/model-fields";
-import { isFilterable, isModelType, isSortable } from "../../../types/field";
+import {
+  isFilterable,
+  isModelType,
+  isOptionType,
+  isSortable,
+} from "../../../types/field";
 import { useFilter } from "../../../context/filter-context";
 import { useSort } from "../../../context/sort-context";
 
-import { FormTypeMap } from "../../../types/models";
-import { OptionsMap } from "../../../utils/createOption";
-import { OptionArray, OptionTable } from "../../../types/option";
+import { FormTypeMap, ModelType } from "../../../types/models";
+import {
+  convertToOption,
+  getDefaultOptions,
+  OptionsMap,
+} from "../../../utils/createOption";
+import { convert } from "../../../lib/convert/DBtoGetted";
+import {
+  ModelDataOptions,
+  OptionArray,
+  OptionTable,
+} from "../../../types/option";
 
 import { FormFieldDefinition } from "../../../types/form";
-import { useOptions } from "../../../context/options-provider";
+import { BaseCrudRoutes } from "../../../types/baseCrudRoutes";
+import {
+  API_PATHS,
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
+import { readItemsBase } from "../../../lib/api";
+import { useApi } from "../../../context/api-context";
+import { AxiosInstance } from "axios";
+import { DataResoonse } from "../../../types/api";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -26,6 +49,29 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   supportButton?: boolean;
 };
 
+const keyMap: Record<string, keyof OptionsMap> = {
+  citizenship: ModelType.COUNTRY,
+  from_team: ModelType.TEAM,
+  to_team: ModelType.TEAM,
+  home_team: ModelType.TEAM,
+  away_team: ModelType.TEAM,
+  series: ModelType.NATIONAL_MATCH_SERIES,
+  parent_stage: ModelType.COMPETITION_STAGE,
+  competition_stage: ModelType.COMPETITION_STAGE,
+  match_format: ModelType.MATCH_FORMAT,
+};
+
+export function getOptionKey<T extends keyof FormTypeMap>(
+  key: keyof FormTypeMap[T] | string
+): keyof OptionsMap {
+  if (typeof key === "string" && key.includes(".")) {
+    const parts = key.split(".");
+    const last = parts[parts.length - 1];
+    return keyMap[last] ?? (last as keyof OptionsMap);
+  }
+  return keyMap[key as string] ?? (key as keyof OptionsMap);
+}
+
 export const RenderField = <T extends keyof FormTypeMap>({
   field,
   formData,
@@ -36,15 +82,10 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const { multi, key, fieldType, valueType, uniqueInArray, lengthInArray } =
     field;
   const formDataKey = key as keyof FormTypeMap[T];
-  const { updateOption, handlePageChange } = useOptions();
 
   const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
-  const [optionTableData, setOptionTableData] = useState<{
-    option: OptionTable;
-    page?: number;
-    totalCount?: number;
-    isLoading: boolean;
-  } | null>(null);
+  const [optionTableData, setOptionTableData] =
+    useState<ModelDataOptions | null>(null);
 
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
     null
@@ -53,19 +94,106 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const { filterConditions } = useFilter();
   const { sortConditions } = useSort();
 
-  useEffect(() => {
-    if (!key) return;
-    if (valueType !== "option") return;
-    updateOption(
-      key,
-      fieldType,
+  const optionRouteMap: Record<string, BaseCrudRoutes> = {
+    [ModelType.PLAYER]: API_PATHS.PLAYER,
+    [ModelType.TEAM]: API_PATHS.TEAM,
+    [ModelType.COUNTRY]: API_PATHS.COUNTRY,
+    [ModelType.MATCH_FORMAT]: API_PATHS.MATCH_FORMAT,
+    [ModelType.NATIONAL_MATCH_SERIES]: API_PATHS.NATIONAL_MATCH_SERIES,
+    [ModelType.SEASON]: API_PATHS.SEASON,
+    [ModelType.STADIUM]: API_PATHS.STADIUM,
+    [ModelType.COMPETITION_STAGE]: API_PATHS.COMPETITION_STAGE,
+    [ModelType.COMPETITION]: API_PATHS.COMPETITION,
+  };
+
+  const api = useApi();
+
+  const handleLoading = () => {
+    if (!setOptionTableData) return undefined;
+
+    return (time: "start" | "end") =>
+      setOptionTableData((prev) => ({
+        ...(prev ?? {
+          option: { data: [], header: [] },
+          page: 1,
+          totalCount: 0,
+        }),
+        isLoading: time === "start",
+      }));
+  };
+
+  const readOptions = async (
+    api: AxiosInstance,
+    nextOptionKey: ModelType,
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+    page?: number
+  ): Promise<ModelDataOptions | undefined> => {
+    const route = optionRouteMap[nextOptionKey].ROOT;
+    if (!route) {
+      console.error("optionRouteMapの不備:", nextOptionKey);
+      return;
+    }
+
+    const optionKey = nextOptionKey as ModelType;
+
+    const response: DataResoonse | undefined = await readItemsBase({
+      apiInstance: api,
+      backendRoute: route,
+      params: {
+        page: page || 1,
+        filters: JSON.stringify(filterConditions),
+        sorts: JSON.stringify(sortConditions),
+      },
+      handleLoading: handleLoading,
+      returnResponse: true,
+    });
+
+    if (!response) return undefined;
+
+    const getted = convert(optionKey, response.data);
+
+    const optionTableData = {
+      option: convertToOption(
+        optionKey,
+        getted as unknown as OptionsMap[T],
+        true
+      ) as OptionTable,
+      page: response.page,
+      totalCount: response.totalCount,
+      isLoading: false,
+    };
+
+    return optionTableData;
+  };
+
+  const handlePageChange = async (page: number): Promise<void> => {
+    if (!optionKey) return;
+    if (!isModelType(optionKey)) return;
+    const optionTableData = await readOptions(
+      api,
+      optionKey,
       filterConditions,
       sortConditions,
-      setOptionKey,
-      setOptionTableData,
-      setOptionSelectData
+      page
     );
-  }, [key]);
+
+    if (!optionTableData) return;
+
+    setOptionTableData(optionTableData);
+  };
+
+  useEffect(() => {
+    if (!key) return;
+
+    const nextOptionKey = getOptionKey(key);
+    setOptionKey(nextOptionKey);
+
+    if (!isOptionType(nextOptionKey)) return;
+
+    const options = getDefaultOptions(nextOptionKey);
+    setOptionSelectData(options);
+  }, [filterConditions, sortConditions]);
 
   const multhInputHandleFormData = (
     index: number,
@@ -98,15 +226,15 @@ export const RenderField = <T extends keyof FormTypeMap>({
     }
   };
 
-  if (fieldType === "table" && optionTableData)
+  if (fieldType === "table")
     return (
       <>
         <div className="mb-2 text-gray-700">
           選択中: {formLabel[formDataKey as string] || "未選択"}
         </div>
         <CustomTableContainer
-          headers={optionTableData.option.header}
-          items={optionTableData.option.data}
+          headers={optionTableData ? optionTableData.option.header : undefined}
+          items={optionTableData ? optionTableData.option.data : undefined}
           filterField={
             optionKey && isModelType(optionKey)
               ? fieldDefinition[optionKey].filter(isFilterable)
@@ -117,9 +245,9 @@ export const RenderField = <T extends keyof FormTypeMap>({
               ? fieldDefinition[optionKey].filter(isSortable)
               : undefined
           }
-          itemsLoading={optionTableData.isLoading}
-          pageNum={optionTableData.page || 1}
-          totalCount={optionTableData.totalCount}
+          itemsLoading={optionTableData ? optionTableData.isLoading : undefined}
+          pageNum={optionTableData ? optionTableData.page || 1 : 1}
+          totalCount={optionTableData ? optionTableData.totalCount : undefined}
           form={true}
           onClick={(row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
             handleFormData(formDataKey, row);
@@ -129,18 +257,13 @@ export const RenderField = <T extends keyof FormTypeMap>({
               ? [formData[formDataKey]]
               : []
           }
-          handlePageChange={(page: number) =>
-            handlePageChange(
-              page,
-              fieldType,
-              filterConditions,
-              sortConditions,
-              optionKey,
-              setOptionTableData,
-              setOptionSelectData
-            )
-          }
+          handlePageChange={(page: number) => handlePageChange(page)}
           openBadges={optionKey === "team"}
+          noItemMessage={
+            <p className="text-sm text-gray-400">
+              フィルターから条件を追加してください
+            </p>
+          }
         />
       </>
     );

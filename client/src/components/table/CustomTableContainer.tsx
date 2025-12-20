@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 import Table from "./Table";
 import TableToolbar from "./TableToolbar";
@@ -11,6 +11,7 @@ import { TableBase, TableOperationFields } from "../../types/table";
 import { useSort } from "../../context/sort-context";
 import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
+import { TableHeader } from "../../types/types";
 
 type TablePage = {
   pageNum: number;
@@ -24,16 +25,18 @@ type TableForm = {
   selectedKey?: string[];
 };
 
-type Original<K extends ModelType> = TableBase<K> &
+type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
   TableOperationFields &
   TablePage &
   TableForm & {
-    items: any[];
+    headers?: TableHeader[];
+    items?: any[];
     itemsLoading?: boolean;
 
     uploadFile?: (file: File) => Promise<boolean>;
     reloadFun?: () => Promise<void>;
     openBadges?: boolean;
+    noItemMessage?: ReactNode;
   };
 
 type TableContainerProps<K extends keyof FormTypeMap> = Original<K>;
@@ -58,6 +61,7 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   onClick,
   selectedKey,
   openBadges,
+  noItemMessage,
 }: TableContainerProps<K>) => {
   const { closeSort } = useSort();
   const { closeFilter } = useFilter();
@@ -108,22 +112,33 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
         reloadFun={reloadFun}
         openBadges={openBadges}
       />
-      <Table
-        data={items}
-        totalCount={totalCount}
-        headers={headers}
-        pageNation="server"
-        linkField={linkField}
-        detailLink={detailLink}
-        rowSpacing={rowSpacing}
-        itemsPerPage={10}
-        isLoading={itemsLoading}
-        currentPage={pageNum}
-        onPageChange={onPageChange}
-        form={form}
-        onClick={onClick}
-        selectedKey={selectedKey}
-      />
+      {items && items?.length > 0 && headers ? (
+        <Table
+          data={items}
+          totalCount={totalCount}
+          headers={headers}
+          pageNation="server"
+          linkField={linkField}
+          detailLink={detailLink}
+          rowSpacing={rowSpacing}
+          itemsPerPage={10}
+          isLoading={itemsLoading}
+          currentPage={pageNum}
+          onPageChange={onPageChange}
+          form={form}
+          onClick={onClick}
+          selectedKey={selectedKey}
+        />
+      ) : (
+        <div className="flex items-center justify-center py-16">
+          <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">
+            <p className="mb-2 text-lg font-semibold text-gray-600">
+              表示するデータがありません
+            </p>
+            {noItemMessage}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

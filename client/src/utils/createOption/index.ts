@@ -117,41 +117,43 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
     competitionStage(data, table ? table : false),
   [ModelType.COMPETITION]: (data, table) =>
     competition(data, table ? table : false),
-  //   [ModelType.TRANSFER]: ,
-  [OptionType.STATUS]: () => status(),
-  [OptionType.POSITION_GROUP]: () => positionGroup(),
-  [OptionType.LEFT_REASON]: () => leftReason(),
-  [OptionType.AGE_GROUP]: () => ageGroup(),
-  [OptionType.AREA]: () => area(),
-  [OptionType.DISTRICT]: () => district(),
-  [OptionType.CONFEDERATION]: () => confederation(),
-  [OptionType.SUB_CONFEDERATION]: () => subConfederation(),
-  [OptionType.POSITION]: () => position(),
-  [OptionType.FORM]: () => form(),
-  [OptionType.GENRE]: () => genre(),
-  [OptionType.OPERATOR]: () => operator(),
-  [OptionType.COMPETITION_TYPE]: () => competitionType(),
-  [OptionType.CATEGORY]: () => category(),
-  [OptionType.LEVEL]: () => level(),
-  [OptionType.CURRENT]: () => [
+};
+
+const defaultOptions: Partial<{ [K in keyof OptionMap]: OptionArray }> = {
+  [OptionType.STATUS]: status(),
+  [OptionType.POSITION_GROUP]: positionGroup(),
+  [OptionType.LEFT_REASON]: leftReason(),
+  [OptionType.AGE_GROUP]: ageGroup(),
+  [OptionType.AREA]: area(),
+  [OptionType.DISTRICT]: district(),
+  [OptionType.CONFEDERATION]: confederation(),
+  [OptionType.SUB_CONFEDERATION]: subConfederation(),
+  [OptionType.POSITION]: position(),
+  [OptionType.FORM]: form(),
+  [OptionType.GENRE]: genre(),
+  [OptionType.OPERATOR]: operator(),
+  [OptionType.COMPETITION_TYPE]: competitionType(),
+  [OptionType.CATEGORY]: category(),
+  [OptionType.LEVEL]: level(),
+  [OptionType.CURRENT]: [
     { key: "true", label: "最新" },
     { key: "false", label: "" },
   ],
-  [OptionType.IS_INJURED]: () => [
+  [OptionType.IS_INJURED]: [
     { key: "true", label: "負傷中" },
     { key: "false", label: "復帰済み" },
   ],
-  [OptionType.STAGE_TYPE]: () => stageType(),
-  [OptionType.DIVISION]: () => division(),
-  [OptionType.PERIOD_LABEL]: () => periodLabel(),
-  [OptionType.RESULT]: () => result(),
-  [OptionType.REGISTRATION_TYPE]: () => registrationType(),
-  [OptionType.EVENT_TYPE]: () => event_type(),
-  [OptionType.POSITION_FORMATION]: () => position_formation(),
+  [OptionType.STAGE_TYPE]: stageType(),
+  [OptionType.DIVISION]: division(),
+  [OptionType.PERIOD_LABEL]: periodLabel(),
+  [OptionType.RESULT]: result(),
+  [OptionType.REGISTRATION_TYPE]: registrationType(),
+  [OptionType.EVENT_TYPE]: event_type(),
+  [OptionType.POSITION_FORMATION]: position_formation(),
 };
 
 // 実装
-export function convert<T extends keyof OptionsMap>(
+export function convertToOption<T extends keyof OptionsMap>(
   type: T,
   data: OptionsMap[T],
   table?: boolean
@@ -162,4 +164,16 @@ export function convert<T extends keyof OptionsMap>(
     return [];
   }
   return converter(data, table);
+}
+
+export function getDefaultOptions<T extends keyof OptionMap>(
+  key: T
+): OptionArray {
+  const options = defaultOptions[key];
+
+  if (!options) {
+    throw new Error(`No options found for ${String(key)}`);
+    return [];
+  }
+  return options;
 }

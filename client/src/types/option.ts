@@ -7,3 +7,10 @@ export type OptionTable = {
   header: TableHeader[];
   data: OptionArray;
 };
+
+export type ModelDataOptions = {
+  option: OptionTable;
+  page: number;
+  totalCount: number;
+  isLoading: boolean;
+};

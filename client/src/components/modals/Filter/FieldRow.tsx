@@ -3,10 +3,9 @@ import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
 import { OptionArray } from "../../../types/option";
 import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
-import { useOptions } from "../../../context/options-provider";
 import { useEffect, useState } from "react";
-import { useFilter } from "../../../context/filter-context";
-import { useSort } from "../../../context/sort-context";
+import { getDefaultOptions } from "../../../utils/createOption";
+import { isOptionType } from "../../../types/field";
 
 type OnchangeProps = {
   handleFieldValue: (value: string | number | Date | boolean) => void;
@@ -41,31 +40,26 @@ const FieldRow = ({
   } = onChange;
   const { addOnClick, deleteOnClick } = onApply;
 
-  const { updateOption } = useOptions();
-
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
     null
   );
 
-  const { filterConditions } = useFilter();
-  const { sortConditions } = useSort();
-
   useEffect(() => {
     if (!filterCondition.key) return;
-    updateOption(
-      filterCondition.key,
-      "select",
-      filterConditions,
-      sortConditions,
-      undefined,
-      undefined,
-      setOptionSelectData
-    );
+
+    if (!isOptionType(filterCondition.key)) return;
+
+    const options = getDefaultOptions(filterCondition.key);
+    setOptionSelectData(options);
   }, [filterCondition.key]);
+
+  const valueArray = !Array.isArray(filterCondition.value)
+    ? [filterCondition.value]
+    : filterCondition.value;
 
   return (
     <div className="mb-4 grid grid-cols-3 gap-3 items-center">
-      {filterCondition.value?.map((f) => {
+      {valueArray?.map((f) => {
         return (
           <>
             {/* フィールド選択 */}
