@@ -14,7 +14,7 @@ const Modal = ({ isOpen, onClose, children, header, footer }: ModalProps) => {
 
   const modal = (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-start justify-center pt-[5vh]">
-      <div className="relative bg-white rounded-lg shadow-lg w-[80%] max-w-2xl sm:w-full h-[90vh] flex flex-col">
+      <div className="relative bg-white rounded-lg shadow-lg h-[85%] w-[80%] max-w-2xl sm:w-full flex flex-col">
         {/* Close Button */}
         {onClose && (
           <button

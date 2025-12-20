@@ -83,7 +83,7 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
+    <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto p-3">
       {props.title && (
         <h2 className="text-xl font-semibold text-gray-700 mb-4">
           {props.title}
