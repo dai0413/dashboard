@@ -15,6 +15,10 @@ import {
   competition as competitionConfig,
   season as seasonConfig,
   competitionStage as competitionStageConfig,
+  match as matchConfig,
+  staff as staffConfig,
+  matchEventType as matchEventTypeConfig,
+  formation as formationConfig,
 } from "@dai0413/myorg-shared";
 import { TeamModel } from "../../models/team.js";
 import { CountryModel } from "../../models/country.js";
@@ -23,6 +27,10 @@ import { CompetitionModel } from "../../models/competition.js";
 import { SeasonModel } from "../../models/season.js";
 import { CompetitionStageModel } from "../../models/competition-stage.js";
 import { PlayerModel } from "../../models/player.js";
+import { MatchModel } from "../../models/match.js";
+import { StaffModel } from "../../models/staff.js";
+import { MatchEventTypeModel } from "../../models/match-event-type.js";
+import { FormationModel } from "../../models/formation.js";
 
 const ROUTE_BASE = process.env.ROUTE_BASE;
 
@@ -65,6 +73,12 @@ export async function setupDependencies(): Promise<DependencyRefs> {
   const competitionStage = await postAndGetData(
     competitionStageConfig(CompetitionStageModel)
   );
+  const match = await postAndGetData(matchConfig(MatchModel));
+  const staff = await postAndGetData(staffConfig(StaffModel));
+  const matchEventType = await postAndGetData(
+    matchEventTypeConfig(MatchEventTypeModel)
+  );
+  const formation = await postAndGetData(formationConfig(FormationModel));
 
   return {
     team,
@@ -74,6 +88,10 @@ export async function setupDependencies(): Promise<DependencyRefs> {
     competition,
     season,
     competitionStage,
+    match,
+    staff,
+    matchEventType,
+    formation,
   };
 }
 
