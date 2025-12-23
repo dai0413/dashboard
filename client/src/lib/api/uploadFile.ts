@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import { AxiosInstance, AxiosResponse } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError } from "@dai0413/myorg-shared";
 
@@ -17,14 +17,12 @@ export const uploadFileBase = async ({
   backendRoute,
   onAfterUpload,
   handleSetAlert,
-}: UploadParams) => {
-  handleSetAlert &&
-    handleSetAlert({
-      success: false,
-      message: "データ送信中",
-    });
-  let result: boolean;
-  let alert: AlertStatus = { success: false };
+}: UploadParams): Promise<AxiosResponse | undefined> => {
+  handleSetAlert?.({
+    success: false,
+    message: "データ送信中",
+  });
+
   const formData = new FormData();
   formData.append("file", data);
 
@@ -34,23 +32,52 @@ export const uploadFileBase = async ({
         "Content-Type": "multipart/form-data",
       },
     });
-    if (res.data && res.data.data) {
+
+    // ✅ 200 OK のときだけ items を反映
+    if (res.status === 200 && res.data?.data) {
       onAfterUpload(res.data.data);
     }
-    alert = { success: true, message: res.data?.message };
-    result = true;
+
+    // ✅ 206 PARTIAL_CONTENT
+    if (res.status === 206 && res.data?.csv) {
+      downloadBase64Csv(res.data.csv, res.data.filename);
+
+      handleSetAlert?.({
+        success: false,
+        message: res.data.message,
+      });
+
+      return res;
+    }
+
+    handleSetAlert?.({
+      success: true,
+      message: res.data?.message,
+    });
+
+    return res;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
-    alert = {
+    handleSetAlert?.({
       success: false,
-      errors: apiError.error?.errors,
-      message: apiError.error?.message,
-    };
-    result = false;
-  } finally {
-    handleSetAlert && handleSetAlert(alert);
-  }
+      errors: apiError?.error?.errors,
+      message: apiError?.error?.message,
+    });
 
-  return result;
+    return undefined;
+  }
+};
+
+const downloadBase64Csv = (base64: string, filename: string) => {
+  const binary = atob(base64);
+  const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: "text/csv;charset=utf-8;" });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 };

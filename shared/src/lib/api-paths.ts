@@ -80,6 +80,7 @@ export const API_PATHS = {
 
   PLAYER_REGISTRATION_HISTORY: {
     ROOT: "/player-registration-history",
+    UPLOAD: "/player-registration-history/upload",
     DETAIL: (id: string | number = ":id") =>
       `/player-registration-history/${id}`,
   },

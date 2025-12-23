@@ -4,6 +4,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
+import { AxiosResponse } from "axios";
 
 export type ModelContext<K extends ModelType> = {
   metacrud: MetaCrudContext<K>;
@@ -26,7 +27,7 @@ export type MetaCrudContext<K extends ModelType> = {
 
   updateItem: (data: FormTypeMap[K]) => Promise<boolean>;
   deleteItem: (id: string) => Promise<boolean>;
-  uploadFile?: (file: File) => Promise<boolean>;
+  uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
 
   isLoading: boolean;

@@ -10,7 +10,7 @@ import { mongoose } from "mongoose";
 import { PlayerModel } from "../dist/models/player.js";
 import { parseObjectId } from "../dist/csvImport/utils/parseObjectId.js";
 
-const inputPath = "../sample_data/input/playerAddOldId.csv";
+const inputPath = "../sample_data/input/player/playerAddOldId.csv";
 dotenv.config();
 
 const mongoUri = process.env.MONGODB_URI || "";
