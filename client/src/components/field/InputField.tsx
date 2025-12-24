@@ -99,7 +99,20 @@ const InputField = ({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => onChange(new Date())}
+            onClick={() => {
+              const now = new Date();
+              onChange(
+                new Date(
+                  now.getFullYear(),
+                  now.getMonth(),
+                  now.getDate(),
+                  0,
+                  0,
+                  0,
+                  0
+                )
+              );
+            }}
             className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
           >
             <CalendarDays size={16} />

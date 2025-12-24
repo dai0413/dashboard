@@ -37,6 +37,7 @@ import { readItemsBase } from "../../../lib/api";
 import { useApi } from "../../../context/api-context";
 import { AxiosInstance } from "axios";
 import { DataResoonse } from "../../../types/api";
+import { normalizeFiltersForApi } from "../../../utils/normalizeFiltersForApi";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -142,7 +143,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       backendRoute: route,
       params: {
         page: page || 1,
-        filters: JSON.stringify(filterConditions),
+        filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
         sorts: JSON.stringify(sortConditions),
       },
       handleLoading: handleLoading,

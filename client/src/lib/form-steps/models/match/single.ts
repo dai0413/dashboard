@@ -50,7 +50,6 @@ export const match: FormStep<ModelType.MATCH>[] = [
         label: "スタジアム",
         fieldType: "table",
         valueType: "option",
-        required: true,
       },
       {
         key: "stadium_name",

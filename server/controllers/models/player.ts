@@ -8,6 +8,7 @@ import { player } from "@dai0413/myorg-shared";
 import { DecodedRequest } from "../../types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { PlayerModel } from "../../models/player.js";
+import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 
 const { TYPE } = player(PlayerModel);
 
@@ -150,7 +151,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
       const playersToAdd = newRows.map((row) => ({
         name: row.name,
         en_name: row.en_name,
-        dob: row.dob,
+        dob: parseDateJST(row.dob),
         pob: row.pob,
       }));
 

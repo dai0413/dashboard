@@ -68,20 +68,20 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
           season: parseObjectId(row.season),
           player: parseObjectId(row.player),
           team: parseObjectId(row.team),
-          number: row.number ? row.number : undefined,
-          position_group: row.position_group ? row.position_group : undefined,
-          name: row.name ? row.name : undefined,
-          en_name: row.en_name ? row.en_name : undefined,
-          registration_type: row.registration_type
-            ? row.registration_type
-            : undefined,
-          height: row.height ? row.height : undefined,
-          weight: row.weight ? row.weight : undefined,
-          homegrown: row.homegrown ? parseBoolean(row.homegrown) : undefined,
-          isTypeTwo: row.isTypeTwo ? parseBoolean(row.isTypeTwo) : undefined,
-          isSpecialDesignation: row.isSpecialDesignation
-            ? parseBoolean(row.isSpecialDesignation)
-            : undefined,
+          registration_type: row.registration_type,
+          changes: {
+            number: row.number ? Number(row.number) : undefined,
+            position_group: row.position_group ? row.position_group : undefined,
+            name: row.name ? row.name : undefined,
+            en_name: row.en_name ? row.en_name : undefined,
+            height: row.height ? row.height : undefined,
+            weight: row.weight ? row.weight : undefined,
+            homegrown: row.homegrown ? parseBoolean(row.homegrown) : undefined,
+            isTypeTwo: row.isTypeTwo ? parseBoolean(row.isTypeTwo) : undefined,
+            isSpecialDesignation: row.isSpecialDesignation
+              ? parseBoolean(row.isSpecialDesignation)
+              : undefined,
+          },
         };
       });
 
@@ -91,7 +91,9 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
         // populate用にIDを集めて find する
         const populatedAdded = await MONGO_MODEL.find({
           _id: { $in: added.map((a: any) => a._id) },
-        }).populate(getNest(true, POPULATE_PATHS));
+        })
+          .populate(getNest(true, POPULATE_PATHS))
+          .lean();
 
         const processed = populatedAdded.map((item: any) => {
           const plain = convertObjectIdToString(item);
@@ -140,6 +142,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
             filename: "failed_rows.csv",
           });
         } else {
+          console.log("err", err);
           res
             .status(StatusCodes.INTERNAL_SERVER_ERROR)
             .json({ message: "保存中にエラーが発生しました" });

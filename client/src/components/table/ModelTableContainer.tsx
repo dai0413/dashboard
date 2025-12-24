@@ -12,6 +12,7 @@ import { ModelContext } from "../../types/context";
 import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
 import { TableBase } from "../../types/table";
+import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
 
 type ModelBase<K extends keyof FormTypeMap> = Omit<
   TableBase<K>,
@@ -49,7 +50,7 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   useEffect(() => {
     readItems({
       page: 1,
-      filters: JSON.stringify(filterConditions),
+      filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
       sorts: JSON.stringify(sortConditions),
     });
     setPage("page", 1);
@@ -62,7 +63,7 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   const handleApplyFilter = () => {
     readItems({
       page: 1,
-      filters: JSON.stringify(filterConditions),
+      filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
       sorts: JSON.stringify(sortConditions),
     });
     setPage("page", 1);
@@ -76,7 +77,7 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   const onPageChange = async (page: number) => {
     readItems({
       page: page,
-      filters: JSON.stringify(filterConditions),
+      filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
       sorts: JSON.stringify(sortConditions),
     });
     setPage("page", page);

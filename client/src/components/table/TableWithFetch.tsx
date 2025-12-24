@@ -13,6 +13,7 @@ import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 import { QueryParams, ResBody } from "@dai0413/myorg-shared";
 import { Data } from "../../types/types";
+import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
 
 type TableWithFetchProps<T extends ModelType> = Omit<
   TableBase<T>,
@@ -53,7 +54,7 @@ const TableWithFetch = <T extends ModelType>({
       backendRoute: apiRoute,
       params: {
         ...params,
-        filters: JSON.stringify(filterConditions),
+        filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
         sorts: JSON.stringify(sortConditions),
       },
       onSuccess: (resBody: ResBody<ModelDataMap[T][]>) =>

@@ -19,6 +19,7 @@ import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
 import Badges from "./Badges";
 import { hasSteps } from "../../lib/form-steps";
+import { AxiosResponse } from "axios";
 
 type AddButtonProps = {
   menuItems: { label: string; onClick: () => void }[];
@@ -77,7 +78,7 @@ type TableToolbarProps<K extends keyof FormTypeMap> = {
   rowSpacing: "wide" | "narrow";
   setRowSpacing: React.Dispatch<React.SetStateAction<"wide" | "narrow">>;
   modelType?: ModelType | null;
-  uploadFile?: (file: File) => Promise<boolean>;
+  uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
   formInitialData?: Partial<FormTypeMap[K]>;
   handleUpdateTrigger?: () => void;

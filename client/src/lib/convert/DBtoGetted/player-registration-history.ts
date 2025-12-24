@@ -1,4 +1,4 @@
-import { registrationType } from "@dai0413/myorg-shared";
+import { positionGroup, registrationType } from "@dai0413/myorg-shared";
 import {
   PlayerRegistrationHistory,
   PlayerRegistrationHistoryGet,
@@ -13,6 +13,10 @@ export const playerRegistrationHistory = (
 ): PlayerRegistrationHistoryGet => {
   const registration_type = registrationType().find(
     (item) => item.key === t.registration_type
+  )?.label;
+
+  const position_group = positionGroup().find(
+    (item) => item.key === t.changes?.position_group
   )?.label;
 
   return {
@@ -35,5 +39,9 @@ export const playerRegistrationHistory = (
       id: t.team._id,
     },
     registration_type: registration_type ? registration_type : "",
+    changes: {
+      ...t.changes,
+      position_group: position_group,
+    },
   };
 };

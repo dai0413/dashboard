@@ -94,7 +94,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
           name: row.name,
           en_name: row.en_name ? row.en_name : undefined,
           citizenship: citizenshipIds,
-          dob: row.dob ? parseDateJST(row.dob as unknown as string) : undefined,
+          dob: row.dob ? parseDateJST(row.dob) : undefined,
           pob: row.pob ? row.pob : undefined,
           player: row.player ? parseObjectId(row.player) : undefined,
           old_id: row.manager_id ? row.manager_id : undefined,
