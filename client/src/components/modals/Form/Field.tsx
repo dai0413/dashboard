@@ -87,6 +87,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
   const [optionTableData, setOptionTableData] =
     useState<ModelDataOptions | null>(null);
+  const [optionIsLoading, setOptionIsLoading] = useState<boolean>(false);
 
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
     null
@@ -109,18 +110,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
   const api = useApi();
 
-  const handleLoading = () => {
-    if (!setOptionTableData) return undefined;
-
-    return (time: "start" | "end") =>
-      setOptionTableData((prev) => ({
-        ...(prev ?? {
-          option: { data: [], header: [] },
-          page: 1,
-          totalCount: 0,
-        }),
-        isLoading: time === "start",
-      }));
+  const handleLoading = (time: "start" | "end") => {
+    setOptionIsLoading(time === "start");
   };
 
   const readOptions = async (
@@ -169,8 +160,10 @@ export const RenderField = <T extends keyof FormTypeMap>({
   };
 
   const handlePageChange = async (page: number): Promise<void> => {
-    if (!optionKey) return;
-    if (!isModelType(optionKey)) return;
+    setOptionIsLoading(true);
+
+    if (!optionKey) return setOptionIsLoading(false);
+    if (!isModelType(optionKey)) return setOptionIsLoading(false);
     const optionTableData = await readOptions(
       api,
       optionKey,
@@ -179,9 +172,10 @@ export const RenderField = <T extends keyof FormTypeMap>({
       page
     );
 
-    if (!optionTableData) return;
+    if (!optionTableData) return setOptionIsLoading(false);
 
     setOptionTableData(optionTableData);
+    setOptionIsLoading(false);
   };
 
   useEffect(() => {
@@ -246,7 +240,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
               ? fieldDefinition[optionKey].filter(isSortable)
               : undefined
           }
-          itemsLoading={optionTableData ? optionTableData.isLoading : undefined}
+          itemsLoading={optionIsLoading}
           pageNum={optionTableData ? optionTableData.page || 1 : 1}
           totalCount={optionTableData ? optionTableData.totalCount : undefined}
           form={true}

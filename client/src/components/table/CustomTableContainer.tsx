@@ -12,6 +12,8 @@ import { useSort } from "../../context/sort-context";
 import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
 import { TableHeader } from "../../types/types";
+import { AxiosResponse } from "axios";
+import { Loader2 } from "lucide-react";
 
 type TablePage = {
   pageNum: number;
@@ -33,7 +35,9 @@ type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
     items?: any[];
     itemsLoading?: boolean;
 
-    uploadFile?: (file: File) => Promise<boolean>;
+    uploadFile?: (
+      file: File
+    ) => Promise<AxiosResponse<any, any, {}> | undefined>;
     reloadFun?: () => Promise<void>;
     openBadges?: boolean;
     noItemMessage?: ReactNode;
@@ -76,8 +80,8 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   }, [updateTrigger]);
 
   const handleApplyFilter = async () => {
-    handlePageChange && (await handlePageChange(1));
     closeFilter();
+    handlePageChange && (await handlePageChange(1));
     closeSort();
   };
 
@@ -112,7 +116,13 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
         reloadFun={reloadFun}
         openBadges={openBadges}
       />
-      {items && items?.length > 0 && headers ? (
+      {itemsLoading ? (
+        <div className="flex items-center justify-center py-16">
+          <div className="bg-gray-50 px-8 py-10 text-center">
+            <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
+          </div>
+        </div>
+      ) : items && items?.length > 0 && headers ? (
         <Table
           data={items}
           totalCount={totalCount}
