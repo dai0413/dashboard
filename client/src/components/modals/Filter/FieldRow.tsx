@@ -3,7 +3,7 @@ import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
 import { OptionArray } from "../../../types/option";
 import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getDefaultOptions } from "../../../utils/createOption";
 import { isOptionType } from "../../../types/field";
 
@@ -59,45 +59,44 @@ const FieldRow = ({
 
   return (
     <div className="mb-4 grid grid-cols-3 gap-3 items-center">
-      {valueArray?.map((f) => {
-        return (
-          <>
-            {/* フィールド選択 */}
+      {valueArray?.map((f, index) => (
+        <React.Fragment key={index}>
+          {/* フィールド選択 */}
+          <SelectField
+            type="text"
+            value={filterCondition.key}
+            onChange={handleFieldSelect}
+            options={fieldOptions}
+            defaultOption="-- 項目を選択 --"
+          />
+
+          {/* 値入力 */}
+          {filterCondition.operator !== "is-empty" &&
+          filterCondition.operator !== "is-not-empty" ? (
+            <FilterFields
+              type={filterCondition.type}
+              value={f ?? ""}
+              onChange={handleFieldValue}
+              onChangeObj={handleFieldObjValue}
+              options={optionSelectData ?? []}
+            />
+          ) : (
+            <div />
+          )}
+
+          {/* 演算子選択 + ボタン */}
+          <div className="flex items-center gap-2">
             <SelectField
               type="text"
-              value={filterCondition.key}
-              onChange={handleFieldSelect}
-              options={fieldOptions}
-              defaultOption="-- 項目を選択 --"
+              value={filterCondition.operator as string}
+              onChange={handleFieldOperator}
+              options={operator()}
             />
-            {/* 値入力 */}
-            {filterCondition.operator !== "is-empty" &&
-            filterCondition.operator !== "is-not-empty" ? (
-              <FilterFields
-                type={filterCondition.type}
-                value={f ? f : ""}
-                onChange={handleFieldValue}
-                onChangeObj={handleFieldObjValue}
-                options={optionSelectData ?? []}
-              />
-            ) : (
-              <div></div>
-            )}
-            {/* 演算子選択 + ボタン */}
-            <div className="flex items-center gap-2">
-              <SelectField
-                type="text"
-                value={filterCondition.operator as string}
-                onChange={handleFieldOperator}
-                options={operator()}
-              />
-
-              <IconButton icon="add" onClick={addOnClick} color="blue" />
-              <IconButton icon="delete" onClick={deleteOnClick} color="red" />
-            </div>
-          </>
-        );
-      })}
+            <IconButton icon="add" onClick={addOnClick} color="blue" />
+            <IconButton icon="delete" onClick={deleteOnClick} color="red" />
+          </div>
+        </React.Fragment>
+      ))}
     </div>
   );
 };

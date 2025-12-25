@@ -436,7 +436,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
 
     // --- onChange 関数による値変更 ---
-    if (current.onChange) {
+    if (newData && current.onChange) {
       if (!Array.isArray(checkData)) {
         const updatePaires = await current.onChange(checkData, api);
 

@@ -1,7 +1,5 @@
-import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
-import { currentTransfer } from "../../utils/onChange/currentTransfer";
 import { setFromDate } from "./onChange/setFromDate";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
@@ -32,26 +30,6 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
 
       return [...teamObj, ...from_dateObj];
     },
-    filterConditions: async (formData, api) => {
-      if (!formData.player) return [];
-
-      const { to_team } = await currentTransfer({ formData, api });
-
-      let filterCondition: FilterableFieldDefinition[] = [];
-
-      if (to_team && to_team.key) {
-        filterCondition.push({
-          key: "_id",
-          label: "チーム",
-          operator: "equals",
-          type: "select",
-          value: [to_team.key],
-          valueLabel: [to_team.label],
-        });
-      }
-
-      return filterCondition;
-    },
   },
   {
     stepLabel: "移籍元を選択",
@@ -70,26 +48,6 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         valueType: "text",
       },
     ],
-    filterConditions: async (formData, api) => {
-      if (!formData.player) return [];
-
-      const { from_team } = await currentTransfer({ formData, api });
-
-      let filterCondition: FilterableFieldDefinition[] = [];
-
-      if (from_team && from_team.key) {
-        filterCondition.push({
-          key: "_id",
-          label: "チーム",
-          operator: "equals",
-          type: "select",
-          value: [from_team.key],
-          valueLabel: [from_team.label],
-        });
-      }
-
-      return filterCondition;
-    },
     skip: (formData) => {
       return formData.form === "更新";
     },
@@ -112,6 +70,9 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
       },
     ],
     validate: (formData) => teamCheck(formData),
+    skip: (formData) => {
+      return formData.form === "満了";
+    },
   },
   {
     stepLabel: "日付を入力",
@@ -139,7 +100,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
     ],
   },
   {
-    stepLabel: "移籍形態・背番号・ポジションを入力",
+    stepLabel: "背番号・ポジションを入力",
     type: "form",
     fields: [
       {

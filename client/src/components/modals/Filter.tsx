@@ -89,7 +89,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
 
           return isEditing ? (
             <FieldRow
-              key={index}
+              key={`${cond.key}-${index}`}
               filterCondition={filterCondition}
               fieldOptions={fieldOptions}
               onChange={{
@@ -110,7 +110,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             />
           ) : (
             <div
-              key={index}
+              key={`${cond.key}-${index}`}
               className="flex justify-between items-center bg-green-100 px-3 py-2 rounded-md"
             >
               {/* cond.valueLabel instanceof Date ? toDateKey(cond.valueLabel) : cond.valueLabel */}

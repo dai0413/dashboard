@@ -16,7 +16,11 @@ export async function setTeam(
 
   let obj: FormUpdatePair = [];
 
-  if (formData.form === "更新") {
+  if (
+    formData.form === "更新" ||
+    formData.form === "期限付き延長" ||
+    formData.form === "育成型期限付き延長"
+  ) {
     if (to_team_name) {
       obj.push({
         key: "to_team_name",
