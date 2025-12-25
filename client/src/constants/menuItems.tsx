@@ -43,7 +43,7 @@ export const SPMenuItems: IconButtonProps[] = [
   },
   {
     icon: "my-page",
-    to: APP_ROUTES.INJURY,
+    to: APP_ROUTES.ME,
     text: "マイページ",
   },
   {

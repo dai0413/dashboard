@@ -118,6 +118,24 @@ const Header = () => {
               className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 border-b border-gray-300`}
             />
           ))}
+          {accessToken ? (
+            <>
+              <button
+                onClick={logout}
+                className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 `}
+              >
+                ログアウト
+              </button>
+            </>
+          ) : (
+            <Link
+              onClick={() => setIsOpen(false)}
+              to={APP_ROUTES.LOGIN}
+              className={`flex justify-center text-xl text-gray-800 w-full text-center py-4 `}
+            >
+              ログイン
+            </Link>
+          )}
         </div>
       )}
     </>
