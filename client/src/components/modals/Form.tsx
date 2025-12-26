@@ -7,7 +7,7 @@ import { useForm } from "../../context/form-context";
 import { useState } from "react";
 import { RenderField } from "./Form/Field";
 import { RenderManyField } from "./Form/ManyField";
-import { Table } from "../table";
+import { ListView } from "../table/";
 import { useQuery } from "../../context/query-context";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
@@ -366,7 +366,7 @@ const Form = <T extends keyof FormTypeMap>() => {
 
                   {many?.renderConfirmMes(confirmBulkData)}
 
-                  <Table
+                  <ListView
                     pageNation="client"
                     data={confirmBulkData || []}
                     headers={confirmBulkDataHeaders || []}

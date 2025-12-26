@@ -1,6 +1,6 @@
 import { FormFieldDefinition } from "../../../types/form";
 import { FormTypeMap } from "../../../types/models";
-import { Table } from "../../table";
+import { ListView } from "../../table";
 import { RenderField } from "./Field";
 import { useState } from "react";
 import { TableHeader } from "../../../types/types";
@@ -64,7 +64,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
 
   return (
     <>
-      <Table
+      <ListView
         pageNation="client"
         data={many?.formData.length === 0 ? [{}] : many?.formData || []}
         headers={headers}

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { Table } from "../components/table";
+import { ListView } from "../components/table";
 import { LinkButton } from "../components/buttons";
 import { Arrow } from "../components/ui";
 import { useTopPage } from "../context/top-page-context";
@@ -21,7 +21,7 @@ const Main = () => {
               <h2 className="text-xl font-semibold text-gray-700 mb-4">
                 {"移籍情報"}
               </h2>
-              <Table
+              <ListView
                 pageNation="client"
                 data={transfers}
                 headers={[
@@ -47,7 +47,7 @@ const Main = () => {
                 {"怪我情報"}
               </h2>
 
-              <Table
+              <ListView
                 pageNation="client"
                 data={injuries}
                 headers={[

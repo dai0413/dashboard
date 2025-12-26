@@ -10,6 +10,7 @@ import { FormProvider } from "./context/form-context";
 import { OptionProvider } from "./context/options-provider";
 import { TopPageProvider } from "./context/top-page-context";
 import { QueryProvider } from "./context/query-context";
+import { ListViewProvider } from "./context/listView-context";
 
 import { PrivateRoute, wrapWithPrivateRoute } from "./components/routes";
 import { Form } from "./components/modals/";
@@ -30,108 +31,113 @@ const App: React.FC = () => {
     <AlertProvider>
       <AuthProvider>
         <ModelWrapper>
-          <OptionProvider>
-            <FilterProvider>
-              <SortProvider>
-                <FormProvider>
-                  <BrowserRouter>
-                    <QueryProvider>
-                      <div className="App">
-                        <Routes>
-                          {Object.entries(models).map(
-                            ([key, { table: Table, detail: Detail }]) => (
-                              <Route
-                                path={`/${key}/*`}
-                                element={wrapWithPrivateRoute(
-                                  <Layout>
-                                    <Table />
-                                    <Routes>
-                                      <Route path=":id" element={<Detail />} />
-                                    </Routes>
-                                  </Layout>
-                                )}
-                              />
-                            )
-                          )}
-
-                          <Route
-                            path={APP_ROUTES.ADMIN}
-                            element={wrapWithPrivateRoute(
-                              <Layout>
-                                <AdminDashboard />
-                              </Layout>
+          <ListViewProvider>
+            <OptionProvider>
+              <FilterProvider>
+                <SortProvider>
+                  <FormProvider>
+                    <BrowserRouter>
+                      <QueryProvider>
+                        <div className="App">
+                          <Routes>
+                            {Object.entries(models).map(
+                              ([key, { table: Table, detail: Detail }]) => (
+                                <Route
+                                  path={`/${key}/*`}
+                                  element={wrapWithPrivateRoute(
+                                    <Layout>
+                                      <Table />
+                                      <Routes>
+                                        <Route
+                                          path=":id"
+                                          element={<Detail />}
+                                        />
+                                      </Routes>
+                                    </Layout>
+                                  )}
+                                />
+                              )
                             )}
-                          />
-                          <Route
-                            path={APP_ROUTES.HOME}
-                            element={
-                              <Layout>
-                                <TopPageProvider>
-                                  <Top />
-                                </TopPageProvider>
-                              </Layout>
-                            }
-                          />
-                          <Route
-                            path={APP_ROUTES.LOGIN}
-                            element={
-                              <Layout>
-                                <Login />
-                              </Layout>
-                            }
-                          />
-                          <Route
-                            path={APP_ROUTES.ME}
-                            element={
-                              <PrivateRoute>
+
+                            <Route
+                              path={APP_ROUTES.ADMIN}
+                              element={wrapWithPrivateRoute(
                                 <Layout>
-                                  <Me />
+                                  <AdminDashboard />
                                 </Layout>
-                              </PrivateRoute>
-                            }
-                          />
-                          <Route
-                            path={`/${APP_ROUTES.NO_NUMBER}/*`}
-                            element={wrapWithPrivateRoute(
-                              <Layout>
-                                <NoNumber />
-                                <Routes>
-                                  <Route
-                                    path=":id"
-                                    element={<TransferDetail />}
-                                  />
-                                </Routes>
-                              </Layout>
-                            )}
-                          />
+                              )}
+                            />
+                            <Route
+                              path={APP_ROUTES.HOME}
+                              element={
+                                <Layout>
+                                  <TopPageProvider>
+                                    <Top />
+                                  </TopPageProvider>
+                                </Layout>
+                              }
+                            />
+                            <Route
+                              path={APP_ROUTES.LOGIN}
+                              element={
+                                <Layout>
+                                  <Login />
+                                </Layout>
+                              }
+                            />
+                            <Route
+                              path={APP_ROUTES.ME}
+                              element={
+                                <PrivateRoute>
+                                  <Layout>
+                                    <Me />
+                                  </Layout>
+                                </PrivateRoute>
+                              }
+                            />
+                            <Route
+                              path={`/${APP_ROUTES.NO_NUMBER}/*`}
+                              element={wrapWithPrivateRoute(
+                                <Layout>
+                                  <NoNumber />
+                                  <Routes>
+                                    <Route
+                                      path=":id"
+                                      element={<TransferDetail />}
+                                    />
+                                  </Routes>
+                                </Layout>
+                              )}
+                            />
 
-                          <Route
-                            path={`/${APP_ROUTES.NO_CALLUP}/*`}
-                            element={wrapWithPrivateRoute(
-                              <Layout>
-                                <NoCallUp />
-                                <Routes>
-                                  <Route
-                                    path=":id"
-                                    element={<NationalMatchSeriesDetail />}
-                                  />
-                                </Routes>
-                              </Layout>
-                            )}
-                          />
+                            <Route
+                              path={`/${APP_ROUTES.NO_CALLUP}/*`}
+                              element={wrapWithPrivateRoute(
+                                <Layout>
+                                  <NoCallUp />
+                                  <Routes>
+                                    <Route
+                                      path=":id"
+                                      element={<NationalMatchSeriesDetail />}
+                                    />
+                                  </Routes>
+                                </Layout>
+                              )}
+                            />
 
-                          {Summary}
+                            {Summary}
 
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </div>
-                      <Form />
-                    </QueryProvider>
-                  </BrowserRouter>
-                </FormProvider>
-              </SortProvider>
-            </FilterProvider>
-          </OptionProvider>
+                            <Route path="*" element={<NotFound />} />
+                          </Routes>
+                        </div>
+                        <Form />
+                      </QueryProvider>
+                    </BrowserRouter>
+                  </FormProvider>
+                </SortProvider>
+              </FilterProvider>
+            </OptionProvider>
+          </ListViewProvider>
         </ModelWrapper>
       </AuthProvider>
     </AlertProvider>
