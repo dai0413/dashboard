@@ -121,7 +121,7 @@ const National = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.COMPETITION.ROOT,
-            params: { country: id, sort: "_id" },
+            params: { getAll: true, country: id, sort: "_id" },
           }}
           filterField={fieldDefinition[ModelType.COMPETITION]
             .filter(isFilterable)
@@ -153,7 +153,7 @@ const National = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
-            params: { country: id, sort: "-_id" },
+            params: { getAll: true, country: id, sort: "-_id" },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
             .filter(isFilterable)
@@ -179,7 +179,7 @@ const National = () => {
           modelType={ModelType.NATIONAL_CALLUP}
           headers={[
             { label: "代表試合シリーズ", field: "series", width: "250px" },
-            { label: "選手", field: "player" },
+            { label: "選手", field: "player", isPrimary: true },
             { label: "招集状況", field: "status", width: "100px" },
             { label: "背番号", field: "number", width: "100px" },
             { label: "ポジション", field: "position_group", width: "100px" },
@@ -187,6 +187,7 @@ const National = () => {
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
             params: {
+              getAll: true,
               "series.country": id,
               sort: "-series,position_group_order,number",
             },

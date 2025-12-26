@@ -196,7 +196,11 @@ const Competition = () => {
           headers={[{ label: "チーム", field: "team" }]}
           fetch={{
             apiRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
-            params: { competition: id, season: selectedSeason?._id },
+            params: {
+              getAll: true,
+              competition: id,
+              season: selectedSeason?._id,
+            },
           }}
           filterField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
             .filter(isFilterable)
@@ -227,7 +231,7 @@ const Competition = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.COMPETITION_STAGE.ROOT,
-            params: { season: selectedSeason?._id },
+            params: { getAll: true, season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.COMPETITION_STAGE]
             .filter(isFilterable)
@@ -278,7 +282,7 @@ const Competition = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.MATCH.ROOT,
-            params: { season: selectedSeason?._id },
+            params: { getAll: true, season: selectedSeason?._id },
           }}
           filterField={fieldDefinition[ModelType.MATCH]
             .filter(isFilterable)
@@ -314,7 +318,7 @@ const Competition = () => {
               },
               width: "80px",
             },
-            { label: "選手", field: "player" },
+            { label: "選手", field: "player", isPrimary: true },
             {
               label: "抹消",
               field: "registration_status",
@@ -338,6 +342,7 @@ const Competition = () => {
           fetch={{
             apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             params: {
+              getAll: true,
               season: selectedSeason._id,
               registration_type: "register",
               sort: "team,position_group_order,number",

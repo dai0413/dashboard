@@ -329,11 +329,12 @@ const Team = () => {
             modelType={ModelType.TRANSFER}
             headers={[
               { label: "ポジション", field: "position", width: "70px" },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
             ]}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
+                getAll: true,
                 from_date: seasonDates.seasonRange,
                 to_team: id,
                 sort: "position_group_order,number",
@@ -369,13 +370,14 @@ const Team = () => {
             modelType={ModelType.TRANSFER}
             headers={[
               { label: "加入日", field: "from_date" },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
               { label: "移籍元", field: "from_team" },
               { label: "ポジション", field: "position" },
             ]}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
+                getAll: true,
                 from_date: [
                   `>${seasonDates.endDate}`,
                   `<${seasonDates.oneYearLater}`,
@@ -418,13 +420,14 @@ const Team = () => {
             modelType={ModelType.TRANSFER}
             headers={[
               { label: "加入日", field: "from_date" },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
               { label: "移籍元", field: "from_team" },
               { label: "形態", field: "form" },
             ]}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
+                getAll: true,
                 to_team: id,
                 form: "!更新",
                 from_date: seasonDates.seasonRange,
@@ -463,13 +466,17 @@ const Team = () => {
             modelType={ModelType.TRANSFER}
             headers={[
               { label: "加入日", field: "from_date" },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
               { label: "移籍先", field: "to_team" },
               { label: "形態", field: "form" },
             ]}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
-              params: { from_team: id, from_date: seasonDates.seasonRange },
+              params: {
+                getAll: true,
+                from_team: id,
+                from_date: seasonDates.seasonRange,
+              },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
               .filter(isFilterable)
@@ -504,13 +511,14 @@ const Team = () => {
             modelType={ModelType.TRANSFER}
             headers={[
               { label: "加入日", field: "from_date" },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
               { label: "移籍先", field: "to_team" },
               { label: "形態", field: "form" },
             ]}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
+                getAll: true,
                 from_team: id,
                 form: ["期限付き", "育成型期限付き"],
                 from_date: seasonDates.seasonRange,
@@ -549,13 +557,13 @@ const Team = () => {
             modelType={ModelType.INJURY}
             headers={[
               { label: "発表日", field: "doa" },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
               { label: "負傷箇所・診断結果", field: "injured_part" },
               { label: "全治", field: "ttp" },
             ]}
             fetch={{
               apiRoute: API_PATHS.INJURY.ROOT,
-              params: { team: id, doa: seasonDates.seasonRange },
+              params: { getAll: true, team: id, doa: seasonDates.seasonRange },
             }}
             filterField={fieldDefinition[ModelType.INJURY]
               .filter(isFilterable)
@@ -632,7 +640,12 @@ const Team = () => {
             ]}
             fetch={{
               apiRoute: API_PATHS.MATCH.ROOT,
-              params: { team: id, date: seasonDates.seasonRange, sort: "date" },
+              params: {
+                getAll: true,
+                team: id,
+                date: seasonDates.seasonRange,
+                sort: "date",
+              },
             }}
             filterField={fieldDefinition[ModelType.MATCH].filter(isFilterable)}
             sortField={fieldDefinition[ModelType.MATCH].filter(isSortable)}
@@ -663,7 +676,7 @@ const Team = () => {
                   return data.number ? String(data.number) : "";
                 },
               },
-              { label: "選手", field: "player" },
+              { label: "選手", field: "player", isPrimary: true },
               { label: "登録中・抹消済", field: "registration_status" },
               {
                 label: "2種・特別指定",
@@ -678,6 +691,7 @@ const Team = () => {
             fetch={{
               apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
               params: {
+                getAll: true,
                 team: id,
                 date: seasonDates.seasonRange,
                 registration_type: "register",

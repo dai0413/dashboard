@@ -142,7 +142,11 @@ const National = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
-            params: { series: id, sort: "position_group_order,number" },
+            params: {
+              getAll: true,
+              series: id,
+              sort: "position_group_order,number",
+            },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
             .filter(isFilterable)

@@ -130,7 +130,7 @@ const Player = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.TRANSFER.ROOT,
-            params: { player: id, sort: "-from_date,-_id" },
+            params: { getAll: true, player: id, sort: "-from_date,-_id" },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
             .filter(isFilterable)
@@ -166,7 +166,7 @@ const Player = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.INJURY.ROOT,
-            params: { player: id },
+            params: { getAll: true, player: id },
           }}
           filterField={fieldDefinition[ModelType.INJURY]
             .filter(isFilterable)
@@ -196,7 +196,7 @@ const Player = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
-            params: { player: id },
+            params: { getAll: true, player: id },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
             .filter(isFilterable)
@@ -238,6 +238,7 @@ const Player = () => {
           fetch={{
             apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
             params: {
+              getAll: true,
               player: id,
               sort: "-date,-competition,-registration_type",
             },

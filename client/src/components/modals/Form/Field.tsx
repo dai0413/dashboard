@@ -119,7 +119,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
     nextOptionKey: ModelType,
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
-    page?: number
+    _page?: number
   ): Promise<ModelDataOptions | undefined> => {
     const route = optionRouteMap[nextOptionKey].ROOT;
     if (!route) {
@@ -133,7 +133,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       apiInstance: api,
       backendRoute: route,
       params: {
-        page: page || 1,
+        getAll: true,
         filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
         sorts: JSON.stringify(sortConditions),
       },
@@ -253,7 +253,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
               : []
           }
           handlePageChange={(page: number) => handlePageChange(page)}
-          openBadges={optionKey === "team"}
+          displayBadge={optionKey === "team"}
           noItemMessage={
             <p className="text-sm text-gray-400">
               フィルターから条件を追加してください
