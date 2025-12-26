@@ -1,6 +1,6 @@
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 
-import Table from "./Table";
+import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
@@ -10,7 +10,7 @@ import { TableBase, TableOperationFields } from "../../types/table";
 
 import { useSort } from "../../context/sort-context";
 import { useFilter } from "../../context/filter-context";
-import { useQuery } from "../../context/query-context";
+import { useListView } from "../../context/listView-context";
 import { TableHeader } from "../../types/types";
 import { AxiosResponse } from "axios";
 import { Loader2 } from "lucide-react";
@@ -39,7 +39,7 @@ type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
       file: File
     ) => Promise<AxiosResponse<any, any, {}> | undefined>;
     reloadFun?: () => Promise<void>;
-    openBadges?: boolean;
+    displayBadge?: boolean;
     noItemMessage?: ReactNode;
   };
 
@@ -64,16 +64,13 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   form,
   onClick,
   selectedKey,
-  openBadges,
+  displayBadge,
   noItemMessage,
 }: TableContainerProps<K>) => {
   const { closeSort } = useSort();
   const { closeFilter } = useFilter();
-  const { setPage } = useQuery();
 
-  const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
-
-  const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
+  const { updateTrigger } = useListView();
 
   useEffect(() => {
     handleApplyFilter();
@@ -91,11 +88,6 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
     ? ModelRouteMap[modelType]
     : "";
 
-  const onPageChange = async (page: number) => {
-    handlePageChange && (await handlePageChange(page));
-    setPage("page", page);
-  };
-
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
       {title && (
@@ -105,16 +97,11 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
       <Filter filterableField={filterField || []} onApply={handleApplyFilter} />
       <Sort sortableField={sortField || []} onApply={handleApplyFilter} />
       <TableToolbar
-        rowSpacing={rowSpacing}
-        setRowSpacing={setRowSpacing}
         modelType={modelType}
         uploadFile={uploadFile}
         formInitialData={formInitialData}
-        handleUpdateTrigger={() => {
-          setUpdateTrigger((prev) => !prev);
-        }}
         reloadFun={reloadFun}
-        openBadges={openBadges}
+        displayBadge={displayBadge}
       />
       {itemsLoading ? (
         <div className="flex items-center justify-center py-16">
@@ -123,18 +110,16 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
           </div>
         </div>
       ) : items && items?.length > 0 && headers ? (
-        <Table
+        <ListView
           data={items}
           totalCount={totalCount}
           headers={headers}
-          pageNation="server"
+          pageNation="client"
           linkField={linkField}
           detailLink={detailLink}
-          rowSpacing={rowSpacing}
           itemsPerPage={10}
           isLoading={itemsLoading}
           currentPage={pageNum}
-          onPageChange={onPageChange}
           form={form}
           onClick={onClick}
           selectedKey={selectedKey}

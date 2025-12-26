@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
-import Table from "./Table";
+import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
@@ -13,6 +13,7 @@ import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
 import { TableBase } from "../../types/table";
 import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
+import { useListView } from "../../context/listView-context";
 
 type ModelBase<K extends keyof FormTypeMap> = Omit<
   TableBase<K>,
@@ -30,10 +31,7 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
-
-  const [rowSpacing, setRowSpacing] = useState<"wide" | "narrow">("narrow");
-
-  const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
+  const { updateTrigger } = useListView();
 
   const {
     items,
@@ -94,24 +92,18 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
       <Filter filterableField={filterField} onApply={handleApplyFilter} />
       <Sort sortableField={sortField} onApply={handleApplyFilter} />
       <TableToolbar
-        rowSpacing={rowSpacing}
-        setRowSpacing={setRowSpacing}
         modelType={props.modelType}
         uploadFile={uploadFile}
         downloadFile={downloadFile}
         formInitialData={props.formInitialData}
-        handleUpdateTrigger={() => {
-          setUpdateTrigger((prev) => !prev);
-        }}
       />
-      <Table
+      <ListView
         data={items}
         totalCount={totalCount}
         headers={props.headers}
         pageNation="server"
         linkField={props.linkField}
         detailLink={detailLink}
-        rowSpacing={rowSpacing}
         itemsPerPage={10}
         isLoading={tableIsLoading}
         currentPage={page}
