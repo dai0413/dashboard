@@ -5,6 +5,7 @@ export type TableHeader = {
   field: string;
   getData?: (data: any) => string | Label;
   width?: string;
+  isPrimary?: boolean;
 };
 
 export type Label = {

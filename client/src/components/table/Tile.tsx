@@ -19,7 +19,6 @@ export const Tile = <T extends Record<string, any>>({
   itemsPerPage,
   // isLoading,
   // currentPage,
-  // onPageChange,
   edit,
   renderFieldCell,
   deleteOnClick,
