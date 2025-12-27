@@ -80,7 +80,7 @@ export const transfer: UIFieldDefinition[] = [
     key: "URL",
     label: "URL",
     type: "string",
-    filterable: false,
+    filterable: true,
     sortable: false,
     displayOnDetail: true,
   },
