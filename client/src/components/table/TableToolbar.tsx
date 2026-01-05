@@ -111,18 +111,27 @@ const TableToolbar = <K extends keyof FormTypeMap>({
 
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const addDropdownRef = useRef<HTMLDivElement | null>(null);
+  const folderDropdownRef = useRef<HTMLDivElement | null>(null);
 
   // 外側クリックで閉じる
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        SetIsFolderOpen(false);
-        setIsAddOpen(false);
+      const target = event.target as Node;
+
+      if (addDropdownRef.current && addDropdownRef.current.contains(target)) {
+        return;
       }
+
+      if (
+        folderDropdownRef.current &&
+        folderDropdownRef.current.contains(target)
+      ) {
+        return;
+      }
+
+      setIsAddOpen(false);
+      SetIsFolderOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -268,7 +277,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
             {hasFormSteps && (
               <AddButton
                 menuItems={menuItems}
-                dropdownRef={dropdownRef}
+                dropdownRef={addDropdownRef}
                 isAddOpen={isAddOpen}
                 setIsAddOpen={setIsAddOpen}
               />
@@ -276,7 +285,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
             {/* 右側：フォルダーボタン */}
             {(uploadFile || downloadFile) && (
               <div
-                ref={dropdownRef}
+                ref={folderDropdownRef}
                 className="relative inline-block text-left"
               >
                 <button
