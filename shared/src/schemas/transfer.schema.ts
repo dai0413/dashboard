@@ -7,37 +7,40 @@ import { PlayerZodSchema } from "./player.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { getKey } from "../utils/getKey.js";
 
-export const TransferZodSchema = z
-  .object({
-    _id: objectId,
-    doa: dateField,
-    from_team: objectId.optional(),
-    from_team_name: z.string().nonempty().optional(),
-    to_team: objectId.optional(),
-    to_team_name: z.string().nonempty().optional(),
-    player: objectId.refine((v) => !!v, { message: "playerは必須です" }),
-    position: z.array(z.enum(getKey(position()))).optional(),
-    form: z.enum(getKey(form())).optional(),
-    number: z.number().optional(),
-    from_date: dateField.refine((v) => !!v, { message: "from_dateは必須です" }),
-    to_date: dateField,
-    URL: z.array(z.string().nonempty()).optional(),
-    createdAt: z
-      .preprocess(
-        (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-        z.date()
-      )
-      .optional(),
-    updatedAt: z
-      .preprocess(
-        (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-        z.date()
-      )
-      .optional(),
-  })
-  .refine((data) => data.from_team || data.from_team_name, {
+export const TransferBaseZodSchema = z.object({
+  _id: objectId,
+  doa: dateField,
+  from_team: objectId.optional(),
+  from_team_name: z.string().nonempty().optional(),
+  to_team: objectId.optional(),
+  to_team_name: z.string().nonempty().optional(),
+  player: objectId.refine((v) => !!v, { message: "playerは必須です" }),
+  position: z.array(z.enum(getKey(position()))).optional(),
+  form: z.enum(getKey(form())).optional(),
+  number: z.number().optional(),
+  from_date: dateField.refine((v) => !!v, { message: "from_dateは必須です" }),
+  to_date: dateField,
+  URL: z.array(z.string().nonempty()).optional(),
+  createdAt: z
+    .preprocess(
+      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+      z.date()
+    )
+    .optional(),
+  updatedAt: z
+    .preprocess(
+      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+      z.date()
+    )
+    .optional(),
+});
+
+export const TransferZodSchema = TransferBaseZodSchema.refine(
+  (data) => data.from_team || data.from_team_name,
+  {
     message: "from_teamまたはfrom_team_nameのどちらかを入力してください",
-  })
+  }
+)
   .refine((data) => data.to_team || data.to_team_name, {
     message: "to_teamまたはto_team_nameのどちらかを入力してください",
   })
@@ -51,13 +54,13 @@ export const TransferZodSchema = z
 
 export type TransferType = z.infer<typeof TransferZodSchema>;
 
-export const TransferFormSchema = TransferZodSchema.omit({
+export const TransferFormSchema = TransferBaseZodSchema.omit({
   _id: true,
   createdAt: true,
   updatedAt: true,
 });
 
-export const TransferResponseSchema = TransferZodSchema.omit({
+export const TransferResponseSchema = TransferBaseZodSchema.omit({
   from_team_name: true,
   to_team_name: true,
 }).extend({
@@ -66,7 +69,7 @@ export const TransferResponseSchema = TransferZodSchema.omit({
   to_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
 });
 
-export const TransferPopulatedSchema = TransferZodSchema.omit({
+export const TransferPopulatedSchema = TransferBaseZodSchema.omit({
   player: true,
   from_team: true,
   to_team: true,
