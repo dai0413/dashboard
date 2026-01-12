@@ -71,7 +71,13 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
     ],
     validate: (formData) => teamCheck(formData),
     skip: (formData) => {
-      return formData.form === "満了";
+      return (
+        formData.form === "満了" ||
+        formData.form === "引退" ||
+        formData.form === "契約解除" ||
+        formData.form === "離脱" ||
+        formData.form === "退団"
+      );
     },
   },
   {

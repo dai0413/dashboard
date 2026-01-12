@@ -16,8 +16,19 @@ export async function setTeam(
 
   let obj: FormUpdatePair = [];
 
-  if (
-    formData.form === "更新" ||
+  if (formData.form === "更新") {
+    if (to_team_name) {
+      obj.push({
+        key: "to_team_name",
+        value: to_team_name,
+      });
+    } else if (to_team) {
+      obj.push({
+        key: "to_team",
+        value: to_team,
+      });
+    }
+  } else if (
     formData.form === "期限付き延長" ||
     formData.form === "育成型期限付き延長"
   ) {
@@ -32,6 +43,18 @@ export async function setTeam(
         value: to_team,
       });
     }
+
+    if (from_team_name) {
+      obj.push({
+        key: "from_team_name",
+        value: from_team_name,
+      });
+    } else if (from_team) {
+      obj.push({
+        key: "from_team",
+        value: from_team,
+      });
+    }
   } else {
     if (to_team_name) {
       obj.push({
@@ -44,13 +67,6 @@ export async function setTeam(
         value: to_team,
       });
     }
-  }
-
-  if (position) {
-    obj.push({
-      key: "position",
-      value: position,
-    });
   }
 
   if (
@@ -71,6 +87,13 @@ export async function setTeam(
         value: from_team,
       });
     }
+  }
+
+  if (position) {
+    obj.push({
+      key: "position",
+      value: position,
+    });
   }
 
   return obj;

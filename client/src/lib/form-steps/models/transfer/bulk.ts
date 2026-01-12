@@ -29,6 +29,14 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         valueType: "option",
         overwriteByMany: true,
       },
+      {
+        key: "URL",
+        label: "URL",
+        multi: true,
+        fieldType: "textarea",
+        valueType: "text",
+        overwriteByMany: true,
+      },
     ],
   },
   {
