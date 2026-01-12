@@ -385,31 +385,39 @@ const Form = <T extends keyof FormTypeMap>() => {
             />
           ) : (
             steps[currentStep].fields &&
-            steps[currentStep].fields.map((field) => (
-              <div key={field.key as string} className="mb-4">
-                <label className="block text-gray-600 text-sm font-medium mb-1">
-                  {field.label}
-                </label>
-                <RenderField
-                  key={field.key as string}
-                  field={field}
-                  formData={
-                    field.overwriteByMany
-                      ? many?.bulkCommonData || {}
-                      : single.formData
-                  }
-                  formLabel={
-                    field.overwriteByMany
-                      ? many?.bulkCommonLabel || {}
-                      : single.formLabel
-                  }
-                  handleFormData={(key, value) =>
-                    handleFormData(key, value, field.overwriteByMany)
-                  }
-                  supportButton={!steps[currentStep].many}
-                />
-              </div>
-            ))
+            steps[currentStep].fields.map((field, fieldIndex) => {
+              const stepTotal = steps[currentStep]?.fields?.length ?? 0;
+              const stepIndex = fieldIndex + 1;
+
+              return (
+                <div key={field.key as string} className="mb-4">
+                  <label className="block text-gray-600 text-sm font-medium mb-1">
+                    <span className="mr-2 text-gray-400">
+                      {stepIndex}/{stepTotal}
+                    </span>
+                    {field.label}
+                  </label>
+                  <RenderField
+                    key={field.key as string}
+                    field={field}
+                    formData={
+                      field.overwriteByMany
+                        ? many?.bulkCommonData || {}
+                        : single.formData
+                    }
+                    formLabel={
+                      field.overwriteByMany
+                        ? many?.bulkCommonLabel || {}
+                        : single.formLabel
+                    }
+                    handleFormData={(key, value) =>
+                      handleFormData(key, value, field.overwriteByMany)
+                    }
+                    supportButton={!steps[currentStep].many}
+                  />
+                </div>
+              );
+            })
           )}
         </>
       )}
