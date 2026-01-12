@@ -31,7 +31,7 @@ function deleteDeepValue(obj: any, path: string[]) {
 export function updateFormValue<T extends object, K extends keyof T>(
   prev: T,
   key: K,
-  value: T[K],
+  value: T[K] | undefined,
   setLabels?:
     | ((updater: (prev: Record<string, any>) => Record<string, any>) => void)
     | null

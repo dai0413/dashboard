@@ -104,7 +104,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     formLabel: Record<string, any>;
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
-      value: FormTypeMap[T][K],
+      value: FormTypeMap[T][K] | undefined,
       overwriteByMany?: boolean
     ) => void;
     formSteps: FormStep<T>[];
@@ -118,7 +118,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     handleFormData: <K extends keyof FormTypeMap[T]>(
       index: number,
       key: K,
-      value: FormTypeMap[T][K]
+      value: FormTypeMap[T][K] | undefined
     ) => void;
     formSteps: FormStep<T>[];
     addFormDatas: (baseCopy: boolean, setPage?: (p: number) => void) => void;
@@ -524,7 +524,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
-    value: FormTypeMap[T][K],
+    value: FormTypeMap[T][K] | undefined,
     overwriteByMany?: boolean
   ) => {
     if (overwriteByMany) {
@@ -567,7 +567,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const handleFormData = <K extends keyof FormTypeMap[T]>(
     index: number,
     key: K,
-    value: FormTypeMap[T][K]
+    value: FormTypeMap[T][K] | undefined
   ) => {
     setFormDatas((prev) => {
       const newData = prev.map((item, i) =>

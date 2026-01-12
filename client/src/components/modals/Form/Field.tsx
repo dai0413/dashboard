@@ -38,6 +38,7 @@ import { useApi } from "../../../context/api-context";
 import { AxiosInstance } from "axios";
 import { DataResoonse } from "../../../types/api";
 import { normalizeFiltersForApi } from "../../../utils/normalizeFiltersForApi";
+import { X } from "lucide-react";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -45,7 +46,7 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   formLabel: Record<string, any>;
   handleFormData: <K extends keyof FormTypeMap[T]>(
     key: K,
-    value: FormTypeMap[T][K]
+    value: FormTypeMap[T][K] | undefined
   ) => void;
   supportButton?: boolean;
 };
@@ -229,8 +230,19 @@ export const RenderField = <T extends keyof FormTypeMap>({
   if (fieldType === "table")
     return (
       <>
-        <div className="mb-2 text-gray-700">
-          選択中: {formLabel[formDataKey as string] || "未選択"}
+        <div className="flex mb-2 text-gray-700">
+          <div className="px-5">
+            選択中: {formLabel[formDataKey as string] || "未選択"}
+          </div>
+          <button
+            type="button"
+            onClick={() => handleFormData(formDataKey, undefined)}
+            className="hover:cursor-pointer flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            title="Clear"
+          >
+            選択解除
+            <X size={16} />
+          </button>
         </div>
         <CustomTableContainer
           headers={optionTableData ? optionTableData.option.header : undefined}
@@ -250,7 +262,15 @@ export const RenderField = <T extends keyof FormTypeMap>({
           totalCount={optionTableData ? optionTableData.totalCount : undefined}
           form={true}
           onClick={(row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
-            handleFormData(formDataKey, row);
+            const currentValue = formData[formDataKey];
+
+            const isSame =
+              currentValue &&
+              row &&
+              typeof row === "object" &&
+              "key" in row &&
+              row.key === currentValue;
+            handleFormData(formDataKey, isSame ? undefined : row);
           }}
           selectedKey={
             typeof formData[formDataKey] === "string"
