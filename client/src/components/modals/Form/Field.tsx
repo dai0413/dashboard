@@ -192,13 +192,18 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
   const multhInputHandleFormData = (
     index: number,
-    value: string | number | Date | boolean
+    value: string | number | Date | boolean | undefined
   ) => {
     const newValue = [...((formData[formDataKey] ?? []) as string[])];
-    newValue[index] = value.toString();
+    if (value === undefined) {
+      newValue[index] = "";
+    } else {
+      newValue[index] = value.toString();
+    }
 
     if (
       index === newValue.length - 1 &&
+      value !== undefined &&
       value.toString().trim() !== "" &&
       !newValue.includes("")
     ) {
@@ -440,8 +445,9 @@ export const RenderField = <T extends keyof FormTypeMap>({
             ? (formData[formDataKey] as string[])
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => {
-          const onChange = (value: string | number | Date | boolean) =>
-            multhInputHandleFormData(index, value);
+          const onChange = (
+            value: string | number | Date | boolean | undefined
+          ) => multhInputHandleFormData(index, value);
 
           return (
             <div key={index} className="flex items-center space-x-2 mb-2">
@@ -490,7 +496,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       <InputField
         type={valueType}
         value={value}
-        onChange={(value: string | number | Date | boolean) => {
+        onChange={(value: string | number | Date | boolean | undefined) => {
           handleFormData(formDataKey, value as any);
         }}
         placeholder=""

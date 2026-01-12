@@ -13,6 +13,21 @@ function setDeepValue(obj: any, path: string[], value: any) {
   return newObj;
 }
 
+function deleteDeepValue(obj: any, path: string[]) {
+  const newObj = { ...obj };
+  let cur = newObj;
+
+  for (let i = 0; i < path.length - 1; i++) {
+    const p = path[i];
+    if (!cur[p]) return newObj;
+    cur[p] = { ...cur[p] };
+    cur = cur[p];
+  }
+
+  delete cur[path[path.length - 1]];
+  return newObj;
+}
+
 export function updateFormValue<T extends object, K extends keyof T>(
   prev: T,
   key: K,
@@ -37,6 +52,9 @@ export function updateFormValue<T extends object, K extends keyof T>(
   // setLabels の更新（深いパス対応）
   if (setLabels) {
     setLabels((prevLabel) => {
+      if (normalizedValue === undefined) {
+        return deleteDeepValue(prevLabel, path);
+      }
       if (isLabelObj) {
         return setDeepValue(prevLabel, path, (normalizedValue as any).label);
       }
@@ -50,6 +68,10 @@ export function updateFormValue<T extends object, K extends keyof T>(
     : normalizedValue;
 
   // フォーム値の更新（深いパス対応）
+  if (storedValue === undefined) {
+    return deleteDeepValue(prev, path);
+  }
+
   const next = setDeepValue(prev, path, storedValue);
   return next;
 }

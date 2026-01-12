@@ -4,8 +4,8 @@ import { InputField, SelectField } from "../field";
 
 type FilterFieldsProps = {
   type: FilterableFieldDefinition["type"];
-  value: string | number | Date | boolean;
-  onChange: (value: string | number | Date | boolean) => void;
+  value: string | number | Date | boolean | undefined;
+  onChange: (value: string | number | Date | boolean | undefined) => void;
   onChangeObj?: (value: Record<string, any>) => void;
   options: OptionArray;
 };

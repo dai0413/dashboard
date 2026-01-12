@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { CalendarDays, CalendarClock, CalendarRange } from "lucide-react";
+import { CalendarDays, CalendarClock, CalendarRange, X } from "lucide-react";
 import { getSeasonDates } from "../../utils/getSeasonDates";
 
 type InputFieldProps = {
   type: "text" | "number" | "date" | "datetime-local" | "boolean" | "option";
   value: string | number | Date | boolean;
-  onChange: (value: string | number | Date | boolean) => void;
+  onChange: (value: string | number | Date | boolean | undefined) => void;
   placeholder?: string;
   supportButton?: boolean;
 };
+
+type InternalValue = string | number | boolean | "";
 
 const formatLocalDate = (date: Date) => {
   const y = date.getFullYear();
@@ -24,26 +26,28 @@ const InputField = ({
   placeholder,
   supportButton,
 }: InputFieldProps) => {
-  const [internalValue, setInternalValue] = useState<string | number | boolean>(
-    () => {
-      if (type === "boolean") return Boolean(value);
+  const [internalValue, setInternalValue] = useState<InternalValue>(() => {
+    if (type === "boolean") return Boolean(value);
 
-      if (type === "date" || type === "datetime-local") {
-        if (typeof value === "string") return value;
-        if (value instanceof Date && !isNaN(value.getTime())) {
-          return type === "datetime-local"
-            ? value.toISOString().slice(0, 16)
-            : formatLocalDate(value); // ✅ ローカル変換
-        }
-        return "";
+    if (type === "date" || type === "datetime-local") {
+      if (typeof value === "string") return value;
+      if (value instanceof Date && !isNaN(value.getTime())) {
+        return type === "datetime-local"
+          ? value.toISOString().slice(0, 16)
+          : formatLocalDate(value); // ✅ ローカル変換
       }
-
-      return value as string | number | boolean;
+      return "";
     }
-  );
+
+    return (value ?? "") as InternalValue;
+  });
 
   useEffect(() => {
-    // 親から値が変わったときは同期
+    if (type === "boolean") {
+      setInternalValue(Boolean(value));
+      return;
+    }
+
     if (type === "date" || type === "datetime-local") {
       if (value instanceof Date && !isNaN(value.getTime())) {
         setInternalValue(
@@ -53,25 +57,41 @@ const InputField = ({
         );
       } else if (typeof value === "string") {
         setInternalValue(value);
+      } else {
+        setInternalValue("");
       }
-    } else {
-      setInternalValue(value as any);
+      return;
     }
+
+    setInternalValue((value ?? "") as InternalValue);
   }, [value, type]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === "boolean") {
+      const checked = e.target.checked;
+      setInternalValue(checked);
+      onChange(checked);
+      return;
+    }
+
     const newVal = e.target.value;
     setInternalValue(newVal);
 
-    if (type === "boolean") {
-      onChange(e.target.checked);
-    } else if (type === "number") {
+    // 🔑 空入力 = undefined
+    if (newVal === "") {
+      onChange(undefined);
+      return;
+    }
+
+    if (type === "number") {
       onChange(Number(newVal));
     } else if (type === "date") {
-      // ✅ 入力値をローカルタイムのDateに変換
       const [y, m, d] = newVal.split("-").map(Number);
-      if (y && m && d) onChange(new Date(y, m - 1, d, 0, 0, 0, 0));
-      else onChange(newVal);
+      if (y && m && d) {
+        onChange(new Date(y, m - 1, d, 0, 0, 0, 0));
+      } else {
+        onChange(undefined);
+      }
     } else if (type === "datetime-local") {
       onChange(new Date(newVal));
     } else {
@@ -79,24 +99,42 @@ const InputField = ({
     }
   };
 
+  const handleClear = () => {
+    setInternalValue(type === "boolean" ? false : "");
+    onChange(undefined);
+  };
+
   const { seasonStart, seasonEnd, nextSeasonStart } = getSeasonDates();
 
-  const inputButton =
+  const displaySupportButton =
     supportButton && (type === "date" || type === "datetime-local");
 
   return (
-    <div className={`flex items-center gap-x-4 ${inputButton ? "" : "w-full"}`}>
-      <input
-        type={type === "boolean" ? "checkbox" : type}
-        className="w-full border border-gray-300 rounded px-3 py-2"
-        {...(type === "boolean"
-          ? { checked: Boolean(internalValue) }
-          : { value: internalValue as string | number })}
-        placeholder={placeholder}
-        onChange={handleChange}
-      />
-      {inputButton && (
-        <div className="flex flex-wrap gap-2">
+    <div
+      className={`flex flex-col gap-2 ${displaySupportButton ? "" : "w-full"}`}
+    >
+      <div className="flex items-center gap-x-2">
+        <input
+          type={type === "boolean" ? "checkbox" : type}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          {...(type === "boolean"
+            ? { checked: Boolean(internalValue) }
+            : { value: internalValue as string | number })}
+          placeholder={placeholder}
+          onChange={handleChange}
+        />
+        {/* クリアボタン */}
+        <button
+          type="button"
+          onClick={handleClear}
+          className="text-gray-400 hover:text-gray-600 px-2"
+          title="Clear"
+        >
+          <X size={16} />
+        </button>
+      </div>
+      {displaySupportButton && (
+        <div className="flex flex-wrap gap-2 text-xs text-gray-600">
           <button
             type="button"
             onClick={() => {
@@ -113,7 +151,8 @@ const InputField = ({
                 )
               );
             }}
-            className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            title="Today"
           >
             <CalendarDays size={16} />
             今日
@@ -121,7 +160,8 @@ const InputField = ({
           <button
             type="button"
             onClick={() => onChange(seasonStart)}
-            className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            title="StartNowSeason"
           >
             <CalendarClock size={16} />
             今季開始
@@ -129,7 +169,8 @@ const InputField = ({
           <button
             type="button"
             onClick={() => onChange(seasonEnd)}
-            className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            title="EndNowSeason"
           >
             <CalendarRange size={16} />
             今季終了
@@ -137,7 +178,8 @@ const InputField = ({
           <button
             type="button"
             onClick={() => onChange(nextSeasonStart)}
-            className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            title="NextNowSeason"
           >
             <CalendarRange size={16} />
             来季開始
