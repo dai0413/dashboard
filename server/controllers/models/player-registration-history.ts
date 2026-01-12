@@ -64,7 +64,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
     .on("end", async () => {
       const toAdd = rows.map((row) => {
         return {
-          date: parseDateJST(row.date as unknown as string),
+          date: parseDateJST(row.date),
           season: parseObjectId(row.season),
           player: parseObjectId(row.player),
           team: parseObjectId(row.team),

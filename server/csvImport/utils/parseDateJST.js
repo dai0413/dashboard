@@ -3,27 +3,26 @@ import { fromZonedTime } from "date-fns-tz";
 export function parseDateJST(dateStr) {
   if (!dateStr) return undefined;
 
-  const [datePart, timePart] = dateStr.trim().split(" ");
+  const trimmed = dateStr.trim();
+  if (!trimmed) return undefined;
 
-  // ---- 日付パート ----
+  // 日付と時刻を分離
+  const [datePart, timePart] = trimmed.split(" ");
+
   const [y, m, d] = datePart.split("/").map(Number);
   if (!y || !m || !d) return undefined;
 
-  // ---- 時刻パート（あれば）----
-  let hour = 0;
-  let minute = 0;
-  let second = 0;
+  const [hh = 0, mm = 0, ss = 0] = timePart?.split(":").map(Number) ?? [];
 
-  if (timePart) {
-    const t = timePart.split(":").map(Number);
-    hour = t[0] ?? 0;
-    minute = t[1] ?? 0;
-    second = t[2] ?? 0;
-  }
+  // ✅ ISO 互換（ゼロ埋め）
+  const isoLike = `${y}-${String(m).padStart(2, "0")}-${String(d).padStart(
+    2,
+    "0"
+  )}T${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:${String(
+    ss
+  ).padStart(2, "0")}`;
 
-  // 👉 JST の Date を明示的に作る
-  const jstDate = new Date(y, m - 1, d, hour, minute, second, 0);
+  const result = fromZonedTime(isoLike, "Asia/Tokyo");
 
-  // 👉 JST として解釈 → UTC に変換
-  return fromZonedTime(jstDate, "Asia/Tokyo");
+  return isNaN(result.getTime()) ? undefined : result;
 }

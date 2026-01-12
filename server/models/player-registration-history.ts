@@ -119,7 +119,6 @@ async function applyDiffForUpdate(update: Partial<IPlayerRegistrationHistory>) {
 }
 
 PlayerRegistrationHistorySchema.pre("validate", async function (next) {
-  await normalizeDate(this);
   await applyCompetition(this);
 
   next();
@@ -127,7 +126,6 @@ PlayerRegistrationHistorySchema.pre("validate", async function (next) {
 
 PlayerRegistrationHistorySchema.pre("insertMany", async function (next, docs) {
   for (const doc of docs) {
-    await normalizeDate(doc);
     await applyDiffForUpdate(doc);
     await applyCompetition(doc);
   }
@@ -147,7 +145,6 @@ PlayerRegistrationHistorySchema.pre(
       ...(rawUpdate as any).$set,
     } as Partial<IPlayerRegistrationHistory>;
 
-    await normalizeDate(update);
     await applyDiffForUpdate(update);
     await applyCompetition(update);
 
@@ -158,8 +155,6 @@ PlayerRegistrationHistorySchema.pre(
 );
 
 PlayerRegistrationHistorySchema.pre("save", async function (next) {
-  await normalizeDate(this);
-
   // 変更履歴は差分だけにする
   if (this.registration_type === "change") {
     const latest = await PlayerRegistrationModel.findOne({
@@ -178,16 +173,6 @@ PlayerRegistrationHistorySchema.pre("save", async function (next) {
 
   next();
 });
-
-async function normalizeDate(updateOrDoc: any) {
-  if (!updateOrDoc?.date) return;
-
-  const d = new Date(updateOrDoc.date);
-  if (isNaN(d.getTime())) return;
-
-  d.setUTCHours(0, 0, 0, 0);
-  updateOrDoc.date = d;
-}
 
 PlayerRegistrationHistorySchema.post("findOneAndUpdate", async function (doc) {
   if (!doc) return;

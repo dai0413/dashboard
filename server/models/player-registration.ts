@@ -82,7 +82,6 @@ async function applyCompetition(updateOrDoc: Partial<IPlayerRegistration>) {
 }
 
 PlayerRegistrationSchema.pre("validate", async function (next) {
-  await normalizeDate(this);
   if (this.season) {
     await applyCompetition(this);
   }
@@ -92,7 +91,6 @@ PlayerRegistrationSchema.pre("validate", async function (next) {
 
 PlayerRegistrationSchema.pre("insertMany", async function (next, docs) {
   for (const doc of docs) {
-    await normalizeDate(doc);
     if (doc.season) {
       await applyCompetition(doc);
     }
@@ -113,7 +111,6 @@ PlayerRegistrationSchema.pre(
       ...(rawUpdate as any).$set,
     } as Partial<IPlayerRegistration>;
 
-    await normalizeDate(update);
     if (update.season) {
       await applyCompetition(update);
     }
@@ -123,8 +120,6 @@ PlayerRegistrationSchema.pre(
 );
 
 PlayerRegistrationSchema.pre("save", async function (next) {
-  await normalizeDate(this);
-
   if (this.registration_type === "register") {
     await PlayerRegistrationModel.updateMany(
       {
@@ -157,16 +152,6 @@ PlayerRegistrationSchema.pre("save", async function (next) {
 
   next();
 });
-
-async function normalizeDate(updateOrDoc: any) {
-  if (!updateOrDoc?.date) return;
-
-  const d = new Date(updateOrDoc.date);
-  if (isNaN(d.getTime())) return;
-
-  d.setUTCHours(0, 0, 0, 0);
-  updateOrDoc.date = d;
-}
 
 export const PlayerRegistrationModel: Model<IPlayerRegistration> =
   mongoose.model<IPlayerRegistration>(
