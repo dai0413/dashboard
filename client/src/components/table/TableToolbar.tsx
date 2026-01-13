@@ -97,8 +97,8 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   reloadFun,
   displayBadge,
 }: TableToolbarProps<K>) => {
-  const { openFilter } = useFilter();
-  const { openSort } = useSort();
+  const { openFilter, filterConditions } = useFilter();
+  const { openSort, sortConditions } = useSort();
   const { createFormMenuItems } = useForm();
   const {
     main: { handleSetAlert },
@@ -136,7 +136,11 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   };
 
   useEffect(() => {
-    onClickTile();
+    if (modelType === ModelType.TEAM_COMPETITION_SEASON) {
+      onClickTile();
+    } else {
+      onClickTable();
+    }
   }, [modelType]);
 
   // 外側クリックで閉じる
@@ -262,20 +266,44 @@ const TableToolbar = <K extends keyof FormTypeMap>({
         </div>
 
         {/* ソートを開くボタン */}
-        <button
+        {/* <button
           className="cursor-pointer flex items-center gap-x-2"
           onClick={() => openSort()}
         >
           <AdjustmentsVerticalIcon className="w-6 h-6" />
           <span className="hidden lg:inline">ソート</span>
+        </button> */}
+        <button
+          className="cursor-pointer flex items-center gap-x-2 relative"
+          onClick={() => openSort()}
+        >
+          <AdjustmentsVerticalIcon className="w-6 h-6" />
+          {sortConditions.filter((c) => typeof c.asc === "boolean").length >
+            0 && (
+            <span
+              className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
+      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
+            >
+              {sortConditions.filter((c) => typeof c.asc === "boolean").length}
+            </span>
+          )}
+          <span className="hidden lg:inline">ソート</span>
         </button>
 
         {/* フィルターを開くボタン */}
         <button
-          className="cursor-pointer flex items-center gap-x-2"
+          className="cursor-pointer flex items-center gap-x-2 relative"
           onClick={() => openFilter()}
         >
           <FunnelIcon className="w-6 h-6" />
+          {filterConditions.length > 0 && (
+            <span
+              className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
+      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
+            >
+              {filterConditions.length}
+            </span>
+          )}
           <span className="hidden lg:inline">フィルター</span>
         </button>
 

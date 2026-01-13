@@ -16,6 +16,8 @@ import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
 import { hasSteps } from "../../lib/form-steps";
 
+import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
+
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
     {[...Array(rows)].map((_, i) => (
@@ -46,7 +48,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
   } = modelContext;
 
   const {
-    modal: { alert, resetAlert },
+    modal: { alert, resetAlert, handleSetAlert },
   } = useAlert();
 
   const {
@@ -128,7 +130,30 @@ const DetailModal = <K extends keyof FormTypeMap>({
       isOpen={true}
       onClose={() => navigate(-1)}
       header={
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">{title}</h3>
+        <div className="flex items-center gap-x-2 mb-4">
+          <h3 className="text-xl font-semibold text-gray-700">{title}</h3>
+          {(staffState.admin || isDev) && (
+            <button
+              type="button"
+              className="text-gray-400 hover:text-gray-600 px-2 hover:cursor-pointer"
+              title="id_copy"
+              onClick={() => {
+                if (!fieldListData._id)
+                  return handleSetAlert({
+                    success: false,
+                    message: `${modelType}のidコピーに失敗しました`,
+                  });
+                navigator.clipboard.writeText(fieldListData._id.value);
+                handleSetAlert({
+                  success: true,
+                  message: `${modelType}のidをコピーしました`,
+                });
+              }}
+            >
+              <ClipboardDocumentListIcon className="w-5 h-5" />
+            </button>
+          )}
+        </div>
       }
       footer={
         hasFormSteps &&
