@@ -18,7 +18,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         message={message || ""}
         resetAlert={resetAlert}
       />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="flex-1 overflow-y-auto min-h-0 pb-16 md:pb-0">
+        {children}
+      </main>
       <Footer />
     </div>
   );
