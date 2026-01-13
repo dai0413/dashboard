@@ -31,38 +31,94 @@ import { useSort } from "../../context/sort-context";
 import PointLine from "./Team/PointLine";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 
-const getSeasonDates = (season: SeasonGet | null): SeasonDates => {
-  if (!season)
-    return {
+const addMonths = (date: Date, months: number) => {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + months);
+  return d;
+};
+
+const addDays = (date: Date, days: number) => {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const addYears = (date: Date, years: number) => {
+  const d = new Date(date);
+  d.setFullYear(d.getFullYear() + years);
+  return d;
+};
+
+const toKey = (date?: Date) =>
+  date ? toDateKey(date.toISOString()) : undefined;
+
+const getSeasonDates = (
+  season: SeasonGet | null
+): {
+  normalSeason: SeasonDates;
+  transferWindow: SeasonDates;
+  future: SeasonDates;
+} => {
+  if (!season) {
+    const empty = {
       startDate: undefined,
       endDate: undefined,
       oneYearLater: undefined,
       seasonRange: [],
     };
+    return {
+      normalSeason: empty,
+      transferWindow: empty,
+      future: empty,
+    };
+  }
 
-  const startDate = season?.start_date
-    ? toDateKey(new Date(season?.start_date).toISOString())
+  const seasonStart = season.start_date
+    ? new Date(season.start_date)
     : undefined;
 
-  const endDate = season?.end_date
-    ? toDateKey(new Date(season?.end_date).toISOString())
+  const seasonEnd = season.end_date ? new Date(season.end_date) : undefined;
+
+  /** normalSeason */
+  const normalSeason: SeasonDates = {
+    startDate: toKey(seasonStart),
+    endDate: toKey(seasonEnd),
+    seasonRange: [
+      seasonStart && `>=${toKey(seasonStart)}`,
+      seasonEnd && `<=${toKey(seasonEnd)}`,
+    ].filter(Boolean) as string[],
+  };
+
+  /** transferWindow（start -1ヶ月） */
+  const transferWindowStart = seasonStart
+    ? addMonths(seasonStart, -1)
     : undefined;
 
-  const oneYearLater = season?.start_date
-    ? toDateKey(
-        new Date(
-          new Date(season?.start_date).setFullYear(
-            new Date(season?.start_date).getFullYear() + 2
-          )
-        ).toISOString()
-      )
-    : undefined;
+  const transferWindow: SeasonDates = {
+    startDate: toKey(transferWindowStart),
+    endDate: toKey(seasonEnd),
+    seasonRange: [
+      transferWindowStart && `>=${toKey(transferWindowStart)}`,
+      seasonEnd && `<=${toKey(seasonEnd)}`,
+    ].filter(Boolean) as string[],
+  };
 
-  const seasonRange: string[] = [];
-  if (startDate) seasonRange.push(`>=${startDate}`);
-  if (endDate) seasonRange.push(`<=${endDate}`);
+  /** future（end +1日） */
+  const futureStart = seasonEnd ? addDays(seasonEnd, 1) : undefined;
+  const futureEnd = seasonEnd ? addYears(seasonEnd, 1) : undefined;
 
-  return { startDate, endDate, oneYearLater, seasonRange };
+  console.log("seasonEnd", seasonEnd);
+
+  const future: SeasonDates = {
+    startDate: toKey(futureStart),
+    endDate: toKey(futureEnd),
+    seasonRange: [
+      futureStart && `>=${toKey(futureStart)}`,
+      futureEnd && `<=${toKey(futureEnd)}`,
+    ].filter(Boolean) as string[],
+  };
+
+  return { normalSeason, transferWindow, future };
 };
 
 const Tabs = TeamTabItems.filter(
@@ -76,7 +132,6 @@ const Tabs = TeamTabItems.filter(
 type SeasonDates = {
   startDate: string | undefined;
   endDate: string | undefined;
-  oneYearLater: string | undefined;
   seasonRange: string[];
 };
 
@@ -195,11 +250,26 @@ const Team = () => {
   const [selectedteamCompetitionSeason, setSelectedTeamCompetitionSeason] =
     useState<TeamCompetitionSeasonGet | null>(null);
 
-  const [seasonDates, setSeasonDates] = useState<SeasonDates>({
-    startDate: undefined,
-    endDate: undefined,
-    oneYearLater: undefined,
-    seasonRange: [],
+  const [seasonDates, setSeasonDates] = useState<{
+    normalSeason: SeasonDates;
+    transferWindow: SeasonDates;
+    future: SeasonDates;
+  }>({
+    normalSeason: {
+      startDate: undefined,
+      endDate: undefined,
+      seasonRange: [],
+    },
+    transferWindow: {
+      startDate: undefined,
+      endDate: undefined,
+      seasonRange: [],
+    },
+    future: {
+      startDate: undefined,
+      endDate: undefined,
+      seasonRange: [],
+    },
   });
 
   useEffect(() => {
@@ -362,7 +432,7 @@ const Team = () => {
       {selectedTab === "player" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に所属した選手`}
+            {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`}
           </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
@@ -374,7 +444,7 @@ const Team = () => {
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
                 getAll: true,
-                from_date: seasonDates.seasonRange,
+                from_date: seasonDates.transferWindow.seasonRange,
                 to_team: id,
                 sort: "position_group_order,number",
                 form: ["!期限付き満了"],
@@ -400,7 +470,7 @@ const Team = () => {
       {selectedTab === "future_in" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に日本国内育成年代チームから加入予定の選手`}
+            {`${seasonDates.future.startDate}~~~${seasonDates.future.endDate}に日本国内育成年代チームから加入予定の選手`}
           </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
@@ -415,8 +485,8 @@ const Team = () => {
               params: {
                 getAll: true,
                 from_date: [
-                  `>${seasonDates.endDate}`,
-                  `<${seasonDates.oneYearLater}`,
+                  `>=${seasonDates.future.startDate}`,
+                  `<=${seasonDates.future.endDate}`,
                 ].filter((t) => t !== undefined),
                 to_team: id,
                 "from_team.age_group": "!full",
@@ -447,7 +517,7 @@ const Team = () => {
       {selectedTab === "transfer_in" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に加入した選手`}
+            {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に加入した選手`}
           </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
@@ -463,7 +533,7 @@ const Team = () => {
                 getAll: true,
                 to_team: id,
                 form: "!更新",
-                from_date: seasonDates.seasonRange,
+                from_date: seasonDates.transferWindow.seasonRange,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -490,7 +560,7 @@ const Team = () => {
       {selectedTab === "transfer_out" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に退団した選手`}
+            {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に退団した選手`}
           </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
@@ -505,7 +575,7 @@ const Team = () => {
               params: {
                 getAll: true,
                 from_team: id,
-                from_date: seasonDates.seasonRange,
+                from_date: seasonDates.transferWindow.seasonRange,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -532,7 +602,7 @@ const Team = () => {
       {selectedTab === "loan" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に期限付き移籍した選手`}
+            {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に期限付き移籍した選手`}
           </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
@@ -548,7 +618,7 @@ const Team = () => {
                 getAll: true,
                 from_team: id,
                 form: ["期限付き", "育成型期限付き"],
-                from_date: seasonDates.seasonRange,
+                from_date: seasonDates.transferWindow.seasonRange,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -575,7 +645,7 @@ const Team = () => {
       {selectedTab === "injury" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に発表された負傷者`}
+            {`${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に発表された負傷者`}
           </div>
           <TableWithFetch
             modelType={ModelType.INJURY}
@@ -587,7 +657,11 @@ const Team = () => {
             ]}
             fetch={{
               apiRoute: API_PATHS.INJURY.ROOT,
-              params: { getAll: true, team: id, doa: seasonDates.seasonRange },
+              params: {
+                getAll: true,
+                team: id,
+                doa: seasonDates.normalSeason.seasonRange,
+              },
             }}
             filterField={fieldDefinition[ModelType.INJURY]
               .filter(isFilterable)
@@ -609,7 +683,7 @@ const Team = () => {
       {selectedTab === "match" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に開催された試合`}
+            {`${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に開催された試合`}
           </div>
           <TableWithFetch
             modelType={ModelType.MATCH}
@@ -664,7 +738,7 @@ const Team = () => {
               params: {
                 getAll: true,
                 team: id,
-                date: seasonDates.seasonRange,
+                date: seasonDates.normalSeason.seasonRange,
                 sort: "date",
               },
             }}
@@ -681,7 +755,7 @@ const Team = () => {
       {selectedTab === "registration" && id && (
         <>
           <div className="text-gray-600">
-            {`${seasonDates.startDate}~~~${seasonDates.endDate}に出場登録された選手`}
+            {`${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に出場登録された選手`}
           </div>
           <TableWithFetch
             modelType={ModelType.PLAYER_REGISTRATION}
@@ -711,7 +785,7 @@ const Team = () => {
               params: {
                 getAll: true,
                 team: id,
-                date: seasonDates.seasonRange,
+                date: seasonDates.normalSeason.seasonRange,
                 registration_type: "register",
                 sort: "number,date",
               },
