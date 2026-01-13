@@ -106,13 +106,38 @@ const TableToolbar = <K extends keyof FormTypeMap>({
 
   const { staffState } = useAuth();
 
-  const { rowSpacing, setRowSpacing, viewMode, setViewMode, triggerUpdate } =
-    useListView();
+  const {
+    rowSpacing,
+    setRowSpacing,
+    viewMode,
+    setViewMode,
+    triggerUpdate,
+    setItemsPerPage,
+  } = useListView();
 
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
   const addDropdownRef = useRef<HTMLDivElement | null>(null);
   const folderDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const onClickTable = () => {
+    setViewMode("table");
+    setItemsPerPage(10);
+  };
+
+  const onClickTile = () => {
+    if (modelType === ModelType.TEAM_COMPETITION_SEASON) {
+      setItemsPerPage(20);
+    } else {
+      setItemsPerPage(10);
+    }
+
+    setViewMode("tile");
+  };
+
+  useEffect(() => {
+    onClickTile();
+  }, [modelType]);
 
   // 外側クリックで閉じる
   useEffect(() => {
@@ -213,7 +238,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
         {/* 表示方式ボタン */}
         <div className="flex">
           <button
-            onClick={() => setViewMode("table")}
+            onClick={onClickTable}
             className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
               viewMode === "table"
                 ? "bg-blue-500 text-white"
@@ -224,7 +249,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
             <span className="hidden lg:inline">テーブル</span>
           </button>
           <button
-            onClick={() => setViewMode("tile")}
+            onClick={onClickTile}
             className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
               viewMode === "tile"
                 ? "bg-blue-500 text-white"
@@ -254,9 +279,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
           <span className="hidden lg:inline">フィルター</span>
         </button>
 
-        <div className="flex">
-          {displayBadge && <Badges handleUpdateTrigger={triggerUpdate} />}
-        </div>
+        <div className="flex">{displayBadge && <Badges />}</div>
       </div>
 
       <div className="flex items-center gap-x-4">
