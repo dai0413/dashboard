@@ -15,6 +15,9 @@ type ListViewContextType = {
 
   updateTrigger: boolean;
   triggerUpdate: () => void;
+
+  itemsPerPage: number | null;
+  setItemsPerPage: (n: number | null) => void;
 };
 
 const ListViewContext = createContext<ListViewContextType | null>(null);
@@ -24,8 +27,11 @@ const ListViewProvider = ({ children }: { children: ReactNode }) => {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [rowSpacing, setRowSpacing] = useState<RowSpacing>("narrow");
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
+  const [itemsPerPage, setItemsPerPage] = useState<number | null>(null);
 
-  const triggerUpdate = () => setUpdateTrigger((v) => !v);
+  const triggerUpdate = () => {
+    setUpdateTrigger((v) => !v);
+  };
 
   const value = {
     viewMode,
@@ -36,6 +42,8 @@ const ListViewProvider = ({ children }: { children: ReactNode }) => {
     setPageNum,
     updateTrigger,
     triggerUpdate,
+    itemsPerPage,
+    setItemsPerPage,
   };
 
   return (
@@ -48,7 +56,7 @@ const ListViewProvider = ({ children }: { children: ReactNode }) => {
 const useListView = () => {
   const context = useContext(ListViewContext);
   if (!context) {
-    throw new Error("useAuth must be used within an ListViewProvider");
+    throw new Error("useListView must be used within an ListViewProvider");
   }
   return context;
 };

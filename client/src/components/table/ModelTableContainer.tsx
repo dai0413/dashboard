@@ -13,7 +13,7 @@ import { useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
 import { TableBase } from "../../types/table";
 import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
-import { useListView } from "../../context/listView-context";
+import { ListViewProvider, useListView } from "../../context/listView-context";
 
 type ModelBase<K extends keyof FormTypeMap> = Omit<
   TableBase<K>,
@@ -25,13 +25,13 @@ type ModelBase<K extends keyof FormTypeMap> = Omit<
 
 type TableContainerProps<K extends keyof FormTypeMap> = ModelBase<K>;
 
-const ModelTableContainer = <K extends keyof FormTypeMap>(
+const TableContainer = <K extends keyof FormTypeMap>(
   props: TableContainerProps<K>
 ) => {
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
-  const { updateTrigger } = useListView();
+  const { updateTrigger, itemsPerPage } = useListView();
 
   const {
     items,
@@ -104,12 +104,22 @@ const ModelTableContainer = <K extends keyof FormTypeMap>(
         pageNation="server"
         linkField={props.linkField}
         detailLink={detailLink}
-        itemsPerPage={10}
+        itemsPerPage={itemsPerPage || 10}
         isLoading={tableIsLoading}
         currentPage={page}
         onPageChange={onPageChange}
       />
     </div>
+  );
+};
+
+const ModelTableContainer = <K extends keyof FormTypeMap>(
+  props: TableContainerProps<K>
+) => {
+  return (
+    <ListViewProvider>
+      <TableContainer {...props} />
+    </ListViewProvider>
   );
 };
 

@@ -10,7 +10,7 @@ import { TableBase, TableOperationFields } from "../../types/table";
 
 import { useSort } from "../../context/sort-context";
 import { useFilter } from "../../context/filter-context";
-import { useListView } from "../../context/listView-context";
+import { ListViewProvider, useListView } from "../../context/listView-context";
 import { TableHeader } from "../../types/types";
 import { AxiosResponse } from "axios";
 import { Loader2 } from "lucide-react";
@@ -45,7 +45,7 @@ type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
 
 type TableContainerProps<K extends keyof FormTypeMap> = Original<K>;
 
-const CustomTableContainer = <K extends keyof FormTypeMap>({
+const TableContainer = <K extends keyof FormTypeMap>({
   title,
   headers,
   modelType,
@@ -70,7 +70,7 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
   const { closeSort } = useSort();
   const { closeFilter } = useFilter();
 
-  const { updateTrigger } = useListView();
+  const { updateTrigger, itemsPerPage } = useListView();
 
   useEffect(() => {
     handleApplyFilter();
@@ -117,7 +117,7 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
           pageNation="client"
           linkField={linkField}
           detailLink={detailLink}
-          itemsPerPage={10}
+          itemsPerPage={itemsPerPage || 10}
           isLoading={itemsLoading}
           currentPage={pageNum}
           form={form}
@@ -135,6 +135,16 @@ const CustomTableContainer = <K extends keyof FormTypeMap>({
         </div>
       )}
     </div>
+  );
+};
+
+const CustomTableContainer = <K extends keyof FormTypeMap>(
+  props: TableContainerProps<K>
+) => {
+  return (
+    <ListViewProvider>
+      <TableContainer {...props} />
+    </ListViewProvider>
   );
 };
 

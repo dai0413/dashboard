@@ -13,6 +13,7 @@ import { objectIsEqual } from "../../utils";
 import { useFilter } from "../../context/filter-context";
 import { ModelType } from "../../types/models";
 import { useState } from "react";
+import { useListView } from "../../context/listView-context";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -29,11 +30,9 @@ const getCompetitionId = (competition: Competition): string | null => {
   return null;
 };
 
-type BadgesProps = {
-  handleUpdateTrigger?: () => void;
-};
-
-const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
+const Badges = () => {
+  const api = useApi();
+  const { setViewMode, triggerUpdate, setItemsPerPage } = useListView();
   const { filterConditions, setFilterConditions } = useFilter();
 
   const countryField = fieldDefinition[ModelType.TEAM]
@@ -90,7 +89,7 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       return newCondition;
     });
 
-    handleUpdateTrigger && handleUpdateTrigger();
+    triggerUpdate && triggerUpdate();
   };
 
   const addColor = (key: string) => {
@@ -101,8 +100,6 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
   const [selectTab, setSelectTab] = useState<Competition | AgeGroup | null>(
     null
   );
-
-  const api = useApi();
 
   const competitionOnClick = async (competition: Competition) => {
     const competitionId = getCompetitionId(competition);
@@ -175,6 +172,8 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       onClick: () => {
         competitionOnClick("j1");
         setSelectTab("j1");
+        setItemsPerPage(20);
+        setViewMode("tile");
       },
       onMark: selectTab === "j1",
     },
@@ -184,6 +183,8 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       onClick: () => {
         competitionOnClick("j2");
         setSelectTab("j2");
+        setItemsPerPage(20);
+        setViewMode("tile");
       },
       onMark: selectTab === "j2",
     },
@@ -193,6 +194,8 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       onClick: () => {
         competitionOnClick("j3");
         setSelectTab("j3");
+        setItemsPerPage(20);
+        setViewMode("tile");
       },
       onMark: selectTab === "j3",
     },
@@ -202,6 +205,8 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       onClick: () => {
         ageGroupOnClick("high_school");
         setSelectTab("high_school");
+        setItemsPerPage(20);
+        setViewMode("tile");
       },
       onMark: !!addColor("high_school"),
     },
@@ -211,6 +216,8 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       onClick: () => {
         ageGroupOnClick("youth");
         setSelectTab("youth");
+        setItemsPerPage(20);
+        setViewMode("tile");
       },
       onMark: !!addColor("youth"),
     },
@@ -220,6 +227,8 @@ const Badges = ({ handleUpdateTrigger }: BadgesProps) => {
       onClick: () => {
         ageGroupOnClick("university");
         setSelectTab("university");
+        setItemsPerPage(20);
+        setViewMode("tile");
       },
       onMark: !!addColor("university"),
     },
