@@ -34,8 +34,6 @@ const Player = () => {
 
   const [selectedTab, setSelectedTab] = useState("transfer");
 
-  const [reloadKey, setReloadKey] = useState(0);
-
   const {
     metacrud: { selected, readItem, isLoading },
   } = usePlayer();
@@ -44,7 +42,6 @@ const Player = () => {
     if (!id) return;
     (async () => {
       await readItem(id);
-      setReloadKey((prev) => prev + 1);
     })();
   }, [id, formIsOpen]);
 
@@ -151,7 +148,6 @@ const Player = () => {
           formInitialData={{
             player: id,
           }}
-          reloadTrigger={reloadKey}
         />
       )}
 
@@ -181,7 +177,6 @@ const Player = () => {
             },
           ]}
           formInitialData={formInitialData}
-          reloadTrigger={reloadKey}
         />
       )}
 
@@ -211,7 +206,6 @@ const Player = () => {
             },
           ]}
           formInitialData={formInitialData}
-          reloadTrigger={reloadKey}
         />
       )}
 
@@ -257,7 +251,6 @@ const Player = () => {
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
           ]}
           formInitialData={formInitialData}
-          reloadTrigger={reloadKey}
         />
       )}
     </div>

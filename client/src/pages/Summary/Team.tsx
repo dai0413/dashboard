@@ -13,7 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useTeam } from "../../context/models/team";
 import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
-import { API_PATHS, QueryParams, ResBody } from "@dai0413/myorg-shared";
+import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
@@ -23,13 +23,47 @@ import {
 } from "../../types/models/team-competition-season";
 import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
-import { Season, SeasonGet } from "../../types/models/season";
+import { SeasonGet } from "../../types/models/season";
 import { Data, TeamMatch } from "../../types/types";
 import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 import PointLine from "./Team/PointLine";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+
+const getSeasonDates = (season: SeasonGet | null): SeasonDates => {
+  if (!season)
+    return {
+      startDate: undefined,
+      endDate: undefined,
+      oneYearLater: undefined,
+      seasonRange: [],
+    };
+
+  const startDate = season?.start_date
+    ? toDateKey(new Date(season?.start_date).toISOString())
+    : undefined;
+
+  const endDate = season?.end_date
+    ? toDateKey(new Date(season?.end_date).toISOString())
+    : undefined;
+
+  const oneYearLater = season?.start_date
+    ? toDateKey(
+        new Date(
+          new Date(season?.start_date).setFullYear(
+            new Date(season?.start_date).getFullYear() + 2
+          )
+        ).toISOString()
+      )
+    : undefined;
+
+  const seasonRange: string[] = [];
+  if (startDate) seasonRange.push(`>=${startDate}`);
+  if (endDate) seasonRange.push(`<=${endDate}`);
+
+  return { startDate, endDate, oneYearLater, seasonRange };
+};
 
 const Tabs = TeamTabItems.filter(
   (item) =>
@@ -55,10 +89,8 @@ const Team = () => {
 
   const [selectedTab, setSelectedTab] = useState("player");
 
-  const [reloadKey, setReloadKey] = useState(0);
-
   const {
-    metacrud: { selected, readItem, isLoading: teamIsLoading },
+    metacrud: { selected, readItem },
   } = useTeam();
 
   const [teamCompetitionSeason, setTeamCompetitionSeason] = useState<
@@ -70,36 +102,76 @@ const Team = () => {
     isLoading: false,
   });
 
-  const [season, setSeason] = useState<SeasonGet | null>(null);
-
-  const readSeason = (seasonId: string) =>
-    readItemBase({
+  const readSeason = async (seasonId: string) => {
+    const resBody = await readItemBase({
       apiInstance: api,
       backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
-      onSuccess: (item: Season) => {
-        setSeason(convert(ModelType.SEASON, item));
-      },
+      returnResponse: true,
     });
 
-  const readTeamCompetitionSeason = (params: QueryParams) =>
-    readItemsBase({
+    const nextSeasonDates = getSeasonDates(
+      convert(ModelType.SEASON, resBody.data)
+    );
+
+    setSeasonDates(nextSeasonDates);
+  };
+
+  const readTeamCompetitionSeason = async (params: QueryParams) => {
+    const resBody = await readItemsBase({
       apiInstance: api,
       backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       params,
-      onSuccess: (resBody: ResBody<TeamCompetitionSeason[]>) => {
-        setTeamCompetitionSeason({
-          data: convert(ModelType.TEAM_COMPETITION_SEASON, resBody.data),
-          page: resBody.page ? resBody.page : 1,
-          totalCount: resBody.totalCount ? resBody.totalCount : 1,
-          isLoading: true,
-        });
-      },
       handleLoading: (time) =>
         setTeamCompetitionSeason((prev) => ({
           ...prev,
           isLoading: time === "start",
         })),
+      returnResponse: true,
     });
+
+    if (resBody?.data && resBody.data.length > 0) {
+      const nextTeamCompetitionSeason = convert(
+        ModelType.TEAM_COMPETITION_SEASON,
+        resBody.data
+      );
+
+      const todaySeason = resBody.data.find(
+        (s: TeamCompetitionSeason) =>
+          s.season.start_date &&
+          new Date(s.season.start_date) <= new Date() &&
+          s.season.end_date &&
+          new Date(s.season.end_date) >= new Date()
+      );
+
+      const currentSeason = resBody.data.find(
+        (s: TeamCompetitionSeason) => s.season.current
+      );
+
+      const nextSelectedTeamCompetitionSeason = todaySeason
+        ? todaySeason
+        : currentSeason;
+
+      const nextSeasonRange = getSeasonDates(
+        nextSelectedTeamCompetitionSeason.season
+      );
+
+      setTeamCompetitionSeason({
+        data: nextTeamCompetitionSeason,
+        page: resBody.page ? resBody.page : 1,
+        totalCount: resBody.totalCount ? resBody.totalCount : 1,
+        isLoading: false,
+      });
+
+      setSelectedTeamCompetitionSeason(
+        convert(
+          ModelType.TEAM_COMPETITION_SEASON,
+          nextSelectedTeamCompetitionSeason
+        )
+      );
+
+      setSeasonDates(nextSeasonRange);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -111,7 +183,6 @@ const Team = () => {
         "competition.level": "exists",
         getAll: true,
       });
-      setReloadKey((prev) => prev + 1);
     })();
   }, [id]);
 
@@ -124,10 +195,12 @@ const Team = () => {
   const [selectedteamCompetitionSeason, setSelectedTeamCompetitionSeason] =
     useState<TeamCompetitionSeasonGet | null>(null);
 
-  useEffect(() => {
-    const current = teamCompetitionSeason.data[0];
-    setSelectedTeamCompetitionSeason(current);
-  }, [teamCompetitionSeason]);
+  const [seasonDates, setSeasonDates] = useState<SeasonDates>({
+    startDate: undefined,
+    endDate: undefined,
+    oneYearLater: undefined,
+    seasonRange: [],
+  });
 
   useEffect(() => {
     const seasonId = selectedteamCompetitionSeason?.season.id;
@@ -153,40 +226,6 @@ const Team = () => {
       }),
     [teamCompetitionSeason]
   );
-
-  const seasonDates: SeasonDates = useMemo(() => {
-    if (!season)
-      return {
-        startDate: undefined,
-        endDate: undefined,
-        oneYearLater: undefined,
-        seasonRange: [],
-      };
-
-    const startDate = season?.start_date
-      ? toDateKey(new Date(season?.start_date).toISOString())
-      : undefined;
-
-    const endDate = season?.end_date
-      ? toDateKey(new Date(season?.end_date).toISOString())
-      : undefined;
-
-    const oneYearLater = season?.start_date
-      ? toDateKey(
-          new Date(
-            new Date(season?.start_date).setFullYear(
-              new Date(season?.start_date).getFullYear() + 2
-            )
-          ).toISOString()
-        )
-      : undefined;
-
-    const seasonRange: string[] = [];
-    if (startDate) seasonRange.push(`>=${startDate}`);
-    if (endDate) seasonRange.push(`<=${endDate}`);
-
-    return { startDate, endDate, oneYearLater, seasonRange };
-  }, [season]);
 
   const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
   const [plotData, setPlotData] = useState<{
@@ -242,7 +281,7 @@ const Team = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       {/* Header情報 */}
-      {!teamIsLoading && selected ? (
+      {!teamCompetitionSeason.isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="font-bold text-lg">{selected.team}</div>
@@ -256,7 +295,9 @@ const Team = () => {
                 }
                 options={seasonOptions}
                 onChange={handleSetSelectedSeason}
-                defaultOption="登録シーズンなし"
+                defaultOption={
+                  seasonOptions.length > 0 ? undefined : "登録シーズンなし"
+                }
               />
             </div>
           </div>
@@ -320,11 +361,9 @@ const Team = () => {
       {/* コンテンツ表示 */}
       {selectedTab === "player" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に所属した選手`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に所属した選手`}
+          </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -354,18 +393,15 @@ const Team = () => {
               },
             ]}
             formInitialData={{ to_team: id }}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "future_in" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に日本国内育成年代チームから加入予定の選手`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.endDate}~~~${seasonDates.oneYearLater}に日本国内育成年代チームから加入予定の選手`}
+          </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -404,18 +440,15 @@ const Team = () => {
               },
             ]}
             formInitialData={{ to_team: id }}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "transfer_in" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に加入した選手`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に加入した選手`}
+          </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -450,18 +483,15 @@ const Team = () => {
               },
             ]}
             formInitialData={{ to_team: id }}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "transfer_out" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に退団した選手`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に退団した選手`}
+          </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -495,18 +525,15 @@ const Team = () => {
               },
             ]}
             formInitialData={{ from_team: id }}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "loan" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に期限付き移籍した選手`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に期限付き移籍した選手`}
+          </div>
           <TableWithFetch
             modelType={ModelType.TRANSFER}
             headers={[
@@ -541,18 +568,15 @@ const Team = () => {
               },
             ]}
             formInitialData={{ from_team: id }}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "injury" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に発表された負傷者`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に発表された負傷者`}
+          </div>
           <TableWithFetch
             modelType={ModelType.INJURY}
             headers={[
@@ -578,18 +602,15 @@ const Team = () => {
               },
             ]}
             formInitialData={{ team: id }}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "match" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に開催された試合`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に開催された試合`}
+          </div>
           <TableWithFetch
             modelType={ModelType.MATCH}
             headers={[
@@ -653,18 +674,15 @@ const Team = () => {
               { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
               { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
             ]}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "registration" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${seasonDates.startDate}~~~${seasonDates.endDate}に出場登録された選手`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${seasonDates.startDate}~~~${seasonDates.endDate}に出場登録された選手`}
+          </div>
           <TableWithFetch
             modelType={ModelType.PLAYER_REGISTRATION}
             headers={[
@@ -710,18 +728,15 @@ const Team = () => {
                 to: APP_ROUTES.PLAYER_SUMMARY,
               },
             ]}
-            reloadTrigger={reloadKey}
           />
         </>
       )}
 
       {selectedTab === "line-plot" && id && (
         <>
-          {season && (
-            <div className="text-gray-600">
-              {`${selectedteamCompetitionSeason?.season.label} ${selectedteamCompetitionSeason?.team.label} の勝点推移`}
-            </div>
-          )}
+          <div className="text-gray-600">
+            {`${selectedteamCompetitionSeason?.season.label} ${selectedteamCompetitionSeason?.team.label} の勝点推移`}
+          </div>
           <PointLine teamMatchs={teamMatchs} plotData={plotData} />
         </>
       )}

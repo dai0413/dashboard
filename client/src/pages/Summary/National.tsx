@@ -32,8 +32,6 @@ const National = () => {
 
   const [selectedTab, setSelectedTab] = useState("competition");
 
-  const [reloadKey, setReloadKey] = useState(0);
-
   const {
     metacrud: { selected, readItem, isLoading },
   } = useCountry();
@@ -42,7 +40,6 @@ const National = () => {
     if (!id) return;
     (async () => {
       await readItem(id);
-      setReloadKey((prev) => prev + 1);
     })();
   }, [id, formIsOpen]);
 
@@ -138,7 +135,6 @@ const National = () => {
           formInitialData={{
             country: id,
           }}
-          reloadTrigger={reloadKey}
         />
       )}
 
@@ -170,7 +166,6 @@ const National = () => {
           formInitialData={{
             country: id,
           }}
-          reloadTrigger={reloadKey}
         />
       )}
 
@@ -208,7 +203,6 @@ const National = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
-          reloadTrigger={reloadKey}
         />
       )}
     </div>

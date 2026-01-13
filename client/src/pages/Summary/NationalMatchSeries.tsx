@@ -33,8 +33,6 @@ const National = () => {
 
   const [selectedTab, setSelectedTab] = useState("player");
 
-  const [reloadKey, setReloadKey] = useState(0);
-
   const {
     metacrud: { selected, readItem, isLoading },
   } = useNationalMatchSeries();
@@ -43,7 +41,6 @@ const National = () => {
     if (!id) return;
     (async () => {
       await readItem(id);
-      setReloadKey((prev) => prev + 1);
     })();
   }, [id, formIsOpen]);
 
@@ -173,7 +170,6 @@ const National = () => {
               ? toDateKey(selected?.left_at)
               : undefined,
           }}
-          reloadTrigger={reloadKey}
         />
       )}
     </div>

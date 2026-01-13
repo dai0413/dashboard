@@ -40,8 +40,6 @@ const Competition = () => {
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
-  const [reloadKey, setReloadKey] = useState(0);
-
   const {
     metacrud: { selected, readItem, isLoading },
   } = useCompetition();
@@ -76,7 +74,6 @@ const Competition = () => {
     (async () => {
       await readItem(id);
       await readSeason(id);
-      setReloadKey((prev) => prev + 1);
     })();
   }, [id]);
 
@@ -214,7 +211,6 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          reloadTrigger={reloadKey}
           formInitialData={{
             season: selectedSeason?._id,
           }}
@@ -239,7 +235,6 @@ const Competition = () => {
           sortField={fieldDefinition[ModelType.COMPETITION_STAGE]
             .filter(isSortable)
             .filter((file) => file.key !== "competition")}
-          reloadTrigger={reloadKey}
           formInitialData={{
             season: selectedSeason?._id,
           }}
@@ -300,7 +295,6 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          reloadTrigger={reloadKey}
         />
       )}
 
@@ -364,7 +358,6 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          reloadTrigger={reloadKey}
         />
       )}
     </div>
