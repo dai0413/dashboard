@@ -13,8 +13,6 @@ import { isFilterable, isSortable } from "../../types/field";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useForm } from "../../context/form-context";
-import { useFilter } from "../../context/filter-context";
-import { useSort } from "../../context/sort-context";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -26,8 +24,6 @@ const Tabs = NationalTabItems.filter(
 
 const National = () => {
   const { id } = useParams();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("competition");
@@ -44,8 +40,6 @@ const National = () => {
   }, [id, formIsOpen]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
-    resetFilterConditions();
-    resetSort([]);
     setSelectedTab(value as string);
   };
 

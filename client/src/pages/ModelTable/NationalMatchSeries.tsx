@@ -1,17 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const NationalMatchSeries = () => {
   const nationalMatchSeriesContext = useNationalMatchSeries();
-  const { isOpen } = useForm();
-
-  useEffect(() => {
-    nationalMatchSeriesContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

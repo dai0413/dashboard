@@ -1,17 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useSeason } from "../../context/models/season";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Competition = () => {
   const seasonContext = useSeason();
-  const { isOpen } = useForm();
-
-  useEffect(() => {
-    seasonContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

@@ -26,8 +26,6 @@ import { toDateKey } from "../../utils";
 import { SeasonGet } from "../../types/models/season";
 import { Data, TeamMatch } from "../../types/types";
 import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
-import { useFilter } from "../../context/filter-context";
-import { useSort } from "../../context/sort-context";
 import PointLine from "./Team/PointLine";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 
@@ -107,8 +105,6 @@ const getSeasonDates = (
   const futureStart = seasonEnd ? addDays(seasonEnd, 1) : undefined;
   const futureEnd = seasonEnd ? addYears(seasonEnd, 1) : undefined;
 
-  console.log("seasonEnd", seasonEnd);
-
   const future: SeasonDates = {
     startDate: toKey(futureStart),
     endDate: toKey(futureEnd),
@@ -138,8 +134,6 @@ type SeasonDates = {
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
   const { isOpen: formIsOpen } = useForm();
 
   const [selectedTab, setSelectedTab] = useState("player");
@@ -242,8 +236,8 @@ const Team = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
-    resetFilterConditions();
-    resetSort([]);
+    // resetFilterConditions();
+    // resetSort([]);
     setSelectedTab(value as string);
   };
 

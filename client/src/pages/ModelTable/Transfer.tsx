@@ -1,20 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useTransfer } from "../../context/models/transfer";
 import { ModelType } from "../../types/models";
-import { useFilter } from "../../context/filter-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Transfer = () => {
   const transferContext = useTransfer();
-  const { isOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
-  useEffect(() => {
-    transferContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

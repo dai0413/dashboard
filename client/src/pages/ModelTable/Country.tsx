@@ -1,17 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useCountry } from "../../context/models/country";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Country = () => {
   const countryContext = useCountry();
-  const { isOpen } = useForm();
-
-  useEffect(() => {
-    countryContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

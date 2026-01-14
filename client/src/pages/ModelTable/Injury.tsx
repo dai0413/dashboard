@@ -1,21 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
 import { useInjury } from "../../context/models/injury";
 import { ModelType } from "../../types/models";
-import { useForm } from "../../context/form-context";
-import { useFilter } from "../../context/filter-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Injury = () => {
   const injuryContext = useInjury();
-  const { isOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
-
-  useEffect(() => {
-    injuryContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

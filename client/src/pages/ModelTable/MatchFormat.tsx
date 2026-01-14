@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useMatchFormat } from "../../context/models/match-format";
 import { ModelType } from "../../types/models";
 import { MatchFormatGet } from "../../types/models/match-format";
@@ -8,11 +6,6 @@ import { periodField, periodOther } from "../../utils/displayField/periodField";
 
 const MatchFormat = () => {
   const context = useMatchFormat();
-  const { isOpen } = useForm();
-
-  useEffect(() => {
-    context.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

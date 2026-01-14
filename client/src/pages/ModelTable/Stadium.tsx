@@ -1,17 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useStadium } from "../../context/models/stadium";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Stadium = () => {
   const stadiumContext = useStadium();
-  const { isOpen } = useForm();
-
-  useEffect(() => {
-    stadiumContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

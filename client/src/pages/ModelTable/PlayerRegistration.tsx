@@ -1,20 +1,10 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { usePlayerRegistration } from "../../context/models/player-registration";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { useFilter } from "../../context/filter-context";
 
 const PlayerRegistration = () => {
   const playerRegistrationContext = usePlayerRegistration();
-  const { isOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
-  useEffect(() => {
-    playerRegistrationContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

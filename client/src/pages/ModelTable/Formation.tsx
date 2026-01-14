@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useFormation } from "../../context/models/formation";
 import { ModelType } from "../../types/models";
 import { FormationGet } from "../../types/models/formation";
@@ -24,11 +22,6 @@ const fields = positions.map((p) => {
 
 const Formation = () => {
   const formationContext = useFormation();
-  const { isOpen } = useForm();
-
-  useEffect(() => {
-    formationContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

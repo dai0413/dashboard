@@ -8,17 +8,27 @@ import { FormTypeMap, ModelType } from "../../types/models";
 import { ModelRouteMap } from "../../types/models";
 import { TableBase, TableOperationFields } from "../../types/table";
 
-import { useSort } from "../../context/sort-context";
-import { useFilter } from "../../context/filter-context";
+import { SortProvider, useSort } from "../../context/sort-context";
+import { FilterProvider, useFilter } from "../../context/filter-context";
 import { ListViewProvider, useListView } from "../../context/listView-context";
 import { TableHeader } from "../../types/types";
 import { AxiosResponse } from "axios";
 import { Loader2 } from "lucide-react";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
+import { isModelType, isSortable } from "../../types/field";
+import { fieldDefinition } from "../../lib/model-fields";
 
 type TablePage = {
   pageNum: number;
   totalCount?: number;
-  handlePageChange?: (page: number) => Promise<void>;
+  handlePageChange?: (
+    page: number,
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[]
+  ) => Promise<void>;
 };
 
 type TableForm = {
@@ -38,7 +48,10 @@ type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
     uploadFile?: (
       file: File
     ) => Promise<AxiosResponse<any, any, {}> | undefined>;
-    reloadFun?: () => Promise<void>;
+    reloadFun?: (
+      filterConditions?: FilterableFieldDefinition[],
+      sortConditions?: SortableFieldDefinition[]
+    ) => Promise<void>;
     displayBadge?: boolean;
     noItemMessage?: ReactNode;
   };
@@ -67,10 +80,18 @@ const TableContainer = <K extends keyof FormTypeMap>({
   displayBadge,
   noItemMessage,
 }: TableContainerProps<K>) => {
-  const { closeSort } = useSort();
-  const { closeFilter } = useFilter();
+  const { sortConditions, closeSort, resetSort } = useSort();
+  const { filterConditions, closeFilter } = useFilter();
 
   const { updateTrigger, itemsPerPage } = useListView();
+
+  useEffect(() => {
+    const sortableField =
+      modelType && isModelType(modelType)
+        ? fieldDefinition[modelType].filter(isSortable)
+        : undefined;
+    sortableField && resetSort(sortableField);
+  }, [modelType]);
 
   useEffect(() => {
     handleApplyFilter();
@@ -78,7 +99,8 @@ const TableContainer = <K extends keyof FormTypeMap>({
 
   const handleApplyFilter = async () => {
     closeFilter();
-    handlePageChange && (await handlePageChange(1));
+    handlePageChange &&
+      (await handlePageChange(1, filterConditions, sortConditions));
     closeSort();
   };
 
@@ -142,9 +164,13 @@ const CustomTableContainer = <K extends keyof FormTypeMap>(
   props: TableContainerProps<K>
 ) => {
   return (
-    <ListViewProvider>
-      <TableContainer {...props} />
-    </ListViewProvider>
+    <FilterProvider>
+      <SortProvider>
+        <ListViewProvider>
+          <TableContainer {...props} />
+        </ListViewProvider>
+      </SortProvider>
+    </FilterProvider>
   );
 };
 

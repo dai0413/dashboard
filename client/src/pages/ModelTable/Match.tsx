@@ -1,22 +1,11 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
 import { useMatch } from "../../context/models/match";
 import { ModelType } from "../../types/models";
-import { useForm } from "../../context/form-context";
-import { useFilter } from "../../context/filter-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { MatchGet } from "../../types/models/match";
 
 const Match = () => {
   const context = useMatch();
-  const { isOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
-
-  useEffect(() => {
-    context.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

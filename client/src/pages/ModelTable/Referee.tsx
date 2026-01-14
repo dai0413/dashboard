@@ -1,19 +1,9 @@
-import { useEffect } from "react";
 import { ModelTableContainer } from "../../components/table";
-import { useForm } from "../../context/form-context";
 import { useReferee } from "../../context/models/referee";
 import { ModelType } from "../../types/models";
-import { useFilter } from "../../context/filter-context";
 
 const Referee = () => {
   const RefereeContext = useReferee();
-  const { isOpen } = useForm();
-  const { resetFilterConditions } = useFilter();
-
-  useEffect(() => resetFilterConditions(), []);
-  useEffect(() => {
-    RefereeContext.metacrud.readItems({});
-  }, [isOpen]);
 
   return (
     <div className="p-6">

@@ -20,8 +20,6 @@ import { MatchGet } from "../../types/models/match";
 import { toDateKey } from "../../utils";
 import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
-import { useFilter } from "../../context/filter-context";
-import { useSort } from "../../context/sort-context";
 import { ResBody } from "@dai0413/myorg-shared";
 
 const Tabs = CompetitionTabItems.filter(
@@ -35,8 +33,6 @@ const Tabs = CompetitionTabItems.filter(
 const Competition = () => {
   const api = useApi();
   const { id } = useParams();
-  const { resetFilterConditions } = useFilter();
-  const { resetSort } = useSort();
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
@@ -78,8 +74,6 @@ const Competition = () => {
   }, [id]);
 
   const handleSelectedTab = (value: string | number | Date): void => {
-    resetFilterConditions();
-    resetSort([]);
     setSelectedTab(value as string);
   };
 
