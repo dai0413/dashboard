@@ -10,8 +10,6 @@ import {
   isOptionType,
   isSortable,
 } from "../../../types/field";
-import { useFilter } from "../../../context/filter-context";
-import { useSort } from "../../../context/sort-context";
 
 import { FormTypeMap, ModelType } from "../../../types/models";
 import {
@@ -94,8 +92,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
     null
   );
 
-  const { filterConditions } = useFilter();
-  const { sortConditions } = useSort();
+  // const { filterConditions } = useFilter();
+  // const { sortConditions } = useSort();
 
   const optionRouteMap: Record<string, BaseCrudRoutes> = {
     [ModelType.PLAYER]: API_PATHS.PLAYER,
@@ -118,8 +116,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const readOptions = async (
     api: AxiosInstance,
     nextOptionKey: ModelType,
-    filterConditions: FilterableFieldDefinition[],
-    sortConditions: SortableFieldDefinition[],
+    filterConditions?: FilterableFieldDefinition[],
+    sortConditions?: SortableFieldDefinition[],
     _page?: number
   ): Promise<ModelDataOptions | undefined> => {
     const route = optionRouteMap[nextOptionKey].ROOT;
@@ -130,14 +128,22 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
     const optionKey = nextOptionKey as ModelType;
 
+    const params: Record<string, any> = {
+      getAll: true,
+    };
+
+    if (filterConditions && filterConditions.length > 0) {
+      params.filters = JSON.stringify(normalizeFiltersForApi(filterConditions));
+    }
+
+    if (sortConditions && sortConditions.length > 0) {
+      params.sorts = JSON.stringify(sortConditions);
+    }
+
     const response: DataResoonse | undefined = await readItemsBase({
       apiInstance: api,
       backendRoute: route,
-      params: {
-        getAll: true,
-        filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
-        sorts: JSON.stringify(sortConditions),
-      },
+      params,
       handleLoading: handleLoading,
       returnResponse: true,
     });
@@ -160,8 +166,14 @@ export const RenderField = <T extends keyof FormTypeMap>({
     return optionTableData;
   };
 
-  const handlePageChange = async (page: number): Promise<void> => {
+  const handlePageChange = async (
+    page: number,
+    filterConditions?: FilterableFieldDefinition[],
+    sortConditions?: SortableFieldDefinition[]
+  ): Promise<void> => {
     setOptionIsLoading(true);
+
+    console.log("filterConditions", filterConditions);
 
     if (!optionKey) return setOptionIsLoading(false);
     if (!isModelType(optionKey)) return setOptionIsLoading(false);
@@ -189,7 +201,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
     const options = getDefaultOptions(nextOptionKey);
     setOptionSelectData(options);
-  }, [filterConditions, sortConditions]);
+  }, []);
 
   const multhInputHandleFormData = (
     index: number,
@@ -245,6 +257,9 @@ export const RenderField = <T extends keyof FormTypeMap>({
           </button>
         </div>
         <CustomTableContainer
+          modelType={
+            optionKey && isModelType(optionKey) ? optionKey : undefined
+          }
           headers={optionTableData ? optionTableData.option.header : undefined}
           items={optionTableData ? optionTableData.option.data : undefined}
           filterField={
@@ -277,7 +292,11 @@ export const RenderField = <T extends keyof FormTypeMap>({
               ? [formData[formDataKey]]
               : []
           }
-          handlePageChange={(page: number) => handlePageChange(page)}
+          handlePageChange={(
+            page: number,
+            filterConditions: FilterableFieldDefinition[],
+            sortConditions: SortableFieldDefinition[]
+          ) => handlePageChange(page, filterConditions, sortConditions)}
           displayBadge={optionKey === "team"}
           noItemMessage={
             <p className="text-sm text-gray-400">

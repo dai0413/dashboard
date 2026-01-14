@@ -3,6 +3,8 @@ import { useListView } from "../../context/listView-context";
 import Tile from "./Tile";
 import Table from "./Table";
 import { TableProps } from "../../types/table";
+import { useFilter } from "../../context/filter-context";
+import { useSort } from "../../context/sort-context";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -47,6 +49,8 @@ const ListView = <T extends Record<string, any>>({
   deleteOnClick,
 }: TableProps<T>) => {
   const { viewMode, pageNum, setPageNum } = useListView();
+  const { filterConditions } = useFilter();
+  const { sortConditions } = useSort();
 
   useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
 
@@ -117,7 +121,7 @@ const ListView = <T extends Record<string, any>>({
               <button
                 key={index}
                 onClick={() => {
-                  pageChange(page);
+                  pageChange(page, filterConditions, sortConditions);
                 }}
                 className={`px-3 py-1 border rounded ${
                   pageNum === page ? "bg-blue-500 text-white" : "bg-white"

@@ -42,7 +42,17 @@ type TableLinkProps = {
 type TableUIProps = {
   itemsPerPage?: number;
   currentPage?: number;
-  onPageChange?: ((page: number) => Promise<void>) | ((page: number) => void);
+  onPageChange?:
+    | ((
+        page: number,
+        filterConditions: FilterableFieldDefinition[],
+        sortConditions: SortableFieldDefinition[]
+      ) => Promise<void>)
+    | ((
+        page: number,
+        filterConditions: FilterableFieldDefinition[],
+        sortConditions: SortableFieldDefinition[]
+      ) => void);
   isLoading?: boolean;
 };
 
