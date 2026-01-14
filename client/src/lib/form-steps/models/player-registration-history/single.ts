@@ -1,10 +1,7 @@
-import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
-import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { readItemBase, readItemsBase } from "../../../api";
 import { convert } from "../../../convert/DBtoGetted";
-import { PlayerRegistration } from "../../../../types/models/player-registration";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
@@ -40,37 +37,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           required: true,
         },
       ],
-      filterConditions: async (formData, api) => {
-        if (!formData.season) return [];
-
-        const resBody = await readItemsBase({
-          apiInstance: api,
-          params: { getAll: true, season: formData.season },
-          backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
-          returnResponse: true,
-        });
-
-        if (!resBody) return [];
-
-        const teamCompetitionSeason = convert(
-          ModelType.TEAM_COMPETITION_SEASON,
-          resBody.data as TeamCompetitionSeason[]
-        );
-
-        const teams = teamCompetitionSeason.map((t) => t.team);
-        const filterCondition: FilterableFieldDefinition = {
-          key: "_id",
-          label: "チーム",
-          operator: "equals",
-          type: "select",
-          value: teams
-            .map((t) => t.id)
-            .filter((id): id is string => Boolean(id)),
-          valueLabel: teams.map((t) => t.label),
-        };
-
-        return [filterCondition];
-      },
     },
     {
       stepLabel: "チーム選択",
@@ -85,47 +51,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           required: true,
         },
       ],
-      filterConditions: async (formData, api) => {
-        if (!formData.team || !formData.season) return [];
-
-        if (
-          formData.registration_type === "deregister" ||
-          formData.registration_type === "change"
-        ) {
-          const resBody = await readItemsBase({
-            apiInstance: api,
-            params: {
-              getAll: true,
-              team: formData.team,
-              season: formData.season,
-            },
-            backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
-            returnResponse: true,
-          });
-
-          if (!resBody) return [];
-
-          const playerRegistration = convert(
-            ModelType.PLAYER_REGISTRATION,
-            resBody.data as PlayerRegistration[]
-          );
-
-          const players = playerRegistration.map((t) => t.player);
-          const filterCondition: FilterableFieldDefinition = {
-            key: "_id",
-            label: "選手",
-            operator: "equals",
-            type: "select",
-            value: players
-              .map((t) => t.id)
-              .filter((id): id is string => Boolean(id)),
-            valueLabel: players.map((t) => t.label),
-          };
-
-          return [filterCondition];
-        }
-        return [];
-      },
     },
     {
       stepLabel: "選手選択",

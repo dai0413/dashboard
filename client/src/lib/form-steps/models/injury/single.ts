@@ -1,4 +1,3 @@
-import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
@@ -36,26 +35,6 @@ export const injury: FormStep<ModelType.INJURY>[] = [
       }
 
       return obj;
-    },
-    filterConditions: async (formData, api) => {
-      if (!formData.player) return [];
-
-      const { to_team } = await currentTransfer({ formData, api });
-
-      if (to_team && to_team.key) {
-        const filterCondition: FilterableFieldDefinition = {
-          key: "_id",
-          label: "チーム",
-          operator: "equals",
-          type: "select",
-          value: [to_team.key],
-          valueLabel: [to_team.label],
-        };
-
-        return [filterCondition];
-      }
-
-      return [];
     },
   },
   {

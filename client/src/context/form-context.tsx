@@ -36,10 +36,7 @@ import {
   DetailFieldDefinition,
   isDisplayOnDetail,
   isModelType,
-  isSortable,
 } from "../types/field";
-import { useFilter } from "./filter-context";
-import { useSort } from "./sort-context";
 import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
@@ -446,14 +443,6 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       }
     }
 
-    // --- table の filter操作
-    if (current.filterConditions) {
-      const getCondition = await current.filterConditions(formData, api);
-      setFilterConditions(getCondition);
-    } else {
-      resetFilterConditions();
-    }
-
     // --- many入力時の共通要素
     if (mode === "many" && bulkCommonData && current.fields) {
       current.fields.forEach((field) => {
@@ -488,17 +477,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
 
     setCurrentStep(nextStepIndex);
     resetAlert();
-
-    const sortableField =
-      modelType && isModelType(modelType)
-        ? fieldDefinition[modelType].filter(isSortable)
-        : undefined;
-    sortableField && resetSort(sortableField);
   };
-
-  const { setFilterConditions, resetFilterConditions } = useFilter();
-
-  const { resetSort } = useSort();
 
   const prevStep = () => {
     if (!singleStep) return;
