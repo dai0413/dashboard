@@ -148,7 +148,7 @@ const Team = () => {
     data: [],
     page: 1,
     totalCount: 1,
-    isLoading: false,
+    isLoading: true,
   });
 
   const readSeason = async (seasonId: string) => {
