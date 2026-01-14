@@ -173,8 +173,6 @@ export const RenderField = <T extends keyof FormTypeMap>({
   ): Promise<void> => {
     setOptionIsLoading(true);
 
-    console.log("filterConditions", filterConditions);
-
     if (!optionKey) return setOptionIsLoading(false);
     if (!isModelType(optionKey)) return setOptionIsLoading(false);
     const optionTableData = await readOptions(

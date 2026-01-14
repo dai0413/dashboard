@@ -30,6 +30,7 @@ export type MetaCrudContext<K extends ModelType> = {
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
 
+  resetItems: () => void;
   isLoading: boolean;
   filterableField: FilterableFieldDefinition[];
   sortableField: SortableFieldDefinition[];

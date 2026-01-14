@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
@@ -38,16 +38,6 @@ const TableContainer = <K extends keyof FormTypeMap>(
     main: { handleSetAlert },
   } = useAlert();
 
-  // useEffect(
-  //   () =>
-  //     console.log(
-  //       "filterConditions",
-  //       props.contextState.metacrud.items,
-  //       filterConditions
-  //     ),
-  //   [filterConditions]
-  // );
-
   const {
     items,
     isLoading,
@@ -58,7 +48,12 @@ const TableContainer = <K extends keyof FormTypeMap>(
     readItems,
     uploadFile,
     downloadFile,
+    resetItems,
   } = props.contextState.metacrud;
+
+  useEffect(() => {
+    resetItems();
+  }, []);
 
   const tableIsLoading = useMemo(() => isLoading, [isLoading]);
   const filterField = useMemo(() => filterableField, [filterableField]);

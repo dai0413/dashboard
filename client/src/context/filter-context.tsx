@@ -45,32 +45,7 @@ const defaultFilterCondition: FilterableFieldDefinition = {
   operator: "equals",
 };
 
-const defaultValue: FilterState = {
-  filterOpen: false,
-
-  filterConditions: [],
-  setFilterConditions: () => {},
-  handleAddCondition: () => {},
-
-  filterCondition: defaultFilterCondition,
-  resetFilterConditions: () => {},
-  handleFieldSelect: () => {},
-  handleFieldValue: () => {},
-  handleFieldObjValue: () => {},
-  handleFieldOperator: () => {},
-
-  handleEdit: () => {},
-  handleDelete: () => {},
-
-  openFilter: () => {},
-  closeFilter: () => {},
-
-  editingIndex: null,
-  isAdding: false,
-  toggleAdding: () => {},
-};
-
-const FilterContext = createContext<FilterState>(defaultValue);
+const FilterContext = createContext<FilterState | null>(null);
 
 const FilterProvider = ({ children }: { children: ReactNode }) => {
   const [filterOpen, setFilterOpen] = useState<boolean>(false);

@@ -47,6 +47,8 @@ export function createModelContext<T extends ModelType>(
 
     const [selected, setSelectedItem] = useState<Get | null>(null);
 
+    const resetItems = () => setItems([]);
+
     const createItems = async (formDatas: Form[]) => {
       const result = createItemBase({
         apiInstance: api,
@@ -224,6 +226,7 @@ export function createModelContext<T extends ModelType>(
       deleteItem,
       uploadFile,
       downloadFile,
+      resetItems,
       isLoading,
       filterableField,
       sortableField,

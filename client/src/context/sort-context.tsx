@@ -4,8 +4,6 @@ import { SortableFieldDefinition } from "@dai0413/myorg-shared";
 type SortState = {
   sortConditions: SortableFieldDefinition[];
   setSortConditions: (conditions: SortableFieldDefinition[]) => void;
-  data: any[];
-  setData: (data: any[]) => void;
 
   moveSortConditionUp: (index: number) => void;
   moveSortConditionDown: (index: number) => void;
@@ -18,29 +16,12 @@ type SortState = {
   openSort: () => void;
 };
 
-const defaultValue: SortState = {
-  sortConditions: [],
-  setSortConditions: () => {},
-  data: [],
-  setData: () => {},
-
-  moveSortConditionUp: () => {},
-  moveSortConditionDown: () => {},
-  toggleAsc: () => {},
-
-  resetSort: () => {},
-
-  sortOpen: false,
-  closeSort: () => {},
-  openSort: () => {},
-};
-
-const SortContext = createContext<SortState>(defaultValue);
+const SortContext = createContext<SortState | null>(null);
 
 const SortProvider = ({ children }: { children: ReactNode }) => {
   const [sortConditions, setSortConditions] = useState<
     SortableFieldDefinition[]
-  >(defaultValue.sortConditions);
+  >([]);
   const [sortOpen, setSortOpen] = useState<boolean>(false);
 
   // リセット
@@ -104,7 +85,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
-    ...defaultValue,
     sortConditions,
     setSortConditions,
 

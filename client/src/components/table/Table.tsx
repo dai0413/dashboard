@@ -181,7 +181,9 @@ const Table = <T extends Record<string, any>>({
               })}
               {detailLink && (
                 <td
-                  className="cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap"
+                  className={`cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap ${
+                    selectedKey.includes(row.key) ? "bg-blue-100" : ""
+                  }`}
                   style={{ width: "80px" }}
                 >
                   <Link
