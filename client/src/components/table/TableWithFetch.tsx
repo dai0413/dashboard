@@ -28,6 +28,7 @@ type TableWithFetchProps<T extends ModelType> = Omit<
   };
 
 const TableWithFetch = <T extends ModelType>({
+  pageNation,
   title,
   modelType,
   headers,
@@ -91,6 +92,13 @@ const TableWithFetch = <T extends ModelType>({
 
   return (
     <CustomTableContainer
+      pageNation={
+        pageNation
+          ? pageNation
+          : params && "getAll" in params
+          ? "client"
+          : "server"
+      }
       modelType={modelType}
       items={data.data}
       title={title}

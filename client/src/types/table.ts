@@ -12,6 +12,7 @@ export type TableBase<K extends ModelType> = {
   modelType?: ModelType | null;
   formInitialData?: Partial<FormTypeMap[K]>;
   linkField?: LinkField[];
+  pageNation?: "client" | "server";
 };
 
 export type TableFetch = {
@@ -28,6 +29,7 @@ export type TableOperationFields = {
 };
 
 type TableDataProps<T> = {
+  modelType?: ModelType;
   data: T[];
   totalCount?: number;
   headers: TableHeader[];

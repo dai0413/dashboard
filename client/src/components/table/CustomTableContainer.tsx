@@ -62,6 +62,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
   title,
   headers,
   modelType,
+  pageNation,
   formInitialData,
   linkField,
   items,
@@ -133,15 +134,17 @@ const TableContainer = <K extends keyof FormTypeMap>({
         </div>
       ) : items && items?.length > 0 && headers ? (
         <ListView
+          modelType={modelType ? modelType : undefined}
           data={items}
           totalCount={totalCount}
           headers={headers}
-          pageNation="client"
+          pageNation={pageNation ? pageNation : "client"}
           linkField={linkField}
           detailLink={detailLink}
           itemsPerPage={itemsPerPage || 10}
           isLoading={itemsLoading}
           currentPage={pageNum}
+          onPageChange={handlePageChange}
           form={form}
           onClick={onClick}
           selectedKey={selectedKey}
