@@ -31,6 +31,7 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
 }
 
 const ListView = <T extends Record<string, any>>({
+  modelType,
   data = [],
   totalCount,
   headers = [],
@@ -72,6 +73,7 @@ const ListView = <T extends Record<string, any>>({
     <div className="max-h-[50rem] overflow-y-auto">
       {viewMode === "table" && (
         <Table
+          modelType={modelType}
           data={data}
           totalCount={totalCount}
           headers={headers}
@@ -92,6 +94,7 @@ const ListView = <T extends Record<string, any>>({
       )}
       {viewMode === "tile" && (
         <Tile
+          modelType={modelType}
           data={data}
           totalCount={totalCount}
           headers={headers}

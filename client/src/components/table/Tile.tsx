@@ -1,13 +1,14 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
 import { isLabelObject, toDateKey } from "../../utils";
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { TableProps } from "../../types/table";
+import { useModal } from "../../context/modal-context";
 
 export const Tile = <T extends Record<string, any>>({
+  modelType,
   data = [],
   headers = [],
   pageNation = "client",
@@ -24,6 +25,10 @@ export const Tile = <T extends Record<string, any>>({
   deleteOnClick,
 }: TableProps<T>) => {
   const { pageNum, rowSpacing } = useListView();
+
+  const {
+    detail: { open },
+  } = useModal();
 
   const primaryHeaders = headers.filter((h) => h.isPrimary);
 
@@ -113,13 +118,15 @@ export const Tile = <T extends Record<string, any>>({
                 {/* actions */}
                 {(detailLink || form) && (
                   <div className="flex justify-start gap-3 text-sm">
-                    {detailLink && row._id && (
-                      <Link
-                        to={`${detailLink}/${row._id}`}
-                        className="text-blue-600 hover:underline"
+                    {row._id && (
+                      <button
+                        className="underline hover:text-blue-600 cursor-pointer"
+                        onClick={() => {
+                          modelType && open(modelType, row._id);
+                        }}
                       >
                         詳細
-                      </Link>
+                      </button>
                     )}
                   </div>
                 )}

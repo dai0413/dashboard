@@ -26,27 +26,31 @@ import Badges from "./Badges";
 import { hasSteps } from "../../lib/form-steps";
 import { AxiosResponse } from "axios";
 import { useListView } from "../../context/listView-context";
+import { useModal } from "../../context/modal-context";
 
 type AddButtonProps = {
   menuItems: { label: string; onClick: () => void }[];
   dropdownRef: React.RefObject<HTMLDivElement | null>;
-  isAddOpen: boolean;
-  setIsAddOpen: (value: React.SetStateAction<boolean>) => void;
+  isAddDropDownOpen: boolean;
+  setIsAddDropDownOpen: (value: React.SetStateAction<boolean>) => void;
+  openForm: () => void;
 };
 
 const AddButton = ({
   menuItems,
   dropdownRef,
-  isAddOpen,
-  setIsAddOpen,
+  isAddDropDownOpen,
+  setIsAddDropDownOpen,
+  openForm,
 }: AddButtonProps) => {
   const handleClick = () => {
     if (menuItems.length === 1) {
       // 1つだけ → 直接実行
       menuItems[0].onClick();
+      openForm();
     } else {
       // 2つ以上 → dropdown 切り替え
-      setIsAddOpen((prev) => !prev);
+      setIsAddDropDownOpen((prev) => !prev);
     }
   };
 
@@ -61,14 +65,15 @@ const AddButton = ({
         <span className="hidden lg:inline">新規追加</span>
       </button>
 
-      {menuItems.length > 1 && isAddOpen && (
+      {menuItems.length > 1 && isAddDropDownOpen && (
         <DropDownMenu
           menuItems={menuItems.map((item) => (
             <button
               key={item.label}
               onClick={() => {
                 item.onClick();
-                setIsAddOpen((prev) => !prev);
+                setIsAddDropDownOpen((prev) => !prev);
+                openForm();
               }}
             >
               {item.label}
@@ -115,7 +120,22 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     setItemsPerPage,
   } = useListView();
 
-  const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
+  const {
+    form: { open },
+  } = useModal();
+
+  const openForm = () => {
+    if (modelType) {
+      open(modelType);
+    } else {
+      handleSetAlert({
+        success: false,
+        message: "フォームの開閉に失敗しました",
+      });
+    }
+  };
+
+  const [isAddDropDownOpen, setIsAddDropDownOpen] = useState<boolean>(false);
   const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
   const addDropdownRef = useRef<HTMLDivElement | null>(null);
   const folderDropdownRef = useRef<HTMLDivElement | null>(null);
@@ -159,7 +179,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
         return;
       }
 
-      setIsAddOpen(false);
+      setIsAddDropDownOpen(false);
       SetIsFolderOpen(false);
     };
 
@@ -329,8 +349,9 @@ const TableToolbar = <K extends keyof FormTypeMap>({
               <AddButton
                 menuItems={menuItems}
                 dropdownRef={addDropdownRef}
-                isAddOpen={isAddOpen}
-                setIsAddOpen={setIsAddOpen}
+                isAddDropDownOpen={isAddDropDownOpen}
+                setIsAddDropDownOpen={setIsAddDropDownOpen}
+                openForm={openForm}
               />
             )}
             {/* 右側：フォルダーボタン */}

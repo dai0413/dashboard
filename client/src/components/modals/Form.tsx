@@ -15,6 +15,7 @@ import { toDateKey } from "../../utils";
 import { DetailFieldDefinition } from "../../types/field";
 import { FormStep } from "../../types/form";
 import { get } from "lodash";
+import { useModal } from "../../context/modal-context";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -99,9 +100,11 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
 
 const Form = <T extends keyof FormTypeMap>() => {
   const {
+    form: { isOpen, close },
+  } = useModal();
+
+  const {
     mode,
-    formOperator: { closeForm },
-    isOpen,
     isEditing,
     newData,
 
@@ -236,7 +239,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={closeForm}
+      onClose={close}
       header={
         <>
           {steps && steps.length !== 0 ? (
@@ -293,7 +296,7 @@ const Form = <T extends keyof FormTypeMap>() => {
               deny={{
                 text: "入力終了",
                 color: "red",
-                onClick: closeForm,
+                onClick: close,
               }}
             />
           ) : (

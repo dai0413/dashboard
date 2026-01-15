@@ -12,7 +12,7 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { useForm } from "../../context/form-context";
+import { useModal } from "../../context/modal-context";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -24,7 +24,9 @@ const Tabs = NationalTabItems.filter(
 
 const National = () => {
   const { id } = useParams();
-  const { isOpen: formIsOpen } = useForm();
+  const {
+    form: { isOpen: formIsOpen },
+  } = useModal();
 
   const [selectedTab, setSelectedTab] = useState("competition");
 

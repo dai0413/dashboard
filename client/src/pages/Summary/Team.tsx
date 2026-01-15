@@ -15,7 +15,6 @@ import { readItemBase, readItemsBase } from "../../lib/api";
 import { useApi } from "../../context/api-context";
 import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import {
   TeamCompetitionSeason,
@@ -28,6 +27,7 @@ import { Data, TeamMatch } from "../../types/types";
 import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
 import PointLine from "./Team/PointLine";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { useModal } from "../../context/modal-context";
 
 const addMonths = (date: Date, months: number) => {
   const d = new Date(date);
@@ -134,7 +134,9 @@ type SeasonDates = {
 const Team = () => {
   const api = useApi();
   const { id } = useParams();
-  const { isOpen: formIsOpen } = useForm();
+  const {
+    form: { isOpen: formIsOpen },
+  } = useModal();
 
   const [selectedTab, setSelectedTab] = useState("player");
 

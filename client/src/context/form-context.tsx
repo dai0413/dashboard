@@ -1,32 +1,8 @@
-import {
-  createContext,
-  JSX,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, JSX, useContext, useEffect, useState } from "react";
 import { useAlert } from "./alert-context";
 import { FormFieldDefinition, FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
-import { ModelContext } from "../types/context";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
-import { useTransfer } from "./models/transfer";
-import { useInjury } from "./models/injury";
-import { usePlayer } from "./models/player";
-import { useTeam } from "./models/team";
-import { useCountry } from "./models/country";
-import { useNationalMatchSeries } from "./models/national-match-series";
-import { useNationalCallup } from "./models/national-callup";
-import { useReferee } from "./models/referee";
-import { useCompetition } from "./models/competition";
-import { useSeason } from "./models/season";
-import { useTeamCompetitionSeason } from "./models/team-competition-season";
-import { useStadium } from "./models/stadium";
-import { useCompetitionStage } from "./models/competition-stage";
-import { useMatchFormat } from "./models/match-format";
-import { useMatch } from "./models/match";
-import { usePlayerRegistration } from "./models/player-registration";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
 import { getSteps } from "../lib/form-steps";
@@ -40,12 +16,9 @@ import {
 import { getOptionKey, useOptions } from "./options-provider";
 import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
-import { usePlayerRegistrationHistory } from "./models/player-registration-history";
-import { useMatchEventType } from "./models/match-event-type";
-import { useFormation } from "./models/formation";
-import { useStaff } from "./models/staff";
+import { useModelContext } from "./models/model-wrapper";
 
-const checkRequiredFields = <T extends keyof FormTypeMap>(
+const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
   data: FormTypeMap[T] | FormTypeMap[T][]
 ): { success: boolean; message?: string } => {
@@ -77,7 +50,7 @@ const checkRequiredFields = <T extends keyof FormTypeMap>(
   return { success: true };
 };
 
-type FormContextValue<T extends keyof FormTypeMap> = {
+type FormContextValue<T extends ModelType> = {
   modelType: T | null;
   mode: "single" | "many";
 
@@ -92,7 +65,7 @@ type FormContextValue<T extends keyof FormTypeMap> = {
     closeForm: () => void;
   };
 
-  isOpen: boolean;
+  // isOpen: boolean;
   isEditing: boolean;
   newData: boolean;
 
@@ -147,42 +120,18 @@ export const FormModalContext = createContext<
   FormContextValue<any> | undefined
 >(undefined);
 
-export const FormProvider = <T extends keyof FormTypeMap>({
+export const FormProvider = <T extends ModelType>({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const modelContextMap: {
-    [K in keyof FormTypeMap]: ModelContext<K>;
-  } = {
-    [ModelType.COMPETITION]: useCompetition(),
-    [ModelType.COMPETITION_STAGE]: useCompetitionStage(),
-    [ModelType.COUNTRY]: useCountry(),
-    [ModelType.INJURY]: useInjury(),
-    [ModelType.FORMATION]: useFormation(),
-    [ModelType.MATCH_EVENT_TYPE]: useMatchEventType(),
-    [ModelType.MATCH_FORMAT]: useMatchFormat(),
-    [ModelType.MATCH]: useMatch(),
-    [ModelType.NATIONAL_CALLUP]: useNationalCallup(),
-    [ModelType.NATIONAL_MATCH_SERIES]: useNationalMatchSeries(),
-    [ModelType.PLAYER]: usePlayer(),
-    [ModelType.PLAYER_REGISTRATION_HISTORY]: usePlayerRegistrationHistory(),
-    [ModelType.PLAYER_REGISTRATION]: usePlayerRegistration(),
-    [ModelType.REFEREE]: useReferee(),
-    [ModelType.SEASON]: useSeason(),
-    [ModelType.STADIUM]: useStadium(),
-    [ModelType.STAFF]: useStaff(),
-    [ModelType.TEAM_COMPETITION_SEASON]: useTeamCompetitionSeason(),
-    [ModelType.TEAM]: useTeam(),
-    [ModelType.TRANSFER]: useTransfer(),
-  };
   const {
     modal: { handleSetAlert, resetAlert },
   } = useAlert();
 
   const api = useApi();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [newData, setNewData] = useState<boolean>(true);
@@ -198,15 +147,11 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     setBulkStep(modelType ? getSteps(modelType, true) : []);
   }, [modelType]);
 
-  const modelContext = useMemo(() => {
-    return modelType ? modelContextMap[modelType] : null;
-  }, [modelType]);
+  const modelContext = useModelContext(modelType);
 
   const getDiffKeys = () => {
-    if (!modelType) return [];
-    const selected = modelType && modelContext?.metacrud.selected;
-
-    if (!selected) return [];
+    if (!modelType || !modelContext || !modelContext.selected) return [];
+    const selected = modelContext.selected;
 
     const diff: string[] = [];
     for (const [key, formValue] of Object.entries(formData)) {
@@ -306,7 +251,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       }
     }
 
-    setIsOpen(true);
+    // setIsOpen(true);
     setModelType(model);
     setIsEditing(true);
 
@@ -320,7 +265,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   const closeForm = () => {
     resetFormData();
     resetFormDatas();
-    setIsOpen(false);
+    // setIsOpen(false);
     setModelType(null);
     setCurrentStep(0);
     resetAlert();
@@ -352,7 +297,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       }
 
       if (newData) {
-        result = await modelContext?.metacrud.createItem(item);
+        result = await modelContext.createItem(item);
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
         if (!difKeys || difKeys?.length === 0)
@@ -365,7 +310,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
           Object.entries(formData).filter(([key]) => difKeys.includes(key))
         );
 
-        result = await modelContext?.metacrud.updateItem({
+        result = await modelContext.updateItem({
           ...getDefault(modelType),
           ...updated,
         });
@@ -377,7 +322,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
     }
 
     if (mode === "many") {
-      result = await modelContext.metacrud.createItems(formDatas);
+      result = await modelContext.createItems(formDatas);
 
       setCurrentStep((prev) =>
         Math.min(prev + 1, bulkStep ? bulkStep.length - 1 : 0)
@@ -670,7 +615,7 @@ export const FormProvider = <T extends keyof FormTypeMap>({
       openForm,
       closeForm,
     },
-    isOpen,
+    // isOpen,
     isEditing,
     newData,
 
@@ -705,14 +650,12 @@ export const FormProvider = <T extends keyof FormTypeMap>({
   );
 };
 
-export const useForm = <T extends keyof FormTypeMap>() => {
+export const useForm = <T extends ModelType>() => {
   const context = useContext(FormModalContext) as
     | FormContextValue<T>
     | undefined;
   if (!context) {
-    throw new Error(
-      "useTypedFormContext must be used within a FormModalProvider"
-    );
+    throw new Error("useForm must be used within a FormProvider");
   }
   return context;
 };

@@ -1,6 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { ModelContext } from "../../types/context";
-import { FormTypeMap, ModelType } from "../../types/models";
+import { ModelType } from "../../types/models";
 import { useEffect } from "react";
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui";
@@ -12,11 +10,13 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
 import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
-import { FieldList } from "../modals/index";
+import { FieldList } from "./index";
 import { FieldListData } from "../../types/types";
 import { hasSteps } from "../../lib/form-steps";
-
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
+
+import { useModal } from "../../context/modal-context";
+import { useModelContext } from "../../context/models/model-wrapper";
 
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
@@ -29,39 +29,35 @@ const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   </div>
 );
 
-type DetailModalProps<K extends keyof FormTypeMap> = {
-  modelType: K | null;
-  modelContext: ModelContext<K>;
-  title: string;
-};
-
-const DetailModal = <K extends keyof FormTypeMap>({
-  modelType,
-  modelContext,
-  title,
-}: DetailModalProps<K>) => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-
+const DetailModal = () => {
   const {
-    metacrud: { isLoading, selected, readItem, deleteItem },
-  } = modelContext;
+    detail: { isOpen, modelType, id, close },
+    form: { open },
+  } = useModal();
+
+  const modelContext = useModelContext(modelType);
 
   const {
     modal: { alert, resetAlert, handleSetAlert },
   } = useAlert();
 
   const {
-    isOpen,
     formOperator: { openForm },
   } = useForm();
+
   const { staffState } = useAuth();
 
   useEffect(() => {
-    if (id) {
-      readItem(id);
+    if (isOpen && modelContext && id) {
+      modelContext.readItem(id);
     }
-  }, [id, isOpen]);
+  }, [isOpen, id]);
+
+  if (!modelType) return <></>;
+
+  if (!modelContext) return <></>;
+
+  const { isLoading, selected, deleteItem } = modelContext;
 
   const displayableField = modelType
     ? (fieldDefinition[modelType].filter(
@@ -70,6 +66,7 @@ const DetailModal = <K extends keyof FormTypeMap>({
     : [];
 
   const editOnClick = () => {
+    open(modelType);
     selected ? openForm(false, modelType || null, selected) : undefined;
   };
 
@@ -127,11 +124,11 @@ const DetailModal = <K extends keyof FormTypeMap>({
 
   return (
     <Modal
-      isOpen={true}
-      onClose={() => navigate(-1)}
+      isOpen={isOpen}
+      onClose={() => close()}
       header={
         <div className="flex items-center gap-x-2 mb-4">
-          <h3 className="text-xl font-semibold text-gray-700">{title}</h3>
+          <h3 className="text-xl font-semibold text-gray-700">詳細ページ</h3>
           {(staffState.admin || isDev) && (
             <button
               type="button"

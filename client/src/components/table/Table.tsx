@@ -1,14 +1,15 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Link, useLocation } from "react-router-dom";
 import { isLabelObject, toDateKey } from "../../utils";
 import { IconButton } from "../buttons";
 import { useEffect, useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { TableProps } from "../../types/table";
+import { useModal } from "../../context/modal-context";
 
 const Table = <T extends Record<string, any>>({
+  modelType,
   data = [],
   headers = [],
   pageNation = "client",
@@ -24,9 +25,11 @@ const Table = <T extends Record<string, any>>({
   renderFieldCell,
   deleteOnClick,
 }: TableProps<T>) => {
-  const location = useLocation();
-
   const { pageNum, rowSpacing, setPageNum } = useListView();
+
+  const {
+    detail: { open },
+  } = useModal();
 
   useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
 
@@ -181,24 +184,19 @@ const Table = <T extends Record<string, any>>({
               })}
               {detailLink && (
                 <td
-                  className={`cursor-pointer px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap ${
+                  className={`px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap ${
                     selectedKey.includes(row.key) ? "bg-blue-100" : ""
                   }`}
                   style={{ width: "80px" }}
                 >
-                  <Link
-                    to={`${detailLink}/${row._id}`}
-                    className="underline hover:text-blue-600"
-                    state={{
-                      backgroundLocation: {
-                        ...location,
-                        pathname: location.pathname.replace(/\/$/, ""),
-                      },
-                      currentPage: pageNum,
+                  <button
+                    className="underline hover:text-blue-600 cursor-pointer"
+                    onClick={() => {
+                      modelType && open(modelType, row._id);
                     }}
                   >
                     詳細
-                  </Link>
+                  </button>
                 </td>
               )}
               {form && (

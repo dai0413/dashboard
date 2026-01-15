@@ -1,24 +1,42 @@
 import { ReactNode } from "react";
-import { CountryProvider } from "./country";
-import { TeamProvider } from "./team";
-import { PlayerProvider } from "./player";
-import { InjuryProvider } from "./injury";
-import { TransferProvider } from "./transfer";
-import { NationalMatchSeriesProvider } from "./national-match-series";
-import { NationalCallupProvider } from "./national-callup";
-import { RefereeProvider } from "./referee";
-import { CompetitionProvider } from "./competition";
-import { SeasonProvider } from "./season";
-import { TeamCompetitionSeasonProvider } from "./team-competition-season";
-import { StadiumProvider } from "./stadium";
-import { CompetitionStageProvider } from "./competition-stage";
-import { MatchFormatProvider } from "./match-format";
-import { MatchProvider } from "./match";
-import { PlayerRegistrationProvider } from "./player-registration";
-import { PlayerRegistrationHistoryProvider } from "./player-registration-history";
-import { MatchEventTypeProvider } from "./match-event-type";
-import { FormationProvider } from "./formation";
-import { StaffProvider } from "./staff";
+
+import { CountryProvider, useCountry } from "./country";
+import { TeamProvider, useTeam } from "./team";
+import { PlayerProvider, usePlayer } from "./player";
+import { InjuryProvider, useInjury } from "./injury";
+import { TransferProvider, useTransfer } from "./transfer";
+import {
+  NationalMatchSeriesProvider,
+  useNationalMatchSeries,
+} from "./national-match-series";
+import { NationalCallupProvider, useNationalCallup } from "./national-callup";
+import { RefereeProvider, useReferee } from "./referee";
+import { CompetitionProvider, useCompetition } from "./competition";
+import { SeasonProvider, useSeason } from "./season";
+import {
+  TeamCompetitionSeasonProvider,
+  useTeamCompetitionSeason,
+} from "./team-competition-season";
+import { StadiumProvider, useStadium } from "./stadium";
+import {
+  CompetitionStageProvider,
+  useCompetitionStage,
+} from "./competition-stage";
+import { MatchFormatProvider, useMatchFormat } from "./match-format";
+import { MatchProvider, useMatch } from "./match";
+import {
+  PlayerRegistrationProvider,
+  usePlayerRegistration,
+} from "./player-registration";
+import {
+  PlayerRegistrationHistoryProvider,
+  usePlayerRegistrationHistory,
+} from "./player-registration-history";
+import { MatchEventTypeProvider, useMatchEventType } from "./match-event-type";
+import { FormationProvider, useFormation } from "./formation";
+import { StaffProvider, useStaff } from "./staff";
+import { ModelType } from "../../types/models";
+import { MetaCrudContext } from "../../types/context";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -66,4 +84,52 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export { ModelWrapper };
+const useModelContext = (modelType: ModelType | null) => {
+  const competition = useCompetition();
+  const competitionStage = useCompetitionStage();
+  const country = useCountry();
+  const injury = useInjury();
+  const formation = useFormation();
+  const matchEventType = useMatchEventType();
+  const matchFormat = useMatchFormat();
+  const match = useMatch();
+  const nationalCallup = useNationalCallup();
+  const nationalMatchSeries = useNationalMatchSeries();
+  const player = usePlayer();
+  const playerRegistrationHistory = usePlayerRegistrationHistory();
+  const playerRegistration = usePlayerRegistration();
+  const referee = useReferee();
+  const season = useSeason();
+  const stadium = useStadium();
+  const staff = useStaff();
+  const teamCompetitionSeason = useTeamCompetitionSeason();
+  const team = useTeam();
+  const transfer = useTransfer();
+
+  const map: Record<ModelType, MetaCrudContext<any>> = {
+    [ModelType.COMPETITION]: competition.metacrud,
+    [ModelType.COMPETITION_STAGE]: competitionStage.metacrud,
+    [ModelType.COUNTRY]: country.metacrud,
+    [ModelType.INJURY]: injury.metacrud,
+    [ModelType.FORMATION]: formation.metacrud,
+    [ModelType.MATCH_EVENT_TYPE]: matchEventType.metacrud,
+    [ModelType.MATCH_FORMAT]: matchFormat.metacrud,
+    [ModelType.MATCH]: match.metacrud,
+    [ModelType.NATIONAL_CALLUP]: nationalCallup.metacrud,
+    [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries.metacrud,
+    [ModelType.PLAYER]: player.metacrud,
+    [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory.metacrud,
+    [ModelType.PLAYER_REGISTRATION]: playerRegistration.metacrud,
+    [ModelType.REFEREE]: referee.metacrud,
+    [ModelType.SEASON]: season.metacrud,
+    [ModelType.STADIUM]: stadium.metacrud,
+    [ModelType.STAFF]: staff.metacrud,
+    [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason.metacrud,
+    [ModelType.TEAM]: team.metacrud,
+    [ModelType.TRANSFER]: transfer.metacrud,
+  };
+
+  return modelType ? map[modelType] : null;
+};
+
+export { ModelWrapper, useModelContext };

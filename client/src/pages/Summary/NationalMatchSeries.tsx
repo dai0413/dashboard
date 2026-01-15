@@ -12,8 +12,8 @@ import { isFilterable, isSortable } from "../../types/field";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { toDateKey } from "../../utils";
-import { useForm } from "../../context/form-context";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { useModal } from "../../context/modal-context";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -25,7 +25,9 @@ const Tabs = NationalMatchSeriesTabItems.filter(
 
 const National = () => {
   const { id } = useParams();
-  const { isOpen: formIsOpen } = useForm();
+  const {
+    form: { isOpen: formIsOpen },
+  } = useModal();
 
   const [selectedTab, setSelectedTab] = useState("player");
 

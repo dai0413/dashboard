@@ -115,6 +115,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         </div>
       ) : items && items?.length > 0 && props.headers ? (
         <ListView
+          modelType={props.modelType}
           data={items}
           totalCount={totalCount}
           headers={props.headers}

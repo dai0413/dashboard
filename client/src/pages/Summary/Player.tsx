@@ -11,10 +11,10 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { useForm } from "../../context/form-context";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { useModal } from "../../context/modal-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -26,7 +26,9 @@ const Tabs = PlayerTabItems.filter(
 
 const Player = () => {
   const { id } = useParams();
-  const { isOpen: formIsOpen } = useForm();
+  const {
+    form: { isOpen: formIsOpen },
+  } = useModal();
 
   const [selectedTab, setSelectedTab] = useState("transfer");
 

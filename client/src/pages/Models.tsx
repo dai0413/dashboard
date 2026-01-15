@@ -21,74 +21,42 @@ import {
   Formation,
   Staff,
 } from "./ModelTable";
-import {
-  CompetitionStageDetail,
-  CompetitionDetail,
-  CountryDetail,
-  InjuryDetail,
-  MatchFormatDetail,
-  MatchDetail,
-  PlayerDetail,
-  RefereeDetail,
-  SeasonDetail,
-  StadiumDetail,
-  TeamCompetitionSeasonDetail,
-  TeamDetail,
-  TransferDetail,
-  NationalCallupDetail,
-  NationalMatchSeriesDetail,
-  PlayerRegistrationDetail,
-  PlayerRegistrationHistoryDetail,
-  MatchEventTypeDetail,
-  FormationDetail,
-  StaffDetail,
-} from "./ModelDetail";
 import { JSX } from "react";
 
-const models: Record<
-  ModelType,
-  { table: () => JSX.Element; detail: () => JSX.Element }
-> = {
+const models: Record<ModelType, { table: () => JSX.Element }> = {
   [ModelType.COMPETITION_STAGE]: {
     table: CompetitionStage,
-    detail: CompetitionStageDetail,
   },
-  [ModelType.COMPETITION]: { table: Competition, detail: CompetitionDetail },
-  [ModelType.COUNTRY]: { table: Country, detail: CountryDetail },
-  [ModelType.FORMATION]: { table: Formation, detail: FormationDetail },
-  [ModelType.INJURY]: { table: Injury, detail: InjuryDetail },
+  [ModelType.COMPETITION]: { table: Competition },
+  [ModelType.COUNTRY]: { table: Country },
+  [ModelType.FORMATION]: { table: Formation },
+  [ModelType.INJURY]: { table: Injury },
   [ModelType.MATCH_EVENT_TYPE]: {
     table: MatchEventType,
-    detail: MatchEventTypeDetail,
   },
-  [ModelType.MATCH_FORMAT]: { table: MatchFormat, detail: MatchFormatDetail },
-  [ModelType.MATCH]: { table: Match, detail: MatchDetail },
+  [ModelType.MATCH_FORMAT]: { table: MatchFormat },
+  [ModelType.MATCH]: { table: Match },
   [ModelType.PLAYER_REGISTRATION_HISTORY]: {
     table: PlayerRegistrationHistory,
-    detail: PlayerRegistrationHistoryDetail,
   },
   [ModelType.PLAYER_REGISTRATION]: {
     table: PlayerRegistration,
-    detail: PlayerRegistrationDetail,
   },
-  [ModelType.PLAYER]: { table: Player, detail: PlayerDetail },
-  [ModelType.REFEREE]: { table: Referee, detail: RefereeDetail },
-  [ModelType.SEASON]: { table: Season, detail: SeasonDetail },
-  [ModelType.STADIUM]: { table: Stadium, detail: StadiumDetail },
-  [ModelType.STAFF]: { table: Staff, detail: StaffDetail },
+  [ModelType.PLAYER]: { table: Player },
+  [ModelType.REFEREE]: { table: Referee },
+  [ModelType.SEASON]: { table: Season },
+  [ModelType.STADIUM]: { table: Stadium },
+  [ModelType.STAFF]: { table: Staff },
   [ModelType.TEAM_COMPETITION_SEASON]: {
     table: TeamCompetitionSeason,
-    detail: TeamCompetitionSeasonDetail,
   },
-  [ModelType.TEAM]: { table: Team, detail: TeamDetail },
-  [ModelType.TRANSFER]: { table: Transfer, detail: TransferDetail },
+  [ModelType.TEAM]: { table: Team },
+  [ModelType.TRANSFER]: { table: Transfer },
   [ModelType.NATIONAL_CALLUP]: {
     table: NationalCallup,
-    detail: NationalCallupDetail,
   },
   [ModelType.NATIONAL_MATCH_SERIES]: {
     table: NationalMatchSeries,
-    detail: NationalMatchSeriesDetail,
   },
 };
 export default models;
