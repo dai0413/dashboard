@@ -1,4 +1,11 @@
-import { createContext, JSX, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  JSX,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useAlert } from "./alert-context";
 import { FormFieldDefinition, FormStep } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
@@ -50,24 +57,24 @@ const checkRequiredFields = <T extends ModelType>(
   return { success: true };
 };
 
+type FormMode = "create" | "update";
+type InputMode = "single" | "many";
+
 type FormContextValue<T extends ModelType> = {
-  modelType: T | null;
-  mode: "single" | "many";
+  inputMode: InputMode;
 
   formOperator: {
-    openForm: (
+    startForm: (
       newData: boolean,
       model: T | null,
       editItem?: GettedModelDataMap[T],
       initialFormData?: Partial<FormTypeMap[T]>,
       many?: boolean
     ) => void;
-    closeForm: () => void;
   };
 
-  // isOpen: boolean;
   isEditing: boolean;
-  newData: boolean;
+  formMode: FormMode;
 
   single: {
     formData: FormTypeMap[T];
@@ -77,7 +84,6 @@ type FormContextValue<T extends ModelType> = {
       value: FormTypeMap[T][K] | undefined,
       overwriteByMany?: boolean
     ) => void;
-    formSteps: FormStep<T>[];
   };
 
   many?: {
@@ -90,7 +96,6 @@ type FormContextValue<T extends ModelType> = {
       key: K,
       value: FormTypeMap[T][K] | undefined
     ) => void;
-    formSteps: FormStep<T>[];
     addFormDatas: (baseCopy: boolean, setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
     renderConfirmMes: (
@@ -100,6 +105,7 @@ type FormContextValue<T extends ModelType> = {
 
   steps: {
     currentStep: number;
+    formSteps: FormStep<T>[];
     nextStep: () => Promise<void>;
     prevStep: () => void;
     nextData: () => void;
@@ -130,22 +136,39 @@ export const FormProvider = <T extends ModelType>({
   } = useAlert();
 
   const api = useApi();
+  const { getLabelById } = useOptions();
 
-  // const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [newData, setNewData] = useState<boolean>(true);
+
   const [isEditing, setIsEditing] = useState<boolean>(true);
 
-  const [mode, setMode] = useState<"many" | "single">("single");
+  const [formMode, setFormMode] = useState<FormMode>("create");
+  const [inputMode, setInputMode] = useState<InputMode>("single");
 
-  const [singleStep, setSingleStep] = useState<FormStep<T>[]>([]);
-  const [bulkStep, setBulkStep] = useState<FormStep<T>[]>([]);
+  const [formSteps, setFormSteps] = useState<FormStep<T>[]>([]);
+
+  const [formData, setFormData] = useState<FormTypeMap[T]>({});
+  const [formLabel, setFormLabel] = useState<Record<string, any>>({});
+
+  const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
+  const [formLabels, setFormLabels] = useState<Record<string, any>[]>([{}]);
+  // useEffect(() => console.log("formData", formData), [formData]);
+
+  const [initialFormData, setInitialFormData] =
+    useState<Partial<FormTypeMap[T] | null>>(null);
+
+  const [bulkCommonData, setBulkCommonData] = useState<FormTypeMap[T]>({});
+  const [bulkCommonLabel, setBulkCommonLabel] = useState<Record<string, any>>(
+    {}
+  );
 
   useEffect(() => {
-    setSingleStep(modelType ? getSteps(modelType, false) : []);
-    setBulkStep(modelType ? getSteps(modelType, true) : []);
-  }, [modelType]);
+    if (!modelType) return;
+    inputMode === "single"
+      ? setFormSteps(getSteps(modelType, false))
+      : setFormSteps(getSteps(modelType, true));
+  }, [modelType, inputMode]);
 
   const modelContext = useModelContext(modelType);
 
@@ -163,8 +186,6 @@ export const FormProvider = <T extends ModelType>({
 
     return diff;
   };
-
-  const { getLabelById } = useOptions();
 
   async function resolveForeignKeyLabels(
     initialFormLabel: Record<string, any>
@@ -187,7 +208,7 @@ export const FormProvider = <T extends ModelType>({
     return resolved;
   }
 
-  const openForm = async (
+  const startForm = async (
     newData: boolean,
     model: T | null,
     editItem?: GettedModelDataMap[T],
@@ -196,12 +217,23 @@ export const FormProvider = <T extends ModelType>({
   ) => {
     if (!model) return;
 
-    many ? setMode("many") : setMode("single");
+    if (!newData) {
+      inputMode === "many"
+        ? setCurrentStep(getSteps(model, true).length - 1)
+        : setCurrentStep(getSteps(model, false).length - 1);
+    } else {
+      setCurrentStep(0);
+    }
+
+    many ? setInputMode("many") : setInputMode("single");
+
+    console.log("initialFormData in startForm", initialFormData);
 
     if (newData) {
-      setNewData(true);
+      setFormMode("create");
 
       if (initialFormData) {
+        setInitialFormData(initialFormData);
         const data = { ...getDefault(model), ...initialFormData };
 
         setFormData(data);
@@ -216,7 +248,7 @@ export const FormProvider = <T extends ModelType>({
         resetFormDatas();
       }
     } else {
-      setNewData(false);
+      setFormMode("update");
       if (editItem) {
         const newFormData = {
           ...getDefault(model),
@@ -251,44 +283,36 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
-    // setIsOpen(true);
     setModelType(model);
     setIsEditing(true);
-
-    if (!newData) {
-      mode === "many"
-        ? setCurrentStep(getSteps(model, true).length - 1)
-        : setCurrentStep(getSteps(model, false).length - 1);
-    }
   };
 
-  const closeForm = () => {
-    resetFormData();
-    resetFormDatas();
-    // setIsOpen(false);
-    setModelType(null);
-    setCurrentStep(0);
-    resetAlert();
+  const finishForm = () => {
     setIsEditing(false);
-    setNewData(true);
-    setMode("single");
   };
 
   const nextData = () => {
     resetFormData();
     resetFormDatas();
+
     setCurrentStep(0);
     resetAlert();
     setIsEditing(true);
-    setNewData(true);
-    setMode("single");
+
+    startForm(
+      true,
+      modelType,
+      undefined,
+      initialFormData ? initialFormData : undefined,
+      inputMode === "many"
+    );
   };
 
   const sendData = async () => {
     let result: boolean = false;
     if (!modelContext || !modelType) return;
 
-    if (mode === "single") {
+    if (inputMode === "single") {
       let item: FormTypeMap[T];
       if (modelType === ModelType.MATCH_FORMAT) {
         item = { ...formData, period: formDatas };
@@ -296,7 +320,7 @@ export const FormProvider = <T extends ModelType>({
         item = formData;
       }
 
-      if (newData) {
+      if (formMode === "create") {
         result = await modelContext.createItem(item);
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
@@ -317,30 +341,29 @@ export const FormProvider = <T extends ModelType>({
       }
 
       setCurrentStep((prev) =>
-        Math.min(prev + 1, singleStep ? singleStep.length - 1 : 0)
+        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0)
       );
     }
 
-    if (mode === "many") {
+    if (inputMode === "many") {
       result = await modelContext.createItems(formDatas);
 
       setCurrentStep((prev) =>
-        Math.min(prev + 1, bulkStep ? bulkStep.length - 1 : 0)
+        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0)
       );
     }
 
-    if (result) setIsEditing(false);
+    if (result) {
+      handleSetAlert({
+        success: true,
+        message: "データを追加しました",
+      });
+      finishForm();
+    }
   };
 
-  const [bulkCommonData, setBulkCommonData] = useState<FormTypeMap[T]>({});
-  const [bulkCommonLabel, setBulkCommonLabel] = useState<Record<string, any>>(
-    {}
-  );
-
   const stepSkip = (next: number) => {
-    const current = singleStep[next];
-
-    if (!current) return;
+    const current = formSteps[next];
 
     if (current?.skip) {
       const skip = current.skip(formData);
@@ -352,8 +375,7 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const nextStep = async (): Promise<void> => {
-    const current =
-      mode === "single" ? singleStep[currentStep] : bulkStep[currentStep];
+    const current = formSteps[currentStep];
 
     if (!current) return;
     const checkData = current.many ? formDatas : formData;
@@ -378,7 +400,7 @@ export const FormProvider = <T extends ModelType>({
     }
 
     // --- onChange 関数による値変更 ---
-    if (newData && current.onChange) {
+    if (formMode === "create" && current.onChange) {
       if (!Array.isArray(checkData)) {
         const updatePaires = await current.onChange(checkData, api);
 
@@ -389,7 +411,7 @@ export const FormProvider = <T extends ModelType>({
     }
 
     // --- many入力時の共通要素
-    if (mode === "many" && bulkCommonData && current.fields) {
+    if (inputMode === "many" && bulkCommonData && current.fields) {
       current.fields.forEach((field) => {
         if (field.overwriteByMany) {
           const valueKey = field.key as keyof FormTypeMap[T];
@@ -404,18 +426,14 @@ export const FormProvider = <T extends ModelType>({
       });
     }
 
-    if (!singleStep) {
-      return;
-    }
-
     let nextStepIndex = Math.min(
       currentStep + 1,
-      singleStep ? singleStep.length - 1 : 0
+      formSteps ? formSteps.length - 1 : 0
     );
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    if (mode === "single") {
-      while (stepSkip(nextStepIndex) && nextStepIndex < singleStep.length - 1) {
+    if (inputMode === "single") {
+      while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
         nextStepIndex++;
       }
     }
@@ -425,11 +443,11 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const prevStep = () => {
-    if (!singleStep) return;
+    if (!formSteps) return;
     let nextStepIndex = Math.max(currentStep - 1, 0);
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    while (stepSkip(nextStepIndex) && nextStepIndex < singleStep.length - 1) {
+    while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
       nextStepIndex--;
     }
 
@@ -441,10 +459,6 @@ export const FormProvider = <T extends ModelType>({
   };
 
   ////////////////////////// single data edit //////////////////////////
-  const [formData, setFormData] = useState<FormTypeMap[T]>({});
-  const [formLabel, setFormLabel] = useState<Record<string, any>>({});
-
-  // useEffect(() => console.log("formData", formData), [formData]);
 
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
@@ -469,9 +483,6 @@ export const FormProvider = <T extends ModelType>({
   };
 
   ////////////////////////// many data edit //////////////////////////
-
-  const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
-  const [formLabels, setFormLabels] = useState<Record<string, any>[]>([{}]);
 
   const resetFormDatas = () => {
     setFormDatas([
@@ -554,13 +565,13 @@ export const FormProvider = <T extends ModelType>({
       hasSingle && {
         label: "Single",
         onClick: () => {
-          openForm(true, model || null, undefined, formInitialData);
+          startForm(true, model || null, undefined, formInitialData);
         },
       },
       hasBulk && {
         label: "Many",
         onClick: () => {
-          openForm(true, model || null, undefined, formInitialData, true);
+          startForm(true, model || null, undefined, formInitialData, true);
         },
       },
     ].filter(Boolean) as { label: string; onClick: () => void }[];
@@ -569,8 +580,7 @@ export const FormProvider = <T extends ModelType>({
   };
   // ////////////////////////////////////////////////////// //
   const autoFill = async (): Promise<void> => {
-    const current =
-      mode === "single" ? singleStep[currentStep] : bulkStep[currentStep];
+    const current = formSteps[currentStep];
 
     if (current?.onChange) {
       for (const [dataIndex, formData] of formDatas.entries()) {
@@ -591,7 +601,7 @@ export const FormProvider = <T extends ModelType>({
   const many = {
     bulkCommonData,
     bulkCommonLabel,
-    formSteps: bulkStep,
+    // formSteps: bulkStep,
     formData: formDatas,
     formLabels,
     handleFormData,
@@ -601,26 +611,26 @@ export const FormProvider = <T extends ModelType>({
   };
 
   // 確認画面
-  const displayableField = modelType
-    ? (fieldDefinition[modelType].filter(
-        isDisplayOnDetail
-      ) as DetailFieldDefinition[])
-    : [];
+  const displayableField = useMemo(
+    () =>
+      modelType
+        ? (fieldDefinition[modelType].filter(
+            isDisplayOnDetail
+          ) as DetailFieldDefinition[])
+        : [],
+    [modelType]
+  );
 
   const value: FormContextValue<T> = {
-    modelType,
-    mode,
+    inputMode,
 
     formOperator: {
-      openForm,
-      closeForm,
+      startForm,
     },
-    // isOpen,
     isEditing,
-    newData,
+    formMode,
 
     single: {
-      formSteps: singleStep,
       formData: formData,
       handleFormData: singleHandleFormData,
       formLabel,
@@ -630,6 +640,7 @@ export const FormProvider = <T extends ModelType>({
 
     steps: {
       currentStep,
+      formSteps,
       nextStep,
       prevStep,
       nextData,

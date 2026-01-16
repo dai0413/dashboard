@@ -42,7 +42,7 @@ const DetailModal = () => {
   } = useAlert();
 
   const {
-    formOperator: { openForm },
+    formOperator: { startForm },
   } = useForm();
 
   const { staffState } = useAuth();
@@ -67,7 +67,7 @@ const DetailModal = () => {
 
   const editOnClick = () => {
     open(modelType);
-    selected ? openForm(false, modelType || null, selected) : undefined;
+    selected ? startForm(false, modelType || null, selected) : undefined;
   };
 
   const deleteOnClick = () => {

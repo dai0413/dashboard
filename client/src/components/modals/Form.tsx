@@ -104,15 +104,24 @@ const Form = <T extends keyof FormTypeMap>() => {
   } = useModal();
 
   const {
-    mode,
+    inputMode,
     isEditing,
-    newData,
+    formMode,
 
     single,
+    single: { formLabel },
 
     many,
 
-    steps: { currentStep, nextStep, prevStep, nextData, sendData, handleStep },
+    steps: {
+      formSteps,
+      currentStep,
+      nextStep,
+      prevStep,
+      nextData,
+      sendData,
+      handleStep,
+    },
 
     getDiffKeys,
     displayableField,
@@ -126,7 +135,7 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   const diffKeys = getDiffKeys ? getDiffKeys() : [];
 
-  const steps = mode === "single" ? single.formSteps : many?.formSteps;
+  const steps = formSteps;
   const handleFormData = single.handleFormData;
 
   const [isTableOpen, setIsTableOpen] = useState<boolean>(false);
@@ -179,9 +188,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
       const value =
-        display.key in single.formLabel
-          ? single.formLabel[display.key]
-          : undefined;
+        display.key in formLabel ? formLabel[display.key] : undefined;
 
       let da: {
         value: string;
@@ -245,13 +252,13 @@ const Form = <T extends keyof FormTypeMap>() => {
           {steps && steps.length !== 0 ? (
             <>
               <h3 className="text-xl font-semibold text-gray-700 mb-1">
-                {newData ? "新規データ作成" : "既存データ編集"}
+                {formMode === "create" ? "新規データ作成" : "既存データ編集"}
               </h3>
 
               <div>
                 <div className="mb-1 text-sm text-gray-500">
                   ステップ {currentStep + 1} / {steps.length}：
-                  {steps[currentStep].stepLabel}
+                  {steps[currentStep].stepLabel || ""}
                 </div>
 
                 <div className="flex space-x-2">
@@ -293,18 +300,13 @@ const Form = <T extends keyof FormTypeMap>() => {
                 color: "green",
                 onClick: nextData,
               }}
-              deny={{
-                text: "入力終了",
-                color: "red",
-                onClick: close,
-              }}
             />
           ) : (
             <LinkButtonGroup
               approve={{
                 text:
                   steps && currentStep === steps.length - 1
-                    ? newData
+                    ? formMode === "create"
                       ? "追加"
                       : "変更"
                     : "次へ",
@@ -332,17 +334,21 @@ const Form = <T extends keyof FormTypeMap>() => {
         <>
           {steps[currentStep].type === "confirm" ? (
             <div className="space-y-2 text-sm text-gray-700">
-              {!newData && alert.success && diffKeys.length > 0 && (
-                <span className="text-sm text-red-600 font-medium">
-                  ※ 赤文字の値に変更しました
-                </span>
-              )}
+              {formMode === "update" &&
+                alert.success &&
+                diffKeys.length > 0 && (
+                  <span className="text-sm text-red-600 font-medium">
+                    ※ 赤文字の値に変更しました
+                  </span>
+                )}
 
-              {!newData && !alert.success && diffKeys.length > 0 && (
-                <span className="text-sm text-red-600 font-medium">
-                  ※ 赤文字の値に変更します
-                </span>
-              )}
+              {formMode === "update" &&
+                !alert.success &&
+                diffKeys.length > 0 && (
+                  <span className="text-sm text-red-600 font-medium">
+                    ※ 赤文字の値に変更します
+                  </span>
+                )}
 
               {typeof single.formData === "object" && (
                 <FieldList
@@ -350,14 +356,14 @@ const Form = <T extends keyof FormTypeMap>() => {
                   fields={displayableField}
                   data={convertDisplayField(
                     displayableField,
-                    single.formLabel,
+                    formLabel,
                     steps,
                     handleStep
                   )}
                   diffKeys={diffKeys}
-                  diffColor={!newData}
-                  isEmpty={mode === "single" ? true : false}
-                  isExclude={mode === "single" ? true : false}
+                  diffColor={formMode === "update"}
+                  isEmpty={inputMode === "single" ? true : false}
+                  isExclude={inputMode === "single" ? true : false}
                 />
               )}
 
@@ -411,7 +417,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                     formLabel={
                       field.overwriteByMany
                         ? many?.bulkCommonLabel || {}
-                        : single.formLabel
+                        : formLabel
                     }
                     handleFormData={(key, value) =>
                       handleFormData(key, value, field.overwriteByMany)
