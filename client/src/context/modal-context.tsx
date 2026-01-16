@@ -1,5 +1,12 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { ModelType } from "../types/models";
+import { useAlert } from "./alert-context";
 
 type ModalState = {
   detail: {
@@ -30,6 +37,14 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [formIsOpen, setFormIsOpen] = useState<boolean>(false);
   const [formModelType, setFormModelType] = useState<ModelType | null>(null);
   const [formId, setFormId] = useState<string | null>(null);
+
+  const {
+    modal: { handleSetAlert },
+  } = useAlert();
+
+  useEffect(() => {
+    handleSetAlert({ success: null });
+  }, [detailIsOpen, formIsOpen]);
 
   const openDetail = (modelType: ModelType, id: string) => {
     setDetailIsOpen(true);

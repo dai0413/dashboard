@@ -11,20 +11,22 @@ const Alert = ({ success, message, resetAlert }: AlertProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (success && message) {
-      setIsOpen(true);
+    // if (success && message) {
+    //   setIsOpen(true);
 
-      const timer = setTimeout(() => {
-        setIsOpen(false);
-        resetAlert();
-      }, 3000); // 3秒後に閉じる
+    //   const timer = setTimeout(() => {
+    //     setIsOpen(false);
+    //     resetAlert();
+    //   }, 3000); // 3秒後に閉じる
 
-      return () => clearTimeout(timer); // クリーンアップ
-    }
+    //   return () => clearTimeout(timer); // クリーンアップ
+    // }
 
-    if (!success && message) {
-      setIsOpen(true); // エラーは自動で閉じずにユーザーが手動で閉じる
-    }
+    // if (!success && message) {
+    //   setIsOpen(true); // エラーは自動で閉じずにユーザーが手動で閉じる
+    // }
+
+    setIsOpen(true);
   }, [success, message]);
 
   const renderMessage = (success: boolean, message: string) => {
