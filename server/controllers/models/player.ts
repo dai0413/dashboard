@@ -170,21 +170,55 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
     });
 };
 
+const safe = (value: any) => {
+  if (value === undefined || value === null) return "";
+  return String(value);
+};
+
 const downloadItem = async (req: Request, res: Response) => {
   try {
-    const data = await PlayerModel.find();
+    const data = await PlayerModel.aggregate([
+      {
+        $addFields: {
+          // old_id があるかどうか（true / false）
+          has_old_id: {
+            $cond: [{ $ifNull: ["$old_id", false] }, 0, 1],
+            // old_idあり → 0（先）
+            // old_idなし → 1（後）
+          },
+
+          // old_id を数値化（失敗しても落ちない）
+          old_id_num: {
+            $convert: {
+              input: "$old_id",
+              to: "int",
+              onError: null,
+              onNull: null,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          has_old_id: 1, // ① old_idあり → なし
+          old_id_num: 1, // ② old_id 昇順（数値）
+          createdAt: 1, // ③ old_id がないものは createdAt 昇順
+        },
+      },
+    ]);
+
     if (data.length === 0) {
       return res.status(404).json({ message: "データがありません" });
     }
 
-    const header = `"player_id","name","en_name","dob","pob"\n`;
+    const header = `"old_id","name","en_name","dob","pob"\n`;
 
     const csvContent = data
       .map((player: any, index: number) => {
         const dob = player.dob ? moment(player.dob).format("YYYY/MM/DD") : ""; // 空でも対応
-        return `"${index + 1}","${player.name}","${player.en_name}","${dob}","${
-          player.pob
-        }"`;
+        return `"${safe(player.old_id)}","${player.name}","${safe(
+          player.en_name
+        )}","${dob}","${safe(player.pob)}"`;
       })
       .join("\n");
 
