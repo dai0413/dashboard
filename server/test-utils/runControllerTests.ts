@@ -43,9 +43,9 @@ export async function setupDependencies(): Promise<DependencyRefs> {
     TType extends object,
     TForm extends object,
     TRes extends { _id: string },
-    TPop extends object
+    TPop extends object,
   >(
-    config: ControllerConfig<TDoc, TType, TForm, TRes, TPop>
+    config: ControllerConfig<TDoc, TType, TForm, TRes, TPop>,
   ) => {
     const sample =
       typeof config.TEST.sampleData === "function"
@@ -70,16 +70,16 @@ export async function setupDependencies(): Promise<DependencyRefs> {
   const player = await postAndGetData(playerConfig(PlayerModel));
   const country = await postAndGetData(countryConfig(CountryModel));
   const nationalMatchSeries = await postAndGetData(
-    nationalMatchSeriesConfig(NationalMatchSeriesModel)
+    nationalMatchSeriesConfig(NationalMatchSeriesModel),
   );
   const competition = await postAndGetData(competitionConfig(CompetitionModel));
   const season = await postAndGetData(seasonConfig(SeasonModel));
   const competitionStage = await postAndGetData(
-    competitionStageConfig(CompetitionStageModel)
+    competitionStageConfig(CompetitionStageModel),
   );
   const match = await postAndGetData(matchConfig(MatchModel));
   const matchEventType = await postAndGetData(
-    matchEventTypeConfig(MatchEventTypeModel)
+    matchEventTypeConfig(MatchEventTypeModel),
   );
   const staff = await postAndGetData(staffConfig(StaffModel));
   const formation = await postAndGetData(formationConfig(FormationModel));
@@ -104,7 +104,7 @@ export function runControllerTests<
   TType extends object,
   TForm extends object,
   TRes extends { _id: string },
-  TPop extends object
+  TPop extends object,
 >(config: ControllerConfig<TDoc, TType, TForm, TRes, TPop>) {
   let deps: DependencyRefs;
 

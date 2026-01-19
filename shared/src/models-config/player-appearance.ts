@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function playerAppearance<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   PlayerAppearanceType,
@@ -31,7 +31,7 @@ export function playerAppearance<TDoc = any, TModel = any>(
     TYPE: {} as PlayerAppearanceType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
-      { path: "match", collection: "matchs" },
+      { path: "match", collection: "matches" },
       { path: "player", collection: "players" },
       { path: "team", collection: "teams" },
     ],
@@ -48,7 +48,7 @@ export function playerAppearance<TDoc = any, TModel = any>(
       buildCustomMatch: customMatchFn,
     },
     bulk: true,
-    download: true,
+    download: false,
     TEST: {
       sampleData: (deps) => [
         {

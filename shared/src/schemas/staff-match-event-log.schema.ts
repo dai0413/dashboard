@@ -4,6 +4,10 @@ import { objectId } from "./utils/objectId.js";
 import { getKey } from "../utils/getKey.js";
 import { periodLabel } from "../enum/period-label.js";
 import { special_time } from "../enum/special_time.js";
+import { MatchZodSchema } from "./match.schema.js";
+import { TeamZodSchema } from "./team.schema.js";
+import { MatchEventTypeZodSchema } from "./match-event-type.schema.js";
+import { StaffZodSchema } from "./staff.schema.js";
 
 const SPECIAL_TIME_ENUM = z.enum(getKey(special_time()));
 const PERIOD_LABEL_ENUM = z.enum(getKey(periodLabel()));
@@ -20,6 +24,10 @@ export const StaffMatchEventLogBaseZodSchema = z.object({
   special_time: SPECIAL_TIME_ENUM.optional(),
   period_label: PERIOD_LABEL_ENUM.optional(),
   time_name: z.string().nonempty().optional(),
+  unique_key: z
+    .string()
+    .nonempty()
+    .refine((v) => !!v, { message: "unique_keyは必須です" }),
   createdAt: dateField,
   updatedAt: dateField,
 });
@@ -29,7 +37,7 @@ export const StaffMatchEventLogZodSchema =
     (d) => {
       return !!d.staff || !!d.staff_name;
     },
-    { message: "staff または staff_name が必要です" }
+    { message: "staff または staff_name が必要です" },
   )
 
     // special_time 入力時は time, add_time, order が undefined
@@ -41,7 +49,7 @@ export const StaffMatchEventLogZodSchema =
       {
         message:
           "special_time を入力する場合は time, add_time, order を指定できません",
-      }
+      },
     );
 
 export type StaffMatchEventLogType = z.infer<
@@ -55,9 +63,31 @@ export const StaffMatchEventLogFormSchema =
     updatedAt: true,
     period_label: true,
     time_name: true,
+    unique_key: true,
   });
 
-export const StaffMatchEventLogResponseSchema = StaffMatchEventLogBaseZodSchema;
+export const StaffMatchEventLogResponseSchema =
+  StaffMatchEventLogBaseZodSchema.omit({
+    match: true,
+    team: true,
+    matchEventType: true,
+    staff: true,
+  }).safeExtend({
+    match: MatchZodSchema,
+    team: TeamZodSchema,
+    matchEventType: MatchEventTypeZodSchema,
+    staff: StaffZodSchema,
+  });
 
 export const StaffMatchEventLogPopulatedSchema =
-  StaffMatchEventLogBaseZodSchema;
+  StaffMatchEventLogBaseZodSchema.omit({
+    match: true,
+    team: true,
+    matchEventType: true,
+    staff: true,
+  }).safeExtend({
+    match: MatchZodSchema,
+    team: TeamZodSchema,
+    matchEventType: MatchEventTypeZodSchema,
+    staff: StaffZodSchema,
+  });

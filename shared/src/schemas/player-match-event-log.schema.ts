@@ -4,6 +4,10 @@ import { objectId } from "./utils/objectId.js";
 import { getKey } from "../utils/getKey.js";
 import { periodLabel } from "../enum/period-label.js";
 import { special_time } from "../enum/special_time.js";
+import { MatchZodSchema } from "./match.schema.js";
+import { TeamZodSchema } from "./team.schema.js";
+import { MatchEventTypeZodSchema } from "./match-event-type.schema.js";
+import { PlayerZodSchema } from "./player.schema.js";
 
 const SPECIAL_TIME_ENUM = z.enum(getKey(special_time()));
 const PERIOD_LABEL_ENUM = z.enum(getKey(periodLabel()));
@@ -12,7 +16,9 @@ export const PlayerMatchEventLogBaseZodSchema = z.object({
   _id: objectId,
   match: objectId.refine((v) => !!v, { message: "matchは必須です" }),
   team: objectId.refine((v) => !!v, { message: "teamは必須です" }),
-  matchEventType: objectId.refine((v) => !!v, { message: "staffは必須です" }),
+  matchEventType: objectId.refine((v) => !!v, {
+    message: "matchEventTypeは必須です",
+  }),
   player: objectId.optional(),
   player_name: z.string().nonempty().optional(),
   time: z.number().optional(),
@@ -21,6 +27,10 @@ export const PlayerMatchEventLogBaseZodSchema = z.object({
   period_label: PERIOD_LABEL_ENUM.optional(),
   time_name: z.string().nonempty().optional(),
   order: z.number().optional(),
+  unique_key: z
+    .string()
+    .nonempty()
+    .refine((v) => !!v, { message: "unique_keyは必須です" }),
   createdAt: dateField,
   updatedAt: dateField,
 });
@@ -36,7 +46,7 @@ export const PlayerMatchEventLogZodSchema =
     {
       message:
         "order を入力する場合は time, add_time, special_time を指定できません",
-    }
+    },
   )
 
     // special_time 入力時は time, add_time, order が undefined
@@ -48,7 +58,7 @@ export const PlayerMatchEventLogZodSchema =
       {
         message:
           "special_time を入力する場合は time, add_time, order を指定できません",
-      }
+      },
     );
 
 export type PlayerMatchEventLogType = z.infer<
@@ -62,10 +72,31 @@ export const PlayerMatchEventLogFormSchema =
     updatedAt: true,
     period_label: true,
     time_name: true,
+    unique_key: true,
   });
 
 export const PlayerMatchEventLogResponseSchema =
-  PlayerMatchEventLogBaseZodSchema;
+  PlayerMatchEventLogBaseZodSchema.omit({
+    match: true,
+    team: true,
+    matchEventType: true,
+    player: true,
+  }).safeExtend({
+    match: MatchZodSchema,
+    team: TeamZodSchema,
+    matchEventType: MatchEventTypeZodSchema,
+    player: PlayerZodSchema,
+  });
 
 export const PlayerMatchEventLogPopulatedSchema =
-  PlayerMatchEventLogBaseZodSchema;
+  PlayerMatchEventLogBaseZodSchema.omit({
+    match: true,
+    team: true,
+    matchEventType: true,
+    player: true,
+  }).safeExtend({
+    match: MatchZodSchema,
+    team: TeamZodSchema,
+    matchEventType: MatchEventTypeZodSchema,
+    player: PlayerZodSchema,
+  });

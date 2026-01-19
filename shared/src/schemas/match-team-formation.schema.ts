@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
+import { MatchZodSchema } from "./match.schema.js";
+import { TeamZodSchema } from "./team.schema.js";
+import { FormationZodSchema } from "./formation.schema.js";
 
 export const MatchTeamFormationZodSchema = z.object({
   _id: objectId,
@@ -19,10 +22,25 @@ export const MatchTeamFormationFormSchema = MatchTeamFormationZodSchema.omit({
   _id: true,
   createdAt: true,
   updatedAt: true,
-  period_label: true,
-  time_name: true,
 });
 
-export const MatchTeamFormationResponseSchema = MatchTeamFormationZodSchema;
-
-export const MatchTeamFormationPopulatedSchema = MatchTeamFormationZodSchema;
+export const MatchTeamFormationResponseSchema =
+  MatchTeamFormationZodSchema.omit({
+    match: true,
+    team: true,
+    formation: true,
+  }).safeExtend({
+    match: MatchZodSchema,
+    team: TeamZodSchema,
+    formation: FormationZodSchema,
+  });
+export const MatchTeamFormationPopulatedSchema =
+  MatchTeamFormationZodSchema.omit({
+    match: true,
+    team: true,
+    formation: true,
+  }).safeExtend({
+    match: MatchZodSchema,
+    team: TeamZodSchema,
+    formation: FormationZodSchema,
+  });

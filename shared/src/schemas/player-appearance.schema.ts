@@ -4,6 +4,9 @@ import { objectId } from "./utils/objectId.js";
 import { position } from "../enum/position.js";
 import { getKey } from "../utils/getKey.js";
 import { play_status } from "../enum/play_status.js";
+import { PlayerZodSchema } from "./player.schema.js";
+import { MatchZodSchema } from "./match.schema.js";
+import { TeamZodSchema } from "./team.schema.js";
 
 export const PlayerAppearanceZodSchema = z.object({
   _id: objectId,
@@ -32,6 +35,22 @@ export const PlayerAppearanceFormSchema = PlayerAppearanceZodSchema.omit({
   updatedAt: true,
 });
 
-export const PlayerAppearanceResponseSchema = PlayerAppearanceZodSchema;
+export const PlayerAppearanceResponseSchema = PlayerAppearanceZodSchema.omit({
+  match: true,
+  player: true,
+  team: true,
+}).safeExtend({
+  player: PlayerZodSchema,
+  match: MatchZodSchema,
+  team: TeamZodSchema,
+});
 
-export const PlayerAppearancePopulatedSchema = PlayerAppearanceZodSchema;
+export const PlayerAppearancePopulatedSchema = PlayerAppearanceZodSchema.omit({
+  match: true,
+  player: true,
+  team: true,
+}).safeExtend({
+  player: PlayerZodSchema,
+  match: MatchZodSchema,
+  team: TeamZodSchema,
+});

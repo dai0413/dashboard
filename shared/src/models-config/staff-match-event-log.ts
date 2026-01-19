@@ -9,9 +9,9 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function staffMatchEvengLog<TDoc = any, TModel = any>(
+export function staffMatchEventLog<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   StaffMatchEventLogType,
@@ -31,7 +31,7 @@ export function staffMatchEvengLog<TDoc = any, TModel = any>(
     TYPE: {} as StaffMatchEventLogType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
-      { path: "match", collection: "matchs" },
+      { path: "match", collection: "matches" },
       { path: "team", collection: "teams" },
       { path: "staff", collection: "staffs" },
       { path: "matchEventType", collection: "matcheventtypes" },
@@ -47,7 +47,7 @@ export function staffMatchEvengLog<TDoc = any, TModel = any>(
       buildCustomMatch: customMatchFn,
     },
     bulk: true,
-    download: true,
+    download: false,
     TEST: {
       sampleData: (deps) => [
         {

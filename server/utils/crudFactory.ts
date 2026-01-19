@@ -18,7 +18,7 @@ import { addPositionGroup } from "../order/position.js";
 import { addPositionGroupOrder } from "../order/position_group.js";
 
 const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
-  config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>
+  config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>,
 ) => {
   const {
     name,
@@ -42,7 +42,9 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       let filters: Record<string, any> = {};
       if (req.query.filters) {
         filters = buildMongoFilter(
-          JSON.parse(req.query.filters as string) as FilterableFieldDefinition[]
+          JSON.parse(
+            req.query.filters as string,
+          ) as FilterableFieldDefinition[],
         );
       }
 
@@ -52,7 +54,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       let jsonSort: Record<string, 1 | -1> = {};
       if (req.query.sorts) {
         jsonSort = buildJsonSort(
-          JSON.parse(req.query.sorts as string) as SortableFieldDefinition[]
+          JSON.parse(req.query.sorts as string) as SortableFieldDefinition[],
         );
       }
 
@@ -65,10 +67,10 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
         Object.keys(jsonSort).length > 0
           ? jsonSort
           : Object.keys(stringSort).length > 0
-          ? stringSort
-          : getAllConfig?.sort && Object.keys(getAllConfig.sort).length > 0
-          ? getAllConfig.sort
-          : { _id: 1 };
+            ? stringSort
+            : getAllConfig?.sort && Object.keys(getAllConfig.sort).length > 0
+              ? getAllConfig.sort
+              : { _id: 1 };
 
       // 最終フォールバック
       if (!mongoSort || Object.keys(mongoSort).length === 0) {
@@ -79,12 +81,12 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       const beforeMatch = buildMatchStage(
         req.query,
         getAllConfig?.query?.filter((q) => !q.populateAfter),
-        getAllConfig?.buildCustomMatch
+        getAllConfig?.buildCustomMatch,
       );
 
       const afterMatch = buildMatchStage(
         req.query,
-        getAllConfig?.query?.filter((q) => q.populateAfter)
+        getAllConfig?.query?.filter((q) => q.populateAfter),
       );
 
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
@@ -150,19 +152,19 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
     if (bulk && Array.isArray(req.body)) {
       const parsed = req.body.map((item) => FORM.parse(item));
       const docs = (await MONGO_MODEL.insertMany(
-        parsed
+        parsed,
       )) as unknown as (TDoc & {
         _id: Types.ObjectId;
       })[];
       const ids = docs.map((doc) => doc._id);
       populatedData = await MONGO_MODEL.find({ _id: { $in: ids } }).populate(
-        POPULATE_PATHS
+        POPULATE_PATHS,
       );
     } else {
       const parsed = FORM.parse(req.body);
       const data = await MONGO_MODEL.create(parsed);
       populatedData = await MONGO_MODEL.findById(data._id).populate(
-        POPULATE_PATHS
+        POPULATE_PATHS,
       );
     }
 
@@ -218,7 +220,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
     if (Array.isArray(obj)) return obj.map(nullToUndefined);
     if (typeof obj === "object" && obj !== null) {
       return Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => [k, nullToUndefined(v)])
+        Object.entries(obj).map(([k, v]) => [k, nullToUndefined(v)]),
       );
     }
     return obj;
@@ -265,7 +267,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
 
     if (!updated) throw new NotFoundError(`${name} データが見つかりません`);
     const populated = await MONGO_MODEL.findById(updated._id).populate(
-      POPULATE_PATHS
+      POPULATE_PATHS,
     );
     if (!populated) {
       throw new NotFoundError(`${name} データ取得中にエラーが発生しました`);

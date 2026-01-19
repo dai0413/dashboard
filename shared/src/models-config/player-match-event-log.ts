@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function playerMatchEventLog<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   PlayerMatchEventLogType,
@@ -31,7 +31,7 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
     TYPE: {} as PlayerMatchEventLogType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
-      { path: "match", collection: "matchs" },
+      { path: "match", collection: "matches" },
       { path: "team", collection: "teams" },
       { path: "player", collection: "players" },
       { path: "matchEventType", collection: "matcheventtypes" },
@@ -47,7 +47,7 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
       buildCustomMatch: customMatchFn,
     },
     bulk: true,
-    download: true,
+    download: false,
     TEST: {
       sampleData: (deps) => [
         {
