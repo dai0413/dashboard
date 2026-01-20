@@ -41,6 +41,10 @@ import {
   PlayerAppearanceProvider,
   usePlayerAppearance,
 } from "./player-appearance";
+import {
+  StaffAppearanceProvider,
+  useStaffAppearance,
+} from "./staff-appearance";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -65,7 +69,9 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                                         <TransferProvider>
                                           <FormationProvider>
                                             <PlayerAppearanceProvider>
-                                              {children}
+                                              <StaffAppearanceProvider>
+                                                {children}
+                                              </StaffAppearanceProvider>
                                             </PlayerAppearanceProvider>
                                           </FormationProvider>
                                         </TransferProvider>
@@ -108,6 +114,7 @@ const useModelContext = (modelType: ModelType | null) => {
   const referee = useReferee();
   const season = useSeason();
   const stadium = useStadium();
+  const staffAppearance = useStaffAppearance();
   const staff = useStaff();
   const teamCompetitionSeason = useTeamCompetitionSeason();
   const team = useTeam();
@@ -131,6 +138,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.REFEREE]: referee.metacrud,
     [ModelType.SEASON]: season.metacrud,
     [ModelType.STADIUM]: stadium.metacrud,
+    [ModelType.STAFF_APPEARANCE]: staffAppearance.metacrud,
     [ModelType.STAFF]: staff.metacrud,
     [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason.metacrud,
     [ModelType.TEAM]: team.metacrud,

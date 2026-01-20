@@ -19,3 +19,4 @@ export { default as Transfer } from "./Transfer";
 export { default as NationalCallup } from "./NationalCallup";
 export { default as NationalMatchSeries } from "./NationalMatchSeries";
 export { default as Formation } from "./Formation";
+export { default as StaffAppearance } from "./StaffAppearance";

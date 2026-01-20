@@ -135,6 +135,12 @@ const models: {
     link: APP_ROUTES.PLAYER_APPEARANCE,
     icon: "match",
   },
+  {
+    model: "StaffAppearance",
+    desc: "スタッフの出場履歴",
+    link: APP_ROUTES.STAFF_APPEARANCE,
+    icon: "match",
+  },
 ];
 
 const AdminDashboard = () => {

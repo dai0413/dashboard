@@ -11,6 +11,7 @@ import {
   stadium,
   matchFormat,
   match,
+  staff,
 } from "./Model";
 import {
   status,
@@ -114,6 +115,7 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [ModelType.PLAYER]: (data, table) => player(data, table ? table : false),
   [ModelType.SEASON]: (data, table) => season(data, table ? table : false),
   [ModelType.STADIUM]: (data, table) => stadium(data, table ? table : false),
+  [ModelType.STAFF]: (data, table) => staff(data, table ? table : false),
   [ModelType.TEAM]: (data, table) => team(data, table ? table : false),
   [ModelType.COMPETITION_STAGE]: (data, table) =>
     competitionStage(data, table ? table : false),

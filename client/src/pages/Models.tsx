@@ -21,6 +21,7 @@ import {
   Formation,
   Staff,
   PlayerAppearance,
+  StaffAppearance,
 } from "./ModelTable";
 import { JSX } from "react";
 
@@ -48,6 +49,7 @@ const models: Record<ModelType, { table: () => JSX.Element }> = {
   [ModelType.REFEREE]: { table: Referee },
   [ModelType.SEASON]: { table: Season },
   [ModelType.STADIUM]: { table: Stadium },
+  [ModelType.STAFF_APPEARANCE]: { table: StaffAppearance },
   [ModelType.STAFF]: { table: Staff },
   [ModelType.TEAM_COMPETITION_SEASON]: {
     table: TeamCompetitionSeason,

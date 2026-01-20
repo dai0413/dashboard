@@ -8,3 +8,4 @@ export { season } from "./season";
 export { stadium } from "./stadium";
 export { matchFormat } from "./match-format";
 export { match } from "./match";
+export { staff } from "./staff";

@@ -19,7 +19,7 @@ const StaffSchema: Schema<IStaff> = new Schema(
     player: { type: Schema.Types.ObjectId, ref: "Player" },
     old_id: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // player が存在する場合のみユニーク
@@ -30,10 +30,10 @@ StaffSchema.index(
     partialFilterExpression: {
       player: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 export const StaffModel: Model<IStaff> = mongoose.model<IStaff>(
   "Staff",
-  StaffSchema
+  StaffSchema,
 );
