@@ -25,9 +25,7 @@ import {
 } from "../../../types/option";
 
 import { FormFieldDefinition } from "../../../types/form";
-import { BaseCrudRoutes } from "../../../types/baseCrudRoutes";
 import {
-  API_PATHS,
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
@@ -37,6 +35,7 @@ import { AxiosInstance } from "axios";
 import { DataResoonse } from "../../../types/api";
 import { normalizeFiltersForApi } from "../../../utils/normalizeFiltersForApi";
 import { X } from "lucide-react";
+import { optionRouteMap, getOptionKey } from "../../../lib/options";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -44,33 +43,10 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   formLabel: Record<string, any>;
   handleFormData: <K extends keyof FormTypeMap[T]>(
     key: K,
-    value: FormTypeMap[T][K] | undefined
+    value: FormTypeMap[T][K] | undefined,
   ) => void;
   supportButton?: boolean;
 };
-
-const keyMap: Record<string, keyof OptionsMap> = {
-  citizenship: ModelType.COUNTRY,
-  from_team: ModelType.TEAM,
-  to_team: ModelType.TEAM,
-  home_team: ModelType.TEAM,
-  away_team: ModelType.TEAM,
-  series: ModelType.NATIONAL_MATCH_SERIES,
-  parent_stage: ModelType.COMPETITION_STAGE,
-  competition_stage: ModelType.COMPETITION_STAGE,
-  match_format: ModelType.MATCH_FORMAT,
-};
-
-export function getOptionKey<T extends keyof FormTypeMap>(
-  key: keyof FormTypeMap[T] | string
-): keyof OptionsMap {
-  if (typeof key === "string" && key.includes(".")) {
-    const parts = key.split(".");
-    const last = parts[parts.length - 1];
-    return keyMap[last] ?? (last as keyof OptionsMap);
-  }
-  return keyMap[key as string] ?? (key as keyof OptionsMap);
-}
 
 export const RenderField = <T extends keyof FormTypeMap>({
   field,
@@ -89,23 +65,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const [optionIsLoading, setOptionIsLoading] = useState<boolean>(false);
 
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
-    null
+    null,
   );
-
-  // const { filterConditions } = useFilter();
-  // const { sortConditions } = useSort();
-
-  const optionRouteMap: Record<string, BaseCrudRoutes> = {
-    [ModelType.PLAYER]: API_PATHS.PLAYER,
-    [ModelType.TEAM]: API_PATHS.TEAM,
-    [ModelType.COUNTRY]: API_PATHS.COUNTRY,
-    [ModelType.MATCH_FORMAT]: API_PATHS.MATCH_FORMAT,
-    [ModelType.NATIONAL_MATCH_SERIES]: API_PATHS.NATIONAL_MATCH_SERIES,
-    [ModelType.SEASON]: API_PATHS.SEASON,
-    [ModelType.STADIUM]: API_PATHS.STADIUM,
-    [ModelType.COMPETITION_STAGE]: API_PATHS.COMPETITION_STAGE,
-    [ModelType.COMPETITION]: API_PATHS.COMPETITION,
-  };
 
   const api = useApi();
 
@@ -118,11 +79,19 @@ export const RenderField = <T extends keyof FormTypeMap>({
     nextOptionKey: ModelType,
     filterConditions?: FilterableFieldDefinition[],
     sortConditions?: SortableFieldDefinition[],
-    _page?: number
+    _page?: number,
   ): Promise<ModelDataOptions | undefined> => {
-    const route = optionRouteMap[nextOptionKey].ROOT;
+    const crudRoutes = optionRouteMap[nextOptionKey];
+
+    if (!crudRoutes) {
+      console.error("optionRouteMapにキーが存在しません:", nextOptionKey);
+      return;
+    }
+
+    const { ROOT: route } = crudRoutes;
+
     if (!route) {
-      console.error("optionRouteMapの不備:", nextOptionKey);
+      console.error("ROOT が未定義です:", nextOptionKey);
       return;
     }
 
@@ -156,7 +125,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       option: convertToOption(
         optionKey,
         getted as unknown as OptionsMap[T],
-        true
+        true,
       ) as OptionTable,
       page: response.page,
       totalCount: response.totalCount,
@@ -169,7 +138,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const handlePageChange = async (
     page: number,
     filterConditions?: FilterableFieldDefinition[],
-    sortConditions?: SortableFieldDefinition[]
+    sortConditions?: SortableFieldDefinition[],
   ): Promise<void> => {
     setOptionIsLoading(true);
 
@@ -180,7 +149,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
       optionKey,
       filterConditions,
       sortConditions,
-      page
+      page,
     );
 
     if (!optionTableData) return setOptionIsLoading(false);
@@ -203,7 +172,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
   const multhInputHandleFormData = (
     index: number,
-    value: string | number | Date | boolean | undefined
+    value: string | number | Date | boolean | undefined,
   ) => {
     const newValue = [...((formData[formDataKey] ?? []) as string[])];
     if (value === undefined) {
@@ -293,7 +262,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           handlePageChange={(
             page: number,
             filterConditions: FilterableFieldDefinition[],
-            sortConditions: SortableFieldDefinition[]
+            sortConditions: SortableFieldDefinition[],
           ) => handlePageChange(page, filterConditions, sortConditions)}
           displayBadge={optionKey === "team"}
           noItemMessage={
@@ -336,7 +305,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
                 handleFormData(
                   formDataKey,
-                  newValue as FormTypeMap[T][typeof formDataKey]
+                  newValue as FormTypeMap[T][typeof formDataKey],
                 );
               }}
             />
@@ -348,7 +317,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                 newValue.splice(index, 1);
                 handleFormData(
                   formDataKey,
-                  newValue as FormTypeMap[T][typeof formDataKey]
+                  newValue as FormTypeMap[T][typeof formDataKey],
                 );
               }}
               className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -363,7 +332,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
   if (multi && fieldType === "select" && optionSelectData && uniqueInArray) {
     let options = optionSelectData;
     const selected = (formData[formDataKey] as string[]).filter(
-      (v) => v !== ""
+      (v) => v !== "",
     );
     if (uniqueInArray && Array.isArray(selected)) {
       options = optionSelectData.filter((item) => {
@@ -381,13 +350,13 @@ export const RenderField = <T extends keyof FormTypeMap>({
         {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
             const inputArrayHandleFormData = (
-              value: string | number | Date
+              value: string | number | Date,
             ) => {
               const newValue = [...(formData[formDataKey] as string[])];
               newValue[index] = String(value);
               handleFormData(
                 formDataKey,
-                newValue as FormTypeMap[T][typeof formDataKey]
+                newValue as FormTypeMap[T][typeof formDataKey],
               );
             };
 
@@ -402,7 +371,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                 />
               </div>
             );
-          }
+          },
         )}
 
         {!lengthInArray && (
@@ -424,13 +393,13 @@ export const RenderField = <T extends keyof FormTypeMap>({
         {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
             const inputArrayHandleFormData = (
-              value: string | number | Date
+              value: string | number | Date,
             ) => {
               const newValue = [...(formData[formDataKey] as string[])];
               newValue[index] = String(value);
               handleFormData(
                 formDataKey,
-                newValue as FormTypeMap[T][typeof formDataKey]
+                newValue as FormTypeMap[T][typeof formDataKey],
               );
             };
 
@@ -451,7 +420,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                     newValue.splice(index, 1);
                     handleFormData(
                       formDataKey,
-                      newValue as FormTypeMap[T][typeof formDataKey]
+                      newValue as FormTypeMap[T][typeof formDataKey],
                     );
                   }}
                   className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -460,7 +429,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                 </button>
               </div>
             );
-          }
+          },
         )}
 
         <SelectField
@@ -483,7 +452,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => {
           const onChange = (
-            value: string | number | Date | boolean | undefined
+            value: string | number | Date | boolean | undefined,
           ) => multhInputHandleFormData(index, value);
 
           return (
@@ -502,7 +471,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                   newValue.splice(index, 1);
                   handleFormData(
                     formDataKey,
-                    newValue as FormTypeMap[T][typeof formDataKey]
+                    newValue as FormTypeMap[T][typeof formDataKey],
                   );
                 }}
                 className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"

@@ -1,0 +1,63 @@
+import { UIFieldDefinition } from "../../types/field";
+
+export const playerAppearance: UIFieldDefinition[] = [
+  {
+    key: "match",
+    filterKey: "match",
+    label: "試合",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "player",
+    filterKey: "player.name",
+    label: "選手",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "team",
+    filterKey: "team.team",
+    label: "チーム",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "number",
+    label: "背番号",
+    type: "number",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "play_status",
+    label: "ステータス",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "position",
+    label: "ポジション",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
+    key: "time",
+    label: "プレイ時間",
+    type: "number",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+];

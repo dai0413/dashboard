@@ -6,6 +6,7 @@ export { default as MatchEventType } from "./MatchEventType";
 export { default as MatchFormat } from "./MatchFormat";
 export { default as Match } from "./Match";
 export { default as Player } from "./Player";
+export { default as PlayerAppearance } from "./PlayerAppearance";
 export { default as PlayerRegistrationHistory } from "./PlayerRegistrationHistory";
 export { default as PlayerRegistration } from "./PlayerRegistration";
 export { default as Referee } from "./Referee";

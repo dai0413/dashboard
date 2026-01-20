@@ -21,6 +21,7 @@ import { playerRegistrationHistory } from "./models/player-registration-history/
 import { matchEventType } from "./models/match-event-type/single";
 import { formation } from "./models/formation/single";
 import { staff } from "./models/staff/single";
+import { playerAppearance } from "./models/player-appearance/single";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
@@ -66,6 +67,10 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   //   createConfirmationStep<ModelType.PLAYER_REGISTRATION>(),
   // ],
   [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
+  [ModelType.PLAYER_APPEARANCE]: [
+    ...playerAppearance,
+    createConfirmationStep<ModelType.PLAYER_APPEARANCE>(),
+  ],
   [ModelType.REFEREE]: [
     ...referee,
     createConfirmationStep<ModelType.REFEREE>(),
@@ -88,7 +93,7 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
 };
 
 export const getSingleSteps = <T extends ModelType>(
-  modelType: T
+  modelType: T,
 ): FormStep<T>[] => {
   return (steps[modelType] as FormStep<T>[] | undefined) ?? [];
 };

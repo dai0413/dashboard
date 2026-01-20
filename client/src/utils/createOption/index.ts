@@ -10,6 +10,7 @@ import {
   competitionStage,
   stadium,
   matchFormat,
+  match,
 } from "./Model";
 import {
   status,
@@ -98,13 +99,14 @@ export type OptionsMap = OptionMap & GettedModelDataArrayMap;
 
 type Converter<T extends keyof OptionsMap> = (
   data: OptionsMap[T],
-  table?: boolean
+  table?: boolean,
 ) => OptionArray | OptionTable;
 
 const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [ModelType.COUNTRY]: (data, table) => country(data, table ? table : false),
   //   [ModelType.INJURY]:,
   //   [ModelType.NATIONAL_CALLUP]: ,
+  [ModelType.MATCH]: (data, table) => match(data, table ? table : false),
   [ModelType.MATCH_FORMAT]: (data, table) =>
     matchFormat(data, table ? table : false),
   [ModelType.NATIONAL_MATCH_SERIES]: (data, table) =>
@@ -156,23 +158,23 @@ const defaultOptions: Partial<{ [K in keyof OptionMap]: OptionArray }> = {
 export function convertToOption<T extends keyof OptionsMap>(
   type: T,
   data: OptionsMap[T],
-  table?: boolean
+  table?: boolean,
 ): OptionArray | OptionTable {
   const converter = convertMap[type];
   if (!converter) {
-    // throw new Error(`No converter found for ${String(type)}`);
+    console.error(`No converter found for ${String(type)}`);
     return [];
   }
   return converter(data, table);
 }
 
 export function getDefaultOptions<T extends keyof OptionMap>(
-  key: T
+  key: T,
 ): OptionArray {
   const options = defaultOptions[key];
 
   if (!options) {
-    throw new Error(`No options found for ${String(key)}`);
+    console.error(`No options found for ${String(key)}`);
     return [];
   }
   return options;

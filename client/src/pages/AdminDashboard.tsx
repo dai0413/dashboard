@@ -129,6 +129,12 @@ const models: {
     link: APP_ROUTES.MATCH_EVENT_TYPE,
     icon: "setting",
   },
+  {
+    model: "PlayerAppearance",
+    desc: "選手の出場履歴",
+    link: APP_ROUTES.PLAYER_APPEARANCE,
+    icon: "match",
+  },
 ];
 
 const AdminDashboard = () => {

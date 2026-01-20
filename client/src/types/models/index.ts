@@ -47,6 +47,11 @@ import {
 } from "./match-event-type";
 import { Formation, FormationForm, FormationGet } from "./formation";
 import { Staff, StaffForm, StaffGet } from "./staff";
+import {
+  PlayerAppearance,
+  PlayerAppearanceForm,
+  PlayerAppearanceGet,
+} from "./player-appearance";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -59,6 +64,7 @@ export enum ModelType {
   MATCH = "match",
   NATIONAL_CALLUP = "national-callup",
   NATIONAL_MATCH_SERIES = "national-match-series",
+  PLAYER_APPEARANCE = "player-appearance",
   PLAYER_REGISTRATION_HISTORY = "player-registration-history",
   PLAYER_REGISTRATION = "player-registration",
   PLAYER = "player",
@@ -82,6 +88,7 @@ export type ModelDataMap = {
   [ModelType.MATCH]: Match;
   [ModelType.NATIONAL_CALLUP]: NationalCallup;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeries;
+  [ModelType.PLAYER_APPEARANCE]: PlayerAppearance;
   [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistory;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistration;
   [ModelType.PLAYER]: Player;
@@ -105,6 +112,7 @@ export type GettedModelDataMap = {
   [ModelType.MATCH]: MatchGet;
   [ModelType.NATIONAL_CALLUP]: NationalCallupGet;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesGet;
+  [ModelType.PLAYER_APPEARANCE]: PlayerAppearanceGet;
   [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistoryGet;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationGet;
   [ModelType.PLAYER]: PlayerGet;
@@ -128,6 +136,7 @@ export type FormTypeMap = {
   [ModelType.MATCH]: MatchForm;
   [ModelType.NATIONAL_CALLUP]: NationalCallupForm;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeriesForm;
+  [ModelType.PLAYER_APPEARANCE]: PlayerAppearanceForm;
   [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistoryForm;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationForm;
   [ModelType.PLAYER]: PlayerForm;
@@ -151,6 +160,7 @@ export const ModelRouteMap = {
   [ModelType.MATCH]: APP_ROUTES.MATCH,
   [ModelType.NATIONAL_CALLUP]: APP_ROUTES.NATIONAL_CALLUP,
   [ModelType.NATIONAL_MATCH_SERIES]: APP_ROUTES.NATIONAL_MATCH_SERIES,
+  [ModelType.PLAYER_APPEARANCE]: APP_ROUTES.PLAYER_APPEARANCE,
   [ModelType.PLAYER_REGISTRATION_HISTORY]:
     APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
   [ModelType.PLAYER_REGISTRATION]: APP_ROUTES.PLAYER_REGISTRATION,

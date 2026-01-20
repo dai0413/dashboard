@@ -23,6 +23,7 @@ import { playerRegistrationHistory } from "./player-registration-history";
 import { matchEventType } from "./match-event-type";
 import { formation } from "./formation";
 import { staff } from "./staff";
+import { playerAppearance } from "./player-appearance";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -72,6 +73,10 @@ const convertMap: {
     single: nationalMatchSeries,
     multiple: (data) => data.map(nationalMatchSeries),
   },
+  [ModelType.PLAYER_APPEARANCE]: {
+    single: playerAppearance,
+    multiple: (data) => data.map(playerAppearance),
+  },
   [ModelType.PLAYER_REGISTRATION_HISTORY]: {
     single: playerRegistrationHistory,
     multiple: (data) => data.map(playerRegistrationHistory),
@@ -116,18 +121,18 @@ const convertMap: {
 
 export function convertGettedToForm<T extends ModelType>(
   modelType: T,
-  data: GettedModelDataMap[T]
+  data: GettedModelDataMap[T],
 ): FormTypeMap[T];
 
 export function convertGettedToForm<T extends ModelType>(
   modelType: T,
-  data: GettedModelDataMap[T][]
+  data: GettedModelDataMap[T][],
 ): FormTypeMap[T][];
 
 // 実装
 export function convertGettedToForm<T extends ModelType>(
   modelType: T,
-  data: GettedModelDataMap[T] | GettedModelDataMap[T][]
+  data: GettedModelDataMap[T] | GettedModelDataMap[T][],
 ): FormTypeMap[T] | FormTypeMap[T][] {
   const converter = convertMap[modelType];
   return Array.isArray(data)

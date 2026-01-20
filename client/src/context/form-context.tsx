@@ -20,14 +20,15 @@ import {
   isDisplayOnDetail,
   isModelType,
 } from "../types/field";
-import { getOptionKey, useOptions } from "./options-provider";
+import { useOptions } from "./options-provider";
 import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
+import { getOptionKey } from "../lib/options";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
-  data: FormTypeMap[T] | FormTypeMap[T][]
+  data: FormTypeMap[T] | FormTypeMap[T][],
 ): { success: boolean; message?: string } => {
   if (!fields) return { success: true };
 
@@ -69,7 +70,7 @@ type FormContextValue<T extends ModelType> = {
       model: T | null,
       editItem?: GettedModelDataMap[T],
       initialFormData?: Partial<FormTypeMap[T]>,
-      many?: boolean
+      many?: boolean,
     ) => void;
   };
 
@@ -82,7 +83,7 @@ type FormContextValue<T extends ModelType> = {
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
       value: FormTypeMap[T][K] | undefined,
-      overwriteByMany?: boolean
+      overwriteByMany?: boolean,
     ) => void;
   };
 
@@ -94,12 +95,12 @@ type FormContextValue<T extends ModelType> = {
     handleFormData: <K extends keyof FormTypeMap[T]>(
       index: number,
       key: K,
-      value: FormTypeMap[T][K] | undefined
+      value: FormTypeMap[T][K] | undefined,
     ) => void;
     addFormDatas: (baseCopy: boolean, setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
     renderConfirmMes: (
-      confirmData: Record<string, string | number | undefined>[]
+      confirmData: Record<string, string | number | undefined>[],
     ) => JSX.Element;
   };
 
@@ -117,7 +118,7 @@ type FormContextValue<T extends ModelType> = {
   getDiffKeys: (() => string[]) | undefined;
   createFormMenuItems: (
     modelType: T,
-    formInitialData: Partial<FormTypeMap[T]>
+    formInitialData: Partial<FormTypeMap[T]>,
   ) => any[];
   autoFill: () => Promise<void>;
 };
@@ -160,7 +161,7 @@ export const FormProvider = <T extends ModelType>({
 
   const [bulkCommonData, setBulkCommonData] = useState<FormTypeMap[T]>({});
   const [bulkCommonLabel, setBulkCommonLabel] = useState<Record<string, any>>(
-    {}
+    {},
   );
 
   useEffect(() => {
@@ -188,7 +189,7 @@ export const FormProvider = <T extends ModelType>({
   };
 
   async function resolveForeignKeyLabels(
-    initialFormLabel: Record<string, any>
+    initialFormLabel: Record<string, any>,
   ) {
     const resolved = { ...initialFormLabel };
 
@@ -213,7 +214,7 @@ export const FormProvider = <T extends ModelType>({
     model: T | null,
     editItem?: GettedModelDataMap[T],
     initialFormData?: FormTypeMap[T],
-    many?: boolean
+    many?: boolean,
   ) => {
     if (!model) return;
 
@@ -278,7 +279,7 @@ export const FormProvider = <T extends ModelType>({
             convertGettedToForm(ModelType.MATCH_FORMAT, {
               ...data,
               period: [],
-            })
+            }),
           );
       }
     }
@@ -304,7 +305,7 @@ export const FormProvider = <T extends ModelType>({
       modelType,
       undefined,
       initialFormData ? initialFormData : undefined,
-      inputMode === "many"
+      inputMode === "many",
     );
   };
 
@@ -331,7 +332,7 @@ export const FormProvider = <T extends ModelType>({
           });
 
         const updated: FormTypeMap[T] = Object.fromEntries(
-          Object.entries(formData).filter(([key]) => difKeys.includes(key))
+          Object.entries(formData).filter(([key]) => difKeys.includes(key)),
         );
 
         result = await modelContext.updateItem({
@@ -341,7 +342,7 @@ export const FormProvider = <T extends ModelType>({
       }
 
       setCurrentStep((prev) =>
-        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0)
+        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0),
       );
     }
 
@@ -349,7 +350,7 @@ export const FormProvider = <T extends ModelType>({
       result = await modelContext.createItems(formDatas);
 
       setCurrentStep((prev) =>
-        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0)
+        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0),
       );
     }
 
@@ -428,7 +429,7 @@ export const FormProvider = <T extends ModelType>({
 
     let nextStepIndex = Math.min(
       currentStep + 1,
-      formSteps ? formSteps.length - 1 : 0
+      formSteps ? formSteps.length - 1 : 0,
     );
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
@@ -463,11 +464,11 @@ export const FormProvider = <T extends ModelType>({
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
     value: FormTypeMap[T][K] | undefined,
-    overwriteByMany?: boolean
+    overwriteByMany?: boolean,
   ) => {
     if (overwriteByMany) {
       return setBulkCommonData((prev) =>
-        updateFormValue(prev, key, value, setBulkCommonLabel)
+        updateFormValue(prev, key, value, setBulkCommonLabel),
       );
     }
     setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
@@ -475,10 +476,10 @@ export const FormProvider = <T extends ModelType>({
 
   const resetFormData = () => {
     setFormData(
-      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     );
     setFormLabel(
-      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     );
   };
 
@@ -492,17 +493,17 @@ export const FormProvider = <T extends ModelType>({
       modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     ]);
     setBulkCommonData(
-      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     );
     setBulkCommonLabel(
-      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {}
+      modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     );
   };
 
   const handleFormData = <K extends keyof FormTypeMap[T]>(
     index: number,
     key: K,
-    value: FormTypeMap[T][K] | undefined
+    value: FormTypeMap[T][K] | undefined,
   ) => {
     setFormDatas((prev) => {
       const newData = prev.map((item, i) =>
@@ -514,9 +515,9 @@ export const FormProvider = <T extends ModelType>({
                 if (!arr[index]) arr[index] = {};
                 arr[index] = updater(arr[index] ?? {});
                 return arr;
-              })
+              }),
             )
-          : item
+          : item,
       );
       return newData;
     });
@@ -553,7 +554,7 @@ export const FormProvider = <T extends ModelType>({
 
   const createFormMenuItems = (
     model: T,
-    formInitialData: Partial<FormTypeMap[T]>
+    formInitialData: Partial<FormTypeMap[T]>,
   ) => {
     const singleStep = getSteps(model, false);
     const bulkStep = getSteps(model, true);
@@ -595,7 +596,7 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const renderer: (
-    confirmData: Record<string, string | number | undefined>[]
+    confirmData: Record<string, string | number | undefined>[],
   ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
 
   const many = {
@@ -615,10 +616,10 @@ export const FormProvider = <T extends ModelType>({
     () =>
       modelType
         ? (fieldDefinition[modelType].filter(
-            isDisplayOnDetail
+            isDisplayOnDetail,
           ) as DetailFieldDefinition[])
         : [],
-    [modelType]
+    [modelType],
   );
 
   const value: FormContextValue<T> = {

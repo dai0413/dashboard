@@ -7,3 +7,4 @@ export { competitionStage } from "./competition-stage";
 export { season } from "./season";
 export { stadium } from "./stadium";
 export { matchFormat } from "./match-format";
+export { match } from "./match";

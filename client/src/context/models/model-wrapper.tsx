@@ -37,6 +37,10 @@ import { FormationProvider, useFormation } from "./formation";
 import { StaffProvider, useStaff } from "./staff";
 import { ModelType } from "../../types/models";
 import { MetaCrudContext } from "../../types/context";
+import {
+  PlayerAppearanceProvider,
+  usePlayerAppearance,
+} from "./player-appearance";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -60,7 +64,9 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                                       <InjuryProvider>
                                         <TransferProvider>
                                           <FormationProvider>
-                                            {children}
+                                            <PlayerAppearanceProvider>
+                                              {children}
+                                            </PlayerAppearanceProvider>
                                           </FormationProvider>
                                         </TransferProvider>
                                       </InjuryProvider>
@@ -95,6 +101,7 @@ const useModelContext = (modelType: ModelType | null) => {
   const match = useMatch();
   const nationalCallup = useNationalCallup();
   const nationalMatchSeries = useNationalMatchSeries();
+  const playerAppearance = usePlayerAppearance();
   const player = usePlayer();
   const playerRegistrationHistory = usePlayerRegistrationHistory();
   const playerRegistration = usePlayerRegistration();
@@ -117,6 +124,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.MATCH]: match.metacrud,
     [ModelType.NATIONAL_CALLUP]: nationalCallup.metacrud,
     [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries.metacrud,
+    [ModelType.PLAYER_APPEARANCE]: playerAppearance.metacrud,
     [ModelType.PLAYER]: player.metacrud,
     [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory.metacrud,
     [ModelType.PLAYER_REGISTRATION]: playerRegistration.metacrud,
