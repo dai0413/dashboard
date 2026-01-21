@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
-import { MatchZodSchema } from "./match.schema.js";
+import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { FormationZodSchema } from "./formation.schema.js";
 
@@ -30,7 +30,7 @@ export const MatchTeamFormationResponseSchema =
     team: true,
     formation: true,
   }).safeExtend({
-    match: MatchZodSchema,
+    match: MatchBaseZodSchema,
     team: TeamZodSchema,
     formation: FormationZodSchema,
   });
@@ -40,7 +40,7 @@ export const MatchTeamFormationPopulatedSchema =
     team: true,
     formation: true,
   }).safeExtend({
-    match: MatchZodSchema,
+    match: MatchBaseZodSchema,
     team: TeamZodSchema,
     formation: FormationZodSchema,
   });

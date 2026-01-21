@@ -34,14 +34,14 @@ export function staffMatchEventLog<TDoc = any, TModel = any>(
       { path: "match", collection: "matches" },
       { path: "team", collection: "teams" },
       { path: "staff", collection: "staffs" },
-      { path: "matchEventType", collection: "matcheventtypes" },
+      { path: "match_event_type", collection: "matcheventtypes" },
     ],
     getAllConfig: {
       query: [
         { field: "match", type: "ObjectId" },
         { field: "team", type: "ObjectId" },
         { field: "staff", type: "ObjectId" },
-        { field: "matchEventType", type: "ObjectId" },
+        { field: "match_event_type", type: "ObjectId" },
       ],
       sort: { match: -1, time: -1, add_time: -1, order: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
@@ -53,7 +53,7 @@ export function staffMatchEventLog<TDoc = any, TModel = any>(
         {
           match: deps.match[0]._id,
           team: deps.team[0]._id,
-          matchEventType: deps.matchEventType[0]._id,
+          match_event_type: deps.matchEventType[0]._id,
           staff: deps.staff[0]._id,
           time: 10,
         },

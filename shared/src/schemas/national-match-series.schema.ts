@@ -3,7 +3,7 @@ import { objectId } from "./utils/objectId.js";
 import { dateField } from "./utils/dateField.js";
 import { ageGroup } from "../enum/ageGroup.js";
 import { CountryZodSchema } from "./country.schema.js";
-import { MatchZodSchema } from "./match.schema.js";
+import { MatchBaseZodSchema } from "./match.schema.js";
 import { getKey } from "../utils/getKey.js";
 
 export const NationalMatchSeriesZodSchema = z.object({
@@ -39,7 +39,7 @@ export const NationalMatchSeriesResponseSchema =
     matches: true,
   }).safeExtend({
     country: CountryZodSchema,
-    matches: z.array(MatchZodSchema).optional(),
+    matches: z.array(MatchBaseZodSchema).optional(),
   });
 
 export const NationalMatchSeriesPopulatedSchema =
@@ -48,5 +48,5 @@ export const NationalMatchSeriesPopulatedSchema =
     matches: true,
   }).safeExtend({
     country: CountryZodSchema,
-    matches: z.array(MatchZodSchema).optional(),
+    matches: z.array(MatchBaseZodSchema).optional(),
   });

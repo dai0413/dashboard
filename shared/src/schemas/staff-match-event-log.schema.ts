@@ -4,7 +4,7 @@ import { objectId } from "./utils/objectId.js";
 import { getKey } from "../utils/getKey.js";
 import { periodLabel } from "../enum/period-label.js";
 import { special_time } from "../enum/special_time.js";
-import { MatchZodSchema } from "./match.schema.js";
+import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { MatchEventTypeZodSchema } from "./match-event-type.schema.js";
 import { StaffZodSchema } from "./staff.schema.js";
@@ -16,7 +16,9 @@ export const StaffMatchEventLogBaseZodSchema = z.object({
   _id: objectId,
   match: objectId.refine((v) => !!v, { message: "matchは必須です" }),
   team: objectId.refine((v) => !!v, { message: "teamは必須です" }),
-  matchEventType: objectId.refine((v) => !!v, { message: "staffは必須です" }),
+  match_event_type: objectId.refine((v) => !!v, {
+    message: "match_event_typeは必須です",
+  }),
   staff: objectId.optional(),
   staff_name: z.string().nonempty().optional(),
   time: z.number().optional(),
@@ -61,8 +63,6 @@ export const StaffMatchEventLogFormSchema =
     _id: true,
     createdAt: true,
     updatedAt: true,
-    period_label: true,
-    time_name: true,
     unique_key: true,
   });
 
@@ -70,12 +70,12 @@ export const StaffMatchEventLogResponseSchema =
   StaffMatchEventLogBaseZodSchema.omit({
     match: true,
     team: true,
-    matchEventType: true,
+    match_event_type: true,
     staff: true,
   }).safeExtend({
-    match: MatchZodSchema,
+    match: MatchBaseZodSchema,
     team: TeamZodSchema,
-    matchEventType: MatchEventTypeZodSchema,
+    match_event_type: MatchEventTypeZodSchema,
     staff: StaffZodSchema,
   });
 
@@ -83,11 +83,11 @@ export const StaffMatchEventLogPopulatedSchema =
   StaffMatchEventLogBaseZodSchema.omit({
     match: true,
     team: true,
-    matchEventType: true,
+    match_event_type: true,
     staff: true,
   }).safeExtend({
-    match: MatchZodSchema,
+    match: MatchBaseZodSchema,
     team: TeamZodSchema,
-    matchEventType: MatchEventTypeZodSchema,
+    match_event_type: MatchEventTypeZodSchema,
     staff: StaffZodSchema,
   });

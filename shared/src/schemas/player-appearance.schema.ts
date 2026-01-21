@@ -5,7 +5,7 @@ import { position } from "../enum/position.js";
 import { getKey } from "../utils/getKey.js";
 import { play_status } from "../enum/play_status.js";
 import { PlayerZodSchema } from "./player.schema.js";
-import { MatchZodSchema } from "./match.schema.js";
+import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 
 export const PlayerAppearanceZodSchema = z.object({
@@ -41,7 +41,7 @@ export const PlayerAppearanceResponseSchema = PlayerAppearanceZodSchema.omit({
   team: true,
 }).safeExtend({
   player: PlayerZodSchema,
-  match: MatchZodSchema,
+  match: MatchBaseZodSchema,
   team: TeamZodSchema,
 });
 
@@ -51,6 +51,6 @@ export const PlayerAppearancePopulatedSchema = PlayerAppearanceZodSchema.omit({
   team: true,
 }).safeExtend({
   player: PlayerZodSchema,
-  match: MatchZodSchema,
+  match: MatchBaseZodSchema,
   team: TeamZodSchema,
 });
