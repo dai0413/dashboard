@@ -5,7 +5,7 @@ import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { FormationZodSchema } from "./formation.schema.js";
 
-export const MatchTeamFormationZodSchema = z.object({
+export const TeamMatchFormationZodSchema = z.object({
   _id: objectId,
   match: objectId.refine((v) => !!v, { message: "matchは必須です" }),
   team: objectId.refine((v) => !!v, { message: "teamは必須です" }),
@@ -14,18 +14,18 @@ export const MatchTeamFormationZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type MatchTeamFormationType = z.infer<
-  typeof MatchTeamFormationZodSchema
+export type TeamMatchFormationType = z.infer<
+  typeof TeamMatchFormationZodSchema
 >;
 
-export const MatchTeamFormationFormSchema = MatchTeamFormationZodSchema.omit({
+export const TeamMatchFormationFormSchema = TeamMatchFormationZodSchema.omit({
   _id: true,
   createdAt: true,
   updatedAt: true,
 });
 
-export const MatchTeamFormationResponseSchema =
-  MatchTeamFormationZodSchema.omit({
+export const TeamMatchFormationResponseSchema =
+  TeamMatchFormationZodSchema.omit({
     match: true,
     team: true,
     formation: true,
@@ -34,8 +34,8 @@ export const MatchTeamFormationResponseSchema =
     team: TeamZodSchema,
     formation: FormationZodSchema,
   });
-export const MatchTeamFormationPopulatedSchema =
-  MatchTeamFormationZodSchema.omit({
+export const TeamMatchFormationPopulatedSchema =
+  TeamMatchFormationZodSchema.omit({
     match: true,
     team: true,
     formation: true,

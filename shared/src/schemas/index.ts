@@ -5,7 +5,7 @@ export * from "./formation.schema.js";
 export * from "./injury.schema.js";
 export * from "./match-event-type.schema.js";
 export * from "./match-format.schema.js";
-export * from "./match-team-formation.schema.js";
+export * from "./team-match-formation.schema.js";
 export * from "./match.schema.js";
 export * from "./national-callup.schema.js";
 export * from "./national-match-series.schema.js";

@@ -1,34 +1,34 @@
 import z from "zod";
 import {
-  MatchTeamFormationZodSchema,
-  MatchTeamFormationType,
-  MatchTeamFormationFormSchema,
-  MatchTeamFormationResponseSchema,
-  MatchTeamFormationPopulatedSchema,
-} from "../schemas/match-team-formation.schema.js";
+  TeamMatchFormationZodSchema,
+  TeamMatchFormationType,
+  TeamMatchFormationFormSchema,
+  TeamMatchFormationResponseSchema,
+  TeamMatchFormationPopulatedSchema,
+} from "../schemas/team-match-formation.schema.js";
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function matchTeamFormation<TDoc = any, TModel = any>(
+export function teamMatchFormation<TDoc = any, TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
-  MatchTeamFormationType,
-  z.infer<typeof MatchTeamFormationFormSchema>,
-  z.infer<typeof MatchTeamFormationResponseSchema>,
-  z.infer<typeof MatchTeamFormationPopulatedSchema>
+  TeamMatchFormationType,
+  z.infer<typeof TeamMatchFormationFormSchema>,
+  z.infer<typeof TeamMatchFormationResponseSchema>,
+  z.infer<typeof TeamMatchFormationPopulatedSchema>
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match-team-formation",
-    collection_name: "matchteamformations",
+    collection_name: "teammatchformations",
     SCHEMA: {
-      DATA: MatchTeamFormationZodSchema,
-      FORM: MatchTeamFormationFormSchema,
-      RESPONSE: MatchTeamFormationResponseSchema,
-      POPULATED: MatchTeamFormationPopulatedSchema,
+      DATA: TeamMatchFormationZodSchema,
+      FORM: TeamMatchFormationFormSchema,
+      RESPONSE: TeamMatchFormationResponseSchema,
+      POPULATED: TeamMatchFormationPopulatedSchema,
     },
-    TYPE: {} as MatchTeamFormationType,
+    TYPE: {} as TeamMatchFormationType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },
