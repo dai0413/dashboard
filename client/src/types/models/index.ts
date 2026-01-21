@@ -62,6 +62,11 @@ import {
   PlayerMatchEventLogForm,
   PlayerMatchEventLogGet,
 } from "./player-match-event-log";
+import {
+  StaffMatchEventLog,
+  StaffMatchEventLogForm,
+  StaffMatchEventLogGet,
+} from "./staff-match-event-log";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -83,6 +88,7 @@ export enum ModelType {
   SEASON = "season",
   STADIUM = "stadium",
   STAFF_APPEARANCE = "staff-appearance",
+  STAFF_MATCH_EVENT_LOG = "staff-match-event-log",
   STAFF = "staff",
   TEAM_COMPETITION_SEASON = "team-competition-season",
   TEAM = "team",
@@ -109,6 +115,7 @@ export type ModelDataMap = {
   [ModelType.SEASON]: Season;
   [ModelType.STADIUM]: Stadium;
   [ModelType.STAFF_APPEARANCE]: StaffAppearance;
+  [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLog;
   [ModelType.STAFF]: Staff;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeason;
   [ModelType.TEAM]: Team;
@@ -135,6 +142,7 @@ export type GettedModelDataMap = {
   [ModelType.SEASON]: SeasonGet;
   [ModelType.STADIUM]: StadiumGet;
   [ModelType.STAFF_APPEARANCE]: StaffAppearanceGet;
+  [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLogGet;
   [ModelType.STAFF]: StaffGet;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonGet;
   [ModelType.TEAM]: TeamGet;
@@ -161,6 +169,7 @@ export type FormTypeMap = {
   [ModelType.SEASON]: SeasonForm;
   [ModelType.STADIUM]: StadiumForm;
   [ModelType.STAFF_APPEARANCE]: StaffAppearanceForm;
+  [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLogForm;
   [ModelType.STAFF]: StaffForm;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonForm;
   [ModelType.TEAM]: TeamForm;
@@ -188,7 +197,8 @@ export const ModelRouteMap = {
   [ModelType.SEASON]: APP_ROUTES.SEASON,
   [ModelType.STADIUM]: APP_ROUTES.STADIUM,
   [ModelType.STAFF_APPEARANCE]: APP_ROUTES.STAFF_APPEARANCE,
-  [ModelType.STAFF]: APP_ROUTES.STAFF,
+  [ModelType.STAFF_MATCH_EVENT_LOG]: APP_ROUTES.STAFF,
+  [ModelType.STAFF]: APP_ROUTES.STAFF_MATCH_EVENT_LOG,
   [ModelType.TEAM_COMPETITION_SEASON]: APP_ROUTES.TEAM_COMPETITION_SEASON,
   [ModelType.TEAM]: APP_ROUTES.TEAM,
   [ModelType.TRANSFER]: APP_ROUTES.TRANSFER,

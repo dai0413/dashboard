@@ -21,3 +21,4 @@ export { default as NationalMatchSeries } from "./NationalMatchSeries";
 export { default as Formation } from "./Formation";
 export { default as StaffAppearance } from "./StaffAppearance";
 export { default as PlayerMatchEventLog } from "./PlayerMatchEventLog";
+export { default as StaffMatchEventLog } from "./StaffMatchEventLog";

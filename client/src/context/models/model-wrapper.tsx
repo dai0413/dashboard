@@ -49,6 +49,10 @@ import {
   PlayerMatchEventLogProvider,
   usePlayerMatchEventLog,
 } from "./player-match-event-log";
+import {
+  StaffMatchEventLogProvider,
+  useStaffMatchEventLog,
+} from "./staff-match-event-log";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -66,25 +70,27 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                           <PlayerProvider>
                             <StaffProvider>
                               <PlayerMatchEventLogProvider>
-                                <PlayerRegistrationProvider>
-                                  <PlayerRegistrationHistoryProvider>
-                                    <RefereeProvider>
-                                      <NationalCallupProvider>
-                                        <InjuryProvider>
-                                          <TransferProvider>
-                                            <FormationProvider>
-                                              <PlayerAppearanceProvider>
-                                                <StaffAppearanceProvider>
-                                                  {children}
-                                                </StaffAppearanceProvider>
-                                              </PlayerAppearanceProvider>
-                                            </FormationProvider>
-                                          </TransferProvider>
-                                        </InjuryProvider>
-                                      </NationalCallupProvider>
-                                    </RefereeProvider>
-                                  </PlayerRegistrationHistoryProvider>
-                                </PlayerRegistrationProvider>
+                                <StaffMatchEventLogProvider>
+                                  <PlayerRegistrationProvider>
+                                    <PlayerRegistrationHistoryProvider>
+                                      <RefereeProvider>
+                                        <NationalCallupProvider>
+                                          <InjuryProvider>
+                                            <TransferProvider>
+                                              <FormationProvider>
+                                                <PlayerAppearanceProvider>
+                                                  <StaffAppearanceProvider>
+                                                    {children}
+                                                  </StaffAppearanceProvider>
+                                                </PlayerAppearanceProvider>
+                                              </FormationProvider>
+                                            </TransferProvider>
+                                          </InjuryProvider>
+                                        </NationalCallupProvider>
+                                      </RefereeProvider>
+                                    </PlayerRegistrationHistoryProvider>
+                                  </PlayerRegistrationProvider>
+                                </StaffMatchEventLogProvider>
                               </PlayerMatchEventLogProvider>
                             </StaffProvider>
                           </PlayerProvider>
@@ -126,6 +132,7 @@ const useModelContext = (modelType: ModelType | null) => {
   const teamCompetitionSeason = useTeamCompetitionSeason();
   const team = useTeam();
   const transfer = useTransfer();
+  const staffMatchEventLog = useStaffMatchEventLog();
 
   const map: Record<ModelType, MetaCrudContext<any>> = {
     [ModelType.COMPETITION]: competition.metacrud,
@@ -147,6 +154,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.SEASON]: season.metacrud,
     [ModelType.STADIUM]: stadium.metacrud,
     [ModelType.STAFF_APPEARANCE]: staffAppearance.metacrud,
+    [ModelType.STAFF_MATCH_EVENT_LOG]: staffMatchEventLog.metacrud,
     [ModelType.STAFF]: staff.metacrud,
     [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason.metacrud,
     [ModelType.TEAM]: team.metacrud,

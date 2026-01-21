@@ -22,6 +22,7 @@ import { staff } from "./staff";
 import { playerAppearance } from "./player-appearance";
 import { staffAppearance } from "./staff-appearance";
 import { playerMatchEventLog } from "./player-match-event-log";
+import { staffMatchEventLog } from "./staff-match-event-log";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => string;
@@ -102,6 +103,10 @@ const convertMap: {
   [ModelType.STADIUM]: {
     single: stadium,
     multiple: (data) => data.map(stadium),
+  },
+  [ModelType.STAFF_MATCH_EVENT_LOG]: {
+    single: staffMatchEventLog,
+    multiple: (data) => data.map(staffMatchEventLog),
   },
   [ModelType.STAFF_APPEARANCE]: {
     single: staffAppearance,

@@ -26,6 +26,7 @@ import { staff } from "./staff";
 import { playerAppearance } from "./player-appearance";
 import { staffAppearance } from "./staff-appearance";
 import { playerMatchEventLog } from "./player-match-event-log";
+import { staffMatchEventLog } from "./staff-match-event-log";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -110,6 +111,10 @@ const convertMap: {
   [ModelType.STAFF_APPEARANCE]: {
     single: staffAppearance,
     multiple: (data) => data.map(staffAppearance),
+  },
+  [ModelType.STAFF_MATCH_EVENT_LOG]: {
+    single: staffMatchEventLog,
+    multiple: (data) => data.map(staffMatchEventLog),
   },
   [ModelType.STAFF]: {
     single: staff,

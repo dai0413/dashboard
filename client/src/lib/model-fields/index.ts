@@ -22,6 +22,7 @@ import { staff } from "./staff";
 import { playerAppearance } from "./player-appearance";
 import { staffAppearance } from "./staff-appearance";
 import { playerMatchEventLog } from "./player-match-event-log";
+import { staffMatchEventLog } from "./staff-match-event-log";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
@@ -43,6 +44,7 @@ export const fieldDefinition = {
   [ModelType.SEASON]: season,
   [ModelType.STADIUM]: stadium,
   [ModelType.STAFF_APPEARANCE]: staffAppearance,
+  [ModelType.STAFF_MATCH_EVENT_LOG]: staffMatchEventLog,
   [ModelType.STAFF]: staff,
   [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason,
   [ModelType.TEAM]: team,
