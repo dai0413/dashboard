@@ -6,7 +6,7 @@ type FilterFieldsProps = {
   type: FilterableFieldDefinition["type"];
   value: string | number | Date | boolean | undefined;
   onChange: (value: string | number | Date | boolean | undefined) => void;
-  onChangeObj?: (value: Record<string, any>) => void;
+  onChangeObj?: (value: Record<string, any> | undefined) => void;
   options: OptionArray;
 };
 

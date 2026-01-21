@@ -21,12 +21,11 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
   formLabel: Record<string, any>,
   steps: FormStep<T>[],
-  onEdit: (nextStepIndex: number) => void
+  onEdit: (nextStepIndex: number) => void,
 ): FieldListData => {
   const data: FieldListData = {};
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
-      get(formLabel, display.key);
       const value = get(formLabel, display.key)
         ? get(formLabel, display.key)
         : undefined;
@@ -53,13 +52,16 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
           .find((f) => f.key === display.key);
 
         const stepIndex = steps.findIndex((step) =>
-          (step.fields || []).some((f) => f.key === display.key)
+          (step.fields || []).some((f) => f.key === display.key),
         );
 
         da.onEdit = () => onEdit(stepIndex);
 
         if (!inputField) {
-          da = { value: "入力対象外", onEdit: undefined };
+          da = {
+            value: typeof value !== "undefined" ? String(value) : "入力対象外",
+            onEdit: undefined,
+          };
         } else {
           if (
             inputField.fieldType === "select" ||
@@ -152,7 +154,7 @@ const Form = <T extends keyof FormTypeMap>() => {
             fieldType: field.fieldType,
             valueType: field.valueType,
           }))
-          .filter((h) => (many?.formData ?? []).some((d) => h.field in d))
+          .filter((h) => (many?.formData ?? []).some((d) => h.field in d)),
       ) ?? [];
 
   const confirmBulkData = (many?.formLabels ?? [])
@@ -212,7 +214,7 @@ const Form = <T extends keyof FormTypeMap>() => {
           .find((f) => f.key === display.key);
 
         const stepIndex = steps.findIndex((step) =>
-          (step.fields || []).some((f) => f.key === display.key)
+          (step.fields || []).some((f) => f.key === display.key),
         );
 
         da.onEdit = () => handleStep(stepIndex);
@@ -358,7 +360,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                     displayableField,
                     formLabel,
                     steps,
-                    handleStep
+                    handleStep,
                   )}
                   diffKeys={diffKeys}
                   diffColor={formMode === "update"}

@@ -8,10 +8,14 @@ import { getDefaultOptions } from "../../../utils/createOption";
 import { isOptionType } from "../../../types/field";
 
 type OnchangeProps = {
-  handleFieldValue: (value: string | number | Date | boolean) => void;
-  handleFieldObjValue: (value: Record<string, any>) => void;
-  handleFieldOperator: (value: string | number | Date | boolean) => void;
-  handleFieldSelect: (e: string | number | Date | boolean) => void;
+  handleFieldValue: (
+    value: string | number | Date | boolean | undefined,
+  ) => void;
+  handleFieldObjValue: (value: Record<string, any> | undefined) => void;
+  handleFieldOperator: (
+    value: string | number | Date | boolean | undefined,
+  ) => void;
+  handleFieldSelect: (e: string | number | Date | boolean | undefined) => void;
 };
 
 type OnApplyProps = {
@@ -41,7 +45,7 @@ const FieldRow = ({
   const { addOnClick, deleteOnClick } = onApply;
 
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
-    null
+    null,
   );
 
   useEffect(() => {

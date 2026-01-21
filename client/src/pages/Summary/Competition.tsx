@@ -24,7 +24,7 @@ import { ResBody } from "@dai0413/myorg-shared";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed")
+    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
 ).map((item) => ({
   key: item.icon as string,
   label: item.text as string,
@@ -73,7 +73,9 @@ const Competition = () => {
     })();
   }, [id]);
 
-  const handleSelectedTab = (value: string | number | Date): void => {
+  const handleSelectedTab = (
+    value: string | number | Date | undefined,
+  ): void => {
     setSelectedTab(value as string);
   };
 
@@ -85,7 +87,7 @@ const Competition = () => {
     setSelectedSeason(newSeason);
   }, [season]);
 
-  const handleSetSelectedSeason = (id: string | number | Date) => {
+  const handleSetSelectedSeason = (id: string | number | Date | undefined) => {
     const selected = season.data.find((s) => s._id === id) ?? null;
     setSelectedSeason(selected);
   };
@@ -96,7 +98,7 @@ const Competition = () => {
         key: s._id,
         label: s.name,
       })),
-    [season]
+    [season],
   );
 
   return (

@@ -53,7 +53,7 @@ const InputField = ({
         setInternalValue(
           type === "datetime-local"
             ? value.toISOString().slice(0, 16)
-            : formatLocalDate(value)
+            : formatLocalDate(value),
         );
       } else if (typeof value === "string") {
         setInternalValue(value);
@@ -147,8 +147,8 @@ const InputField = ({
                   0,
                   0,
                   0,
-                  0
-                )
+                  0,
+                ),
               );
             }}
             className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"

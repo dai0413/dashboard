@@ -22,7 +22,9 @@ type FilterState = {
   filterCondition: FilterableFieldDefinition;
   resetFilterConditions: (all?: boolean) => void;
   handleFieldSelect: (field: FilterableFieldDefinition) => void;
-  handleFieldValue: (value: string | number | Date | boolean) => void;
+  handleFieldValue: (
+    value: string | number | Date | boolean | undefined,
+  ) => void;
   handleFieldObjValue: (value: Record<string, any>) => void;
   handleFieldOperator: (value: string | number | Date | boolean) => void;
 
@@ -82,7 +84,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     // 編集モード（index 指定あり）
     if (typeof index === "number") {
       setFilterConditions((prev) =>
-        prev.map((cond, i) => (i === index ? newCondition : cond))
+        prev.map((cond, i) => (i === index ? newCondition : cond)),
       );
     } else {
       // 新規追加モード
@@ -117,19 +119,25 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
 
   const handleFieldSelect = (field: FilterableFieldDefinition) => {
     let value = "";
+    let valueLabel = "";
     switch (field.key) {
       case "position":
-        value = "GK";
+        value = valueLabel = "GK";
         break;
       case "form":
-        value = "完全";
+        value = valueLabel = "完全";
         break;
       case "age_group":
         value = "full";
+        valueLabel = "A";
         break;
       case "genre":
         value = "club";
+        valueLabel = "クラブ";
         break;
+      case "event_type":
+        value = "card";
+        valueLabel = "カード";
     }
 
     setFilterCondition({
@@ -137,17 +145,24 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       label: field.label,
       type: field.type,
       value: [value],
-      valueLabel: [value],
+      valueLabel: [valueLabel],
       operator: "equals",
     });
   };
 
-  const handleFieldValue = (value: string | number | Date | boolean) =>
+  const handleFieldValue = (
+    value: string | number | Date | boolean | undefined,
+  ) => {
+    if (value === undefined) {
+      return;
+    }
+
     setFilterCondition((prev) => ({
       ...prev,
       value: [value],
       valueLabel: [value],
     }));
+  };
 
   const handleFieldObjValue = (obj: Record<string, any>): void => {
     setFilterCondition((prev) => ({

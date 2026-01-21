@@ -195,7 +195,9 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
   const value = get(formData, formDataKey) as string | number | Date;
 
-  const multiInputHandleFormData = (value: string | number | Date) => {
+  const multiInputHandleFormData = (
+    value: string | number | Date | undefined,
+  ) => {
     const selected = value;
     if (selected) {
       const current = (formData[formDataKey] as string[]) ?? [];
@@ -350,7 +352,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
         {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
             const inputArrayHandleFormData = (
-              value: string | number | Date,
+              value: string | number | Date | undefined,
             ) => {
               const newValue = [...(formData[formDataKey] as string[])];
               newValue[index] = String(value);
@@ -368,6 +370,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                   onChange={inputArrayHandleFormData}
                   options={getUniqueOptions(index)}
                   defaultOption="--- 未選択 ---"
+                  displayClearButton={true}
                 />
               </div>
             );
@@ -381,6 +384,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
             onChange={multiInputHandleFormData}
             options={options}
             defaultOption="--- 未選択 ---"
+            displayClearButton={true}
           />
         )}
       </>
@@ -393,7 +397,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
         {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
             const inputArrayHandleFormData = (
-              value: string | number | Date,
+              value: string | number | Date | undefined,
             ) => {
               const newValue = [...(formData[formDataKey] as string[])];
               newValue[index] = String(value);
@@ -411,6 +415,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
                   onChange={inputArrayHandleFormData}
                   options={optionSelectData}
                   defaultOption="--- 未選択 ---"
+                  displayClearButton={true}
                 />
 
                 <button
@@ -438,6 +443,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           onChange={multiInputHandleFormData}
           options={optionSelectData}
           defaultOption="--- 未選択 ---"
+          displayClearButton={true}
         />
       </>
     );
@@ -489,11 +495,12 @@ export const RenderField = <T extends keyof FormTypeMap>({
       <SelectField
         type={valueType}
         value={value || ""}
-        onChangeObj={(value: Record<string, any>) => {
+        onChangeObj={(value: Record<string, any> | undefined) => {
           handleFormData(formDataKey, value as any);
         }}
         options={optionSelectData}
         defaultOption="--- 未選択 ---"
+        displayClearButton={true}
       />
     );
 

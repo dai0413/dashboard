@@ -18,7 +18,7 @@ import { useModal } from "../../context/modal-context";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed")
+    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
 ).map((item) => ({
   key: item.icon as string,
   label: item.text as string,
@@ -43,7 +43,9 @@ const Player = () => {
     })();
   }, [id, formIsOpen]);
 
-  const handleSelectedTab = (value: string | number | Date): void => {
+  const handleSelectedTab = (
+    value: string | number | Date | undefined,
+  ): void => {
     setSelectedTab(value as string);
   };
 

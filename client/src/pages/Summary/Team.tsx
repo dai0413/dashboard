@@ -51,7 +51,7 @@ const toKey = (date?: Date) =>
   date ? toDateKey(date.toISOString()) : undefined;
 
 const getSeasonDates = (
-  season: SeasonGet | null
+  season: SeasonGet | null,
 ): {
   normalSeason: SeasonDates;
   transferWindow: SeasonDates;
@@ -119,7 +119,7 @@ const getSeasonDates = (
 
 const Tabs = TeamTabItems.filter(
   (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed")
+    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
 ).map((item) => ({
   key: item.icon as string,
   label: item.text as string,
@@ -161,7 +161,7 @@ const Team = () => {
     });
 
     const nextSeasonDates = getSeasonDates(
-      convert(ModelType.SEASON, resBody.data)
+      convert(ModelType.SEASON, resBody.data),
     );
 
     setSeasonDates(nextSeasonDates);
@@ -183,7 +183,7 @@ const Team = () => {
     if (resBody?.data && resBody.data.length > 0) {
       const nextTeamCompetitionSeason = convert(
         ModelType.TEAM_COMPETITION_SEASON,
-        resBody.data
+        resBody.data,
       );
 
       const todaySeason = resBody.data.find(
@@ -191,11 +191,11 @@ const Team = () => {
           s.season.start_date &&
           new Date(s.season.start_date) <= new Date() &&
           s.season.end_date &&
-          new Date(s.season.end_date) >= new Date()
+          new Date(s.season.end_date) >= new Date(),
       );
 
       const currentSeason = resBody.data.find(
-        (s: TeamCompetitionSeason) => s.season.current
+        (s: TeamCompetitionSeason) => s.season.current,
       );
 
       const nextSelectedTeamCompetitionSeason = todaySeason
@@ -203,7 +203,7 @@ const Team = () => {
         : currentSeason;
 
       const nextSeasonRange = getSeasonDates(
-        nextSelectedTeamCompetitionSeason.season
+        nextSelectedTeamCompetitionSeason.season,
       );
 
       setTeamCompetitionSeason({
@@ -216,8 +216,8 @@ const Team = () => {
       setSelectedTeamCompetitionSeason(
         convert(
           ModelType.TEAM_COMPETITION_SEASON,
-          nextSelectedTeamCompetitionSeason
-        )
+          nextSelectedTeamCompetitionSeason,
+        ),
       );
 
       setSeasonDates(nextSeasonRange);
@@ -237,9 +237,9 @@ const Team = () => {
     })();
   }, [id]);
 
-  const handleSelectedTab = (value: string | number | Date): void => {
-    // resetFilterConditions();
-    // resetSort([]);
+  const handleSelectedTab = (
+    value: string | number | Date | undefined,
+  ): void => {
     setSelectedTab(value as string);
   };
 
@@ -276,7 +276,7 @@ const Team = () => {
     })();
   }, [selectedteamCompetitionSeason?._id, formIsOpen]);
 
-  const handleSetSelectedSeason = (id: string | number | Date) => {
+  const handleSetSelectedSeason = (id: string | number | Date | undefined) => {
     const selected =
       teamCompetitionSeason.data.find((s) => s._id === id) ?? null;
     setSelectedTeamCompetitionSeason(selected);
@@ -290,7 +290,7 @@ const Team = () => {
           label: s.season.label,
         };
       }),
-    [teamCompetitionSeason]
+    [teamCompetitionSeason],
   );
 
   const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
@@ -321,7 +321,7 @@ const Team = () => {
     setTeamMatchs(teamMatchs);
 
     const labels = teamMatchs.map((match) =>
-      match.match_week ? `w-${match.match_week}` : ""
+      match.match_week ? `w-${match.match_week}` : "",
     );
 
     let total = 0;
