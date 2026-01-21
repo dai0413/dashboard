@@ -4,7 +4,7 @@ import { objectId } from "./utils/objectId.js";
 import { getKey } from "../utils/getKey.js";
 import { periodLabel } from "../enum/period-label.js";
 import { special_time } from "../enum/special_time.js";
-import { MatchZodSchema } from "./match.schema.js";
+import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { MatchEventTypeZodSchema } from "./match-event-type.schema.js";
 import { PlayerZodSchema } from "./player.schema.js";
@@ -16,8 +16,8 @@ export const PlayerMatchEventLogBaseZodSchema = z.object({
   _id: objectId,
   match: objectId.refine((v) => !!v, { message: "matchは必須です" }),
   team: objectId.refine((v) => !!v, { message: "teamは必須です" }),
-  matchEventType: objectId.refine((v) => !!v, {
-    message: "matchEventTypeは必須です",
+  match_event_type: objectId.refine((v) => !!v, {
+    message: "match_event_typeは必須です",
   }),
   player: objectId.optional(),
   player_name: z.string().nonempty().optional(),
@@ -70,8 +70,6 @@ export const PlayerMatchEventLogFormSchema =
     _id: true,
     createdAt: true,
     updatedAt: true,
-    period_label: true,
-    time_name: true,
     unique_key: true,
   });
 
@@ -79,12 +77,12 @@ export const PlayerMatchEventLogResponseSchema =
   PlayerMatchEventLogBaseZodSchema.omit({
     match: true,
     team: true,
-    matchEventType: true,
+    match_event_type: true,
     player: true,
   }).safeExtend({
-    match: MatchZodSchema,
+    match: MatchBaseZodSchema,
     team: TeamZodSchema,
-    matchEventType: MatchEventTypeZodSchema,
+    match_event_type: MatchEventTypeZodSchema,
     player: PlayerZodSchema,
   });
 
@@ -92,11 +90,11 @@ export const PlayerMatchEventLogPopulatedSchema =
   PlayerMatchEventLogBaseZodSchema.omit({
     match: true,
     team: true,
-    matchEventType: true,
+    match_event_type: true,
     player: true,
   }).safeExtend({
-    match: MatchZodSchema,
+    match: MatchBaseZodSchema,
     team: TeamZodSchema,
-    matchEventType: MatchEventTypeZodSchema,
+    match_event_type: MatchEventTypeZodSchema,
     player: PlayerZodSchema,
   });

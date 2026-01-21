@@ -21,6 +21,7 @@ import { formation } from "./formation";
 import { staff } from "./staff";
 import { playerAppearance } from "./player-appearance";
 import { staffAppearance } from "./staff-appearance";
+import { playerMatchEventLog } from "./player-match-event-log";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
@@ -33,6 +34,7 @@ export const fieldDefinition = {
   [ModelType.MATCH]: match,
   [ModelType.NATIONAL_CALLUP]: nationalCallUp,
   [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries,
+  [ModelType.PLAYER_MATCH_EVENT_LOG]: playerMatchEventLog,
   [ModelType.PLAYER_APPEARANCE]: playerAppearance,
   [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory,
   [ModelType.PLAYER_REGISTRATION]: playerRegistration,

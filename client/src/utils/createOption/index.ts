@@ -12,6 +12,7 @@ import {
   matchFormat,
   match,
   staff,
+  matchEventType,
 } from "./Model";
 import {
   status,
@@ -36,6 +37,7 @@ import {
   operator,
   event_type,
   position_formation,
+  special_time,
 } from "@dai0413/myorg-shared";
 
 export enum OptionType {
@@ -63,6 +65,7 @@ export enum OptionType {
   REGISTRATION_TYPE = "registration_type",
   EVENT_TYPE = "event_type",
   POSITION_FORMATION = "position_formation",
+  SPECIAL_TIME = "special_time",
 }
 
 type OptionMap = {
@@ -90,6 +93,7 @@ type OptionMap = {
   [OptionType.REGISTRATION_TYPE]: OptionArray;
   [OptionType.EVENT_TYPE]: OptionArray;
   [OptionType.POSITION_FORMATION]: OptionArray;
+  [OptionType.SPECIAL_TIME]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -110,6 +114,8 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
   [ModelType.MATCH]: (data, table) => match(data, table ? table : false),
   [ModelType.MATCH_FORMAT]: (data, table) =>
     matchFormat(data, table ? table : false),
+  [ModelType.MATCH_EVENT_TYPE]: (data, table) =>
+    matchEventType(data, table ? table : false),
   [ModelType.NATIONAL_MATCH_SERIES]: (data, table) =>
     nationalMatchSeries(data, table ? table : false),
   [ModelType.PLAYER]: (data, table) => player(data, table ? table : false),
@@ -154,6 +160,7 @@ const defaultOptions: Partial<{ [K in keyof OptionMap]: OptionArray }> = {
   [OptionType.REGISTRATION_TYPE]: registrationType(),
   [OptionType.EVENT_TYPE]: event_type(),
   [OptionType.POSITION_FORMATION]: position_formation(),
+  [OptionType.SPECIAL_TIME]: special_time(),
 };
 
 // 実装

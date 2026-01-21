@@ -22,6 +22,7 @@ import {
   Staff,
   PlayerAppearance,
   StaffAppearance,
+  PlayerMatchEventLog,
 } from "./ModelTable";
 import { JSX } from "react";
 
@@ -39,6 +40,7 @@ const models: Record<ModelType, { table: () => JSX.Element }> = {
   [ModelType.MATCH_FORMAT]: { table: MatchFormat },
   [ModelType.MATCH]: { table: Match },
   [ModelType.PLAYER_APPEARANCE]: { table: PlayerAppearance },
+  [ModelType.PLAYER_MATCH_EVENT_LOG]: { table: PlayerMatchEventLog },
   [ModelType.PLAYER_REGISTRATION_HISTORY]: {
     table: PlayerRegistrationHistory,
   },

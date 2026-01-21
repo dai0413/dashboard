@@ -11,4 +11,5 @@ export const keyMap: Record<string, keyof OptionsMap> = {
   parent_stage: ModelType.COMPETITION_STAGE,
   competition_stage: ModelType.COMPETITION_STAGE,
   match_format: ModelType.MATCH_FORMAT,
+  match_event_type: ModelType.MATCH_EVENT_TYPE,
 };

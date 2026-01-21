@@ -45,6 +45,10 @@ import {
   StaffAppearanceProvider,
   useStaffAppearance,
 } from "./staff-appearance";
+import {
+  PlayerMatchEventLogProvider,
+  usePlayerMatchEventLog,
+} from "./player-match-event-log";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -61,25 +65,27 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                         <TeamCompetitionSeasonProvider>
                           <PlayerProvider>
                             <StaffProvider>
-                              <PlayerRegistrationProvider>
-                                <PlayerRegistrationHistoryProvider>
-                                  <RefereeProvider>
-                                    <NationalCallupProvider>
-                                      <InjuryProvider>
-                                        <TransferProvider>
-                                          <FormationProvider>
-                                            <PlayerAppearanceProvider>
-                                              <StaffAppearanceProvider>
-                                                {children}
-                                              </StaffAppearanceProvider>
-                                            </PlayerAppearanceProvider>
-                                          </FormationProvider>
-                                        </TransferProvider>
-                                      </InjuryProvider>
-                                    </NationalCallupProvider>
-                                  </RefereeProvider>
-                                </PlayerRegistrationHistoryProvider>
-                              </PlayerRegistrationProvider>
+                              <PlayerMatchEventLogProvider>
+                                <PlayerRegistrationProvider>
+                                  <PlayerRegistrationHistoryProvider>
+                                    <RefereeProvider>
+                                      <NationalCallupProvider>
+                                        <InjuryProvider>
+                                          <TransferProvider>
+                                            <FormationProvider>
+                                              <PlayerAppearanceProvider>
+                                                <StaffAppearanceProvider>
+                                                  {children}
+                                                </StaffAppearanceProvider>
+                                              </PlayerAppearanceProvider>
+                                            </FormationProvider>
+                                          </TransferProvider>
+                                        </InjuryProvider>
+                                      </NationalCallupProvider>
+                                    </RefereeProvider>
+                                  </PlayerRegistrationHistoryProvider>
+                                </PlayerRegistrationProvider>
+                              </PlayerMatchEventLogProvider>
                             </StaffProvider>
                           </PlayerProvider>
                         </TeamCompetitionSeasonProvider>
@@ -107,6 +113,7 @@ const useModelContext = (modelType: ModelType | null) => {
   const match = useMatch();
   const nationalCallup = useNationalCallup();
   const nationalMatchSeries = useNationalMatchSeries();
+  const playerMatchEventLog = usePlayerMatchEventLog();
   const playerAppearance = usePlayerAppearance();
   const player = usePlayer();
   const playerRegistrationHistory = usePlayerRegistrationHistory();
@@ -131,6 +138,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.MATCH]: match.metacrud,
     [ModelType.NATIONAL_CALLUP]: nationalCallup.metacrud,
     [ModelType.NATIONAL_MATCH_SERIES]: nationalMatchSeries.metacrud,
+    [ModelType.PLAYER_MATCH_EVENT_LOG]: playerMatchEventLog.metacrud,
     [ModelType.PLAYER_APPEARANCE]: playerAppearance.metacrud,
     [ModelType.PLAYER]: player.metacrud,
     [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory.metacrud,

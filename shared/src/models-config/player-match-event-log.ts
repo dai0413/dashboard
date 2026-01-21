@@ -7,6 +7,7 @@ import {
   PlayerMatchEventLogPopulatedSchema,
 } from "../schemas/player-match-event-log.schema.js";
 import { ControllerConfig } from "../types/models-config.js";
+import { playerMatchEventLog as convertFun } from "../utils/format/player-match-event-log.js";
 import { ParsedQs } from "qs";
 
 export function playerMatchEventLog<TDoc = any, TModel = any>(
@@ -34,14 +35,14 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
       { path: "match", collection: "matches" },
       { path: "team", collection: "teams" },
       { path: "player", collection: "players" },
-      { path: "matchEventType", collection: "matcheventtypes" },
+      { path: "match_event_type", collection: "matcheventtypes" },
     ],
     getAllConfig: {
       query: [
         { field: "match", type: "ObjectId" },
         { field: "team", type: "ObjectId" },
         { field: "player", type: "ObjectId" },
-        { field: "matchEventType", type: "ObjectId" },
+        { field: "match_event_type", type: "ObjectId" },
       ],
       sort: { match: -1, time: -1, add_time: -1, order: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
@@ -53,7 +54,7 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
         {
           match: deps.match[0]._id,
           team: deps.team[0]._id,
-          matchEventType: deps.matchEventType[0]._id,
+          match_event_type: deps.matchEventType[0]._id,
           player: deps.player[0]._id,
           time: 10,
         },
@@ -62,5 +63,6 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
         time: 5,
       },
     },
+    convertFun: convertFun,
   };
 }

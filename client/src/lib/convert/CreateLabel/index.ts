@@ -21,6 +21,7 @@ import { formation } from "./formation";
 import { staff } from "./staff";
 import { playerAppearance } from "./player-appearance";
 import { staffAppearance } from "./staff-appearance";
+import { playerMatchEventLog } from "./player-match-event-log";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => string;
@@ -73,6 +74,10 @@ const convertMap: {
   [ModelType.PLAYER_APPEARANCE]: {
     single: playerAppearance,
     multiple: (data) => data.map(playerAppearance),
+  },
+  [ModelType.PLAYER_MATCH_EVENT_LOG]: {
+    single: playerMatchEventLog,
+    multiple: (data) => data.map(playerMatchEventLog),
   },
   [ModelType.PLAYER_REGISTRATION_HISTORY]: {
     single: playerRegistrationHistory,
