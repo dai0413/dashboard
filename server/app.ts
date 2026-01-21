@@ -23,7 +23,7 @@ app.use(
       }
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -60,6 +60,11 @@ import staff from "./routes/staff.js";
 import teamCompetitionSeason from "./routes/team-competition-season.js";
 import playerRegistration from "./routes/player-registration.js";
 import playerRegistrationHistory from "./routes/player-registration-history.js";
+import playerAppearance from "./routes/player-appearance.js";
+import playerMatchEventLog from "./routes/player-match-event-log.js";
+import staffMatchEventLog from "./routes/staff-match-event-log.js";
+import teamMatchFormation from "./routes/team-match-formation.js";
+import staffAppearance from "./routes/staff-appearance.js";
 
 app.use(`/api/v1`, auth);
 app.use(`/api/v1`, authmiddleware, aggregate);
@@ -68,17 +73,22 @@ app.use(`/api/v1`, authmiddleware, formation);
 app.use(`/api/v1`, authmiddleware, competitionStage);
 app.use(`/api/v1`, authmiddleware, competition);
 app.use(`/api/v1`, authmiddleware, matchFormat);
+app.use(`/api/v1`, authmiddleware, teamMatchFormation);
 app.use(`/api/v1`, authmiddleware, match);
 app.use(`/api/v1`, authmiddleware, injury);
 app.use(`/api/v1`, authmiddleware, matchEventType);
 app.use(`/api/v1`, authmiddleware, nationalCallup);
 app.use(`/api/v1`, authmiddleware, nationalMatchSeries);
+app.use(`/api/v1`, authmiddleware, playerAppearance);
+app.use(`/api/v1`, authmiddleware, playerMatchEventLog);
 app.use(`/api/v1`, authmiddleware, playerRegistrationHistory);
 app.use(`/api/v1`, authmiddleware, playerRegistration);
 app.use(`/api/v1`, authmiddleware, player);
 app.use(`/api/v1`, authmiddleware, referee);
 app.use(`/api/v1`, authmiddleware, season);
 app.use(`/api/v1`, authmiddleware, stadium);
+app.use(`/api/v1`, authmiddleware, staffAppearance);
+app.use(`/api/v1`, authmiddleware, staffMatchEventLog);
 app.use(`/api/v1`, authmiddleware, staff);
 app.use(`/api/v1`, authmiddleware, teamCompetitionSeason);
 app.use(`/api/v1`, authmiddleware, team);

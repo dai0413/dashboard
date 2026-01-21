@@ -42,7 +42,7 @@ const Badges = () => {
   const handleOnClick = (
     fieldKey: string,
     filterCondition: FilterableFieldDefinition,
-    removeKey?: string
+    removeKey?: string,
   ): void => {
     if (!countryField) return;
 
@@ -57,7 +57,7 @@ const Badges = () => {
         objectIsEqual(existing.value, filterCondition.value)
       ) {
         return prev.filter(
-          (f) => f.key !== fieldKey && f.key !== "country._id"
+          (f) => f.key !== fieldKey && f.key !== "country._id",
         );
       }
 
@@ -69,7 +69,7 @@ const Badges = () => {
                 ...f,
                 ...filterCondition,
               }
-            : f
+            : f,
         );
       }
 
@@ -98,7 +98,7 @@ const Badges = () => {
   };
 
   const [selectTab, setSelectTab] = useState<Competition | AgeGroup | null>(
-    null
+    null,
   );
 
   const competitionOnClick = async (competition: Competition) => {
@@ -123,7 +123,7 @@ const Badges = () => {
 
     const teamCompetitionSeason = convert(
       ModelType.TEAM_COMPETITION_SEASON,
-      resBody.data as TeamCompetitionSeason[]
+      resBody.data as TeamCompetitionSeason[],
     );
 
     const teams = teamCompetitionSeason.map((t) => t.team);
@@ -156,7 +156,7 @@ const Badges = () => {
         valueLabel: [obj.label],
         operator: "equals",
       },
-      "_id"
+      "_id",
     );
   };
 

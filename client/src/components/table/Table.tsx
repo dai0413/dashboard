@@ -65,7 +65,7 @@ const Table = <T extends Record<string, any>>({
               {header.label}
             </th>
           ))}
-          {detailLink && (
+          {detailLink && !form && (
             <th className="bg-gray-200 border" style={{ width: "80px" }}>
               詳細
             </th>
@@ -103,7 +103,7 @@ const Table = <T extends Record<string, any>>({
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </td>
               ))}
-              {detailLink && (
+              {detailLink && !form && (
                 <td className="px-4 py-2 border">
                   <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
                 </td>
@@ -128,7 +128,7 @@ const Table = <T extends Record<string, any>>({
                   onClick={() =>
                     deleteOnClick &&
                     deleteOnClick(
-                      itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i
+                      itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
                     )
                   }
                 >
@@ -146,10 +146,10 @@ const Table = <T extends Record<string, any>>({
                   typeof value === "boolean"
                     ? value.toString()
                     : value instanceof Date
-                    ? toDateKey(value)
-                    : isLabelObject(value)
-                    ? value.label
-                    : value;
+                      ? toDateKey(value)
+                      : isLabelObject(value)
+                        ? value.label
+                        : value;
 
                 return (
                   <td
@@ -176,13 +176,13 @@ const Table = <T extends Record<string, any>>({
                         renderFieldCell(
                           header,
                           row,
-                          itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i
+                          itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
                         )
                       : RenderCell(header, row, form, linkField)}
                   </td>
                 );
               })}
-              {detailLink && (
+              {detailLink && !form && (
                 <td
                   className={`px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap ${
                     selectedKey.includes(row.key) ? "bg-blue-100" : ""

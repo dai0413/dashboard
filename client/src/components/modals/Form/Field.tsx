@@ -79,7 +79,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
     nextOptionKey: ModelType,
     filterConditions?: FilterableFieldDefinition[],
     sortConditions?: SortableFieldDefinition[],
-    _page?: number,
+    page?: number,
   ): Promise<ModelDataOptions | undefined> => {
     const crudRoutes = optionRouteMap[nextOptionKey];
 
@@ -127,7 +127,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
         getted as unknown as OptionsMap[T],
         true,
       ) as OptionTable,
-      page: response.page,
+      page: page ? page : response.page,
       totalCount: response.totalCount,
       isLoading: false,
     };
@@ -226,6 +226,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           </button>
         </div>
         <CustomTableContainer
+          pageNation="client"
           modelType={
             optionKey && isModelType(optionKey) ? optionKey : undefined
           }

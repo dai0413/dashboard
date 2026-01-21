@@ -25,7 +25,7 @@ import { QueryParams, ResBody } from "@dai0413/myorg-shared";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
-  backendRoute: BaseCrudRoutes
+  backendRoute: BaseCrudRoutes,
 ) {
   type Form = FormTypeMap[T];
   type Get = GettedModelDataMap[T];
@@ -122,7 +122,6 @@ export function createModelContext<T extends ModelType>(
 
     const updateItem = async (updated: Form) => {
       if (!selected) return false;
-      console.log(updated);
       const id = selected._id;
 
       const result = updateItemBase({
@@ -132,8 +131,8 @@ export function createModelContext<T extends ModelType>(
         onAfterUpdate: (updatedItem: Model) => {
           setItems((prev) =>
             prev.map((t) =>
-              t._id === id ? convert(ContextModelString, updatedItem) : t
-            )
+              t._id === id ? convert(ContextModelString, updatedItem) : t,
+            ),
           );
           setSelectedItem(convert(ContextModelString, updatedItem));
         },

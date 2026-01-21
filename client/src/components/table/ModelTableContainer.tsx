@@ -28,7 +28,7 @@ type ModelBase<K extends keyof FormTypeMap> = Omit<
 type TableContainerProps<K extends keyof FormTypeMap> = ModelBase<K>;
 
 const TableContainer = <K extends keyof FormTypeMap>(
-  props: TableContainerProps<K>
+  props: TableContainerProps<K>,
 ) => {
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
@@ -60,19 +60,19 @@ const TableContainer = <K extends keyof FormTypeMap>(
   const sortField = useMemo(() => sortableField, [sortableField]);
 
   const handleApplyFilter = () => {
-    if (filterConditions.length === 0) {
-      handleSetAlert({
-        success: false,
-        message: "条件を設定してください",
-      });
-    } else {
-      handleSetAlert({ success: true, message: "" });
-      readItems({
-        page: 1,
-        filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
-        sorts: JSON.stringify(sortConditions),
-      });
-    }
+    // if (filterConditions.length === 0) {
+    //   handleSetAlert({
+    //     success: false,
+    //     message: "条件を設定してください",
+    //   });
+    // } else {
+    handleSetAlert({ success: true, message: "" });
+    readItems({
+      page: 1,
+      filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
+      sorts: JSON.stringify(sortConditions),
+    });
+    // }
 
     setPage("page", 1);
 
@@ -146,7 +146,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
 };
 
 const ModelTableContainer = <K extends keyof FormTypeMap>(
-  props: TableContainerProps<K>
+  props: TableContainerProps<K>,
 ) => {
   return (
     <FilterProvider>

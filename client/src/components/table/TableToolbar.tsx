@@ -146,7 +146,10 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   };
 
   const onClickTile = () => {
-    if (modelType === ModelType.TEAM_COMPETITION_SEASON) {
+    if (
+      modelType === ModelType.TEAM_COMPETITION_SEASON ||
+      modelType === ModelType.FORMATION
+    ) {
       setItemsPerPage(20);
     } else {
       setItemsPerPage(10);
@@ -156,7 +159,10 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   };
 
   useEffect(() => {
-    if (modelType === ModelType.TEAM_COMPETITION_SEASON) {
+    if (
+      modelType === ModelType.TEAM_COMPETITION_SEASON ||
+      modelType === ModelType.FORMATION
+    ) {
       onClickTile();
     } else {
       onClickTable();
