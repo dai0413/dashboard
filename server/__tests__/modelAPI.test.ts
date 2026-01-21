@@ -19,6 +19,10 @@ import {
   matchEventType,
   formation,
   staff,
+  playerAppearance,
+  playerMatchEventLog,
+  staffMatchEventLog,
+  teamMatchFormation,
 } from "@dai0413/myorg-shared";
 import { runControllerTests } from "../dist/test-utils/runControllerTests.js";
 
@@ -42,6 +46,10 @@ import { PlayerRegistrationHistoryModel } from "../dist/models/player-registrati
 import { MatchEventTypeModel } from "../dist/models/match-event-type.js";
 import { FormationModel } from "../dist/models/formation.js";
 import { StaffModel } from "../dist/models/staff.js";
+import { PlayerAppearanceModel } from "../dist/models/player-appearance.js";
+import { PlayerMatchEventLogModel } from "../dist/models/player-match-event-log.js";
+import { StaffMatchEventLogModel } from "../dist/models/staff-match-event-log.js";
+import { TeamMatchFormationModel } from "../dist/models/team-match-formation.js";
 import { match as customMatch } from "../dist/utils/customMatchStage/match.js";
 import { transfer as customTransfer } from "../dist/utils/customMatchStage/transfer.js";
 
@@ -65,3 +73,7 @@ runControllerTests(playerRegistrationHistory(PlayerRegistrationHistoryModel));
 runControllerTests(matchEventType(MatchEventTypeModel));
 runControllerTests(formation(FormationModel));
 runControllerTests(staff(StaffModel));
+runControllerTests(playerAppearance(PlayerAppearanceModel));
+runControllerTests(playerMatchEventLog(PlayerMatchEventLogModel));
+runControllerTests(staffMatchEventLog(StaffMatchEventLogModel));
+runControllerTests(teamMatchFormation(TeamMatchFormationModel));
