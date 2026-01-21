@@ -228,8 +228,6 @@ export const FormProvider = <T extends ModelType>({
 
     many ? setInputMode("many") : setInputMode("single");
 
-    console.log("initialFormData in startForm", initialFormData);
-
     if (newData) {
       setFormMode("create");
 
@@ -270,7 +268,9 @@ export const FormProvider = <T extends ModelType>({
           ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
         };
         const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
-        dat ? setFormDatas(periodArray) : setFormDatas([]);
+        dat
+          ? setFormDatas(periodArray as FormTypeMap[ModelType.MATCH_FORMAT][])
+          : setFormDatas([]);
 
         const { period, ...data } = matchFormatEditItem;
 

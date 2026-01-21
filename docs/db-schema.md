@@ -650,7 +650,7 @@
 | フィールド        | 型                         | 日本語           | require | default |
 | ----------------- | -------------------------- | ---------------- | ------- | ------- |
 | competition       | 外部キー(Competition)      | 大会             | true    |         |
-| competition-stage | 外部キー(CompetitionStage) | ステージ         | true    |         |
+| competition_stage | 外部キー(CompetitionStage) | ステージ         | true    |         |
 | season            | 外部キー(Season)           | シーズン         | true    |         |
 | home_team         | 外部キー(Team)             | ホーム           | true    |         |
 | away_team         | 外部キー(Team)             | アウェイ         | true    |         |
@@ -983,19 +983,20 @@
 
 ### フィールド一覧
 
-| フィールド     | 型                        | 日本語         | require | default |
-| -------------- | ------------------------- | -------------- | ------- | ------- |
-| match          | 外部キー(Match)           | 試合           | true    |         |
-| team           | 外部キー (Team)           | チーム         | true    |         |
-| matchEventType | 外部キー (MatchEventType) | イベントタイプ | true    |         |
-| player         | 外部キー (Player)         | 選手           |         |         |
-| player_name    | 文字列                    | 選手名         |         |         |
-| time           | 数字                      | 時間           |         |         |
-| add_time       | 数字                      | 追加タイム     |         |         |
-| special_time   | 文字列(ENUM)              | 特別時間       |         |         |
-| period_label   | 文字列(ENUM)              | 前後半         |         |         |
-| time_name      | 文字列                    | 文字列時間     |         |         |
-| order          | 数字                      | 順番           |         |         |
+| フィールド       | 型                        | 日本語         | require | default |
+| ---------------- | ------------------------- | -------------- | ------- | ------- |
+| match            | 外部キー(Match)           | 試合           | true    |         |
+| team             | 外部キー (Team)           | チーム         | true    |         |
+| match_event_type | 外部キー (MatchEventType) | イベントタイプ | true    |         |
+| player           | 外部キー (Player)         | 選手           |         |         |
+| player_name      | 文字列                    | 選手名         |         |         |
+| time             | 数字                      | 時間           |         |         |
+| add_time         | 数字                      | 追加タイム     |         |         |
+| special_time     | 文字列(ENUM)              | 特別時間       |         |         |
+| period_label     | 文字列(ENUM)              | 前後半         |         |         |
+| time_name        | 文字列                    | 文字列時間     |         |         |
+| order            | 数字                      | 順番           |         |         |
+| unique_key       | 文字                      | ユニークキー   | true    |         |
 
 ### ENUM
 
@@ -1004,14 +1005,13 @@
 
 ### 組み合わせ (Mongoose)
 
-以下の組み合わせで **ユニーク** とする：
+以下の組み合わせを文字列とした値(unique_key)を **ユニーク** とする：
 
 - `match`
-- `player`
-- `player_name`（任意）
-- `time_name`（任意）
 - `match_event`
-- `order`（任意）
+- `player`（任意） or `player_name`（任意）or `no-player`
+- `time_name`（任意）or `no-time`
+- `order`（任意） or `no-order`
 
 ### バリデーション(zod)
 
@@ -1023,7 +1023,6 @@
 ### バリデーション(client)
 
 - **player または player_name どちらかを入力** (matchEventType がオウンゴール以外のとき)
-- **player 必須** (matchEventType がオウンゴール以外のとき)
 
 ### 自動入力(client)
 
@@ -1033,13 +1032,13 @@
 - **time_name の自動生成**
   - `${time}` or `${time}+${add_time}`
 - **period_label の自動生成**
-  - match モデルの match_format フィールド内の periold フィールド から time が当てはまる periold_label を取得する
+  - match モデルの match_format フィールド内の periold フィールド から time が当てはまる period_label を取得する
     (例: match から得られる match_format の period が
     `{"period": [{"period_label": "1H","order": 1,"start": 0,"end": 45},{"period_label": "2H","order": 2,"start": 45,"end": 90}],}`)
     ①：このとき time : 65 と入力されたら
     ②：start - end 間に 65 があるオブジェクトを探す
-    ③：そのオブジェクトの periold_label を periold_label に入力
-    ④：periold_label : `2H`
+    ③：そのオブジェクトの period_label を period_label に入力
+    ④：period_label : `2H`
 
 ### 入力時注意
 
@@ -1056,18 +1055,19 @@
 
 ### フィールド一覧
 
-| フィールド     | 型                       | 日本語         | require | default |
-| -------------- | ------------------------ | -------------- | ------- | ------- |
-| match          | 外部キー(Match)          | 試合           | true    |         |
-| team           | 外部キー(Team)           | チーム         | true    |         |
-| matchEventType | 外部キー(MatchEventType) | イベントタイプ | true    |         |
-| staff          | 外部キー(Staff)          | 監督           |         |         |
-| staff_name     | 文字列                   | 監督名         |         |         |
-| time           | 数字                     | 時間           |         |         |
-| add_time       | 数字                     | 追加タイム     |         |         |
-| special_time   | 文字列                   | 特別時間       |         |         |
-| period_label   | 文字列                   | 前後半         |         |         |
-| time_name      | 文字列                   | 文字列時間     |         |         |
+| フィールド       | 型                        | 日本語         | require | default |
+| ---------------- | ------------------------- | -------------- | ------- | ------- |
+| match            | 外部キー(Match)           | 試合           | true    |         |
+| team             | 外部キー(Team)            | チーム         | true    |         |
+| match_event_type | 外部キー (MatchEventType) | イベントタイプ | true    |         |
+| staff            | 外部キー(Staff)           | 監督           |         |         |
+| staff_name       | 文字列                    | 監督名         |         |         |
+| time             | 数字                      | 時間           |         |         |
+| add_time         | 数字                      | 追加タイム     |         |         |
+| special_time     | 文字列                    | 特別時間       |         |         |
+| period_label     | 文字列                    | 前後半         |         |         |
+| time_name        | 文字列                    | 文字列時間     |         |         |
+| unique_key       | 文字                      | ユニークキー   | true    |         |
 
 ### ENUM
 
@@ -1076,13 +1076,12 @@
 
 ### 組み合わせ (Mongoose)
 
-以下の組み合わせで **ユニーク** とする：
+以下の組み合わせを文字列とした値(unique_key)を **ユニーク** とする：
 
 - `match`
-- `staff`
-- `staff_name`（任意）
-- `time_name`（任意）
 - `match_event`
+- `staff`（任意） or `staff_name`（任意）or `no-staff`
+- `time_name`（任意）or `no-time`
 
 ### バリデーション(zod)
 
@@ -1102,13 +1101,13 @@
 - **time_name の自動生成**
   - `${time}` or `${time}+${add_time}`
 - **period_label の自動生成**
-  - match モデルの match_format フィールド内の periold フィールド から time が当てはまる periold_label を取得する
+  - match モデルの match_format フィールド内の periold フィールド から time が当てはまる period_label を取得する
     (例: match から得られる match_format の period が
     `{"period": [{"period_label": "1H","order": 1,"start": 0,"end": 45},{"period_label": "2H","order": 2,"start": 45,"end": 90}],}`)
     ①：このとき time : 65 と入力されたら
     ②：start - end 間に 65 があるオブジェクトを探す
-    ③：そのオブジェクトの periold_label を periold_label に入力
-    ④：periold_label : `2H`
+    ③：そのオブジェクトの period_label を period_label に入力
+    ④：period_label : `2H`
 
 ### 入力時注意
 

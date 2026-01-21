@@ -67,7 +67,6 @@ assignees: ""
 
 - [ ] `client/src/types/models/` にモデルの TypeScript 型定義を追加。
 - [ ] `client/src/lib/appRoutes.ts`に client のルート定義
-- [ ] `client/src/lib/apiRoutes.ts`に server のルート定義
 - [ ] `client/src/types/models/index.ts` にまとめてエクスポート。
 
 ### 4-2. データ変換処理
@@ -89,6 +88,7 @@ assignees: ""
 
 - [ ] `client/src/context/models/`に新しいモデルを管理する context を作成。
 - [ ] `client/src/context/models/model-wrapper`に追加。
+- [ ] `client/src/context/models/model-wrapper`の`modelContextMap`内追加
 
 ---
 
@@ -97,28 +97,20 @@ assignees: ""
 - [ ] `docs/route/index.md`にルートまとめ
 - [ ] `client/src/pages/ModelTable/` に新しいモデル用の一覧ページを作成。
 - [ ] `client/src/pages/ModelTable/index.ts` にまとめ。
+- [ ] `client/src/pages/Models`にまとめる -->
 
 ---
 
-## 7. 詳細ページ作成
-
-- [ ] `client/src/pages/ModelDetail/` にモデルの詳細表示ページを作成。
-- [ ] `client/src/pages/ModelDetail/index.ts` にまとめ。
-- [ ] `client/src/pages/Models`にまとめる
-
----
-
-## 8. 登録用フォーム作成
+## 7. 登録用フォーム作成
 
 - [ ] `client/src/lib/form-steps/` に登録用のフォームステップ（ステップフォーム）を作成。
   - 入力項目のバリデーション・ステップ分割を定義, `index.ts`にも追加
 - [ ] `client/src/lib/default-formData`でデフォルト値設定
-- [ ] `client/src/context/form-context`内で`modelContextMap`内追加
 
 ---
 
 ## 9. モデルまとめページ
 
-- [ ] `client/src/lib/AdminDashboard/` にモデルへのリンクまとめ。
+- [ ] `client/src/pages/AdminDashboard/` にモデルへのリンクまとめ。
 
 ---
