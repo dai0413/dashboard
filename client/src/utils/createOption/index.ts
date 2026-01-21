@@ -13,6 +13,7 @@ import {
   match,
   staff,
   matchEventType,
+  formation,
 } from "./Model";
 import {
   status,
@@ -127,6 +128,8 @@ const convertMap: Partial<{ [K in keyof OptionsMap]: Converter<K> }> = {
     competitionStage(data, table ? table : false),
   [ModelType.COMPETITION]: (data, table) =>
     competition(data, table ? table : false),
+  [ModelType.FORMATION]: (data, table) =>
+    formation(data, table ? table : false),
 };
 
 const defaultOptions: Partial<{ [K in keyof OptionMap]: OptionArray }> = {

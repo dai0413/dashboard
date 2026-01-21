@@ -27,6 +27,7 @@ import { playerAppearance } from "./player-appearance";
 import { staffAppearance } from "./staff-appearance";
 import { playerMatchEventLog } from "./player-match-event-log";
 import { staffMatchEventLog } from "./staff-match-event-log";
+import { teamMatchFormation } from "./team-match-formation";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -123,6 +124,10 @@ const convertMap: {
   [ModelType.TEAM_COMPETITION_SEASON]: {
     single: teamCompetitionSeason,
     multiple: (data) => data.map(teamCompetitionSeason),
+  },
+  [ModelType.TEAM_MATCH_FORMATION]: {
+    single: teamMatchFormation,
+    multiple: (data) => data.map(teamMatchFormation)
   },
   [ModelType.TEAM]: {
     single: team,

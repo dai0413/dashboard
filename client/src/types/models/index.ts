@@ -67,6 +67,11 @@ import {
   StaffMatchEventLogForm,
   StaffMatchEventLogGet,
 } from "./staff-match-event-log";
+import {
+  TeamMatchFormation,
+  TeamMatchFormationForm,
+  TeamMatchFormationGet,
+} from "./team-match-formation";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -91,6 +96,7 @@ export enum ModelType {
   STAFF_MATCH_EVENT_LOG = "staff-match-event-log",
   STAFF = "staff",
   TEAM_COMPETITION_SEASON = "team-competition-season",
+  TEAM_MATCH_FORMATION = "team-match-formation",
   TEAM = "team",
   TRANSFER = "transfer",
 }
@@ -118,6 +124,7 @@ export type ModelDataMap = {
   [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLog;
   [ModelType.STAFF]: Staff;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeason;
+  [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormation;
   [ModelType.TEAM]: Team;
   [ModelType.TRANSFER]: Transfer;
 };
@@ -145,6 +152,7 @@ export type GettedModelDataMap = {
   [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLogGet;
   [ModelType.STAFF]: StaffGet;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonGet;
+  [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormationGet;
   [ModelType.TEAM]: TeamGet;
   [ModelType.TRANSFER]: TransferGet;
 };
@@ -172,6 +180,7 @@ export type FormTypeMap = {
   [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLogForm;
   [ModelType.STAFF]: StaffForm;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonForm;
+  [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormationForm;
   [ModelType.TEAM]: TeamForm;
   [ModelType.TRANSFER]: TransferForm;
 };
@@ -200,6 +209,7 @@ export const ModelRouteMap = {
   [ModelType.STAFF_MATCH_EVENT_LOG]: APP_ROUTES.STAFF,
   [ModelType.STAFF]: APP_ROUTES.STAFF_MATCH_EVENT_LOG,
   [ModelType.TEAM_COMPETITION_SEASON]: APP_ROUTES.TEAM_COMPETITION_SEASON,
+  [ModelType.TEAM_MATCH_FORMATION]: APP_ROUTES.TEAM_MATCH_FORMATION,
   [ModelType.TEAM]: APP_ROUTES.TEAM,
   [ModelType.TRANSFER]: APP_ROUTES.TRANSFER,
 };

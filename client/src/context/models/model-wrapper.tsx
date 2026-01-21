@@ -53,6 +53,10 @@ import {
   StaffMatchEventLogProvider,
   useStaffMatchEventLog,
 } from "./staff-match-event-log";
+import {
+  TeamMatchFormationProvider,
+  useTeamMatchFormation,
+} from "./team-match-formation";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -78,11 +82,13 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                                           <InjuryProvider>
                                             <TransferProvider>
                                               <FormationProvider>
-                                                <PlayerAppearanceProvider>
-                                                  <StaffAppearanceProvider>
-                                                    {children}
-                                                  </StaffAppearanceProvider>
-                                                </PlayerAppearanceProvider>
+                                                <TeamMatchFormationProvider>
+                                                  <PlayerAppearanceProvider>
+                                                    <StaffAppearanceProvider>
+                                                      {children}
+                                                    </StaffAppearanceProvider>
+                                                  </PlayerAppearanceProvider>
+                                                </TeamMatchFormationProvider>
                                               </FormationProvider>
                                             </TransferProvider>
                                           </InjuryProvider>
@@ -127,12 +133,13 @@ const useModelContext = (modelType: ModelType | null) => {
   const referee = useReferee();
   const season = useSeason();
   const stadium = useStadium();
+  const staffMatchEventLog = useStaffMatchEventLog();
   const staffAppearance = useStaffAppearance();
   const staff = useStaff();
   const teamCompetitionSeason = useTeamCompetitionSeason();
+  const teamMatchFormation = useTeamMatchFormation();
   const team = useTeam();
   const transfer = useTransfer();
-  const staffMatchEventLog = useStaffMatchEventLog();
 
   const map: Record<ModelType, MetaCrudContext<any>> = {
     [ModelType.COMPETITION]: competition.metacrud,
@@ -157,6 +164,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.STAFF_MATCH_EVENT_LOG]: staffMatchEventLog.metacrud,
     [ModelType.STAFF]: staff.metacrud,
     [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason.metacrud,
+    [ModelType.TEAM_MATCH_FORMATION]: teamMatchFormation.metacrud,
     [ModelType.TEAM]: team.metacrud,
     [ModelType.TRANSFER]: transfer.metacrud,
   };

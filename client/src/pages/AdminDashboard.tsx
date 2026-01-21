@@ -153,6 +153,12 @@ const models: {
     link: APP_ROUTES.STAFF_MATCH_EVENT_LOG,
     icon: "match",
   },
+  {
+    model: "TeamMatchFormation",
+    desc: "試合でのフォーメーション",
+    link: APP_ROUTES.TEAM_MATCH_FORMATION,
+    icon: "setting",
+  },
 ];
 
 const AdminDashboard = () => {

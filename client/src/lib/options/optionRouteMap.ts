@@ -15,4 +15,5 @@ export const optionRouteMap: Record<string, BaseCrudRoutes> = {
   [ModelType.STAFF]: API_PATHS.STAFF,
   [ModelType.COMPETITION_STAGE]: API_PATHS.COMPETITION_STAGE,
   [ModelType.COMPETITION]: API_PATHS.COMPETITION,
+  [ModelType.FORMATION]: API_PATHS.FORMATION,
 };

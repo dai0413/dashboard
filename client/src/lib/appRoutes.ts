@@ -29,6 +29,7 @@ export const APP_ROUTES = {
   STAFF_MATCH_EVENT_LOG: "/staff-match-event-log",
   STAFF: "/staff",
   TEAM_COMPETITION_SEASON: "/team-competition-season",
+  TEAM_MATCH_FORMATION: "/team-match-formation",
   TEAM: "/team",
   TRANSFER: "/transfer",
 

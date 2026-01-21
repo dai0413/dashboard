@@ -22,3 +22,4 @@ export { default as Formation } from "./Formation";
 export { default as StaffAppearance } from "./StaffAppearance";
 export { default as PlayerMatchEventLog } from "./PlayerMatchEventLog";
 export { default as StaffMatchEventLog } from "./StaffMatchEventLog";
+export { default as TeamMatchFormation } from "./TeamMatchFormation";

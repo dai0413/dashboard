@@ -10,3 +10,4 @@ export { matchFormat } from "./match-format";
 export { match } from "./match";
 export { staff } from "./staff";
 export { matchEventType } from "./match-event-type";
+export { formation } from "./formation";
