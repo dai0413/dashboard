@@ -47,8 +47,8 @@ export const API_PATHS = {
   },
 
   MATCH_TEAM_FORMATION: {
-    ROOT: "/match-team-formation",
-    DETAIL: (id: string | number = ":id") => `/match-team-formation/${id}`,
+    ROOT: "/team-match-formation",
+    DETAIL: (id: string | number = ":id") => `/team-match-formation/${id}`,
   },
 
   MATCH: {

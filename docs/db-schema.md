@@ -116,7 +116,7 @@
     - [バリデーション(client)](#バリデーションclient-1)
     - [自動入力(client)](#自動入力client-7)
     - [入力時注意](#入力時注意-1)
-  - [26. 試合でのフォーメーション(Match-Team-Formation)](#26-試合でのフォーメーションmatch-team-formation)
+  - [26. 試合でのフォーメーション(Team-Match-Formation)](#26-試合でのフォーメーションteam-match-formation)
     - [フィールド一覧](#フィールド一覧-24)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-23)
   - [今後](#今後)
@@ -1115,7 +1115,7 @@
 
 ---
 
-## 26. 試合でのフォーメーション(Match-Team-Formation)
+## 26. 試合でのフォーメーション(Team-Match-Formation)
 
 ### フィールド一覧
 

@@ -20,7 +20,7 @@ export function teamMatchFormation<TDoc = any, TModel = any>(
   z.infer<typeof TeamMatchFormationPopulatedSchema>
 > & { MONGO_MODEL: TModel | null } {
   return {
-    name: "match-team-formation",
+    name: "team-match-formation",
     collection_name: "teammatchformations",
     SCHEMA: {
       DATA: TeamMatchFormationZodSchema,

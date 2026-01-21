@@ -20,7 +20,7 @@
 | `/injury`                      | 怪我                         |
 | `/match-event-type`            | 試合イベントタイプ           |
 | `/match-format`                | 大会フォーマット             |
-| `/match-team-formation`        | 試合でのフォーメーション     |
+| `/team-match-formation`        | 試合でのフォーメーション     |
 | `/match`                       | 試合                         |
 | `/national-callup`             | 代表招集リスト               |
 | `/national-match-series`       | 代表試合シリーズ             |
@@ -52,7 +52,7 @@
 | `/injury/:id`                      | 怪我                         |
 | `/match-event-type/:id`            | 試合イベントタイプ           |
 | `/match-format/:id`                | 大会フォーマット             |
-| `/match-team-formation/:id`        | 試合でのフォーメーション     |
+| `/team-match-formation/:id`        | 試合でのフォーメーション     |
 | `/match/:id`                       | 試合                         |
 | `/national-callup/:id`             | 代表招集リスト               |
 | `/national-match-series/:id`       | 代表試合シリーズ             |
