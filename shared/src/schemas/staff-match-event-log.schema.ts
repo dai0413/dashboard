@@ -52,7 +52,10 @@ export const StaffMatchEventLogZodSchema =
         message:
           "special_time を入力する場合は time, add_time, order を指定できません",
       },
-    );
+    )
+    .refine((data) => data.staff || data.staff_name, {
+      message: "staffまたはstaff_nameのどちらかを入力してください",
+    });
 
 export type StaffMatchEventLogType = z.infer<
   typeof StaffMatchEventLogZodSchema
@@ -76,7 +79,7 @@ export const StaffMatchEventLogResponseSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    staff: StaffZodSchema,
+    staff: StaffZodSchema.extend({ _id: objectId.optional() }).optional(),
   });
 
 export const StaffMatchEventLogPopulatedSchema =
@@ -89,5 +92,5 @@ export const StaffMatchEventLogPopulatedSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    staff: StaffZodSchema,
+    staff: StaffZodSchema.extend({ _id: objectId.optional() }).optional(),
   });

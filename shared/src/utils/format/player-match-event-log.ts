@@ -9,7 +9,7 @@ const playerMatchEventLog = (
 ): z.infer<typeof PlayerMatchEventLogResponseSchema> => {
   const { player, player_name, ...rest } = playerMatchEventLog;
 
-  const player_obj = player ?? { player: player_name as string };
+  const player_obj = player ?? { name: player_name as string };
 
   return {
     ...rest,

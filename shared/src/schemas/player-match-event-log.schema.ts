@@ -59,7 +59,10 @@ export const PlayerMatchEventLogZodSchema =
         message:
           "special_time を入力する場合は time, add_time, order を指定できません",
       },
-    );
+    )
+    .refine((data) => data.player || data.player_name, {
+      message: "playerまたはplayer_nameのどちらかを入力してください",
+    });
 
 export type PlayerMatchEventLogType = z.infer<
   typeof PlayerMatchEventLogZodSchema
@@ -83,7 +86,7 @@ export const PlayerMatchEventLogResponseSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    player: PlayerZodSchema,
+    player: PlayerZodSchema.extend({ _id: objectId.optional() }).optional(),
   });
 
 export const PlayerMatchEventLogPopulatedSchema =
@@ -96,5 +99,5 @@ export const PlayerMatchEventLogPopulatedSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    player: PlayerZodSchema,
+    player: PlayerZodSchema.extend({ _id: objectId.optional() }).optional(),
   });

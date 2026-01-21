@@ -7,6 +7,7 @@ import {
   StaffMatchEventLogPopulatedSchema,
 } from "../schemas/staff-match-event-log.schema.js";
 import { ControllerConfig } from "../types/models-config.js";
+import { staffMatchEventLog as convertFun } from "../utils/format/staff-match-event-log.js";
 import { ParsedQs } from "qs";
 
 export function staffMatchEventLog<TDoc = any, TModel = any>(
@@ -62,5 +63,6 @@ export function staffMatchEventLog<TDoc = any, TModel = any>(
         time: 5,
       },
     },
+    convertFun: convertFun,
   };
 }
