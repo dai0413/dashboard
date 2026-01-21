@@ -1,5 +1,8 @@
+import { API_PATHS } from "@dai0413/myorg-shared";
 import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
+import { readItemBase } from "../../../api";
+import { MatchFormatGet } from "../../../../types/models/match-format";
 
 export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
   [
@@ -106,19 +109,104 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           valueType: "number",
         },
       ],
-      onChange: (data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG]) => {
+      onChange: async (
+        data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],
+        api,
+      ) => {
         let obj: FormUpdatePair = [];
-        if (data.time) {
-          const time_name = data.add_time
-            ? `${data.time + data.add_time}`
-            : `${data.time}`;
-          obj.push({ key: "time_name", value: time_name });
+
+        const time = data.time;
+        const add_time = data.add_time;
+        if (time == null) return [];
+
+        const time_name = add_time ? `${time}+${add_time}` : `${time}`;
+        obj.push({ key: "time_name", value: time_name });
+
+        const resData = await readItemBase({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(data.match),
+          returnResponse: true,
+        });
+
+        if (!resData) {
+          console.error("試合が見つかりません");
+          return [];
         }
-        //   if (data.match_event_type) {
-        //     const { nextSeasonStart } = getSeasonDates();
-        //     obj.push({ key: "periold_label", value: nextSeasonStart });
-        //   }
+
+        if (!resData.data.match_format) {
+          console.error("試合フォーマットが見つかりません");
+          return [];
+        }
+
+        const match_format: MatchFormatGet = resData.data.match_format;
+
+        const periods = match_format?.period;
+
+        const period_label = periods?.find((p) => {
+          if (p.start == null || p.end == null) return false;
+          return Number(p.start) < time && time <= Number(p.end);
+        })?.period_label;
+
+        if (period_label) {
+          obj.push({ key: "period_label", value: period_label });
+        }
+
         return obj;
+      },
+      validate: (data) => {
+        if (data.order) {
+          if (data.time) {
+            return {
+              success: false,
+              message: "PK順番(order)を入力する場合はtimeを入力できません",
+            };
+          }
+
+          if (data.add_time) {
+            return {
+              success: false,
+              message: "PK順番(order)を入力する場合はadd_timeを入力できません",
+            };
+          }
+
+          if (data.special_time) {
+            return {
+              success: false,
+              message:
+                "PK順番(order)を入力する場合はspecial_timeを入力できません",
+            };
+          }
+        }
+
+        if (data.special_time) {
+          if (data.time) {
+            return {
+              success: false,
+              message:
+                "特別時間(special_time)を入力する場合はtimeを入力できません",
+            };
+          }
+
+          if (data.add_time) {
+            return {
+              success: false,
+              message:
+                "特別時間(special_time)を入力する場合はadd_timeを入力できません",
+            };
+          }
+
+          if (data.order) {
+            return {
+              success: false,
+              message:
+                "特別時間(special_time)を入力する場合はorderを入力できません",
+            };
+          }
+        }
+
+        return {
+          success: true,
+        };
       },
     },
   ];
