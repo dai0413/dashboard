@@ -3,7 +3,6 @@ import { Response } from "express";
 
 import { crudFactory } from "../../utils/crudFactory.js";
 
-import { match as formatMatch } from "../../utils/format/match.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 import csv from "csv-parser";
@@ -158,7 +157,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
     .pipe(
       csv({
         mapHeaders: ({ header }) => header.replace(/'/g, "").trim(),
-      })
+      }),
     )
     .on("data", (row) => {
       rows.push(row);
@@ -202,7 +201,12 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
         const processed = populatedAdded.map((item: any) => {
           const plain = convertObjectIdToString(item);
           const parsed = POPULATED.parse(plain);
-          return formatMatch ? formatMatch(parsed) : parsed;
+
+          const convertFun = match().convertFun;
+          if (!convertFun) console.error("error convert fun");
+          const formattedTransfers = convertFun ? convertFun(parsed) : [];
+
+          return formattedTransfers;
         });
 
         res.status(StatusCodes.OK).json({

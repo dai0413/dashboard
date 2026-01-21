@@ -1,14 +1,17 @@
 import { Request } from "express";
 import mongoose from "mongoose";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";
-import { nationalCallup as formatNationalCallup } from "../utils/format/national-callup.js";
-import { NationalCallUpResponseSchema, ResBody } from "@dai0413/myorg-shared";
+import {
+  NationalCallUpResponseSchema,
+  ResBody,
+  nationalCallUp,
+} from "@dai0413/myorg-shared";
 import z from "zod";
 
 type ResponseData = z.infer<typeof NationalCallUpResponseSchema>;
 
 export const getNoCallUpService = async (
-  req: Request
+  req: Request,
 ): Promise<ResBody<ResponseData[]>> => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
@@ -75,7 +78,9 @@ export const getNoCallUpService = async (
     { $limit: limit },
   ]);
 
-  const formatData: ResponseData[] = data.map(formatNationalCallup);
+  const convertFun = nationalCallUp().convertFun;
+  if (!convertFun) console.error("error convert fun");
+  const formatData: ResponseData[] = convertFun ? data.map(convertFun) : [];
 
   const responseData = {
     data: formatData,

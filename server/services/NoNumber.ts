@@ -2,14 +2,17 @@ import mongoose from "mongoose";
 import { TransferModel } from "../models/transfer.js";
 import { SeasonModel } from "../models/season.js";
 import { Request } from "express";
-import { transfer as formatTransfer } from "../utils/format/transfer.js";
-import { ResBody, TransferResponseSchema } from "@dai0413/myorg-shared";
+import {
+  ResBody,
+  TransferResponseSchema,
+  transfer,
+} from "@dai0413/myorg-shared";
 import z from "zod";
 
-type ResponseData = z.infer<typeof TransferResponseSchema>;
+type ResponseData = z.infer<typeof TransferResponseSchema | undefined>;
 
 export const getNoNumberService = async (
-  req: Request
+  req: Request,
 ): Promise<ResBody<ResponseData[]>> => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
@@ -26,8 +29,8 @@ export const getNoNumberService = async (
     competitionIds = Array.isArray(competition)
       ? (competition as string[])
       : typeof competition === "string"
-      ? competition.split(",")
-      : [];
+        ? competition.split(",")
+        : [];
   }
 
   // seson検索
@@ -47,7 +50,7 @@ export const getNoNumberService = async (
   }
 
   const competitionObjectIds = competitionIds.map(
-    (id) => new mongoose.Types.ObjectId(id)
+    (id) => new mongoose.Types.ObjectId(id),
   );
 
   const dateMatch: any = {};
@@ -200,7 +203,13 @@ export const getNoNumberService = async (
     { $limit: limit },
   ]);
 
-  const formatData: ResponseData[] = noNumberData.map(formatTransfer);
+  const convertFun = transfer().convertFun;
+
+  if (!convertFun) console.error("error convert fun");
+
+  const formatData: ResponseData[] = convertFun
+    ? noNumberData.map(convertFun)
+    : [];
 
   const responseData = {
     data: formatData,
