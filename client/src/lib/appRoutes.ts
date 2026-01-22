@@ -39,4 +39,5 @@ export const APP_ROUTES = {
   NATIONAL_MATCH_SERIES_SUMMARY: "/national-match-series-summary",
   PLAYER_SUMMARY: "/player-summary",
   TEAM_SUMMARY: "/team-summary",
+  MATCH_SUMMARY: "/match-summary",
 };

@@ -22,7 +22,7 @@ import {
   IdentificationIcon,
   ServerStackIcon,
 } from "@heroicons/react/24/solid";
-import { XMarkIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, PencilSquareIcon, UserIcon as OutLineUserIcon, UserGroupIcon as OutLineUserGroupIcon } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
@@ -52,10 +52,13 @@ export type Icon =
   | "competitionStage"
   | "teamCompetitionSeason"
   | "registration"
-  | "line-plot";
+  | "line-plot"
+  | "staff"
+  | "away";
 
 export type IconButtonProps = {
   icon?: Icon;
+  key?: string;
   text?: string;
   color?: keyof typeof colorMap;
   onClick?: () => void;
@@ -147,6 +150,10 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <IdentificationIcon className={iconClass} />;
       case "line-plot":
         return <PresentationChartLineIcon className={iconClass} />;
+      case "staff":
+        return <OutLineUserIcon className={iconClass} />;
+      case "away":
+        return <OutLineUserGroupIcon className={iconClass} />;
       default:
         return null;
     }

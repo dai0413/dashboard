@@ -743,6 +743,7 @@ const Team = () => {
             linkField={[
               { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
               { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
+              { field: "result", to: APP_ROUTES.MATCH_SUMMARY },
             ]}
           />
         </>

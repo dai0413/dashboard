@@ -12,7 +12,7 @@ const TeamMatchFormation = () => {
         title={"チームの大会参加記録"}
         headers={[
           { label: "試合", field: "match" },
-          { label: "シーズン", field: "team" },
+          { label: "チーム", field: "team" },
           { label: "フォーメーション", field: "formation" },
         ]}
         contextState={teamMatchFormation}

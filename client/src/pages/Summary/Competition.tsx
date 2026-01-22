@@ -290,6 +290,10 @@ const Competition = () => {
               field: "away_team",
               to: APP_ROUTES.TEAM_SUMMARY,
             },
+            {
+              field: "result",
+              to: APP_ROUTES.MATCH_SUMMARY,
+            },
           ]}
         />
       )}

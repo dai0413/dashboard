@@ -9,6 +9,7 @@ import {
   NationalMatchSeries,
   Player,
   Team,
+  Match,
 } from "../pages/Summary";
 
 export const Summary = (
@@ -18,7 +19,7 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Competition />
-        </Layout>
+        </Layout>,
       )}
     />
     <Route
@@ -26,7 +27,7 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <National />
-        </Layout>
+        </Layout>,
       )}
     />
     <Route
@@ -34,7 +35,7 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <NationalMatchSeries />
-        </Layout>
+        </Layout>,
       )}
     />
     <Route
@@ -42,7 +43,7 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Player />
-        </Layout>
+        </Layout>,
       )}
     />
     <Route
@@ -50,7 +51,15 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Team />
-        </Layout>
+        </Layout>,
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.MATCH_SUMMARY}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Match />
+        </Layout>,
       )}
     />
   </>

@@ -39,6 +39,7 @@ import {
   event_type,
   position_formation,
   special_time,
+  play_status,
 } from "@dai0413/myorg-shared";
 
 export enum OptionType {
@@ -67,6 +68,7 @@ export enum OptionType {
   EVENT_TYPE = "event_type",
   POSITION_FORMATION = "position_formation",
   SPECIAL_TIME = "special_time",
+  PLAY_STATUS = "play_status",
 }
 
 type OptionMap = {
@@ -95,6 +97,7 @@ type OptionMap = {
   [OptionType.EVENT_TYPE]: OptionArray;
   [OptionType.POSITION_FORMATION]: OptionArray;
   [OptionType.SPECIAL_TIME]: OptionArray;
+  [OptionType.PLAY_STATUS]: OptionArray;
 };
 
 type GettedModelDataArrayMap = {
@@ -164,6 +167,7 @@ const defaultOptions: Partial<{ [K in keyof OptionMap]: OptionArray }> = {
   [OptionType.EVENT_TYPE]: event_type(),
   [OptionType.POSITION_FORMATION]: position_formation(),
   [OptionType.SPECIAL_TIME]: special_time(),
+  [OptionType.PLAY_STATUS]: play_status(),
 };
 
 // 実装
