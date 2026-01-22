@@ -21,7 +21,7 @@ export const NationalCallUpBaseZodSchema = z.object({
   team_name: z.string().nonempty().optional(),
   joined_at: dateField,
   left_at: dateField,
-  number: z.number().optional(),
+  number: z.number().int().positive().optional(),
   position_group: z.enum(getKey(positionGroup())).optional(),
   is_captain: z.boolean().default(false),
   is_overage: z.boolean().default(false),
@@ -38,7 +38,7 @@ export const NationalCallUpZodSchema = NationalCallUpBaseZodSchema.refine(
   (data) => data.team || data.team_name,
   {
     message: "teamまたはteam_nameのどちらかを入力してください",
-  }
+  },
 ).refine(
   (data) => {
     if (data.status === "declined") {
@@ -49,7 +49,7 @@ export const NationalCallUpZodSchema = NationalCallUpBaseZodSchema.refine(
   {
     message:
       "statusがdeclinedのときはjoined_atとleft_atはundefinedでなければならない",
-  }
+  },
 );
 
 export type NationalCallUpType = z.infer<typeof NationalCallUpZodSchema>;

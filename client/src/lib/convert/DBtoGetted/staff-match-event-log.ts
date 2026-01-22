@@ -11,14 +11,12 @@ import { Label } from "../../../types/types";
 export const staffMatchEventLog = (
   t: StaffMatchEventLog,
 ): StaffMatchEventLogGet => {
-  let staff_obj: Label | null = null;
+  let staff_obj: Label;
 
-  if ("staff" in t && t.staff) {
-    if (t.staff._id) {
-      staff_obj = { label: staff(t.staff), id: t.staff._id };
-    } else {
-      staff_obj = { label: t.staff.name || "", id: undefined };
-    }
+  if (t.staff) {
+    staff_obj = { label: staff(t.staff), id: t.staff._id };
+  } else {
+    staff_obj = { label: t.staff_name || "", id: undefined };
   }
 
   return {
@@ -35,9 +33,6 @@ export const staffMatchEventLog = (
       label: matchEventType(t.match_event_type),
       id: t.match_event_type._id,
     },
-    staff: {
-      label: staff(t.staff),
-      id: t.staff._id,
-    },
+    staff: staff_obj,
   };
 };

@@ -2,7 +2,8 @@ import { MatchType, result, getKey } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface IMatch
-  extends Omit<
+  extends
+    Omit<
       MatchType,
       | "_id"
       | "competition"
@@ -78,10 +79,11 @@ const MatchSchema: Schema<IMatch> = new Schema<IMatch, any, IMatch>(
     sofaurl: { type: String },
     urls: { type: [String] },
     old_id: { type: String },
+    name: { type: String },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // transferurl が存在する場合のみユニーク
@@ -92,7 +94,7 @@ MatchSchema.index(
     partialFilterExpression: {
       transferurl: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 // sofaurl が存在する場合のみユニーク
@@ -103,7 +105,7 @@ MatchSchema.index(
     partialFilterExpression: {
       sofaurl: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 // old_id が存在する場合のみユニーク
@@ -114,7 +116,7 @@ MatchSchema.index(
     partialFilterExpression: {
       old_id: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 MatchSchema.index(
@@ -130,7 +132,7 @@ MatchSchema.index(
     partialFilterExpression: {
       date: { $exists: true }, // date があるときだけ unique 適用
     },
-  }
+  },
 );
 
 MatchSchema.index(
@@ -146,7 +148,7 @@ MatchSchema.index(
     partialFilterExpression: {
       match_week: { $exists: true }, // match_week があるときのみ unique
     },
-  }
+  },
 );
 
 // --- 共通ユーティリティ ---
@@ -162,7 +164,7 @@ async function applyCompetitionSeason(updateOrDoc: Partial<IMatch>) {
 async function applyPlayTime(updateOrDoc: Partial<IMatch>) {
   const MatchFormat = mongoose.model("MatchFormat");
   const format = await MatchFormat.findById(updateOrDoc.match_format).select(
-    "period"
+    "period",
   );
 
   if (format && Array.isArray(format.period)) {
@@ -172,14 +174,14 @@ async function applyPlayTime(updateOrDoc: Partial<IMatch>) {
         p: {
           start: number;
           end: number;
-        }
+        },
       ) => {
         if (typeof p.start === "number" && typeof p.end === "number") {
           return total + (p.end - p.start);
         }
         return total;
       },
-      0
+      0,
     );
 
     updateOrDoc.play_time = play_time;
@@ -221,6 +223,37 @@ async function computeResult(updateOrDoc: Partial<IMatch>) {
   else updateOrDoc.result = "draw";
 }
 
+async function applyMatchName(match: Partial<IMatch>) {
+  if (
+    !match.season ||
+    !match.competition ||
+    !match.competition_stage ||
+    !match.home_team ||
+    !match.away_team
+  ) {
+    return;
+  }
+
+  const Season = mongoose.model("Season");
+  const Competition = mongoose.model("Competition");
+  const CompetitionStage = mongoose.model("CompetitionStage");
+  const Team = mongoose.model("Team");
+
+  const season = await Season.findById(match.season);
+  const competition = await Competition.findById(match.competition);
+  const stage = await CompetitionStage.findById(match.competition_stage);
+  const home = await Team.findById(match.home_team);
+  const away = await Team.findById(match.away_team);
+
+  if (!season || !competition || !stage || !home || !away) return;
+
+  match.name = `${season.name} ${competition.abbr ?? competition.name} ${
+    stage.name ? stage.name : ""
+  } ${
+    match.match_week ? `第${match.match_week}節 ` : ""
+  }${home.abbr ?? home.name} vs ${away.abbr ?? away.name}`;
+}
+
 // --- create / save 時 ---
 MatchSchema.pre("validate", async function (next) {
   if (this.competition_stage) {
@@ -231,7 +264,7 @@ MatchSchema.pre("validate", async function (next) {
   }
 
   await computeResult(this);
-
+  await applyMatchName(this);
   next();
 });
 
@@ -244,6 +277,7 @@ MatchSchema.pre("insertMany", async function (next, docs) {
       await applyPlayTime(doc);
     }
     await computeResult(doc);
+    await applyMatchName(doc);
   }
   next();
 });
@@ -268,11 +302,18 @@ MatchSchema.pre(["findOneAndUpdate", "updateOne"], async function (next) {
 
   await computeResult(update);
 
+  const doc = await this.model.findOne(this.getQuery());
+
+  await applyMatchName({
+    ...doc.toObject(),
+    ...update,
+  });
+
   this.setUpdate(update);
   next();
 });
 
 export const MatchModel: Model<IMatch> = mongoose.model<IMatch>(
   "Match",
-  MatchSchema
+  MatchSchema,
 );

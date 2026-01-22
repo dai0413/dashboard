@@ -5,20 +5,26 @@ import { MatchBaseZodSchema } from "./match.schema.js";
 import { PlayerZodSchema } from "./player.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 
-export const StaffAppearanceZodSchema = z.object({
+export const StaffAppearanceBaseZodSchema = z.object({
   _id: objectId,
   match: objectId.refine((v) => !!v, {
     message: "matchは必須です",
   }),
-  staff: objectId.refine((v) => !!v, {
-    message: "staffは必須です",
-  }),
+  staff: objectId.optional(),
+  staff_name: z.string().nonempty().optional(),
   team: objectId.refine((v) => !!v, {
     message: "teamは必須です",
   }),
   role: z.string().nonempty().optional(),
   createdAt: dateField,
   updatedAt: dateField,
+});
+
+export const StaffAppearanceZodSchema = StaffAppearanceBaseZodSchema.refine(
+  (data) => data.staff || data.staff_name,
+  { message: "staff または staff_name のどちらかは必須" },
+).refine((data) => !(data.staff && data.staff_name), {
+  message: "staff と staff_name は同時に指定できません",
 });
 
 export type StaffAppearanceType = z.infer<typeof StaffAppearanceZodSchema>;

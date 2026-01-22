@@ -95,15 +95,17 @@
     - [フィールド一覧](#フィールド一覧-20)
     - [ENUM](#enum-13)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-19)
+    - [バリデーション(zod)](#バリデーションzod-6)
   - [23. 監督・コーチの出場履歴(Staff-Appearance)](#23-監督コーチの出場履歴staff-appearance)
     - [フィールド一覧](#フィールド一覧-21)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-20)
+    - [バリデーション(zod)](#バリデーションzod-7)
     - [備考](#備考-3)
   - [24. 選手の試合イベントログ(Player-Match-Event-Log)](#24-選手の試合イベントログplayer-match-event-log)
     - [フィールド一覧](#フィールド一覧-22)
     - [ENUM](#enum-14)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-21)
-    - [バリデーション(zod)](#バリデーションzod-6)
+    - [バリデーション(zod)](#バリデーションzod-8)
     - [バリデーション(client)](#バリデーションclient)
     - [自動入力(client)](#自動入力client-6)
     - [入力時注意](#入力時注意)
@@ -112,7 +114,7 @@
     - [フィールド一覧](#フィールド一覧-23)
     - [ENUM](#enum-15)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-22)
-    - [バリデーション(zod)](#バリデーションzod-7)
+    - [バリデーション(zod)](#バリデーションzod-9)
     - [バリデーション(client)](#バリデーションclient-1)
     - [自動入力(client)](#自動入力client-7)
     - [入力時注意](#入力時注意-1)
@@ -672,6 +674,7 @@
 | sofaurl           | 文字列                     | sofa             |         |         |
 | urls              | [文字列]                   | urls             |         |         |
 | old_id            | 文字列                     | 旧 match_id      |         |         |
+| name              | 文字列                     | 名前             | true    |         |
 
 ### ENUM
 
@@ -706,6 +709,7 @@
   - `season`
   - `play_time`
   - `result`
+  - `name`
 - **competition の自動生成**
   - `competition_stage`モデルから取得
 - **season の自動生成**
@@ -714,6 +718,15 @@
   - `※match_format`モデルから取得
 - **result の自動生成**
   - `※goal, pk_goal`から計算
+- **name の自動生成**
+  - 各フィールド・モデルからname or abbrを取得して結合
+  - seasonモデル name
+  - competitionモデル abbr or name
+  - competition_stageモデル name
+  - match_week
+  - home_team teamモデル abbr or name
+  - away_team teamモデル abbr or name
+  - `${season.name} ${competition.abbr ?? competition.name} ${competition_stage.name} 第${match_week}節 ${homeTeam.abbr ?? homeTeam.team} vs ${awayTeam.abbr ?? awayTeam.team}`
 
 ---
 
@@ -928,15 +941,16 @@
 
 ### フィールド一覧
 
-| フィールド  | 型               | 日本語     | require | default |
-| ----------- | ---------------- | ---------- | ------- | ------- |
-| match       | 外部キー(Match)  | 試合       | true    |         |
-| player      | 外部キー(Player) | 選手       | true    |         |
-| team        | 外部キー(Team)   | チーム     | true    |         |
-| number      | 数字             | 背番号     |         |         |
-| play_status | 文字列           | ステータス |         |         |
-| position    | 文字列           | ポジション |         |         |
-| time        | 数字             | プレイ時間 |         |         |
+| フィールド  | 型                | 日本語     | require | default |
+| ----------- | ----------------- | ---------- | ------- | ------- |
+| match       | 外部キー(Match)   | 試合       | true    |         |
+| player      | 外部キー (Player) | 選手       |         |         |
+| player_name | 文字列            | 選手名     |         |         |
+| team        | 外部キー(Team)    | チーム     | true    |         |
+| number      | 数字              | 背番号     |         |         |
+| play_status | 文字列            | ステータス |         |         |
+| position    | 文字列            | ポジション |         |         |
+| time        | 数字              | プレイ時間 |         |         |
 
 ### ENUM
 
@@ -948,10 +962,21 @@
 
 ### 組み合わせ (Mongoose)
 
-以下の組み合わせで**ユニーク**とする:
+以下の2つの組み合わせで**ユニーク**とする:
 
 - `match`
+- `team`
 - `player`
+
+- `match`
+- `team`
+- `player_name`
+
+### バリデーション(zod)
+
+- **player または player_name どちらかを入力**
+- **play_status が bench のとき time は undefined**
+- **play_status が bench のとき position は undefined**
 
 ---
 
@@ -959,19 +984,29 @@
 
 ### フィールド一覧
 
-| フィールド | 型       | 日本語          | require | default |
-| ---------- | -------- | --------------- | ------- | ------- |
-| match      | 外部キー | 試合 (Match)    | true    |         |
-| staff      | 外部キー | スタッフ(Staff) | true    |         |
-| team       | 外部キー | チーム (Team)   | true    |         |
-| role       | 文字列   | 役割            |         |         |
+| フィールド | 型              | 日本語        | require | default |
+| ---------- | --------------- | ------------- | ------- | ------- |
+| match      | 外部キー        | 試合 (Match)  | true    |         |
+| staff      | 外部キー(Staff) | 監督          |         |         |
+| staff_name | 文字列          | 監督名        |         |         |
+| team       | 外部キー        | チーム (Team) | true    |         |
+| role       | 文字列          | 役割          |         |         |
 
 ### 組み合わせ (Mongoose)
 
-以下の組み合わせで**ユニーク**とする:
+以下の2つの組み合わせで**ユニーク**とする:
 
 - `match`
+- `team`
 - `staff`
+
+- `match`
+- `team`
+- `staff_name`
+
+### バリデーション(zod)
+
+- **staff または staff_name どちらかを入力**
 
 ### 備考
 

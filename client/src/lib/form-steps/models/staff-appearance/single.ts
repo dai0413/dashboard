@@ -37,9 +37,25 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
         label: "スタッフ",
         fieldType: "table",
         valueType: "option",
-        required: true,
+      },
+      {
+        key: "staff_name",
+        label: "登録外スタッフ",
+        fieldType: "input",
+        valueType: "text",
       },
     ],
+    validate: (data) => {
+      if (!data.staff && !data.staff_name) {
+        return {
+          success: false,
+          message: "スタッフを選択・または入力してください",
+        };
+      }
+      return {
+        success: true,
+      };
+    },
   },
   {
     stepLabel: "役割を入力",

@@ -17,20 +17,20 @@ export const TransferBaseZodSchema = z.object({
   player: objectId.refine((v) => !!v, { message: "playerは必須です" }),
   position: z.array(z.enum(getKey(position()))).optional(),
   form: z.enum(getKey(form())).optional(),
-  number: z.number().optional(),
+  number: z.number().int().positive().optional(),
   from_date: dateField.refine((v) => !!v, { message: "from_dateは必須です" }),
   to_date: dateField,
   URL: z.array(z.string().nonempty()).optional(),
   createdAt: z
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
+      z.date(),
     )
     .optional(),
   updatedAt: z
     .preprocess(
       (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
+      z.date(),
     )
     .optional(),
 });
@@ -39,7 +39,7 @@ export const TransferZodSchema = TransferBaseZodSchema.refine(
   (data) => data.from_team || data.from_team_name,
   {
     message: "from_teamまたはfrom_team_nameのどちらかを入力してください",
-  }
+  },
 )
   .refine((data) => data.to_team || data.to_team_name, {
     message: "to_teamまたはto_team_nameのどちらかを入力してください",
@@ -49,7 +49,7 @@ export const TransferZodSchema = TransferBaseZodSchema.refine(
       !data.to_date ||
       !data.from_date ||
       new Date(data.to_date) > new Date(data.from_date),
-    { message: "to_dateはfrom_dateよりも後である必要があります" }
+    { message: "to_dateはfrom_dateよりも後である必要があります" },
   );
 
 export type TransferType = z.infer<typeof TransferZodSchema>;

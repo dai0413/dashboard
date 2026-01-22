@@ -11,14 +11,12 @@ import { Label } from "../../../types/types";
 export const playerMatchEventLog = (
   t: PlayerMatchEventLog,
 ): PlayerMatchEventLogGet => {
-  let player_obj: Label | null = null;
+  let player_obj: Label;
 
-  if ("player" in t && t.player) {
-    if (t.player._id) {
-      player_obj = { label: player(t.player), id: t.player._id };
-    } else {
-      player_obj = { label: t.player.name || "", id: undefined };
-    }
+  if (t.player) {
+    player_obj = { label: player(t.player), id: t.player._id };
+  } else {
+    player_obj = { label: t.player_name || "", id: undefined };
   }
 
   return {
@@ -35,9 +33,6 @@ export const playerMatchEventLog = (
       label: matchEventType(t.match_event_type),
       id: t.match_event_type._id,
     },
-    player: {
-      label: player(t.player),
-      id: t.player._id,
-    },
+    player: player_obj,
   };
 };

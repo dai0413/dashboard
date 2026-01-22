@@ -25,8 +25,8 @@ const StaffAppearanceSchema: Schema<IStaffAppearance> = new Schema<
     staff: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Staff",
-      required: true,
     },
+    staff_name: { type: String },
     team: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
@@ -37,7 +37,11 @@ const StaffAppearanceSchema: Schema<IStaffAppearance> = new Schema<
   { timestamps: true },
 );
 
-StaffAppearanceSchema.index({ match: 1, staff: 1 }, { unique: true });
+StaffAppearanceSchema.index({ match: 1, team: 1, staff: 1 }, { unique: true });
+StaffAppearanceSchema.index(
+  { match: 1, team: 1, staff_name: 1 },
+  { unique: true },
+);
 
 export const StaffAppearanceModel: Model<IStaffAppearance> =
   mongoose.model<IStaffAppearance>("StaffAppearance", StaffAppearanceSchema);

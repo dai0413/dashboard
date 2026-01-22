@@ -35,6 +35,7 @@ export type Match = {
   sofaurl?: string;
   urls?: string[];
   old_id?: string;
+  name: string;
 };
 
 type MatchPost = Omit<

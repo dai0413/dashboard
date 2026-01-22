@@ -25,15 +25,15 @@ export const PlayerRegistrationZodSchema = z.object({
   team: objectId.refine((v) => !!v, {
     message: "teamは必須です",
   }),
-  number: z.number().optional(),
+  number: z.number().int().positive().optional(),
   position_group: z.enum(getKey(positionGroup())).optional(),
   name: z.string().nonempty().optional(),
   en_name: z.string().nonempty().optional(),
   registration_type: z
     .enum(getKey(registrationType()))
     .refine((v) => !!v, { message: "registration_typeは必須です" }),
-  height: z.number().optional(),
-  weight: z.number().optional(),
+  height: z.number().int().positive().optional(),
+  weight: z.number().int().positive().optional(),
   homegrown: z.boolean().optional(),
   registration_status: z
     .enum(getKey(registrationStatus()))

@@ -21,9 +21,9 @@ export const CompetitionStageBaseZodSchema = z.object({
     })
     .default("none"),
   name: z.string().optional(),
-  round_number: z.number().optional(),
-  leg: z.number().optional(),
-  order: z.number().optional(),
+  round_number: z.number().int().positive().optional(),
+  leg: z.number().int().positive().optional(),
+  order: z.number().int().positive().optional(),
   parent_stage: objectId.optional(),
   notes: z.string().nonempty().optional(),
   createdAt: dateField,
@@ -45,7 +45,7 @@ export const CompetitionStageZodSchema = CompetitionStageBaseZodSchema.refine(
   {
     message:
       "stage_typeがnoneのときはname, round_number, leg, orderはundefinedでなければなりません",
-  }
+  },
 );
 
 export type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;

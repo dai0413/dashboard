@@ -21,12 +21,12 @@ export const PlayerMatchEventLogBaseZodSchema = z.object({
   }),
   player: objectId.optional(),
   player_name: z.string().nonempty().optional(),
-  time: z.number().optional(),
-  add_time: z.number().optional(),
+  time: z.number().int().min(0).optional(),
+  add_time: z.number().int().positive().optional(),
   special_time: SPECIAL_TIME_ENUM.optional(),
   period_label: PERIOD_LABEL_ENUM.optional(),
   time_name: z.string().nonempty().optional(),
-  order: z.number().optional(),
+  order: z.number().int().positive().optional(),
   unique_key: z
     .string()
     .nonempty()

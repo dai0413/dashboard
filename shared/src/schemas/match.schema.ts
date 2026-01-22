@@ -30,15 +30,15 @@ export const MatchBaseZodSchema = z.object({
   match_format: objectId.optional(),
   stadium: objectId.optional(),
   stadium_name: z.string().nonempty().optional(),
-  play_time: z.number().optional(),
+  play_time: z.number().int().min(0).optional(),
   date: dateField,
-  audience: z.number().optional(),
-  home_goal: z.number().optional(),
-  away_goal: z.number().optional(),
-  home_pk_goal: z.number().optional(),
-  away_pk_goal: z.number().optional(),
+  audience: z.number().int().min(0).optional(),
+  home_goal: z.number().int().min(0).optional(),
+  away_goal: z.number().int().min(0).optional(),
+  home_pk_goal: z.number().int().min(0).optional(),
+  away_pk_goal: z.number().int().min(0).optional(),
   result: z.enum(getKey(result())).optional(),
-  match_week: z.number().optional(),
+  match_week: z.number().int().positive().optional(),
   weather: z.string().nonempty().optional(),
   temperature: z.number().optional(),
   humidity: z.number().optional(),
@@ -46,6 +46,7 @@ export const MatchBaseZodSchema = z.object({
   sofaurl: z.string().nonempty().optional(),
   urls: z.array(z.string().nonempty()).optional(),
   old_id: z.string().optional(),
+  name: z.string().nonempty(),
   createdAt: dateField,
   updatedAt: dateField,
 });
@@ -67,7 +68,7 @@ export const MatchZodSchema = MatchBaseZodSchema.refine(
   },
   {
     message: "resultがgoalまたはPK結果と一致していません",
-  }
+  },
 );
 
 export type MatchType = z.infer<typeof MatchZodSchema>;
@@ -78,6 +79,7 @@ export const MatchFormSchema = MatchBaseZodSchema.omit({
   season: true,
   play_time: true,
   result: true,
+  name: true,
   createdAt: true,
   updatedAt: true,
 });

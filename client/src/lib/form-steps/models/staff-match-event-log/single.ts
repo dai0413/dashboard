@@ -32,8 +32,7 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
     ],
   },
   {
-    stepLabel:
-      "チーム選択(オウンゴールについては失点した選手,　チームは得点したチームにする)",
+    stepLabel: "チーム選択",
     type: "form",
     fields: [
       {
@@ -46,19 +45,18 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
     ],
   },
   {
-    stepLabel:
-      "選手選択(オウンゴールについては失点した選手,　チームは得点したチームにする)",
+    stepLabel: "スタッフ選択",
     type: "form",
     fields: [
       {
         key: "staff",
-        label: "選手",
+        label: "スタッフ",
         fieldType: "table",
         valueType: "option",
       },
       {
         key: "staff_name",
-        label: "登録外選手",
+        label: "登録外スタッフ",
         fieldType: "input",
         valueType: "text",
       },
@@ -71,7 +69,7 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
       ) {
         return {
           success: false,
-          message: "選手を選択・または入力してください",
+          message: "スタッフを選択・または入力してください",
         };
       }
       return {

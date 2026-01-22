@@ -25,6 +25,7 @@ export type StaffAppearanceForm = Partial<
     match: Match["_id"];
     staff: Staff["_id"];
     team: Team["_id"];
+    staff_name?: string;
   }
 >;
 

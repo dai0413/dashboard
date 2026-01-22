@@ -29,12 +29,12 @@ export const PlayerRegistrationHistoryZodSchema = z.object({
     .refine((v) => !!v, { message: "registration_typeは必須です" }),
   changes: z
     .object({
-      number: z.number().optional(),
+      number: z.number().int().positive().optional(),
       position_group: z.enum(getKey(positionGroup())).optional(),
       name: z.string().nonempty().optional(),
       en_name: z.string().nonempty().optional(),
-      height: z.number().optional(),
-      weight: z.number().optional(),
+      height: z.number().int().positive().optional(),
+      weight: z.number().int().positive().optional(),
       homegrown: z.boolean().optional(),
       isTypeTwo: z.boolean().optional(),
       isSpecialDesignation: z.boolean().optional(),

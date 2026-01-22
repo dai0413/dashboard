@@ -23,6 +23,10 @@ const StaffAppearance = () => {
             field: "team",
             to: APP_ROUTES.TEAM_SUMMARY,
           },
+          {
+            field: "match",
+            to: APP_ROUTES.MATCH_SUMMARY,
+          },
         ]}
       />
     </div>

@@ -9,9 +9,9 @@ const PeriodZodSchema = z
     period_label: z.enum(getKey(periodLabel())).refine((v) => !!v, {
       message: "period_labelは必須です",
     }),
-    start: z.number().optional(),
-    end: z.number().optional(),
-    order: z.number().default(0),
+    start: z.number().int().min(0).optional(),
+    end: z.number().int().min(0).optional(),
+    order: z.number().int().min(0).default(0),
   })
   .refine(
     (data) => {
@@ -21,7 +21,7 @@ const PeriodZodSchema = z
     {
       message: "startはend以下である必要があります",
       path: ["start"], // エラー箇所を明示
-    }
+    },
   );
 
 export const MatchFormatZodSchema = z.object({

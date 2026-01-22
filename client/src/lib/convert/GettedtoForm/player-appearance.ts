@@ -11,10 +11,13 @@ export const playerAppearance = (
     (item) => item.label === t.play_status,
   )?.key;
 
+  const player_name = t.player && !t.player.id ? t.player.label : undefined;
+
   return {
     ...t,
     match: t.match.id,
-    player: t.player.id,
+    player: t.player.id ? t.player.id : undefined,
+    player_name,
     team: t.team.id,
     play_status: playStatus,
   };

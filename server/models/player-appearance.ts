@@ -30,8 +30,8 @@ const PlayerAppearanceSchema: Schema<IPlayerAppearance> = new Schema<
     player: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Player",
-      required: true,
     },
+    player_name: { type: String },
     team: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
@@ -45,7 +45,14 @@ const PlayerAppearanceSchema: Schema<IPlayerAppearance> = new Schema<
   { timestamps: true },
 );
 
-PlayerAppearanceSchema.index({ match: 1, player: 1 }, { unique: true });
+PlayerAppearanceSchema.index(
+  { match: 1, team: 1, player: 1 },
+  { unique: true },
+);
+PlayerAppearanceSchema.index(
+  { match: 1, team: 1, player_name: 1 },
+  { unique: true },
+);
 
 export const PlayerAppearanceModel: Model<IPlayerAppearance> =
   mongoose.model<IPlayerAppearance>("PlayerAppearance", PlayerAppearanceSchema);

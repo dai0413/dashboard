@@ -25,6 +25,7 @@ export type PlayerAppearanceForm = Partial<
     match: Match["_id"];
     player: Player["_id"];
     team: Team["_id"];
+    player_name?: string;
   }
 >;
 
