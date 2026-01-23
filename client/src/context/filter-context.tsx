@@ -25,8 +25,10 @@ type FilterState = {
   handleFieldValue: (
     value: string | number | Date | boolean | undefined,
   ) => void;
-  handleFieldObjValue: (value: Record<string, any>) => void;
-  handleFieldOperator: (value: string | number | Date | boolean) => void;
+  handleFieldObjValue: (value: Record<string, any> | undefined) => void;
+  handleFieldOperator: (
+    value: string | number | Date | boolean | undefined,
+  ) => void;
 
   handleEdit: (index: number) => void;
   handleDelete: (index: number) => void;
@@ -164,7 +166,10 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
-  const handleFieldObjValue = (obj: Record<string, any>): void => {
+  const handleFieldObjValue = (obj: Record<string, any> | undefined): void => {
+    if (obj === undefined) {
+      return;
+    }
     setFilterCondition((prev) => ({
       ...prev,
       value: obj.key,
@@ -172,7 +177,13 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
-  const handleFieldOperator = (value: string | number | Date | boolean) => {
+  const handleFieldOperator = (
+    value: string | number | Date | boolean | undefined,
+  ) => {
+    if (value === undefined) {
+      return;
+    }
+
     setFilterCondition((prev) => ({
       ...prev,
       operator: value as FilterOperator,
