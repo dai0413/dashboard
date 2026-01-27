@@ -22,11 +22,16 @@ import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
-import Badges from "./Badges";
+import QuickFilterBar from "./QuickFilterBar";
 import { hasSteps } from "../../lib/form-steps";
 import { AxiosResponse } from "axios";
 import { useListView } from "../../context/listView-context";
 import { useModal } from "../../context/modal-context";
+import { QuickFilterItem } from "../../types/table";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
 
 type AddButtonProps = {
   menuItems: { label: string; onClick: () => void }[];
@@ -90,8 +95,11 @@ type TableToolbarProps<K extends keyof FormTypeMap> = {
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
   formInitialData?: Partial<FormTypeMap[K]>;
-  reloadFun?: () => Promise<void>;
-  displayBadge?: boolean;
+  reloadFun?: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
+  quickFilterItems: QuickFilterItem[];
 };
 
 const TableToolbar = <K extends keyof FormTypeMap>({
@@ -100,7 +108,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
   downloadFile,
   formInitialData,
   reloadFun,
-  displayBadge,
+  quickFilterItems,
 }: TableToolbarProps<K>) => {
   const { openFilter, filterConditions } = useFilter();
   const { openSort, sortConditions } = useSort();
@@ -291,14 +299,6 @@ const TableToolbar = <K extends keyof FormTypeMap>({
           </button>
         </div>
 
-        {/* ソートを開くボタン */}
-        {/* <button
-          className="cursor-pointer flex items-center gap-x-2"
-          onClick={() => openSort()}
-        >
-          <AdjustmentsVerticalIcon className="w-6 h-6" />
-          <span className="hidden lg:inline">ソート</span>
-        </button> */}
         <button
           className="cursor-pointer flex items-center gap-x-2 relative"
           onClick={() => openSort()}
@@ -333,7 +333,15 @@ const TableToolbar = <K extends keyof FormTypeMap>({
           <span className="hidden lg:inline">フィルター</span>
         </button>
 
-        <div className="flex">{displayBadge && <Badges />}</div>
+        <div className="flex">
+          {quickFilterItems.length > 0 && (
+            <QuickFilterBar
+              items={quickFilterItems}
+              loading={false}
+              reloadFun={reloadFun}
+            />
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-x-4">
@@ -341,7 +349,7 @@ const TableToolbar = <K extends keyof FormTypeMap>({
         {reloadFun && (
           <button
             className="cursor-pointer flex items-center gap-x-2"
-            onClick={reloadFun}
+            onClick={() => reloadFun(filterConditions, sortConditions)}
           >
             <ArrowPathIcon className="w-6 h-6" />
             <span className="hidden lg:inline">リロード</span>

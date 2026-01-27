@@ -48,12 +48,12 @@ type TableUIProps = {
     | ((
         page: number,
         filterConditions: FilterableFieldDefinition[],
-        sortConditions: SortableFieldDefinition[]
+        sortConditions: SortableFieldDefinition[],
       ) => Promise<void>)
     | ((
         page: number,
         filterConditions: FilterableFieldDefinition[],
-        sortConditions: SortableFieldDefinition[]
+        sortConditions: SortableFieldDefinition[],
       ) => void);
   isLoading?: boolean;
 };
@@ -70,7 +70,7 @@ type TableEditProps<T> = {
   renderFieldCell?: (
     header: TableHeader,
     row: T,
-    rowIndex: number
+    rowIndex: number,
   ) => React.ReactNode;
   deleteOnClick?: (index: number) => void;
 };
@@ -79,3 +79,19 @@ export type TableProps<T> = TableLinkProps &
   TableUIProps &
   TableDataProps<T> &
   TableEditProps<T>;
+
+export type QuickFilterItem = {
+  key: string;
+  label: string;
+  filterCondition?: FilterableFieldDefinition;
+  onClick?: (() => void) | (() => Promise<void>);
+  defaultSelect?: boolean;
+  removeKey?: string[];
+};
+
+export enum QuickFilterType {
+  TEAM = "team",
+  PLAYER_FOR_MATCH = "player-for-match",
+  MATCH_EVENT_TYPE = "match-event-type",
+  FORMATION = "formation",
+}

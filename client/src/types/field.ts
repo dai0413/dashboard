@@ -7,6 +7,7 @@ import {
 } from "@dai0413/myorg-shared";
 import { OptionType } from "../utils/createOption";
 import { ModelType } from "./models";
+import { QuickFilterType } from "./table";
 
 // 詳細画面用
 type DetailField = {
@@ -23,7 +24,7 @@ export type UIFieldDefinition = BaseField &
   Partial<DetailField>;
 
 export function isFilterable(
-  f: UIFieldDefinition
+  f: UIFieldDefinition,
 ): f is FilterableFieldDefinition {
   return f.filterable === true && f.type !== undefined;
 }
@@ -33,7 +34,7 @@ export function isSortable(f: UIFieldDefinition): f is SortableFieldDefinition {
 }
 
 export function isDisplayOnDetail(
-  f: UIFieldDefinition
+  f: UIFieldDefinition,
 ): f is DetailFieldDefinition {
   return f.displayOnDetail === true;
 }
@@ -44,4 +45,8 @@ export function isModelType(value: string): value is ModelType {
 
 export function isOptionType(value: string): value is OptionType {
   return Object.values(OptionType).includes(value as OptionType);
+}
+
+export function isQuickFilterType(value: string): value is QuickFilterType {
+  return Object.values(QuickFilterType).includes(value as QuickFilterType);
 }

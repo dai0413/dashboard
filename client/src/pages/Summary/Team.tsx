@@ -28,6 +28,7 @@ import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
 import PointLine from "./Team/PointLine";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useModal } from "../../context/modal-context";
+import { toKey } from "../../utils/toDateKey";
 
 const addMonths = (date: Date, months: number) => {
   const d = new Date(date);
@@ -46,9 +47,6 @@ const addYears = (date: Date, years: number) => {
   d.setFullYear(d.getFullYear() + years);
   return d;
 };
-
-const toKey = (date?: Date) =>
-  date ? toDateKey(date.toISOString()) : undefined;
 
 const getSeasonDates = (
   season: SeasonGet | null,

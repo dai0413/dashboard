@@ -1,6 +1,6 @@
 export const toDateKey = (
   value: string | number | Date | boolean,
-  withTime = false
+  withTime = false,
 ): string => {
   if (typeof value === "boolean" || !value) return "";
 
@@ -20,12 +20,18 @@ export const toDateKey = (
 
   const parts = new Intl.DateTimeFormat("ja-JP", opts)
     .formatToParts(date)
-    .reduce((acc, p) => {
-      if (p.type !== "literal") acc[p.type] = p.value;
-      return acc;
-    }, {} as Record<string, string>);
+    .reduce(
+      (acc, p) => {
+        if (p.type !== "literal") acc[p.type] = p.value;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
 
   return withTime
     ? `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`
     : `${parts.year}-${parts.month}-${parts.day}`;
 };
+
+export const toKey = (date?: Date) =>
+  date ? toDateKey(date.toISOString()) : undefined;
