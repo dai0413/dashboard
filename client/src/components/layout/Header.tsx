@@ -108,7 +108,7 @@ const Header = () => {
         <div className="fixed top-16 left-0 right-0 bottom-0 bg-white z-40 flex flex-col items-center justify-center">
           {SPMenuItems.map(({ icon, text, to }, index) => (
             <IconButton
-              key={index}
+              key={String(index)}
               icon={icon}
               text={text}
               to={to}

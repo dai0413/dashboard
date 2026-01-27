@@ -16,6 +16,10 @@ import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
 import { ListViewProvider, useListView } from "../../context/listView-context";
 import { useAlert } from "../../context/alert-context";
 import { Loader2 } from "lucide-react";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
 
 type ModelBase<K extends keyof FormTypeMap> = Omit<
   TableBase<K>,
@@ -59,7 +63,10 @@ const TableContainer = <K extends keyof FormTypeMap>(
   const filterField = useMemo(() => filterableField, [filterableField]);
   const sortField = useMemo(() => sortableField, [sortableField]);
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = async (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => {
     // if (filterConditions.length === 0) {
     //   handleSetAlert({
     //     success: false,
@@ -67,7 +74,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
     //   });
     // } else {
     handleSetAlert({ success: true, message: "" });
-    readItems({
+    await readItems({
       page: 1,
       filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
       sorts: JSON.stringify(sortConditions),
@@ -106,6 +113,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
         uploadFile={uploadFile}
         downloadFile={downloadFile}
         formInitialData={props.formInitialData}
+        quickFilterItems={[]}
       />
       {tableIsLoading ? (
         <div className="flex items-center justify-center py-16">

@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function matchEventType<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   MatchEventTypeType,
@@ -35,7 +35,7 @@ export function matchEventType<TDoc = any, TModel = any>(
       query: [
         { field: "name", type: "String" },
         { field: "en_name", type: "String" },
-        { field: "event_type", type: "Date" },
+        { field: "event_type", type: "String" },
       ],
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
