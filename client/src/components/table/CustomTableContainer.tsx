@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 
 import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
@@ -6,7 +6,12 @@ import { Sort, Filter } from "../modals/index";
 
 import { FormTypeMap, ModelType } from "../../types/models";
 import { ModelRouteMap } from "../../types/models";
-import { TableBase, TableOperationFields } from "../../types/table";
+import {
+  QuickFilterItem,
+  QuickFilterType,
+  TableBase,
+  TableOperationFields,
+} from "../../types/table";
 
 import { SortProvider, useSort } from "../../context/sort-context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
@@ -20,6 +25,8 @@ import {
 } from "@dai0413/myorg-shared";
 import { isModelType, isSortable } from "../../types/field";
 import { fieldDefinition } from "../../lib/model-fields";
+import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
+import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
 
 type TablePage = {
   pageNum: number;
@@ -27,7 +34,7 @@ type TablePage = {
   handlePageChange?: (
     page: number,
     filterConditions: FilterableFieldDefinition[],
-    sortConditions: SortableFieldDefinition[]
+    sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
 };
 
@@ -46,13 +53,14 @@ type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
     itemsLoading?: boolean;
 
     uploadFile?: (
-      file: File
+      file: File,
     ) => Promise<AxiosResponse<any, any, {}> | undefined>;
     reloadFun?: (
-      filterConditions?: FilterableFieldDefinition[],
-      sortConditions?: SortableFieldDefinition[]
+      filterConditions: FilterableFieldDefinition[],
+      sortConditions: SortableFieldDefinition[],
     ) => Promise<void>;
-    displayBadge?: boolean;
+    quickFilterType?: QuickFilterType;
+    quickFilterItems?: QuickFilterItem[];
     noItemMessage?: ReactNode;
   };
 
@@ -78,13 +86,50 @@ const TableContainer = <K extends keyof FormTypeMap>({
   form,
   onClick,
   selectedKey,
-  displayBadge,
+  quickFilterType,
+  quickFilterItems,
   noItemMessage,
 }: TableContainerProps<K>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
-  const { filterConditions, closeFilter } = useFilter();
+  const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
   const { updateTrigger, itemsPerPage } = useListView();
+
+  const handleApplyFilter = useCallback(
+    async (
+      filterConditions: FilterableFieldDefinition[],
+      sortConditions: SortableFieldDefinition[],
+    ) => {
+      const forceFilterConditions = filterField
+        ? filterField.filter((f) => !!f.value)
+        : null;
+
+      const paramFilterConditions =
+        forceFilterConditions && forceFilterConditions?.length > 0
+          ? forceFilterConditions
+          : filterConditions;
+
+      closeFilter();
+
+      if (handlePageChange) {
+        await handlePageChange(1, paramFilterConditions, sortConditions);
+      }
+
+      closeSort();
+    },
+    [filterField],
+  );
+
+  useEffect(() => {
+    const filterConditions = filterField
+      ? filterField.filter((f) => !!f.value)
+      : null;
+    filterConditions && setFilterConditions(filterConditions);
+
+    filterConditions &&
+      filterConditions?.length > 0 &&
+      handleApplyFilter(filterConditions, sortConditions);
+  }, [filterField]);
 
   useEffect(() => {
     const sortableField =
@@ -95,21 +140,40 @@ const TableContainer = <K extends keyof FormTypeMap>({
   }, [modelType]);
 
   useEffect(() => {
-    handleApplyFilter();
+    handleApplyFilter(filterConditions, sortConditions);
   }, [updateTrigger]);
 
-  const handleApplyFilter = async () => {
-    closeFilter();
-    handlePageChange &&
-      (await handlePageChange(1, filterConditions, sortConditions));
-    closeSort();
-  };
+  useEffect(() => {
+    if (!quickFilterItems) return;
+
+    const defaultItem = quickFilterItems.find((i) => i.defaultSelect);
+    if (!defaultItem) return;
+
+    const newFilterConditions =
+      defaultItem.filterCondition &&
+      toggleQuickFilter(defaultItem.filterCondition, filterConditions);
+    if (!newFilterConditions) return;
+    setFilterConditions(newFilterConditions);
+    reloadFun && reloadFun(newFilterConditions, sortConditions);
+    (async () => {
+      await defaultItem.onClick?.();
+    })();
+  }, [quickFilterType, quickFilterItems]);
+
+  const { items: quickFilterSouce, loading: quickFilterLoading } =
+    useQuickFilterSource(quickFilterType);
+
+  const quickFilterItemsParam = useMemo(() => {
+    if (quickFilterItems && quickFilterItems.length > 0)
+      return quickFilterItems;
+    return quickFilterSouce ?? [];
+  }, [quickFilterSouce, quickFilterItems]);
 
   const detailLink = detailLinkValue
     ? detailLinkValue
     : modelType
-    ? ModelRouteMap[modelType]
-    : "";
+      ? ModelRouteMap[modelType]
+      : "";
 
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
@@ -124,9 +188,9 @@ const TableContainer = <K extends keyof FormTypeMap>({
         uploadFile={uploadFile}
         formInitialData={formInitialData}
         reloadFun={reloadFun}
-        displayBadge={displayBadge}
+        quickFilterItems={quickFilterItemsParam}
       />
-      {itemsLoading ? (
+      {itemsLoading || quickFilterLoading ? (
         <div className="flex items-center justify-center py-16">
           <div className="bg-gray-50 px-8 py-10 text-center">
             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
@@ -164,7 +228,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
 };
 
 const CustomTableContainer = <K extends keyof FormTypeMap>(
-  props: TableContainerProps<K>
+  props: TableContainerProps<K>,
 ) => {
   return (
     <FilterProvider>

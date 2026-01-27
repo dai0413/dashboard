@@ -2,12 +2,13 @@ import { CustomTableContainer } from "../../table";
 import { InputField, SelectField } from "../../field";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fieldDefinition } from "../../../lib/model-fields";
 import {
   isFilterable,
   isModelType,
   isOptionType,
+  isQuickFilterType,
   isSortable,
 } from "../../../types/field";
 
@@ -36,6 +37,8 @@ import { DataResoonse } from "../../../types/api";
 import { normalizeFiltersForApi } from "../../../utils/normalizeFiltersForApi";
 import { X } from "lucide-react";
 import { optionRouteMap, getOptionKey } from "../../../lib/options";
+import { useForm } from "../../../context/form-context";
+import { QuickFilterItem } from "../../../types/table";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -67,6 +70,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
     null,
   );
+
+  const { filterConditionsObj, quickFilterItemsObj } = useForm();
 
   const api = useApi();
 
@@ -208,6 +213,21 @@ export const RenderField = <T extends keyof FormTypeMap>({
     }
   };
 
+  const filterField = useMemo(() => {
+    if (filterConditionsObj && optionKey && filterConditionsObj[optionKey]) {
+      return filterConditionsObj[optionKey];
+    }
+
+    return optionKey && isModelType(optionKey)
+      ? fieldDefinition[optionKey].filter(isFilterable)
+      : undefined;
+  }, [optionKey]);
+
+  const quickFilterItems: QuickFilterItem[] = useMemo(() => {
+    if (!quickFilterItemsObj || !optionKey) return [];
+    return quickFilterItemsObj[optionKey] || [];
+  }, [optionKey]);
+
   if (fieldType === "table")
     return (
       <>
@@ -232,11 +252,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
           }
           headers={optionTableData ? optionTableData.option.header : undefined}
           items={optionTableData ? optionTableData.option.data : undefined}
-          filterField={
-            optionKey && isModelType(optionKey)
-              ? fieldDefinition[optionKey].filter(isFilterable)
-              : undefined
-          }
+          filterField={filterField}
           sortField={
             optionKey && isModelType(optionKey)
               ? fieldDefinition[optionKey].filter(isSortable)
@@ -267,7 +283,14 @@ export const RenderField = <T extends keyof FormTypeMap>({
             filterConditions: FilterableFieldDefinition[],
             sortConditions: SortableFieldDefinition[],
           ) => handlePageChange(page, filterConditions, sortConditions)}
-          displayBadge={optionKey === "team"}
+          reloadFun={(
+            filterConditions: FilterableFieldDefinition[],
+            sortConditions: SortableFieldDefinition[],
+          ) => handlePageChange(1, filterConditions, sortConditions)}
+          quickFilterType={
+            optionKey && isQuickFilterType(optionKey) ? optionKey : undefined
+          }
+          quickFilterItems={quickFilterItems}
           noItemMessage={
             <p className="text-sm text-gray-400">
               フィルターから条件を追加してください
