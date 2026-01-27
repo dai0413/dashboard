@@ -1,5 +1,6 @@
 import { FormStep } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
+import { FormTypeMap, ModelType } from "../../../../types/models";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 
 export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
@@ -14,6 +15,10 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
         required: true,
       },
     ],
+    createFilterConditions: async (
+      data: FormTypeMap[ModelType.STAFF_APPEARANCE],
+      api,
+    ) => setMatchTeam(data, api),
   },
   {
     stepLabel: "チーム選択",

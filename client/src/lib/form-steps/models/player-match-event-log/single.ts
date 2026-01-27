@@ -3,6 +3,8 @@ import { FormStep, FormUpdatePair } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
 import { MatchFormatGet } from "../../../../types/models/match-format";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { setMatchPlayer } from "../../utils/createQuickFilterItems/setMatchPlayer";
 
 export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
   [
@@ -18,6 +20,10 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           required: true,
         },
       ],
+      createFilterConditions: async (
+        data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],
+        api,
+      ) => setMatchTeam(data, api),
     },
     {
       stepLabel: "イベントタイプ選択",
@@ -45,6 +51,10 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           required: true,
         },
       ],
+      createQuickFilterItems: async (
+        data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
+        api,
+      ) => setMatchPlayer(data, api),
     },
     {
       stepLabel:

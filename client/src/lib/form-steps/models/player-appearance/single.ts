@@ -1,5 +1,7 @@
 import { FormStep } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
+import { FormTypeMap, ModelType } from "../../../../types/models";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { setMatchPlayer } from "../../utils/createQuickFilterItems/setMatchPlayer";
 
 export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
@@ -14,6 +16,10 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         required: true,
       },
     ],
+    createFilterConditions: async (
+      data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
+      api,
+    ) => setMatchTeam(data, api),
   },
   {
     stepLabel: "チーム選択",
@@ -27,6 +33,10 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         required: true,
       },
     ],
+    createQuickFilterItems: async (
+      data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
+      api,
+    ) => setMatchPlayer(data, api),
   },
   {
     stepLabel: "選手選択",

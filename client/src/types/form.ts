@@ -1,7 +1,9 @@
-import { FormTypeMap } from "./models";
+import { FormTypeMap, ModelType } from "./models";
 import { AlertStatus } from "./alert";
 import { AxiosInstance } from "axios";
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
+import { OptionType } from "../utils/createOption";
+import { QuickFilterItem } from "./table";
 
 type StepType = "form" | "confirm";
 
@@ -102,9 +104,21 @@ export interface FormStep<K extends keyof FormTypeMap> {
   onChange?:
     | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
     | ((data: FormTypeMap[K]) => FormUpdatePair);
+  createFilterConditions?: (
+    data: FormTypeMap[K],
+    api?: AxiosInstance,
+  ) => Promise<FilterConditionsByKey | null>;
+  createQuickFilterItems?: (
+    data: FormTypeMap[K],
+    api?: AxiosInstance,
+  ) => Promise<QuickFilterItemsByKey | null>;
   skip?: (data: FormTypeMap[K]) => boolean;
 }
 
-//  multiurl
-//  multiselect
-//  multiInput
+export type FilterConditionsByKey = Partial<
+  Record<ModelType | OptionType, FilterableFieldDefinition[]>
+>;
+
+export type QuickFilterItemsByKey = Partial<
+  Record<ModelType | OptionType, QuickFilterItem[]>
+>;

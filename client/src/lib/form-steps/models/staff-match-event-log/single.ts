@@ -1,8 +1,17 @@
-import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
+import {
+  FormStep,
+  FormUpdatePair,
+  QuickFilterItemsByKey,
+} from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
-import { readItemBase } from "../../../api";
+import { readItemBase, readItemsBase } from "../../../api";
 import { MatchFormatGet } from "../../../../types/models/match-format";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { convert } from "../../../convert/DBtoGetted";
+import { convert as createLabel } from "../../../convert/CreateLabel";
+import { AxiosInstance } from "axios";
+import { QuickFilterItem } from "../../../../types/table";
 
 export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
@@ -17,6 +26,15 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
         required: true,
       },
     ],
+    createFilterConditions: async (
+      data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
+      api,
+    ) => setMatchTeam(data, api),
+
+    createQuickFilterItems: async (
+      data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
+      api,
+    ) => readMatchEventType(data, api),
   },
   {
     stepLabel: "イベントタイプ選択",
@@ -146,3 +164,52 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
     },
   },
 ];
+
+const readMatchEventType = async (
+  data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
+  api: AxiosInstance | undefined,
+): Promise<QuickFilterItemsByKey | null> => {
+  if (!api || !data) return null;
+  const read = async (
+    api: AxiosInstance,
+  ): Promise<FilterableFieldDefinition | undefined> => {
+    const resBody = await readItemsBase({
+      apiInstance: api,
+      params: { getAll: true, event_type: "card" },
+      backendRoute: API_PATHS.MATCH_EVENT_TYPE.ROOT,
+      returnResponse: true,
+    });
+
+    if (!resBody) return;
+    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, resBody.data);
+
+    const filterCondition: FilterableFieldDefinition = {
+      key: "_id",
+      label: "カード",
+      operator: "equals",
+      type: "select",
+      value: matchEventTypes.map((t) => t._id),
+      valueLabel: matchEventTypes.map((t) =>
+        createLabel(ModelType.MATCH_EVENT_TYPE, t),
+      ),
+    };
+
+    return filterCondition;
+  };
+
+  const matchEventTypes = await read(api);
+  const quickFilterItem: QuickFilterItem = {
+    key: "card",
+    label: "カード",
+    filterCondition: matchEventTypes,
+    defaultSelect: true,
+  };
+
+  const matchEventObj: QuickFilterItemsByKey | null = quickFilterItem
+    ? {
+        "match-event-type": [quickFilterItem],
+      }
+    : null;
+
+  return matchEventObj;
+};
