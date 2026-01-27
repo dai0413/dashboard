@@ -7,7 +7,12 @@ import {
   useState,
 } from "react";
 import { useAlert } from "./alert-context";
-import { FormFieldDefinition, FormStep } from "../types/form";
+import {
+  FilterConditionsByKey,
+  FormFieldDefinition,
+  FormStep,
+  QuickFilterItemsByKey,
+} from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
@@ -121,6 +126,10 @@ type FormContextValue<T extends ModelType> = {
     formInitialData: Partial<FormTypeMap[T]>,
   ) => any[];
   autoFill: () => Promise<void>;
+  filterConditionsObj: FilterConditionsByKey | null;
+  removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
+  quickFilterItemsObj: QuickFilterItemsByKey | null;
+  removeQuickFilterItemsObj: (key: keyof QuickFilterItemsByKey) => void;
 };
 
 export const FormModalContext = createContext<
@@ -154,7 +163,13 @@ export const FormProvider = <T extends ModelType>({
 
   const [formDatas, setFormDatas] = useState<FormTypeMap[T][]>([{}]);
   const [formLabels, setFormLabels] = useState<Record<string, any>[]>([{}]);
+
+  const [filterConditionsObj, setFilterConditionsObj] =
+    useState<FilterConditionsByKey | null>(null);
   // useEffect(() => console.log("formData", formData), [formData]);
+
+  const [quickFilterItemsObj, setQuickFilterIteemsObj] =
+    useState<QuickFilterItemsByKey | null>(null);
 
   const [initialFormData, setInitialFormData] =
     useState<Partial<FormTypeMap[T] | null>>(null);
@@ -172,6 +187,24 @@ export const FormProvider = <T extends ModelType>({
   }, [modelType, inputMode]);
 
   const modelContext = useModelContext(modelType);
+
+  const removeFilterConditionsObj = (key: keyof FilterConditionsByKey) => {
+    setFilterConditionsObj((prev) => {
+      if (!prev) return prev;
+
+      const { [key]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const removeQuickFilterItemsObj = (key: keyof FilterConditionsByKey) => {
+    setQuickFilterIteemsObj((prev) => {
+      if (!prev) return prev;
+
+      const { [key]: _, ...rest } = prev;
+      return rest;
+    });
+  };
 
   const getDiffKeys = () => {
     if (!modelType || !modelContext || !modelContext.selected) return [];
@@ -286,6 +319,8 @@ export const FormProvider = <T extends ModelType>({
 
     setModelType(model);
     setIsEditing(true);
+    setFilterConditionsObj(null);
+    setQuickFilterIteemsObj(null);
   };
 
   const finishForm = () => {
@@ -299,6 +334,8 @@ export const FormProvider = <T extends ModelType>({
     setCurrentStep(0);
     resetAlert();
     setIsEditing(true);
+    setFilterConditionsObj(null);
+    setQuickFilterIteemsObj(null);
 
     startForm(
       true,
@@ -436,6 +473,38 @@ export const FormProvider = <T extends ModelType>({
     if (inputMode === "single") {
       while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
         nextStepIndex++;
+      }
+    }
+
+    if (current.createFilterConditions) {
+      if (!Array.isArray(checkData)) {
+        const filterConditionsObj = await current.createFilterConditions(
+          checkData,
+          api,
+        );
+
+        if (filterConditionsObj) {
+          setFilterConditionsObj((prev) => ({
+            ...(prev ?? {}),
+            ...filterConditionsObj,
+          }));
+        }
+      }
+    }
+
+    if (current.createQuickFilterItems) {
+      if (!Array.isArray(checkData)) {
+        const quickFilterItemsObj = await current.createQuickFilterItems(
+          checkData,
+          api,
+        );
+
+        if (quickFilterItemsObj) {
+          setQuickFilterIteemsObj((prev) => ({
+            ...(prev ?? {}),
+            ...quickFilterItemsObj,
+          }));
+        }
       }
     }
 
@@ -653,6 +722,10 @@ export const FormProvider = <T extends ModelType>({
     getDiffKeys,
     createFormMenuItems,
     autoFill,
+    filterConditionsObj,
+    removeFilterConditionsObj,
+    quickFilterItemsObj,
+    removeQuickFilterItemsObj,
   };
 
   return (
