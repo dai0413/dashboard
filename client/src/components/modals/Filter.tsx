@@ -2,13 +2,21 @@ import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
-import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
+import {
+  FilterableFieldDefinition,
+  operator,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
 import { OptionArray } from "../../types/option";
 import { toDateKey } from "../../utils";
+import { useSort } from "../../context/sort-context";
 
 type FilterProps = {
   filterableField: FilterableFieldDefinition[];
-  onApply: () => void;
+  onApply: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
 };
 
 const Filter = ({ filterableField, onApply }: FilterProps) => {
@@ -35,6 +43,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
 
     resetFilterConditions,
   } = useFilter();
+  const { sortConditions } = useSort();
 
   const fieldOptions: OptionArray = filterableField.map((f) => {
     return {
@@ -56,7 +65,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
           deny={{
             text: "検索",
             color: "green",
-            onClick: onApply,
+            onClick: async () => onApply(filterConditions, sortConditions),
           }}
           reset={{
             text: "リセット",
@@ -84,7 +93,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
           const isEditing = editingIndex === index;
 
           const operation = operator().find(
-            (f) => f.key === cond.operator
+            (f) => f.key === cond.operator,
           )?.label;
 
           return isEditing ? (
@@ -98,7 +107,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
                 handleFieldOperator: handleFieldOperator,
                 handleFieldSelect: (e) => {
                   const field = filterableField.find((f) =>
-                    f.filterKey ? f.filterKey === e : f.key === e
+                    f.filterKey ? f.filterKey === e : f.key === e,
                   );
                   field && handleFieldSelect(field);
                 },
@@ -152,7 +161,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
                 handleFieldOperator: handleFieldOperator,
                 handleFieldSelect: (e) => {
                   const field = filterableField.find((f) =>
-                    f.filterKey ? f.filterKey === e : f.key === e
+                    f.filterKey ? f.filterKey === e : f.key === e,
                   );
                   field && handleFieldSelect(field);
                 },

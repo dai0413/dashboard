@@ -2,7 +2,11 @@ import { IconButton, LinkButtonGroup } from "../buttons/index";
 import { useSort } from "../../context/sort-context";
 import { useEffect, useMemo } from "react";
 import { Modal } from "../ui/index";
-import { SortableFieldDefinition } from "@dai0413/myorg-shared";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
+import { useFilter } from "../../context/filter-context";
 
 type ToggleButtonAndLabelProps = {
   ascColor: boolean;
@@ -46,10 +50,14 @@ const ToggleButtonAndLabel = ({
 
 type SortProps = {
   sortableField: SortableFieldDefinition[];
-  onApply: () => void;
+  onApply: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
 };
 
 const Sort = ({ sortableField, onApply }: SortProps) => {
+  const { filterConditions } = useFilter();
   const {
     sortOpen,
     sortConditions,
@@ -66,12 +74,12 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
 
   const selectingSortConditions = useMemo(
     () => sortConditions.filter((cond) => cond.asc !== null),
-    [sortConditions]
+    [sortConditions],
   );
 
   const notSelectingSortConditions = useMemo(
     () => sortConditions.filter((cond) => cond.asc === null),
-    [sortConditions]
+    [sortConditions],
   );
 
   return (
@@ -86,7 +94,7 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
           deny={{
             text: "並び替える",
             color: "green",
-            onClick: onApply,
+            onClick: async () => onApply(filterConditions, sortConditions),
           }}
           reset={{
             text: "リセット",
@@ -103,7 +111,7 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
         <div className="mb-4 space-y-1">
           {selectingSortConditions.map((cond, index) => {
             const actualIndex = sortConditions.findIndex(
-              (c) => c.key === cond.key
+              (c) => c.key === cond.key,
             );
 
             return (
