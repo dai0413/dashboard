@@ -70,11 +70,13 @@ export const API_PATHS = {
 
   PLAYER_APPEARANCE: {
     ROOT: "/player-appearance",
+    UPLOAD: "/player-appearance/upload",
     DETAIL: (id: string | number = ":id") => `/player-appearance/${id}`,
   },
 
   PLAYER_MATCH_EVENT_LOG: {
     ROOT: "/player-match-event-log",
+    UPLOAD: "/player-match-event-log/upload",
     DETAIL: (id: string | number = ":id") => `/player-match-event-log/${id}`,
   },
 
@@ -115,11 +117,13 @@ export const API_PATHS = {
 
   STAFF_APPEARANCE: {
     ROOT: "/staff-appearance",
+    UPLOAD: "/staff-appearance/upload",
     DETAIL: (id: string | number = ":id") => `/staff-appearance/${id}`,
   },
 
   STAFF_MATCH_EVENT_LOG: {
     ROOT: "/staff-match-event-log",
+    UPLOAD: "/staff-match-event-log/upload",
     DETAIL: (id: string | number = ":id") => `/staff-match-event-log/${id}`,
   },
 
