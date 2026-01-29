@@ -79,7 +79,7 @@ export const StaffMatchEventLogResponseSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    staff: StaffZodSchema.extend({ _id: objectId.optional() }).optional(),
+    staff: StaffZodSchema.extend({ _id: objectId.optional() }),
   });
 
 export const StaffMatchEventLogPopulatedSchema =
@@ -92,5 +92,5 @@ export const StaffMatchEventLogPopulatedSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    staff: StaffZodSchema.extend({ _id: objectId.optional() }).optional(),
+    staff: StaffZodSchema.optional(),
   });

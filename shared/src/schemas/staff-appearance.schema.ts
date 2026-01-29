@@ -2,7 +2,7 @@ import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
-import { PlayerZodSchema } from "./player.schema.js";
+import { StaffZodSchema } from "./staff.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 
 export const StaffAppearanceBaseZodSchema = z.object({
@@ -41,7 +41,7 @@ export const StaffAppearanceResponseSchema = StaffAppearanceZodSchema.omit({
   team: true,
 }).safeExtend({
   match: MatchBaseZodSchema,
-  staff: PlayerZodSchema,
+  staff: StaffZodSchema.extend({ _id: objectId.optional() }),
   team: TeamZodSchema,
 });
 
@@ -51,6 +51,6 @@ export const StaffAppearancePopulatedSchema = StaffAppearanceZodSchema.omit({
   team: true,
 }).safeExtend({
   match: MatchBaseZodSchema,
-  staff: PlayerZodSchema,
+  staff: StaffZodSchema.optional(),
   team: TeamZodSchema,
 });

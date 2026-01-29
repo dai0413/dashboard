@@ -7,6 +7,7 @@ import {
   StaffAppearancePopulatedSchema,
 } from "../schemas/staff-appearance.schema.js";
 import { ControllerConfig } from "../types/models-config.js";
+import { staffAppearance as convertFun } from "../utils/format/staff-appearance.js";
 import { ParsedQs } from "qs";
 
 export function staffAppearance<TDoc = any, TModel = any>(
@@ -60,5 +61,6 @@ export function staffAppearance<TDoc = any, TModel = any>(
         role: "analyst",
       },
     },
+    convertFun: convertFun,
   };
 }

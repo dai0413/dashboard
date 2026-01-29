@@ -75,6 +75,6 @@ export const TransferPopulatedSchema = TransferBaseZodSchema.omit({
   to_team: true,
 }).safeExtend({
   player: PlayerZodSchema,
-  from_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
-  to_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+  from_team: TeamZodSchema.optional(),
+  to_team: TeamZodSchema.optional(),
 });

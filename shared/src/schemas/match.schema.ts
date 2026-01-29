@@ -117,5 +117,5 @@ export const MatchPopulatedSchema = MatchBaseZodSchema.omit({
   home_team: TeamZodSchema,
   away_team: TeamZodSchema,
   match_format: MatchFormatZodSchema.optional(),
-  stadium: StadiumZodSchema.extend({ _id: objectId.optional() }).optional(),
+  stadium: StadiumZodSchema.optional(),
 });

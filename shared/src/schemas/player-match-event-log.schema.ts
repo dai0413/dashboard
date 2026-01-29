@@ -86,7 +86,7 @@ export const PlayerMatchEventLogResponseSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    player: PlayerZodSchema.extend({ _id: objectId.optional() }).optional(),
+    player: PlayerZodSchema.extend({ _id: objectId.optional() }),
   });
 
 export const PlayerMatchEventLogPopulatedSchema =
@@ -99,5 +99,5 @@ export const PlayerMatchEventLogPopulatedSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    player: PlayerZodSchema.extend({ _id: objectId.optional() }).optional(),
+    player: PlayerZodSchema.optional(),
   });

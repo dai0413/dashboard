@@ -7,6 +7,7 @@ import {
   PlayerAppearancePopulatedSchema,
 } from "../schemas/player-appearance.schema.js";
 import { ControllerConfig } from "../types/models-config.js";
+import { playerAppearance as convertFun } from "../utils/format/player-appearance.js";
 import { ParsedQs } from "qs";
 
 export function playerAppearance<TDoc = any, TModel = any>(
@@ -66,5 +67,6 @@ export function playerAppearance<TDoc = any, TModel = any>(
         time: undefined,
       },
     },
+    convertFun: convertFun,
   };
 }

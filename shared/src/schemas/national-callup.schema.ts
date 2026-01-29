@@ -78,5 +78,5 @@ export const NationalCallUpPopulatedSchema = NationalCallUpBaseZodSchema.omit({
 }).safeExtend({
   series: NationalMatchSeriesZodSchema,
   player: PlayerZodSchema,
-  team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+  team: TeamZodSchema.optional(),
 });
