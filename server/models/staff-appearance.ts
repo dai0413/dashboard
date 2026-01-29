@@ -37,10 +37,23 @@ const StaffAppearanceSchema: Schema<IStaffAppearance> = new Schema<
   { timestamps: true },
 );
 
-StaffAppearanceSchema.index({ match: 1, team: 1, staff: 1 }, { unique: true });
+StaffAppearanceSchema.index(
+  { match: 1, team: 1, staff: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      staff: { $type: "objectId" },
+    },
+  },
+);
 StaffAppearanceSchema.index(
   { match: 1, team: 1, staff_name: 1 },
-  { unique: true },
+  {
+    unique: true,
+    partialFilterExpression: {
+      staff_name: { $type: "string" },
+    },
+  },
 );
 
 export const StaffAppearanceModel: Model<IStaffAppearance> =
