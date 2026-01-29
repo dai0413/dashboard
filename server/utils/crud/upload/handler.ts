@@ -10,6 +10,7 @@ import { ZodError } from "zod";
 import { getNest } from "../../getNest.js";
 import { convertObjectIdToString } from "../../convertObjectIdToString.js";
 import { uploadConfig, UploadConfigMap } from "./configs/index.js";
+import { cleanObject } from "./services/cleanObject.js";
 
 function formatZodError(error: unknown): string {
   if (error instanceof ZodError) {
@@ -90,7 +91,7 @@ export const uploadItemHandler = async <
         }
 
         try {
-          const parsed = FORM.parse(value);
+          const parsed = FORM.parse(cleanObject(value));
           const add = await MONGO_MODEL.create(parsed);
           added.push(add);
         } catch (err) {

@@ -1,0 +1,55 @@
+import { playerMatchEventLog } from "@dai0413/myorg-shared";
+import { MatchModel } from "../../../../models/match.js";
+import { PlayerModel } from "../../../../models/player.js";
+import { TeamModel } from "../../../../models/team.js";
+import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
+import { ParserKey, UploadConfig } from "../types.js";
+import { resolveOldIds } from "../services/resolveOldIds.js";
+import { normalizeRows } from "../parsers/index.js";
+
+const { TYPE } = playerMatchEventLog(PlayerAppearanceModel);
+
+type INPUT_CSV_TYPE = Omit<
+  typeof TYPE,
+  "_id" | "match" | "team" | "createdAt" | "updatedAt"
+> & {
+  match?: string;
+  team?: string;
+  match_old_id?: string;
+  player_old_id?: string;
+  team_old_id?: string;
+};
+
+export const playerMatchEventLogConfig: UploadConfig = {
+  createValidRows: async (rows: any[]) => {
+    let csvRows: INPUT_CSV_TYPE[] = rows;
+
+    const reslovedOldIds = await resolveOldIds(csvRows, [
+      {
+        key: "match",
+        oldKey: "match_old_id",
+        model: MatchModel,
+      },
+      {
+        key: "player",
+        oldKey: "player_old_id",
+        model: PlayerModel,
+      },
+      {
+        key: "team",
+        oldKey: "team_old_id",
+        model: TeamModel,
+      },
+    ]);
+
+    const normalized = normalizeRows(reslovedOldIds, [
+      { field: ["time", "add_time", "order"], parserKey: ParserKey.Number },
+      {
+        field: ["match", "team", "player", "match_event_type"],
+        parserKey: ParserKey.ObjectId,
+      },
+    ]);
+
+    return normalized;
+  },
+};

@@ -1,6 +1,9 @@
 import { staffAppearance } from "@dai0413/myorg-shared";
+import { Response } from "express";
+import { DecodedRequest } from "types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { StaffAppearanceModel } from "../../models/staff-appearance.js";
+import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
 const getAllItems = crudFactory(
   staffAppearance(StaffAppearanceModel),
@@ -16,4 +19,7 @@ const deleteItem = crudFactory(
   staffAppearance(StaffAppearanceModel),
 ).deleteItem;
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem };
+const uploadItem = async (req: DecodedRequest, res: Response) =>
+  uploadItemHandler(staffAppearance(StaffAppearanceModel), req, res);
+
+export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };
