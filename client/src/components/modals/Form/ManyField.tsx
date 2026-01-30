@@ -7,6 +7,9 @@ import { TableHeader } from "../../../types/types";
 import { IconButton, IconTextButton } from "../../buttons";
 import { useQuery } from "../../../context/query-context";
 import { useForm } from "../../../context/form-context";
+import { FilterProvider } from "../../../context/filter-context";
+import { SortProvider } from "../../../context/sort-context";
+import { ListViewProvider } from "../../../context/listView-context";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   fields: FormFieldDefinition<T>[];
@@ -14,7 +17,7 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   toggleTableOpen: () => void;
 };
 
-export const RenderManyField = <T extends keyof FormTypeMap>({
+const ManyField = <T extends keyof FormTypeMap>({
   fields,
   isTableOpen,
   toggleTableOpen,
@@ -71,7 +74,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
         renderFieldCell={(
           header: TableHeader,
           formData: FormTypeMap[T],
-          rowIndex: number
+          rowIndex: number,
         ) => {
           const field = fields?.find((f) => f.key === header.field);
           if (!field) return null;
@@ -122,7 +125,7 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
             onClick={() => {
               many?.addFormDatas(
                 inputMode === "many" ? true : false,
-                handleSetPage
+                handleSetPage,
               );
             }}
           >
@@ -141,3 +144,19 @@ export const RenderManyField = <T extends keyof FormTypeMap>({
     </>
   );
 };
+
+const RenderManyField = <K extends keyof FormTypeMap>(
+  props: RenderFieldProps<K>,
+) => {
+  return (
+    <FilterProvider>
+      <SortProvider>
+        <ListViewProvider>
+          <ManyField {...props} />
+        </ListViewProvider>
+      </SortProvider>
+    </FilterProvider>
+  );
+};
+
+export default RenderManyField;

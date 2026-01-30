@@ -57,21 +57,21 @@ const ListView = <T extends Record<string, any>>({
 
   const pageChange = useMemo(
     () => (onPageChange ? onPageChange : setPageNum),
-    [onPageChange]
+    [onPageChange],
   );
 
   const totalPages =
     itemsPerPage && totalCount
       ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
       : itemsPerPage
-      ? Math.ceil(data.length / itemsPerPage)
-      : 1;
+        ? Math.ceil(data.length / itemsPerPage)
+        : 1;
 
   const pages = getPageNumbers(pageNum, totalPages);
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
-      {viewMode === "table" && (
+      {viewMode === "table" ? (
         <Table
           modelType={modelType}
           data={data}
@@ -91,27 +91,28 @@ const ListView = <T extends Record<string, any>>({
           renderFieldCell={renderFieldCell}
           deleteOnClick={deleteOnClick}
         />
-      )}
-      {viewMode === "tile" && (
-        <Tile
-          modelType={modelType}
-          data={data}
-          totalCount={totalCount}
-          headers={headers}
-          pageNation={pageNation}
-          linkField={linkField}
-          detailLink={detailLink}
-          itemsPerPage={itemsPerPage || 10}
-          isLoading={isLoading}
-          currentPage={pageNum}
-          onPageChange={onPageChange}
-          form={form}
-          onClick={onClick}
-          selectedKey={selectedKey}
-          edit={edit}
-          renderFieldCell={renderFieldCell}
-          deleteOnClick={deleteOnClick}
-        />
+      ) : (
+        viewMode === "tile" && (
+          <Tile
+            modelType={modelType}
+            data={data}
+            totalCount={totalCount}
+            headers={headers}
+            pageNation={pageNation}
+            linkField={linkField}
+            detailLink={detailLink}
+            itemsPerPage={itemsPerPage || 10}
+            isLoading={isLoading}
+            currentPage={pageNum}
+            onPageChange={onPageChange}
+            form={form}
+            onClick={onClick}
+            selectedKey={selectedKey}
+            edit={edit}
+            renderFieldCell={renderFieldCell}
+            deleteOnClick={deleteOnClick}
+          />
+        )
       )}
       {pages.length > 1 ? (
         <div className="flex justify-center m-4 space-x-2">
@@ -132,7 +133,7 @@ const ListView = <T extends Record<string, any>>({
               >
                 {page}
               </button>
-            )
+            ),
           )}
         </div>
       ) : (

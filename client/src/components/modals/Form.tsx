@@ -6,7 +6,7 @@ import { useAlert } from "../../context/alert-context";
 import { useForm } from "../../context/form-context";
 import { useState } from "react";
 import { RenderField } from "./Form/Field";
-import { RenderManyField } from "./Form/ManyField";
+import RenderManyField from "./Form/ManyField";
 import { ListView } from "../table/";
 import { useQuery } from "../../context/query-context";
 import { FieldList } from "../modals/index";
@@ -16,6 +16,9 @@ import { DetailFieldDefinition } from "../../types/field";
 import { FormStep } from "../../types/form";
 import { get } from "lodash";
 import { useModal } from "../../context/modal-context";
+import { FilterProvider } from "../../context/filter-context";
+import { SortProvider } from "../../context/sort-context";
+import { ListViewProvider } from "../../context/listView-context";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -377,14 +380,20 @@ const Form = <T extends keyof FormTypeMap>() => {
 
                   {many?.renderConfirmMes(confirmBulkData)}
 
-                  <ListView
-                    pageNation="client"
-                    data={confirmBulkData || []}
-                    headers={confirmBulkDataHeaders || []}
-                    currentPage={page.formPage}
-                    onPageChange={(p: number) => setPage("formPage", p)}
-                    itemsPerPage={10}
-                  />
+                  <FilterProvider>
+                    <SortProvider>
+                      <ListViewProvider>
+                        <ListView
+                          pageNation="client"
+                          data={confirmBulkData || []}
+                          headers={confirmBulkDataHeaders || []}
+                          currentPage={page.formPage}
+                          onPageChange={(p: number) => setPage("formPage", p)}
+                          itemsPerPage={10}
+                        />
+                      </ListViewProvider>
+                    </SortProvider>
+                  </FilterProvider>
                 </>
               )}
             </div>
