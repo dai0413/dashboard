@@ -1,5 +1,5 @@
 import { fromZonedTime } from "date-fns-tz";
-import { FieldParser } from "../types.js";
+import { FieldParser } from "./types.js";
 
 export const toDate: FieldParser<Date> = (value, fieldName) => {
   if (value === undefined || value === null || value === "") {

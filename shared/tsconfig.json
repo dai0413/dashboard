@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "moduleResolution": "nodenext",
-    "module": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "target": "ES2022",
     "declaration": true,
     "outDir": "./dist",

@@ -1,11 +1,11 @@
 import { playerAppearance } from "@dai0413/myorg-shared";
+import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchModel } from "../../../../models/match.js";
 import { PlayerModel } from "../../../../models/player.js";
 import { TeamModel } from "../../../../models/team.js";
 import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
-import { ParserKey, UploadConfig } from "../types.js";
+import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
-import { normalizeRows } from "../parsers/index.js";
 
 const { TYPE } = playerAppearance(PlayerAppearanceModel);
 

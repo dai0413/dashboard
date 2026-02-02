@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { FieldParser } from "../types.js";
+import { FieldParser } from "./types.js";
 
 export const toObjectId: FieldParser<String> = (value, fieldName) => {
   if (value === undefined || value === null || value === "") {

@@ -1,4 +1,4 @@
-import { FieldParser } from "../types.js";
+import { FieldParser } from "./types.js";
 
 export const toNumber: FieldParser<number> = (value, fieldName) => {
   if (value === undefined || value === null || value === "") {
