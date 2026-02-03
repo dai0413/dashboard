@@ -4,7 +4,7 @@ import { FormTypeMap } from "../../types/models";
 import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useForm } from "../../context/form-context";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RenderField } from "./Form/Field";
 import RenderManyField from "./Form/ManyField";
 import { ListView } from "../table/";
@@ -140,54 +140,59 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   const diffKeys = getDiffKeys ? getDiffKeys() : [];
 
-  const steps = formSteps;
   const handleFormData = single.handleFormData;
 
   const [isTableOpen, setIsTableOpen] = useState<boolean>(false);
 
-  const confirmBulkDataHeaders =
-    steps
-      ?.filter((step) => step.many)
-      .flatMap((s) =>
-        (s.fields ?? [])
-          .map((field) => ({
-            label: field.label,
-            field: field.key as string,
-            width: field.width,
-            fieldType: field.fieldType,
-            valueType: field.valueType,
-          }))
-          .filter((h) => (many?.formData ?? []).some((d) => h.field in d)),
-      ) ?? [];
+  const confirmBulkDataHeaders = useMemo(() => {
+    return (
+      formSteps
+        ?.filter((step) => step.many)
+        .flatMap((s) =>
+          (s.fields ?? [])
+            .map((field) => ({
+              label: field.label,
+              field: field.key as string,
+              width: field.width,
+              fieldType: field.fieldType,
+              valueType: field.valueType,
+            }))
+            .filter((h) => (many?.formData ?? []).some((d) => h.field in d)),
+        ) ?? []
+    );
+  }, [formSteps, many?.formData]);
 
-  const confirmBulkData = (many?.formLabels ?? [])
-    .map((d) => {
-      const row: Record<string, string | number | undefined> = {};
+  const confirmBulkData = useMemo(() => {
+    return (many?.formLabels ?? [])
+      .map((d) => {
+        console.log(d);
+        const row: Record<string, string | number | undefined> = {};
 
-      confirmBulkDataHeaders.forEach((h) => {
-        const key = h.field;
-        const value = d[key as keyof typeof d];
+        confirmBulkDataHeaders.forEach((h) => {
+          const key = h.field;
+          const value = d[key as keyof typeof d];
 
-        let displayValue: string | number | undefined;
+          let displayValue: string | number | undefined;
 
-        if (h.fieldType === "select" || h.fieldType === "table") {
-          displayValue = value;
-        } else if (h.valueType === "boolean") {
-          displayValue = value ? "◯" : "";
-        } else {
-          displayValue = value as string | number;
-        }
+          if (h.fieldType === "select" || h.fieldType === "table") {
+            displayValue = value;
+          } else if (h.valueType === "boolean") {
+            displayValue = value ? "◯" : "";
+          } else {
+            displayValue = value as string | number;
+          }
 
-        if (value === null || value === undefined) {
-          displayValue = undefined;
-        }
+          if (value === null || value === undefined) {
+            displayValue = undefined;
+          }
 
-        row[key] = displayValue;
-      });
+          row[key] = displayValue;
+        });
 
-      return row;
-    })
-    .filter((row) => Object.keys(row).length > 0);
+        return row;
+      })
+      .filter((row) => Object.keys(row).length > 0);
+  }, [many?.formLabels]);
 
   const data: FieldListData = {};
   displayableField.forEach((display) => {
@@ -211,12 +216,12 @@ const Form = <T extends keyof FormTypeMap>() => {
 
       if (Array.isArray(value) && value.length === 0) da.value = "未入力";
 
-      if (steps) {
-        const inputField = steps
+      if (formSteps) {
+        const inputField = formSteps
           .flatMap((step) => step.fields || [])
           .find((f) => f.key === display.key);
 
-        const stepIndex = steps.findIndex((step) =>
+        const stepIndex = formSteps.findIndex((step) =>
           (step.fields || []).some((f) => f.key === display.key),
         );
 
@@ -254,7 +259,7 @@ const Form = <T extends keyof FormTypeMap>() => {
       onClose={close}
       header={
         <>
-          {steps && steps.length !== 0 ? (
+          {formSteps && formSteps.length !== 0 ? (
             <>
               <h3 className="text-xl font-semibold text-gray-700 mb-1">
                 {formMode === "create" ? "新規データ作成" : "既存データ編集"}
@@ -262,12 +267,12 @@ const Form = <T extends keyof FormTypeMap>() => {
 
               <div>
                 <div className="mb-1 text-sm text-gray-500">
-                  ステップ {currentStep + 1} / {steps.length}：
-                  {steps[currentStep].stepLabel || ""}
+                  ステップ {currentStep + 1} / {formSteps.length}：
+                  {formSteps[currentStep].stepLabel || ""}
                 </div>
 
                 <div className="flex space-x-2">
-                  {steps.map((_, index) => (
+                  {formSteps.map((_, index) => (
                     <div
                       key={index}
                       className={`flex-1 h-2 rounded-full ${
@@ -298,7 +303,9 @@ const Form = <T extends keyof FormTypeMap>() => {
                 onClick: () => setIsTableOpen(false),
               }}
             />
-          ) : steps && currentStep === steps.length - 1 && !isEditing ? (
+          ) : formSteps &&
+            currentStep === formSteps.length - 1 &&
+            !isEditing ? (
             <LinkButtonGroup
               approve={{
                 text: "次のデータへ",
@@ -310,14 +317,14 @@ const Form = <T extends keyof FormTypeMap>() => {
             <LinkButtonGroup
               approve={{
                 text:
-                  steps && currentStep === steps.length - 1
+                  formSteps && currentStep === formSteps.length - 1
                     ? formMode === "create"
                       ? "追加"
                       : "変更"
                     : "次へ",
                 color: "green",
                 onClick:
-                  steps && currentStep === steps.length - 1
+                  formSteps && currentStep === formSteps.length - 1
                     ? () => {
                         sendData();
                         setPage("formPage", 1);
@@ -335,9 +342,9 @@ const Form = <T extends keyof FormTypeMap>() => {
         </div>
       }
     >
-      {!steps || steps.length === 0 ? null : (
+      {!formSteps || formSteps.length === 0 ? null : (
         <>
-          {steps[currentStep].type === "confirm" ? (
+          {formSteps[currentStep].type === "confirm" ? (
             <div className="space-y-2 text-sm text-gray-700">
               {formMode === "update" &&
                 alert.success &&
@@ -362,7 +369,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                   data={convertDisplayField(
                     displayableField,
                     formLabel,
-                    steps,
+                    formSteps,
                     handleStep,
                   )}
                   diffKeys={diffKeys}
@@ -397,16 +404,18 @@ const Form = <T extends keyof FormTypeMap>() => {
                 </>
               )}
             </div>
-          ) : steps[currentStep].fields && steps[currentStep].many && many ? (
+          ) : formSteps[currentStep].fields &&
+            formSteps[currentStep].many &&
+            many ? (
             <RenderManyField
-              fields={steps[currentStep].fields}
+              fields={formSteps[currentStep].fields}
               isTableOpen={isTableOpen}
               toggleTableOpen={() => setIsTableOpen((prev) => !prev)}
             />
           ) : (
-            steps[currentStep].fields &&
-            steps[currentStep].fields.map((field, fieldIndex) => {
-              const stepTotal = steps[currentStep]?.fields?.length ?? 0;
+            formSteps[currentStep].fields &&
+            formSteps[currentStep].fields.map((field, fieldIndex) => {
+              const stepTotal = formSteps[currentStep]?.fields?.length ?? 0;
               const stepIndex = fieldIndex + 1;
 
               return (
@@ -433,7 +442,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                     handleFormData={(key, value) =>
                       handleFormData(key, value, field.overwriteByMany)
                     }
-                    supportButton={!steps[currentStep].many}
+                    supportButton={!formSteps[currentStep].many}
                   />
                 </div>
               );

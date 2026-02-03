@@ -2,6 +2,10 @@ import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { IconButton } from "../components/buttons";
 import { Icon } from "../components/buttons/IconButton";
+import { useModal } from "../context/modal-context";
+import { ModelType } from "../types/models";
+import { useForm } from "../context/form-context";
+import { From } from "../types/types";
 
 const models: {
   model: string;
@@ -161,10 +165,63 @@ const models: {
   },
 ];
 
+const createItemMenu: {
+  model: string;
+  desc: string;
+  link: string;
+  icon: Icon;
+  modelType: ModelType;
+}[] = [
+  {
+    model: "Player",
+    desc: "選手",
+    link: APP_ROUTES.PLAYER,
+    icon: "player",
+    modelType: ModelType.PLAYER,
+  },
+];
+
 const AdminDashboard = () => {
+  const {
+    form: { open },
+  } = useModal();
+  const {
+    formOperator: { startForm },
+  } = useForm();
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 border-b pb-2">管理画面</h1>
+
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">
+          D_PC
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {createItemMenu.map((m) => (
+            <div
+              key={m.model}
+              onClick={() => {
+                startForm(
+                  true,
+                  m.modelType,
+                  undefined,
+                  undefined,
+                  true,
+                  From.D_PC,
+                );
+                open(m.modelType);
+              }}
+            >
+              <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
+                <IconButton icon={m.icon} />
+                <h2 className="text-lg font-bold mb-2">{m.desc}</h2>
+                <p className="text-gray-500 text-sm">{m.model}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="mb-10">
         <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">

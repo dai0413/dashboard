@@ -104,6 +104,10 @@ export interface FormStep<K extends keyof FormTypeMap> {
   onChange?:
     | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
     | ((data: FormTypeMap[K]) => FormUpdatePair);
+  fetchValue?: (
+    data?: FormTypeMap[K],
+    api?: AxiosInstance,
+  ) => Promise<FormTypeMap[K][]>;
   createFilterConditions?: (
     data: FormTypeMap[K],
     api?: AxiosInstance,

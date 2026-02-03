@@ -1,11 +1,4 @@
-import {
-  createContext,
-  JSX,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, JSX, useContext, useMemo, useState } from "react";
 import { useAlert } from "./alert-context";
 import {
   FilterConditionsByKey,
@@ -30,6 +23,7 @@ import { useApi } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
+import { From } from "../types/types";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -76,6 +70,7 @@ type FormContextValue<T extends ModelType> = {
       editItem?: GettedModelDataMap[T],
       initialFormData?: Partial<FormTypeMap[T]>,
       many?: boolean,
+      from?: From,
     ) => void;
   };
 
@@ -179,13 +174,6 @@ export const FormProvider = <T extends ModelType>({
     {},
   );
 
-  useEffect(() => {
-    if (!modelType) return;
-    inputMode === "single"
-      ? setFormSteps(getSteps(modelType, false))
-      : setFormSteps(getSteps(modelType, true));
-  }, [modelType, inputMode]);
-
   const modelContext = useModelContext(modelType);
 
   const removeFilterConditionsObj = (key: keyof FilterConditionsByKey) => {
@@ -248,13 +236,16 @@ export const FormProvider = <T extends ModelType>({
     editItem?: GettedModelDataMap[T],
     initialFormData?: FormTypeMap[T],
     many?: boolean,
+    from?: From,
   ) => {
     if (!model) return;
 
+    const newSteps = getSteps(model, many, from);
+
+    setFormSteps(newSteps);
+
     if (!newData) {
-      inputMode === "many"
-        ? setCurrentStep(getSteps(model, true).length - 1)
-        : setCurrentStep(getSteps(model, false).length - 1);
+      setCurrentStep(newSteps.length - 1);
     } else {
       setCurrentStep(0);
     }
@@ -412,6 +403,8 @@ export const FormProvider = <T extends ModelType>({
     return false;
   };
 
+  // useEffect(() => console.log("formDatas", formDatas), formDatas);
+
   const nextStep = async (): Promise<void> => {
     const current = formSteps[currentStep];
 
@@ -438,7 +431,7 @@ export const FormProvider = <T extends ModelType>({
     }
 
     // --- onChange 関数による値変更 ---
-    if (formMode === "create" && current.onChange) {
+    if (inputMode === "single" && formMode === "create" && current.onChange) {
       if (!Array.isArray(checkData)) {
         const updatePaires = await current.onChange(checkData, api);
 
@@ -446,6 +439,16 @@ export const FormProvider = <T extends ModelType>({
           singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
         });
       }
+    }
+
+    if (inputMode === "many" && formMode === "create" && current.fetchValue) {
+      const fetchedValues = await current.fetchValue(formData, api);
+      setFormDatas(fetchedValues);
+      const resolvedLabels = await Promise.all(
+        fetchedValues.map((v) => resolveForeignKeyLabels(v)),
+      );
+
+      setFormLabels(resolvedLabels);
     }
 
     // --- many入力時の共通要素
@@ -592,15 +595,28 @@ export const FormProvider = <T extends ModelType>({
     });
   };
 
-  const addFormDatas = (baseCopy: boolean, setPage?: (p: number) => void) => {
-    // const baseData = formData ? { ...formData } : ({} as FormTypeMap[T]);
-    // const baseLabel = formLabel ? { ...formLabel } : {};
-
+  const addFormDatas = (
+    baseCopy: boolean,
+    setPage?: (p: number) => void,
+    formData?: FormTypeMap[T],
+  ) => {
     const baseData = bulkCommonData ? { ...bulkCommonData } : {};
     const baseLabel = bulkCommonLabel ? { ...bulkCommonLabel } : {};
 
-    const newFormDatas = [...formDatas, baseCopy ? baseData : {}];
-    const newFormLabels = [...formLabels, baseCopy ? baseLabel : {}];
+    const newFormDatas = [
+      ...formDatas,
+      {
+        ...(baseCopy ? baseData : {}),
+        ...(formData || {}),
+      },
+    ];
+    const newFormLabels = [
+      ...formLabels,
+      {
+        ...(baseCopy ? baseLabel : {}),
+        ...(formData || {}),
+      },
+    ];
 
     setFormDatas(newFormDatas);
     setFormLabels(newFormLabels);

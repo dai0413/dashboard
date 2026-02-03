@@ -51,3 +51,11 @@ export type TeamMatch = Omit<
   against_pk_goal?: number;
   result?: "勝ち" | "負け" | "分け";
 };
+
+export enum From {
+  D_PC = "d_pc",
+  D_SC = "d_sc",
+  D_M = "d_m",
+  D_ML = "d_ml",
+  FL = "fl",
+}

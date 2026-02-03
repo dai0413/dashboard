@@ -58,9 +58,12 @@ const FieldList = (props: Props) => {
       value !== "入力対象外" &&
       value !== "未入力"
         ? toDateKey(value as string | number | Date)
-        : field.type === "datetime-local"
-        ? toDateKey(value as string | number | Date, true)
-        : displayValue;
+        : field.type === "datetime-local" &&
+            value !== "" &&
+            value !== "入力対象外" &&
+            value !== "未入力"
+          ? toDateKey(value as string | number | Date, true)
+          : "未入力";
 
     // // 配列の処理
     if (Array.isArray(value)) {
@@ -75,7 +78,7 @@ const FieldList = (props: Props) => {
             typeof v === "object" &&
             v !== null &&
             "label" in v &&
-            typeof (v as any).label === "string"
+            typeof (v as any).label === "string",
         )
       ) {
         displayValue = value.map((v) => v.label).join(", ");
@@ -92,7 +95,7 @@ const FieldList = (props: Props) => {
     ) {
       const urls = Array.isArray(value) ? value : [value];
       const validUrls = urls.filter(
-        (u) => typeof u === "string" && u.trim() !== ""
+        (u) => typeof u === "string" && u.trim() !== "",
       );
 
       displayValue = (

@@ -79,7 +79,11 @@ const ManyField = <T extends keyof FormTypeMap>({
           const field = fields?.find((f) => f.key === header.field);
           if (!field) return null;
 
-          const value = many?.formLabels[rowIndex][field.key as string] ?? "";
+          const targetObj = many?.formLabels[rowIndex];
+          const value =
+            targetObj && field.key in targetObj
+              ? targetObj[field.key as string]
+              : "";
 
           if (field.fieldType === "table") {
             return (
