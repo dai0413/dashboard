@@ -168,4 +168,19 @@ export const API_PATHS = {
       NO_NUMBER: "/aggregate/transfer/no-number",
     },
   },
+
+  GET_NEW_DATA: {
+    D_PC: {
+      PLAYER: "/get-new-data/d-pc/player",
+      PLAYER_UPDATE: "/get-new-data/d-pc/player-update",
+      PLAYER_REGISTRATION_HISTORY:
+        "/get-new-data/d-pc/player-registration-history",
+    },
+    D_SC: {
+      STAFF: "/get-new-data/d-pc/staff",
+      STAFF_UPDATE: "/get-new-data/d-pc/staff-update",
+      STAFF_REGISTRATION_HISTORY:
+        "/get-new-data/d-pc/staff-registration-history",
+    },
+  },
 } as const;
