@@ -7,15 +7,12 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/competition-stage.js";
+} from "../../controllers/models/referee.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
+router.route(API_PATHS.REFEREE.ROOT).get(getAllItems).post(createItem);
 router
-  .route(API_PATHS.COMPETITION_STAGE.ROOT)
-  .get(getAllItems)
-  .post(createItem);
-router
-  .route(API_PATHS.COMPETITION_STAGE.DETAIL())
+  .route(API_PATHS.REFEREE.DETAIL())
   .patch(updateItem)
   .delete(deleteItem)
   .get(getItem);

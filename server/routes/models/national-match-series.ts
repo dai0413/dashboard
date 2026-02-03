@@ -8,7 +8,7 @@ import {
   updateItem,
   deleteItem,
   downloadItems,
-} from "../controllers/models/national-match-series.js";
+} from "../../controllers/models/national-match-series.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 router

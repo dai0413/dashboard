@@ -7,12 +7,12 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/injury.js";
+} from "../../controllers/models/season.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-router.route(API_PATHS.INJURY.ROOT).get(getAllItems).post(createItem);
+router.route(API_PATHS.SEASON.ROOT).get(getAllItems).post(createItem);
 router
-  .route(API_PATHS.INJURY.DETAIL())
+  .route(API_PATHS.SEASON.DETAIL())
   .patch(updateItem)
   .delete(deleteItem)
   .get(getItem);

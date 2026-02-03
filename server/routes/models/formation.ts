@@ -7,15 +7,12 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/player-registration.js";
+} from "../../controllers/models/formation.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
+router.route(API_PATHS.FORMATION.ROOT).get(getAllItems).post(createItem);
 router
-  .route(API_PATHS.PLAYER_REGISTRATION.ROOT)
-  .get(getAllItems)
-  .post(createItem);
-router
-  .route(API_PATHS.PLAYER_REGISTRATION.DETAIL())
+  .route(API_PATHS.FORMATION.DETAIL())
   .patch(updateItem)
   .delete(deleteItem)
   .get(getItem);

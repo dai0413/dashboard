@@ -7,12 +7,12 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/national-callup.js";
+} from "../../controllers/models/transfer.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-router.route(API_PATHS.NATIONAL_CALLUP.ROOT).get(getAllItems).post(createItem);
+router.route(API_PATHS.TRANSFER.ROOT).get(getAllItems).post(createItem);
 router
-  .route(API_PATHS.NATIONAL_CALLUP.DETAIL())
+  .route(API_PATHS.TRANSFER.DETAIL())
   .patch(updateItem)
   .delete(deleteItem)
   .get(getItem);

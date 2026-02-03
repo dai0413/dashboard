@@ -7,15 +7,15 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/team-match-formation.js";
+} from "../../controllers/models/competition-stage.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 router
-  .route(API_PATHS.TEAM_MATCH_FORMATION.ROOT)
+  .route(API_PATHS.COMPETITION_STAGE.ROOT)
   .get(getAllItems)
   .post(createItem);
 router
-  .route(API_PATHS.TEAM_MATCH_FORMATION.DETAIL())
+  .route(API_PATHS.COMPETITION_STAGE.DETAIL())
   .patch(updateItem)
   .delete(deleteItem)
   .get(getItem);

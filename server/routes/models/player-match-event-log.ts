@@ -8,20 +8,23 @@ import {
   updateItem,
   deleteItem,
   uploadItem,
-} from "../controllers/models/staff-appearance.js";
-import upload from "../middleware/upload.js";
-import detectEncoding from "../middleware/detectEncoding.js";
-import checkFileExists from "../middleware/checkFileExists.js";
+} from "../../controllers/models/player-match-event-log.js";
+import upload from "../../middleware/upload.js";
+import detectEncoding from "../../middleware/detectEncoding.js";
+import checkFileExists from "../../middleware/checkFileExists.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-router.route(API_PATHS.STAFF_APPEARANCE.ROOT).get(getAllItems).post(createItem);
 router
-  .route(API_PATHS.STAFF_APPEARANCE.DETAIL())
+  .route(API_PATHS.PLAYER_MATCH_EVENT_LOG.ROOT)
+  .get(getAllItems)
+  .post(createItem);
+router
+  .route(API_PATHS.PLAYER_MATCH_EVENT_LOG.DETAIL())
   .patch(updateItem)
   .delete(deleteItem)
   .get(getItem);
 router
-  .route(API_PATHS.STAFF_APPEARANCE.UPLOAD)
+  .route(API_PATHS.PLAYER_MATCH_EVENT_LOG.UPLOAD)
   .post(
     upload.single("file"),
     checkFileExists,

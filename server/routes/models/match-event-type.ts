@@ -7,7 +7,7 @@ import {
   getItem,
   updateItem,
   deleteItem,
-} from "../controllers/models/match-event-type.js";
+} from "../../controllers/models/match-event-type.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 router.route(API_PATHS.MATCH_EVENT_TYPE.ROOT).get(getAllItems).post(createItem);

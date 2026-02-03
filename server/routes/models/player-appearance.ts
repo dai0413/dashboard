@@ -8,10 +8,10 @@ import {
   updateItem,
   deleteItem,
   uploadItem,
-} from "../controllers/models/player-appearance.js";
-import upload from "../middleware/upload.js";
-import detectEncoding from "../middleware/detectEncoding.js";
-import checkFileExists from "../middleware/checkFileExists.js";
+} from "../../controllers/models/player-appearance.js";
+import upload from "../../middleware/upload.js";
+import detectEncoding from "../../middleware/detectEncoding.js";
+import checkFileExists from "../../middleware/checkFileExists.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 router
