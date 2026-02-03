@@ -6,7 +6,7 @@ import {
   getCurrentLoanPlayersByTeam,
   getNoNumberByCountry,
   getNoCallUp,
-} from "../controllers/aggregate.js";
+} from "../controllers/aggregate/index.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 router

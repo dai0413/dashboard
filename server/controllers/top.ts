@@ -18,10 +18,10 @@ const createData = async <
   TData,
   TForm = TData,
   TResponse = TData,
-  TPopulated = TData
+  TPopulated = TData,
 >(
   config: ControllerConfig<TDoc, TData, TForm, TResponse, TPopulated>,
-  query: ParsedQs
+  query: ParsedQs,
 ): Promise<(TResponse | TPopulated)[]> => {
   const limit: number = query.limit ? parseInt(query.limit as string, 10) : 5;
 
@@ -36,12 +36,12 @@ const createData = async <
   const beforeMatch = buildMatchStage(
     query,
     getAllConfig?.query?.filter((q) => !q.populateAfter),
-    getAllConfig?.buildCustomMatch
+    getAllConfig?.buildCustomMatch,
   );
   const afterMatch = buildMatchStage(
     query,
     getAllConfig?.query?.filter((q) => q.populateAfter),
-    getAllConfig?.buildCustomMatch
+    getAllConfig?.buildCustomMatch,
   );
 
   const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
@@ -71,7 +71,7 @@ const createData = async <
 const getTopPageData = async (req: Request, res: Response) => {
   const transferData = await createData(
     transferConfig(TransferModel, customTransfer),
-    req.query
+    req.query,
   );
   const injuryData = await createData(injuryConfig(InjuryModel), req.query);
 
