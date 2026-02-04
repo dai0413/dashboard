@@ -4,7 +4,7 @@ import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
 import { MatchFormatGet } from "../../../../types/models/match-format";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { setMatchPlayer } from "../../utils/createQuickFilterItems/setMatchPlayer";
+import { playerInMatch } from "../../utils/createQuickFilterItems/player/playerInMatch";
 
 export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
   [
@@ -51,10 +51,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           required: true,
         },
       ],
-      createQuickFilterItems: async (
-        data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
-        api,
-      ) => setMatchPlayer(data, api),
+      createQuickFilterItems: (data, api) => playerInMatch(data, api),
     },
     {
       stepLabel:

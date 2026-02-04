@@ -1,15 +1,67 @@
 import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
-import { playerInSeason } from "../../utils/createQuickFilterItems/player/playerInSeason";
-import { validateByRegistrationType } from "./validate/validateByRegistrationType";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
+import { validateByRegistrationType } from "./validate/validateByRegistrationType";
 
 export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
   [
     {
-      stepLabel: "登録or抹消を入力",
+      stepLabel: "共通要素を入力",
       type: "form",
       fields: [
+        {
+          key: "season",
+          label: "大会シーズン",
+          fieldType: "table",
+          valueType: "option",
+          overwriteByMany: true,
+        },
+      ],
+    },
+    {
+      stepLabel: "共通要素を入力",
+      type: "form",
+      fields: [
+        {
+          key: "team",
+          label: "チーム",
+          fieldType: "table",
+          valueType: "option",
+          overwriteByMany: true,
+        },
+      ],
+    },
+    {
+      stepLabel: "共通要素を入力",
+      type: "form",
+      fields: [
+        {
+          key: "date",
+          label: "日付",
+          fieldType: "input",
+          valueType: "date",
+          overwriteByMany: true,
+        },
+        {
+          key: "registration_type",
+          label: "登録・抹消",
+          fieldType: "select",
+          valueType: "option",
+          overwriteByMany: true,
+        },
+      ],
+    },
+    {
+      stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",
+      type: "form",
+      fields: [
+        {
+          key: "season",
+          label: "大会シーズン",
+          fieldType: "table",
+          valueType: "option",
+          required: true,
+        },
         {
           key: "date",
           label: "日付",
@@ -23,25 +75,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           valueType: "option",
           required: true,
         },
-      ],
-    },
-    {
-      stepLabel: "大会シーズン選択",
-      type: "form",
-      fields: [
-        {
-          key: "season",
-          label: "大会シーズン",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-      ],
-    },
-    {
-      stepLabel: "チーム選択",
-      type: "form",
-      fields: [
         {
           key: "team",
           label: "チーム",
@@ -49,13 +82,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           valueType: "option",
           required: true,
         },
-      ],
-      createQuickFilterItems: (data, api) => playerInSeason(data, api),
-    },
-    {
-      stepLabel: "選手選択",
-      type: "form",
-      fields: [
         {
           key: "player",
           label: "選手",
@@ -63,13 +89,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           valueType: "option",
           required: true,
         },
-      ],
-      onChange: onChangeFillChangesByRegistrationType,
-    },
-    {
-      stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",
-      type: "form",
-      fields: [
         {
           key: "changes.number",
           label: "背番号",
@@ -131,9 +150,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           valueType: "text",
         },
       ],
+      onChange: onChangeFillChangesByRegistrationType,
       validate: validateByRegistrationType,
-      skip: (data) => {
-        return data.registration_type === "deregister";
-      },
+      many: true,
     },
   ];

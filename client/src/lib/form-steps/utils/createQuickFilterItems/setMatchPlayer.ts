@@ -1,8 +1,7 @@
 import { AxiosInstance } from "axios";
-import { FormTypeMap, ModelType } from "../../../../types/models";
-import { readItemBase, readItemsBase } from "../../../api";
+import { ModelType } from "../../../../types/models";
+import { readItemsBase } from "../../../api";
 import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { Match } from "../../../../types/models/match";
 import { OptionType } from "../../../../utils/createOption";
 import { QuickFilterItem } from "../../../../types/table";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
@@ -14,11 +13,9 @@ import { Season } from "../../../../types/models/season";
 const getRegistration = async (
   api: AxiosInstance,
   teamId: string,
-  match: Match,
+  competition: Competition,
+  season: Season,
 ): Promise<FilterableFieldDefinition | undefined> => {
-  const competition: Competition = match.competition;
-  const season: Season = match.season;
-  if (!competition || !season) return undefined;
   const resBody = await readItemsBase({
     apiInstance: api,
     backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
@@ -64,21 +61,19 @@ const getRegistration = async (
 const getTransfer = async (
   api: AxiosInstance,
   teamId: string,
-  match: Match,
+  startDate?: Date,
+  endDate?: Date,
 ): Promise<FilterableFieldDefinition | undefined> => {
-  const matchDate = match.date;
-  const seasonStartDate = match.season.start_date;
-
   const labelParts = [
-    seasonStartDate && `${toKey(new Date(seasonStartDate))}から`,
-    matchDate && `${toKey(new Date(matchDate))}に所属した選手`,
+    startDate && `${toKey(new Date(startDate))}から`,
+    endDate && `${toKey(new Date(endDate))}に所属した選手`,
   ].filter(Boolean);
 
   const fromDateRange = {
     label: labelParts.join(""),
     value: [
-      seasonStartDate ? `>=${toKey(new Date(seasonStartDate))}` : "",
-      matchDate ? `<=${toKey(new Date(matchDate))}` : "",
+      startDate ? `>=${toKey(new Date(startDate))}` : "",
+      endDate ? `<=${toKey(new Date(endDate))}` : "",
     ].filter(Boolean) as string[],
   };
 
@@ -132,45 +127,48 @@ const getTransfer = async (
   };
 };
 
-export const setMatchPlayer = async (
-  data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
-  api?: AxiosInstance,
+export const setPlayerQuickFilter = async (
+  api: AxiosInstance,
+  teamId: string,
+  competition?: Competition,
+  season?: Season,
+  transferFromDate?: Date,
+  transferToDate?: Date,
 ): Promise<Partial<
   Record<ModelType | OptionType, QuickFilterItem[]>
 > | null> => {
-  if (!data.match || !data.team || !api) return null;
+  let result: QuickFilterItem[] = [];
 
-  const matchResBody = await readItemBase({
-    apiInstance: api,
-    backendRoute: API_PATHS.MATCH.DETAIL(data.match),
-    returnResponse: true,
-  });
+  const onRegisterFilterCondition =
+    competition && season
+      ? await getRegistration(api, teamId, competition, season)
+      : undefined;
 
-  const match: Match = matchResBody.data;
-
-  if (!match) return null;
-
-  const onRegisterFilterCondition = await getRegistration(
+  const onTransferFilterCondition = await getTransfer(
     api,
-    data.team,
-    match,
+    teamId,
+    transferFromDate,
+    transferToDate,
   );
 
-  const onTransferFilterCondition = await getTransfer(api, data.team, match);
+  if (onRegisterFilterCondition) {
+    result.push({
+      key: "register",
+      label: "登録中",
+      filterCondition: onRegisterFilterCondition,
+      defaultSelect: true,
+    });
+  }
+
+  if (onTransferFilterCondition) {
+    result.push({
+      key: "transfer",
+      label: "所属中",
+      filterCondition: onTransferFilterCondition,
+    });
+  }
 
   return {
-    player: [
-      {
-        key: "register",
-        label: "登録中",
-        filterCondition: onRegisterFilterCondition,
-        defaultSelect: true,
-      },
-      {
-        key: "transfer",
-        label: "所属中",
-        filterCondition: onTransferFilterCondition,
-      },
-    ],
+    player: result,
   };
 };
