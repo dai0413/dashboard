@@ -1,4 +1,11 @@
-import { createContext, JSX, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  JSX,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useAlert } from "./alert-context";
 import {
   FilterConditionsByKey,
@@ -455,14 +462,8 @@ export const FormProvider = <T extends ModelType>({
     if (inputMode === "many" && bulkCommonData && current.fields) {
       current.fields.forEach((field) => {
         if (field.overwriteByMany) {
-          const valueKey = field.key as keyof FormTypeMap[T];
-          const value = bulkCommonData[valueKey];
-
-          if (value) {
-            formDatas.forEach((_formData, index) => {
-              handleFormData(index, valueKey, value);
-            });
-          }
+          setFormDatas([bulkCommonData]);
+          setFormLabels([bulkCommonLabel]);
         }
       });
     }

@@ -9,6 +9,7 @@ import { transfer } from "./models/transfer/bulk";
 import { injury } from "./models/injury/bulk";
 import { matchEventType } from "./models/match-event-type/bulk";
 import { staff } from "./models/staff/bulk";
+import { playerRegistrationHistory } from "./models/player-registration-history/bulk";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
@@ -34,10 +35,14 @@ const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
     ...matchEventType,
     createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(),
   ],
+  [ModelType.PLAYER_REGISTRATION_HISTORY]: [
+    ...playerRegistrationHistory,
+    createConfirmationStep<ModelType.PLAYER_REGISTRATION_HISTORY>(),
+  ],
 };
 
 export const getBulkSteps = <T extends ModelType>(
-  modelType: T
+  modelType: T,
 ): FormStep<T>[] => {
   return (steps[modelType] as FormStep<T>[] | undefined) ?? [];
 };

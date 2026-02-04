@@ -165,7 +165,6 @@ const Form = <T extends keyof FormTypeMap>() => {
   const confirmBulkData = useMemo(() => {
     return (many?.formLabels ?? [])
       .map((d) => {
-        console.log(d);
         const row: Record<string, string | number | undefined> = {};
 
         confirmBulkDataHeaders.forEach((h) => {

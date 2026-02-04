@@ -37,7 +37,7 @@ export const season: UIFieldDefinition[] = [
   {
     key: "current",
     label: "現在シーズン",
-    type: "select",
+    type: "checkbox",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
