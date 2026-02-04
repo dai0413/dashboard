@@ -179,6 +179,13 @@ const createItemMenu: {
     icon: "player",
     modelType: ModelType.PLAYER,
   },
+  {
+    model: "PlayerRegistrationHistory",
+    desc: "選手の登録履歴",
+    link: APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
+    icon: "player",
+    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+  },
 ];
 
 const AdminDashboard = () => {
@@ -197,7 +204,7 @@ const AdminDashboard = () => {
         <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">
           D_PC
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hover:cursor-pointer">
           {createItemMenu.map((m) => (
             <div
               key={m.model}
