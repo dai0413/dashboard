@@ -47,11 +47,7 @@ export const normalizeRows = <
       for (const f of fields) {
         const path = String(f);
         const currentValue = getByPath(row, path);
-
-        const converted =
-          currentValue instanceof Date ? currentValue : new Date(currentValue);
-
-        const res = parsersMap[parserKey](converted, path);
+        const res = parsersMap[parserKey](currentValue, path);
 
         if (res.ok) {
           setByPath(row, path, res.value);
