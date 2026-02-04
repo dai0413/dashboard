@@ -21,18 +21,8 @@ export const TransferBaseZodSchema = z.object({
   from_date: dateField.refine((v) => !!v, { message: "from_dateは必須です" }),
   to_date: dateField,
   URL: z.array(z.string().nonempty()).optional(),
-  createdAt: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date(),
-    )
-    .optional(),
-  updatedAt: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date(),
-    )
-    .optional(),
+  createdAt: dateField,
+  updatedAt: dateField,
 });
 
 export const TransferZodSchema = TransferBaseZodSchema.refine(
