@@ -1,9 +1,9 @@
 import { registrationStatus, registrationType } from "@dai0413/myorg-shared";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import {
   PlayerRegistrationForm,
   PlayerRegistrationGet,
 } from "../../../types/models/player-registration";
-import { toDateKey } from "../../../utils";
 
 export const playerRegistration = (
   t: PlayerRegistrationGet,

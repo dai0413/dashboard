@@ -1,5 +1,5 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchForm, MatchGet } from "../../../types/models/match";
-import { toDateKey } from "../../../utils";
 
 export const match = (t: MatchGet): MatchForm => {
   const { competition, season, ...dat } = t;

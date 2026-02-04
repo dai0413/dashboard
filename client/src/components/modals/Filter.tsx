@@ -1,14 +1,14 @@
-import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
-import { useFilter } from "../../context/filter-context";
-import { Modal } from "../ui";
-import FieldRow from "./Filter/FieldRow";
 import {
   FilterableFieldDefinition,
   operator,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
+import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
+import { useFilter } from "../../context/filter-context";
+import { Modal } from "../ui";
+import FieldRow from "./Filter/FieldRow";
 import { OptionArray } from "../../types/option";
-import { toDateKey } from "../../utils";
 import { useSort } from "../../context/sort-context";
 
 type FilterProps = {
@@ -125,7 +125,11 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               {/* cond.valueLabel instanceof Date ? toDateKey(cond.valueLabel) : cond.valueLabel */}
               <span>{`${cond.label} が ${
                 cond.type === "Date"
-                  ? cond.valueLabel?.map((label) => toDateKey(label))
+                  ? cond.valueLabel?.map((label) => {
+                      typeof label !== "boolean"
+                        ? toDateKey(label)
+                        : cond.valueLabel;
+                    })
                   : cond.valueLabel
               } ${operation}`}</span>
               <div className="space-x-2 flex">

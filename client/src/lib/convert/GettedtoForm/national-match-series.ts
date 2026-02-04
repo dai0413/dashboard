@@ -1,9 +1,9 @@
 import { ageGroup } from "@dai0413/myorg-shared";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import {
   NationalMatchSeriesForm,
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
-import { toDateKey } from "../../../utils";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeriesGet,

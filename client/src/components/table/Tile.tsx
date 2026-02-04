@@ -1,7 +1,8 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { isLabelObject, toDateKey } from "../../utils";
-import { useEffect, useMemo, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
+import { isLabelObject } from "../../utils";
+import { useEffect, useMemo, useState } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { TableProps } from "../../types/table";
@@ -41,7 +42,7 @@ export const Tile = <T extends Record<string, any>>({
 
   const toggleOpen = (key?: string) => {
     setOpenKeys((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
     );
   };
 
@@ -162,10 +163,10 @@ export const Tile = <T extends Record<string, any>>({
                     typeof value === "boolean"
                       ? value.toString()
                       : value instanceof Date
-                      ? toDateKey(value)
-                      : isLabelObject(value)
-                      ? value.label
-                      : value;
+                        ? toDateKey(value)
+                        : isLabelObject(value)
+                          ? value.label
+                          : value;
 
                   return (
                     <div
@@ -182,7 +183,7 @@ export const Tile = <T extends Record<string, any>>({
                               row,
                               itemsPerPage
                                 ? (pageNum - 1) * itemsPerPage + index
-                                : index
+                                : index,
                             )
                           : RenderCell(header, row, form, linkField)}
                       </span>

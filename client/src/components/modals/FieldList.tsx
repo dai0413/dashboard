@@ -1,6 +1,7 @@
 import { JSX } from "react";
 import { DetailFieldDefinition } from "../../types/field";
-import { isLabelObject, toDateKey } from "../../utils";
+import { isLabelObject } from "../../utils";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { FieldListData } from "../../types/types";
 
 type FieldListProps = {
@@ -57,12 +58,12 @@ const FieldList = (props: Props) => {
       value !== "" &&
       value !== "入力対象外" &&
       value !== "未入力"
-        ? toDateKey(value as string | number | Date)
+        ? toDateKey(value as string | number | Date) || "未入力"
         : field.type === "datetime-local" &&
             value !== "" &&
             value !== "入力対象外" &&
             value !== "未入力"
-          ? toDateKey(value as string | number | Date, true)
+          ? toDateKey(value as string | number | Date, true) || "未入力"
           : "未入力";
 
     // // 配列の処理

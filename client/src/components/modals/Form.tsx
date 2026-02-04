@@ -1,3 +1,4 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { LinkButtonGroup } from "../buttons";
 import { Modal } from "../ui/index";
 import { FormTypeMap } from "../../types/models";
@@ -11,7 +12,6 @@ import { ListView } from "../table/";
 import { useQuery } from "../../context/query-context";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
-import { toDateKey } from "../../utils";
 import { DetailFieldDefinition } from "../../types/field";
 import { FormStep } from "../../types/form";
 import { get } from "lodash";
@@ -84,10 +84,11 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
           ) {
             let datevalue: string = "";
             if (inputField.valueType === "date") {
-              datevalue = toDateKey(value as string | number | Date);
+              datevalue = toDateKey(value as string | number | Date) || "";
             }
             if (inputField.valueType === "datetime-local") {
-              datevalue = toDateKey(value as string | number | Date, true);
+              datevalue =
+                toDateKey(value as string | number | Date, true) || "";
             }
             if (datevalue === "NaN-NaN-NaN") {
               da.value = "未入力";
@@ -239,9 +240,9 @@ const Form = <T extends keyof FormTypeMap>() => {
           }
 
           if (inputField.valueType === "date")
-            da.value = toDateKey(value as string | number | Date);
+            da.value = toDateKey(value as string | number | Date) || "";
           if (inputField.valueType === "datetime-local")
-            da.value = toDateKey(value as string | number | Date, true);
+            da.value = toDateKey(value as string | number | Date, true) || "";
 
           if (value && Array.isArray(value))
             da.value = value.filter((u) => u.trim() !== "").join(", ");

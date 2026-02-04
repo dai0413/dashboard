@@ -1,9 +1,9 @@
 import { leftReason, status } from "@dai0413/myorg-shared";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import {
   NationalCallupForm,
   NationalCallupGet,
 } from "../../../types/models/national-callup";
-import { toDateKey } from "../../../utils";
 
 export const nationalCallup = (t: NationalCallupGet): NationalCallupForm => {
   const statusOptions = status().find((item) => item.label === t.status)?.key;

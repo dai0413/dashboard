@@ -1,5 +1,5 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { PlayerForm, PlayerGet } from "../../../types/models/player";
-import { toDateKey } from "../../../utils";
 
 export const player = (p: PlayerGet): PlayerForm => ({
   ...p,

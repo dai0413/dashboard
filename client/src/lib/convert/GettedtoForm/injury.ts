@@ -1,5 +1,5 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { InjuryForm, InjuryGet } from "../../../types/models/injury";
-import { toDateKey } from "../../../utils";
 
 function getInjuryStatus(
   isInjured: string | null | undefined,

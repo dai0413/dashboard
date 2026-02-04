@@ -1,5 +1,5 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { StaffForm, StaffGet } from "../../../types/models/staff";
-import { toDateKey } from "../../../utils";
 
 export const staff = (t: StaffGet): StaffForm => ({
   ...t,

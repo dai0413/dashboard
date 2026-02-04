@@ -1,5 +1,5 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TransferForm, TransferGet } from "../../../types/models/transfer";
-import { toDateKey } from "../../../utils";
 
 export const transfer = (t: TransferGet): TransferForm => {
   const from_team_name =

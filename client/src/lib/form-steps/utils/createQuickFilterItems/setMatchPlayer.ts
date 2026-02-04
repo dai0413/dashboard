@@ -1,4 +1,5 @@
 import { AxiosInstance } from "axios";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
@@ -6,7 +7,6 @@ import { OptionType } from "../../../../utils/createOption";
 import { QuickFilterItem } from "../../../../types/table";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
 import { convert } from "../../../convert/CreateLabel";
-import { toDateKey } from "../../../../utils";
 import { Competition } from "../../../../types/models/competition";
 import { Season } from "../../../../types/models/season";
 

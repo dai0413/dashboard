@@ -1,5 +1,5 @@
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { RefereeForm, RefereeGet } from "../../../types/models/referee";
-import { toDateKey } from "../../../utils";
 
 export const referee = (t: RefereeGet): RefereeForm => ({
   ...t,

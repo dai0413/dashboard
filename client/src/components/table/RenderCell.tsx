@@ -1,13 +1,14 @@
-import { LinkField, TableHeader } from "../../types/types";
 import { Link } from "react-router-dom";
-import { isLabelObject, toDateKey } from "../../utils";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
+import { LinkField, TableHeader } from "../../types/types";
+import { isLabelObject } from "../../utils";
 import React from "react";
 
 const RenderCell = (
   header: TableHeader,
   row: Record<string, any>,
   form: boolean,
-  linkField?: LinkField[]
+  linkField?: LinkField[],
 ): React.ReactNode => {
   if ("element" in row && React.isValidElement(row.element)) {
     if (row.key === header.field) return row.element;

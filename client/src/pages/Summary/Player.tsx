@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { API_PATHS } from "@dai0413/myorg-shared";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TableWithFetch } from "../../components/table";
 import { usePlayer } from "../../context/models/player";
-import { toDateKey } from "../../utils";
 import { ModelType } from "../../types/models";
 import { PlayerTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
@@ -11,7 +12,6 @@ import { OptionArray } from "../../types/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
-import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useModal } from "../../context/modal-context";
