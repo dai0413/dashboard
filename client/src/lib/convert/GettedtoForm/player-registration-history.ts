@@ -6,15 +6,15 @@ import {
 import { toDateKey } from "../../../utils";
 
 export const playerRegistrationHistory = (
-  t: PlayerRegistrationHistoryGet
+  t: PlayerRegistrationHistoryGet,
 ): PlayerRegistrationHistoryForm => {
   const registration_type = registrationType().find(
-    (item) => item.label === t.registration_type
+    (item) => item.label === t.registration_type,
   )?.key;
 
   return {
     ...t,
-    date: t.date ? toDateKey(t.date) : "",
+    date: toDateKey(t.date),
     season: t.season.id,
     player: t.player.id,
     team: t.team.id,

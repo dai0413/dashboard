@@ -1,9 +1,7 @@
-export const toDateKey = (
-  value: string | number | Date | boolean,
+const formatDateKey = (
+  value: string | number | Date,
   withTime = false,
 ): string => {
-  if (typeof value === "boolean" || !value) return "";
-
   const date = value instanceof Date ? value : new Date(value);
 
   const opts: Intl.DateTimeFormatOptions = {
@@ -33,5 +31,7 @@ export const toDateKey = (
     : `${parts.year}-${parts.month}-${parts.day}`;
 };
 
-export const toKey = (date?: Date) =>
-  date ? toDateKey(date.toISOString()) : undefined;
+export const toDateKey = (
+  date?: Date | string | number | null,
+  withTime = false,
+) => (date ? formatDateKey(date, withTime) : undefined);

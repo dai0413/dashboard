@@ -6,7 +6,7 @@ import { OptionType } from "../../../../utils/createOption";
 import { QuickFilterItem } from "../../../../types/table";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
 import { convert } from "../../../convert/CreateLabel";
-import { toKey } from "../../../../utils/toDateKey";
+import { toDateKey } from "../../../../utils";
 import { Competition } from "../../../../types/models/competition";
 import { Season } from "../../../../types/models/season";
 
@@ -65,15 +65,15 @@ const getTransfer = async (
   endDate?: Date,
 ): Promise<FilterableFieldDefinition | undefined> => {
   const labelParts = [
-    startDate && `${toKey(new Date(startDate))}から`,
-    endDate && `${toKey(new Date(endDate))}に所属した選手`,
+    startDate && `${toDateKey(new Date(startDate))}から`,
+    endDate && `${toDateKey(new Date(endDate))}に所属した選手`,
   ].filter(Boolean);
 
   const fromDateRange = {
     label: labelParts.join(""),
     value: [
-      startDate ? `>=${toKey(new Date(startDate))}` : "",
-      endDate ? `<=${toKey(new Date(endDate))}` : "",
+      startDate ? `>=${toDateKey(new Date(startDate))}` : "",
+      endDate ? `<=${toDateKey(new Date(endDate))}` : "",
     ].filter(Boolean) as string[],
   };
 

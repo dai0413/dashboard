@@ -64,7 +64,7 @@ const Match = () => {
               <div className="text-gray-600">{`第${selected.match_week}節`}</div>
             )}
             <div className="text-sm text-gray-500">
-              開催日：{toDateKey(selected.date as string | number | Date)}
+              開催日：{toDateKey(selected.date)}
             </div>
           </div>
         </div>

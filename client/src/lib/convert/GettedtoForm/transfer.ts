@@ -8,9 +8,9 @@ export const transfer = (t: TransferGet): TransferForm => {
 
   return {
     ...t,
-    doa: t.doa ? toDateKey(t.doa) : "",
-    from_date: t.from_date ? toDateKey(t.from_date) : "",
-    to_date: t.to_date ? toDateKey(t.to_date) : "",
+    doa: toDateKey(t.doa),
+    from_date: toDateKey(t.from_date),
+    to_date: toDateKey(t.to_date),
     player: t.player.id,
     from_team: t.from_team ? t.from_team.id : undefined,
     to_team: t.to_team ? t.to_team.id : undefined,

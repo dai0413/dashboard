@@ -21,14 +21,13 @@ import {
   TeamCompetitionSeasonGet,
 } from "../../types/models/team-competition-season";
 import { MatchGet } from "../../types/models/match";
-import { toDateKey } from "../../utils";
 import { SeasonGet } from "../../types/models/season";
 import { Data, TeamMatch } from "../../types/types";
 import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
 import PointLine from "./Team/PointLine";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useModal } from "../../context/modal-context";
-import { toKey } from "../../utils/toDateKey";
+import { toDateKey } from "../../utils";
 
 const addMonths = (date: Date, months: number) => {
   const d = new Date(date);
@@ -77,11 +76,11 @@ const getSeasonDates = (
 
   /** normalSeason */
   const normalSeason: SeasonDates = {
-    startDate: toKey(seasonStart),
-    endDate: toKey(seasonEnd),
+    startDate: toDateKey(seasonStart),
+    endDate: toDateKey(seasonEnd),
     seasonRange: [
-      seasonStart && `>=${toKey(seasonStart)}`,
-      seasonEnd && `<=${toKey(seasonEnd)}`,
+      seasonStart && `>=${toDateKey(seasonStart)}`,
+      seasonEnd && `<=${toDateKey(seasonEnd)}`,
     ].filter(Boolean) as string[],
   };
 
@@ -91,11 +90,11 @@ const getSeasonDates = (
     : undefined;
 
   const transferWindow: SeasonDates = {
-    startDate: toKey(transferWindowStart),
-    endDate: toKey(seasonEnd),
+    startDate: toDateKey(transferWindowStart),
+    endDate: toDateKey(seasonEnd),
     seasonRange: [
-      transferWindowStart && `>=${toKey(transferWindowStart)}`,
-      seasonEnd && `<=${toKey(seasonEnd)}`,
+      transferWindowStart && `>=${toDateKey(transferWindowStart)}`,
+      seasonEnd && `<=${toDateKey(seasonEnd)}`,
     ].filter(Boolean) as string[],
   };
 
@@ -104,11 +103,11 @@ const getSeasonDates = (
   const futureEnd = seasonEnd ? addYears(seasonEnd, 1) : undefined;
 
   const future: SeasonDates = {
-    startDate: toKey(futureStart),
-    endDate: toKey(futureEnd),
+    startDate: toDateKey(futureStart),
+    endDate: toDateKey(futureEnd),
     seasonRange: [
-      futureStart && `>=${toKey(futureStart)}`,
-      futureEnd && `<=${toKey(futureEnd)}`,
+      futureStart && `>=${toDateKey(futureStart)}`,
+      futureEnd && `<=${toDateKey(futureEnd)}`,
     ].filter(Boolean) as string[],
   };
 
@@ -685,8 +684,7 @@ const Team = () => {
               {
                 label: "開催日",
                 field: "date",
-                getData: (d: MatchGet) =>
-                  d.date ? toDateKey(new Date(d.date)) : "",
+                getData: (d: MatchGet) => toDateKey(d.date) || "",
               },
               { label: "大会", field: "competition" },
               { label: "ステージ", field: "competition_stage" },

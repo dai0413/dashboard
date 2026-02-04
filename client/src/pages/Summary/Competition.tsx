@@ -244,8 +244,7 @@ const Competition = () => {
             {
               label: "開催日",
               field: "date",
-              getData: (d: MatchGet) =>
-                d.date ? toDateKey(new Date(d.date)) : "",
+              getData: (d: MatchGet) => toDateKey(d.date) || "",
             },
             { label: "節", field: "match_week", width: "80px" },
             { label: "ステージ", field: "competition_stage", width: "100px" },
