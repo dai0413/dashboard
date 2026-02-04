@@ -1,8 +1,10 @@
 import { toBoolean } from "./toBoolean.js";
 import { toDate } from "./toDate.js";
+import { formatDateKey } from "./formatDateKey.js";
 import { toNumber } from "./toNumber.js";
 import { toObjectId } from "./toObjectId.js";
 import { ParserKey } from "./types.js";
+import { formatDateKeyWithTime } from "./formatDateKeyWithTime.js";
 
 type FieldPath<T> = keyof T | string;
 
@@ -46,7 +48,10 @@ export const normalizeRows = <
         const path = String(f);
         const currentValue = getByPath(row, path);
 
-        const res = parsersMap[parserKey](currentValue, path);
+        const converted =
+          currentValue instanceof Date ? currentValue : new Date(currentValue);
+
+        const res = parsersMap[parserKey](converted, path);
 
         if (res.ok) {
           setByPath(row, path, res.value);
@@ -65,6 +70,20 @@ export const parsersMap = {
   [ParserKey.Boolean]: toBoolean,
   [ParserKey.ObjectId]: toObjectId,
   [ParserKey.Date]: toDate,
+  [ParserKey.DateToString]: formatDateKey,
+  [ParserKey.DateToStringWithTime]: formatDateKeyWithTime,
 };
 
 export { ParserKey } from "./types.js";
+
+export const toDateKey = (
+  date?: Date | string | number | null,
+  withTime = false,
+) => {
+  if (!date) return undefined;
+
+  const result = withTime ? formatDateKeyWithTime(date) : formatDateKey(date);
+
+  if (result.ok) return result.value;
+  return undefined;
+};
