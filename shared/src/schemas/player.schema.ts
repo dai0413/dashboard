@@ -12,6 +12,7 @@ export const PlayerZodSchema = z.object({
   dob: dateField,
   pob: z.string().nonempty().optional(),
   old_id: z.string().optional(),
+  normalized_en_name: z.string().nonempty(),
   createdAt: dateField,
   updatedAt: dateField,
 });
@@ -20,6 +21,7 @@ export type PlayerType = z.infer<typeof PlayerZodSchema>;
 
 export const PlayerFormSchema = PlayerZodSchema.omit({
   _id: true,
+  normalized_en_name: true,
   createdAt: true,
   updatedAt: true,
 });

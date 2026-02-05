@@ -17,7 +17,7 @@ export const RefereeZodSchema = z.object({
   player: objectId.optional(),
   transferurl: z.string().nonempty().optional(),
   sofaurl: z.string().nonempty().optional(),
-
+  normalized_en_name: z.string().nonempty(),
   createdAt: dateField,
   updatedAt: dateField,
 });
@@ -26,6 +26,7 @@ export type RefereeType = z.infer<typeof RefereeZodSchema>;
 
 export const RefereeFormSchema = RefereeZodSchema.omit({
   _id: true,
+  normalized_en_name: true,
   createdAt: true,
   updatedAt: true,
 });

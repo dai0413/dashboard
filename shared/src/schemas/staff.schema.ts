@@ -16,6 +16,7 @@ export const StaffZodSchema = z.object({
   pob: z.string().nonempty().optional(),
   player: objectId.optional(),
   old_id: z.string().optional(),
+  normalized_en_name: z.string().nonempty(),
   createdAt: dateField,
   updatedAt: dateField,
 });
@@ -24,6 +25,7 @@ export type StaffType = z.infer<typeof StaffZodSchema>;
 
 export const StaffFormSchema = StaffZodSchema.omit({
   _id: true,
+  normalized_en_name: true,
   createdAt: true,
   updatedAt: true,
 });

@@ -1,5 +1,16 @@
 # CHANGELOG
 
+### v2.1.0
+
+#### フィールド追加
+
+- match モデル
+  - name フィールド追加
+- team モデル
+  - normalized_name フィールド追加
+- player モデル , staff モデル , referee モデル
+  - normalized_en_name フィールド追加
+
 ### v1.1.0
 
 #### 新規モデル追加

@@ -41,7 +41,10 @@ export const StaffAppearanceResponseSchema = StaffAppearanceZodSchema.omit({
   team: true,
 }).safeExtend({
   match: MatchBaseZodSchema,
-  staff: StaffZodSchema.extend({ _id: objectId.optional() }),
+  staff: StaffZodSchema.extend({
+    _id: objectId.optional(),
+    normalized_en_name: z.string().optional(),
+  }),
   team: TeamZodSchema,
 });
 

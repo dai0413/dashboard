@@ -23,8 +23,8 @@ export const InjuryBaseZodSchema = z.object({
         .string()
         .regex(
           ttpPattern,
-          "全治期間は 数字+単位（d/w/m/y）、または 数字+単位-数字+単位 の形式で入力してください（例: 3d, 10-14d, 1d-3w）"
-        )
+          "全治期間は 数字+単位（d/w/m/y）、または 数字+単位-数字+単位 の形式で入力してください（例: 3d, 10-14d, 1d-3w）",
+        ),
     )
     .optional(),
   erd: dateField.optional(),
@@ -37,14 +37,14 @@ export const InjuryZodSchema = InjuryBaseZodSchema.refine(
   (data) => data.team || data.team_name,
   {
     message: "team または team_name のどちらかを入力してください",
-  }
+  },
 ).refine(
   (data) =>
     !data.erd ||
     (!data.doi && !data.dos) ||
     (data.doi && data.erd > data.doi) ||
     (data.dos && data.erd > data.dos),
-  { message: "erd は doi または dos より後である必要があります" }
+  { message: "erd は doi または dos より後である必要があります" },
 );
 export type InjuryType = z.infer<typeof InjuryZodSchema>;
 
@@ -59,7 +59,10 @@ export const InjuryResponseSchema = InjuryBaseZodSchema.omit({
   team_name: true,
 }).extend({
   player: PlayerZodSchema,
-  team: TeamZodSchema.extend({ _id: objectId.optional() }),
+  team: TeamZodSchema.extend({
+    _id: objectId.optional(),
+    normalized_name: z.string().optional(),
+  }).optional(),
   now_team: TeamZodSchema.optional(),
 });
 

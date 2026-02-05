@@ -86,7 +86,10 @@ export const PlayerMatchEventLogResponseSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
-    player: PlayerZodSchema.extend({ _id: objectId.optional() }),
+    player: PlayerZodSchema.extend({
+      _id: objectId.optional(),
+      normalized_en_name: z.string().optional(),
+    }),
   });
 
 export const PlayerMatchEventLogPopulatedSchema =

@@ -55,8 +55,14 @@ export const TransferResponseSchema = TransferBaseZodSchema.omit({
   to_team_name: true,
 }).extend({
   player: PlayerZodSchema.extend({ _id: objectId.optional() }),
-  from_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
-  to_team: TeamZodSchema.extend({ _id: objectId.optional() }).optional(),
+  from_team: TeamZodSchema.extend({
+    _id: objectId.optional(),
+    normalized_name: z.string().optional(),
+  }).optional(),
+  to_team: TeamZodSchema.extend({
+    _id: objectId.optional(),
+    normalized_name: z.string().optional(),
+  }).optional(),
 });
 
 export const TransferPopulatedSchema = TransferBaseZodSchema.omit({

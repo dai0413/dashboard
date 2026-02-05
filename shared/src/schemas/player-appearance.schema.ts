@@ -53,7 +53,10 @@ export const PlayerAppearanceResponseSchema = PlayerAppearanceZodSchema.omit({
   player: true,
   team: true,
 }).safeExtend({
-  player: PlayerZodSchema.extend({ _id: objectId.optional() }),
+  player: PlayerZodSchema.extend({
+    _id: objectId.optional(),
+    normalized_en_name: z.string().optional(),
+  }),
   match: MatchBaseZodSchema,
   team: TeamZodSchema,
 });

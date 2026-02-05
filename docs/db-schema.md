@@ -1,13 +1,16 @@
 # データベース設計
 
 - [データベース設計](#データベース設計)
+  - [共通関数](#共通関数)
   - [1. ユーザー(user)](#1-ユーザーuser)
   - [2. チーム(team)](#2-チームteam)
     - [フィールド一覧](#フィールド一覧)
     - [ENUM](#enum)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose)
+    - [自動入力(server)](#自動入力server)
   - [3. 選手(player)](#3-選手player)
     - [フィールド一覧](#フィールド一覧-1)
+    - [自動入力(server)](#自動入力server-1)
   - [4. 移籍(transfer)](#4-移籍transfer)
     - [フィールド一覧](#フィールド一覧-2)
     - [ENUM](#enum-1)
@@ -17,7 +20,7 @@
     - [フィールド一覧](#フィールド一覧-3)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-2)
     - [バリデーション(zod)](#バリデーションzod-1)
-    - [自動入力(server)](#自動入力server)
+    - [自動入力(server)](#自動入力server-2)
   - [6. 国(country)](#6-国country)
     - [フィールド一覧](#フィールド一覧-4)
     - [ENUM](#enum-2)
@@ -34,6 +37,7 @@
   - [9. 審判(referee)](#9-審判referee)
     - [フィールド一覧](#フィールド一覧-7)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-6)
+    - [自動入力(server)](#自動入力server-3)
   - [10. 大会(Competition)](#10-大会competition)
     - [フィールド一覧](#フィールド一覧-8)
     - [ENUM](#enum-5)
@@ -65,18 +69,18 @@
     - [フィールド一覧](#フィールド一覧-14)
     - [ENUM](#enum-8)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-13)
-    - [自動入力(client)](#自動入力client-2)
+    - [自動入力(server)](#自動入力server-4)
   - [17. 選手登録(Player-Registration)](#17-選手登録player-registration)
     - [フィールド一覧](#フィールド一覧-15)
     - [ENUM](#enum-9)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-14)
-    - [自動入力(client)](#自動入力client-3)
+    - [自動入力(client)](#自動入力client-2)
   - [18. 選手登録履歴(Player-RegistrationHistory)](#18-選手登録履歴player-registrationhistory)
     - [フィールド一覧](#フィールド一覧-16)
     - [ENUM](#enum-10)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-15)
     - [バリデーション(zod)](#バリデーションzod-4)
-    - [自動入力(client)](#自動入力client-4)
+    - [自動入力(client)](#自動入力client-3)
   - [19. 試合イベント(Match-Event-Type)](#19-試合イベントmatch-event-type)
     - [フィールド一覧](#フィールド一覧-17)
     - [ENUM](#enum-11)
@@ -90,7 +94,7 @@
   - [21. 監督・コーチ(Staff)](#21-監督コーチstaff)
     - [フィールド一覧](#フィールド一覧-19)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-18)
-    - [自動入力(client)](#自動入力client-5)
+    - [自動入力(client)](#自動入力client-4)
   - [22. 選手の出場履歴(Player-Appearance)](#22-選手の出場履歴player-appearance)
     - [フィールド一覧](#フィールド一覧-20)
     - [ENUM](#enum-13)
@@ -107,7 +111,7 @@
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-21)
     - [バリデーション(zod)](#バリデーションzod-8)
     - [バリデーション(client)](#バリデーションclient)
-    - [自動入力(client)](#自動入力client-6)
+    - [自動入力(client)](#自動入力client-5)
     - [入力時注意](#入力時注意)
     - [備考](#備考-4)
   - [25. 監督・コーチの試合イベントログ(Staff-Match-Event-Log)](#25-監督コーチの試合イベントログstaff-match-event-log)
@@ -116,7 +120,7 @@
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-22)
     - [バリデーション(zod)](#バリデーションzod-9)
     - [バリデーション(client)](#バリデーションclient-1)
-    - [自動入力(client)](#自動入力client-7)
+    - [自動入力(client)](#自動入力client-6)
     - [入力時注意](#入力時注意-1)
   - [26. 試合でのフォーメーション(Team-Match-Formation)](#26-試合でのフォーメーションteam-match-formation)
     - [フィールド一覧](#フィールド一覧-24)
@@ -127,6 +131,22 @@
   - [. ポジション](#-ポジション)
 
 ---
+
+## 共通関数
+
+- **normalized_en_name の自動生成**
+
+```
+   function normalizeEnName(name: string): string {
+     return name
+     .toUpperCase()
+     .replace(/[^\p{L}\p{N}\s]/gu, "")
+     .split(/\s+/)
+     .filter(Boolean)
+     .sort()
+     .join(" ");
+     }
+```
 
 ## 1. ユーザー(user)
 
@@ -146,19 +166,20 @@
 
 ### フィールド一覧
 
-| フィールド  | 型                | 日本語        | require | default |
-| ----------- | ----------------- | ------------- | ------- | ------- |
-| team        | 文字列            | チーム名      | true    |         |
-| abbr        | 文字列            | 略称          |         |         |
-| enTeam      | 文字列            | 英名          |         |         |
-| country     | 外部キー(Country) | 国名          |         |         |
-| genre       | 文字列            | ジャンル      |         |         |
-| age_group   | 文字列            | 年代          |         |         |
-| division    | 文字列            | 2nd, 3rd など |         | 1st     |
-| jdataid     | 数字              | j.data.id     |         |         |
-| labalph     | 文字列            | lab.alph      |         |         |
-| transferurl | 文字列            | transfer      |         |         |
-| sofaurl     | 文字列            | sofa          |         |         |
+| フィールド      | 型                | 日本語        | require | default |
+| --------------- | ----------------- | ------------- | ------- | ------- |
+| team            | 文字列            | チーム名      | true    |         |
+| abbr            | 文字列            | 略称          |         |         |
+| enTeam          | 文字列            | 英名          |         |         |
+| country         | 外部キー(Country) | 国名          |         |         |
+| genre           | 文字列            | ジャンル      |         |         |
+| age_group       | 文字列            | 年代          |         |         |
+| division        | 文字列            | 2nd, 3rd など |         | 1st     |
+| jdataid         | 数字              | j.data.id     |         |         |
+| labalph         | 文字列            | lab.alph      |         |         |
+| transferurl     | 文字列            | transfer      |         |         |
+| sofaurl         | 文字列            | sofa          |         |         |
+| normalized_name | 文字列            | チーム名      |         |         |
 
 ### ENUM
 
@@ -171,18 +192,33 @@
 - `transferurl` は **ユニーク**
 - `sofaurl` は **ユニーク**
 
+### 自動入力(server)
+
+- **client で入力させないフィールド**
+  - `normalized_name`
+- **normalized_name の自動生成**
+  - team.normalize(`NFKC`)で正規化
+
 ---
 
 ## 3. 選手(player)
 
 ### フィールド一覧
 
-| フィールド | 型     | 日本語   | require | default |
-| ---------- | ------ | -------- | ------- | ------- |
-| name       | 文字列 | 名前     | true    |         |
-| en_name    | 文字列 | 英語名   |         |         |
-| dob        | 日付   | 生年月日 |         |         |
-| pob        | 文字列 | 出身地   |         |         |
+| フィールド         | 型     | 日本語     | require | default |
+| ------------------ | ------ | ---------- | ------- | ------- |
+| name               | 文字列 | 名前       | true    |         |
+| en_name            | 文字列 | 英語名     |         |         |
+| normalized_en_name | 文字列 | 正規済英名 |         |         |
+| dob                | 日付   | 生年月日   |         |         |
+| pob                | 文字列 | 出身地     |         |         |
+
+### 自動入力(server)
+
+- **client で入力させないフィールド**
+  - `normalized_en_name`
+- **normalized_en_name の自動生成**
+  - `normalizeEnName`関数で処理
 
 ---
 
@@ -406,16 +442,17 @@
 
 ### フィールド一覧
 
-| フィールド  | 型                  | 日本語   | require | default |
-| ----------- | ------------------- | -------- | ------- | ------- |
-| name        | 文字列              | 名前     | true    |         |
-| en_name     | 文字列              | 英名     |         |         |
-| dob         | 日付                | 生年月日 |         |         |
-| pob         | 文字列              | 出身地   |         |         |
-| citizenship | [外部キー(Country)] | 国籍     |         |         |
-| player      | 外部キー(Player)    | 選手     |         |         |
-| transferurl | 文字列              | transfer |         |         |
-| sofaurl     | 文字列              | sofa     |         |         |
+| フィールド         | 型                  | 日本語     | require | default |
+| ------------------ | ------------------- | ---------- | ------- | ------- |
+| name               | 文字列              | 名前       | true    |         |
+| en_name            | 文字列              | 英名       |         |         |
+| normalized_en_name | 文字列              | 正規済英名 |         |         |
+| dob                | 日付                | 生年月日   |         |         |
+| pob                | 文字列              | 出身地     |         |         |
+| citizenship        | [外部キー(Country)] | 国籍       |         |         |
+| player             | 外部キー(Player)    | 選手       |         |         |
+| transferurl        | 文字列              | transfer   |         |         |
+| sofaurl            | 文字列              | sofa       |         |         |
 
 ### 組み合わせ (Mongoose)
 
@@ -427,6 +464,13 @@
 - `country`
 - `age_group`（任意）
 - `joined_at`（任意）
+
+### 自動入力(server)
+
+- **client で入力させないフィールド**
+  - `normalized_en_name`
+- **normalized_en_name の自動生成**
+  - `normalizeEnName`関数で処理
 
 ---
 
@@ -702,7 +746,7 @@
 - `away_team`
 - `match_week`（任意）
 
-### 自動入力(client)
+### 自動入力(server)
 
 - **client で入力させないフィールド**
   - `competiton`
@@ -915,15 +959,16 @@
 
 ### フィールド一覧
 
-| フィールド  | 型                  | 日本語      | require | default |
-| ----------- | ------------------- | ----------- | ------- | ------- |
-| name        | 文字列              | 名前        | true    |         |
-| en_name     | 文字列              | 英語名      |         |         |
-| dob         | 日付                | 生年月日    |         |         |
-| citizenship | [外部キー(Country)] | 国籍        |         |         |
-| pob         | 文字列              | 出身地      |         |         |
-| player      | 外部キー(Player)    | 選手        |         |         |
-| old_id      | 文字列              | 旧 match_id |         |         |
+| フィールド         | 型                  | 日本語      | require | default |
+| ------------------ | ------------------- | ----------- | ------- | ------- |
+| name               | 文字列              | 名前        | true    |         |
+| en_name            | 文字列              | 英語名      |         |         |
+| normalized_en_name | 文字列              | 正規済英名  |         |         |
+| dob                | 日付                | 生年月日    |         |         |
+| citizenship        | [外部キー(Country)] | 国籍        |         |         |
+| pob                | 文字列              | 出身地      |         |         |
+| player             | 外部キー(Player)    | 選手        |         |         |
+| old_id             | 文字列              | 旧 match_id |         |         |
 
 ### 組み合わせ (Mongoose)
 
@@ -934,6 +979,9 @@
 
 - **client で入力させないフィールド**
   - `old_id`
+  - `normalized_en_name`
+- **normalized_en_name の自動生成**
+  - `normalizeEnName`関数で処理
 
 ---
 
@@ -1050,9 +1098,9 @@
 
 ### バリデーション(zod)
 
-- **order 入力時**  
+- **order 入力時**
   → `time`, `add_time`, `special_time` は `undefined`
-- **special_time 入力時**  
+- **special_time 入力時**
   → `time`, `add_time`, `order` は `undefined`
 
 ### バリデーション(client)
@@ -1121,7 +1169,7 @@
 ### バリデーション(zod)
 
 - **staff または staff_name どちらかを入力**
-- **special_time 入力時**  
+- **special_time 入力時**
   → `time`, `add_time` は `undefined`
 
 ### バリデーション(client)
@@ -1176,3 +1224,7 @@
 ## . 監督キャリア
 
 ## . ポジション
+
+```
+
+```

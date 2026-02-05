@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { objectId } from "./utils/objectId.js";
+import { dateField } from "./utils/dateField.js";
 import { genre } from "../enum/genre.js";
 import { ageGroup } from "../enum/ageGroup.js";
 import { division } from "../enum/division.js";
@@ -23,24 +24,16 @@ export const TeamZodSchema = z.object({
   transferurl: z.string().nonempty().optional(),
   sofaurl: z.string().nonempty().optional(),
   old_id: z.string().optional(),
-  createdAt: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
-    )
-    .optional(),
-  updatedAt: z
-    .preprocess(
-      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
-      z.date()
-    )
-    .optional(),
+  normalized_name: z.string().nonempty(),
+  createdAt: dateField,
+  updatedAt: dateField,
 });
 
 export type TeamType = z.infer<typeof TeamZodSchema>;
 
 export const TeamFormSchema = TeamZodSchema.omit({
   _id: true,
+  normalized_name: true,
   createdAt: true,
   updatedAt: true,
 });
