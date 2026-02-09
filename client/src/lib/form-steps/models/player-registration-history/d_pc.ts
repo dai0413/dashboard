@@ -1,6 +1,5 @@
 import { AxiosInstance } from "axios";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
@@ -22,13 +21,10 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
 
         if (!res) return [];
 
-        const data = normalizeRows(res.data, [
-          { field: "date", parserKey: ParserKey.DateToString },
-        ]);
-
-        return data;
+        return res.data;
       },
       many: true,
+      onChange: onChangeFillChangesByRegistrationType,
     },
     {
       stepLabel: "取得したデータを編集してください",
@@ -40,6 +36,7 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           fieldType: "input",
           valueType: "date",
           overwriteByMany: true,
+          width: "200px",
         },
         {
           key: "registration_type",
