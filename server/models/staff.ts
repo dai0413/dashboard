@@ -1,5 +1,5 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { StaffType } from "@dai0413/myorg-shared";
+import { generateNormalizedEnName, StaffType } from "@dai0413/myorg-shared";
 
 export interface IStaff extends Omit<StaffType, "_id" | "player">, Document {
   _id: Types.ObjectId;
@@ -18,6 +18,7 @@ const StaffSchema: Schema<IStaff> = new Schema(
     pob: { type: String },
     player: { type: Schema.Types.ObjectId, ref: "Player" },
     old_id: { type: String },
+    normalized_en_name: { type: String },
   },
   { timestamps: true },
 );
@@ -32,6 +33,45 @@ StaffSchema.index(
     },
   },
 );
+
+function applyNormalizedEnName(staff: Partial<IStaff>) {
+  if (staff.en_name) {
+    staff.normalized_en_name = generateNormalizedEnName(staff.en_name);
+  }
+}
+
+StaffSchema.pre("validate", async function (next) {
+  applyNormalizedEnName(this);
+  next();
+});
+
+StaffSchema.pre("insertMany", async function (next, docs) {
+  for (const doc of docs) {
+    applyNormalizedEnName(doc);
+  }
+  next();
+});
+
+StaffSchema.pre(["findOneAndUpdate", "updateOne"], async function (next) {
+  const rawUpdate = this.getUpdate();
+  if (!rawUpdate) return next();
+
+  // update.$set を吸収
+  const update = {
+    ...(rawUpdate as any),
+    ...(rawUpdate as any).$set,
+  } as Partial<IStaff>;
+
+  const doc = await this.model.findOne(this.getQuery());
+
+  applyNormalizedEnName({
+    ...doc.toObject(),
+    ...update,
+  });
+
+  this.setUpdate(update);
+  next();
+});
 
 export const StaffModel: Model<IStaff> = mongoose.model<IStaff>(
   "Staff",

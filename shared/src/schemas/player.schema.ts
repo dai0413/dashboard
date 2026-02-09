@@ -12,7 +12,7 @@ export const PlayerZodSchema = z.object({
   dob: dateField,
   pob: z.string().nonempty().optional(),
   old_id: z.string().optional(),
-  normalized_en_name: z.string().nonempty(),
+  normalized_en_name: z.string().nonempty().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });

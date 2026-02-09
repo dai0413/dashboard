@@ -16,7 +16,7 @@ export const StaffZodSchema = z.object({
   pob: z.string().nonempty().optional(),
   player: objectId.optional(),
   old_id: z.string().optional(),
-  normalized_en_name: z.string().nonempty(),
+  normalized_en_name: z.string().nonempty().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });
