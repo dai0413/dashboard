@@ -53,18 +53,14 @@ const FieldList = (props: Props) => {
     }
 
     // // 日付フォーマット
-    displayValue =
-      field.type === "Date" &&
-      value !== "" &&
-      value !== "入力対象外" &&
-      value !== "未入力"
-        ? toDateKey(value as string | number | Date) || "未入力"
-        : field.type === "datetime-local" &&
-            value !== "" &&
-            value !== "入力対象外" &&
-            value !== "未入力"
-          ? toDateKey(value as string | number | Date, true) || "未入力"
-          : "未入力";
+    if (value !== "" && value !== "入力対象外" && value !== "未入力") {
+      if (field.type === "Date") {
+        displayValue = toDateKey(value as string | number | Date) || "未入力";
+      } else if (field.type === "datetime-local") {
+        displayValue =
+          toDateKey(value as string | number | Date, true) || "未入力";
+      }
+    }
 
     // // 配列の処理
     if (Array.isArray(value)) {
