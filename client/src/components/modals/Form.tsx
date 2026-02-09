@@ -19,6 +19,7 @@ import { useModal } from "../../context/modal-context";
 import { FilterProvider } from "../../context/filter-context";
 import { SortProvider } from "../../context/sort-context";
 import { ListViewProvider } from "../../context/listView-context";
+import { isEmptyObject } from "../../utils";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -145,8 +146,18 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   const [isTableOpen, setIsTableOpen] = useState<boolean>(false);
 
+  const hasNestedKey = (obj: any, path: string) => {
+    return path.split(".").every((key) => {
+      if (obj && typeof obj === "object" && key in obj) {
+        obj = obj[key];
+        return true;
+      }
+      return false;
+    });
+  };
+
   const confirmBulkDataHeaders = useMemo(() => {
-    return (
+    const nextConfirmBulkDataHeaders =
       formSteps
         ?.filter((step) => step.many)
         .flatMap((s) =>
@@ -158,9 +169,12 @@ const Form = <T extends keyof FormTypeMap>() => {
               fieldType: field.fieldType,
               valueType: field.valueType,
             }))
-            .filter((h) => (many?.formData ?? []).some((d) => h.field in d)),
-        ) ?? []
-    );
+            .filter((h) =>
+              (many?.formData ?? []).some((d) => hasNestedKey(d, h.field)),
+            ),
+        ) ?? [];
+
+    return nextConfirmBulkDataHeaders;
   }, [formSteps, many?.formData]);
 
   const confirmBulkData = useMemo(() => {
@@ -170,7 +184,7 @@ const Form = <T extends keyof FormTypeMap>() => {
 
         confirmBulkDataHeaders.forEach((h) => {
           const key = h.field;
-          const value = d[key as keyof typeof d];
+          const value = get(d, key);
 
           let displayValue: string | number | undefined;
 
@@ -362,7 +376,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                   </span>
                 )}
 
-              {typeof single.formData === "object" && (
+              {!isEmptyObject(single.formData) && (
                 <FieldList
                   isForm={true}
                   fields={displayableField}
