@@ -125,6 +125,17 @@
   - [26. 試合でのフォーメーション(Team-Match-Formation)](#26-試合でのフォーメーションteam-match-formation)
     - [フィールド一覧](#フィールド一覧-24)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-23)
+  - [27. スタッフ登録(Staff-Registration)](#27-スタッフ登録staff-registration)
+    - [フィールド一覧](#フィールド一覧-25)
+    - [ENUM](#enum-16)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-24)
+    - [自動入力(client)](#自動入力client-7)
+  - [28. スタッフ登録履歴(Staff-RegistrationHistory)](#28-スタッフ登録履歴staff-registrationhistory)
+    - [フィールド一覧](#フィールド一覧-26)
+    - [ENUM](#enum-17)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-25)
+    - [バリデーション(zod)](#バリデーションzod-10)
+    - [自動入力(client)](#自動入力client-8)
   - [今後](#今後)
   - [. 出場停止](#-出場停止)
   - [. 監督キャリア](#-監督キャリア)
@@ -1214,6 +1225,119 @@
 
 - `match`
 - `team`
+
+---
+
+## 27. スタッフ登録(Staff-Registration)
+
+28. スタッフ登録履歴(Staff-RegistrationHistory)から自動更新するモデル
+
+### フィールド一覧
+
+| フィールド          | 型                    | 日本語     | require | default |
+| ------------------- | --------------------- | ---------- | ------- | ------- |
+| date                | 日付                  | 開催日     |         |         |
+| season              | 外部キー(Season)      | シーズン   | true    |         |
+| competition         | 外部キー(Competition) | 大会       | true    |         |
+| staff               | 外部キー(Staff)       | スタッフ   | true    |         |
+| team                | 外部キー(Team)        | チーム     | true    |         |
+| role                | 文字列                | 役割       |         |         |
+| name                | 文字列                | 名前       | true    |         |
+| en_name             | 文字列                | 英語名     |         |         |
+| registration_type   | 文字列                | 登録・抹消 | true    |         |
+| registration_status | 文字列                | 登録状況   | true    |         |
+| note                | 文字列                | 備考       |         |         |
+
+### ENUM
+
+- **registration_type**: `register` | `deregister`
+- **registration_status**: `active` | `terminated`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `date`
+- `season`
+- `staff`
+- `team`
+- `registration_type`
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+  - `registration_status`
+- **competition の自動生成**
+  - `season`モデルから取得
+- **registration_status の自動生成**
+  - `registration_type` === `register` がきたとき `season`, `staff`, が一致する data を探す
+    そのうち最新データの`registration_status` を `active`に, それ以外データは`terminated`
+  - `registration_type` === `deregister` がきたとき `season`, `staff`, が一致する data を探す
+    そのうち送られてきた`date`より前のデータの`registration_status` を `terminated`に
+
+[Staff-RegistrationHistory] register ----→ [Staff-Registration (registration_type === `register`)作成 + ※4]
+
+[Staff-RegistrationHistory] update ------→ [Staff-Registration に差分適用]
+
+[Staff-RegistrationHistory] deregister --→ [Staff-Registration (registration_type === `deregister`)作成 + ※5]
+
+---
+
+## 28. スタッフ登録履歴(Staff-RegistrationHistory)
+
+### フィールド一覧
+
+| フィールド        | 型                    | 日本語           | require | default |
+| ----------------- | --------------------- | ---------------- | ------- | ------- |
+| date              | 日付                  | 開催日           |         |         |
+| season            | 外部キー(Season)      | シーズン         | true    |         |
+| competition       | 外部キー(Competition) | 大会             | true    |         |
+| staff             | 外部キー(Staff)       | スタッフ         | true    |         |
+| team              | 外部キー(Team)        | チーム           | true    |         |
+| registration_type | 文字列                | 登録・抹消・変更 | true    |         |
+| changes           | オブジェクト          | 変更点           |         |         |
+
+- changes は以下の通り
+
+| フィールド | 型     | 日本語 | require | default |
+| ---------- | ------ | ------ | ------- | ------- |
+| role       | 文字列 | 役割   |         |         |
+| name       | 文字列 | 名前   |         |         |
+| en_name    | 文字列 | 英語名 |         |         |
+| note       | 文字列 | 備考   |         |         |
+
+### ENUM
+
+- **registration_type**: `register` | `deregister`
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `date`
+- `season`
+- `staff`
+- `team`
+- `registration_type`
+
+### バリデーション(zod)
+
+- **registration_type === register の時**
+  → `name` は 必須
+- **registration_type === change の時**
+  → `changes` は 必須
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `competiton`
+- **competition の自動生成**
+  - `season`モデルから取得
+- **staff , en_name の自動生成**
+  - `staff`モデルから取得
+- **changes の自動生成**
+  - `registration_type` === `deregister` 　の時 `season` , `team` , `staff` が一致する直前データの `changes` を採用
 
 ---
 

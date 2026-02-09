@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### v2.2.0
+
+#### 新規モデル追加
+
+- [27. スタッフ登録(Staff-Registration)]
+- [28. スタッフ登録履歴(Staff-RegistrationHistory)]
+
 ### v2.1.0
 
 #### フィールド追加

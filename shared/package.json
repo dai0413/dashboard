@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -34,6 +34,16 @@
       "import": "./dist/types/d_pc/player-registration-history.js",
       "require": "./dist/types/d_pc/player-registration-history.js",
       "types": "./dist/types/d_pc/player-registration-history.d.ts"
+    },
+    "./types/d_pc/staff": {
+      "import": "./dist/types/d_pc/staff.js",
+      "require": "./dist/types/d_pc/staff.js",
+      "types": "./dist/types/d_pc/staff.d.ts"
+    },
+    "./types/d_pc/staff-registration-history": {
+      "import": "./dist/types/d_pc/staff-registration-history.js",
+      "require": "./dist/types/d_pc/staff-registration-history.js",
+      "types": "./dist/types/d_pc/staff-registration-history.d.ts"
     }
   },
   "scripts": {
