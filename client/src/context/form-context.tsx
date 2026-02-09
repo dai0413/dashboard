@@ -1,11 +1,4 @@
-import {
-  createContext,
-  JSX,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, JSX, useContext, useMemo, useState } from "react";
 import { useAlert } from "./alert-context";
 import {
   FilterConditionsByKey,
@@ -18,7 +11,7 @@ import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
 import { getSteps } from "../lib/form-steps";
-import { objectIsEqual } from "../utils";
+import { isEmptyObject, objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
 import {
   DetailFieldDefinition,
@@ -416,6 +409,7 @@ export const FormProvider = <T extends ModelType>({
     const current = formSteps[currentStep];
 
     if (!current) return;
+    const onChange = current.onChange;
     const checkData = current.many ? formDatas : formData;
 
     // --- 必須チェック ---
@@ -438,9 +432,9 @@ export const FormProvider = <T extends ModelType>({
     }
 
     // --- onChange 関数による値変更 ---
-    if (inputMode === "single" && formMode === "create" && current.onChange) {
+    if (inputMode === "single" && formMode === "create" && onChange) {
       if (!Array.isArray(checkData)) {
-        const updatePaires = await current.onChange(checkData, api);
+        const updatePaires = await onChange(checkData, api);
 
         updatePaires.forEach((da) => {
           singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
@@ -448,18 +442,39 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
-    if (inputMode === "many" && formMode === "create" && current.fetchValue) {
-      const fetchedValues = await current.fetchValue(formData, api);
-      setFormDatas(fetchedValues);
-      const resolvedLabels = await Promise.all(
-        fetchedValues.map((v) => resolveForeignKeyLabels(v)),
-      );
+    if (inputMode === "many" && formMode === "create") {
+      const fetchValue = current.fetchValue;
+      let arrayCheckData = checkData;
+      if (fetchValue) {
+        const fetchedValues = await fetchValue(formData, api);
+        setFormDatas(fetchedValues);
+        arrayCheckData = fetchedValues;
+        const resolvedLabels = await Promise.all(
+          fetchedValues.map((v) => resolveForeignKeyLabels(v)),
+        );
+        setFormLabels(resolvedLabels);
+      }
 
-      setFormLabels(resolvedLabels);
+      if (onChange && Array.isArray(arrayCheckData)) {
+        await Promise.all(
+          arrayCheckData.map(async (value, index) => {
+            const updatePaires = await onChange(value, api);
+
+            updatePaires.forEach((da) => {
+              handleFormData(index, da.key as keyof FormTypeMap[T], da.value);
+            });
+          }),
+        );
+      }
     }
 
     // --- many入力時の共通要素
-    if (inputMode === "many" && bulkCommonData && current.fields) {
+    if (
+      inputMode === "many" &&
+      bulkCommonData &&
+      !isEmptyObject(bulkCommonData) &&
+      current.fields
+    ) {
       current.fields.forEach((field) => {
         if (field.overwriteByMany) {
           setFormDatas([bulkCommonData]);
