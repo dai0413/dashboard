@@ -1,16 +1,11 @@
-import {
-  generateNormalizedEnName,
-  PlayerFormSchema,
-} from "@dai0413/myorg-shared";
-import { z } from "zod";
+import { generateNormalizedEnName } from "@dai0413/myorg-shared";
+import { Form, Scraped } from "@dai0413/myorg-shared/types/d_pc/player";
 import { PlayerModel } from "../../../../models/player.js";
 
-type Player = z.infer<typeof PlayerFormSchema>;
-
 export const filter = async (
-  data: Partial<Player>[],
-): Promise<Partial<Player>[]> => {
-  const results: Partial<Player>[] = [];
+  data: Partial<Form>[],
+): Promise<Partial<Scraped>[]> => {
+  const results: Partial<Scraped>[] = [];
 
   for (const p of data) {
     const query: any = {};
