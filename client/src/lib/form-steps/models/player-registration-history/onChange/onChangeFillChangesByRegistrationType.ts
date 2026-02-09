@@ -53,6 +53,7 @@ export const onChangeFillChangesByRegistrationType = async (
     });
 
     if (!res) return [];
+    if (res.data.length === 0) return [];
 
     const { changes } = convert(
       ModelType.PLAYER_REGISTRATION_HISTORY,

@@ -19,7 +19,7 @@ export const filter = async (
     if (p.dob) query.dob = p.dob;
     if (p.pob) query.pob = p.pob;
     if (p.en_name) {
-      query.en_name_normalized = generateNormalizedEnName(p.en_name);
+      query.normalized_en_name = generateNormalizedEnName(p.en_name);
     }
 
     const exists = await PlayerModel.findOne(query).lean();
