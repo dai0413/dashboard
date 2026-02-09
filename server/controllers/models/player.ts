@@ -215,9 +215,12 @@ const downloadItem = async (req: Request, res: Response) => {
 
     const csvContent = data
       .map((player: any, index: number) => {
-        const dob = player.dob ? moment(player.dob).format("YYYY/MM/DD") : ""; // 空でも対応
+        const formattedDob = player.dob ? new Date(player.dob) : undefined;
+        const dob = formattedDob
+          ? moment(formattedDob).format("YYYY/MM/DD")
+          : ""; // 空でも対応
         return `"${safe(player.old_id)}","${player.name}","${safe(
-          player.en_name
+          player.en_name,
         )}","${dob}","${safe(player.pob)}"`;
       })
       .join("\n");
