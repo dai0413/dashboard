@@ -19,6 +19,21 @@ const formatLocalDate = (date: Date) => {
   return `${y}-${m}-${d}`;
 };
 
+const convertDate = (
+  value: string | number | Date,
+  type?: "date" | "datetime-local",
+): string => {
+  if (typeof value === "string") {
+    return formatLocalDate(new Date(value));
+  }
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return type === "datetime-local"
+      ? value.toISOString().slice(0, 16)
+      : formatLocalDate(value); // ✅ ローカル変換
+  }
+  return "";
+};
+
 const InputField = ({
   type,
   value,
@@ -27,40 +42,25 @@ const InputField = ({
   supportButton,
 }: InputFieldProps) => {
   const [internalValue, setInternalValue] = useState<InternalValue>(() => {
-    if (type === "boolean") return Boolean(value);
+    if (type === "boolean" || typeof value === "boolean") return Boolean(value);
 
     if (type === "date" || type === "datetime-local") {
-      if (typeof value === "string") return value;
-      if (value instanceof Date && !isNaN(value.getTime())) {
-        return type === "datetime-local"
-          ? value.toISOString().slice(0, 16)
-          : formatLocalDate(value); // ✅ ローカル変換
-      }
-      return "";
+      const newVal = convertDate(value, type);
+      return newVal;
     }
 
     return (value ?? "") as InternalValue;
   });
 
   useEffect(() => {
-    if (type === "boolean") {
+    if (type === "boolean" || typeof value === "boolean") {
       setInternalValue(Boolean(value));
       return;
     }
 
     if (type === "date" || type === "datetime-local") {
-      if (value instanceof Date && !isNaN(value.getTime())) {
-        setInternalValue(
-          type === "datetime-local"
-            ? value.toISOString().slice(0, 16)
-            : formatLocalDate(value),
-        );
-      } else if (typeof value === "string") {
-        setInternalValue(value);
-      } else {
-        setInternalValue("");
-      }
-      return;
+      const newValue = convertDate(value, type);
+      return setInternalValue(newValue);
     }
 
     setInternalValue((value ?? "") as InternalValue);
@@ -88,7 +88,7 @@ const InputField = ({
     } else if (type === "date") {
       const [y, m, d] = newVal.split("-").map(Number);
       if (y && m && d) {
-        onChange(new Date(y, m - 1, d, 0, 0, 0, 0));
+        onChange(new Date(y, m - 1, d, 15, 0, 0, 0));
       } else {
         onChange(undefined);
       }
