@@ -300,7 +300,8 @@ const Competition = () => {
         <TableWithFetch
           modelType={ModelType.PLAYER_REGISTRATION}
           headers={[
-            { label: "チーム", field: "team" },
+            { label: "日付", field: "date" },
+            { label: "チーム", field: "team", width: "100px" },
             { label: "ポジション", field: "position_group", width: "100px" },
             {
               label: "背番号",
