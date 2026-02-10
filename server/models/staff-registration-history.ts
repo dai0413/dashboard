@@ -1,29 +1,28 @@
 import {
   getKey,
-  PlayerRegistrationHistoryType,
-  positionGroup,
+  StaffRegistrationHistoryType,
   registrationType,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { PlayerRegistrationModel } from "./player-registration.js";
-import { asyncRegistration } from "../utils/async/playerApplyHistoryRecord.js";
+import { StaffRegistrationModel } from "./staff-registration.js";
+import { asyncRegistration } from "../utils/async/staffApplyHistoryRecord.js";
 
-export interface IPlayerRegistrationHistory
+export interface IStaffRegistrationHistory
   extends
     Omit<
-      PlayerRegistrationHistoryType,
-      "_id" | "season" | "competition" | "player" | "team"
+      StaffRegistrationHistoryType,
+      "_id" | "season" | "competition" | "staff" | "team"
     >,
     Document {
   _id: Types.ObjectId;
   season: Types.ObjectId;
   competition: Types.ObjectId;
-  player: Types.ObjectId;
+  staff: Types.ObjectId;
   team: Types.ObjectId;
 }
 
-const PlayerRegistrationHistorySchema: Schema<IPlayerRegistrationHistory> =
-  new Schema<IPlayerRegistrationHistory, any, IPlayerRegistrationHistory>(
+const StaffRegistrationHistorySchema: Schema<IStaffRegistrationHistory> =
+  new Schema<IStaffRegistrationHistory, any, IStaffRegistrationHistory>(
     {
       date: { type: Date },
       season: {
@@ -36,9 +35,9 @@ const PlayerRegistrationHistorySchema: Schema<IPlayerRegistrationHistory> =
         ref: "Competition",
         required: true,
       },
-      player: {
+      staff: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Player",
+        ref: "Staff",
         required: true,
       },
       team: {
@@ -48,33 +47,27 @@ const PlayerRegistrationHistorySchema: Schema<IPlayerRegistrationHistory> =
       },
       registration_type: { type: String, enum: getKey(registrationType()) },
       changes: {
-        number: { type: Number },
-        position_group: { type: String, enum: getKey(positionGroup()) },
+        role: { type: String },
         name: { type: String },
         en_name: { type: String },
-        height: { type: Number },
-        weight: { type: Number },
-        homegrown: { type: Boolean },
-        isTypeTwo: { type: Boolean },
-        isSpecialDesignation: { type: Boolean },
         note: { type: String },
       },
     },
     { timestamps: true },
   );
 
-PlayerRegistrationHistorySchema.index(
-  { date: 1, season: 1, player: 1, team: 1, registration_type: 1 },
+StaffRegistrationHistorySchema.index(
+  { date: 1, season: 1, staff: 1, team: 1, registration_type: 1 },
   { unique: true },
 );
 
-PlayerRegistrationHistorySchema.index(
-  { season: 1, player: 1, team: 1, registration_type: 1 },
+StaffRegistrationHistorySchema.index(
+  { season: 1, staff: 1, team: 1, registration_type: 1 },
   { unique: true, partialFilterExpression: { date: { $exists: false } } },
 );
 
 async function applyCompetition(
-  updateOrDoc: Partial<IPlayerRegistrationHistory>,
+  updateOrDoc: Partial<IStaffRegistrationHistory>,
 ) {
   if (!updateOrDoc.season) return;
 
@@ -105,12 +98,12 @@ function getDiff<T extends Record<string, any>>(
   return diff;
 }
 
-async function applyDiffForUpdate(update: Partial<IPlayerRegistrationHistory>) {
+async function applyDiffForUpdate(update: Partial<IStaffRegistrationHistory>) {
   if (update.registration_type !== "change" || !update.changes) return;
 
-  const latest = await PlayerRegistrationModel.findOne({
+  const latest = await StaffRegistrationModel.findOne({
     season: update.season,
-    player: update.player,
+    staff: update.staff,
     team: update.team,
   }).sort({ date: -1 });
 
@@ -119,13 +112,13 @@ async function applyDiffForUpdate(update: Partial<IPlayerRegistrationHistory>) {
   }
 }
 
-PlayerRegistrationHistorySchema.pre("validate", async function (next) {
+StaffRegistrationHistorySchema.pre("validate", async function (next) {
   await applyCompetition(this);
 
   next();
 });
 
-PlayerRegistrationHistorySchema.pre("insertMany", async function (next, docs) {
+StaffRegistrationHistorySchema.pre("insertMany", async function (next, docs) {
   for (const doc of docs) {
     await applyDiffForUpdate(doc);
     await applyCompetition(doc);
@@ -134,7 +127,7 @@ PlayerRegistrationHistorySchema.pre("insertMany", async function (next, docs) {
   next();
 });
 
-PlayerRegistrationHistorySchema.pre(
+StaffRegistrationHistorySchema.pre(
   ["findOneAndUpdate", "updateOne"],
   async function (next) {
     const rawUpdate = this.getUpdate();
@@ -144,7 +137,7 @@ PlayerRegistrationHistorySchema.pre(
     const update = {
       ...(rawUpdate as any),
       ...(rawUpdate as any).$set,
-    } as Partial<IPlayerRegistrationHistory>;
+    } as Partial<IStaffRegistrationHistory>;
 
     await applyDiffForUpdate(update);
     await applyCompetition(update);
@@ -155,12 +148,12 @@ PlayerRegistrationHistorySchema.pre(
   },
 );
 
-PlayerRegistrationHistorySchema.pre("save", async function (next) {
+StaffRegistrationHistorySchema.pre("save", async function (next) {
   // 変更履歴は差分だけにする
   if (this.registration_type === "change") {
-    const latest = await PlayerRegistrationModel.findOne({
+    const latest = await StaffRegistrationModel.findOne({
       season: this.season,
-      player: this.player,
+      staff: this.staff,
       team: this.team,
     }).sort({ date: -1 });
 
@@ -175,14 +168,14 @@ PlayerRegistrationHistorySchema.pre("save", async function (next) {
   next();
 });
 
-PlayerRegistrationHistorySchema.post("findOneAndUpdate", async function (doc) {
+StaffRegistrationHistorySchema.post("findOneAndUpdate", async function (doc) {
   if (!doc) return;
 
   try {
     // 対応する Registration を取得
-    const reg = await PlayerRegistrationModel.findOne({
+    const reg = await StaffRegistrationModel.findOne({
       season: doc.season,
-      player: doc.player,
+      staff: doc.staff,
       team: doc.team,
       date: doc.date,
       registration_type: doc.registration_type,
@@ -205,7 +198,7 @@ PlayerRegistrationHistorySchema.post("findOneAndUpdate", async function (doc) {
       "date",
       "season",
       "competition",
-      "player",
+      "staff",
       "team",
       "registration_type",
     ];
@@ -218,14 +211,14 @@ PlayerRegistrationHistorySchema.post("findOneAndUpdate", async function (doc) {
 
     await reg.save();
   } catch (err) {
-    console.error("PlayerRegistration full sync error on update:", err);
+    console.error("StaffRegistration full sync error on update:", err);
   }
 });
 
-PlayerRegistrationHistorySchema.post(
+StaffRegistrationHistorySchema.post(
   "insertMany",
   async function (
-    docs: IPlayerRegistrationHistory[] & { _id: Types.ObjectId }[],
+    docs: IStaffRegistrationHistory[] & { _id: Types.ObjectId }[],
   ) {
     for (const doc of docs) {
       await asyncRegistration(doc);
@@ -233,8 +226,8 @@ PlayerRegistrationHistorySchema.post(
   },
 );
 
-export const PlayerRegistrationHistoryModel: Model<IPlayerRegistrationHistory> =
-  mongoose.model<IPlayerRegistrationHistory>(
-    "PlayerRegistrationHistory",
-    PlayerRegistrationHistorySchema,
+export const StaffRegistrationHistoryModel: Model<IStaffRegistrationHistory> =
+  mongoose.model<IStaffRegistrationHistory>(
+    "StaffRegistrationHistory",
+    StaffRegistrationHistorySchema,
   );

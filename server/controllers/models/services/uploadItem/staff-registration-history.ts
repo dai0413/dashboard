@@ -1,0 +1,115 @@
+import { staffRegistrationHistory } from "@dai0413/myorg-shared";
+import { StatusCodes } from "http-status-codes";
+import { Response } from "express";
+import { stringify } from "csv-stringify/sync";
+import csv from "csv-parser";
+import { DecodedRequest } from "types.js";
+import { StaffRegistrationHistoryModel } from "../../../../models/staff-registration-history.js";
+import { parseObjectId } from "../../../../csvImport/utils/parseObjectId.js";
+import { parseDateJST } from "../../../../csvImport/utils/parseDateJST.js";
+import { getNest } from "../../../../utils/getNest.js";
+import { convertObjectIdToString } from "../../../../utils/convertObjectIdToString.js";
+import { formatDateYMD } from "../utils/formatDateYMD.js";
+
+const {
+  MONGO_MODEL,
+  SCHEMA: { POPULATED },
+  TYPE,
+  POPULATE_PATHS,
+} = staffRegistrationHistory(StaffRegistrationHistoryModel);
+
+type FlattenedTYPE = Omit<typeof TYPE, "changes"> & (typeof TYPE)["changes"];
+
+export const uploadItem = async (req: DecodedRequest, res: Response) => {
+  const rows: FlattenedTYPE[] = [];
+
+  req.decodedStream
+    .pipe(
+      csv({
+        mapHeaders: ({ header }) => header.replace(/'/g, "").trim(),
+      }),
+    )
+    .on("data", (row) => {
+      rows.push(row);
+    })
+    .on("end", async () => {
+      const toAdd = rows.map((row) => {
+        return {
+          date: parseDateJST(row.date),
+          season: parseObjectId(row.season),
+          staff: parseObjectId(row.staff),
+          team: parseObjectId(row.team),
+          registration_type: row.registration_type,
+          changes: {
+            role: row.role ? row.role : undefined,
+            name: row.name ? row.name : undefined,
+            en_name: row.en_name ? row.en_name : undefined,
+          },
+        };
+      });
+
+      try {
+        const added = await MONGO_MODEL.insertMany(toAdd, { ordered: false });
+
+        // populate用にIDを集めて find する
+        const populatedAdded = await MONGO_MODEL.find({
+          _id: { $in: added.map((a: any) => a._id) },
+        })
+          .populate(getNest(true, POPULATE_PATHS))
+          .lean();
+
+        const processed = populatedAdded.map((item: any) => {
+          const plain = convertObjectIdToString(item);
+          const parsed = POPULATED.parse(plain);
+          return parsed;
+        });
+
+        res.status(StatusCodes.OK).json({
+          message: `${populatedAdded.length}件のデータを追加しました`,
+          data: processed,
+        });
+      } catch (err: any) {
+        // console.error("保存エラー:", err);
+
+        // MongoBulkWriteError の場合、失敗した行を取り出せる
+        if (err.writeErrors) {
+          const failedRows = err.writeErrors.map((e: any) => {
+            const original = toAdd[e.index];
+            const parsedDate = parseDateJST(toAdd[e.index].date);
+            const mongoErr = e.err || {};
+
+            return {
+              ...original,
+              date: formatDateYMD(parsedDate),
+              _error_code: e.code ?? mongoErr.code ?? "UNKNOWN",
+              _error_message:
+                mongoErr.errmsg ??
+                mongoErr.message ??
+                (mongoErr.keyValue
+                  ? `重複キー: ${JSON.stringify(mongoErr.keyValue)}`
+                  : "MongoDB書き込みエラー"),
+            };
+          });
+
+          const csvText = stringify(failedRows, { header: true, quoted: true });
+          const bom = "\uFEFF";
+          const csvWithBom = bom + csvText;
+          const csvBase64 = Buffer.from(csvWithBom, "utf8").toString("base64");
+
+          return res.status(StatusCodes.PARTIAL_CONTENT).json({
+            message: `${toAdd.length - failedRows.length}件追加に成功、${
+              failedRows.length
+            }件失敗`,
+            failedCount: failedRows.length,
+            csv: csvBase64,
+            filename: "failed_rows.csv",
+          });
+        } else {
+          console.log("err", err);
+          res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ message: "保存中にエラーが発生しました" });
+        }
+      }
+    });
+};
