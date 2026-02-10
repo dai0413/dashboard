@@ -47,7 +47,31 @@ export const normalizeRows = <
       for (const f of fields) {
         const path = String(f);
         const currentValue = getByPath(row, path);
-        const res = parsersMap[parserKey](currentValue, path);
+        const parser = parsersMap[parserKey];
+
+        if (Array.isArray(currentValue)) {
+          const parsedValues = [];
+          let error = null;
+
+          for (let i = 0; i < currentValue.length; i++) {
+            const res = parser(currentValue[i], `${path}[${i}]`);
+            if (!res.ok) {
+              error = res.error;
+              break;
+            }
+            parsedValues.push(res.value);
+          }
+
+          if (error) {
+            row.error = row.error ? `${row.error} / ${error}` : error;
+          } else {
+            setByPath(row, path, parsedValues);
+          }
+
+          continue;
+        }
+
+        const res = parser(currentValue, path);
 
         if (res.ok) {
           setByPath(row, path, res.value);
