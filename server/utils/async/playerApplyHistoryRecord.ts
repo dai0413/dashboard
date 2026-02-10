@@ -46,7 +46,7 @@ async function handleChange(prh: IPlayerRegistrationHistory) {
     // _$set で差分だけを更新_
     await PlayerRegistrationModel.updateOne(
       { _id: latest._id },
-      { $set: prh.changes }
+      { $set: prh.changes },
     );
   }
 
@@ -72,7 +72,7 @@ async function handleDeregister(prh: IPlayerRegistrationHistory) {
 async function reconcileLatestRegisterActive(
   season: Types.ObjectId | string,
   player: Types.ObjectId | string,
-  team: Types.ObjectId | string
+  team: Types.ObjectId | string,
 ) {
   // ObjectId 化
   const seasonId =
@@ -96,6 +96,6 @@ async function reconcileLatestRegisterActive(
   // 2. その register の status を terminated にする
   await PlayerRegistrationModel.updateOne(
     { _id: latestRegister._id },
-    { $set: { registration_status: "terminated" } }
+    { $set: { registration_status: "terminated" } },
   );
 }
