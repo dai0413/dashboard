@@ -1,10 +1,9 @@
 import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
-import { playerInSeason } from "../../utils/createQuickFilterItems/player/playerInSeason";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 
-export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
+export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] =
   [
     {
       stepLabel: "登録or抹消を入力",
@@ -50,15 +49,14 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           required: true,
         },
       ],
-      createQuickFilterItems: (data, api) => playerInSeason(data, api),
     },
     {
-      stepLabel: "選手選択",
+      stepLabel: "スタッフ選択",
       type: "form",
       fields: [
         {
-          key: "player",
-          label: "選手",
+          key: "staff",
+          label: "スタッフ",
           fieldType: "table",
           valueType: "option",
           required: true,
@@ -67,20 +65,14 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
       onChange: onChangeFillChangesByRegistrationType,
     },
     {
-      stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",
+      stepLabel: "役割・名前・英名を入力",
       type: "form",
       fields: [
         {
-          key: "changes.number",
-          label: "背番号",
+          key: "changes.role",
+          label: "役割",
           fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "changes.position_group",
-          label: "ポジション",
-          fieldType: "select",
-          valueType: "option",
+          valueType: "text",
         },
         {
           key: "changes.name",
@@ -93,36 +85,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           label: "英名",
           fieldType: "input",
           valueType: "text",
-        },
-        {
-          key: "changes.height",
-          label: "身長",
-          fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "changes.weight",
-          label: "体重",
-          fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "changes.isTypeTwo",
-          label: "2種登録",
-          fieldType: "input",
-          valueType: "boolean",
-        },
-        {
-          key: "changes.isSpecialDesignation",
-          label: "特別指定",
-          fieldType: "input",
-          valueType: "boolean",
-        },
-        {
-          key: "changes.homegrown",
-          label: "ホームグロウン",
-          fieldType: "input",
-          valueType: "boolean",
         },
         {
           key: "changes.note",

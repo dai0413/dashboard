@@ -6,16 +6,16 @@ import { readItemsBase } from "../../../api";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
 
-export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] =
+export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] =
   [
     {
-      stepLabel: "D_PCデータを取得します",
+      stepLabel: "D_SCデータを取得します",
       type: "form",
       fetchValue: async (_data, api?: AxiosInstance) => {
         if (!api) return [];
         const res = await readItemsBase({
           apiInstance: api,
-          backendRoute: API_PATHS.GET_NEW_DATA.D_PC.PLAYER_REGISTRATION_HISTORY,
+          backendRoute: API_PATHS.GET_NEW_DATA.D_SC.STAFF_REGISTRATION_HISTORY,
           returnResponse: true,
         });
 
@@ -53,23 +53,17 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           overwriteByMany: true,
         },
         {
-          key: "player",
-          label: "選手",
+          key: "staff",
+          label: "スタッフ",
           fieldType: "table",
           valueType: "option",
           required: true,
         },
         {
-          key: "changes.number",
-          label: "背番号",
+          key: "changes.role",
+          label: "役割",
           fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "changes.position_group",
-          label: "ポジション",
-          fieldType: "select",
-          valueType: "option",
+          valueType: "text",
         },
         {
           key: "changes.name",
@@ -82,36 +76,6 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           label: "英名",
           fieldType: "input",
           valueType: "text",
-        },
-        {
-          key: "changes.height",
-          label: "身長",
-          fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "changes.weight",
-          label: "体重",
-          fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "changes.isTypeTwo",
-          label: "2種登録",
-          fieldType: "input",
-          valueType: "boolean",
-        },
-        {
-          key: "changes.isSpecialDesignation",
-          label: "特別指定",
-          fieldType: "input",
-          valueType: "boolean",
-        },
-        {
-          key: "changes.homegrown",
-          label: "ホームグロウン",
-          fieldType: "input",
-          valueType: "boolean",
         },
         {
           key: "changes.note",

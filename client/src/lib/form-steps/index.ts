@@ -4,6 +4,7 @@ import { getBulkSteps } from "./bulk";
 import { getSingleSteps } from "./single";
 import { getD_PCsteps } from "./d_pc";
 import { From } from "../../types/types";
+import { getD_SCsteps } from "./d_sc";
 
 export const getSteps = <T extends ModelType>(
   modelType: T,
@@ -11,6 +12,7 @@ export const getSteps = <T extends ModelType>(
   from?: From,
 ): FormStep<T>[] => {
   if (from === From.D_PC) return getD_PCsteps(modelType);
+  if (from === From.D_SC) return getD_SCsteps(modelType);
   if (bulk) return getBulkSteps(modelType);
   return getSingleSteps(modelType);
 };

@@ -63,14 +63,26 @@ const models: {
   },
   {
     model: "PlayerRegistration",
-    desc: "選手の大会参加記録",
+    desc: "選手登録情報",
     link: APP_ROUTES.PLAYER_REGISTRATION,
     icon: "registration",
   },
   {
     model: "PlayerRegistrationHistory",
-    desc: "選手の大会参加記録履歴",
+    desc: "選手登録情報履歴",
     link: APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
+    icon: "registration",
+  },
+  {
+    model: "StaffRegistration",
+    desc: "スタッフ登録情報",
+    link: APP_ROUTES.STAFF_REGISTRATION,
+    icon: "registration",
+  },
+  {
+    model: "StaffRegistrationHistory",
+    desc: "スタッフ登録情報履歴",
+    link: APP_ROUTES.STAFF_REGISTRATION_HISTORY,
     icon: "registration",
   },
   {
@@ -165,7 +177,7 @@ const models: {
   },
 ];
 
-const createItemMenu: {
+const d_pcItems: {
   model: string;
   desc: string;
   link: string;
@@ -188,6 +200,29 @@ const createItemMenu: {
   },
 ];
 
+const d_scItems: {
+  model: string;
+  desc: string;
+  link: string;
+  icon: Icon;
+  modelType: ModelType;
+}[] = [
+  {
+    model: "Staff",
+    desc: "スタッフ",
+    link: APP_ROUTES.STAFF,
+    icon: "player",
+    modelType: ModelType.STAFF,
+  },
+  {
+    model: "StaffRegistrationHistory",
+    desc: "スタッフの登録履歴",
+    link: APP_ROUTES.STAFF_REGISTRATION_HISTORY,
+    icon: "player",
+    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+  },
+];
+
 const AdminDashboard = () => {
   const {
     form: { open },
@@ -205,7 +240,7 @@ const AdminDashboard = () => {
           D_PC
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hover:cursor-pointer">
-          {createItemMenu.map((m) => (
+          {d_pcItems.map((m) => (
             <div
               key={m.model}
               onClick={() => {
@@ -216,6 +251,36 @@ const AdminDashboard = () => {
                   undefined,
                   true,
                   From.D_PC,
+                );
+                open(m.modelType);
+              }}
+            >
+              <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
+                <IconButton icon={m.icon} />
+                <h2 className="text-lg font-bold mb-2">{m.desc}</h2>
+                <p className="text-gray-500 text-sm">{m.model}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">
+          D_SC
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hover:cursor-pointer">
+          {d_scItems.map((m) => (
+            <div
+              key={m.model}
+              onClick={() => {
+                startForm(
+                  true,
+                  m.modelType,
+                  undefined,
+                  undefined,
+                  true,
+                  From.D_SC,
                 );
                 open(m.modelType);
               }}

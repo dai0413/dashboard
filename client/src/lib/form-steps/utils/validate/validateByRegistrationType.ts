@@ -1,7 +1,9 @@
-import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { FormTypeMap, ModelType } from "../../../../types/models";
 
 export const validateByRegistrationType = (
-  formData: FormTypeMap[ModelType.PLAYER_REGISTRATION_HISTORY],
+  formData:
+    | FormTypeMap[ModelType.PLAYER_REGISTRATION_HISTORY]
+    | FormTypeMap[ModelType.STAFF_REGISTRATION_HISTORY],
 ) => {
   if (formData.registration_type === "register") {
     if (!formData.changes?.name) {

@@ -28,6 +28,8 @@ import { staffAppearance } from "./staff-appearance";
 import { playerMatchEventLog } from "./player-match-event-log";
 import { staffMatchEventLog } from "./staff-match-event-log";
 import { teamMatchFormation } from "./team-match-formation";
+import { staffRegistration } from "./staff-registration";
+import { staffRegistrationHistory } from "./staff-registration-history";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -113,6 +115,14 @@ const convertMap: {
     single: staffAppearance,
     multiple: (data) => data.map(staffAppearance),
   },
+  [ModelType.STAFF_REGISTRATION]: {
+    single: staffRegistration,
+    multiple: (data) => data.map(staffRegistration),
+  },
+  [ModelType.STAFF_REGISTRATION_HISTORY]: {
+    single: staffRegistrationHistory,
+    multiple: (data) => data.map(staffRegistrationHistory),
+  },
   [ModelType.STAFF_MATCH_EVENT_LOG]: {
     single: staffMatchEventLog,
     multiple: (data) => data.map(staffMatchEventLog),
@@ -127,7 +137,7 @@ const convertMap: {
   },
   [ModelType.TEAM_MATCH_FORMATION]: {
     single: teamMatchFormation,
-    multiple: (data) => data.map(teamMatchFormation)
+    multiple: (data) => data.map(teamMatchFormation),
   },
   [ModelType.TEAM]: {
     single: team,

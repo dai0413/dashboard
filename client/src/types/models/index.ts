@@ -72,6 +72,16 @@ import {
   TeamMatchFormationForm,
   TeamMatchFormationGet,
 } from "./team-match-formation";
+import {
+  StaffRegistration,
+  StaffRegistrationForm,
+  StaffRegistrationGet,
+} from "./staff-registration";
+import {
+  StaffRegistrationHistory,
+  StaffRegistrationHistoryForm,
+  StaffRegistrationHistoryGet,
+} from "./staff-registration-history";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -94,6 +104,8 @@ export enum ModelType {
   STADIUM = "stadium",
   STAFF_APPEARANCE = "staff-appearance",
   STAFF_MATCH_EVENT_LOG = "staff-match-event-log",
+  STAFF_REGISTRATION = "staff-registration",
+  STAFF_REGISTRATION_HISTORY = "staff-registration-history",
   STAFF = "staff",
   TEAM_COMPETITION_SEASON = "team-competition-season",
   TEAM_MATCH_FORMATION = "team-match-formation",
@@ -122,6 +134,8 @@ export type ModelDataMap = {
   [ModelType.STADIUM]: Stadium;
   [ModelType.STAFF_APPEARANCE]: StaffAppearance;
   [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLog;
+  [ModelType.STAFF_REGISTRATION]: StaffRegistration;
+  [ModelType.STAFF_REGISTRATION_HISTORY]: StaffRegistrationHistory;
   [ModelType.STAFF]: Staff;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeason;
   [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormation;
@@ -150,6 +164,8 @@ export type GettedModelDataMap = {
   [ModelType.STADIUM]: StadiumGet;
   [ModelType.STAFF_APPEARANCE]: StaffAppearanceGet;
   [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLogGet;
+  [ModelType.STAFF_REGISTRATION]: StaffRegistrationGet;
+  [ModelType.STAFF_REGISTRATION_HISTORY]: StaffRegistrationHistoryGet;
   [ModelType.STAFF]: StaffGet;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonGet;
   [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormationGet;
@@ -178,6 +194,8 @@ export type FormTypeMap = {
   [ModelType.STADIUM]: StadiumForm;
   [ModelType.STAFF_APPEARANCE]: StaffAppearanceForm;
   [ModelType.STAFF_MATCH_EVENT_LOG]: StaffMatchEventLogForm;
+  [ModelType.STAFF_REGISTRATION]: StaffRegistrationForm;
+  [ModelType.STAFF_REGISTRATION_HISTORY]: StaffRegistrationHistoryForm;
   [ModelType.STAFF]: StaffForm;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonForm;
   [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormationForm;
@@ -207,6 +225,8 @@ export const ModelRouteMap = {
   [ModelType.STADIUM]: APP_ROUTES.STADIUM,
   [ModelType.STAFF_APPEARANCE]: APP_ROUTES.STAFF_APPEARANCE,
   [ModelType.STAFF_MATCH_EVENT_LOG]: APP_ROUTES.STAFF,
+  [ModelType.STAFF_REGISTRATION]: APP_ROUTES.STAFF_REGISTRATION,
+  [ModelType.STAFF_REGISTRATION_HISTORY]: APP_ROUTES.STAFF_REGISTRATION_HISTORY,
   [ModelType.STAFF]: APP_ROUTES.STAFF_MATCH_EVENT_LOG,
   [ModelType.TEAM_COMPETITION_SEASON]: APP_ROUTES.TEAM_COMPETITION_SEASON,
   [ModelType.TEAM_MATCH_FORMATION]: APP_ROUTES.TEAM_MATCH_FORMATION,

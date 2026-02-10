@@ -26,6 +26,7 @@ import { staffAppearance } from "./models/staff-appearance/single";
 import { playerMatchEventLog } from "./models/player-match-event-log/single";
 import { staffMatchEventLog } from "./models/staff-match-event-log/single";
 import { teamMatchFormation } from "./models/team-match-formation/single";
+import { staffRegistrationHistory } from "./models/staff-registration-history/single";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
@@ -91,6 +92,10 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.STAFF_APPEARANCE]: [
     ...staffAppearance,
     createConfirmationStep<ModelType.STAFF_APPEARANCE>(),
+  ],
+  [ModelType.STAFF_REGISTRATION_HISTORY]: [
+    ...staffRegistrationHistory,
+    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(),
   ],
   [ModelType.STAFF_MATCH_EVENT_LOG]: [
     ...staffMatchEventLog,

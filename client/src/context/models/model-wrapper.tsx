@@ -57,6 +57,14 @@ import {
   TeamMatchFormationProvider,
   useTeamMatchFormation,
 } from "./team-match-formation";
+import {
+  StaffRegistrationProvider,
+  useStaffRegistration,
+} from "./staff-registration";
+import {
+  StaffRegistrationHistoryProvider,
+  useStaffRegistrationHistory,
+} from "./staff-registration-history";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -77,23 +85,27 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                                 <StaffMatchEventLogProvider>
                                   <PlayerRegistrationProvider>
                                     <PlayerRegistrationHistoryProvider>
-                                      <RefereeProvider>
-                                        <NationalCallupProvider>
-                                          <InjuryProvider>
-                                            <TransferProvider>
-                                              <FormationProvider>
-                                                <TeamMatchFormationProvider>
-                                                  <PlayerAppearanceProvider>
-                                                    <StaffAppearanceProvider>
-                                                      {children}
-                                                    </StaffAppearanceProvider>
-                                                  </PlayerAppearanceProvider>
-                                                </TeamMatchFormationProvider>
-                                              </FormationProvider>
-                                            </TransferProvider>
-                                          </InjuryProvider>
-                                        </NationalCallupProvider>
-                                      </RefereeProvider>
+                                      <StaffRegistrationProvider>
+                                        <StaffRegistrationHistoryProvider>
+                                          <RefereeProvider>
+                                            <NationalCallupProvider>
+                                              <InjuryProvider>
+                                                <TransferProvider>
+                                                  <FormationProvider>
+                                                    <TeamMatchFormationProvider>
+                                                      <PlayerAppearanceProvider>
+                                                        <StaffAppearanceProvider>
+                                                          {children}
+                                                        </StaffAppearanceProvider>
+                                                      </PlayerAppearanceProvider>
+                                                    </TeamMatchFormationProvider>
+                                                  </FormationProvider>
+                                                </TransferProvider>
+                                              </InjuryProvider>
+                                            </NationalCallupProvider>
+                                          </RefereeProvider>
+                                        </StaffRegistrationHistoryProvider>
+                                      </StaffRegistrationProvider>
                                     </PlayerRegistrationHistoryProvider>
                                   </PlayerRegistrationProvider>
                                 </StaffMatchEventLogProvider>
@@ -135,6 +147,8 @@ const useModelContext = (modelType: ModelType | null) => {
   const stadium = useStadium();
   const staffMatchEventLog = useStaffMatchEventLog();
   const staffAppearance = useStaffAppearance();
+  const staffRegistraion = useStaffRegistration();
+  const staffRegistrationHistory = useStaffRegistrationHistory();
   const staff = useStaff();
   const teamCompetitionSeason = useTeamCompetitionSeason();
   const teamMatchFormation = useTeamMatchFormation();
@@ -162,6 +176,8 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.STADIUM]: stadium.metacrud,
     [ModelType.STAFF_APPEARANCE]: staffAppearance.metacrud,
     [ModelType.STAFF_MATCH_EVENT_LOG]: staffMatchEventLog.metacrud,
+    [ModelType.STAFF_REGISTRATION_HISTORY]: staffRegistrationHistory.metacrud,
+    [ModelType.STAFF_REGISTRATION]: staffRegistraion.metacrud,
     [ModelType.STAFF]: staff.metacrud,
     [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason.metacrud,
     [ModelType.TEAM_MATCH_FORMATION]: teamMatchFormation.metacrud,
