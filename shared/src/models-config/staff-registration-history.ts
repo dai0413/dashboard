@@ -66,7 +66,7 @@ export function staffRegistrationHistory<TDoc = any, TModel = any>(
         {
           date: new Date("2025/02/01"),
           season: deps.season[0]._id,
-          staff: deps.staff[1]._id,
+          staff: deps.staff[0]._id,
           team: deps.team[1]._id,
           registration_type: "register",
           changes: {

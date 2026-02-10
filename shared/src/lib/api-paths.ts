@@ -127,6 +127,18 @@ export const API_PATHS = {
     DETAIL: (id: string | number = ":id") => `/staff-match-event-log/${id}`,
   },
 
+  STAFF_REGISTRATION_HISTORY: {
+    ROOT: "/staff-registration-history",
+    UPLOAD: "/staff-registration-history/upload",
+    DETAIL: (id: string | number = ":id") =>
+      `/staff-registration-history/${id}`,
+  },
+
+  STAFF_REGISTRATION: {
+    ROOT: "/staff-registration",
+    DETAIL: (id: string | number = ":id") => `/staff-registration/${id}`,
+  },
+
   STAFF: {
     ROOT: "/staff",
     UPLOAD: "/staff/upload",

@@ -19,6 +19,8 @@ export * from "./season.js";
 export * from "./stadium.js";
 export * from "./staff-appearance.js";
 export * from "./staff-match-event-log.js";
+export * from "./staff-registration.js";
+export * from "./staff-registration-history.js";
 export * from "./staff.js";
 export * from "./team-competition-season.js";
 export * from "./team.js";
