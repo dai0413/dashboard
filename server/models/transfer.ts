@@ -2,7 +2,8 @@ import { getKey, form, position, TransferType } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 
 export interface ITransfer
-  extends Omit<TransferType, "_id" | "from_team" | "to_team" | "player">,
+  extends
+    Omit<TransferType, "_id" | "from_team" | "to_team" | "player">,
     Document {
   _id: Types.ObjectId;
   from_team: Types.ObjectId;
@@ -63,7 +64,7 @@ const TransferSchema: Schema<ITransfer> = new Schema<ITransfer, any, ITransfer>(
       type: [String],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 TransferSchema.index(
@@ -77,7 +78,7 @@ TransferSchema.index(
     from_date: 1,
     to_date: 1,
   },
-  { unique: true }
+  { unique: true },
 );
 
 // injuryモデルのnow_teamを更新
@@ -92,7 +93,7 @@ async function syncNowTeam(playerId: Types.ObjectId) {
 
   await Injury.updateMany(
     { player: playerId },
-    { $set: { now_team: latest ? latest.to_team : null } }
+    { $set: { now_team: latest ? latest.to_team : null } },
   );
 }
 
@@ -102,7 +103,6 @@ TransferSchema.post("save", async function (doc: ITransfer, next) {
   next();
 });
 
-// findOneAndUpdate / updateOne / updateMany
 TransferSchema.post(
   ["findOneAndUpdate", "updateOne", "updateMany"],
   async function (res, next) {
@@ -110,7 +110,7 @@ TransferSchema.post(
       await syncNowTeam(this.getQuery().player);
     }
     next();
-  }
+  },
 );
 
 // insertMany
@@ -131,10 +131,10 @@ TransferSchema.post(
       : [res.player];
     await Promise.all(playerIds.map((id) => syncNowTeam(id)));
     next();
-  }
+  },
 );
 
 export const TransferModel: Model<ITransfer> = mongoose.model<ITransfer>(
   "Transfer",
-  TransferSchema
+  TransferSchema,
 );

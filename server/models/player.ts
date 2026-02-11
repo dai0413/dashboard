@@ -48,11 +48,21 @@ PlayerMongooseSchema.pre(
     } as Partial<IPlayer>;
 
     const doc = await this.model.findOne(this.getQuery());
+    if (!doc) return next();
 
-    applyNormalizedEnName({
+    // 仮想的な「更新後ドキュメント」
+    const merged: Partial<IPlayer> = {
       ...doc.toObject(),
       ...update,
-    });
+    };
+
+    // 正規化
+    applyNormalizedEnName(merged);
+
+    // update に反映
+    if (merged.normalized_en_name) {
+      update.normalized_en_name = merged.normalized_en_name;
+    }
 
     this.setUpdate(update);
     next();

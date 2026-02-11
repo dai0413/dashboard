@@ -6,7 +6,8 @@ import {
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface INationalMatchSeries
-  extends Omit<NationalMatchSeriesType, "_id" | "country" | "matchs">,
+  extends
+    Omit<NationalMatchSeriesType, "_id" | "country" | "matchs">,
     Document {
   _id: Types.ObjectId;
   country: Types.ObjectId;
@@ -35,7 +36,7 @@ const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
     left_at: { type: Date },
     urls: { type: [String] },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 NationalMatchSeriesSchema.index(
@@ -45,10 +46,10 @@ NationalMatchSeriesSchema.index(
     partialFilterExpression: {
       joined_at: { $type: "date" },
     },
-  }
+  },
 );
 
-async function syncCallUps(doc: INationalMatchSeries) {
+async function syncCallUps(doc: Partial<INationalMatchSeries>) {
   if (!doc) return;
 
   const NationalCallUpModel = mongoose.model("NationalCallUp");
@@ -82,24 +83,25 @@ async function syncCallUps(doc: INationalMatchSeries) {
   }
 }
 
-// findOneAndUpdate後
 NationalMatchSeriesSchema.post(
-  "findOneAndUpdate",
-  async function (doc: INationalMatchSeries) {
-    if (!doc) return;
+  ["findOneAndUpdate", "updateOne"],
+  async function () {
     const rawUpdate = this.getUpdate();
     if (!rawUpdate) return;
 
-    // update.$set を吸収
     const update = {
       ...(rawUpdate as any),
       ...(rawUpdate as any).$set,
     } as Partial<INationalMatchSeries>;
 
-    if (update?.joined_at || update?.left_at) {
-      await syncCallUps(doc);
-    }
-  }
+    if (!update.joined_at && !update.left_at) return;
+
+    // 🔑 最新の series を取得
+    const doc = await this.model.findOne(this.getQuery());
+    if (!doc) return;
+
+    await syncCallUps(doc);
+  },
 );
 // save後
 NationalMatchSeriesSchema.post(
@@ -112,11 +114,11 @@ NationalMatchSeriesSchema.post(
     ) {
       await syncCallUps(doc);
     }
-  }
+  },
 );
 
 export const NationalMatchSeriesModel: Model<INationalMatchSeries> =
   mongoose.model<INationalMatchSeries>(
     "NationalMatchSeries",
-    NationalMatchSeriesSchema
+    NationalMatchSeriesSchema,
   );

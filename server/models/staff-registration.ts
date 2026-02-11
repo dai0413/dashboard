@@ -105,10 +105,20 @@ StaffRegistrationSchema.pre(
       ...(rawUpdate as any).$set,
     } as Partial<IStaffRegistration>;
 
-    if (update.season) {
-      await applyCompetition(update);
+    const doc = await this.model.findOne(this.getQuery());
+    if (!doc) return next();
+
+    const merged: Partial<IStaffRegistration> = {
+      ...doc.toObject(),
+      ...update,
+    };
+
+    if (merged.season) {
+      await applyCompetition(merged);
+      update.competition = merged.competition;
     }
 
+    this.setUpdate(update);
     next();
   },
 );

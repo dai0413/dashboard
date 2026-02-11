@@ -93,11 +93,21 @@ TeamSchema.pre(["findOneAndUpdate", "updateOne"], async function (next) {
   } as Partial<ITeam>;
 
   const doc = await this.model.findOne(this.getQuery());
+  if (!doc) return next();
 
-  applyNormalizedName({
+  // 仮想的な「更新後ドキュメント」
+  const merged: Partial<ITeam> = {
     ...doc.toObject(),
     ...update,
-  });
+  };
+
+  // 正規化
+  applyNormalizedName(merged);
+
+  // update に反映
+  if (merged.normalized_name) {
+    update.normalized_name = merged.normalized_name;
+  }
 
   this.setUpdate(update);
   next();

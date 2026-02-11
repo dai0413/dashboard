@@ -8,7 +8,8 @@ import {
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface IPlayerRegistration
-  extends Omit<
+  extends
+    Omit<
       PlayerRegistrationType,
       "_id" | "season" | "competition" | "player" | "team"
     >,
@@ -60,17 +61,17 @@ const PlayerRegistrationSchema: Schema<IPlayerRegistration> = new Schema<
     isSpecialDesignation: { type: Boolean },
     note: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 PlayerRegistrationSchema.index(
   { date: 1, season: 1, player: 1, team: 1, registration_type: 1 },
-  { unique: true }
+  { unique: true },
 );
 
 PlayerRegistrationSchema.index(
   { season: 1, player: 1, team: 1, registration_type: 1 },
-  { unique: true, partialFilterExpression: { date: { $exists: false } } }
+  { unique: true, partialFilterExpression: { date: { $exists: false } } },
 );
 
 async function applyCompetition(updateOrDoc: Partial<IPlayerRegistration>) {
@@ -111,12 +112,22 @@ PlayerRegistrationSchema.pre(
       ...(rawUpdate as any).$set,
     } as Partial<IPlayerRegistration>;
 
-    if (update.season) {
-      await applyCompetition(update);
+    const doc = await this.model.findOne(this.getQuery());
+    if (!doc) return next();
+
+    const merged: Partial<IPlayerRegistration> = {
+      ...doc.toObject(),
+      ...update,
+    };
+
+    if (merged.season) {
+      await applyCompetition(merged);
+      update.competition = merged.competition;
     }
 
+    this.setUpdate(update);
     next();
-  }
+  },
 );
 
 PlayerRegistrationSchema.pre("save", async function (next) {
@@ -127,7 +138,7 @@ PlayerRegistrationSchema.pre("save", async function (next) {
         player: this.player,
         _id: { $ne: this._id },
       },
-      { registration_status: "terminated" }
+      { registration_status: "terminated" },
     );
     this.registration_status = "active";
   }
@@ -156,5 +167,5 @@ PlayerRegistrationSchema.pre("save", async function (next) {
 export const PlayerRegistrationModel: Model<IPlayerRegistration> =
   mongoose.model<IPlayerRegistration>(
     "PlayerRegistration",
-    PlayerRegistrationSchema
+    PlayerRegistrationSchema,
   );

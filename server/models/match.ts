@@ -293,21 +293,32 @@ MatchSchema.pre(["findOneAndUpdate", "updateOne"], async function (next) {
     ...(rawUpdate as any).$set,
   } as Partial<IMatch>;
 
-  if (update.competition_stage) {
-    await applyCompetitionSeason(update);
-  }
-  if (update.match_format) {
-    await applyPlayTime(update);
-  }
-
-  await computeResult(update);
-
   const doc = await this.model.findOne(this.getQuery());
+  if (!doc) return next();
 
-  await applyMatchName({
+  // 仮想的な「更新後 Match」
+  const merged: Partial<IMatch> = {
     ...doc.toObject(),
     ...update,
-  });
+  };
+
+  // --- 依存計算 ---
+  if (merged.competition_stage) {
+    await applyCompetitionSeason(merged);
+  }
+  if (merged.match_format) {
+    await applyPlayTime(merged);
+  }
+
+  await computeResult(merged);
+  await applyMatchName(merged);
+
+  // --- 計算結果を update に反映 ---
+  update.competition = merged.competition;
+  update.season = merged.season;
+  update.play_time = merged.play_time;
+  update.result = merged.result;
+  update.name = merged.name;
 
   this.setUpdate(update);
   next();
