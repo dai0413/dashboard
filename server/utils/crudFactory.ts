@@ -196,8 +196,8 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   // --- GET by id ---
   const getItem = async (req: Request, res: Response) => {
     const { id } = req.params;
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      throw new BadRequestError("Invalid ID");
+    if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError("正しいIDを入力してください");
     }
     const populated = await MONGO_MODEL.findById(id).populate(POPULATE_PATHS);
 
@@ -226,7 +226,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
 
   const updateItem = async (req: Request, res: Response) => {
     const { id } = req.params;
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestError("正しいIDを入力してください");
     }
     const data = nullToUndefined(req.body);
@@ -283,7 +283,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
   // --- DELETE ---
   const deleteItem = async (req: Request, res: Response) => {
     const { id } = req.params;
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestError("正しいIDを入力してください");
     }
     const deleted = await MONGO_MODEL.findByIdAndDelete(id);

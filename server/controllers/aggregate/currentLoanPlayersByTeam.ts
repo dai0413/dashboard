@@ -9,6 +9,7 @@ export const getCurrentLoanPlayersByTeam = async (
   res: Response,
 ) => {
   const teamId = req.params.teamId;
+  if (typeof teamId !== "string") res.status(StatusCodes.BAD_REQUEST);
   const result = await getCurrentLoanPlayersByTeamService(teamId);
 
   const convertFun = transfer().convertFun;

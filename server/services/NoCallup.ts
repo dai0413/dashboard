@@ -17,7 +17,8 @@ export const getNoCallUpService = async (
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  const countryId: string = req.params.countryId;
+  const countryId =
+    typeof req.params.countryId === "string" ? req.params.countryId : "";
 
   const countResult = await NationalMatchSeriesModel.aggregate([
     {
