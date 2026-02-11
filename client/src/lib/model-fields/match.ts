@@ -2,6 +2,15 @@ import { UIFieldDefinition } from "../../types/field";
 
 export const match: UIFieldDefinition[] = [
   {
+    key: "name",
+    filterKey: "name",
+    label: "名前",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
     key: "competition",
     filterKey: "competition.name",
     label: "大会名",

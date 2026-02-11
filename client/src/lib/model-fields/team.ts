@@ -2,6 +2,14 @@ import { UIFieldDefinition } from "../../types/field";
 
 export const team: UIFieldDefinition[] = [
   {
+    key: "normalized_name",
+    label: "正規化チーム",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
     key: "team",
     label: "チーム名",
     type: "string",

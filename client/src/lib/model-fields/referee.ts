@@ -18,6 +18,14 @@ export const referee: UIFieldDefinition[] = [
     displayOnDetail: true,
   },
   {
+    key: "normalized_en_name",
+    label: "正規化英名",
+    type: "string",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+  },
+  {
     key: "dob",
     label: "生年月日",
     type: "Date",

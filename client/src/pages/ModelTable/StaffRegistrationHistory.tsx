@@ -17,7 +17,7 @@ const StaffRegistrationHistory = () => {
           { label: "チーム", field: "team" },
           { label: "スタッフ", field: "staff" },
           {
-            label: "ポジション",
+            label: "役割",
             field: "changes.role",
             getData: (data) => {
               let base: string = "";
