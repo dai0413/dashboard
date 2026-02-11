@@ -94,4 +94,5 @@ export enum QuickFilterType {
   PLAYER_FOR_MATCH = "player-for-match",
   MATCH_EVENT_TYPE = "match-event-type",
   FORMATION = "formation",
+  MATCH_FORMAT = "match-format",
 }

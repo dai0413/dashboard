@@ -66,17 +66,25 @@ export const match: FormStep<ModelType.MATCH>[] = [
         };
       }
 
-      const isValid =
-        Boolean(formData.stadium) || Boolean(formData.stadium_name);
-
       return {
-        success: isValid,
-        message: isValid ? "" : "スタジアムは選択、または入力してください",
+        success: true,
       };
     },
   },
   {
-    stepLabel: "節・試合形式・日付・観客数を入力",
+    stepLabel: "試合形式を入力",
+    type: "form",
+    fields: [
+      {
+        key: "match_format",
+        label: "試合形式",
+        fieldType: "table",
+        valueType: "option",
+      },
+    ],
+  },
+  {
+    stepLabel: "節・日付・観客数を入力",
     type: "form",
     fields: [
       {
@@ -84,12 +92,6 @@ export const match: FormStep<ModelType.MATCH>[] = [
         label: "節",
         fieldType: "input",
         valueType: "number",
-      },
-      {
-        key: "match_format",
-        label: "試合形式",
-        fieldType: "select",
-        valueType: "option",
       },
       {
         key: "date",
