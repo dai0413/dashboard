@@ -29,13 +29,13 @@ export const StaffAppearanceZodSchema = StaffAppearanceBaseZodSchema.refine(
 
 export type StaffAppearanceType = z.infer<typeof StaffAppearanceZodSchema>;
 
-export const StaffAppearanceFormSchema = StaffAppearanceZodSchema.omit({
+export const StaffAppearanceFormSchema = StaffAppearanceBaseZodSchema.omit({
   _id: true,
   createdAt: true,
   updatedAt: true,
 });
 
-export const StaffAppearanceResponseSchema = StaffAppearanceZodSchema.omit({
+export const StaffAppearanceResponseSchema = StaffAppearanceBaseZodSchema.omit({
   match: true,
   staff: true,
   team: true,
@@ -48,11 +48,13 @@ export const StaffAppearanceResponseSchema = StaffAppearanceZodSchema.omit({
   team: TeamZodSchema,
 });
 
-export const StaffAppearancePopulatedSchema = StaffAppearanceZodSchema.omit({
-  match: true,
-  staff: true,
-  team: true,
-}).safeExtend({
+export const StaffAppearancePopulatedSchema = StaffAppearanceBaseZodSchema.omit(
+  {
+    match: true,
+    staff: true,
+    team: true,
+  },
+).safeExtend({
   match: MatchBaseZodSchema,
   staff: StaffZodSchema.optional(),
   team: TeamZodSchema,

@@ -42,31 +42,33 @@ export const PlayerAppearanceZodSchema = PlayerAppearanceBaseZodSchema.refine(
 
 export type PlayerAppearanceType = z.infer<typeof PlayerAppearanceZodSchema>;
 
-export const PlayerAppearanceFormSchema = PlayerAppearanceZodSchema.omit({
+export const PlayerAppearanceFormSchema = PlayerAppearanceBaseZodSchema.omit({
   _id: true,
   createdAt: true,
   updatedAt: true,
 });
 
-export const PlayerAppearanceResponseSchema = PlayerAppearanceZodSchema.omit({
-  match: true,
-  player: true,
-  team: true,
-}).safeExtend({
-  player: PlayerZodSchema.extend({
-    _id: objectId.optional(),
-    normalized_en_name: z.string().optional(),
-  }),
-  match: MatchBaseZodSchema,
-  team: TeamZodSchema,
-});
+export const PlayerAppearanceResponseSchema =
+  PlayerAppearanceBaseZodSchema.omit({
+    match: true,
+    player: true,
+    team: true,
+  }).safeExtend({
+    player: PlayerZodSchema.extend({
+      _id: objectId.optional(),
+      normalized_en_name: z.string().optional(),
+    }),
+    match: MatchBaseZodSchema,
+    team: TeamZodSchema,
+  });
 
-export const PlayerAppearancePopulatedSchema = PlayerAppearanceZodSchema.omit({
-  match: true,
-  player: true,
-  team: true,
-}).safeExtend({
-  player: PlayerZodSchema.optional(),
-  match: MatchBaseZodSchema,
-  team: TeamZodSchema,
-});
+export const PlayerAppearancePopulatedSchema =
+  PlayerAppearanceBaseZodSchema.omit({
+    match: true,
+    player: true,
+    team: true,
+  }).safeExtend({
+    player: PlayerZodSchema.optional(),
+    match: MatchBaseZodSchema,
+    team: TeamZodSchema,
+  });
