@@ -4,6 +4,9 @@ import { ListView } from "../components/table";
 import { LinkButton } from "../components/buttons";
 import { Arrow } from "../components/ui";
 import { useTopPage } from "../context/top-page-context";
+import { ListViewProvider } from "../context/listView-context";
+import { FilterProvider } from "../context/filter-context";
+import { SortProvider } from "../context/sort-context";
 
 const Main = () => {
   const { isLoading, transfers, injuries, readItems } = useTopPage();
@@ -21,17 +24,23 @@ const Main = () => {
               <h2 className="text-xl font-semibold text-gray-700 mb-4">
                 {"移籍情報"}
               </h2>
-              <ListView
-                pageNation="client"
-                data={transfers}
-                headers={[
-                  { label: "発表日", field: "doa" },
-                  { label: "移籍元", field: "from_team" },
-                  { label: "移籍先", field: "to_team" },
-                  { label: "名前", field: "player" },
-                ]}
-                isLoading={isLoading}
-              />
+              <FilterProvider>
+                <SortProvider>
+                  <ListViewProvider>
+                    <ListView
+                      pageNation="client"
+                      data={transfers}
+                      headers={[
+                        { label: "発表日", field: "doa" },
+                        { label: "移籍元", field: "from_team" },
+                        { label: "移籍先", field: "to_team" },
+                        { label: "名前", field: "player" },
+                      ]}
+                      isLoading={isLoading}
+                    />
+                  </ListViewProvider>
+                </SortProvider>
+              </FilterProvider>
               <LinkButton to={APP_ROUTES.TRANSFER} color={"green"}>
                 <>
                   詳細へ
@@ -47,16 +56,22 @@ const Main = () => {
                 {"怪我情報"}
               </h2>
 
-              <ListView
-                pageNation="client"
-                data={injuries}
-                headers={[
-                  { label: "発表日", field: "doa" },
-                  { label: "名前", field: "player" },
-                  { label: "負傷箇所", field: "injured_part" },
-                ]}
-                isLoading={isLoading}
-              />
+              <FilterProvider>
+                <SortProvider>
+                  <ListViewProvider>
+                    <ListView
+                      pageNation="client"
+                      data={injuries}
+                      headers={[
+                        { label: "発表日", field: "doa" },
+                        { label: "名前", field: "player" },
+                        { label: "負傷箇所", field: "injured_part" },
+                      ]}
+                      isLoading={isLoading}
+                    />
+                  </ListViewProvider>
+                </SortProvider>
+              </FilterProvider>
               <LinkButton to={APP_ROUTES.INJURY} color={"green"}>
                 <>
                   詳細へ

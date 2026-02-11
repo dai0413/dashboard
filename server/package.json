@@ -2,7 +2,7 @@
   "version": "2.2.0",
   "type": "module",
   "dependencies": {
-    "@dai0413/myorg-shared": "^2.2.3",
+    "@dai0413/myorg-shared": "^2.2.4",
     "@dai0413/scraping-logic": "^2.0.1",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
