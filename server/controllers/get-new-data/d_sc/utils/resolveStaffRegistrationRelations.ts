@@ -104,7 +104,6 @@ export const resolveStaffRegistrationRelations = async (
       }
 
       if (d.registration_type === "register") {
-        staffFindObj.pob = d.staff?.pob;
         staffFindObj.dob = d.staff?.dob;
       } else {
         staffFindObj._id = { $in: staffIds };
