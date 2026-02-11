@@ -61,7 +61,7 @@ const DetailModal = () => {
 
   const displayableField = modelType
     ? (fieldDefinition[modelType].filter(
-        isDisplayOnDetail
+        isDisplayOnDetail,
       ) as DetailFieldDefinition[])
     : [];
 
@@ -99,9 +99,10 @@ const DetailModal = () => {
               };
           });
         }
-        // player-registration-history対応
+        // registration-history対応
         if (
-          modelType === ModelType.PLAYER_REGISTRATION_HISTORY &&
+          (modelType === ModelType.PLAYER_REGISTRATION_HISTORY ||
+            modelType === ModelType.STAFF_REGISTRATION_HISTORY) &&
           key === "changes"
         ) {
           const fields = displayableField.filter((fie) => !!fie.getValue);
