@@ -58,13 +58,71 @@ const StaffRegistrationSchema: Schema<IStaffRegistration> = new Schema<
 );
 
 StaffRegistrationSchema.index(
-  { date: 1, season: 1, staff: 1, team: 1, registration_type: 1 },
-  { unique: true },
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+    date: 1,
+    role: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      date: { $exists: true },
+      role: { $exists: true },
+    },
+  },
 );
 
 StaffRegistrationSchema.index(
-  { season: 1, staff: 1, team: 1, registration_type: 1 },
-  { unique: true, partialFilterExpression: { date: { $exists: false } } },
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+    date: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      role: { $exists: false },
+      date: { $exists: true },
+    },
+  },
+);
+
+StaffRegistrationSchema.index(
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+    role: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      role: { $exists: true },
+      date: { $exists: false },
+    },
+  },
+);
+
+StaffRegistrationSchema.index(
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      role: { $exists: false },
+      date: { $exists: false },
+    },
+  },
 );
 
 async function applyCompetition(updateOrDoc: Partial<IStaffRegistration>) {

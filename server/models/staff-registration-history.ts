@@ -57,13 +57,71 @@ const StaffRegistrationHistorySchema: Schema<IStaffRegistrationHistory> =
   );
 
 StaffRegistrationHistorySchema.index(
-  { date: 1, season: 1, staff: 1, team: 1, registration_type: 1 },
-  { unique: true },
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+    date: 1,
+    "changes.role": 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      date: { $exists: true },
+      "changes.role": { $exists: true },
+    },
+  },
 );
 
 StaffRegistrationHistorySchema.index(
-  { season: 1, staff: 1, team: 1, registration_type: 1 },
-  { unique: true, partialFilterExpression: { date: { $exists: false } } },
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+    date: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      "changes.role": { $exists: false },
+      date: { $exists: true },
+    },
+  },
+);
+
+StaffRegistrationHistorySchema.index(
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+    "changes.role": 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      "changes.role": { $exists: true },
+      date: { $exists: false },
+    },
+  },
+);
+
+StaffRegistrationHistorySchema.index(
+  {
+    season: 1,
+    staff: 1,
+    team: 1,
+    registration_type: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      "changes.role": { $exists: false },
+      date: { $exists: false },
+    },
+  },
 );
 
 async function applyCompetition(
