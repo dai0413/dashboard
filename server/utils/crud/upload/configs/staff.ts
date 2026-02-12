@@ -53,6 +53,7 @@ export const staffConfig: UploadConfig = {
 
     const normalized = normalizeRows(reslovedOldIds, [
       { field: ["player", "citizenship"], parserKey: ParserKey.ObjectId },
+      { field: ["dob"], parserKey: ParserKey.Date },
     ]);
 
     return normalized;
