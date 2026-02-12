@@ -61,6 +61,7 @@ export const staffRegistrationHistoryConfig: UploadConfig = {
         field: ["match", "team", "staff"],
         parserKey: ParserKey.ObjectId,
       },
+      { field: ["dob"], parserKey: ParserKey.Date },
     ]);
 
     return normalized;
