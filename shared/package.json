@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "2.2.4",
+  "version": "2.2.8",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -35,15 +35,40 @@
       "require": "./dist/types/d_pc/player-registration-history.js",
       "types": "./dist/types/d_pc/player-registration-history.d.ts"
     },
-    "./types/d_pc/staff": {
-      "import": "./dist/types/d_pc/staff.js",
-      "require": "./dist/types/d_pc/staff.js",
-      "types": "./dist/types/d_pc/staff.d.ts"
+    "./types/d_sc/staff": {
+      "import": "./dist/types/d_sc/staff.js",
+      "require": "./dist/types/d_sc/staff.js",
+      "types": "./dist/types/d_sc/staff.d.ts"
     },
-    "./types/d_pc/staff-registration-history": {
-      "import": "./dist/types/d_pc/staff-registration-history.js",
-      "require": "./dist/types/d_pc/staff-registration-history.js",
-      "types": "./dist/types/d_pc/staff-registration-history.d.ts"
+    "./types/d_sc/staff-registration-history": {
+      "import": "./dist/types/d_sc/staff-registration-history.js",
+      "require": "./dist/types/d_sc/staff-registration-history.js",
+      "types": "./dist/types/d_sc/staff-registration-history.d.ts"
+    },
+    "./types/j_m/match": {
+      "import": "./dist/types/j_m/match.js",
+      "require": "./dist/types/j_m/match.js",
+      "types": "./dist/types/j_m/match.d.ts"
+    },
+    "./types/j_m/player-appearance": {
+      "import": "./dist/types/j_m/player-appearance.js",
+      "require": "./dist/types/j_m/player-appearance.js",
+      "types": "./dist/types/j_m/player-appearance.d.ts"
+    },
+    "./types/j_m/player-match-event-log": {
+      "import": "./dist/types/j_m/player-match-event-log.js",
+      "require": "./dist/types/j_m/player-match-event-log.js",
+      "types": "./dist/types/j_m/player-match-event-log.d.ts"
+    },
+    "./types/j_m/staff-appearance": {
+      "import": "./dist/types/j_m/staff-appearance.js",
+      "require": "./dist/types/j_m/staff-appearance.js",
+      "types": "./dist/types/j_m/staff-appearance.d.ts"
+    },
+    "./types/sn_m/position": {
+      "import": "./dist/types/sn_m/position.js",
+      "require": "./dist/types/sn_m/position.js",
+      "types": "./dist/types/sn_m/position.d.ts"
     }
   },
   "scripts": {

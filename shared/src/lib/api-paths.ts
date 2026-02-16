@@ -189,10 +189,18 @@ export const API_PATHS = {
         "/get-new-data/d-pc/player-registration-history",
     },
     D_SC: {
-      STAFF: "/get-new-data/d-pc/staff",
-      STAFF_UPDATE: "/get-new-data/d-pc/staff-update",
+      STAFF: "/get-new-data/d-sc/staff",
+      STAFF_UPDATE: "/get-new-data/d-sc/staff-update",
       STAFF_REGISTRATION_HISTORY:
-        "/get-new-data/d-pc/staff-registration-history",
+        "/get-new-data/d-sc/staff-registration-history",
+    },
+    J_M: {
+      MATCH: "/get-new-data/j-m/match",
+      PLAYER_APPEARANCE: "/get-new-data/j-m/player-appearance",
+      PLAYER_MATCH_EVENT_LOG: "/get-new-data/j-m/player-match-event-log",
+    },
+    SN_M: {
+      POSITION: "/get-new-data/sn-m/position",
     },
   },
 } as const;
