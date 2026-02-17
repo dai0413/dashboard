@@ -23,7 +23,7 @@ export const resolvePlayerRegistrationRelations = async (
       let team = undefined;
 
       const teams = await TeamModel.find({
-        $or: [{ team: d.team?.team }, { team: normalized }],
+        $or: [{ team: d.team?.team }, { normalized_name: normalized }],
       })
         .select("_id")
         .lean<{ _id: any }[]>();
