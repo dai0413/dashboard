@@ -12,6 +12,39 @@ type InputFieldProps = {
 
 type InternalValue = string | number | boolean | "";
 
+const localDateToUTC = (y: number, m: number, d: number) => {
+  // ローカル 00:00
+  const local = new Date(y, m - 1, d, 0, 0, 0, 0);
+
+  // UTCとして保存
+  return new Date(local.getTime());
+};
+
+const localStringToUTCDate = (value: string) => {
+  // value: "2026-02-17T15:00"
+  const [datePart, timePart] = value.split("T");
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [hh, mm] = timePart.split(":").map(Number);
+
+  // ローカル時刻として生成
+  const local = new Date(y, m - 1, d, hh, mm);
+
+  // UTCとして保存
+  return new Date(local.getTime());
+};
+
+const utcDateToLocalInput = (date: Date) => {
+  const local = new Date(date);
+
+  const y = local.getFullYear();
+  const m = String(local.getMonth() + 1).padStart(2, "0");
+  const d = String(local.getDate()).padStart(2, "0");
+  const hh = String(local.getHours()).padStart(2, "0");
+  const mm = String(local.getMinutes()).padStart(2, "0");
+
+  return `${y}-${m}-${d}T${hh}:${mm}`;
+};
+
 const formatLocalDate = (date: Date) => {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -28,7 +61,7 @@ const convertDate = (
   }
   if (value instanceof Date && !isNaN(value.getTime())) {
     return type === "datetime-local"
-      ? value.toISOString().slice(0, 16)
+      ? utcDateToLocalInput(value)
       : formatLocalDate(value); // ✅ ローカル変換
   }
   return "";
@@ -88,12 +121,12 @@ const InputField = ({
     } else if (type === "date") {
       const [y, m, d] = newVal.split("-").map(Number);
       if (y && m && d) {
-        onChange(new Date(y, m - 1, d, 15, 0, 0, 0));
+        onChange(localDateToUTC(y, m, d));
       } else {
         onChange(undefined);
       }
     } else if (type === "datetime-local") {
-      onChange(new Date(newVal));
+      onChange(localStringToUTCDate(newVal));
     } else {
       onChange(newVal);
     }
