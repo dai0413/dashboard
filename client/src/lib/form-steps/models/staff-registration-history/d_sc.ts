@@ -31,6 +31,13 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
       type: "form",
       fields: [
         {
+          key: "season",
+          label: "大会シーズン",
+          fieldType: "table",
+          valueType: "option",
+          required: true,
+        },
+        {
           key: "date",
           label: "日付",
           fieldType: "input",
