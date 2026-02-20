@@ -26,6 +26,7 @@ import { staffMatchEventLog } from "./staff-match-event-log";
 import { teamMatchFormation } from "./team-match-formation";
 import { staffRegistrationHistory } from "./staff-registration-history";
 import { staffRegistration } from "./staff-registration";
+import { statsL } from "./stats-l";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
@@ -51,6 +52,7 @@ export const fieldDefinition = {
   [ModelType.STAFF_REGISTRATION_HISTORY]: staffRegistrationHistory,
   [ModelType.STAFF_REGISTRATION]: staffRegistration,
   [ModelType.STAFF]: staff,
+  [ModelType.STATS_L]: statsL,
   [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason,
   [ModelType.TEAM_MATCH_FORMATION]: teamMatchFormation,
   [ModelType.TEAM]: team,
