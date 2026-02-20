@@ -136,6 +136,9 @@
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-25)
     - [バリデーション(zod)](#バリデーションzod-10)
     - [自動入力(client)](#自動入力client-8)
+  - [29. スタッツL(Stats-L)](#29-スタッツlstats-l)
+    - [フィールド一覧](#フィールド一覧-27)
+    - [組み合わせ (Mongoose)](#組み合わせ-mongoose-26)
   - [今後](#今後)
   - [. 出場停止](#-出場停止)
   - [. 監督キャリア](#-監督キャリア)
@@ -1338,6 +1341,84 @@
   - `staff`モデルから取得
 - **changes の自動生成**
   - `registration_type` === `deregister` 　の時 `season` , `team` , `staff` が一致する直前データの `changes` を採用
+
+---
+
+## 29. スタッツL(Stats-L)
+
+### フィールド一覧
+
+| フィールド                | 型              | 日本語           | require | default |
+| ------------------------- | --------------- | ---------------- | ------- | ------- |
+| match                     | 外部キー(Match) | 試合             | true    |         |
+| team                      | 外部キー(Team)  | チーム           | true    |         |
+| xgFor                     | 数字            | 得点期待値       |         |         |
+| shootFor                  | 0以上整数       | シュート         |         |         |
+| onTargetFor               | 0以上整数       | 枠内シュート     |         |         |
+| pkShootFor                | 0以上整数       | PKによるシュート |         |         |
+| passFor                   | 0以上整数       | パス             |         |         |
+| crossFor                  | 0以上整数       | クロス           |         |         |
+| directFkFor               | 0以上整数       | 直接ＦＫ         |         |         |
+| indirectFkFor             | 0以上整数       | 間接ＦＫ         |         |         |
+| cornerKickFor             | 0以上整数       | ＣＫ             |         |         |
+| throwInFor                | 0以上整数       | スローイン       |         |         |
+| dribbleFor                | 0以上整数       | ドリブル         |         |         |
+| tackleFor                 | 0以上整数       | タックル         |         |         |
+| clearFor                  | 0以上整数       | クリア           |         |         |
+| interceptFor              | 0以上整数       | インターセプト   |         |         |
+| offsideFor                | 0以上整数       | オフサイド       |         |         |
+| yellowCardFor             | 0以上整数       | 警告             |         |         |
+| redCardFor                | 0以上整数       | 退場             |         |         |
+| entryAtk3rdFor            | 0以上整数       | ATK3rd進入       |         |         |
+| entryPenaltyAreaFor       | 0以上整数       | PA進入           |         |         |
+| distanceFor               | 0以上整数       | 総移動距離       |         |         |
+| sprintFor                 | 0以上整数       | スプリント       |         |         |
+| attackCountFor            | 0以上整数       | 攻撃回数         |         |         |
+| chanceCreationRateFor     | 数字            | チャンス構築率   |         |         |
+| shootSuccessRateFor       | 数字            | シュート成功率   |         |         |
+| passSuccessRateFor        | 数字            | パス成功率       |         |         |
+| crossSuccessRateFor       | 数字            | クロス成功率     |         |         |
+| throwInSuccessRateFor     | 数字            | スローイン成功率 |         |         |
+| dribbleSuccessRateFor     | 数字            | ドリブル成功率   |         |         |
+| tackleSuccessRateFor      | 数字            | タックル成功率   |         |         |
+| possession                | 数字            | ボール保持率     |         |         |
+| acc_time                  | 0以上整数       | プレイタイム     |         |         |
+| xgAgainst                 | 数字            | 失点期待値       |         |         |
+| shootAgainst              | 0以上整数       | シュート         |         |         |
+| onTargetAgainst           | 0以上整数       | 枠内シュート     |         |         |
+| pkShootAgainst            | 0以上整数       | PKによるシュート |         |         |
+| passAgainst               | 0以上整数       | パス             |         |         |
+| crossAgainst              | 0以上整数       | クロス           |         |         |
+| directFkAgainst           | 0以上整数       | 直接ＦＫ         |         |         |
+| indirectFkAgainst         | 0以上整数       | 間接ＦＫ         |         |         |
+| cornerKickAgainst         | 0以上整数       | ＣＫ             |         |         |
+| throwInAgainst            | 0以上整数       | スローイン       |         |         |
+| dribbleAgainst            | 0以上整数       | ドリブル         |         |         |
+| tackleAgainst             | 0以上整数       | タックル         |         |         |
+| clearAgainst              | 0以上整数       | クリア           |         |         |
+| interceptAgainst          | 0以上整数       | インターセプト   |         |         |
+| offsideAgainst            | 0以上整数       | オフサイド       |         |         |
+| yellowCardAgainst         | 0以上整数       | 警告             |         |         |
+| redCardAgainst            | 0以上整数       | 退場             |         |         |
+| entryAtk3rdAgainst        | 0以上整数       | ATK3rd進入       |         |         |
+| entryPenaltyAreaAgainst   | 0以上整数       | PA進入           |         |         |
+| distanceAgainst           | 0以上整数       | 総移動距離       |         |         |
+| sprintAgainst             | 0以上整数       | スプリント       |         |         |
+| attackCountAgainst        | 0以上整数       | 攻撃回数         |         |         |
+| chanceCreationRateAgainst | 数字            | チャンス構築率   |         |         |
+| shootSuccessRateAgainst   | 数字            | シュート成功率   |         |         |
+| passSuccessRateAgainst    | 数字            | パス成功率       |         |         |
+| crossSuccessRateAgainst   | 数字            | クロス成功率     |         |         |
+| throwInSuccessRateAgainst | 数字            | スローイン成功率 |         |         |
+| dribbleSuccessRateAgainst | 数字            | ドリブル成功率   |         |         |
+| tackleSuccessRateAgainst  | 数字            | タックル成功率   |         |         |
+
+### 組み合わせ (Mongoose)
+
+以下の組み合わせで **ユニーク** とする：
+
+- `match`
+- `team`
 
 ---
 
