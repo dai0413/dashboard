@@ -82,6 +82,7 @@ import {
   StaffRegistrationHistoryForm,
   StaffRegistrationHistoryGet,
 } from "./staff-registration-history";
+import { StatsL, StatsLForm, StatsLGet } from "./stats-l";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -107,6 +108,7 @@ export enum ModelType {
   STAFF_REGISTRATION = "staff-registration",
   STAFF_REGISTRATION_HISTORY = "staff-registration-history",
   STAFF = "staff",
+  STATS_L = "stats-l",
   TEAM_COMPETITION_SEASON = "team-competition-season",
   TEAM_MATCH_FORMATION = "team-match-formation",
   TEAM = "team",
@@ -137,6 +139,7 @@ export type ModelDataMap = {
   [ModelType.STAFF_REGISTRATION]: StaffRegistration;
   [ModelType.STAFF_REGISTRATION_HISTORY]: StaffRegistrationHistory;
   [ModelType.STAFF]: Staff;
+  [ModelType.STATS_L]: StatsL;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeason;
   [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormation;
   [ModelType.TEAM]: Team;
@@ -167,6 +170,7 @@ export type GettedModelDataMap = {
   [ModelType.STAFF_REGISTRATION]: StaffRegistrationGet;
   [ModelType.STAFF_REGISTRATION_HISTORY]: StaffRegistrationHistoryGet;
   [ModelType.STAFF]: StaffGet;
+  [ModelType.STATS_L]: StatsLGet;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonGet;
   [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormationGet;
   [ModelType.TEAM]: TeamGet;
@@ -197,6 +201,7 @@ export type FormTypeMap = {
   [ModelType.STAFF_REGISTRATION]: StaffRegistrationForm;
   [ModelType.STAFF_REGISTRATION_HISTORY]: StaffRegistrationHistoryForm;
   [ModelType.STAFF]: StaffForm;
+  [ModelType.STATS_L]: StatsLForm;
   [ModelType.TEAM_COMPETITION_SEASON]: TeamCompetitionSeasonForm;
   [ModelType.TEAM_MATCH_FORMATION]: TeamMatchFormationForm;
   [ModelType.TEAM]: TeamForm;
@@ -228,6 +233,7 @@ export const ModelRouteMap = {
   [ModelType.STAFF_REGISTRATION]: APP_ROUTES.STAFF_REGISTRATION,
   [ModelType.STAFF_REGISTRATION_HISTORY]: APP_ROUTES.STAFF_REGISTRATION_HISTORY,
   [ModelType.STAFF]: APP_ROUTES.STAFF_MATCH_EVENT_LOG,
+  [ModelType.STATS_L]: APP_ROUTES.STATS_L,
   [ModelType.TEAM_COMPETITION_SEASON]: APP_ROUTES.TEAM_COMPETITION_SEASON,
   [ModelType.TEAM_MATCH_FORMATION]: APP_ROUTES.TEAM_MATCH_FORMATION,
   [ModelType.TEAM]: APP_ROUTES.TEAM,

@@ -30,6 +30,7 @@ export const APP_ROUTES = {
   STAFF_REGISTRATION: "/staff-registration",
   STAFF_REGISTRATION_HISTORY: "/staff-registration-history",
   STAFF: "/staff",
+  STATS_L: "/stats-l",
   TEAM_COMPETITION_SEASON: "/team-competition-season",
   TEAM_MATCH_FORMATION: "/team-match-formation",
   TEAM: "/team",
