@@ -65,6 +65,7 @@ import {
   StaffRegistrationHistoryProvider,
   useStaffRegistrationHistory,
 } from "./staff-registration-history";
+import { StatsLProvider, useStatsL } from "./stats-l";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -78,41 +79,43 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                   <NationalMatchSeriesProvider>
                     <TeamProvider>
                       <MatchProvider>
-                        <TeamCompetitionSeasonProvider>
-                          <PlayerProvider>
-                            <StaffProvider>
-                              <PlayerMatchEventLogProvider>
-                                <StaffMatchEventLogProvider>
-                                  <PlayerRegistrationProvider>
-                                    <PlayerRegistrationHistoryProvider>
-                                      <StaffRegistrationProvider>
-                                        <StaffRegistrationHistoryProvider>
-                                          <RefereeProvider>
-                                            <NationalCallupProvider>
-                                              <InjuryProvider>
-                                                <TransferProvider>
-                                                  <FormationProvider>
-                                                    <TeamMatchFormationProvider>
-                                                      <PlayerAppearanceProvider>
-                                                        <StaffAppearanceProvider>
-                                                          {children}
-                                                        </StaffAppearanceProvider>
-                                                      </PlayerAppearanceProvider>
-                                                    </TeamMatchFormationProvider>
-                                                  </FormationProvider>
-                                                </TransferProvider>
-                                              </InjuryProvider>
-                                            </NationalCallupProvider>
-                                          </RefereeProvider>
-                                        </StaffRegistrationHistoryProvider>
-                                      </StaffRegistrationProvider>
-                                    </PlayerRegistrationHistoryProvider>
-                                  </PlayerRegistrationProvider>
-                                </StaffMatchEventLogProvider>
-                              </PlayerMatchEventLogProvider>
-                            </StaffProvider>
-                          </PlayerProvider>
-                        </TeamCompetitionSeasonProvider>
+                        <StatsLProvider>
+                          <TeamCompetitionSeasonProvider>
+                            <PlayerProvider>
+                              <StaffProvider>
+                                <PlayerMatchEventLogProvider>
+                                  <StaffMatchEventLogProvider>
+                                    <PlayerRegistrationProvider>
+                                      <PlayerRegistrationHistoryProvider>
+                                        <StaffRegistrationProvider>
+                                          <StaffRegistrationHistoryProvider>
+                                            <RefereeProvider>
+                                              <NationalCallupProvider>
+                                                <InjuryProvider>
+                                                  <TransferProvider>
+                                                    <FormationProvider>
+                                                      <TeamMatchFormationProvider>
+                                                        <PlayerAppearanceProvider>
+                                                          <StaffAppearanceProvider>
+                                                            {children}
+                                                          </StaffAppearanceProvider>
+                                                        </PlayerAppearanceProvider>
+                                                      </TeamMatchFormationProvider>
+                                                    </FormationProvider>
+                                                  </TransferProvider>
+                                                </InjuryProvider>
+                                              </NationalCallupProvider>
+                                            </RefereeProvider>
+                                          </StaffRegistrationHistoryProvider>
+                                        </StaffRegistrationProvider>
+                                      </PlayerRegistrationHistoryProvider>
+                                    </PlayerRegistrationProvider>
+                                  </StaffMatchEventLogProvider>
+                                </PlayerMatchEventLogProvider>
+                              </StaffProvider>
+                            </PlayerProvider>
+                          </TeamCompetitionSeasonProvider>
+                        </StatsLProvider>
                       </MatchProvider>
                     </TeamProvider>
                   </NationalMatchSeriesProvider>
@@ -150,6 +153,7 @@ const useModelContext = (modelType: ModelType | null) => {
   const staffRegistraion = useStaffRegistration();
   const staffRegistrationHistory = useStaffRegistrationHistory();
   const staff = useStaff();
+  const statsL = useStatsL();
   const teamCompetitionSeason = useTeamCompetitionSeason();
   const teamMatchFormation = useTeamMatchFormation();
   const team = useTeam();
@@ -179,6 +183,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.STAFF_REGISTRATION_HISTORY]: staffRegistrationHistory.metacrud,
     [ModelType.STAFF_REGISTRATION]: staffRegistraion.metacrud,
     [ModelType.STAFF]: staff.metacrud,
+    [ModelType.STATS_L]: statsL.metacrud,
     [ModelType.TEAM_COMPETITION_SEASON]: teamCompetitionSeason.metacrud,
     [ModelType.TEAM_MATCH_FORMATION]: teamMatchFormation.metacrud,
     [ModelType.TEAM]: team.metacrud,

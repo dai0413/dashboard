@@ -175,6 +175,12 @@ const models: {
     link: APP_ROUTES.TEAM_MATCH_FORMATION,
     icon: "setting",
   },
+  {
+    model: "StatsL",
+    desc: "スタッツL",
+    link: APP_ROUTES.STATS_L,
+    icon: "match",
+  },
 ];
 
 const d_pcItems: {

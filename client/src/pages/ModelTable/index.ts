@@ -21,6 +21,7 @@ export { default as StaffAppearance } from "./StaffAppearance";
 export { default as StaffMatchEventLog } from "./StaffMatchEventLog";
 export { default as StaffRegistration } from "./StaffRegistration";
 export { default as StaffRegistrationHistory } from "./StaffRegistrationHistory";
+export { default as StatsL } from "./StatsL";
 export { default as Team } from "./Team";
 export { default as TeamCompetitionSeason } from "./TeamCompetitionSeason";
 export { default as TeamMatchFormation } from "./TeamMatchFormation";
