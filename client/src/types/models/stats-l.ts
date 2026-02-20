@@ -8,18 +8,18 @@ export type StatsL = Omit<
   z.infer<typeof StatsLPopulatedSchema>,
   "match" | "team"
 > & {
-  match?: Match;
-  team?: Team;
+  match: Match;
+  team: Team;
 };
 
 export type StatsLForm = Partial<
   Omit<z.infer<typeof StatsLFormSchema>, "match" | "team"> & {
-    match?: Match["_id"];
-    team?: Team["_id"];
+    match: Match["_id"];
+    team: Team["_id"];
   }
 >;
 
 export type StatsLGet = Omit<StatsL, "match" | "team"> & {
-  match?: Label;
-  team?: Label;
+  match: Label;
+  team: Label;
 };

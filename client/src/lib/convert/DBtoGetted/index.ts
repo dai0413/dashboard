@@ -30,6 +30,7 @@ import { staffMatchEventLog } from "./staff-match-event-log";
 import { teamMatchFormation } from "./team-match-formation";
 import { staffRegistration } from "./staff-registration";
 import { staffRegistrationHistory } from "./staff-registration-history";
+import { statsL } from "./stats-l";
 
 type Converter<T extends ModelType> = {
   single: (data: ModelDataMap[T]) => GettedModelDataMap[T];
@@ -130,6 +131,10 @@ const convertMap: {
   [ModelType.STAFF]: {
     single: staff,
     multiple: (data) => data.map(staff),
+  },
+  [ModelType.STATS_L]: {
+    single: statsL,
+    multiple: (data) => data.map(statsL),
   },
   [ModelType.TEAM_COMPETITION_SEASON]: {
     single: teamCompetitionSeason,
