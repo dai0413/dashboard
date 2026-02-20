@@ -146,6 +146,12 @@ export const API_PATHS = {
     DETAIL: (id: string | number = ":id") => `/staff/${id}`,
   },
 
+  STATS_L: {
+    ROOT: "/stats-l",
+    UPLOAD: "/stats-l/upload",
+    DETAIL: (id: string | number = ":id") => `/stats-l/${id}`,
+  },
+
   TEAM_COMPETITION_SEASON: {
     ROOT: "/team-competition-season",
     UPLOAD: "/team-competition-season/upload",
