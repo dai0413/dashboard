@@ -67,6 +67,7 @@ import teamMatchFormation from "./routes/models/team-match-formation.js";
 import staffAppearance from "./routes/models/staff-appearance.js";
 import staffRegistrationHistory from "./routes/models/staff-registration-history.js";
 import staffRegistration from "./routes/models/staff-registration.js";
+import statsL from "./routes/models/stats-l.js";
 
 import getNewData from "./routes/get-new-data.js";
 
@@ -96,6 +97,7 @@ app.use(`/api/v1`, authmiddleware, staffMatchEventLog);
 app.use(`/api/v1`, authmiddleware, staffRegistrationHistory);
 app.use(`/api/v1`, authmiddleware, staffRegistration);
 app.use(`/api/v1`, authmiddleware, staff);
+app.use(`/api/v1`, authmiddleware, statsL);
 app.use(`/api/v1`, authmiddleware, teamCompetitionSeason);
 app.use(`/api/v1`, authmiddleware, team);
 app.use(`/api/v1`, authmiddleware, transfer);

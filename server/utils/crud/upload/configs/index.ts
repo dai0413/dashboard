@@ -4,6 +4,7 @@ import { staffAppearanceConfig } from "./staff-appearance.js";
 import { staffMatchEventLogConfig } from "./staff-match-event-log.js";
 import { staffRegistrationHistoryConfig } from "./staff-registration-history.js";
 import { staffConfig } from "./staff.js";
+import { statsLConfig } from "./stats-l.js";
 
 export type UploadConfigMap = {
   "player-appearance": typeof playerAppearanceConfig;
@@ -12,6 +13,7 @@ export type UploadConfigMap = {
   "staff-appearance": typeof staffAppearanceConfig;
   "staff-match-event-log": typeof staffMatchEventLogConfig;
   "staff-registration-history": typeof staffRegistrationHistoryConfig;
+  "stats-l": typeof statsLConfig;
 };
 
 export const uploadConfig: {
@@ -23,4 +25,5 @@ export const uploadConfig: {
   "staff-appearance": staffAppearanceConfig,
   "staff-match-event-log": staffMatchEventLogConfig,
   "staff-registration-history": staffRegistrationHistoryConfig,
+  "stats-l": statsLConfig,
 };
