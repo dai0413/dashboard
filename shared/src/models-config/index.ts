@@ -22,6 +22,7 @@ export * from "./staff-match-event-log.js";
 export * from "./staff-registration.js";
 export * from "./staff-registration-history.js";
 export * from "./staff.js";
+export * from "./stats-l.js";
 export * from "./team-competition-season.js";
 export * from "./team.js";
 export * from "./transfer.js";
