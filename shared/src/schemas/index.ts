@@ -14,6 +14,7 @@ export * from "./player-match-event-log.schema.js";
 export * from "./player-registration-history.schema.js";
 export * from "./player-registration.schema.js";
 export * from "./player.schema.js";
+export * from "./referee-appearance.schema.js";
 export * from "./referee.schema.js";
 export * from "./season.schema.js";
 export * from "./stadium.schema.js";

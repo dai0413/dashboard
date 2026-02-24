@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function referee<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   RefereeType,
@@ -38,7 +38,7 @@ export function referee<TDoc = any, TModel = any>(
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
     },
-    bulk: false,
+    bulk: true,
     download: false,
     TEST: {
       sampleData: [

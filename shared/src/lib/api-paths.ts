@@ -105,6 +105,12 @@ export const API_PATHS = {
     DETAIL: (id: string | number = ":id") => `/referee/${id}`,
   },
 
+  REFEREE_APPEARANCE: {
+    ROOT: "/referee-appearance",
+    UPLOAD: "/referee-appearance/upload",
+    DETAIL: (id: string | number = ":id") => `/referee-appearance/${id}`,
+  },
+
   SEASON: {
     ROOT: "/season",
     DETAIL: (id: string | number = ":id") => `/season/${id}`,

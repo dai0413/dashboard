@@ -11,6 +11,7 @@ import { MatchResponseSchema } from "../schemas/match.schema.js";
 import { StaffResponseSchema } from "../schemas/staff.schema.js";
 import { MatchEventTypeResponseSchema } from "../schemas/match-event-type.schema.js";
 import { FormationResponseSchema } from "../schemas/formation.schema.js";
+import { RefereeResponseSchema } from "../schemas/referee.schema.js";
 
 export type PopulatePath = {
   path: string;
@@ -40,6 +41,7 @@ export interface DependencyRefs {
   staff: z.infer<typeof StaffResponseSchema>[];
   matchEventType: z.infer<typeof MatchEventTypeResponseSchema>[];
   formation: z.infer<typeof FormationResponseSchema>[];
+  referee: z.infer<typeof RefereeResponseSchema>[];
 }
 
 export interface ControllerConfig<
@@ -47,7 +49,7 @@ export interface ControllerConfig<
   TData,
   TForm = TData,
   TResponse = TData,
-  TPopulated = TData
+  TPopulated = TData,
 > {
   name: string;
   collection_name: string;
