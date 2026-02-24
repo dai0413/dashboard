@@ -22,9 +22,13 @@ const PositionOptions = [
   "LIH",
   "RSH",
   "LSH",
+  "RST",
+  "LST",
   "RWG",
   "LWG",
   "CF",
+  "RCF",
+  "LCF",
   "FW",
 ];
 export const position = () =>
