@@ -83,6 +83,11 @@ import {
   StaffRegistrationHistoryGet,
 } from "./staff-registration-history";
 import { StatsL, StatsLForm, StatsLGet } from "./stats-l";
+import {
+  RefereeAppearance,
+  RefereeAppearanceForm,
+  RefereeAppearanceGet,
+} from "./referee-appearance";
 
 export enum ModelType {
   COMPETITION_STAGE = "competition-stage",
@@ -100,6 +105,7 @@ export enum ModelType {
   PLAYER_REGISTRATION_HISTORY = "player-registration-history",
   PLAYER_REGISTRATION = "player-registration",
   PLAYER = "player",
+  REFEREE_APPEARANCE = "referee-appearance",
   REFEREE = "referee",
   SEASON = "season",
   STADIUM = "stadium",
@@ -131,6 +137,7 @@ export type ModelDataMap = {
   [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistory;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistration;
   [ModelType.PLAYER]: Player;
+  [ModelType.REFEREE_APPEARANCE]: RefereeAppearance;
   [ModelType.REFEREE]: Referee;
   [ModelType.SEASON]: Season;
   [ModelType.STADIUM]: Stadium;
@@ -162,6 +169,7 @@ export type GettedModelDataMap = {
   [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistoryGet;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationGet;
   [ModelType.PLAYER]: PlayerGet;
+  [ModelType.REFEREE_APPEARANCE]: RefereeAppearanceGet;
   [ModelType.REFEREE]: RefereeGet;
   [ModelType.SEASON]: SeasonGet;
   [ModelType.STADIUM]: StadiumGet;
@@ -193,6 +201,7 @@ export type FormTypeMap = {
   [ModelType.PLAYER_REGISTRATION_HISTORY]: PlayerRegistrationHistoryForm;
   [ModelType.PLAYER_REGISTRATION]: PlayerRegistrationForm;
   [ModelType.PLAYER]: PlayerForm;
+  [ModelType.REFEREE_APPEARANCE]: RefereeAppearanceForm;
   [ModelType.REFEREE]: RefereeForm;
   [ModelType.SEASON]: SeasonForm;
   [ModelType.STADIUM]: StadiumForm;
@@ -225,6 +234,7 @@ export const ModelRouteMap = {
     APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
   [ModelType.PLAYER_REGISTRATION]: APP_ROUTES.PLAYER_REGISTRATION,
   [ModelType.PLAYER]: APP_ROUTES.PLAYER,
+  [ModelType.REFEREE_APPEARANCE]: APP_ROUTES.REFEREE_APPEARANCE,
   [ModelType.REFEREE]: APP_ROUTES.REFEREE,
   [ModelType.SEASON]: APP_ROUTES.SEASON,
   [ModelType.STADIUM]: APP_ROUTES.STADIUM,

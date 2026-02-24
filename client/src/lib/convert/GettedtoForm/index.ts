@@ -31,6 +31,7 @@ import { teamMatchFormation } from "./team-match-formation";
 import { staffRegistration } from "./staff-registration";
 import { staffRegistrationHistory } from "./staff-registration-history";
 import { statsL } from "./stats-l";
+import { refereeAppearance } from "./referee-appearance";
 
 type Converter<T extends ModelType> = {
   single: (data: GettedModelDataMap[T]) => FormTypeMap[T];
@@ -99,6 +100,10 @@ const convertMap: {
   [ModelType.PLAYER]: {
     single: player,
     multiple: (data) => data.map(player),
+  },
+  [ModelType.REFEREE_APPEARANCE]: {
+    single: refereeAppearance,
+    multiple: (data) => data.map(refereeAppearance),
   },
   [ModelType.REFEREE]: {
     single: referee,

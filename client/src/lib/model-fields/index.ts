@@ -27,6 +27,7 @@ import { teamMatchFormation } from "./team-match-formation";
 import { staffRegistrationHistory } from "./staff-registration-history";
 import { staffRegistration } from "./staff-registration";
 import { statsL } from "./stats-l";
+import { refereeAppearance } from "./referee-appearance";
 
 export const fieldDefinition = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
@@ -44,6 +45,7 @@ export const fieldDefinition = {
   [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory,
   [ModelType.PLAYER_REGISTRATION]: playerRegistration,
   [ModelType.PLAYER]: player,
+  [ModelType.REFEREE_APPEARANCE]: refereeAppearance,
   [ModelType.REFEREE]: referee,
   [ModelType.SEASON]: season,
   [ModelType.STADIUM]: stadium,

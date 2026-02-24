@@ -22,6 +22,7 @@ export const APP_ROUTES = {
   PLAYER_REGISTRATION_HISTORY: "/player-registration-history",
   PLAYER_REGISTRATION: "/player-registration",
   PLAYER: "/player",
+  REFEREE_APPEARANCE: "/referee-appearance",
   REFEREE: "/referee",
   SEASON: "/season",
   STADIUM: "/stadium",
