@@ -19,6 +19,7 @@ import {
   staff as staffConfig,
   matchEventType as matchEventTypeConfig,
   formation as formationConfig,
+  referee as refereeConfig,
 } from "@dai0413/myorg-shared";
 import { TeamModel } from "../models/team.js";
 import { CountryModel } from "../models/country.js";
@@ -32,6 +33,7 @@ import { MatchEventTypeModel } from "../models/match-event-type.js";
 import { StaffModel } from "../models/staff.js";
 import { FormationModel } from "../models/formation.js";
 import { PlayerRegistrationModel } from "../models/player-registration.js";
+import { RefereeModel } from "../models/referee.js";
 
 const ROUTE_BASE = process.env.ROUTE_BASE;
 
@@ -83,6 +85,7 @@ export async function setupDependencies(): Promise<DependencyRefs> {
   );
   const staff = await postAndGetData(staffConfig(StaffModel));
   const formation = await postAndGetData(formationConfig(FormationModel));
+  const referee = await postAndGetData(refereeConfig(RefereeModel));
 
   return {
     team,
@@ -96,6 +99,7 @@ export async function setupDependencies(): Promise<DependencyRefs> {
     staff,
     matchEventType,
     formation,
+    referee,
   };
 }
 
@@ -180,6 +184,8 @@ export function runControllerTests<
       validateParsedData(parsedData, sample[0], populateKeys);
 
       created = parsedData;
+
+      expect({ data: [] }).toHaveProperty("data");
     });
     it(`GET ${route} should get all ${name}s`, async () => {
       const res = await request(app).get(route);

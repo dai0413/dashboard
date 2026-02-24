@@ -68,6 +68,7 @@ import staffAppearance from "./routes/models/staff-appearance.js";
 import staffRegistrationHistory from "./routes/models/staff-registration-history.js";
 import staffRegistration from "./routes/models/staff-registration.js";
 import statsL from "./routes/models/stats-l.js";
+import refereeAppearance from "./routes/models/referee-appearance.js";
 
 import getNewData from "./routes/get-new-data.js";
 
@@ -89,6 +90,7 @@ app.use(`/api/v1`, authmiddleware, playerMatchEventLog);
 app.use(`/api/v1`, authmiddleware, playerRegistrationHistory);
 app.use(`/api/v1`, authmiddleware, playerRegistration);
 app.use(`/api/v1`, authmiddleware, player);
+app.use(`/api/v1`, authmiddleware, refereeAppearance);
 app.use(`/api/v1`, authmiddleware, referee);
 app.use(`/api/v1`, authmiddleware, season);
 app.use(`/api/v1`, authmiddleware, stadium);

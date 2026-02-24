@@ -26,6 +26,7 @@ import {
   staffRegistration,
   staffRegistrationHistory,
   statsL,
+  refereeAppearance,
 } from "@dai0413/myorg-shared";
 import { runControllerTests } from "../dist/test-utils/runControllerTests.js";
 
@@ -56,6 +57,7 @@ import { TeamMatchFormationModel } from "../dist/models/team-match-formation.js"
 import { StaffRegistrationModel } from "../dist/models/staff-registration.js";
 import { StaffRegistrationHistoryModel } from "../dist/models/staff-registration-history.js";
 import { StatsLModel } from "../dist/models/stats-l.js";
+import { RefereeAppearanceModel } from "../dist/models/referee-appearance.js";
 import { match as customMatch } from "../dist/utils/customMatchStage/match.js";
 import { transfer as customTransfer } from "../dist/utils/customMatchStage/transfer.js";
 
@@ -85,4 +87,5 @@ import { transfer as customTransfer } from "../dist/utils/customMatchStage/trans
 // runControllerTests(teamMatchFormation(TeamMatchFormationModel));
 // runControllerTests(staffRegistration(StaffRegistrationModel));
 // runControllerTests(staffRegistrationHistory(StaffRegistrationHistoryModel));
-runControllerTests(statsL(StatsLModel));
+// runControllerTests(statsL(StatsLModel));
+runControllerTests(refereeAppearance(RefereeAppearanceModel));
