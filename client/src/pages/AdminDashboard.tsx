@@ -181,6 +181,12 @@ const models: {
     link: APP_ROUTES.STATS_L,
     icon: "match",
   },
+  {
+    model: "RefereeAppearance",
+    desc: "審判の出場履歴",
+    link: APP_ROUTES.REFEREE_APPEARANCE,
+    icon: "match",
+  },
 ];
 
 const d_pcItems: {
