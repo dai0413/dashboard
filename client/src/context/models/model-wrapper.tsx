@@ -66,6 +66,10 @@ import {
   useStaffRegistrationHistory,
 } from "./staff-registration-history";
 import { StatsLProvider, useStatsL } from "./stats-l";
+import {
+  RefereeAppearanceProvider,
+  useRefereeAppearance,
+} from "./referee-appearance";
 
 const ModelWrapper = ({ children }: { children: ReactNode }) => {
   return (
@@ -90,21 +94,23 @@ const ModelWrapper = ({ children }: { children: ReactNode }) => {
                                         <StaffRegistrationProvider>
                                           <StaffRegistrationHistoryProvider>
                                             <RefereeProvider>
-                                              <NationalCallupProvider>
-                                                <InjuryProvider>
-                                                  <TransferProvider>
-                                                    <FormationProvider>
-                                                      <TeamMatchFormationProvider>
-                                                        <PlayerAppearanceProvider>
-                                                          <StaffAppearanceProvider>
-                                                            {children}
-                                                          </StaffAppearanceProvider>
-                                                        </PlayerAppearanceProvider>
-                                                      </TeamMatchFormationProvider>
-                                                    </FormationProvider>
-                                                  </TransferProvider>
-                                                </InjuryProvider>
-                                              </NationalCallupProvider>
+                                              <RefereeAppearanceProvider>
+                                                <NationalCallupProvider>
+                                                  <InjuryProvider>
+                                                    <TransferProvider>
+                                                      <FormationProvider>
+                                                        <TeamMatchFormationProvider>
+                                                          <PlayerAppearanceProvider>
+                                                            <StaffAppearanceProvider>
+                                                              {children}
+                                                            </StaffAppearanceProvider>
+                                                          </PlayerAppearanceProvider>
+                                                        </TeamMatchFormationProvider>
+                                                      </FormationProvider>
+                                                    </TransferProvider>
+                                                  </InjuryProvider>
+                                                </NationalCallupProvider>
+                                              </RefereeAppearanceProvider>
                                             </RefereeProvider>
                                           </StaffRegistrationHistoryProvider>
                                         </StaffRegistrationProvider>
@@ -146,6 +152,7 @@ const useModelContext = (modelType: ModelType | null) => {
   const playerRegistrationHistory = usePlayerRegistrationHistory();
   const playerRegistration = usePlayerRegistration();
   const referee = useReferee();
+  const refereeAppearance = useRefereeAppearance();
   const season = useSeason();
   const stadium = useStadium();
   const staffMatchEventLog = useStaffMatchEventLog();
@@ -175,6 +182,7 @@ const useModelContext = (modelType: ModelType | null) => {
     [ModelType.PLAYER]: player.metacrud,
     [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory.metacrud,
     [ModelType.PLAYER_REGISTRATION]: playerRegistration.metacrud,
+    [ModelType.REFEREE_APPEARANCE]: refereeAppearance.metacrud,
     [ModelType.REFEREE]: referee.metacrud,
     [ModelType.SEASON]: season.metacrud,
     [ModelType.STADIUM]: stadium.metacrud,

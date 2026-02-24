@@ -14,6 +14,7 @@ export { default as PlayerMatchEventLog } from "./PlayerMatchEventLog";
 export { default as PlayerRegistration } from "./PlayerRegistration";
 export { default as PlayerRegistrationHistory } from "./PlayerRegistrationHistory";
 export { default as Referee } from "./Referee";
+export { default as RefereeAppearance } from "./RefereeAppearance";
 export { default as Season } from "./Season";
 export { default as Stadium } from "./Stadium";
 export { default as Staff } from "./Staff";
