@@ -1117,10 +1117,8 @@
 
 ### バリデーション(zod)
 
-- **order 入力時**
-  → `time`, `add_time`, `special_time` は `undefined`
 - **special_time 入力時**
-  → `time`, `add_time`, `order` は `undefined`
+  → `time`, `add_time`, は `undefined`
 
 ### バリデーション(client)
 

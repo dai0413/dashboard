@@ -111,7 +111,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
         },
         {
           key: "order",
-          label: "PK順番",
+          label: "PKなど順番",
           fieldType: "input",
           valueType: "number",
         },
@@ -161,30 +161,6 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
         return obj;
       },
       validate: (data) => {
-        if (data.order) {
-          if (data.time) {
-            return {
-              success: false,
-              message: "PK順番(order)を入力する場合はtimeを入力できません",
-            };
-          }
-
-          if (data.add_time) {
-            return {
-              success: false,
-              message: "PK順番(order)を入力する場合はadd_timeを入力できません",
-            };
-          }
-
-          if (data.special_time) {
-            return {
-              success: false,
-              message:
-                "PK順番(order)を入力する場合はspecial_timeを入力できません",
-            };
-          }
-        }
-
         if (data.special_time) {
           if (data.time) {
             return {
@@ -199,14 +175,6 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
               success: false,
               message:
                 "特別時間(special_time)を入力する場合はadd_timeを入力できません",
-            };
-          }
-
-          if (data.order) {
-            return {
-              success: false,
-              message:
-                "特別時間(special_time)を入力する場合はorderを入力できません",
             };
           }
         }

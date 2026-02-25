@@ -31,13 +31,14 @@ const FormationSchema = new Schema<IFormation, any, IFormation>(
         },
       ],
     },
+    old_id: { type: String },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const FormationModel: Model<IFormation> = mongoose.model<IFormation>(
   "Formation",
-  FormationSchema
+  FormationSchema,
 );

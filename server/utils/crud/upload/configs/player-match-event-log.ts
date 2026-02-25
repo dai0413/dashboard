@@ -4,6 +4,7 @@ import { MatchModel } from "../../../../models/match.js";
 import { PlayerModel } from "../../../../models/player.js";
 import { TeamModel } from "../../../../models/team.js";
 import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
+import { MatchEventTypeModel } from "../../../../models/match-event-type.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
 
@@ -18,6 +19,7 @@ type INPUT_CSV_TYPE = Omit<
   match_old_id?: string;
   player_old_id?: string;
   team_old_id?: string;
+  match_event_type_old_id?: string;
 };
 
 export const playerMatchEventLogConfig: UploadConfig = {
@@ -39,6 +41,11 @@ export const playerMatchEventLogConfig: UploadConfig = {
         key: "team",
         oldKey: "team_old_id",
         model: TeamModel,
+      },
+      {
+        key: "match_event_type",
+        oldKey: "match_event_type_old_id",
+        model: MatchEventTypeModel,
       },
     ]);
 

@@ -21,6 +21,7 @@ export const MatchEventTypeZodSchema = z.object({
   event_type: z
     .enum(getKey(event_type()))
     .refine((v) => !!v, { message: "event_typeは必須です" }),
+  old_id: z.string().nonempty().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });

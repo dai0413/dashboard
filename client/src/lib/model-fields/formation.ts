@@ -17,4 +17,12 @@ export const formation: UIFieldDefinition[] = [
     sortable: false,
     displayOnDetail: true,
   },
+  {
+    key: "old_id",
+    label: "旧id",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: true,
+  },
 ];

@@ -18,6 +18,7 @@ export const FormationZodSchema = z.object({
     .refine((arr) => new Set(arr).size === 11, {
       message: "position_formation 内の重複は許可されません",
     }),
+  old_id: z.string().nonempty().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });

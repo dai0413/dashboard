@@ -33,4 +33,12 @@ export const matchEventType: UIFieldDefinition[] = [
     sortable: true,
     displayOnDetail: true,
   },
+  {
+    key: "old_id",
+    label: "旧id",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: true,
+  },
 ];
