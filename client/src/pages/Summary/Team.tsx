@@ -177,12 +177,14 @@ const Team = () => {
     });
 
     if (resBody?.data && resBody.data.length > 0) {
+      const seasons: TeamCompetitionSeason[] = resBody?.data;
+
       const nextTeamCompetitionSeason = convert(
         ModelType.TEAM_COMPETITION_SEASON,
-        resBody.data,
+        seasons,
       );
 
-      const todaySeason = resBody.data.find(
+      const todaySeason = seasons.find(
         (s: TeamCompetitionSeason) =>
           s.season.start_date &&
           new Date(s.season.start_date) <= new Date() &&
@@ -190,33 +192,48 @@ const Team = () => {
           new Date(s.season.end_date) >= new Date(),
       );
 
-      const currentSeason = resBody.data.find(
+      const currentSeason = seasons.find(
         (s: TeamCompetitionSeason) => s.season.current,
       );
 
-      const nextSelectedTeamCompetitionSeason = todaySeason
-        ? todaySeason
-        : currentSeason;
+      const lastSeason = seasons.reduce(
+        (latest, current) => {
+          if (!current.season?.start_date || !latest?.season?.start_date) {
+            return latest ?? current;
+          }
 
-      const nextSeasonRange = getSeasonDates(
-        nextSelectedTeamCompetitionSeason.season,
+          return new Date(current.season.start_date) >
+            new Date(latest.season.start_date)
+            ? current
+            : latest;
+        },
+        undefined as TeamCompetitionSeason | undefined,
       );
 
-      setTeamCompetitionSeason({
-        data: nextTeamCompetitionSeason,
-        page: resBody.page ? resBody.page : 1,
-        totalCount: resBody.totalCount ? resBody.totalCount : 1,
-        isLoading: false,
-      });
+      const nextSelectedTeamCompetitionSeason =
+        todaySeason ?? currentSeason ?? lastSeason;
 
-      setSelectedTeamCompetitionSeason(
-        convert(
-          ModelType.TEAM_COMPETITION_SEASON,
-          nextSelectedTeamCompetitionSeason,
-        ),
-      );
+      if (nextSelectedTeamCompetitionSeason) {
+        const nextSeasonRange = convert(
+          ModelType.SEASON,
+          nextSelectedTeamCompetitionSeason.season,
+        );
+        setSeasonDates(getSeasonDates(nextSeasonRange));
 
-      setSeasonDates(nextSeasonRange);
+        setTeamCompetitionSeason({
+          data: nextTeamCompetitionSeason,
+          page: resBody.page ? resBody.page : 1,
+          totalCount: resBody.totalCount ? resBody.totalCount : 1,
+          isLoading: false,
+        });
+
+        setSelectedTeamCompetitionSeason(
+          convert(
+            ModelType.TEAM_COMPETITION_SEASON,
+            nextSelectedTeamCompetitionSeason,
+          ),
+        );
+      }
     }
   };
 

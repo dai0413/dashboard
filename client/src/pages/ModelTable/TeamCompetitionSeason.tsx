@@ -22,6 +22,10 @@ const TeamCompetitionSeason = () => {
             field: "competition",
             to: APP_ROUTES.COMPETITION_SUMMARY,
           },
+          {
+            field: "team",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
         ]}
       />
     </div>

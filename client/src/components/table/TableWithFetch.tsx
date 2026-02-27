@@ -51,7 +51,7 @@ const TableWithFetch = <T extends ModelType>({
   const fetchData = (
     filterConditions?: FilterableFieldDefinition[],
     sortConditions?: SortableFieldDefinition[],
-    params?: QueryParams
+    params?: QueryParams,
   ) => {
     const readParams: Record<string, any> = {
       ...params,
@@ -59,7 +59,7 @@ const TableWithFetch = <T extends ModelType>({
 
     if (filterConditions && filterConditions.length > 0) {
       readParams.filters = JSON.stringify(
-        normalizeFiltersForApi(filterConditions)
+        normalizeFiltersForApi(filterConditions),
       );
     }
 
@@ -87,7 +87,7 @@ const TableWithFetch = <T extends ModelType>({
   const handlePageChange = async (
     page: number,
     filterConditions: FilterableFieldDefinition[],
-    sortConditions: SortableFieldDefinition[]
+    sortConditions: SortableFieldDefinition[],
   ) => fetchData(filterConditions, sortConditions, { ...params, page: page });
 
   return (
@@ -96,8 +96,8 @@ const TableWithFetch = <T extends ModelType>({
         pageNation
           ? pageNation
           : params && "getAll" in params
-          ? "client"
-          : "server"
+            ? "client"
+            : "server"
       }
       modelType={modelType}
       items={data.data}
