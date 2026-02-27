@@ -9,7 +9,7 @@ const TeamMatchFormation = () => {
   return (
     <div className="p-6">
       <ModelTableContainer
-        title={"チームの大会参加記録"}
+        title={"各試合のチームフォーメーション"}
         headers={[
           { label: "試合", field: "match" },
           { label: "チーム", field: "team" },
@@ -18,6 +18,10 @@ const TeamMatchFormation = () => {
         contextState={teamMatchFormation}
         modelType={ModelType.TEAM_MATCH_FORMATION}
         linkField={[
+          {
+            field: "match",
+            to: APP_ROUTES.MATCH_SUMMARY,
+          },
           {
             field: "team",
             to: APP_ROUTES.TEAM_SUMMARY,

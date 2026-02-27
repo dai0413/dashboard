@@ -1,6 +1,9 @@
 import { teamMatchFormation } from "@dai0413/myorg-shared";
-import { crudFactory } from "../../utils/crudFactory.js";
+import { Response } from "express";
+import { DecodedRequest } from "types.js";
 import { TeamMatchFormationModel } from "../../models/team-match-formation.js";
+import { crudFactory } from "../../utils/crudFactory.js";
+import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
 const getAllItems = crudFactory(
   teamMatchFormation(TeamMatchFormationModel),
@@ -18,4 +21,7 @@ const deleteItem = crudFactory(
   teamMatchFormation(TeamMatchFormationModel),
 ).deleteItem;
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem };
+const uploadItem = async (req: DecodedRequest, res: Response) =>
+  uploadItemHandler(teamMatchFormation(TeamMatchFormationModel), req, res);
+
+export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };
