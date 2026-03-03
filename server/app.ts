@@ -73,6 +73,8 @@ import refereeAppearance from "./routes/models/referee-appearance.js";
 import getNewData from "./routes/get-new-data.js";
 
 app.use(`/api/v1`, auth);
+app.use(`/api/v1`, top);
+
 app.use(`/api/v1`, authmiddleware, aggregate);
 app.use(`/api/v1`, authmiddleware, country);
 app.use(`/api/v1`, authmiddleware, formation);
@@ -104,7 +106,6 @@ app.use(`/api/v1`, authmiddleware, teamCompetitionSeason);
 app.use(`/api/v1`, authmiddleware, team);
 app.use(`/api/v1`, authmiddleware, transfer);
 app.use(`/api/v1`, authmiddleware, getNewData);
-app.use(`/api/v1`, top);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

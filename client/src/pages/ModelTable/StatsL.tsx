@@ -28,8 +28,12 @@ const StatsL = () => {
         modelType={ModelType.STATS_L}
         linkField={[
           {
-            field: "player",
-            to: APP_ROUTES.PLAYER_SUMMARY,
+            field: "match",
+            to: APP_ROUTES.MATCH_SUMMARY,
+          },
+          {
+            field: "team",
+            to: APP_ROUTES.TEAM_SUMMARY,
           },
         ]}
       />

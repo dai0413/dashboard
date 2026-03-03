@@ -37,7 +37,7 @@ export const statsLConfig: UploadConfig = {
 
     const normalized = normalizeRows(reslovedOldIds, [
       { field: numberFields, parserKey: ParserKey.Number },
-      { field: ["match", "team", "player"], parserKey: ParserKey.ObjectId },
+      { field: ["match", "team"], parserKey: ParserKey.ObjectId },
     ]);
 
     return normalized;
