@@ -215,10 +215,9 @@ const downloadItem = async (req: Request, res: Response) => {
 
     const csvContent = data
       .map((player: any, index: number) => {
-        const formattedDob = player.dob ? new Date(player.dob) : undefined;
-        const dob = formattedDob
-          ? moment(formattedDob).format("YYYY/MM/DD")
-          : ""; // 空でも対応
+        const dob = player.dob
+          ? moment.utc(player.dob).add(9, "hours").format("YYYY/MM/DD")
+          : "";
         return `"${safe(player.old_id)}","${player.name}","${safe(
           player.en_name,
         )}","${dob}","${safe(player.pob)}"`;
