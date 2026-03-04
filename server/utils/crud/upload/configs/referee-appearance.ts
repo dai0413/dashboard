@@ -15,7 +15,6 @@ type INPUT_CSV_TYPE = Omit<
   match?: string;
   match_old_id?: string;
   referee_old_id?: string;
-  team_old_id?: string;
 };
 
 export const refereeAppearanceConfig: UploadConfig = {
