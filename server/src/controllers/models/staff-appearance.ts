@@ -1,25 +1,25 @@
-import { playerAppearance } from "@dai0413/myorg-shared";
+import { staffAppearance } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "types.js";
-import { PlayerAppearanceModel } from "../../models/player-appearance.js";
+import { DecodedRequest } from "src/types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
+import { StaffAppearanceModel } from "../../models/staff-appearance.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
 const getAllItems = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
+  staffAppearance(StaffAppearanceModel),
 ).getAllItems;
 const createItem = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
+  staffAppearance(StaffAppearanceModel),
 ).createItem;
-const getItem = crudFactory(playerAppearance(PlayerAppearanceModel)).getItem;
+const getItem = crudFactory(staffAppearance(StaffAppearanceModel)).getItem;
 const updateItem = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
+  staffAppearance(StaffAppearanceModel),
 ).updateItem;
 const deleteItem = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
+  staffAppearance(StaffAppearanceModel),
 ).deleteItem;
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(playerAppearance(PlayerAppearanceModel), req, res);
+  uploadItemHandler(staffAppearance(StaffAppearanceModel), req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

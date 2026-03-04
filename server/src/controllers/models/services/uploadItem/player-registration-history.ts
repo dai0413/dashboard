@@ -9,7 +9,7 @@ import { parseObjectId } from "../../../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../../../csvImport/utils/parseDateJST.js";
 import { parseBoolean } from "../../../../csvImport/utils/parseBoolean.js";
 import csv from "csv-parser";
-import { DecodedRequest } from "types.js";
+import { DecodedRequest } from "src/types.js";
 import { getNest } from "../../../../utils/getNest.js";
 import { convertObjectIdToString } from "../../../../utils/convertObjectIdToString.js";
 import { formatDateYMD } from "../utils/formatDateYMD.js";

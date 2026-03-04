@@ -4,7 +4,7 @@ import { Response } from "express";
 import { teamCompetitionSeason } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { TeamCompetitionSeasonModel } from "../../models/team-competition-season.js";
-import { DecodedRequest } from "types.js";
+import { DecodedRequest } from "src/types.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
@@ -17,19 +17,19 @@ const {
 } = teamCompetitionSeason(TeamCompetitionSeasonModel);
 
 const getAllItems = crudFactory(
-  teamCompetitionSeason(TeamCompetitionSeasonModel)
+  teamCompetitionSeason(TeamCompetitionSeasonModel),
 ).getAllItems;
 const createItem = crudFactory(
-  teamCompetitionSeason(TeamCompetitionSeasonModel)
+  teamCompetitionSeason(TeamCompetitionSeasonModel),
 ).createItem;
 const getItem = crudFactory(
-  teamCompetitionSeason(TeamCompetitionSeasonModel)
+  teamCompetitionSeason(TeamCompetitionSeasonModel),
 ).getItem;
 const updateItem = crudFactory(
-  teamCompetitionSeason(TeamCompetitionSeasonModel)
+  teamCompetitionSeason(TeamCompetitionSeasonModel),
 ).updateItem;
 const deleteItem = crudFactory(
-  teamCompetitionSeason(TeamCompetitionSeasonModel)
+  teamCompetitionSeason(TeamCompetitionSeasonModel),
 ).deleteItem;
 
 // const getAllItems = async (req: Request, res: Response) => {
@@ -161,7 +161,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
     .pipe(
       csv({
         mapHeaders: ({ header }) => header.replace(/'/g, "").trim(),
-      })
+      }),
     )
     .on("data", (row) => {
       rows.push(row);

@@ -4,7 +4,7 @@ import csv from "csv-parser";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
 import { Types } from "mongoose";
-import { DecodedRequest } from "types.js";
+import { DecodedRequest } from "src/types.js";
 import { ZodError } from "zod";
 
 import { getNest } from "../../getNest.js";

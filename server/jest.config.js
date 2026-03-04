@@ -9,6 +9,6 @@ export default {
   },
   extensionsToTreatAsEsm: [".ts"],
   testPathIgnorePatterns: ["/node_modules/", "/dist/"],
-  setupFilesAfterEnv: ["<rootDir>/test-utils/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/test-utils/setup.ts"],
   testMatch: ["<rootDir>/__tests__/**/*.test.ts"],
 };

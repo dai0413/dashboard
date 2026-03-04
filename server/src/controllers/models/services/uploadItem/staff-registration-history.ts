@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
 import { stringify } from "csv-stringify/sync";
 import csv from "csv-parser";
-import { DecodedRequest } from "types.js";
+import { DecodedRequest } from "src/types.js";
 import { StaffRegistrationHistoryModel } from "../../../../models/staff-registration-history.js";
 import { parseObjectId } from "../../../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../../../csvImport/utils/parseDateJST.js";

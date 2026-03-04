@@ -1,27 +1,27 @@
-import { teamMatchFormation } from "@dai0413/myorg-shared";
+import { staffMatchEventLog } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "types.js";
-import { TeamMatchFormationModel } from "../../models/team-match-formation.js";
+import { DecodedRequest } from "src/types.js";
+import { StaffMatchEventLogModel } from "../../models/staff-match-event-log.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
 const getAllItems = crudFactory(
-  teamMatchFormation(TeamMatchFormationModel),
+  staffMatchEventLog(StaffMatchEventLogModel),
 ).getAllItems;
 const createItem = crudFactory(
-  teamMatchFormation(TeamMatchFormationModel),
+  staffMatchEventLog(StaffMatchEventLogModel),
 ).createItem;
 const getItem = crudFactory(
-  teamMatchFormation(TeamMatchFormationModel),
+  staffMatchEventLog(StaffMatchEventLogModel),
 ).getItem;
 const updateItem = crudFactory(
-  teamMatchFormation(TeamMatchFormationModel),
+  staffMatchEventLog(StaffMatchEventLogModel),
 ).updateItem;
 const deleteItem = crudFactory(
-  teamMatchFormation(TeamMatchFormationModel),
+  staffMatchEventLog(StaffMatchEventLogModel),
 ).deleteItem;
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(teamMatchFormation(TeamMatchFormationModel), req, res);
+  uploadItemHandler(staffMatchEventLog(StaffMatchEventLogModel), req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

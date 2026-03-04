@@ -1,6 +1,6 @@
 import { statsL } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "types.js";
+import { DecodedRequest } from "src/types.js";
 import { StatsLModel } from "../../models/stats-l.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
