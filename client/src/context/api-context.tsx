@@ -26,7 +26,11 @@ export const setupInterceptors = (refresh: any, logout: any) => {
     async (error) => {
       const originalRequest = error.config;
 
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      if (
+        error.response?.status === 401 &&
+        !originalRequest._retry &&
+        originalRequest.url !== API_PATHS.AUTH.REFRESH
+      ) {
         originalRequest._retry = true;
 
         try {

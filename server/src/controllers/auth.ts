@@ -14,12 +14,12 @@ const register = async (req: Request, res: Response) => {
   const { user_name, email, password } = req.body;
   if (!user_name || !email || !password) {
     new BadRequestError(
-      "ユーザー名・メールアドレス・パスワードを入力してください。"
+      "ユーザー名・メールアドレス・パスワードを入力してください。",
     );
   }
 
   const user = (await UserModel.create(
-    req.body
+    req.body,
   )) as unknown as InstanceType<UserModelType>;
 
   const token = user.createJWT();
@@ -28,6 +28,7 @@ const register = async (req: Request, res: Response) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // 本番環境ではHTTPSのみ
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 30 * 24 * 60 * 60 * 1000, // リフレッシュトークンの有効期限（30日）
   });
 
@@ -42,7 +43,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return next(
-      new BadRequestError("メールアドレス・パスワードを入力してください。")
+      new BadRequestError("メールアドレス・パスワードを入力してください。"),
     );
   }
 
@@ -66,6 +67,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // 本番環境ではHTTPSのみ
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: 30 * 24 * 60 * 60 * 1000, // リフレッシュトークンの有効期限（30日）
   });
 
@@ -91,7 +93,7 @@ const me = async (req: Request, res: Response) => {
     throw new UnauthenticatedError();
   }
   const user = (await UserModel.findById(
-    req.user.userId
+    req.user.userId,
   )) as InstanceType<UserModelType>;
   if (!user) {
     throw new NotFoundError();
@@ -122,7 +124,7 @@ const refresh = async (req: Request, res: Response) => {
   }
 
   const user = (await UserModel.findById(
-    decoded.userId
+    decoded.userId,
   )) as InstanceType<UserModelType>;
   if (!user) {
     throw new NotFoundError();
