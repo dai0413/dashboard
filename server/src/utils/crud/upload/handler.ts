@@ -3,12 +3,9 @@ import { stringify } from "csv-stringify/sync";
 import csv from "csv-parser";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
-import { Types } from "mongoose";
 import { DecodedRequest } from "src/types.js";
 import { ZodError } from "zod";
 
-import { getNest } from "../../getNest.js";
-import { convertObjectIdToString } from "../../convertObjectIdToString.js";
 import { uploadConfig, UploadConfigMap } from "./configs/index.js";
 import { cleanObject } from "./services/cleanObject.js";
 
@@ -48,16 +45,16 @@ export const uploadItemHandler = async <
 
   const {
     name,
-    SCHEMA: { POPULATED, FORM },
+    SCHEMA: { FORM },
     MONGO_MODEL,
-    POPULATE_PATHS,
   } = config;
 
   const { createValidRows } = uploadConfig[name as keyof UploadConfigMap];
 
-  const rows: TInput[] = [];
+  const BATCH_SIZE = 1000;
+  let totalAdded = 0;
+  let buffer: TInput[] = [];
   const errors: TError[] = [];
-  const added: { _id: Types.ObjectId }[] = [];
 
   req.decodedStream
     .pipe(
@@ -65,79 +62,68 @@ export const uploadItemHandler = async <
         mapHeaders: ({ header }) => header.replace(/'/g, "").trim(),
       }),
     )
-    .on("data", (row) => {
-      rows.push(row);
+    .on("data", async (row) => {
+      buffer.push(row);
+
+      if (buffer.length >= BATCH_SIZE) {
+        await processBatch(buffer);
+        buffer = [];
+      }
     })
     .on("end", async () => {
-      if (rows.length === 0) {
-        return res.status(StatusCodes.PARTIAL_CONTENT).json({
-          message: `選択したファイルにはデータがありません`,
-        });
-      }
-
-      const results: TError[] = await createValidRows(rows);
-
-      for (let i = 0; i < results.length; i++) {
-        const r = results[i];
-        const { error, row, ...rest } = r;
-        const value = rest;
-
-        if (error) {
-          errors.push({
-            ...r,
-            row: i + 2,
-          });
-          continue;
-        }
-
-        try {
-          const parsed = FORM.parse(cleanObject(value));
-          const add = await MONGO_MODEL.create(parsed);
-          added.push(add);
-        } catch (err) {
-          errors.push({
-            ...r,
-            row: i + 2,
-            error: formatZodError(err),
-          });
-        }
+      if (buffer.length > 0) {
+        await processBatch(buffer);
       }
 
       if (errors.length > 0) {
-        const csvErrors: TError[] = errors.map((e) => {
-          return {
-            ...e,
-          };
-        });
-
-        const csvText = stringify(csvErrors, { header: true, quoted: true });
-        const bom = "\uFEFF";
-        const csvWithBom = bom + csvText;
-        const csvBase64 = Buffer.from(csvWithBom, "utf8").toString("base64");
+        const csvText = stringify(errors, { header: true, quoted: true });
+        const csvBase64 = Buffer.from("\uFEFF" + csvText, "utf8").toString(
+          "base64",
+        );
 
         return res.status(StatusCodes.PARTIAL_CONTENT).json({
-          message: `${added.length}件追加に成功、${errors.length}件失敗`,
+          message: `${totalAdded}件追加に成功、${errors.length}件失敗`,
           failedCount: errors.length,
           csv: csvBase64,
           filename: "failed.csv",
         });
       }
 
-      const populatedAdded = await MONGO_MODEL.find({
-        _id: { $in: added.map((a: any) => a._id) },
-      })
-        .populate(getNest(true, POPULATE_PATHS))
-        .lean();
-
-      const processed = populatedAdded.map((item: any) => {
-        const plain = convertObjectIdToString(item);
-        const parsed = POPULATED.parse(plain);
-        return parsed;
-      });
-
       res.status(StatusCodes.OK).json({
-        message: `${populatedAdded.length}件のデータを追加しました`,
-        data: processed,
+        message: `${totalAdded}件のデータを追加しました`,
       });
     });
+
+  async function processBatch(rows: TInput[]) {
+    const results = await createValidRows(rows);
+
+    const validDocs: any[] = [];
+
+    for (let i = 0; i < results.length; i++) {
+      const r = results[i];
+      const { error, ...rest } = r;
+
+      if (error) {
+        errors.push({ ...r });
+        continue;
+      }
+
+      try {
+        const parsed = FORM.parse(cleanObject(rest));
+        validDocs.push(parsed);
+      } catch (err) {
+        errors.push({
+          ...r,
+          error: formatZodError(err),
+        });
+      }
+    }
+
+    if (validDocs.length > 0) {
+      const inserted = await MONGO_MODEL.insertMany(validDocs, {
+        ordered: false,
+      });
+      totalAdded += inserted.length;
+    }
+  }
 };
