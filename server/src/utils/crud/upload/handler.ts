@@ -1,5 +1,5 @@
 import { ControllerConfig } from "@dai0413/myorg-shared";
-import { stringify } from "csv-stringify/sync";
+import { stringify } from "csv-stringify";
 import csv from "csv-parser";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
@@ -38,11 +38,6 @@ export const uploadItemHandler = async <
   req: DecodedRequest,
   res: Response,
 ) => {
-  type TError = TInput & {
-    error: string;
-    row?: number;
-  };
-
   const {
     name,
     SCHEMA: { FORM },
@@ -52,78 +47,137 @@ export const uploadItemHandler = async <
   const { createValidRows } = uploadConfig[name as keyof UploadConfigMap];
 
   const BATCH_SIZE = 1000;
+  let buffer: any[] = [];
   let totalAdded = 0;
-  let buffer: TInput[] = [];
-  const errors: TError[] = [];
+  let failedCount = 0;
+  let rowIndex = 1; // ヘッダー分
 
-  req.decodedStream
-    .pipe(
-      csv({
-        mapHeaders: ({ header }) => header.replace(/'/g, "").trim(),
-      }),
-    )
-    .on("data", async (row) => {
-      buffer.push(row);
+  let failedRows: any[] = [];
 
-      if (buffer.length >= BATCH_SIZE) {
-        await processBatch(buffer);
-        buffer = [];
-      }
-    })
-    .on("end", async () => {
-      if (buffer.length > 0) {
-        await processBatch(buffer);
-      }
+  const parser = req.decodedStream.pipe(
+    csv({
+      mapHeaders: ({ header }) =>
+        header
+          .replace(/^\uFEFF/, "")
+          .replace(/['"]/g, "")
+          .trim(),
+    }),
+  );
 
-      if (errors.length > 0) {
-        const csvText = stringify(errors, { header: true, quoted: true });
-        const csvBase64 = Buffer.from("\uFEFF" + csvText, "utf8").toString(
-          "base64",
-        );
+  try {
+    for await (const row of parser) {
+      rowIndex++;
+      const [result] = await createValidRows([row]);
 
-        return res.status(StatusCodes.PARTIAL_CONTENT).json({
-          message: `${totalAdded}件追加に成功、${errors.length}件失敗`,
-          failedCount: errors.length,
-          csv: csvBase64,
-          filename: "failed.csv",
-        });
-      }
-
-      res.status(StatusCodes.OK).json({
-        message: `${totalAdded}件のデータを追加しました`,
-      });
-    });
-
-  async function processBatch(rows: TInput[]) {
-    const results = await createValidRows(rows);
-
-    const validDocs: any[] = [];
-
-    for (let i = 0; i < results.length; i++) {
-      const r = results[i];
-      const { error, ...rest } = r;
-
-      if (error) {
-        errors.push({ ...r });
+      if (result.error) {
+        failedRows.push({ ...row, row: rowIndex });
+        failedCount++;
         continue;
       }
 
       try {
-        const parsed = FORM.parse(cleanObject(rest));
-        validDocs.push(parsed);
+        const parsed = FORM.parse(cleanObject(result));
+        buffer.push(parsed);
       } catch (err) {
-        errors.push({
-          ...r,
+        failedRows.push({
+          ...row,
+          row: rowIndex,
           error: formatZodError(err),
         });
+        failedCount++;
+        continue;
+      }
+
+      if (buffer.length >= BATCH_SIZE) {
+        try {
+          await MONGO_MODEL.insertMany(buffer, { ordered: false });
+          totalAdded += buffer.length;
+        } catch (err: any) {
+          if (err?.code === 11000 && err.writeErrors) {
+            // 重複行をCSVへ
+            for (const writeError of err.writeErrors) {
+              const failedDoc = buffer[writeError.index];
+
+              failedRows.push({
+                ...failedDoc,
+                error: "重複データです",
+              });
+
+              failedCount++;
+            }
+
+            // 成功分だけ加算
+            const successCount = buffer.length - err.writeErrors.length;
+
+            totalAdded += successCount;
+          } else {
+            throw err;
+          }
+        }
+
+        buffer = [];
       }
     }
 
-    if (validDocs.length > 0) {
-      const inserted = await MONGO_MODEL.insertMany(validDocs, {
-        ordered: false,
-      });
-      totalAdded += inserted.length;
+    if (buffer.length > 0) {
+      try {
+        await MONGO_MODEL.insertMany(buffer, { ordered: false });
+        totalAdded += buffer.length;
+      } catch (err: any) {
+        if (err?.code === 11000 && err.writeErrors) {
+          for (const writeError of err.writeErrors) {
+            const failedDoc = buffer[writeError.index];
+
+            failedRows.push({
+              ...failedDoc,
+              error: "重複データです",
+            });
+
+            failedCount++;
+          }
+
+          const successCount = buffer.length - err.writeErrors.length;
+
+          totalAdded += successCount;
+        } else {
+          throw err;
+        }
+      }
     }
+
+    if (failedCount > 0) {
+      const csvString = await new Promise<string>((resolve, reject) => {
+        stringify(failedRows, { header: true, quoted: true }, (err, output) => {
+          if (err) reject(err);
+          else resolve(output);
+        });
+      });
+
+      const csvBase64 = Buffer.from("\uFEFF" + csvString).toString("base64");
+
+      res.status(StatusCodes.PARTIAL_CONTENT).json({
+        message: `${totalAdded}件追加に成功、${failedCount}件失敗`,
+        failedCount,
+        csv: csvBase64,
+        filename: "failed.csv",
+      });
+
+      return;
+    }
+
+    res.json({
+      message: `${totalAdded}件追加しました`,
+    });
+  } catch (error) {
+    console.error(error);
+
+    const mes =
+      error && typeof error === "object" && "message" in error
+        ? error.message
+        : "アップロード中にエラーが発生しました";
+
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: mes,
+    });
   }
 };
