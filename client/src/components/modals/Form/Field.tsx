@@ -31,7 +31,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { readItemsBase } from "../../../lib/api";
-import { useApi } from "../../../context/api-context";
+import { api } from "../../../context/api-context";
 import { AxiosInstance } from "axios";
 import { DataResoonse } from "../../../types/api";
 import { normalizeFiltersForApi } from "../../../utils/normalizeFiltersForApi";
@@ -72,8 +72,6 @@ export const RenderField = <T extends keyof FormTypeMap>({
   );
 
   const { filterConditionsObj, quickFilterItemsObj } = useForm();
-
-  const api = useApi();
 
   const handleLoading = (time: "start" | "end") => {
     setOptionIsLoading(time === "start");

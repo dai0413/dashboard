@@ -12,7 +12,7 @@ import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
-import { useApi } from "../../context/api-context";
+import { api } from "../../context/api-context";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useCompetition } from "../../context/models/competition";
@@ -30,7 +30,6 @@ const Tabs = CompetitionTabItems.filter(
 })) as OptionArray;
 
 const Competition = () => {
-  const api = useApi();
   const { id } = useParams();
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");

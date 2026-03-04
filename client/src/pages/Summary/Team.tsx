@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TeamTabItems } from "../../constants/menuItems";
-import { useApi } from "../../context/api-context";
+import { api } from "../../context/api-context";
 import { useModal } from "../../context/modal-context";
 import { ModelType } from "../../types/models";
 import { OptionArray } from "../../types/option";
@@ -128,7 +128,6 @@ type SeasonDates = {
 };
 
 const Team = () => {
-  const api = useApi();
   const { id } = useParams();
   const {
     form: { isOpen: formIsOpen },

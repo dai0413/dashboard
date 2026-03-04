@@ -1,8 +1,14 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAlert } from "./alert-context";
 import { AlertStatus } from "../types/alert";
 import { APIError, API_PATHS } from "@dai0413/myorg-shared";
-import { useApi } from "./api-context";
+import { api, setAccessTokenGetter, setupInterceptors } from "./api-context";
 
 type AuthState = {
   accessToken: string | null;
@@ -10,7 +16,7 @@ type AuthState = {
   register: (
     user_name: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<boolean>;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
@@ -38,18 +44,17 @@ const AuthContext = createContext<AuthState>(defaultValue);
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [staffState, setStaffState] = useState<StaffState>(
-    defaultValue.staffState
+    defaultValue.staffState,
   );
   const [loading, setLoading] = useState<boolean>(false);
   const {
     main: { handleSetAlert },
   } = useAlert();
-  const api = useApi();
 
   const register = async (
     user_name: string,
     email: string,
-    password: string
+    password: string,
   ): Promise<boolean> => {
     setLoading(true);
     let alert: AlertStatus = { success: false };
@@ -90,9 +95,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setAccessToken(res.data?.accessToken);
       setStaffState({ admin: res.data?.admin, is_staff: res.data?.is_staff });
 
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${res.data.accessToken}`;
+      api.defaults.headers.common["Authorization"] =
+        `Bearer ${res.data.accessToken}`;
 
       alert = { success: true, message: res.data?.message };
       handleSetAlert(alert);
@@ -136,6 +140,31 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const refresh = async (token: string) => {
     setAccessToken(token);
   };
+
+  useEffect(() => {
+    setAccessTokenGetter(() => accessToken);
+  }, [accessToken]);
+
+  useEffect(() => {
+    setupInterceptors(refresh, logout);
+  }, []);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const res = await api.post(API_PATHS.AUTH.REFRESH);
+        setAccessToken(res.data.accessToken);
+        setStaffState({
+          admin: res.data?.admin,
+          is_staff: res.data?.is_staff,
+        });
+      } catch {
+        setAccessToken(null);
+      }
+    };
+
+    initAuth();
+  }, []);
 
   const value: AuthState = {
     accessToken,

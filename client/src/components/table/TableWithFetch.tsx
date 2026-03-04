@@ -5,7 +5,7 @@ import {
   ModelDataMap,
   ModelType,
 } from "../../types/models";
-import { useApi } from "../../context/api-context";
+import { api } from "../../context/api-context";
 import { readItemsBase } from "../../lib/api";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { TableBase, TableFetch, TableOperationFields } from "../../types/table";
@@ -39,8 +39,6 @@ const TableWithFetch = <T extends ModelType>({
   detailLinkValue,
   formInitialData,
 }: TableWithFetchProps<T>) => {
-  const api = useApi();
-
   const [data, setData] = useState<Data<GettedModelDataMap[T]>>({
     data: [],
     page: 1,

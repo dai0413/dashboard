@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 import { ModelDataMap, ModelType } from "../types/models";
 import { convert as createLabel } from "../lib/convert/CreateLabel";
 
-import { useApi } from "./api-context";
+import { api } from "./api-context";
 import { isModelType } from "../types/field";
 import { readItemBase } from "../lib/api";
 import { optionRouteMap, getOptionKey } from "../lib/options";
@@ -20,8 +20,6 @@ const OptionContext = createContext<OptionsState>({
 });
 
 const OptionProvider = ({ children }: { children: React.ReactNode }) => {
-  const api = useApi();
-
   async function getLabelById<T extends ModelType>(
     optionKey: T,
     id: string,

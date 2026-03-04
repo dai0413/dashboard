@@ -1,5 +1,5 @@
 import { readItemsBase } from "../../../lib/api";
-import { useApi } from "../../../context/api-context";
+import { api } from "../../../context/api-context";
 import { convert } from "../../../lib/convert/DBtoGetted";
 import { convert as createLabel } from "../../../lib/convert/CreateLabel";
 
@@ -13,7 +13,6 @@ export const useMatchFormat = (): {
   items: QuickFilterItem[];
   loading: boolean;
 } => {
-  const api = useApi();
   const { setViewMode, setItemsPerPage } = useListView();
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);

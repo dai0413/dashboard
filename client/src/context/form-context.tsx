@@ -19,7 +19,7 @@ import {
   isModelType,
 } from "../types/field";
 import { useOptions } from "./options-provider";
-import { useApi } from "./api-context";
+import { api } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
@@ -140,7 +140,6 @@ export const FormProvider = <T extends ModelType>({
     modal: { handleSetAlert, resetAlert },
   } = useAlert();
 
-  const api = useApi();
   const { getLabelById } = useOptions();
 
   const [modelType, setModelType] = useState<T | null>(null);

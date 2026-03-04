@@ -9,7 +9,7 @@ import {
 import { BaseCrudRoutes } from "../types/baseCrudRoutes";
 import { convert } from "../lib/convert/DBtoGetted";
 import { MetaCrudContext } from "../types/context";
-import { useApi } from "../context/api-context";
+import { api } from "../context/api-context";
 import {
   createItemBase,
   deleteItemBase,
@@ -38,7 +38,6 @@ export function createModelContext<T extends ModelType>(
       modal: { handleSetAlert },
       main: { handleSetAlert: mainHandleSetAlert },
     } = useAlert();
-    const api = useApi();
 
     const [items, setItems] = useState<Get[]>([]);
     const [totalCount, setTotalCount] = useState<number>(0);

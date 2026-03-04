@@ -1,67 +1,51 @@
 import axios from "axios";
-import { useAuth } from "./auth-context";
+import { API_PATHS } from "@dai0413/myorg-shared";
 
-export const useApi = () => {
-  const { accessToken /*refresh*/ } = useAuth();
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
+});
 
-  const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    withCredentials: true,
-    // timeout: 10000,
-  });
+let getAccessToken: () => string | null = () => null;
 
-  // アクセストークン付与
+export const setAccessTokenGetter = (getter: () => string | null) => {
+  getAccessToken = getter;
+};
+
+export const setupInterceptors = (refresh: any, logout: any) => {
   api.interceptors.request.use((config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   });
 
-  // レスポンスで401を検知 → リフレッシュ処理
-  // api.interceptors.response.use(
-  //   (response) => response,
-  //   async (error) => {
-  //     const originalRequest = error.config;
+  api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
 
-  //     if (
-  //       error.response?.status === 401 &&
-  //       !originalRequest._retry &&
-  //       !skipRetry(originalRequest.url)
-  //     ) {
-  //       originalRequest._retry = true;
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
 
-  //       try {
-  //         if (!refreshPromise) {
-  //           refreshPromise = axios
-  //             .post(API_ROUTES.AUTH.REFRESH, {}, { withCredentials: true })
-  //             .then((res) => res.data.accessToken)
-  //             .finally(() => {
-  //               refreshPromise = null;
-  //             });
-  //         }
+        try {
+          const res = await api.post(API_PATHS.AUTH.REFRESH);
+          const newAccessToken = res.data.accessToken;
 
-  //         const newToken = await refreshPromise;
+          refresh(newAccessToken);
 
-  //         // Context 内も更新
-  //         refresh(newToken);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-  //         // apiヘッダー更新
-  //         api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
-  //         originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalRequest);
+        } catch (err) {
+          logout();
+          window.location.href = "/login";
+          return Promise.reject(err);
+        }
+      }
 
-  //         return api(originalRequest); // retry
-  //       } catch (refreshError) {
-  //         console.error("リフレッシュ失敗", refreshError);
-  //         refresh(""); // Contextをリセット
-  //         window.location.href = APP_ROUTES.LOGIN;
-  //         return Promise.reject(refreshError);
-  //       }
-  //     }
-
-  //     return Promise.reject(error);
-  //   }
-  // );
-
-  return api;
+      return Promise.reject(error);
+    },
+  );
 };

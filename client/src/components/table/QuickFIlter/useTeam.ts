@@ -2,7 +2,7 @@ import { fieldDefinition } from "../../../lib/model-fields";
 import { isFilterable } from "../../../types/field";
 import { TeamCompetitionSeason } from "../../../types/models/team-competition-season";
 import { readItemsBase } from "../../../lib/api";
-import { useApi } from "../../../context/api-context";
+import { api } from "../../../context/api-context";
 import { convert } from "../../../lib/convert/DBtoGetted";
 import {
   ageGroup,
@@ -31,7 +31,6 @@ export const useTeam = (): {
   items: QuickFilterItem[];
   loading: boolean;
 } => {
-  const api = useApi();
   const { setViewMode, setItemsPerPage } = useListView();
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);
