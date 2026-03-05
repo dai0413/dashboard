@@ -28,6 +28,7 @@ export type Country = {
   fifa_member_year: number | null;
   association_member_year: number | null;
   district_member_year: number | null;
+  old_id?: string;
 };
 
 type CountryPost = Omit<Country, "_id">;

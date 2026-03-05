@@ -12,17 +12,18 @@ export type Referee = {
   player: Player | null;
   transferurl?: string;
   sofaurl?: string;
+  old_id?: string;
 };
 
 type RefereePost = Omit<Referee, "_id" | "player" | "citizenship" | "dob"> & {
   citizenship: Country["_id"][] | null;
-  player: Player["_id"];
+  player?: Player["_id"];
   dob: string;
 };
 
 export type RefereeForm = Partial<RefereePost>;
 
 export type RefereeGet = Omit<Referee, "player" | "citizenship"> & {
-  player: Label;
+  player?: Label;
   citizenship: Label[];
 };

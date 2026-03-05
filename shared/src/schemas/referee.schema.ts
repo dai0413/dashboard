@@ -18,6 +18,7 @@ export const RefereeZodSchema = z.object({
   transferurl: z.string().nonempty().optional(),
   sofaurl: z.string().nonempty().optional(),
   normalized_en_name: z.string().nonempty().optional(),
+  old_id: z.string().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });

@@ -26,15 +26,16 @@ const CountrySchema = new Schema<ICountry, any, ICountry>(
     fifa_member_year: { type: Number },
     association_member_year: { type: Number },
     district_member_year: { type: Number },
+    old_id: { type: String },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 CountrySchema.index({ iso3: 1, name: 1 }, { unique: true });
 
 export const CountryModel: Model<ICountry> = mongoose.model<ICountry>(
   "Country",
-  CountrySchema
+  CountrySchema,
 );

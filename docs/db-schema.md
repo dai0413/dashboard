@@ -358,6 +358,7 @@
 | fifa_member_year        | 数字   | FIFA 加入年        |         |         |
 | association_member_year | 数字   | 地域協会加入年     |         |         |
 | district_member_year    | 数字   | 詳細地域協会加入年 |         |         |
+| old_id                  | 文字列 | 旧id               |         |         |
 
 ### ENUM
 
@@ -472,6 +473,7 @@
 | player             | 外部キー(Player)    | 選手       |         |         |
 | transferurl        | 文字列              | transfer   |         |         |
 | sofaurl            | 文字列              | sofa       |         |         |
+| old_id             | 文字列              | 旧id       |         |         |
 
 ### 組み合わせ (Mongoose)
 

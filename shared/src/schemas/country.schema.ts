@@ -32,6 +32,7 @@ export const CountryZodSchema = z.object({
   fifa_member_year: z.number().int().min(0).optional(),
   association_member_year: z.number().int().min(0).optional(),
   district_member_year: z.number().int().min(0).optional(),
+  old_id: z.string().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });

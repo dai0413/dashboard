@@ -25,6 +25,7 @@ const RefereeSchema: Schema<IReferee> = new Schema<IReferee, any, IReferee>(
     transferurl: { type: String },
     sofaurl: { type: String },
     normalized_en_name: { type: String },
+    old_id: { type: String },
   },
   { timestamps: true },
 );

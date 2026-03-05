@@ -97,4 +97,12 @@ export const country: UIFieldDefinition[] = [
     sortable: true,
     displayOnDetail: true,
   },
+  {
+    key: "old_id",
+    label: "旧ID",
+    type: "string",
+    filterable: false,
+    sortable: false,
+    displayOnDetail: true,
+  },
 ];
