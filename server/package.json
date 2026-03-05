@@ -1,5 +1,5 @@
 {
-  "version": "2.2.4",
+  "version": "2.2.6",
   "type": "module",
   "dependencies": {
     "@dai0413/myorg-shared": "^2.3.9",
