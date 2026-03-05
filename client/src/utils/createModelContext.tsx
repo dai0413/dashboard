@@ -21,7 +21,7 @@ import {
 import { cleanData } from ".";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
-import { QueryParams, ResBody } from "@dai0413/myorg-shared";
+import { QueryParams, ResBody, UploadJobType } from "@dai0413/myorg-shared";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
@@ -45,6 +45,8 @@ export function createModelContext<T extends ModelType>(
     const [pageSize, setPageSize] = useState<number>(10);
 
     const [selected, setSelectedItem] = useState<Get | null>(null);
+
+    const [uploadJob, setUploadJob] = useState<UploadJobType | null>(null);
 
     const resetItems = () => setItems([]);
 
@@ -149,16 +151,8 @@ export function createModelContext<T extends ModelType>(
               apiInstance: api,
               backendRoute: backendRoute.UPLOAD!,
               data: file,
-              onAfterUpload: (item: Model[] | Model) => {
-                if (Array.isArray(item)) {
-                  const createItems = convert(ContextModelString, item);
-                  setItems((prev) => [...prev, ...createItems]);
-                } else {
-                  const createItems = convert(ContextModelString, item);
-                  setItems((prev) => [...prev, ...[createItems]]);
-                }
-              },
               handleSetAlert: mainHandleSetAlert,
+              setUploadJob,
             });
 
             return result;
@@ -228,6 +222,7 @@ export function createModelContext<T extends ModelType>(
       isLoading,
       filterableField,
       sortableField,
+      uploadJob,
     };
 
     return <Context.Provider value={value}>{children}</Context.Provider>;

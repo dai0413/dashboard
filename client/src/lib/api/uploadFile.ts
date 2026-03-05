@@ -1,22 +1,22 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError } from "@dai0413/myorg-shared";
+import { API_PATHS, APIError, UploadJobType } from "@dai0413/myorg-shared";
 
 type UploadParams = {
   apiInstance: AxiosInstance;
   backendRoute: string;
   data: File;
-  onAfterUpload: (item: any) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: AlertStatus) => void;
+  setUploadJob?: (uploadJob: UploadJobType) => void;
 };
 
 export const uploadFileBase = async ({
   apiInstance,
   data,
   backendRoute,
-  onAfterUpload,
   handleSetAlert,
+  setUploadJob,
 }: UploadParams): Promise<AxiosResponse | undefined> => {
   handleSetAlert?.({
     success: false,
@@ -33,27 +33,39 @@ export const uploadFileBase = async ({
       },
     });
 
-    // ✅ 200 OK のときだけ items を反映
-    if (res.status === 200 && res.data?.data) {
-      onAfterUpload(res.data.data);
-    }
-
-    // ✅ 206 PARTIAL_CONTENT
-    if (res.status === 206 && res.data?.csv) {
-      downloadBase64Csv(res.data.csv, res.data.filename);
-
-      handleSetAlert?.({
-        success: false,
-        message: res.data.message,
-      });
-
-      return res;
-    }
-
     handleSetAlert?.({
       success: true,
       message: res.data?.message,
     });
+
+    if (!res.data?.jobId) {
+      throw new Error("jobId not returned");
+    }
+    const jobId = res.data.jobId;
+
+    let pollingTimer: number | null = null;
+
+    pollingTimer = window.setInterval(async () => {
+      const res = await apiInstance.get(API_PATHS.UPLOAD_STATUS(jobId));
+      const uploadJob = res.data;
+
+      const { status, errorCsv, filename, totalAdded, failedCount } = uploadJob;
+
+      setUploadJob?.(uploadJob);
+
+      handleSetAlert?.({
+        success: status === "completed",
+        message: `${status} - 成功:${totalAdded} 失敗:${failedCount}`,
+      });
+
+      if (status === "completed" || status === "failed") {
+        clearInterval(pollingTimer!);
+
+        if (status === "completed" && errorCsv) {
+          downloadBase64Csv(errorCsv, filename);
+        }
+      }
+    }, 3000);
 
     return res;
   } catch (err: any) {
