@@ -194,6 +194,8 @@ export const API_PATHS = {
     },
   },
 
+  UPLOAD_STATUS: (jobId: string = ":id") => `/upload-status/${jobId}`,
+
   GET_NEW_DATA: {
     D_PC: {
       PLAYER: "/get-new-data/d-pc/player",

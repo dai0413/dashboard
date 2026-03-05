@@ -27,4 +27,5 @@ export * from "./stats-l.schema.js";
 export * from "./team-competition-season.schema.js";
 export * from "./team.schema.js";
 export * from "./transfer.schema.js";
+export * from "./upload-job.js";
 export * from "./user.schema.js";
