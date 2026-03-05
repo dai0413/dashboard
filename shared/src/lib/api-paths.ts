@@ -103,6 +103,7 @@ export const API_PATHS = {
 
   REFEREE: {
     ROOT: "/referee",
+    UPLOAD: "/referee/upload",
     DETAIL: (id: string | number = ":id") => `/referee/${id}`,
   },
 
