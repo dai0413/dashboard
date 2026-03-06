@@ -47,9 +47,9 @@ export const uploadFileBase = async ({
 
     pollingTimer = window.setInterval(async () => {
       const res = await apiInstance.get(API_PATHS.UPLOAD_STATUS(jobId));
-      const uploadJob = res.data;
+      const uploadJob: UploadJobType = res.data;
 
-      const { status, errorCsv, filename, totalAdded, failedCount } = uploadJob;
+      const { status, errorCsv, totalAdded, failedCount } = uploadJob;
 
       setUploadJob?.(uploadJob);
 
@@ -62,7 +62,7 @@ export const uploadFileBase = async ({
         clearInterval(pollingTimer!);
 
         if (status === "completed" && errorCsv) {
-          downloadBase64Csv(errorCsv, filename);
+          downloadBase64Csv(errorCsv, "failed.csv");
         }
       }
     }, 3000);
@@ -81,7 +81,7 @@ export const uploadFileBase = async ({
   }
 };
 
-const downloadBase64Csv = (base64: string, filename: string) => {
+const downloadBase64Csv = (base64: string, filename = "failed.csv") => {
   const binary = atob(base64);
   const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
   const blob = new Blob([bytes], { type: "text/csv;charset=utf-8;" });
