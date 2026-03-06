@@ -123,11 +123,10 @@ const Form = <T extends keyof FormTypeMap>() => {
     steps: {
       formSteps,
       currentStep,
-      nextStep,
       prevStep,
       nextData,
-      sendData,
       handleStep,
+      processStep,
     },
 
     getDiffKeys,
@@ -337,13 +336,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                       : "変更"
                     : "次へ",
                 color: "green",
-                onClick:
-                  formSteps && currentStep === formSteps.length - 1
-                    ? () => {
-                        sendData();
-                        setPage("formPage", 1);
-                      }
-                    : nextStep,
+                onClick: processStep,
               }}
               deny={{
                 text: "戻る",

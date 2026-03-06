@@ -117,6 +117,8 @@ export interface FormStep<K extends keyof FormTypeMap> {
     api?: AxiosInstance,
   ) => Promise<QuickFilterItemsByKey | null>;
   skip?: (data: FormTypeMap[K]) => boolean;
+  send?: boolean;
+  nextModelType?: ModelType;
 }
 
 export type FilterConditionsByKey = Partial<

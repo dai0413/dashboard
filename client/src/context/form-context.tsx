@@ -107,11 +107,10 @@ type FormContextValue<T extends ModelType> = {
   steps: {
     currentStep: number;
     formSteps: FormStep<T>[];
-    nextStep: () => Promise<void>;
     prevStep: () => void;
     nextData: () => void;
-    sendData: () => Promise<void>;
     handleStep: (nextStepIndex: number) => void;
+    processStep: () => Promise<void>;
   };
 
   displayableField: DetailFieldDefinition[];
@@ -530,6 +529,20 @@ export const FormProvider = <T extends ModelType>({
     resetAlert();
   };
 
+  const processStep = async () => {
+    const current = formSteps[currentStep];
+
+    if (!current) return;
+
+    if (current.send) {
+      sendData();
+    } else {
+      nextStep();
+    }
+
+    if (current.nextModelType) setModelType(current.nextModelType as T);
+  };
+
   const prevStep = () => {
     if (!formSteps) return;
     let nextStepIndex = Math.max(currentStep - 1, 0);
@@ -742,11 +755,10 @@ export const FormProvider = <T extends ModelType>({
     steps: {
       currentStep,
       formSteps,
-      nextStep,
       prevStep,
       nextData,
-      sendData,
       handleStep,
+      processStep,
     },
 
     displayableField,
