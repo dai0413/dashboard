@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "2.3.11",
+  "version": "2.3.15",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -60,10 +60,20 @@
       "require": "./dist/types/j_m/player-match-event-log.js",
       "types": "./dist/types/j_m/player-match-event-log.d.ts"
     },
+    "./types/j_m/referee-appearance": {
+      "import": "./dist/types/j_m/referee-appearance.js",
+      "require": "./dist/types/j_m/referee-appearance.js",
+      "types": "./dist/types/j_m/referee-appearance.d.ts"
+    },
     "./types/j_m/staff-appearance": {
       "import": "./dist/types/j_m/staff-appearance.js",
       "require": "./dist/types/j_m/staff-appearance.js",
       "types": "./dist/types/j_m/staff-appearance.d.ts"
+    },
+    "./types/j_m/values": {
+      "import": "./dist/types/j_m/values.js",
+      "require": "./dist/types/j_m/values.js",
+      "types": "./dist/types/j_m/values.d.ts"
     },
     "./types/sn_m/position": {
       "import": "./dist/types/sn_m/position.js",

@@ -14,12 +14,7 @@ type CompetitionStage = Partial<z.infer<typeof CompetitionStageFormSchema>>;
 
 type PreMatchFormSchema = Omit<
   z.infer<typeof MatchFormSchema>,
-  | "competition_stage"
-  | "home_team"
-  | "away_team"
-  | "stadium"
-  | "match_format"
-  | "stadium_name"
+  "competition_stage" | "home_team" | "away_team" | "stadium" | "match_format"
 > & {
   competition_stage: CompetitionStage;
   home_team: Team;
