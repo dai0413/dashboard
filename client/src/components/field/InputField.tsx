@@ -56,15 +56,15 @@ const convertDate = (
   value: string | number | Date,
   type?: "date" | "datetime-local",
 ): string => {
-  if (typeof value === "string") {
-    return formatLocalDate(new Date(value));
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) return "";
+
+  if (type === "datetime-local") {
+    return utcDateToLocalInput(date);
   }
-  if (value instanceof Date && !isNaN(value.getTime())) {
-    return type === "datetime-local"
-      ? utcDateToLocalInput(value)
-      : formatLocalDate(value); // ✅ ローカル変換
-  }
-  return "";
+
+  return formatLocalDate(date);
 };
 
 const InputField = ({
