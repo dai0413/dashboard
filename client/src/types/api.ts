@@ -8,7 +8,7 @@ export type APIError = {
 };
 
 export type DataResoonse = {
-  data: any[];
+  data: any;
   totalCount: number;
   page: number;
   pageSize: number;
