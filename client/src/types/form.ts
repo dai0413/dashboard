@@ -2,8 +2,15 @@ import { FormTypeMap, ModelType } from "./models";
 import { AlertStatus } from "./alert";
 import { AxiosInstance } from "axios";
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
+import { Form } from "@dai0413/myorg-shared/types/j_m/values";
 import { OptionType } from "../utils/createOption";
 import { QuickFilterItem } from "./table";
+import { DataResoonse } from "./api";
+import { MatchGet } from "./models/match";
+import { PlayerAppearanceGet } from "./models/player-appearance";
+import { PlayerMatchEventLogGet } from "./models/player-match-event-log";
+import { StaffAppearanceGet } from "./models/staff-appearance";
+import { RefereeAppearanceGet } from "./models/referee-appearance";
 
 type StepType = "form" | "confirm";
 
@@ -101,7 +108,7 @@ export type FormUpdatePair = {
   value: any;
 }[];
 
-export interface FormStep<K extends keyof FormTypeMap> {
+type BaseFormStep<K extends keyof FormTypeMap> = {
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
@@ -120,7 +127,43 @@ export interface FormStep<K extends keyof FormTypeMap> {
   skip?: (data: FormTypeMap[K]) => boolean;
   send?: boolean;
   nextModelType?: ModelType;
-}
+  addDraftData?: (
+    data?: FormTypeMap[K] & Record<string, any>,
+    api?: AxiosInstance,
+  ) => Promise<DraftData>;
+  updateDraftData?: (
+    draftData: DraftData,
+    postedDraftData: PostedDraftData,
+    res: DataResoonse,
+    scrapingUrl: string,
+  ) => PostedDraftData;
+};
+
+type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
+  many: true;
+  fetchValue?: (
+    data?: FormTypeMap[K],
+    api?: AxiosInstance,
+  ) => Promise<FormTypeMap[K][]>;
+  getDraftData?: (
+    draftData: DraftData,
+    postedDraftData: PostedDraftData,
+    scrapingUrl: string,
+  ) => { value: FormTypeMap[K][]; label: Record<string, any>[] };
+};
+
+type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
+  many?: false;
+  getDraftData?: (
+    draftData: DraftData,
+    postedDraftData: PostedDraftData,
+    scrapingUrl: string,
+  ) => Record<string, any>;
+};
+
+export type FormStep<K extends keyof FormTypeMap> =
+  | ArrayDataFormStep<K>
+  | RecordDataFormStep<K>;
 
 export type FilterConditionsByKey = Partial<
   Record<ModelType | OptionType, FilterableFieldDefinition[]>
@@ -129,3 +172,26 @@ export type FilterConditionsByKey = Partial<
 export type QuickFilterItemsByKey = Partial<
   Record<ModelType | OptionType, QuickFilterItem[]>
 >;
+
+export type DraftData = Record<string, Form>;
+export type PostedDraftData = Record<string, PostedDraftDataValues>;
+
+type PostedDraftDataValues = {
+  match: MatchGet;
+  playerAppearance: {
+    home: PlayerAppearanceGet[];
+    away: PlayerAppearanceGet[];
+  };
+  playerMatchEventLog: {
+    home: PlayerMatchEventLogGet[];
+    away: PlayerMatchEventLogGet[];
+  };
+  staffAppearance: {
+    home: StaffAppearanceGet[];
+    away: StaffAppearanceGet[];
+  };
+  refereeAppearance: {
+    home: RefereeAppearanceGet[];
+    away: RefereeAppearanceGet[];
+  };
+};
