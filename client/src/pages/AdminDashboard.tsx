@@ -235,6 +235,20 @@ const d_scItems: {
   },
 ];
 
+const matchRelatedItems: {
+  model: string;
+  desc: string;
+  icon: Icon;
+  modelType: ModelType;
+}[] = [
+  {
+    model: "Match",
+    desc: "J_M",
+    icon: "match",
+    modelType: ModelType.MATCH,
+  },
+];
+
 const AdminDashboard = () => {
   const {
     form: { open },
@@ -246,6 +260,37 @@ const AdminDashboard = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 border-b pb-2">管理画面</h1>
+
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">
+          試合関連更新
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hover:cursor-pointer">
+          {matchRelatedItems.map((m) => (
+            <div
+              key={m.model}
+              onClick={() => {
+                startForm(
+                  true,
+                  m.modelType,
+                  undefined,
+                  undefined,
+                  true,
+                  From.J_M,
+                  true,
+                );
+                open(m.modelType);
+              }}
+            >
+              <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
+                <IconButton icon={m.icon} />
+                <h2 className="text-lg font-bold mb-2">{m.desc}</h2>
+                <p className="text-gray-500 text-sm">{m.model}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="mb-10">
         <h2 className="text-xl font-semibold border-b border-gray-300 pb-1 mb-4">
