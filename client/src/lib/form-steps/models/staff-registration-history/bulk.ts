@@ -1,4 +1,4 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, DataSource } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
@@ -14,7 +14,7 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
           label: "大会シーズン",
           fieldType: "table",
           valueType: "option",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
         },
       ],
     },
@@ -27,7 +27,7 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
           label: "チーム",
           fieldType: "table",
           valueType: "option",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
         },
       ],
     },
@@ -40,14 +40,14 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
           label: "日付",
           fieldType: "input",
           valueType: "date",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
         },
         {
           key: "registration_type",
           label: "登録・抹消",
           fieldType: "select",
           valueType: "option",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
         },
       ],
     },

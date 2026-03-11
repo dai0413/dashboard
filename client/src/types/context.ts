@@ -6,6 +6,7 @@ import {
 } from "@dai0413/myorg-shared";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 import { AxiosResponse } from "axios";
+import { DataResoonse } from "./api";
 
 export type ModelContext<K extends ModelType> = {
   metacrud: MetaCrudContext<K>;
@@ -23,8 +24,8 @@ export type MetaCrudContext<K extends ModelType> = {
   readItem: (id: string) => Promise<void>;
   readItems: (params: QueryParams) => Promise<void>;
 
-  createItem: (formData: FormTypeMap[K]) => Promise<boolean>;
-  createItems: (formDatas: FormTypeMap[K][]) => Promise<boolean>;
+  createItem: (formData: FormTypeMap[K]) => Promise<DataResoonse>;
+  createItems: (formDatas: FormTypeMap[K][]) => Promise<DataResoonse>;
 
   updateItem: (data: FormTypeMap[K]) => Promise<boolean>;
   deleteItem: (id: string) => Promise<boolean>;

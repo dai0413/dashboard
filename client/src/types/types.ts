@@ -58,4 +58,5 @@ export enum From {
   D_M = "d_m",
   D_ML = "d_ml",
   FL = "fl",
+  J_M = "j_m",
 }

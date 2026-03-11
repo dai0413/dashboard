@@ -1,4 +1,4 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, DataSource } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
@@ -13,21 +13,21 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         label: "移籍発表日",
         fieldType: "input",
         valueType: "date",
-        overwriteByMany: true,
+        dataSource: DataSource.BULK_COMMON,
       },
       {
         key: "from_date",
         label: "新チーム加入日",
         fieldType: "input",
         valueType: "date",
-        overwriteByMany: true,
+        dataSource: DataSource.BULK_COMMON,
       },
       {
         key: "form",
         label: "移籍形態",
         fieldType: "select",
         valueType: "option",
-        overwriteByMany: true,
+        dataSource: DataSource.BULK_COMMON,
       },
       {
         key: "URL",
@@ -35,7 +35,7 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
         multi: true,
         fieldType: "textarea",
         valueType: "text",
-        overwriteByMany: true,
+        dataSource: DataSource.BULK_COMMON,
       },
     ],
   },

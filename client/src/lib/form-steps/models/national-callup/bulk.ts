@@ -1,4 +1,4 @@
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { DataSource, FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
@@ -15,7 +15,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         fieldType: "table",
         valueType: "option",
         required: true,
-        overwriteByMany: true,
+        dataSource: DataSource.BULK_COMMON,
       },
     ],
     onChange: async (formData, _api) => {
@@ -149,7 +149,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       const teamObj = await setTeam(
         formData,
         api,
-        formData.joined_at ? formData.joined_at : undefined
+        formData.joined_at ? formData.joined_at : undefined,
       );
       const dateobj = setDate(formData);
 

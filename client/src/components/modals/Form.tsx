@@ -13,7 +13,7 @@ import { useQuery } from "../../context/query-context";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
 import { DetailFieldDefinition } from "../../types/field";
-import { FormStep } from "../../types/form";
+import { DataSource, FormStep } from "../../types/form";
 import { get } from "lodash";
 import { useModal } from "../../context/modal-context";
 import { FilterProvider } from "../../context/filter-context";
@@ -437,17 +437,17 @@ const Form = <T extends keyof FormTypeMap>() => {
                     key={field.key as string}
                     field={field}
                     formData={
-                      field.overwriteByMany
+                      field.dataSource === DataSource.BULK_COMMON
                         ? many?.bulkCommonData || {}
                         : single.formData
                     }
                     formLabel={
-                      field.overwriteByMany
+                      field.dataSource === DataSource.BULK_COMMON
                         ? many?.bulkCommonLabel || {}
                         : formLabel
                     }
                     handleFormData={(key, value) =>
-                      handleFormData(key, value, field.overwriteByMany)
+                      handleFormData(key, value, field.dataSource)
                     }
                     supportButton={!formSteps[currentStep].many}
                   />

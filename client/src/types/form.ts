@@ -9,6 +9,11 @@ type StepType = "form" | "confirm";
 
 type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
+export enum DataSource {
+  SCRAPE_URL = "scrape_url",
+  BULK_COMMON = "bulk_common",
+}
+
 type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   key: FieldKey<T>;
   label: string;
@@ -19,6 +24,7 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   overwriteByMany?: boolean;
   lengthInArray?: number;
   uniqueInArray?: boolean;
+  dataSource?: DataSource;
 };
 
 type MultiValueField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
@@ -99,15 +105,10 @@ export interface FormStep<K extends keyof FormTypeMap> {
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
-  many?: boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
   onChange?:
     | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
     | ((data: FormTypeMap[K]) => FormUpdatePair);
-  fetchValue?: (
-    data?: FormTypeMap[K],
-    api?: AxiosInstance,
-  ) => Promise<FormTypeMap[K][]>;
   createFilterConditions?: (
     data: FormTypeMap[K],
     api?: AxiosInstance,

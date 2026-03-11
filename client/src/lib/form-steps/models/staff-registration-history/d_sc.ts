@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormStep } from "../../../../types/form";
+import { FormStep, DataSource } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
@@ -42,7 +42,7 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
           label: "日付",
           fieldType: "input",
           valueType: "date",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
           width: "200px",
         },
         {
@@ -50,14 +50,14 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
           label: "登録・抹消",
           fieldType: "select",
           valueType: "option",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
         },
         {
           key: "team",
           label: "チーム",
           fieldType: "table",
           valueType: "option",
-          overwriteByMany: true,
+          dataSource: DataSource.BULK_COMMON,
         },
         {
           key: "staff",

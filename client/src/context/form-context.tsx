@@ -1,6 +1,7 @@
 import { createContext, JSX, useContext, useMemo, useState } from "react";
 import { useAlert } from "./alert-context";
 import {
+  DataSource,
   FilterConditionsByKey,
   FormFieldDefinition,
   FormStep,
@@ -24,6 +25,7 @@ import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
 import { From } from "../types/types";
+import { DataResoonse } from "../types/api";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -71,6 +73,7 @@ type FormContextValue<T extends ModelType> = {
       initialFormData?: Partial<FormTypeMap[T]>,
       many?: boolean,
       from?: From,
+      allRelated?: boolean,
     ) => void;
   };
 
@@ -83,7 +86,7 @@ type FormContextValue<T extends ModelType> = {
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
       value: FormTypeMap[T][K] | undefined,
-      overwriteByMany?: boolean,
+      dataSource?: DataSource,
     ) => void;
   };
 
@@ -172,6 +175,8 @@ export const FormProvider = <T extends ModelType>({
     {},
   );
 
+  const [scrapingUrl, setScrapingUrl] = useState<string[]>([]);
+
   const modelContext = useModelContext(modelType);
 
   const removeFilterConditionsObj = (key: keyof FilterConditionsByKey) => {
@@ -235,10 +240,11 @@ export const FormProvider = <T extends ModelType>({
     initialFormData?: FormTypeMap[T],
     many?: boolean,
     from?: From,
+    allRelated?: boolean,
   ) => {
     if (!model) return;
 
-    const newSteps = getSteps(model, many, from);
+    const newSteps = getSteps(model, many, from, allRelated);
 
     setFormSteps(newSteps);
 
@@ -337,6 +343,7 @@ export const FormProvider = <T extends ModelType>({
 
   const sendData = async () => {
     let result: boolean = false;
+    let res: DataResoonse | null = null;
     if (!modelContext || !modelType) return;
 
     if (inputMode === "single") {
@@ -348,7 +355,8 @@ export const FormProvider = <T extends ModelType>({
       }
 
       if (formMode === "create") {
-        result = await modelContext.createItem(item);
+        res = await modelContext.createItem(item);
+        result = !!res;
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
         if (!difKeys || difKeys?.length === 0)
@@ -366,14 +374,11 @@ export const FormProvider = <T extends ModelType>({
           ...updated,
         });
       }
-
-      setCurrentStep((prev) =>
-        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0),
-      );
     }
 
     if (inputMode === "many") {
-      result = await modelContext.createItems(formDatas);
+      res = await modelContext.createItems(formDatas);
+      result = !!res;
 
       setCurrentStep((prev) =>
         Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0),
@@ -474,7 +479,7 @@ export const FormProvider = <T extends ModelType>({
       current.fields
     ) {
       current.fields.forEach((field) => {
-        if (field.overwriteByMany) {
+        if (field.dataSource === DataSource.BULK_COMMON) {
           setFormDatas([bulkCommonData]);
           setFormLabels([bulkCommonLabel]);
         }
@@ -540,7 +545,10 @@ export const FormProvider = <T extends ModelType>({
       nextStep();
     }
 
-    if (current.nextModelType) setModelType(current.nextModelType as T);
+    if (current.nextModelType) {
+      setModelType(current.nextModelType as T);
+      nextStep();
+    }
   };
 
   const prevStep = () => {
@@ -564,12 +572,17 @@ export const FormProvider = <T extends ModelType>({
   const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
     key: K,
     value: FormTypeMap[T][K] | undefined,
-    overwriteByMany?: boolean,
+    dataSource?: DataSource,
   ) => {
-    if (overwriteByMany) {
+    if (dataSource === DataSource.BULK_COMMON) {
       return setBulkCommonData((prev) =>
         updateFormValue(prev, key, value, setBulkCommonLabel),
       );
+    }
+    if (dataSource === DataSource.SCRAPE_URL) {
+      if (typeof value === "string") {
+        setScrapingUrl([value]);
+      }
     }
     setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
   };

@@ -61,6 +61,7 @@ export function createModelContext<T extends ModelType>(
         },
         handleLoading,
         handleSetAlert,
+        returnResponse: true,
       });
       return result;
     };
@@ -75,6 +76,7 @@ export function createModelContext<T extends ModelType>(
         },
         handleLoading,
         handleSetAlert,
+        returnResponse: true,
       });
       return result;
     };

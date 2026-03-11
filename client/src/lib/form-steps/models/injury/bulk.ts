@@ -1,4 +1,4 @@
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { DataSource, FormStep, FormUpdatePair } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
@@ -12,7 +12,7 @@ export const injury: FormStep<ModelType.INJURY>[] = [
         label: "発表日",
         fieldType: "input",
         valueType: "date",
-        overwriteByMany: true,
+        dataSource: DataSource.BULK_COMMON,
       },
     ],
   },
