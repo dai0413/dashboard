@@ -111,6 +111,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   } = useModal();
 
   const {
+    modelType,
     inputMode,
     isEditing,
     formMode,
@@ -158,7 +159,7 @@ const Form = <T extends keyof FormTypeMap>() => {
   const confirmBulkDataHeaders = useMemo(() => {
     const nextConfirmBulkDataHeaders =
       formSteps
-        ?.filter((step) => step.many)
+        ?.filter((step) => step.many && step.modelType === modelType)
         .flatMap((s) =>
           (s.fields ?? [])
             .map((field) => ({
@@ -336,7 +337,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                       : "変更"
                     : "次へ",
                 color: "green",
-                onClick: processStep,
+                onClick: () => {processStep(); setPage("formPage",1)},
               }}
               deny={{
                 text: "戻る",
