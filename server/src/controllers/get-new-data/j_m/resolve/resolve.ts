@@ -17,11 +17,16 @@ export const resolve = async <Scraped, Form>(
 
       const findData = await field.model
         .find(findObj)
-        .select("_id")
-        .lean<{ _id: any }[]>();
+        .select("_id name team")
+        .lean<{ _id: any; name?: string; team?: string }[]>();
 
       if (findData.length === 1) {
-        result[field.key] = findData[0]._id;
+        const { _id, name, team } = findData[0];
+
+        result[field.key] = {
+          id: _id,
+          label: name ?? team ?? "",
+        };
 
         if (field.delete) {
           delete result[field.delete];

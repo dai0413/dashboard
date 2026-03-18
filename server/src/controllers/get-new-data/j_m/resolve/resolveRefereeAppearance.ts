@@ -2,24 +2,35 @@ import {
   Form,
   Scraped,
 } from "@dai0413/myorg-shared/types/j_m/referee-appearance";
-import { resolve } from "./resolve.js";
-import { ResolveField } from "../types.js";
 import { RefereeModel } from "../../../../models/referee.js";
 
-const resolveFields: ResolveField<Scraped>[] = [
-  {
-    key: "referee",
-    model: RefereeModel,
-  },
-];
-
-const removeFields: string[] = [];
-
 export const resolveRefereeAppearance = async (data: Scraped[]) => {
-  const resolved = await resolve<Scraped, Form>(
-    data,
-    resolveFields,
-    removeFields,
+  const newData: Partial<Form>[] = await Promise.all(
+    data.map(async (d) => {
+      let result = d;
+      const findObj = d.referee ?? {};
+
+      const findData = await RefereeModel.find(findObj)
+        .select("_id name team")
+        .lean<{ _id: any }[]>();
+
+      const refereeId =
+        findData.length === 1 ? findData[0].toString() : undefined;
+
+      const referee = refereeId
+        ? {
+            id: refereeId,
+            label: d.referee_name ?? "",
+          }
+        : undefined;
+
+      return {
+        ...d,
+        referee: referee,
+        referee_name: referee ? undefined : d.referee?.name,
+      };
+    }),
   );
-  return resolved;
+
+  return newData;
 };

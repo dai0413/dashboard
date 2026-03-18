@@ -38,15 +38,15 @@ const getValues = async (req: Request, res: Response) => {
     const { home_team, away_team, date } = resolvedMatch;
     const targetSeasons = await getTargetSeasons(
       season,
-      home_team,
-      away_team,
+      home_team?.id,
+      away_team?.id,
       date,
     );
 
     const resolvedPlayerAppearance = await resolvePlayerAppearance(
       playerAppearance,
       targetSeasons,
-      { home: home_team, away: away_team },
+      { home: home_team?.id, away: away_team?.id },
     );
     const resolvedPlayerMatchEventLog = await resolvePlayerMatchEventLog(
       playerMatchEventLog,
@@ -57,7 +57,7 @@ const getValues = async (req: Request, res: Response) => {
     const resolvedStaffAppearance = await resolveStaffAppearance(
       staffAppearance,
       targetSeasons,
-      { home: home_team, away: away_team },
+      { home: home_team?.id, away: away_team?.id },
     );
 
     const resolved: Form = {

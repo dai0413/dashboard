@@ -434,7 +434,7 @@ export const result = {
           play_status: "sub",
           player: { name: "桑山　侃士" },
           start_time: 90,
-          end_time: 1,
+          end_time: undefined,
           key: "49-桑山　侃士",
         },
         {

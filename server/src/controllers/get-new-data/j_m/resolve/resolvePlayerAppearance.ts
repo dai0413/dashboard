@@ -49,11 +49,14 @@ export const resolvePlayerAppearance = async (
         const playerId =
           playerIds.length === 1 ? playerIds[0].toString() : undefined;
 
+        const player: Form["player"] = playerId
+          ? { id: playerId, label: d.player_name ?? "" }
+          : undefined;
+
         return {
           ...d,
-          team: teamId,
-          player: playerId,
-          player_name: playerId ? undefined : d.player_name,
+          player: player,
+          player_name: player ? undefined : d.player_name,
         };
       }),
     );

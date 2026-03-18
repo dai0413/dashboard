@@ -43,11 +43,14 @@ export const resolveStaffAppearance = async (
         const staffId =
           staffIds.length === 1 ? staffIds[0].toString() : undefined;
 
+        const staff = staffId
+          ? { id: staffId, label: d.staff_name || "" }
+          : undefined;
+
         return {
           ...d,
-          team: teamId,
-          staff: staffId,
-          staff_name: staffId ? undefined : d.staff_name,
+          staff,
+          staff_name: staff ? undefined : d.staff_name,
         };
       }),
     );
