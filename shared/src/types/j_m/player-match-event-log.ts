@@ -2,6 +2,7 @@ import {
   PlayerFormSchema,
   MatchEventTypeFormSchema,
   PlayerMatchEventLogFormSchema,
+  Label,
 } from "@dai0413/myorg-shared";
 import { z } from "zod";
 
@@ -17,11 +18,12 @@ type PrePlayerMatchEventLogScrapedSchema = Omit<
   key: string;
 };
 
+export type Scraped = Partial<PrePlayerMatchEventLogScrapedSchema>;
 export type Form = Omit<
   z.infer<typeof PlayerMatchEventLogFormSchema>,
-  "match" | "team"
+  "team" | "player" | "match" | "match_event_type"
 > & {
-  team?: string;
+  player?: Label;
+  match_event_type?: Label;
   key: string;
 };
-export type Scraped = Partial<PrePlayerMatchEventLogScrapedSchema>;

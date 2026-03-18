@@ -4,6 +4,7 @@ import {
   StadiumFormSchema,
   CompetitionStageFormSchema,
   MatchFormSchema,
+  Label,
 } from "@dai0413/myorg-shared";
 import { z } from "zod";
 
@@ -24,4 +25,12 @@ type PreMatchFormSchema = Omit<
 };
 
 export type Scraped = Partial<PreMatchFormSchema>;
-export type Form = z.infer<typeof MatchFormSchema>;
+export type Form = Omit<
+  z.infer<typeof MatchFormSchema>,
+  "home_team" | "away_team" | "match_format" | "stadium"
+> & {
+  home_team?: Label;
+  away_team?: Label;
+  match_format?: Label;
+  stadium?: Label;
+};

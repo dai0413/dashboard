@@ -1,6 +1,7 @@
 import {
   RefereeFormSchema,
   RefereeAppearanceFormSchema,
+  Label,
 } from "@dai0413/myorg-shared";
 import { z } from "zod";
 
@@ -14,4 +15,9 @@ type PreRefereeAppearanceScrapedSchema = Omit<
 };
 
 export type Scraped = Partial<PreRefereeAppearanceScrapedSchema>;
-export type Form = z.infer<typeof RefereeAppearanceFormSchema>;
+export type Form = Omit<
+  z.infer<typeof RefereeAppearanceFormSchema>,
+  "match" | "referee"
+> & {
+  referee?: Label;
+};

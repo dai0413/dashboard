@@ -1,6 +1,7 @@
 import {
   PlayerFormSchema,
   PlayerAppearanceFormSchema,
+  Label,
 } from "@dai0413/myorg-shared";
 import { z } from "zod";
 
@@ -12,13 +13,17 @@ type PrePlayerAppearanceScrapedSchema = Omit<
 > & {
   player: Player;
   key: string;
+  start_time?: number;
+  end_time?: number;
 };
 
 export type Scraped = Partial<PrePlayerAppearanceScrapedSchema>;
 export type Form = Omit<
   z.infer<typeof PlayerAppearanceFormSchema>,
-  "match" | "team"
+  "match" | "team" | "player"
 > & {
-  team?: string;
   key: string;
+  player?: Label;
+  start_time?: number;
+  end_time?: number;
 };

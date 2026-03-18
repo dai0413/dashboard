@@ -1,6 +1,7 @@
 import {
   StaffFormSchema,
   StaffAppearanceFormSchema,
+  Label,
 } from "@dai0413/myorg-shared";
 import { z } from "zod";
 
@@ -14,4 +15,9 @@ type PreStaffAppearanceScrapedSchema = Omit<
 };
 
 export type Scraped = Partial<PreStaffAppearanceScrapedSchema>;
-export type Form = z.infer<typeof StaffAppearanceFormSchema>;
+export type Form = Omit<
+  z.infer<typeof StaffAppearanceFormSchema>,
+  "staff" | "team"
+> & {
+  staff?: Label;
+};
