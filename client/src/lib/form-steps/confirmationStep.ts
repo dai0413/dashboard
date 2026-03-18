@@ -1,13 +1,12 @@
-import { FormStep } from "../../types/form";
+import { FormStep, StepType } from "../../types/form";
 import { FormTypeMap, ModelType } from "../../types/models";
 
 export function createConfirmationStep<T extends keyof FormTypeMap>(
-  nextModelType?: ModelType,
+  modelType: ModelType,
 ): FormStep<T> {
   return {
     stepLabel: "最終確認",
-    type: "confirm",
-    nextModelType,
-    send: true,
+    type: StepType.CONFIRM,
+    modelType,
   };
 }
