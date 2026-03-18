@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError } from "@dai0413/myorg-shared";
+import { DataResoonse } from "../../types/api";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;
@@ -18,7 +19,7 @@ export const updateItemBase = async ({
   onAfterUpdate,
   handleLoading,
   handleSetAlert,
-}: UpdateParams) => {
+}: UpdateParams): Promise<DataResoonse> => {
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
   let result = false;
@@ -42,6 +43,6 @@ export const updateItemBase = async ({
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
 
-    return result;
+    return { success: result };
   }
 };

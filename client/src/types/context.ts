@@ -27,7 +27,7 @@ export type MetaCrudContext<K extends ModelType> = {
   createItem: (formData: FormTypeMap[K]) => Promise<DataResoonse>;
   createItems: (formDatas: FormTypeMap[K][]) => Promise<DataResoonse>;
 
-  updateItem: (data: FormTypeMap[K]) => Promise<boolean>;
+  updateItem: (data: FormTypeMap[K]) => Promise<DataResoonse>;
   deleteItem: (id: string) => Promise<boolean>;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;

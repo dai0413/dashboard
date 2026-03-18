@@ -124,7 +124,7 @@ export function createModelContext<T extends ModelType>(
     };
 
     const updateItem = async (updated: Form) => {
-      if (!selected) return false;
+      if (!selected) return { success: false };
       const id = selected._id;
 
       const result = updateItemBase({

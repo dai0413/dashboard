@@ -44,7 +44,7 @@ export async function createItemBase({
     alert = { success: true, message: res.data?.message };
     result = true;
 
-    if (returnResponse) return res.data as DataResoonse;
+    if (returnResponse) return { ...res.data, success: true } as DataResoonse;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -65,6 +65,7 @@ export async function createItemBase({
       totalCount: 0,
       page: 0,
       pageSize: 0,
+      success: false,
     };
 
   return result;
