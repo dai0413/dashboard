@@ -12,7 +12,10 @@ import { PlayerMatchEventLogGet } from "./models/player-match-event-log";
 import { StaffAppearanceGet } from "./models/staff-appearance";
 import { RefereeAppearanceGet } from "./models/referee-appearance";
 
-type StepType = "form" | "confirm";
+export enum StepType {
+  FORM = "form",
+  CONFIRM = "confirm",
+}
 
 type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
@@ -109,6 +112,7 @@ export type FormUpdatePair = {
 }[];
 
 type BaseFormStep<K extends keyof FormTypeMap> = {
+  modelType: ModelType;
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
@@ -125,8 +129,6 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
     api?: AxiosInstance,
   ) => Promise<QuickFilterItemsByKey | null>;
   skip?: (data: FormTypeMap[K]) => boolean;
-  send?: boolean;
-  nextModelType?: ModelType;
   addDraftData?: (
     data?: FormTypeMap[K] & Record<string, any>,
     api?: AxiosInstance,
@@ -158,7 +160,7 @@ type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
     draftData: DraftData,
     postedDraftData: PostedDraftData,
     scrapingUrl: string,
-  ) => Record<string, any>;
+  ) => { value: FormTypeMap[K]; label: Record<string, any> };
 };
 
 export type FormStep<K extends keyof FormTypeMap> =
@@ -177,6 +179,7 @@ export type DraftData = Record<string, Form>;
 export type PostedDraftData = Record<string, PostedDraftDataValues>;
 
 type PostedDraftDataValues = {
+  matchLabel?: string;
   match: MatchGet;
   playerAppearance: {
     home: PlayerAppearanceGet[];
