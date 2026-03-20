@@ -30,9 +30,8 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
   const data: FieldListData = {};
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
-      const value = get(formLabel, display.key)
-        ? get(formLabel, display.key)
-        : undefined;
+      let value = null;
+      value = get(formLabel, display.key);
 
       let da: {
         value: string;
@@ -263,9 +262,12 @@ const Form = <T extends keyof FormTypeMap>() => {
         }
       }
 
+      console.log("stateLabel", stateLabel);
       data[display.key] = da;
     }
   });
+
+  console.log("stateLabel", stateLabel);
 
   return (
     <Modal
