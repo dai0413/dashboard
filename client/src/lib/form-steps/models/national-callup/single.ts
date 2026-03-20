@@ -1,4 +1,4 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
@@ -8,7 +8,8 @@ import { teamCheck } from "./validate/teamCheck";
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "代表試合シリーズを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "series",
@@ -21,7 +22,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "選手を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "player",
@@ -35,7 +37,7 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       const obj = await setTeam(
         formData,
         api,
-        formData.joined_at ? formData.joined_at : undefined
+        formData.joined_at ? formData.joined_at : undefined,
       );
 
       return obj;
@@ -43,7 +45,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "選手のチームを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "team",
@@ -62,7 +65,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "日付",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "number",
@@ -80,7 +84,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "詳細",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "is_captain",
@@ -116,7 +121,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "日付",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "joined_at",
@@ -134,7 +140,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "招集状況",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "status",

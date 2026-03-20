@@ -1,5 +1,5 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
 import { MatchFormatGet } from "../../../../types/models/match-format";
@@ -10,7 +10,8 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
   [
     {
       stepLabel: "試合選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
       fields: [
         {
           key: "match",
@@ -20,14 +21,12 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           required: true,
         },
       ],
-      createFilterConditions: async (
-        data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],
-        api,
-      ) => setMatchTeam(data, api),
+      createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     },
     {
       stepLabel: "イベントタイプ選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
       fields: [
         {
           key: "match_event_type",
@@ -41,7 +40,8 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
     {
       stepLabel:
         "チーム選択(オウンゴールについては失点した選手,　チームは得点したチームにする)",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
       fields: [
         {
           key: "team",
@@ -51,12 +51,13 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           required: true,
         },
       ],
-      createQuickFilterItems: (data, api) => playerInMatch(data, api),
+      createQuickFilterItems: (args) => playerInMatch(args.data, args.api),
     },
     {
       stepLabel:
         "選手選択(オウンゴールについては失点した選手,　チームは得点したチームにする)",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
       fields: [
         {
           key: "player",
@@ -89,7 +90,8 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
     },
     {
       stepLabel: "時間・PK順番を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
       fields: [
         {
           key: "time",

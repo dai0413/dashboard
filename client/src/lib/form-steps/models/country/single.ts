@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const country: FormStep<ModelType.COUNTRY>[] = [
   {
     stepLabel: "国名を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COUNTRY,
     fields: [
       {
         key: "name",
@@ -23,7 +24,8 @@ export const country: FormStep<ModelType.COUNTRY>[] = [
   },
   {
     stepLabel: "コードを入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COUNTRY,
     fields: [
       {
         key: "iso3",
@@ -41,7 +43,8 @@ export const country: FormStep<ModelType.COUNTRY>[] = [
   },
   {
     stepLabel: "地域",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COUNTRY,
     fields: [
       {
         key: "area",
@@ -71,7 +74,8 @@ export const country: FormStep<ModelType.COUNTRY>[] = [
   },
   {
     stepLabel: "協会加入年度",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COUNTRY,
     fields: [
       {
         key: "established_year",

@@ -12,7 +12,7 @@ import {
   TeamCompetitionSeason,
   TeamCompetitionSeasonGet,
 } from "../../types/models/team-competition-season";
-import { MatchGet } from "../../types/models/match";
+import { Match, MatchGet } from "../../types/models/match";
 import { SeasonGet } from "../../types/models/season";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { Data, TeamMatch } from "../../types/types";
@@ -321,9 +321,10 @@ const Team = () => {
 
     if (!res) return [];
 
-    const data = convert(ModelType.MATCH, res.data);
+    const data: Match[] = res.data;
+    const matchs = convert(ModelType.MATCH, data);
 
-    return data;
+    return matchs;
   }
 
   const readPlotData = async (id: string, seasonId: string) => {

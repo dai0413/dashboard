@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const matchFormat: FormStep<ModelType.MATCH_FORMAT>[] = [
   {
     stepLabel: "フォーマット名",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH_FORMAT,
     fields: [
       {
         key: "name",
@@ -17,7 +18,8 @@ export const matchFormat: FormStep<ModelType.MATCH_FORMAT>[] = [
   },
   {
     stepLabel: "ピリオドを入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH_FORMAT,
     many: true,
     fields: [
       {

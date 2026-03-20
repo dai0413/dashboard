@@ -1,4 +1,4 @@
-import { FormStep, DataSource } from "../../../../types/form";
+import { FormStep, DataSource, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
@@ -7,7 +7,8 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
   [
     {
       stepLabel: "共通要素を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
       fields: [
         {
           key: "season",
@@ -20,7 +21,8 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
     },
     {
       stepLabel: "共通要素を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
       fields: [
         {
           key: "team",
@@ -33,7 +35,8 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
     },
     {
       stepLabel: "共通要素を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
       fields: [
         {
           key: "date",
@@ -53,7 +56,8 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
     },
     {
       stepLabel: "役割・名前・英名を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
       fields: [
         {
           key: "season",

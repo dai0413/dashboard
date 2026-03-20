@@ -5,10 +5,15 @@ import { staff } from "./models/staff/d_sc";
 import { staffRegistrationHistory } from "./models/staff-registration-history/d_sc";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
-  [ModelType.STAFF]: [...staff, createConfirmationStep<ModelType.STAFF>()],
+  [ModelType.STAFF]: [
+    ...staff,
+    createConfirmationStep<ModelType.STAFF>(ModelType.STAFF),
+  ],
   [ModelType.STAFF_REGISTRATION_HISTORY]: [
     ...staffRegistrationHistory,
-    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(),
+    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(
+      ModelType.STAFF_REGISTRATION_HISTORY,
+    ),
   ],
 };
 

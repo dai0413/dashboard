@@ -6,12 +6,12 @@ import { setPlayerQuickFilter } from "../../../utils/createQuickFilterItems/setM
 import { Season } from "../../../../../types/models/season";
 
 export const playerInSeason = async (
-  data: FormTypeMap[ModelType.PLAYER_REGISTRATION_HISTORY],
-  api: AxiosInstance | undefined,
+  data?: FormTypeMap[ModelType.PLAYER_REGISTRATION_HISTORY],
+  api?: AxiosInstance | undefined,
 ) => {
+  if (!data || !api || !data.team) return null;
   const { team } = data;
   const { season: seasonId } = data;
-  if (!api || !team) return null;
 
   const seasonResBody = await readItemBase({
     apiInstance: api,

@@ -8,6 +8,7 @@ import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
 import { useListView } from "../../../context/listView-context";
 import { QuickFilterItem } from "../../../types/table";
+import { MatchFormat } from "../../../types/models/match-format";
 
 export const useMatchFormat = (): {
   items: QuickFilterItem[];
@@ -26,7 +27,8 @@ export const useMatchFormat = (): {
     });
 
     if (!resBody) return;
-    const matchFormats = convert(ModelType.MATCH_FORMAT, resBody.data);
+    const data: MatchFormat[] = resBody.data;
+    const matchFormats = convert(ModelType.MATCH_FORMAT, data);
 
     const filterCondition: FilterableFieldDefinition = {
       key: "_id",

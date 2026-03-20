@@ -130,8 +130,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
         getted as unknown as OptionsMap[T],
         true,
       ) as OptionTable,
-      page: page ? page : response.page,
-      totalCount: response.totalCount,
+      page: page ? page : response.page || 1,
+      totalCount: response.totalCount || 1,
       isLoading: false,
     };
 

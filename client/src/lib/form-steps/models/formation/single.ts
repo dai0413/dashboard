@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const formation: FormStep<ModelType.FORMATION>[] = [
   {
     stepLabel: "フォーメーション名を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.FORMATION,
     fields: [
       {
         key: "name",
@@ -17,7 +18,8 @@ export const formation: FormStep<ModelType.FORMATION>[] = [
   },
   {
     stepLabel: "ポジションを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.FORMATION,
     fields: [
       {
         key: "position_formation",
@@ -38,7 +40,7 @@ export const formation: FormStep<ModelType.FORMATION>[] = [
       }
 
       const position_formation = data.position_formation?.filter(
-        (p) => p !== ""
+        (p) => p !== "",
       ).length;
 
       if (position_formation !== 11)
@@ -57,7 +59,7 @@ export const formation: FormStep<ModelType.FORMATION>[] = [
         return {
           success: false,
           message: `positionは重複なく入力してください。重複しているのは ${uniqueDuplicates.join(
-            ", "
+            ", ",
           )}`,
         };
 

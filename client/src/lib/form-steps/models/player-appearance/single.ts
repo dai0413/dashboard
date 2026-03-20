@@ -1,12 +1,13 @@
-import { FormStep } from "../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../types/models";
+import { FormStep, StepType } from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 import { playerInMatch } from "../../utils/createQuickFilterItems/player/playerInMatch";
 
 export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_APPEARANCE,
     fields: [
       {
         key: "match",
@@ -16,14 +17,12 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         required: true,
       },
     ],
-    createFilterConditions: async (
-      data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
-      api,
-    ) => setMatchTeam(data, api),
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
   },
   {
     stepLabel: "チーム選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_APPEARANCE,
     fields: [
       {
         key: "team",
@@ -33,11 +32,12 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         required: true,
       },
     ],
-    createQuickFilterItems: (data, api) => playerInMatch(data, api),
+    createQuickFilterItems: (args) => playerInMatch(args.data, args.api),
   },
   {
     stepLabel: "選手選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_APPEARANCE,
     fields: [
       {
         key: "player",
@@ -66,7 +66,8 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   },
   {
     stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_APPEARANCE,
     fields: [
       {
         key: "number",

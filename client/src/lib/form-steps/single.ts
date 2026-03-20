@@ -33,94 +33,141 @@ import { refereeAppearance } from "./models/referee-appearance/single";
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.COMPETITION_STAGE]: [
     ...competitionStage,
-    createConfirmationStep<ModelType.COMPETITION_STAGE>(),
+    createConfirmationStep<ModelType.COMPETITION_STAGE>(
+      ModelType.COMPETITION_STAGE,
+    ),
   ],
   [ModelType.COMPETITION]: [
     ...competition,
-    createConfirmationStep<ModelType.COMPETITION>(),
+    createConfirmationStep<ModelType.COMPETITION>(ModelType.COMPETITION),
   ],
   [ModelType.COUNTRY]: [
     ...country,
-    createConfirmationStep<ModelType.COUNTRY>(),
+    createConfirmationStep<ModelType.COUNTRY>(ModelType.COUNTRY),
   ],
   [ModelType.FORMATION]: [
     ...formation,
-    createConfirmationStep<ModelType.FORMATION>(),
+    createConfirmationStep<ModelType.FORMATION>(ModelType.FORMATION),
   ],
-  [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
+  [ModelType.INJURY]: [
+    ...injury,
+    createConfirmationStep<ModelType.INJURY>(ModelType.INJURY),
+  ],
   [ModelType.MATCH_EVENT_TYPE]: [
     ...matchEventType,
-    createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(),
+    createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(
+      ModelType.MATCH_EVENT_TYPE,
+    ),
   ],
-  [ModelType.MATCH]: [...match, createConfirmationStep<ModelType.MATCH>()],
+  [ModelType.MATCH]: [
+    ...match,
+    createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
+  ],
   [ModelType.MATCH_FORMAT]: [
     ...matchFormat,
-    createConfirmationStep<ModelType.MATCH_FORMAT>(),
+    createConfirmationStep<ModelType.MATCH_FORMAT>(ModelType.MATCH_FORMAT),
   ],
   [ModelType.NATIONAL_CALLUP]: [
     ...nationalCallUp,
-    createConfirmationStep<ModelType.NATIONAL_CALLUP>(),
+    createConfirmationStep<ModelType.NATIONAL_CALLUP>(
+      ModelType.NATIONAL_CALLUP,
+    ),
   ],
   [ModelType.NATIONAL_MATCH_SERIES]: [
     ...nationalMatchSeries,
-    createConfirmationStep<ModelType.NATIONAL_MATCH_SERIES>(),
+    createConfirmationStep<ModelType.NATIONAL_MATCH_SERIES>(
+      ModelType.NATIONAL_MATCH_SERIES,
+    ),
   ],
   [ModelType.PLAYER_REGISTRATION_HISTORY]: [
     ...playerRegistrationHistory,
-    createConfirmationStep<ModelType.PLAYER_REGISTRATION_HISTORY>(),
+    createConfirmationStep<ModelType.PLAYER_REGISTRATION_HISTORY>(
+      ModelType.PLAYER_REGISTRATION_HISTORY,
+    ),
   ],
   // [ModelType.PLAYER_REGISTRATION]: [
   //   ...playerRegistration,
-  //   createConfirmationStep<ModelType.PLAYER_REGISTRATION>(),
+  //   createConfirmationStep<ModelType.PLAYER_REGISTRATION>(ModelType.),
   // ],
-  [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
+  [ModelType.PLAYER]: [
+    ...player,
+    createConfirmationStep<ModelType.PLAYER>(ModelType.PLAYER),
+  ],
   [ModelType.PLAYER_MATCH_EVENT_LOG]: [
     ...playerMatchEventLog,
-    createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(),
+    createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(
+      ModelType.PLAYER_MATCH_EVENT_LOG,
+    ),
   ],
   [ModelType.PLAYER_APPEARANCE]: [
     ...playerAppearance,
-    createConfirmationStep<ModelType.PLAYER_APPEARANCE>(),
+    createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
+      ModelType.PLAYER_APPEARANCE,
+    ),
   ],
   [ModelType.REFEREE_APPEARANCE]: [
     ...refereeAppearance,
-    createConfirmationStep<ModelType.REFEREE_APPEARANCE>(),
+    createConfirmationStep<ModelType.REFEREE_APPEARANCE>(
+      ModelType.REFEREE_APPEARANCE,
+    ),
   ],
   [ModelType.REFEREE]: [
     ...referee,
-    createConfirmationStep<ModelType.REFEREE>(),
+    createConfirmationStep<ModelType.REFEREE>(ModelType.REFEREE),
   ],
-  [ModelType.SEASON]: [...season, createConfirmationStep<ModelType.SEASON>()],
+  [ModelType.SEASON]: [
+    ...season,
+    createConfirmationStep<ModelType.SEASON>(ModelType.SEASON),
+  ],
   [ModelType.STADIUM]: [
     ...stadium,
-    createConfirmationStep<ModelType.STADIUM>(),
+    createConfirmationStep<ModelType.STADIUM>(ModelType.STADIUM),
   ],
   [ModelType.STAFF_APPEARANCE]: [
     ...staffAppearance,
-    createConfirmationStep<ModelType.STAFF_APPEARANCE>(),
+    createConfirmationStep<ModelType.STAFF_APPEARANCE>(
+      ModelType.STAFF_APPEARANCE,
+    ),
   ],
   [ModelType.STAFF_REGISTRATION_HISTORY]: [
     ...staffRegistrationHistory,
-    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(),
+    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(
+      ModelType.STAFF_REGISTRATION_HISTORY,
+    ),
   ],
   [ModelType.STAFF_MATCH_EVENT_LOG]: [
     ...staffMatchEventLog,
-    createConfirmationStep<ModelType.STAFF_MATCH_EVENT_LOG>(),
+    createConfirmationStep<ModelType.STAFF_MATCH_EVENT_LOG>(
+      ModelType.STAFF_MATCH_EVENT_LOG,
+    ),
   ],
-  [ModelType.STAFF]: [...staff, createConfirmationStep<ModelType.STAFF>()],
-  [ModelType.STATS_L]: [...statsL, createConfirmationStep<ModelType.STATS_L>()],
+  [ModelType.STAFF]: [
+    ...staff,
+    createConfirmationStep<ModelType.STAFF>(ModelType.STAFF),
+  ],
+  [ModelType.STATS_L]: [
+    ...statsL,
+    createConfirmationStep<ModelType.STATS_L>(ModelType.STATS_L),
+  ],
   [ModelType.TEAM_COMPETITION_SEASON]: [
     ...teamCompetitionSeason,
-    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),
+    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(
+      ModelType.TEAM_COMPETITION_SEASON,
+    ),
   ],
   [ModelType.TEAM_MATCH_FORMATION]: [
     ...teamMatchFormation,
-    createConfirmationStep<ModelType.TEAM_MATCH_FORMATION>(),
+    createConfirmationStep<ModelType.TEAM_MATCH_FORMATION>(
+      ModelType.TEAM_MATCH_FORMATION,
+    ),
   ],
-  [ModelType.TEAM]: [...team, createConfirmationStep<ModelType.TEAM>()],
+  [ModelType.TEAM]: [
+    ...team,
+    createConfirmationStep<ModelType.TEAM>(ModelType.TEAM),
+  ],
   [ModelType.TRANSFER]: [
     ...transfer,
-    createConfirmationStep<ModelType.TRANSFER>(),
+    createConfirmationStep<ModelType.TRANSFER>(ModelType.TRANSFER),
   ],
 };
 

@@ -8,6 +8,7 @@ import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
 import { useListView } from "../../../context/listView-context";
 import { QuickFilterItem } from "../../../types/table";
+import { MatchEventType } from "../../../types/models/match-event-type";
 
 export const useMatchEventType = (): {
   items: QuickFilterItem[];
@@ -26,7 +27,8 @@ export const useMatchEventType = (): {
     });
 
     if (!resBody) return;
-    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, resBody.data);
+    const data: MatchEventType[] = resBody.data;
+    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, data);
 
     const filterCondition: FilterableFieldDefinition = {
       key: "_id",

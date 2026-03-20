@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   {
     stepLabel: "大会を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "season",
@@ -17,7 +18,8 @@ export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   },
   {
     stepLabel: "ステージタイプ",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "stage_type",
@@ -30,7 +32,8 @@ export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   },
   {
     stepLabel: "ステージ名・ラウンド・レグ・表示順",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "name",
@@ -67,7 +70,8 @@ export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   },
   {
     stepLabel: "親要素",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "parent_stage",
@@ -86,7 +90,8 @@ export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   },
   {
     stepLabel: "メモ",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "notes",

@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const player: FormStep<ModelType.PLAYER>[] = [
   {
     stepLabel: "名前を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER,
     fields: [
       {
         key: "name",
@@ -16,7 +17,8 @@ export const player: FormStep<ModelType.PLAYER>[] = [
   },
   {
     stepLabel: "名前・前後半・時間を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER,
     fields: [
       {
         key: "form",

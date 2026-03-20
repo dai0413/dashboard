@@ -1,11 +1,12 @@
-import { FormStep } from "../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../types/models";
+import { FormStep, StepType } from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 
 export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_APPEARANCE,
     fields: [
       {
         key: "match",
@@ -15,14 +16,12 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
         required: true,
       },
     ],
-    createFilterConditions: async (
-      data: FormTypeMap[ModelType.STAFF_APPEARANCE],
-      api,
-    ) => setMatchTeam(data, api),
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
   },
   {
     stepLabel: "チーム選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_APPEARANCE,
     fields: [
       {
         key: "team",
@@ -35,7 +34,8 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   },
   {
     stepLabel: "スタッフ選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_APPEARANCE,
     fields: [
       {
         key: "staff",
@@ -64,7 +64,8 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   },
   {
     stepLabel: "役割を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_APPEARANCE,
     fields: [
       {
         key: "role",

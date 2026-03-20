@@ -1,4 +1,4 @@
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
@@ -8,7 +8,8 @@ import { currentTransfer } from "../../utils/onChange/currentTransfer";
 export const staffRegistration: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   {
     stepLabel: "大会シーズン選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_REGISTRATION,
     fields: [
       {
         key: "season",
@@ -21,7 +22,8 @@ export const staffRegistration: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   },
   {
     stepLabel: "スタッフ選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_REGISTRATION,
     fields: [
       {
         key: "staff",
@@ -72,7 +74,8 @@ export const staffRegistration: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   },
   {
     stepLabel: "チーム選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_REGISTRATION,
     fields: [
       {
         key: "team",
@@ -85,7 +88,8 @@ export const staffRegistration: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   },
   {
     stepLabel: "登録or抹消・日付・役割・名前・英名を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_REGISTRATION,
     fields: [
       {
         key: "registration_type",

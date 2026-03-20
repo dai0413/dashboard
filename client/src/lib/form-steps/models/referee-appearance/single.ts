@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE_APPEARANCE,
     fields: [
       {
         key: "match",
@@ -17,7 +18,8 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   },
   {
     stepLabel: "審判選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE_APPEARANCE,
     fields: [
       {
         key: "referee",
@@ -46,7 +48,8 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   },
   {
     stepLabel: "役割を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE_APPEARANCE,
     fields: [
       {
         key: "role",

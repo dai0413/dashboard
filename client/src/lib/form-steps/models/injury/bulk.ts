@@ -1,11 +1,17 @@
-import { DataSource, FormStep, FormUpdatePair } from "../../../../types/form";
+import {
+  DataSource,
+  FormStep,
+  FormUpdatePair,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
 export const injury: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "共通要素を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "doa",
@@ -18,7 +24,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
   },
   {
     stepLabel: "選手を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "doa",

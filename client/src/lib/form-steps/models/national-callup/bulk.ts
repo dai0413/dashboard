@@ -1,4 +1,9 @@
-import { DataSource, FormStep, FormUpdatePair } from "../../../../types/form";
+import {
+  DataSource,
+  FormStep,
+  FormUpdatePair,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
@@ -7,7 +12,8 @@ import { teamCheck } from "./validate/teamCheck";
 export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "代表試合シリーズを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "series",
@@ -43,7 +49,8 @@ export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   },
   {
     stepLabel: "選手を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.NATIONAL_CALLUP,
     fields: [
       {
         key: "position_group",

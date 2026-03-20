@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const team: FormStep<ModelType.TEAM>[] = [
   {
     stepLabel: "チーム名を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM,
     fields: [
       {
         key: "team",
@@ -29,7 +30,8 @@ export const team: FormStep<ModelType.TEAM>[] = [
   },
   {
     stepLabel: "国名",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM,
     fields: [
       {
         key: "country",
@@ -41,7 +43,8 @@ export const team: FormStep<ModelType.TEAM>[] = [
   },
   {
     stepLabel: "ジャンル・年代・ディビジョン",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM,
     fields: [
       {
         key: "genre",
@@ -71,7 +74,8 @@ export const team: FormStep<ModelType.TEAM>[] = [
   },
   {
     stepLabel: "urlなど",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM,
     fields: [
       {
         key: "jdataid",

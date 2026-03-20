@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const competition: FormStep<ModelType.COMPETITION>[] = [
   {
     stepLabel: "名前",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION,
     fields: [
       {
         key: "name",
@@ -29,7 +30,8 @@ export const competition: FormStep<ModelType.COMPETITION>[] = [
   },
   {
     stepLabel: "国を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION,
     fields: [
       {
         key: "country",
@@ -41,7 +43,8 @@ export const competition: FormStep<ModelType.COMPETITION>[] = [
   },
   {
     stepLabel: "大会規模・大会タイプ・大会レベル・年代・公式戦",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION,
     fields: [
       {
         key: "competition_type",
@@ -78,7 +81,8 @@ export const competition: FormStep<ModelType.COMPETITION>[] = [
   },
   {
     stepLabel: "URL",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION,
     fields: [
       {
         key: "transferurl",

@@ -8,6 +8,7 @@ import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
 import { useListView } from "../../../context/listView-context";
 import { QuickFilterItem } from "../../../types/table";
+import { Formation } from "../../../types/models/formation";
 
 export const useFormation = (): {
   items: QuickFilterItem[];
@@ -26,7 +27,8 @@ export const useFormation = (): {
     });
 
     if (!resBody) return;
-    const formations = convert(ModelType.FORMATION, resBody.data);
+    const data: Formation[] = resBody.data;
+    const formations = convert(ModelType.FORMATION, data);
 
     const filterCondition: FilterableFieldDefinition = {
       key: "_id",

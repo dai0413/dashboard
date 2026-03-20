@@ -1,4 +1,4 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { playerInSeason } from "../../utils/createQuickFilterItems/player/playerInSeason";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
@@ -8,7 +8,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
   [
     {
       stepLabel: "登録or抹消を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
       fields: [
         {
           key: "date",
@@ -27,7 +28,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
     },
     {
       stepLabel: "大会シーズン選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
       fields: [
         {
           key: "season",
@@ -40,7 +42,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
     },
     {
       stepLabel: "チーム選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
       fields: [
         {
           key: "team",
@@ -50,11 +53,12 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
           required: true,
         },
       ],
-      createQuickFilterItems: (data, api) => playerInSeason(data, api),
+      createQuickFilterItems: (args) => playerInSeason(args.data, args.api),
     },
     {
       stepLabel: "選手選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
       fields: [
         {
           key: "player",
@@ -68,7 +72,8 @@ export const playerRegistrationHistory: FormStep<ModelType.PLAYER_REGISTRATION_H
     },
     {
       stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
       fields: [
         {
           key: "changes.number",

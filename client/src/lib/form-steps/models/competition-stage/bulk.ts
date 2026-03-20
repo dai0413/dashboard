@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   {
     stepLabel: "大会を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "season",
@@ -17,7 +18,8 @@ export const competitionStage: FormStep<ModelType.COMPETITION_STAGE>[] = [
   },
   {
     stepLabel: "ステージデータを編集",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.COMPETITION_STAGE,
     fields: [
       {
         key: "stage_type",

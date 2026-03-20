@@ -1,11 +1,12 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
   [
     {
       stepLabel: "名称入力",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.NATIONAL_MATCH_SERIES,
       fields: [
         {
           key: "name",
@@ -18,7 +19,8 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
     },
     {
       stepLabel: "国を選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.NATIONAL_MATCH_SERIES,
       fields: [
         {
           key: "country",
@@ -30,7 +32,8 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
     },
     {
       stepLabel: "年代を選択",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.NATIONAL_MATCH_SERIES,
       fields: [
         {
           key: "age_group",
@@ -42,7 +45,8 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
     },
     // {
     //   stepLabel: "試合を選択",
-    //   type: "form",
+    //   type: StepType.FORM,
+    //   modelType: ModelType.NATIONAL_MATCH_SERIES,
     //   fields: [
     //     {
     //       key: "matchs",
@@ -53,7 +57,8 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
     // },
     {
       stepLabel: "日付",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.NATIONAL_MATCH_SERIES,
       fields: [
         {
           key: "joined_at",
@@ -71,7 +76,8 @@ export const nationalMatchSeries: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] =
     },
     {
       stepLabel: "url",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.NATIONAL_MATCH_SERIES,
       fields: [
         {
           key: "urls",

@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const staff: FormStep<ModelType.STAFF>[] = [
   {
     stepLabel: "名前",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF,
     fields: [
       {
         key: "name",
@@ -42,7 +43,8 @@ export const staff: FormStep<ModelType.STAFF>[] = [
   },
   {
     stepLabel: "選手",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF,
     fields: [
       {
         key: "player",

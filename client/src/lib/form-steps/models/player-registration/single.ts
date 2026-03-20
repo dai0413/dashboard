@@ -1,4 +1,4 @@
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
@@ -8,7 +8,8 @@ import { currentTransfer } from "../../utils/onChange/currentTransfer";
 export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "大会シーズン選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_REGISTRATION,
     fields: [
       {
         key: "season",
@@ -21,7 +22,8 @@ export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   },
   {
     stepLabel: "選手選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_REGISTRATION,
     fields: [
       {
         key: "player",
@@ -72,7 +74,8 @@ export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   },
   {
     stepLabel: "チーム選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_REGISTRATION,
     fields: [
       {
         key: "team",
@@ -85,7 +88,8 @@ export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   },
   {
     stepLabel: "登録or抹消・日付・背番号・POS.・名前・英名・身長・体重を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_REGISTRATION,
     fields: [
       {
         key: "registration_type",
@@ -152,7 +156,8 @@ export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   },
   {
     stepLabel: "2種登録・特別指定・HG・メモを入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER_REGISTRATION,
     fields: [
       {
         key: "isTypeTwo",

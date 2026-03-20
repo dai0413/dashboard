@@ -1,11 +1,12 @@
-import { FormStep, FormUpdatePair } from "../../../../types/form";
+import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
 export const injury: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "選手を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "player",
@@ -39,7 +40,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
   },
   {
     stepLabel: "チームを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "team",
@@ -51,7 +53,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
   },
   {
     stepLabel: "日付を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "doa",
@@ -71,7 +74,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
   },
   {
     stepLabel: "詳細",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "injured_part",
@@ -91,7 +95,8 @@ export const injury: FormStep<ModelType.INJURY>[] = [
   },
   {
     stepLabel: "公式発表のURLを入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.INJURY,
     fields: [
       {
         key: "URL",

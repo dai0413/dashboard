@@ -6,13 +6,13 @@ import { setPlayerQuickFilter } from "../../../utils/createQuickFilterItems/setM
 import { Match } from "../../../../../types/models/match";
 
 export const playerInMatch = async (
-  data:
+  data?:
     | FormTypeMap[ModelType.PLAYER_APPEARANCE]
     | FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],
-  api: AxiosInstance | undefined,
+  api?: AxiosInstance | undefined,
 ) => {
+  if (!data || !api || !data.team || !data.match) return null;
   const { team, match: matchId } = data;
-  if (!api || !team) return null;
 
   const matchResBody = await readItemBase({
     apiInstance: api,

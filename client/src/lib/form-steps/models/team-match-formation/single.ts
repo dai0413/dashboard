@@ -1,11 +1,12 @@
-import { FormStep } from "../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../types/models";
+import { FormStep, StepType } from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 
 export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     stepLabel: "試合を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM_MATCH_FORMATION,
     fields: [
       {
         key: "match",
@@ -15,14 +16,12 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
         required: true,
       },
     ],
-    createFilterConditions: async (
-      data: FormTypeMap[ModelType.TEAM_MATCH_FORMATION],
-      api,
-    ) => setMatchTeam(data, api),
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
   },
   {
     stepLabel: "チームを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM_MATCH_FORMATION,
     fields: [
       {
         key: "team",
@@ -35,7 +34,8 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   },
   {
     stepLabel: "フォーメーションを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TEAM_MATCH_FORMATION,
     fields: [
       {
         key: "formation",

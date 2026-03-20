@@ -4,7 +4,6 @@ import { readItemsBase } from "../../../api/readItems";
 import { Transfer } from "../../../../types/models/transfer";
 import { convert } from "../../../convert/DBtoGetted";
 import { API_PATHS, form, position } from "@dai0413/myorg-shared";
-import { ResBody } from "@dai0413/myorg-shared";
 
 const positionOptions = position().map((item) => item.key);
 const formOptions = form().map((item) => item.key);
@@ -54,10 +53,10 @@ export const currentTransfer = async <T extends ModelType>({
 
   if (!currentTransferData) return {};
 
-  const currentTransfer: ResBody<Transfer[]> = currentTransferData;
+  const currentTransfer: Transfer[] = currentTransferData.data;
 
-  if (currentTransfer.data.length > 0) {
-    const latest = convert(ModelType.TRANSFER, currentTransfer.data[0]);
+  if (currentTransfer.length > 0) {
+    const latest = convert(ModelType.TRANSFER, currentTransfer[0]);
 
     if (latest.to_team) {
       if (latest.to_team.id) {

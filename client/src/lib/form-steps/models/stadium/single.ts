@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const stadium: FormStep<ModelType.STADIUM>[] = [
   {
     stepLabel: "国を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STADIUM,
     fields: [
       {
         key: "country",
@@ -17,7 +18,8 @@ export const stadium: FormStep<ModelType.STADIUM>[] = [
   },
   {
     stepLabel: "名称",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STADIUM,
     fields: [
       {
         key: "name",
@@ -42,7 +44,8 @@ export const stadium: FormStep<ModelType.STADIUM>[] = [
   },
   {
     stepLabel: "別名",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STADIUM,
     fields: [
       {
         key: "alt_names",
@@ -66,7 +69,8 @@ export const stadium: FormStep<ModelType.STADIUM>[] = [
   },
   {
     stepLabel: "urlなど",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STADIUM,
     fields: [
       {
         key: "transferurl",

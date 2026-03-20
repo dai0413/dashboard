@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormStep, DataSource } from "../../../../types/form";
+import { FormStep, DataSource, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
@@ -10,7 +10,8 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
   [
     {
       stepLabel: "D_SCデータを取得します",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
       fetchValue: async (_data, api?: AxiosInstance) => {
         if (!api) return [];
         const res = await readItemsBase({
@@ -28,7 +29,8 @@ export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HIS
     },
     {
       stepLabel: "取得したデータを編集してください",
-      type: "form",
+      type: StepType.FORM,
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
       fields: [
         {
           key: "season",

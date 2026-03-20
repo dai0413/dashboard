@@ -3,6 +3,7 @@ import {
   FormStep,
   FormUpdatePair,
   QuickFilterItemsByKey,
+  StepType,
 } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readItemBase, readItemsBase } from "../../../api";
@@ -12,11 +13,13 @@ import { convert } from "../../../convert/DBtoGetted";
 import { convert as createLabel } from "../../../convert/CreateLabel";
 import { AxiosInstance } from "axios";
 import { QuickFilterItem } from "../../../../types/table";
+import { MatchEventType } from "../../../../types/models/match-event-type";
 
 export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "試合選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
     fields: [
       {
         key: "match",
@@ -26,19 +29,14 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
         required: true,
       },
     ],
-    createFilterConditions: async (
-      data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
-      api,
-    ) => setMatchTeam(data, api),
-
-    createQuickFilterItems: async (
-      data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
-      api,
-    ) => readMatchEventType(data, api),
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
+    createQuickFilterItems: async (args) =>
+      readMatchEventType(args.data, args.api),
   },
   {
     stepLabel: "イベントタイプ選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
     fields: [
       {
         key: "match_event_type",
@@ -51,7 +49,8 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   },
   {
     stepLabel: "チーム選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
     fields: [
       {
         key: "team",
@@ -64,7 +63,8 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   },
   {
     stepLabel: "スタッフ選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
     fields: [
       {
         key: "staff",
@@ -97,7 +97,8 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   },
   {
     stepLabel: "時間を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
     fields: [
       {
         key: "time",
@@ -166,8 +167,8 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
 ];
 
 const readMatchEventType = async (
-  data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
-  api: AxiosInstance | undefined,
+  data?: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
+  api?: AxiosInstance | undefined,
 ): Promise<QuickFilterItemsByKey | null> => {
   if (!api || !data) return null;
   const read = async (
@@ -181,7 +182,8 @@ const readMatchEventType = async (
     });
 
     if (!resBody) return;
-    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, resBody.data);
+    const data: MatchEventType[] = resBody.data;
+    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, data);
 
     const filterCondition: FilterableFieldDefinition = {
       key: "_id",

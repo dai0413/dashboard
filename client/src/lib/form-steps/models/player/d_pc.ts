@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
@@ -7,7 +7,8 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 export const player: FormStep<ModelType.PLAYER>[] = [
   {
     stepLabel: "D_PCデータを取得します",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER,
     fetchValue: async (_data, api?: AxiosInstance) => {
       if (!api) return [];
       const res = await readItemsBase({
@@ -24,7 +25,8 @@ export const player: FormStep<ModelType.PLAYER>[] = [
   },
   {
     stepLabel: "取得したデータを編集してください",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.PLAYER,
     fields: [
       {
         key: "name",

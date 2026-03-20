@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const match: FormStep<ModelType.MATCH>[] = [
   {
     stepLabel: "大会ステージを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "competition_stage",
@@ -17,7 +18,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "チームを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "home_team",
@@ -30,7 +32,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "チームを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "away_team",
@@ -43,7 +46,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "スタジアムを選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "stadium",
@@ -73,7 +77,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "試合形式を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "match_format",
@@ -85,7 +90,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "節・日付・観客数を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "match_week",
@@ -109,7 +115,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "得点",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "home_goal",
@@ -139,7 +146,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "気象条件を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "weather",
@@ -163,7 +171,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
   },
   {
     stepLabel: "公式発表のURLを入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.MATCH,
     fields: [
       {
         key: "transferurl",

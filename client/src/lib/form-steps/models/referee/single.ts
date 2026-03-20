@@ -1,10 +1,11 @@
-import { FormStep } from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
 export const referee: FormStep<ModelType.REFEREE>[] = [
   {
     stepLabel: "名前",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE,
     fields: [
       {
         key: "name",
@@ -23,7 +24,8 @@ export const referee: FormStep<ModelType.REFEREE>[] = [
   },
   {
     stepLabel: "生年月日・出身地・国籍",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE,
     fields: [
       {
         key: "dob",
@@ -47,7 +49,8 @@ export const referee: FormStep<ModelType.REFEREE>[] = [
   },
   {
     stepLabel: "選手DBと紐づけ",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE,
     fields: [
       {
         key: "player",
@@ -59,7 +62,8 @@ export const referee: FormStep<ModelType.REFEREE>[] = [
   },
   {
     stepLabel: "URL",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.REFEREE,
     fields: [
       {
         key: "transferurl",

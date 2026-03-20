@@ -13,36 +13,57 @@ import { playerRegistrationHistory } from "./models/player-registration-history/
 import { staffRegistrationHistory } from "./models/staff-registration-history/bulk";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
-  [ModelType.INJURY]: [...injury, createConfirmationStep<ModelType.INJURY>()],
+  [ModelType.INJURY]: [
+    ...injury,
+    createConfirmationStep<ModelType.INJURY>(ModelType.INJURY),
+  ],
   [ModelType.COMPETITION_STAGE]: [
     ...competitionStage,
-    createConfirmationStep<ModelType.COMPETITION_STAGE>(),
+    createConfirmationStep<ModelType.COMPETITION_STAGE>(
+      ModelType.COMPETITION_STAGE,
+    ),
   ],
-  [ModelType.PLAYER]: [...player, createConfirmationStep<ModelType.PLAYER>()],
-  [ModelType.STAFF]: [...staff, createConfirmationStep<ModelType.STAFF>()],
+  [ModelType.PLAYER]: [
+    ...player,
+    createConfirmationStep<ModelType.PLAYER>(ModelType.PLAYER),
+  ],
+  [ModelType.STAFF]: [
+    ...staff,
+    createConfirmationStep<ModelType.STAFF>(ModelType.STAFF),
+  ],
   [ModelType.NATIONAL_CALLUP]: [
     ...nationalCallUp,
-    createConfirmationStep<ModelType.NATIONAL_CALLUP>(),
+    createConfirmationStep<ModelType.NATIONAL_CALLUP>(
+      ModelType.NATIONAL_CALLUP,
+    ),
   ],
   [ModelType.TEAM_COMPETITION_SEASON]: [
     ...teamCompetitionSeason,
-    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(),
+    createConfirmationStep<ModelType.TEAM_COMPETITION_SEASON>(
+      ModelType.TEAM_COMPETITION_SEASON,
+    ),
   ],
   [ModelType.TRANSFER]: [
     ...transfer,
-    createConfirmationStep<ModelType.TRANSFER>(),
+    createConfirmationStep<ModelType.TRANSFER>(ModelType.TRANSFER),
   ],
   [ModelType.MATCH_EVENT_TYPE]: [
     ...matchEventType,
-    createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(),
+    createConfirmationStep<ModelType.MATCH_EVENT_TYPE>(
+      ModelType.MATCH_EVENT_TYPE,
+    ),
   ],
   [ModelType.PLAYER_REGISTRATION_HISTORY]: [
     ...playerRegistrationHistory,
-    createConfirmationStep<ModelType.PLAYER_REGISTRATION_HISTORY>(),
+    createConfirmationStep<ModelType.PLAYER_REGISTRATION_HISTORY>(
+      ModelType.PLAYER_REGISTRATION_HISTORY,
+    ),
   ],
   [ModelType.STAFF_REGISTRATION_HISTORY]: [
     ...staffRegistrationHistory,
-    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(),
+    createConfirmationStep<ModelType.STAFF_REGISTRATION_HISTORY>(
+      ModelType.STAFF_REGISTRATION_HISTORY,
+    ),
   ],
 };
 

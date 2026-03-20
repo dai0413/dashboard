@@ -1,4 +1,4 @@
-import { FormStep, DataSource } from "../../../../types/form";
+import { FormStep, DataSource, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
@@ -6,7 +6,8 @@ import { teamCheck } from "./validate/teamCheck";
 export const transfer: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "共通要素を入力",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TRANSFER,
     fields: [
       {
         key: "doa",
@@ -41,7 +42,8 @@ export const transfer: FormStep<ModelType.TRANSFER>[] = [
   },
   {
     stepLabel: "選手を選択",
-    type: "form",
+    type: StepType.FORM,
+    modelType: ModelType.TRANSFER,
     fields: [
       {
         key: "player",
