@@ -1,11 +1,21 @@
-import { createContext, JSX, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  JSX,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useAlert } from "./alert-context";
 import {
   DataSource,
+  DraftData,
   FilterConditionsByKey,
   FormFieldDefinition,
   FormStep,
+  PostedDraftData,
   QuickFilterItemsByKey,
+  StepType,
 } from "../types/form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
@@ -60,9 +70,13 @@ const checkRequiredFields = <T extends ModelType>(
 };
 
 type FormMode = "create" | "update";
-type InputMode = "single" | "many";
+enum InputMode {
+  SINGLE = "single",
+  MANY = "many",
+}
 
 type FormContextValue<T extends ModelType> = {
+  modelType: T | null;
   inputMode: InputMode;
 
   formOperator: {
@@ -81,20 +95,18 @@ type FormContextValue<T extends ModelType> = {
   formMode: FormMode;
 
   single: {
-    formData: FormTypeMap[T];
-    formLabel: Record<string, any>;
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
       value: FormTypeMap[T][K] | undefined,
       dataSource?: DataSource,
     ) => void;
+    state: Record<string, any>;
+    stateLabel: Record<string, any>;
   };
 
   many?: {
     bulkCommonData: FormTypeMap[T];
     bulkCommonLabel: Record<string, any>;
-    formData: FormTypeMap[T][];
-    formLabels: Record<string, any>[];
     handleFormData: <K extends keyof FormTypeMap[T]>(
       index: number,
       key: K,
@@ -105,6 +117,8 @@ type FormContextValue<T extends ModelType> = {
     renderConfirmMes: (
       confirmData: Record<string, string | number | undefined>[],
     ) => JSX.Element;
+    state: Record<string, any>[];
+    stateLabel: Record<string, any>[];
   };
 
   steps: {
@@ -150,7 +164,7 @@ export const FormProvider = <T extends ModelType>({
   const [isEditing, setIsEditing] = useState<boolean>(true);
 
   const [formMode, setFormMode] = useState<FormMode>("create");
-  const [inputMode, setInputMode] = useState<InputMode>("single");
+  const [inputMode, setInputMode] = useState<InputMode>(InputMode.SINGLE);
 
   const [formSteps, setFormSteps] = useState<FormStep<T>[]>([]);
 
@@ -162,7 +176,6 @@ export const FormProvider = <T extends ModelType>({
 
   const [filterConditionsObj, setFilterConditionsObj] =
     useState<FilterConditionsByKey | null>(null);
-  // useEffect(() => console.log("formData", formData), [formData]);
 
   const [quickFilterItemsObj, setQuickFilterIteemsObj] =
     useState<QuickFilterItemsByKey | null>(null);
@@ -175,9 +188,61 @@ export const FormProvider = <T extends ModelType>({
     {},
   );
 
-  const [scrapingUrl, setScrapingUrl] = useState<string[]>([]);
+  const [metaData, setMetaData] = useState<Record<string, any>>({});
+  const [metaDataLabel, setMetaDataLabel] = useState<Record<string, any>>({});
+  const [metaDatas, setMetaDatas] = useState<Record<string, any>[]>([]);
+  const [metaDataLabels, setMetaDataLabels] = useState<Record<string, any>[]>(
+    [],
+  );
+
+  const [state, setState] = useState<Record<string, any>>({});
+  const [states, setStates] = useState<Record<string, any>[]>([]);
+
+  const [stateLabel, setStateLabel] = useState<Record<string, any>>({});
+  const [stateLabels, setStateLabels] = useState<Record<string, any>[]>([]);
+
+  useEffect(() => {
+    const newState: Record<string, any> = { ...formData, ...metaData };
+    setState(newState);
+  }, [formData, metaData]);
+
+  useEffect(() => {
+    const newStates: Record<string, any>[] = formDatas.map((d, i) => {
+      return {
+        ...d,
+        ...metaDatas[i],
+      };
+    });
+    setStates(newStates);
+  }, [formDatas, metaDatas]);
+
+  useEffect(() => {
+    const newStateLabel: Record<string, any> = {
+      ...formLabel,
+      ...metaDataLabel,
+    };
+    setStateLabel(newStateLabel);
+  }, [formLabel, metaDataLabel]);
+
+  useEffect(() => {
+    const newStateLabels: Record<string, any>[] = formLabels.map((d, i) => {
+      return {
+        ...d,
+        ...metaDataLabels[i],
+      };
+    });
+    setStateLabels(newStateLabels);
+  }, [formLabels, metaDataLabels]);
+
+  // match関連のモデル（複数同時取得時）に使用
+  const [draftData, setDraftData] = useState<DraftData>({});
+  const [postedDraftData, setPostedDraftData] = useState<PostedDraftData>({});
 
   const modelContext = useModelContext(modelType);
+
+  const resetDraftData = () => {
+    setDraftData({});
+  };
 
   const removeFilterConditionsObj = (key: keyof FilterConditionsByKey) => {
     setFilterConditionsObj((prev) => {
@@ -254,7 +319,7 @@ export const FormProvider = <T extends ModelType>({
       setCurrentStep(0);
     }
 
-    many ? setInputMode("many") : setInputMode("single");
+    many ? setInputMode(InputMode.MANY) : setInputMode(InputMode.SINGLE);
 
     if (newData) {
       setFormMode("create");
@@ -318,13 +383,10 @@ export const FormProvider = <T extends ModelType>({
     setQuickFilterIteemsObj(null);
   };
 
-  const finishForm = () => {
-    setIsEditing(false);
-  };
-
   const nextData = () => {
     resetFormData();
     resetFormDatas();
+    resetDraftData();
 
     setCurrentStep(0);
     resetAlert();
@@ -341,10 +403,9 @@ export const FormProvider = <T extends ModelType>({
     );
   };
 
-  const sendData = async () => {
-    let result: boolean = false;
+  const sendData = async (modelType: ModelType): Promise<boolean> => {
     let res: DataResoonse | null = null;
-    if (!modelContext || !modelType) return;
+    if (!modelContext || !modelType) return false;
 
     if (inputMode === "single") {
       let item: FormTypeMap[T];
@@ -356,20 +417,21 @@ export const FormProvider = <T extends ModelType>({
 
       if (formMode === "create") {
         res = await modelContext.createItem(item);
-        result = !!res;
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
-        if (!difKeys || difKeys?.length === 0)
-          return handleSetAlert({
+        if (!difKeys || difKeys?.length === 0) {
+          handleSetAlert({
             success: false,
             message: "変更点がありません",
           });
+          return false;
+        }
 
         const updated: FormTypeMap[T] = Object.fromEntries(
           Object.entries(formData).filter(([key]) => difKeys.includes(key)),
         );
 
-        result = await modelContext.updateItem({
+        res = await modelContext.updateItem({
           ...getDefault(modelType),
           ...updated,
         });
@@ -378,20 +440,31 @@ export const FormProvider = <T extends ModelType>({
 
     if (inputMode === "many") {
       res = await modelContext.createItems(formDatas);
-      result = !!res;
-
-      setCurrentStep((prev) =>
-        Math.min(prev + 1, formSteps ? formSteps.length - 1 : 0),
-      );
     }
 
-    if (result) {
-      handleSetAlert({
-        success: true,
-        message: "データを追加しました",
-      });
-      finishForm();
+    if (res?.success) {
+      const current = formSteps[currentStep];
+
+      if (!current) return false;
+      const addPostedDraftData = current.addPostedDraftData;
+      if (addPostedDraftData && res) {
+        const newDraftData = addPostedDraftData({
+          draftData,
+          postedDraftData,
+          metaData,
+          res,
+        });
+        setPostedDraftData(newDraftData);
+      }
+
+      if (formSteps.length - 1 === currentStep) {
+        setIsEditing(false);
+      }
+
+      resetFormDatas();
     }
+
+    return res?.success ? true : false;
   };
 
   const stepSkip = (next: number) => {
@@ -406,14 +479,14 @@ export const FormProvider = <T extends ModelType>({
     return false;
   };
 
-  // useEffect(() => console.log("formDatas", formDatas), formDatas);
-
   const nextStep = async (): Promise<void> => {
     const current = formSteps[currentStep];
 
     if (!current) return;
+    setInputMode(current.many ? InputMode.MANY : InputMode.SINGLE);
     const onChange = current.onChange;
-    const checkData = current.many ? formDatas : formData;
+    const isArray = current.many;
+    const checkData = isArray ? states : state;
 
     // --- 必須チェック ---
     const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
@@ -436,18 +509,55 @@ export const FormProvider = <T extends ModelType>({
 
     // --- onChange 関数による値変更 ---
     if (inputMode === "single" && formMode === "create" && onChange) {
-      if (!Array.isArray(checkData)) {
-        const updatePaires = await onChange(checkData, api);
+      const updatePaires = await onChange(formData, api);
 
-        updatePaires.forEach((da) => {
-          singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
+      updatePaires.forEach((da) => {
+        singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
+      });
+    }
+
+    let newDraftData: DraftData = {};
+
+    if (current.addDraftData) {
+      newDraftData = await current.addDraftData({
+        data: formData,
+        metaData,
+        api,
+      });
+      setDraftData({ ...draftData, ...newDraftData });
+    }
+
+    if (current.getDraftData) {
+      if (current.many) {
+        const { value, label } = current.getDraftData({
+          draftData: {
+            ...draftData,
+            ...newDraftData,
+          },
+          postedDraftData,
+          metaData,
         });
+
+        setFormDatas(value);
+        setFormLabels(label);
+      } else {
+        const { value, label } = current.getDraftData({
+          draftData: {
+            ...draftData,
+            ...newDraftData,
+          },
+          postedDraftData,
+          metaData,
+        });
+
+        setFormData(value);
+        setFormLabel(label);
       }
     }
 
-    if (inputMode === "many" && formMode === "create") {
+    if (current.many && formMode === "create") {
       const fetchValue = current.fetchValue;
-      let arrayCheckData = checkData;
+      let arrayCheckData = formDatas;
       if (fetchValue) {
         const fetchedValues = await fetchValue(formData, api);
         setFormDatas(fetchedValues);
@@ -458,7 +568,7 @@ export const FormProvider = <T extends ModelType>({
         setFormLabels(resolvedLabels);
       }
 
-      if (onChange && Array.isArray(arrayCheckData)) {
+      if (onChange) {
         await Promise.all(
           arrayCheckData.map(async (value, index) => {
             const updatePaires = await onChange(value, api);
@@ -500,10 +610,11 @@ export const FormProvider = <T extends ModelType>({
 
     if (current.createFilterConditions) {
       if (!Array.isArray(checkData)) {
-        const filterConditionsObj = await current.createFilterConditions(
-          checkData,
+        const filterConditionsObj = await current.createFilterConditions({
+          data: formData,
+          metaData,
           api,
-        );
+        });
 
         if (filterConditionsObj) {
           setFilterConditionsObj((prev) => ({
@@ -516,10 +627,11 @@ export const FormProvider = <T extends ModelType>({
 
     if (current.createQuickFilterItems) {
       if (!Array.isArray(checkData)) {
-        const quickFilterItemsObj = await current.createQuickFilterItems(
-          checkData,
+        const quickFilterItemsObj = await current.createQuickFilterItems({
+          data: formData,
+          metaData,
           api,
-        );
+        });
 
         if (quickFilterItemsObj) {
           setQuickFilterIteemsObj((prev) => ({
@@ -538,17 +650,14 @@ export const FormProvider = <T extends ModelType>({
     const current = formSteps[currentStep];
 
     if (!current) return;
-
-    if (current.send) {
-      sendData();
-    } else {
-      nextStep();
+    if (current.modelType) {
+      setModelType(current.modelType as T);
     }
 
-    if (current.nextModelType) {
-      setModelType(current.nextModelType as T);
-      nextStep();
+    if (current.type === StepType.CONFIRM) {
+      sendData(current.modelType);
     }
+    nextStep();
   };
 
   const prevStep = () => {
@@ -579,10 +688,10 @@ export const FormProvider = <T extends ModelType>({
         updateFormValue(prev, key, value, setBulkCommonLabel),
       );
     }
-    if (dataSource === DataSource.SCRAPE_URL) {
-      if (typeof value === "string") {
-        setScrapingUrl([value]);
-      }
+    if (dataSource === DataSource.META_DATA) {
+      return setMetaData((prev) =>
+        updateFormValue(prev, key as string, value, setMetaDataLabel),
+      );
     }
     setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
   };
@@ -594,6 +703,8 @@ export const FormProvider = <T extends ModelType>({
     setFormLabel(
       modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     );
+    setMetaData({});
+    setMetaDataLabel({});
   };
 
   ////////////////////////// many data edit //////////////////////////
@@ -611,13 +722,35 @@ export const FormProvider = <T extends ModelType>({
     setBulkCommonLabel(
       modelType ? ({ ...getDefault(modelType) } as FormTypeMap[T]) : {},
     );
+    setMetaDatas([]);
+    setMetaDataLabels([]);
   };
 
   const handleFormData = <K extends keyof FormTypeMap[T]>(
     index: number,
     key: K,
     value: FormTypeMap[T][K] | undefined,
+    dataSource?: DataSource,
   ) => {
+    if (dataSource === DataSource.META_DATA) {
+      return setMetaDatas((prev) => {
+        const newData = prev.map((item, i) =>
+          i === index
+            ? updateFormValue(item, key as string, value, (updater) =>
+                setMetaDataLabels((prevLabels) => {
+                  const arr = [...(prevLabels ?? [])];
+                  // 存在チェック：なければ空オブジェクトを入れておく
+                  if (!arr[index]) arr[index] = {};
+                  arr[index] = updater(arr[index] ?? {});
+                  return arr;
+                }),
+              )
+            : item,
+        );
+        return newData;
+      });
+    }
+
     setFormDatas((prev) => {
       const newData = prev.map((item, i) =>
         i === index
@@ -674,8 +807,14 @@ export const FormProvider = <T extends ModelType>({
     const newFormDatas = formDatas.filter((_d, i) => i !== index);
     const newFormLabels = formLabels.filter((_d, i) => i !== index);
 
+    const newMetaDatas = metaDatas.filter((_d, i) => i !== index);
+    const newMetaDataLabes = metaDataLabels.filter((_d, i) => i !== index);
+
     setFormDatas(newFormDatas);
     setFormLabels(newFormLabels);
+
+    setMetaDatas(newMetaDatas);
+    setMetaDataLabels(newMetaDataLabes);
   };
 
   const createFormMenuItems = (
@@ -725,18 +864,6 @@ export const FormProvider = <T extends ModelType>({
     confirmData: Record<string, string | number | undefined>[],
   ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
 
-  const many = {
-    bulkCommonData,
-    bulkCommonLabel,
-    // formSteps: bulkStep,
-    formData: formDatas,
-    formLabels,
-    handleFormData,
-    addFormDatas,
-    deleteFormDatas,
-    renderConfirmMes: renderer,
-  };
-
   // 確認画面
   const displayableField = useMemo(
     () =>
@@ -749,6 +876,7 @@ export const FormProvider = <T extends ModelType>({
   );
 
   const value: FormContextValue<T> = {
+    modelType,
     inputMode,
 
     formOperator: {
@@ -758,12 +886,21 @@ export const FormProvider = <T extends ModelType>({
     formMode,
 
     single: {
-      formData: formData,
       handleFormData: singleHandleFormData,
-      formLabel,
+      state,
+      stateLabel,
     },
 
-    many,
+    many: {
+      bulkCommonData,
+      bulkCommonLabel,
+      handleFormData,
+      addFormDatas,
+      deleteFormDatas,
+      renderConfirmMes: renderer,
+      state: states,
+      stateLabel: stateLabels,
+    },
 
     steps: {
       currentStep,
