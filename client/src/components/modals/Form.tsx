@@ -117,7 +117,7 @@ const Form = <T extends keyof FormTypeMap>() => {
     formMode,
 
     single,
-    single: { formLabel },
+    single: { stateLabel },
 
     many,
 
@@ -170,15 +170,15 @@ const Form = <T extends keyof FormTypeMap>() => {
               valueType: field.valueType,
             }))
             .filter((h) =>
-              (many?.formData ?? []).some((d) => hasNestedKey(d, h.field)),
+              (many?.state ?? []).some((d) => hasNestedKey(d, h.field)),
             ),
         ) ?? [];
 
     return nextConfirmBulkDataHeaders;
-  }, [formSteps, many?.formData]);
+  }, [formSteps, many?.state]);
 
   const confirmBulkData = useMemo(() => {
-    return (many?.formLabels ?? [])
+    return (many?.stateLabel ?? [])
       .map((d) => {
         const row: Record<string, string | number | undefined> = {};
 
@@ -206,13 +206,13 @@ const Form = <T extends keyof FormTypeMap>() => {
         return row;
       })
       .filter((row) => Object.keys(row).length > 0);
-  }, [many?.formLabels]);
+  }, [many?.stateLabel]);
 
   const data: FieldListData = {};
   displayableField.forEach((display) => {
     if (typeof display.key === "string") {
       const value =
-        display.key in formLabel ? formLabel[display.key] : undefined;
+        display.key in stateLabel ? stateLabel[display.key] : undefined;
 
       let da: {
         value: string;
@@ -337,7 +337,10 @@ const Form = <T extends keyof FormTypeMap>() => {
                       : "変更"
                     : "次へ",
                 color: "green",
-                onClick: () => {processStep(); setPage("formPage",1)},
+                onClick: () => {
+                  processStep();
+                  setPage("formPage", 1);
+                },
               }}
               deny={{
                 text: "戻る",
@@ -370,13 +373,13 @@ const Form = <T extends keyof FormTypeMap>() => {
                   </span>
                 )}
 
-              {!isEmptyObject(single.formData) && (
+              {!isEmptyObject(single.state) && (
                 <FieldList
                   isForm={true}
                   fields={displayableField}
                   data={convertDisplayField(
                     displayableField,
-                    formLabel,
+                    stateLabel,
                     formSteps,
                     handleStep,
                   )}
@@ -440,12 +443,12 @@ const Form = <T extends keyof FormTypeMap>() => {
                     formData={
                       field.dataSource === DataSource.BULK_COMMON
                         ? many?.bulkCommonData || {}
-                        : single.formData
+                        : single.state
                     }
                     formLabel={
                       field.dataSource === DataSource.BULK_COMMON
                         ? many?.bulkCommonLabel || {}
-                        : formLabel
+                        : stateLabel
                     }
                     handleFormData={(key, value) =>
                       handleFormData(key, value, field.dataSource)

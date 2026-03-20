@@ -31,8 +31,8 @@ const ManyField = <T extends keyof FormTypeMap>({
   };
   const [focus, setFocus] = useState<Focus | null>(null);
 
-  const formData = focus && many?.formData[focus.rowIndex];
-  const formLabel = focus && many?.formLabels[focus.rowIndex];
+  const formData = focus && many?.state[focus.rowIndex];
+  const formLabel = focus && many?.stateLabel[focus.rowIndex];
 
   const handleSetPage = (p: number) => setPage("formPage", p);
 
@@ -69,7 +69,7 @@ const ManyField = <T extends keyof FormTypeMap>({
     <>
       <ListView
         pageNation="client"
-        data={many?.formData.length === 0 ? [{}] : many?.formData || []}
+        data={many?.state.length === 0 ? [{}] : many?.state || []}
         headers={headers}
         renderFieldCell={(
           header: TableHeader,
@@ -79,7 +79,7 @@ const ManyField = <T extends keyof FormTypeMap>({
           const field = fields?.find((f) => f.key === header.field);
           if (!field) return null;
 
-          const targetObj = many?.formLabels[rowIndex];
+          const targetObj = many?.stateLabel[rowIndex];
           const value =
             targetObj && field.key in targetObj
               ? targetObj[field.key as string]
