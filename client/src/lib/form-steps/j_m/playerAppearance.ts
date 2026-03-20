@@ -1,6 +1,6 @@
 import { Form } from "@dai0413/myorg-shared/types/j_m/player-appearance";
 import { FormStep, StepType } from "../../../types/form";
-import { FormTypeMap, ModelType } from "../../../types/models";
+import { ModelType } from "../../../types/models";
 import { PlayerAppearanceForm } from "../../../types/models/player-appearance";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../types/types";
@@ -65,20 +65,18 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     stepLabel: "選手の出場歴を入力開始",
     type: StepType.FORM,
     fields: [],
-    createFilterConditions: async (
-      data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
-      api,
-    ) => setMatchTeam(data, api),
-    getDraftData: (draftData, postedDraftData, scrapingUrl) => {
-      if (!scrapingUrl) return { value: [], label: [] };
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
+    getDraftData: ({ draftData, postedDraftData, metaData }) => {
+      const getDataUrl = metaData.getDataUrl;
+      if (!getDataUrl) return { value: [], label: [] };
 
       const {
         _id: matchId,
         home_team,
         away_team,
         play_time,
-      } = postedDraftData[scrapingUrl].match;
-      const { home, away } = draftData[scrapingUrl].playerAppearance;
+      } = postedDraftData[getDataUrl].match;
+      const { home, away } = draftData[getDataUrl].playerAppearance;
 
       const value: PlayerAppearanceForm[] = [
         ...getPlayerAppearanceValues(home, play_time, home_team, matchId),
@@ -90,13 +88,13 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
           home,
           play_time,
           home_team,
-          postedDraftData[scrapingUrl].matchLabel,
+          postedDraftData[getDataUrl].matchLabel,
         ),
         ...getPlayerAppearanceLabels(
           away,
           play_time,
           away_team,
-          postedDraftData[scrapingUrl].matchLabel,
+          postedDraftData[getDataUrl].matchLabel,
         ),
       ];
 

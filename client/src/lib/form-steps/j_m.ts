@@ -1,9 +1,8 @@
 import { convert } from "../convert/DBtoGetted";
 import { convert as createLabel } from "../convert/CreateLabel";
-import { DraftData, FormStep, PostedDraftData } from "../../types/form";
+import { AddPostedDraftData, FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 import { PlayerAppearance } from "../../types/models/player-appearance";
-import { DataResoonse } from "../../types/api";
 import { createConfirmationStep } from "./confirmationStep";
 import { match } from "./j_m/match";
 import { playerAppearance } from "./j_m/playerAppearance";
@@ -18,19 +17,19 @@ export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   ],
 };
 
-const afterMatchUpdateDraftData = (
-  _draftData: DraftData,
-  postedDraftData: PostedDraftData,
-  res: DataResoonse,
-  scrapingUrl: string,
-): PostedDraftData => {
+const afterMatchaddPostedDraftData: AddPostedDraftData = ({
+  postedDraftData,
+  res,
+  metaData,
+}) => {
   let result = postedDraftData;
+  const getDataUrl = metaData.getDataUrl;
 
   const convertData = convert(ModelType.MATCH, res.data);
   const label = createLabel(ModelType.MATCH, res.data);
   result = {
-    [scrapingUrl]: {
-      ...result[scrapingUrl],
+    [getDataUrl]: {
+      ...result[getDataUrl],
       matchLabel: label,
       match: { ...convertData },
     },
@@ -39,14 +38,15 @@ const afterMatchUpdateDraftData = (
   return result;
 };
 
-const afterPlayerAppearanceUpdateDraftData = (
-  _draftData: DraftData,
-  postedDraftData: PostedDraftData,
-  res: DataResoonse,
-  scrapingUrl: string,
-): PostedDraftData => {
+const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
+  postedDraftData,
+  res,
+  metaData,
+}) => {
   let result = postedDraftData;
-  const { home_team, away_team } = postedDraftData[scrapingUrl].match;
+  const getDataUrl = metaData.getDataUrl;
+
+  const { home_team, away_team } = postedDraftData[getDataUrl].match;
 
   const playerAppearance: PlayerAppearance[] = res.data;
 
@@ -60,8 +60,8 @@ const afterPlayerAppearanceUpdateDraftData = (
   );
 
   result = {
-    [scrapingUrl]: {
-      ...result[scrapingUrl],
+    [getDataUrl]: {
+      ...result[getDataUrl],
       playerAppearance: { home, away },
     },
   };
@@ -73,14 +73,14 @@ const allStep: FormStep<any>[] = [
   ...match,
   {
     ...createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
-    updateDraftData: afterMatchUpdateDraftData,
+    addPostedDraftData: afterMatchaddPostedDraftData,
   },
   ...playerAppearance,
   {
     ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
       ModelType.PLAYER_APPEARANCE,
     ),
-    updateDraftData: afterPlayerAppearanceUpdateDraftData,
+    addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
   },
   ...playerMatchEventLog,
   createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(

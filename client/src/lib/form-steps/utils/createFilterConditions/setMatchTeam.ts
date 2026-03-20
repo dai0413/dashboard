@@ -7,10 +7,10 @@ import { FilterConditionsByKey } from "../../../../types/form";
 import { convert } from "../../../convert/CreateLabel";
 
 export const setMatchTeam = async (
-  data: FormTypeMap[ModelType.PLAYER_APPEARANCE],
+  data?: FormTypeMap[ModelType.PLAYER_APPEARANCE],
   api?: AxiosInstance,
 ): Promise<FilterConditionsByKey | null> => {
-  if (!data.match || !api) return null;
+  if (!data || !data.match || !api) return null;
 
   const resBody = await readItemBase({
     apiInstance: api,

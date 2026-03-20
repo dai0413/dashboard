@@ -1,6 +1,6 @@
 import { Form } from "@dai0413/myorg-shared/types/j_m/player-match-event-log";
 import { FormStep, StepType } from "../../../types/form";
-import { FormTypeMap, ModelType } from "../../../types/models";
+import { ModelType } from "../../../types/models";
 import { PlayerMatchEventLogForm } from "../../../types/models/player-match-event-log";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../types/types";
@@ -54,19 +54,18 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
       stepLabel: "選手の出場歴を入力開始",
       type: StepType.FORM,
       fields: [],
-      createFilterConditions: async (
-        data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],
-        api,
-      ) => setMatchTeam(data, api),
-      getDraftData: (draftData, postedDraftData, scrapingUrl) => {
-        if (!scrapingUrl) return { value: [], label: [] };
+      createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
+      getDraftData: ({ draftData, postedDraftData, metaData }) => {
+        const getDataUrl = metaData.getDataUrl;
+
+        if (!getDataUrl) return { value: [], label: [] };
 
         const {
           _id: matchId,
           home_team,
           away_team,
-        } = postedDraftData[scrapingUrl].match;
-        const { home, away } = draftData[scrapingUrl].playerMatchEventLog;
+        } = postedDraftData[getDataUrl].match;
+        const { home, away } = draftData[getDataUrl].playerMatchEventLog;
 
         const value: PlayerMatchEventLogForm[] = [
           ...getPlayerMatchEventLogValues(home, home_team, matchId),
@@ -77,12 +76,12 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           ...getPlayerMatchEventLogLabels(
             home,
             home_team,
-            postedDraftData[scrapingUrl].matchLabel,
+            postedDraftData[getDataUrl].matchLabel,
           ),
           ...getPlayerMatchEventLogLabels(
             away,
             away_team,
-            postedDraftData[scrapingUrl].matchLabel,
+            postedDraftData[getDataUrl].matchLabel,
           ),
         ];
 

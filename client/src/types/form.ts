@@ -20,7 +20,7 @@ export enum StepType {
 type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
 export enum DataSource {
-  SCRAPE_URL = "scrape_url",
+  META_DATA = "meta_data",
   BULK_COMMON = "bulk_common",
 }
 
@@ -30,7 +30,6 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   required?: boolean;
   width?: string;
   multi?: boolean;
-  // update?: boolean;
   overwriteByMany?: boolean;
   lengthInArray?: number;
   uniqueInArray?: boolean;
@@ -111,35 +110,54 @@ export type FormUpdatePair = {
   value: any;
 }[];
 
+type CreateFilterConditions<K extends keyof FormTypeMap> = (args: {
+  data?: FormTypeMap[K];
+  metaData?: Record<string, any>;
+  api?: AxiosInstance;
+}) => Promise<FilterConditionsByKey | null>;
+
+type CreateQuickFilterItems<K extends keyof FormTypeMap> = (args: {
+  data?: FormTypeMap[K];
+  metaData?: Record<string, any>;
+  api?: AxiosInstance;
+}) => Promise<QuickFilterItemsByKey | null>;
+
+type AddDraftData<K extends keyof FormTypeMap> = (args: {
+  data?: FormTypeMap[K] & Record<string, any>;
+  metaData?: Record<string, any>;
+  api?: AxiosInstance;
+}) => Promise<DraftData>;
+
+export type AddPostedDraftData = (args: {
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+  metaData: Record<string, any>;
+  res: DataResoonse;
+}) => PostedDraftData;
+
 type BaseFormStep<K extends keyof FormTypeMap> = {
   modelType: ModelType;
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
+  skip?: (data: FormTypeMap[K]) => boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
   onChange?:
     | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
     | ((data: FormTypeMap[K]) => FormUpdatePair);
-  createFilterConditions?: (
-    data: FormTypeMap[K],
-    api?: AxiosInstance,
-  ) => Promise<FilterConditionsByKey | null>;
-  createQuickFilterItems?: (
-    data: FormTypeMap[K],
-    api?: AxiosInstance,
-  ) => Promise<QuickFilterItemsByKey | null>;
-  skip?: (data: FormTypeMap[K]) => boolean;
-  addDraftData?: (
-    data?: FormTypeMap[K] & Record<string, any>,
-    api?: AxiosInstance,
-  ) => Promise<DraftData>;
-  updateDraftData?: (
-    draftData: DraftData,
-    postedDraftData: PostedDraftData,
-    res: DataResoonse,
-    scrapingUrl: string,
-  ) => PostedDraftData;
+  createFilterConditions?: CreateFilterConditions<K>;
+  createQuickFilterItems?: CreateQuickFilterItems<K>;
+  addDraftData?: AddDraftData<K>;
+  addPostedDraftData?: AddPostedDraftData;
 };
+
+type GetDraftData<K extends keyof FormTypeMap, T extends boolean> = (args: {
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+  metaData: Record<string, any>;
+}) => T extends true
+  ? { value: FormTypeMap[K][]; label: Record<string, any>[] }
+  : { value: FormTypeMap[K]; label: Record<string, any> };
 
 type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   many: true;
@@ -147,20 +165,12 @@ type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
     data?: FormTypeMap[K],
     api?: AxiosInstance,
   ) => Promise<FormTypeMap[K][]>;
-  getDraftData?: (
-    draftData: DraftData,
-    postedDraftData: PostedDraftData,
-    scrapingUrl: string,
-  ) => { value: FormTypeMap[K][]; label: Record<string, any>[] };
+  getDraftData?: GetDraftData<K, true>;
 };
 
 type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   many?: false;
-  getDraftData?: (
-    draftData: DraftData,
-    postedDraftData: PostedDraftData,
-    scrapingUrl: string,
-  ) => { value: FormTypeMap[K]; label: Record<string, any> };
+  getDraftData?: GetDraftData<K, false>;
 };
 
 export type FormStep<K extends keyof FormTypeMap> =

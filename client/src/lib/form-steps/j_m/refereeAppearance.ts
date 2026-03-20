@@ -1,6 +1,6 @@
 import { Form } from "@dai0413/myorg-shared/types/j_m/referee-appearance";
 import { FormStep, StepType } from "../../../types/form";
-import { FormTypeMap, ModelType } from "../../../types/models";
+import { ModelType } from "../../../types/models";
 import { RefereeAppearanceForm } from "../../../types/models/referee-appearance";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 
@@ -40,15 +40,13 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
     stepLabel: "審判の出場歴を入力開始",
     type: StepType.FORM,
     fields: [],
-    createFilterConditions: async (
-      data: FormTypeMap[ModelType.REFEREE_APPEARANCE],
-      api,
-    ) => setMatchTeam(data, api),
-    getDraftData: (draftData, postedDraftData, scrapingUrl) => {
-      if (!scrapingUrl) return { value: [], label: [] };
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
+    getDraftData: ({ draftData, postedDraftData, metaData }) => {
+      const getDataUrl = metaData.getDataUrl;
+      if (!getDataUrl) return { value: [], label: [] };
 
-      const { _id: matchId } = postedDraftData[scrapingUrl].match;
-      const { refereeAppearance } = draftData[scrapingUrl];
+      const { _id: matchId } = postedDraftData[getDataUrl].match;
+      const { refereeAppearance } = draftData[getDataUrl];
 
       const value: RefereeAppearanceForm[] = getRefereeAppearanceValues(
         refereeAppearance,
@@ -57,7 +55,7 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
 
       const label: Record<string, any>[] = getRefereeAppearanceLabels(
         refereeAppearance,
-        postedDraftData[scrapingUrl].matchLabel,
+        postedDraftData[getDataUrl].matchLabel,
       );
 
       return { value, label };
