@@ -1,7 +1,8 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
+import { Form as BaseData } from "@dai0413/myorg-shared/types/j_m/values";
+import { Form as PositionData } from "@dai0413/myorg-shared/types/sn_m/position";
 import {
   DataSource,
-  DraftData,
   FilterConditionsByKey,
   FormStep,
   StepType,
@@ -138,10 +139,17 @@ export const match: FormStep<ModelType.MATCH>[] = [
     fields: [
       {
         key: "getDataUrl",
-        label: "url",
+        label: "データ取得url",
         fieldType: "input",
         valueType: "text",
         required: true,
+        dataSource: DataSource.META_DATA,
+      },
+      {
+        key: "getPositionUrl",
+        label: "ポジション取得url",
+        fieldType: "input",
+        valueType: "text",
         dataSource: DataSource.META_DATA,
       },
     ],
@@ -153,23 +161,57 @@ export const match: FormStep<ModelType.MATCH>[] = [
     addDraftData: async ({ metaData, api }) => {
       const getDataUrl = metaData?.getDataUrl;
       const season = metaData?.season;
+      const getPositionUrl = metaData?.getPositionUrl;
 
       if (!api || !getDataUrl || !season) return {};
 
-      const sendData = { url: getDataUrl, season: season };
+      // 並列実行にする
+      const [res, positionRes] = await Promise.all([
+        createItemBase({
+          apiInstance: api,
+          backendRoute: API_PATHS.GET_NEW_DATA.J_M.MATCH,
+          data: { url: getDataUrl, season },
+          returnResponse: true,
+        }),
+        getPositionUrl
+          ? createItemBase({
+              apiInstance: api,
+              backendRoute: API_PATHS.GET_NEW_DATA.SN_M.POSITION,
+              data: { url: getPositionUrl },
+              returnResponse: true,
+            })
+          : Promise.resolve(null),
+      ]);
 
-      const res = await createItemBase({
-        apiInstance: api,
-        backendRoute: API_PATHS.GET_NEW_DATA.J_M.MATCH,
-        data: sendData,
-        returnResponse: true,
-      });
+      if (!res?.data) return {};
 
-      if (!res) return {};
+      const baseData: BaseData = res.data;
 
-      const result: DraftData = { [getDataUrl]: res.data };
+      // ポジションマージ処理
+      if (positionRes?.data) {
+        const positionData: PositionData = positionRes.data;
+        const { home, away } = positionData;
 
-      return result;
+        const mergePosition = (
+          target: typeof baseData.playerAppearance.home,
+          positions: typeof home,
+        ) => {
+          positions.forEach((positionData) => {
+            const idx = target.findIndex(
+              (scraped) => scraped.number === positionData.number,
+            );
+
+            if (idx >= 0) {
+              target[idx].position = positionData.position;
+            }
+          });
+        };
+
+        mergePosition(baseData.playerAppearance.home, home);
+        mergePosition(baseData.playerAppearance.away, away);
+      }
+
+      return { [getDataUrl]: baseData };
     },
     getDraftData: ({ draftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;

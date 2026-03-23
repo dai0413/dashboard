@@ -262,12 +262,9 @@ const Form = <T extends keyof FormTypeMap>() => {
         }
       }
 
-      console.log("stateLabel", stateLabel);
       data[display.key] = da;
     }
   });
-
-  console.log("stateLabel", stateLabel);
 
   return (
     <Modal
