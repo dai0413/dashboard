@@ -26,56 +26,54 @@ const getValues = async (req: Request, res: Response) => {
     }
 
     // const result = await get(url);
-    const {
-      match,
-      playerAppearance,
-      playerMatchEventLog,
-      refereeAppearance,
-      staffAppearance,
-    }: Scraped = result.data;
 
-    const resolvedMatch = await resolveMatch(match);
-    const { home_team, away_team, date } = resolvedMatch;
-    const targetSeasons = await getTargetSeasons(
-      season,
-      home_team?.id,
-      away_team?.id,
-      date,
-    );
+    if (result.ok) {
+      const {
+        match,
+        playerAppearance,
+        playerMatchEventLog,
+        refereeAppearance,
+        staffAppearance,
+      }: Scraped = result.data;
 
-    const resolvedPlayerAppearance = await resolvePlayerAppearance(
-      playerAppearance,
-      targetSeasons,
-      { home: home_team?.id, away: away_team?.id },
-    );
-    const resolvedPlayerMatchEventLog = await resolvePlayerMatchEventLog(
-      playerMatchEventLog,
-      resolvedPlayerAppearance,
-    );
-    const resolvedRefereeAppearance =
-      await resolveRefereeAppearance(refereeAppearance);
-    const resolvedStaffAppearance = await resolveStaffAppearance(
-      staffAppearance,
-      targetSeasons,
-      { home: home_team?.id, away: away_team?.id },
-    );
+      const resolvedMatch = await resolveMatch(match);
+      const { home_team, away_team, date } = resolvedMatch;
+      const targetSeasons = await getTargetSeasons(
+        season,
+        home_team?.id,
+        away_team?.id,
+        date,
+      );
 
-    const resolved: Form = {
-      match: resolvedMatch,
-      playerAppearance: resolvedPlayerAppearance,
-      playerMatchEventLog: resolvedPlayerMatchEventLog,
-      refereeAppearance: resolvedRefereeAppearance,
-      staffAppearance: resolvedStaffAppearance,
-    };
+      const resolvedPlayerAppearance = await resolvePlayerAppearance(
+        playerAppearance,
+        targetSeasons,
+        { home: home_team?.id, away: away_team?.id },
+      );
+      const resolvedPlayerMatchEventLog = await resolvePlayerMatchEventLog(
+        playerMatchEventLog,
+        resolvedPlayerAppearance,
+      );
+      const resolvedRefereeAppearance =
+        await resolveRefereeAppearance(refereeAppearance);
+      const resolvedStaffAppearance = await resolveStaffAppearance(
+        staffAppearance,
+        targetSeasons,
+        { home: home_team?.id, away: away_team?.id },
+      );
 
-    // if (result.ok) {
-    //   const filtered = await filter(result.data);
-    //   res.status(StatusCodes.OK).json({ data: filtered });
-    // } else {
-    //   throw new InternalServerError(result.error);
-    // }
+      const resolved: Form = {
+        match: resolvedMatch,
+        playerAppearance: resolvedPlayerAppearance,
+        playerMatchEventLog: resolvedPlayerMatchEventLog,
+        refereeAppearance: resolvedRefereeAppearance,
+        staffAppearance: resolvedStaffAppearance,
+      };
 
-    res.status(StatusCodes.OK).json({ data: resolved });
+      res.status(StatusCodes.OK).json({ data: resolved });
+    } else {
+      throw new InternalServerError(result.error);
+    }
   } catch (error) {
     console.error("Error in getValues:", error);
 

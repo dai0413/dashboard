@@ -1,4 +1,13 @@
-export const result = {
+import { Scraped } from "@dai0413/myorg-shared/types/j_m/values";
+
+type Result = {
+  ok: boolean;
+  url: string;
+  data: Scraped;
+  error?: string;
+};
+
+export const result: Result = {
   ok: true,
   url: "test",
   data: {
