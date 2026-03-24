@@ -158,7 +158,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "J_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
-    addDraftData: async ({ metaData, api }) => {
+    addDraftData: async ({ data, metaData, api }) => {
       const getDataUrl = metaData?.getDataUrl;
       const season = metaData?.season;
       const getPositionUrl = metaData?.getPositionUrl;
@@ -185,7 +185,13 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       if (!res?.data) return {};
 
-      const baseData: BaseData = res.data;
+      const baseData: BaseData = {
+        ...res.data,
+        match: {
+          ...res.data.match,
+          competition_stage: data?.competition_stage,
+        },
+      };
 
       // ポジションマージ処理
       if (positionRes?.data) {

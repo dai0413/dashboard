@@ -9,6 +9,7 @@ import { playerAppearance } from "./j_m/playerAppearance";
 import { playerMatchEventLog } from "./j_m/playerMatchEventLog";
 import { staffAppearance } from "./j_m/staffAppearance";
 import { refereeAppearance } from "./j_m/refereeAppearance";
+import { Match } from "../../types/models/match";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.MATCH]: [
@@ -25,13 +26,17 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   let result = postedDraftData;
   const getDataUrl = metaData.getDataUrl;
 
-  const convertData = convert(ModelType.MATCH, res.data);
-  const label = createLabel(ModelType.MATCH, res.data);
+  const matchOriginal: Match = res.data;
+
+  const match = convert(ModelType.MATCH, matchOriginal);
+  const label = createLabel(ModelType.MATCH, matchOriginal);
+  const periods = matchOriginal.match_format?.period;
   result = {
     [getDataUrl]: {
       ...result[getDataUrl],
       matchLabel: label,
-      match: { ...convertData },
+      match: { ...match },
+      periods,
     },
   };
 

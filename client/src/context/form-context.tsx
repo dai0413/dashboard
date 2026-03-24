@@ -448,13 +448,13 @@ export const FormProvider = <T extends ModelType>({
       if (!current) return false;
       const addPostedDraftData = current.addPostedDraftData;
       if (addPostedDraftData && res) {
-        const newDraftData = addPostedDraftData({
+        const newPostedDraftData = addPostedDraftData({
           draftData,
           postedDraftData,
           metaData,
           res,
         });
-        setPostedDraftData(newDraftData);
+        setPostedDraftData(newPostedDraftData);
       }
 
       if (formSteps.length - 1 === currentStep) {

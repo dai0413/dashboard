@@ -11,6 +11,7 @@ import { PlayerAppearanceGet } from "./models/player-appearance";
 import { PlayerMatchEventLogGet } from "./models/player-match-event-log";
 import { StaffAppearanceGet } from "./models/staff-appearance";
 import { RefereeAppearanceGet } from "./models/referee-appearance";
+import { MatchFormatGet } from "./models/match-format";
 
 export enum StepType {
   FORM = "form",
@@ -190,6 +191,7 @@ export type PostedDraftData = Record<string, PostedDraftDataValues>;
 
 type PostedDraftDataValues = {
   matchLabel?: string;
+  periods?: MatchFormatGet["period"];
   match: MatchGet;
   playerAppearance: {
     home: PlayerAppearanceGet[];

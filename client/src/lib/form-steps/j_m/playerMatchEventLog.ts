@@ -4,14 +4,22 @@ import { ModelType } from "../../../types/models";
 import { PlayerMatchEventLogForm } from "../../../types/models/player-match-event-log";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../types/types";
+import { MatchFormatGet } from "../../../types/models/match-format";
 
 const getPlayerMatchEventLogValues = (
   draftData: Form[],
   team?: Label,
   matchId?: string,
+  periods?: MatchFormatGet["period"],
 ): PlayerMatchEventLogForm[] => {
   const data: PlayerMatchEventLogForm[] = draftData.map((d) => {
     const { key, ...rest } = d;
+
+    const period_label = periods?.find((p) => {
+      if (p.start == null || p.end == null || !d.time) return false;
+      return Number(p.start) < d.time && d.time <= Number(p.end);
+    })?.period_label;
+
     return {
       ...rest,
       match: matchId,
@@ -20,6 +28,7 @@ const getPlayerMatchEventLogValues = (
         : undefined,
       player: rest.player ? rest.player.id : undefined,
       team: team ? team?.id : undefined,
+      period_label,
     };
   });
 
@@ -30,9 +39,16 @@ const getPlayerMatchEventLogLabels = (
   draftData: Form[],
   team?: Label,
   matchLabel?: string,
+  periods?: MatchFormatGet["period"],
 ): Record<string, any>[] => {
   const data: Record<string, any>[] = draftData.map((d) => {
     const { key, ...rest } = d;
+
+    const period_label = periods?.find((p) => {
+      if (p.start == null || p.end == null || !d.time) return false;
+      return Number(p.start) < d.time && d.time <= Number(p.end);
+    })?.period_label;
+
     return {
       ...rest,
       match: matchLabel,
@@ -41,6 +57,7 @@ const getPlayerMatchEventLogLabels = (
         : undefined,
       player: rest.player ? rest.player.label : undefined,
       team: team ? team?.label : undefined,
+      period_label,
     };
   });
 
@@ -65,11 +82,12 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           home_team,
           away_team,
         } = postedDraftData[getDataUrl].match;
+        const { periods } = postedDraftData[getDataUrl];
         const { home, away } = draftData[getDataUrl].playerMatchEventLog;
 
         const value: PlayerMatchEventLogForm[] = [
-          ...getPlayerMatchEventLogValues(home, home_team, matchId),
-          ...getPlayerMatchEventLogValues(away, away_team, matchId),
+          ...getPlayerMatchEventLogValues(home, home_team, matchId, periods),
+          ...getPlayerMatchEventLogValues(away, away_team, matchId, periods),
         ];
 
         const label: Record<string, any>[] = [
