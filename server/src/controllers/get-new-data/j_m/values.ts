@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { getMatch as get } from "@dai0413/scraping-logic/J";
+import { getValues as get } from "@dai0413/scraping-logic/J";
+import { Form, Scraped } from "@dai0413/myorg-shared/types/j_m/values";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 import { resolveMatch } from "./resolve/resolveMatch.js";
@@ -11,7 +12,6 @@ import mongoose from "mongoose";
 import { getTargetSeasons } from "./utils/getTargetSeasons.js";
 import { result } from "./sample.js";
 import { resolveStaffAppearance } from "./resolve/resolveStaffAppearance.js";
-import { Form, Scraped } from "@dai0413/myorg-shared/types/j_m/values";
 
 const getValues = async (req: Request, res: Response) => {
   try {
@@ -25,7 +25,7 @@ const getValues = async (req: Request, res: Response) => {
       throw new BadRequestError("seasonを送信してください");
     }
 
-    // const result = await get(url);
+    const result = await get(url);
 
     if (result.ok) {
       const {
