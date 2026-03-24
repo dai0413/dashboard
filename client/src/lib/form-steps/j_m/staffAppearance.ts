@@ -81,7 +81,7 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   },
   {
     modelType: ModelType.STAFF_APPEARANCE,
-    stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
+    stepLabel: "詳細を入力",
     type: StepType.FORM,
     fields: [
       {

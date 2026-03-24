@@ -64,7 +64,7 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   },
   {
     modelType: ModelType.REFEREE_APPEARANCE,
-    stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
+    stepLabel: "詳細を入力",
     type: StepType.FORM,
     fields: [
       {

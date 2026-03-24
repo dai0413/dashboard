@@ -523,6 +523,8 @@ export const FormProvider = <T extends ModelType>({
         data: formData,
         metaData,
         api,
+        postedDraftData,
+        draftData,
       });
       setDraftData({ ...draftData, ...newDraftData });
     }

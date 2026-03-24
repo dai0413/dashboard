@@ -109,7 +109,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
     },
     {
       modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
-      stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
+      stepLabel: "詳細を入力",
       type: StepType.FORM,
       fields: [
         {

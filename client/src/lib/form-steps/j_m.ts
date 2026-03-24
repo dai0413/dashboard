@@ -9,6 +9,7 @@ import { playerAppearance } from "./j_m/playerAppearance";
 import { playerMatchEventLog } from "./j_m/playerMatchEventLog";
 import { staffAppearance } from "./j_m/staffAppearance";
 import { refereeAppearance } from "./j_m/refereeAppearance";
+import { teamMatchFormation } from "./j_m/teamMatchFormation";
 import { Match } from "../../types/models/match";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
@@ -98,6 +99,10 @@ const allStep: FormStep<any>[] = [
   ...refereeAppearance,
   createConfirmationStep<ModelType.REFEREE_APPEARANCE>(
     ModelType.REFEREE_APPEARANCE,
+  ),
+  ...teamMatchFormation,
+  createConfirmationStep<ModelType.TEAM_MATCH_FORMATION>(
+    ModelType.TEAM_MATCH_FORMATION,
   ),
 ];
 

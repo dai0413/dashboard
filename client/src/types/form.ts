@@ -12,6 +12,8 @@ import { PlayerMatchEventLogGet } from "./models/player-match-event-log";
 import { StaffAppearanceGet } from "./models/staff-appearance";
 import { RefereeAppearanceGet } from "./models/referee-appearance";
 import { MatchFormatGet } from "./models/match-format";
+import { TeamMatchFormationForm } from "./models/team-match-formation";
+import { Label } from "./types";
 
 export enum StepType {
   FORM = "form",
@@ -126,6 +128,8 @@ type CreateQuickFilterItems<K extends keyof FormTypeMap> = (args: {
 type AddDraftData<K extends keyof FormTypeMap> = (args: {
   data?: FormTypeMap[K] & Record<string, any>;
   metaData?: Record<string, any>;
+  draftData?: DraftData;
+  postedDraftData?: PostedDraftData;
   api?: AxiosInstance;
 }) => Promise<DraftData>;
 
@@ -186,7 +190,18 @@ export type QuickFilterItemsByKey = Partial<
   Record<ModelType | OptionType, QuickFilterItem[]>
 >;
 
-export type DraftData = Record<string, Form>;
+type TeamMatchFormation = Omit<TeamMatchFormationForm, "formation"> & {
+  formation?: Label;
+};
+
+type DraftDataValue = Form & {
+  teamMatchFormation?: {
+    home: TeamMatchFormation;
+    away: TeamMatchFormation;
+  };
+};
+
+export type DraftData = Record<string, DraftDataValue>;
 export type PostedDraftData = Record<string, PostedDraftDataValues>;
 
 type PostedDraftDataValues = {
