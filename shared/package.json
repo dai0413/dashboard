@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "2.3.18",
+  "version": "2.3.19",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -24,6 +24,11 @@
       "import": "./dist/normalizer/index.js",
       "require": "./dist/normalizer/index.js",
       "types": "./dist/normalizer/index.d.ts"
+    },
+    "./sort": {
+      "import": "./dist/sort/index.js",
+      "require": "./dist/sort/index.js",
+      "types": "./dist/sort/index.d.ts"
     },
     "./types/d_pc/player": {
       "import": "./dist/types/d_pc/player.js",
