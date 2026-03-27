@@ -91,10 +91,11 @@
     - [ENUM](#enum-12)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-17)
     - [バリデーション(zod)](#バリデーションzod-5)
+    - [自動入力(client)](#自動入力client-4)
   - [21. 監督・コーチ(Staff)](#21-監督コーチstaff)
     - [フィールド一覧](#フィールド一覧-19)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-18)
-    - [自動入力(client)](#自動入力client-4)
+    - [自動入力(client)](#自動入力client-5)
   - [22. 選手の出場履歴(Player-Appearance)](#22-選手の出場履歴player-appearance)
     - [フィールド一覧](#フィールド一覧-20)
     - [ENUM](#enum-13)
@@ -111,7 +112,7 @@
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-21)
     - [バリデーション(zod)](#バリデーションzod-8)
     - [バリデーション(client)](#バリデーションclient)
-    - [自動入力(client)](#自動入力client-5)
+    - [自動入力(client)](#自動入力client-6)
     - [入力時注意](#入力時注意)
     - [備考](#備考-4)
   - [25. 監督・コーチの試合イベントログ(Staff-Match-Event-Log)](#25-監督コーチの試合イベントログstaff-match-event-log)
@@ -120,7 +121,7 @@
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-22)
     - [バリデーション(zod)](#バリデーションzod-9)
     - [バリデーション(client)](#バリデーションclient-1)
-    - [自動入力(client)](#自動入力client-6)
+    - [自動入力(client)](#自動入力client-7)
     - [入力時注意](#入力時注意-1)
   - [26. 試合でのフォーメーション(Team-Match-Formation)](#26-試合でのフォーメーションteam-match-formation)
     - [フィールド一覧](#フィールド一覧-24)
@@ -129,13 +130,13 @@
     - [フィールド一覧](#フィールド一覧-25)
     - [ENUM](#enum-16)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-24)
-    - [自動入力(client)](#自動入力client-7)
+    - [自動入力(client)](#自動入力client-8)
   - [28. スタッフ登録履歴(Staff-RegistrationHistory)](#28-スタッフ登録履歴staff-registrationhistory)
     - [フィールド一覧](#フィールド一覧-26)
     - [ENUM](#enum-17)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-25)
     - [バリデーション(zod)](#バリデーションzod-10)
-    - [自動入力(client)](#自動入力client-8)
+    - [自動入力(client)](#自動入力client-9)
   - [29. スタッツL(Stats-L)](#29-スタッツlstats-l)
     - [フィールド一覧](#フィールド一覧-27)
     - [組み合わせ (Mongoose)](#組み合わせ-mongoose-26)
@@ -957,6 +958,7 @@
 | ------------------ | -------- | ---------- | ------- | ------- |
 | name               | 文字列   | 名前       | true    |         |
 | position_formation | [文字列] | ポジション | true    |         |
+| key                | 文字列   | キー       | true    |         |
 
 ### ENUM
 
@@ -973,6 +975,13 @@
 
 - `position_formation` の 組み合わせユニーク
 - `position_formation`の長さ 11
+
+### 自動入力(client)
+
+- **client で入力させないフィールド**
+  - `Key`
+- **key の自動生成**
+  - `key`関数でposition_formationフィールドから作成
 
 ---
 

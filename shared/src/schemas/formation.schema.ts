@@ -18,6 +18,10 @@ export const FormationZodSchema = z.object({
     .refine((arr) => new Set(arr).size === 11, {
       message: "position_formation 内の重複は許可されません",
     }),
+  key: z
+    .string()
+    .nonempty()
+    .refine((v) => !!v, { message: "keyは必須です" }),
   old_id: z.string().nonempty().optional(),
   createdAt: dateField,
   updatedAt: dateField,
@@ -27,6 +31,7 @@ export type FormationType = z.infer<typeof FormationZodSchema>;
 
 export const FormationFormSchema = FormationZodSchema.omit({
   _id: true,
+  key: true,
   createdAt: true,
   updatedAt: true,
 });
