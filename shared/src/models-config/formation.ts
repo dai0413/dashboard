@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function formation<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   FormationType,
@@ -32,7 +32,10 @@ export function formation<TDoc = any, TModel = any>(
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {
-      query: [{ field: "name", type: "String" }],
+      query: [
+        { field: "name", type: "String" },
+        { field: "key", type: "String" },
+      ],
       sort: {
         name: -1,
         _id: -1,

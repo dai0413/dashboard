@@ -1,4 +1,4 @@
-import { position, position_formation } from "@dai0413/myorg-shared";
+import { position } from "@dai0413/myorg-shared";
 
 const positions = position();
 const positionIndexMap = Object.fromEntries(
@@ -15,6 +15,10 @@ export const sortPositions = (positions, { desc = true } = {}) => {
         (positionIndexMap[b] ?? DEFAULT_INDEX);
       return desc ? -diff : diff;
     });
+};
+
+const key = (positions) => {
+  return sortPositions(positions).join("-");
 };
 
 import mongoose from "mongoose";
@@ -42,6 +46,7 @@ const updateField = async () => {
         update: {
           $set: {
             position_formation: sorted,
+            key: key(sorted),
           },
         },
       },

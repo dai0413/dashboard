@@ -18,6 +18,14 @@ export const formation: UIFieldDefinition[] = [
     displayOnDetail: true,
   },
   {
+    key: "key",
+    label: "キー",
+    type: "string",
+    filterable: true,
+    sortable: false,
+    displayOnDetail: true,
+  },
+  {
     key: "old_id",
     label: "旧id",
     type: "string",
