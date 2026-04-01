@@ -7,6 +7,7 @@ import { play_status } from "../enum/play_status.js";
 import { PlayerZodSchema } from "./player.schema.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
+import { label } from "./utils/label.js";
 
 export const PlayerAppearanceBaseZodSchema = z.object({
   _id: objectId,
@@ -71,4 +72,15 @@ export const PlayerAppearancePopulatedSchema =
     player: PlayerZodSchema.optional(),
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
+  });
+
+export const PlayerAppearancePopulateLabelSchema =
+  PlayerAppearanceBaseZodSchema.omit({
+    match: true,
+    player: true,
+    team: true,
+  }).safeExtend({
+    player: label.optional(),
+    match: label.optional(),
+    team: label.optional(),
   });

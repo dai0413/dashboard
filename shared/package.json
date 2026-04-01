@@ -85,6 +85,31 @@
       "require": "./dist/types/j_m/values.js",
       "types": "./dist/types/j_m/values.d.ts"
     },
+    "./types/resolver/match": {
+      "import": "./dist/types/resolver/match.js",
+      "require": "./dist/types/resolver/match.js",
+      "types": "./dist/types/resolver/match.d.ts"
+    },
+    "./types/resolver/playerAppearance": {
+      "import": "./dist/types/resolver/playerAppearance.js",
+      "require": "./dist/types/resolver/playerAppearance.js",
+      "types": "./dist/types/resolver/playerAppearance.d.ts"
+    },
+    "./types/resolver/playerMatchEventLog": {
+      "import": "./dist/types/resolver/playerMatchEventLog.js",
+      "require": "./dist/types/resolver/playerMatchEventLog.js",
+      "types": "./dist/types/resolver/playerMatchEventLog.d.ts"
+    },
+    "./types/resolver/refereeAppearance": {
+      "import": "./dist/types/resolver/refereeAppearance.js",
+      "require": "./dist/types/resolver/refereeAppearance.js",
+      "types": "./dist/types/resolver/refereeAppearance.d.ts"
+    },
+    "./types/resolver/staffAppearance": {
+      "import": "./dist/types/resolver/staffAppearance.js",
+      "require": "./dist/types/resolver/staffAppearance.js",
+      "types": "./dist/types/resolver/staffAppearance.d.ts"
+    },
     "./types/sn_m/position": {
       "import": "./dist/types/sn_m/position.js",
       "require": "./dist/types/sn_m/position.js",

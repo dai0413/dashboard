@@ -8,6 +8,7 @@ import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { MatchEventTypeZodSchema } from "./match-event-type.schema.js";
 import { PlayerZodSchema } from "./player.schema.js";
+import { label } from "./utils/label.js";
 
 const SPECIAL_TIME_ENUM = z.enum(getKey(special_time()));
 const PERIOD_LABEL_ENUM = z.enum(getKey(periodLabel()));
@@ -103,4 +104,17 @@ export const PlayerMatchEventLogPopulatedSchema =
     team: TeamZodSchema,
     match_event_type: MatchEventTypeZodSchema,
     player: PlayerZodSchema.optional(),
+  });
+
+export const PlayerMatchEventLogPopulateLabelSchema =
+  PlayerMatchEventLogBaseZodSchema.omit({
+    match: true,
+    team: true,
+    match_event_type: true,
+    player: true,
+  }).safeExtend({
+    match: label.optional(),
+    team: label.optional(),
+    match_event_type: label.optional(),
+    player: label.optional(),
   });

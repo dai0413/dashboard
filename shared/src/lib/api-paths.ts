@@ -219,4 +219,8 @@ export const API_PATHS = {
       POSITION: "/get-new-data/sn-m/position",
     },
   },
+
+  RESOLVE: {
+    MODEL_DATA: "/resolve-model-data",
+  },
 } as const;

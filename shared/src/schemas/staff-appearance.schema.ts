@@ -4,6 +4,7 @@ import { objectId } from "./utils/objectId.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
 import { StaffZodSchema } from "./staff.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
+import { label } from "./utils/label.js";
 
 export const StaffAppearanceBaseZodSchema = z.object({
   _id: objectId,
@@ -59,3 +60,14 @@ export const StaffAppearancePopulatedSchema = StaffAppearanceBaseZodSchema.omit(
   staff: StaffZodSchema.optional(),
   team: TeamZodSchema,
 });
+
+export const StaffAppearancePopulateLabelSchema =
+  StaffAppearanceBaseZodSchema.omit({
+    match: true,
+    staff: true,
+    team: true,
+  }).safeExtend({
+    match: label.optional(),
+    staff: label.optional(),
+    team: label.optional(),
+  });

@@ -3,6 +3,7 @@ import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { RefereeZodSchema } from "./referee.schema.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
+import { label } from "./utils/label.js";
 
 export const RefereeAppearanceBaseZodSchema = z.object({
   _id: objectId,
@@ -50,4 +51,13 @@ export const RefereeAppearancePopulatedSchema =
   }).safeExtend({
     referee: RefereeZodSchema.optional(),
     match: MatchBaseZodSchema,
+  });
+
+export const RefereeAppearancePopulateLabelSchema =
+  RefereeAppearanceBaseZodSchema.omit({
+    match: true,
+    referee: true,
+  }).safeExtend({
+    referee: label.optional(),
+    match: label.optional(),
   });

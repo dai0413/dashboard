@@ -9,6 +9,7 @@ import { SeasonZodSchema } from "./season.schema.js";
 import { MatchFormatZodSchema } from "./match-format.schema.js";
 import { StadiumZodSchema } from "./stadium.schema.js";
 import { getKey } from "../utils/getKey.js";
+import { label } from "./utils/label.js";
 
 export const MatchBaseZodSchema = z.object({
   _id: objectId,
@@ -118,4 +119,22 @@ export const MatchPopulatedSchema = MatchBaseZodSchema.omit({
   away_team: TeamZodSchema,
   match_format: MatchFormatZodSchema.optional(),
   stadium: StadiumZodSchema.optional(),
+});
+
+export const MatchPopulateLabelSchema = MatchBaseZodSchema.omit({
+  competition: true,
+  competition_stage: true,
+  season: true,
+  home_team: true,
+  away_team: true,
+  match_format: true,
+  stadium: true,
+}).safeExtend({
+  competition: label.optional(),
+  competition_stage: label.optional(),
+  season: label.optional(),
+  home_team: label.optional(),
+  away_team: label.optional(),
+  match_format: label.optional(),
+  stadium: label.optional(),
 });
