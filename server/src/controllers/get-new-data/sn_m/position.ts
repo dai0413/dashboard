@@ -11,7 +11,7 @@ const getPositions = async (req: Request, res: Response) => {
     const { url } = req.body;
     if (!url) throw new BadRequestError("urlを送信してください");
 
-    const result = await get(url);
+    // const result = await get(url);
     if (result.ok) {
       const positionDatas: Scraped = result.data;
       res.status(StatusCodes.OK).json({ data: positionDatas });
