@@ -9,7 +9,7 @@ type Player = Partial<z.infer<typeof PlayerFormSchema>>;
 
 type PrePlayerAppearanceScrapedSchema = Omit<
   z.infer<typeof PlayerAppearanceFormSchema>,
-  "team" | "player" | "match" | "position"
+  "team" | "player" | "match"
 > & {
   player: Player;
   key: string;
