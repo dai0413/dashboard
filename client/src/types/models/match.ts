@@ -41,9 +41,9 @@ export type Match = {
 type MatchPost = Omit<
   Match,
   | "_id"
-  //   | "competition"
+  | "competition"
   | "competition_stage"
-  //   | "season"
+  | "season"
   | "home_team"
   | "away_team"
   | "match_format"
