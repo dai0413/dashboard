@@ -2,18 +2,10 @@ import { FormTypeMap, ModelType } from "./models";
 import { AlertStatus } from "./alert";
 import { AxiosInstance } from "axios";
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { Scraped } from "@dai0413/myorg-shared/types/j_m/values";
 import { OptionType } from "../utils/createOption";
 import { QuickFilterItem } from "./table";
-import { DataResoonse } from "./api";
-import { MatchGet } from "./models/match";
-import { PlayerAppearanceGet } from "./models/player-appearance";
-import { PlayerMatchEventLogGet } from "./models/player-match-event-log";
-import { StaffAppearanceGet } from "./models/staff-appearance";
-import { RefereeAppearanceGet } from "./models/referee-appearance";
-import { MatchFormatGet } from "./models/match-format";
-import { TeamMatchFormationForm } from "./models/team-match-formation";
-import { Label } from "./types";
+import { AddDraftData, GetDraftData } from "./form/draftData";
+import { AddPostedDraftData } from "./form/postedDraftData";
 
 export enum StepType {
   FORM = "form",
@@ -125,23 +117,6 @@ type CreateQuickFilterItems<K extends keyof FormTypeMap> = (args: {
   api?: AxiosInstance;
 }) => Promise<QuickFilterItemsByKey | null>;
 
-type AddDraftData<K extends keyof FormTypeMap> = (args: {
-  data: FormTypeMap[K] & Record<string, any>;
-  metaData: Record<string, any>;
-  draftData: DraftData;
-  postedDraftData: PostedDraftData;
-  api: AxiosInstance;
-  formLabel: Record<string, any>;
-}) => Promise<DraftData>;
-
-export type AddPostedDraftData = (args: {
-  draftData: DraftData;
-  postedDraftData: PostedDraftData;
-  metaData: Record<string, any>;
-  res: DataResoonse;
-  formLabel: Record<string, any>;
-}) => PostedDraftData;
-
 type BaseFormStep<K extends keyof FormTypeMap> = {
   modelType: ModelType;
   stepLabel: string;
@@ -157,15 +132,6 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   addDraftData?: AddDraftData<K>;
   addPostedDraftData?: AddPostedDraftData;
 };
-
-type GetDraftData<K extends keyof FormTypeMap, T extends boolean> = (args: {
-  draftData: DraftData;
-  postedDraftData: PostedDraftData;
-  metaData: Record<string, any>;
-  api: AxiosInstance;
-}) => T extends true
-  ? Promise<{ value: FormTypeMap[K][]; label: Record<string, any>[] } | null>
-  : Promise<{ value: FormTypeMap[K]; label: Record<string, any> } | null>;
 
 type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   many: true;
@@ -192,39 +158,3 @@ export type FilterConditionsByKey = Partial<
 export type QuickFilterItemsByKey = Partial<
   Record<ModelType | OptionType, QuickFilterItem[]>
 >;
-
-type TeamMatchFormation = Omit<TeamMatchFormationForm, "formation"> & {
-  formation?: Label;
-};
-
-export type DraftDataValue = Scraped & {
-  teamMatchFormation?: {
-    home: TeamMatchFormation;
-    away: TeamMatchFormation;
-  };
-};
-
-export type DraftData = Record<string, DraftDataValue>;
-export type PostedDraftData = Record<string, PostedDraftDataValues>;
-
-type PostedDraftDataValues = {
-  matchLabel?: string;
-  periods?: MatchFormatGet["period"];
-  match: MatchGet;
-  playerAppearance: {
-    home: PlayerAppearanceGet[];
-    away: PlayerAppearanceGet[];
-  };
-  playerMatchEventLog: {
-    home: PlayerMatchEventLogGet[];
-    away: PlayerMatchEventLogGet[];
-  };
-  staffAppearance: {
-    home: StaffAppearanceGet[];
-    away: StaffAppearanceGet[];
-  };
-  refereeAppearance: {
-    home: RefereeAppearanceGet[];
-    away: RefereeAppearanceGet[];
-  };
-};

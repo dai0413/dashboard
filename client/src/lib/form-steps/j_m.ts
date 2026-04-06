@@ -1,6 +1,6 @@
 import { convert } from "../convert/DBtoGetted";
 import { convert as createLabel } from "../convert/CreateLabel";
-import { AddPostedDraftData, FormStep } from "../../types/form";
+import { FormStep } from "../../types/form";
 import { ModelType } from "../../types/models";
 import { PlayerAppearance } from "../../types/models/player-appearance";
 import { createConfirmationStep } from "./confirmationStep";
@@ -11,6 +11,7 @@ import { staffAppearance } from "./j_m/staffAppearance";
 import { refereeAppearance } from "./j_m/refereeAppearance";
 import { teamMatchFormation } from "./j_m/teamMatchFormation";
 import { Match } from "../../types/models/match";
+import { AddPostedDraftData } from "../../types/form/postedDraftData";
 
 export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.MATCH]: [
