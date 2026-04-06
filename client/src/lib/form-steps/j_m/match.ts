@@ -1,17 +1,70 @@
-import { API_PATHS } from "@dai0413/myorg-shared";
-import { Form as BaseData } from "@dai0413/myorg-shared/types/j_m/values";
+import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import { Form as PositionData } from "@dai0413/myorg-shared/types/sn_m/position";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/match";
+
 import {
   DataSource,
   FilterConditionsByKey,
   FormStep,
   StepType,
 } from "../../../types/form";
-import { FormTypeMap, ModelType } from "../../../types/models";
+import { ModelType } from "../../../types/models";
 import { createItemBase, readItemsBase } from "../../api";
 import { Season } from "../../../types/models/season";
 import { convert } from "../../convert/CreateLabel";
 import { CompetitionStage } from "../../../types/models/competition-stage";
+import { AxiosInstance } from "axios";
+import {
+  resolveToLabel,
+  resolveToValue,
+} from "../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../types/form/draftData";
+
+const KEYS = [
+  "home_team",
+  "away_team",
+  "stadium",
+  "match_format",
+  "competition_stage",
+] as const;
+
+type Input = ResolveInput<{
+  competition: Select.MODEL;
+  home_team: Select.MODEL;
+  away_team: Select.MODEL;
+  match_format: Select.MODEL;
+  stadium: Select.MODEL;
+}>[];
+
+const fetchResolved = async (
+  api: AxiosInstance,
+  input: Input,
+): Promise<ResolveOutput[]> => {
+  const res = await createItemBase({
+    apiInstance: api,
+    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
+    backendRoute: "/resolve-model-data",
+    data: { match: input },
+    returnResponse: true,
+  });
+
+  if (!res?.data || !Array.isArray(res.data.match)) return [];
+
+  return res.data.match;
+};
+
+const resolve = async (api: AxiosInstance, data: DraftDataValue["match"]) => {
+  const input: Input = [data];
+  return fetchResolved(api, input);
+};
+
+const buildValueLabel = (data: ResolveOutput[]) => ({
+  value: resolveToValue(data, KEYS),
+  label: resolveToLabel(data, KEYS),
+});
 
 export const match: FormStep<ModelType.MATCH>[] = [
   {
@@ -158,7 +211,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "J_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
-    addDraftData: async ({ data, metaData, api }) => {
+    addDraftData: async ({ data, metaData, api, formLabel }) => {
       const getDataUrl = metaData?.getDataUrl;
       const season = metaData?.season;
       const getPositionUrl = metaData?.getPositionUrl;
@@ -185,11 +238,14 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       if (!res?.data) return {};
 
-      const baseData: BaseData = {
+      const baseData: DraftDataValue = {
         ...res.data,
         match: {
           ...res.data.match,
-          competition_stage: data?.competition_stage,
+          competition_stage: {
+            id: data?.competition_stage,
+            label: formLabel.competition_stage,
+          },
         },
       };
 
@@ -219,29 +275,24 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       return { [getDataUrl]: baseData };
     },
-    getDraftData: ({ draftData, metaData }) => {
+    getDraftData: async ({ draftData, metaData, api }) => {
       const getDataUrl = metaData.getDataUrl;
-
       const data = draftData[getDataUrl][ModelType.MATCH];
+      if (!data || !api) return null;
 
-      const value: FormTypeMap[ModelType.MATCH] = {
-        ...data,
-        date: data.date?.toString(),
-        home_team: data.home_team?.id,
-        away_team: data.away_team?.id,
-        stadium: data.stadium?.id,
-        match_format: data.match_format?.id,
-        competition_stage: data.competition_stage,
+      const resolvedData = await resolve(
+        api,
+        draftData[getDataUrl][ModelType.MATCH],
+      );
+      const resolvedOutput = buildValueLabel(resolvedData);
+
+      const value = {
+        ...resolvedOutput.value,
+        date: resolvedOutput.value?.toString(),
       };
 
-      const label: Record<string, any> = {
-        ...data,
-        date: data.date,
-        home_team: data.home_team?.label,
-        away_team: data.away_team?.label,
-        stadium: data.stadium?.label,
-        match_format: data.match_format?.label,
-        competition_stage: data.competition_stage,
+      const label = {
+        ...resolvedOutput.label,
       };
 
       return { value, label };

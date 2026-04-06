@@ -1,68 +1,92 @@
-import { Form } from "@dai0413/myorg-shared/types/j_m/player-match-event-log";
 import { FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { PlayerMatchEventLogForm } from "../../../types/models/player-match-event-log";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../types/types";
 import { MatchFormatGet } from "../../../types/models/match-format";
+import { createItemBase } from "../../api";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
+import { Select } from "@dai0413/myorg-shared";
+import {
+  resolveToLabel,
+  resolveToValue,
+} from "../utils/resolver/resolveToValue";
+import { AxiosInstance } from "axios";
+import { DraftDataValue } from "../../../types/form/draftData";
 
-const getPlayerMatchEventLogValues = (
-  draftData: Form[],
-  team?: Label,
-  matchId?: string,
+type PeriodLabelArg = {
+  time?: number;
+} & Record<string, any>;
+
+const KEYS = ["match", "player", "team", "match_event_type"] as const;
+
+const calcPeriodLabel = (
+  d: PeriodLabelArg,
   periods?: MatchFormatGet["period"],
-): PlayerMatchEventLogForm[] => {
-  const data: PlayerMatchEventLogForm[] = draftData.map((d) => {
-    const { key, ...rest } = d;
+): string | undefined => {
+  const period_label = periods?.find((p) => {
+    if (p.start == null || p.end == null || !d.time) return false;
+    return Number(p.start) < d.time && d.time <= Number(p.end);
+  })?.period_label;
 
-    const period_label = periods?.find((p) => {
-      if (p.start == null || p.end == null || !d.time) return false;
-      return Number(p.start) < d.time && d.time <= Number(p.end);
-    })?.period_label;
+  return period_label;
+};
 
+const buildResolveInput = (
+  draftData: DraftDataValue["playerMatchEventLog"]["home"],
+  match: Label,
+  team?: Label,
+  periods?: MatchFormatGet["period"],
+) => {
+  const data = draftData.map((d) => {
     return {
-      ...rest,
-      match: matchId,
-      match_event_type: rest.match_event_type
-        ? rest.match_event_type.id
-        : undefined,
-      player: rest.player ? rest.player.id : undefined,
-      team: team ? team?.id : undefined,
-      period_label,
+      ...d,
+      match,
+      team,
+      period_label: calcPeriodLabel(d, periods),
     };
   });
-
   return data;
 };
 
-const getPlayerMatchEventLogLabels = (
-  draftData: Form[],
-  team?: Label,
-  matchLabel?: string,
-  periods?: MatchFormatGet["period"],
-): Record<string, any>[] => {
-  const data: Record<string, any>[] = draftData.map((d) => {
-    const { key, ...rest } = d;
-
-    const period_label = periods?.find((p) => {
-      if (p.start == null || p.end == null || !d.time) return false;
-      return Number(p.start) < d.time && d.time <= Number(p.end);
-    })?.period_label;
-
-    return {
-      ...rest,
-      match: matchLabel,
-      match_event_type: rest.match_event_type
-        ? rest.match_event_type.label
-        : undefined,
-      player: rest.player ? rest.player.label : undefined,
-      team: team ? team?.label : undefined,
-      period_label,
-    };
+const fetchResolved = async (
+  api: AxiosInstance,
+  input: ResolveInput<{
+    player: Select.MODEL;
+    match_event_type: Select.MODEL;
+  }>[],
+): Promise<ResolveOutput[]> => {
+  const res = await createItemBase({
+    apiInstance: api,
+    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
+    backendRoute: "/resolve-model-data",
+    data: { playerMatchEventLog: input },
+    returnResponse: true,
   });
 
-  return data;
+  if (!res?.data || !Array.isArray(res.data.playerAppearance)) return [];
+
+  return res.data.playerAppearance;
 };
+
+const resolve = async (
+  api: AxiosInstance,
+  data: DraftDataValue["playerMatchEventLog"]["home"],
+  match: Label,
+  team?: Label,
+  periods?: MatchFormatGet["period"],
+) => {
+  const input = buildResolveInput(data, match, team, periods);
+  return fetchResolved(api, input);
+};
+
+const buildValueLabel = (data: ResolveOutput[]) => ({
+  value: resolveToValue(data, KEYS),
+  label: resolveToLabel(data, KEYS),
+});
 
 export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
   [
@@ -72,7 +96,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
       type: StepType.FORM,
       fields: [],
       createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-      getDraftData: ({ draftData, postedDraftData, metaData }) => {
+      getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
         const getDataUrl = metaData.getDataUrl;
 
         if (!getDataUrl) return { value: [], label: [] };
@@ -83,24 +107,38 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           away_team,
         } = postedDraftData[getDataUrl].match;
         const { periods } = postedDraftData[getDataUrl];
-        const { home, away } = draftData[getDataUrl].playerMatchEventLog;
+
+        const match = {
+          id: matchId,
+          label: postedDraftData[getDataUrl].matchLabel || "",
+        };
+
+        const home = await resolve(
+          api,
+          draftData[getDataUrl].playerMatchEventLog.home,
+          match,
+          home_team,
+          periods,
+        );
+
+        const away = await resolve(
+          api,
+          draftData[getDataUrl].playerMatchEventLog.away,
+          match,
+          away_team,
+          periods,
+        );
+
+        const homeResult = buildValueLabel(home);
+        const awayResult = buildValueLabel(away);
 
         const value: PlayerMatchEventLogForm[] = [
-          ...getPlayerMatchEventLogValues(home, home_team, matchId, periods),
-          ...getPlayerMatchEventLogValues(away, away_team, matchId, periods),
+          ...homeResult.value,
+          ...awayResult.value,
         ];
-
         const label: Record<string, any>[] = [
-          ...getPlayerMatchEventLogLabels(
-            home,
-            home_team,
-            postedDraftData[getDataUrl].matchLabel,
-          ),
-          ...getPlayerMatchEventLogLabels(
-            away,
-            away_team,
-            postedDraftData[getDataUrl].matchLabel,
-          ),
+          ...homeResult.label,
+          ...awayResult.label,
         ];
 
         return { value, label };

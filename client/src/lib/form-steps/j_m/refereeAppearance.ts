@@ -1,38 +1,65 @@
-import { Form } from "@dai0413/myorg-shared/types/j_m/referee-appearance";
 import { FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { RefereeAppearanceForm } from "../../../types/models/referee-appearance";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
+import { createItemBase } from "../../api";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
+import { Label, Select } from "@dai0413/myorg-shared";
+import { AxiosInstance } from "axios";
+import {
+  resolveToLabel,
+  resolveToValue,
+} from "../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../types/form/draftData";
 
-const getRefereeAppearanceValues = (
-  draftData: Form[],
-  matchId?: string,
-): RefereeAppearanceForm[] => {
-  const data: RefereeAppearanceForm[] = draftData.map((d) => {
+const KEYS = ["match", "referee"] as const;
+
+const buildResolveInput = (
+  draftData: DraftDataValue["refereeAppearance"],
+  match: Label,
+) => {
+  const data = draftData.map((d) => {
     return {
       ...d,
-      match: matchId,
-      referee: d.referee ? d.referee.id : undefined,
+      match,
     };
   });
-
   return data;
 };
 
-const getRefereeAppearanceLabels = (
-  draftData: Form[],
-  matchLabel?: string,
-): Record<string, any>[] => {
-  const data: Record<string, any>[] = draftData.map((d) => {
-    return {
-      ...d,
-      match: matchLabel,
-      referee: d.referee ? d.referee.label : undefined,
-    };
+const fetchResolved = async (
+  api: AxiosInstance,
+  input: ResolveInput<{ referee: Select.MODEL }>[],
+): Promise<ResolveOutput[]> => {
+  const res = await createItemBase({
+    apiInstance: api,
+    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
+    backendRoute: "/resolve-model-data",
+    data: { refereeAppearance: input },
+    returnResponse: true,
   });
 
-  return data;
+  if (!res?.data || !Array.isArray(res.data.refereeAppearance)) return [];
+
+  return res.data.refereeAppearance;
 };
+
+const resolve = async (
+  api: AxiosInstance,
+  data: DraftDataValue["staffAppearance"]["home"],
+  match: Label,
+) => {
+  const input = buildResolveInput(data, match);
+  return fetchResolved(api, input);
+};
+
+const buildValueLabel = (data: ResolveOutput[]) => ({
+  value: resolveToValue(data, KEYS),
+  label: resolveToLabel(data, KEYS),
+});
 
 export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
@@ -41,22 +68,27 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
     type: StepType.FORM,
     fields: [],
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-    getDraftData: ({ draftData, postedDraftData, metaData }) => {
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
-      if (!getDataUrl) return { value: [], label: [] };
+      if (!getDataUrl || !api) return { value: [], label: [] };
 
       const { _id: matchId } = postedDraftData[getDataUrl].match;
-      const { refereeAppearance } = draftData[getDataUrl];
 
-      const value: RefereeAppearanceForm[] = getRefereeAppearanceValues(
-        refereeAppearance,
-        matchId,
+      const match = {
+        id: matchId,
+        label: postedDraftData[getDataUrl].matchLabel || "",
+      };
+
+      const resolved = await resolve(
+        api,
+        draftData[getDataUrl].refereeAppearance,
+        match,
       );
 
-      const label: Record<string, any>[] = getRefereeAppearanceLabels(
-        refereeAppearance,
-        postedDraftData[getDataUrl].matchLabel,
-      );
+      const result = buildValueLabel(resolved);
+
+      const value: RefereeAppearanceForm[] = result.value;
+      const label: Record<string, any>[] = result.label;
 
       return { value, label };
     },

@@ -1,10 +1,11 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { DraftData, FormStep, StepType } from "../../../types/form";
+import { FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { readItemsBase } from "../../api";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Formation } from "../../../types/models/formation";
 import { key } from "@dai0413/myorg-shared/generateField";
+import { DraftData } from "../../../types/form/draftData";
 
 export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
@@ -74,7 +75,7 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
 
       return newDraftData;
     },
-    getDraftData: ({ draftData, postedDraftData, metaData }) => {
+    getDraftData: async ({ draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
       if (!getDataUrl) return { value: [], label: [] };
       if (!draftData[getDataUrl].teamMatchFormation)

@@ -1,43 +1,70 @@
-import { Form } from "@dai0413/myorg-shared/types/j_m/staff-appearance";
 import { FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { StaffAppearanceForm } from "../../../types/models/staff-appearance";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../types/types";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/staffAppearance";
+import { createItemBase } from "../../api";
+import { Select } from "@dai0413/myorg-shared";
+import {
+  resolveToLabel,
+  resolveToValue,
+} from "../utils/resolver/resolveToValue";
+import { AxiosInstance } from "axios";
+import { DraftDataValue } from "../../../types/form/draftData";
 
-const getStaffAppearanceValues = (
-  draftData: Form[],
+const KEYS = ["match", "staff", "team"] as const;
+
+const buildResolveInput = (
+  draftData: DraftDataValue["staffAppearance"]["home"],
+  match: Label,
   team?: Label,
-  matchId?: string,
-): StaffAppearanceForm[] => {
-  const data: StaffAppearanceForm[] = draftData.map((d) => {
+): ResolveInput<{ staff: Select.MODEL }>[] => {
+  const data = draftData.map((d) => {
     return {
       ...d,
-      match: matchId,
-      staff: d.staff ? d.staff.id : undefined,
-      team: team ? team?.id : undefined,
+      match,
+      team: team,
     };
   });
 
   return data;
 };
 
-const getStaffAppearanceLabels = (
-  draftData: Form[],
-  team?: Label,
-  matchLabel?: string,
-): Record<string, any>[] => {
-  const data: Record<string, any>[] = draftData.map((d) => {
-    return {
-      ...d,
-      match: matchLabel,
-      staff: d.staff ? d.staff.label : undefined,
-      team: team ? team?.label : undefined,
-    };
+const fetchResolved = async (
+  api: AxiosInstance,
+  input: ResolveInput<{ staff: Select.MODEL }>[],
+): Promise<ResolveOutput[]> => {
+  const res = await createItemBase({
+    apiInstance: api,
+    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
+    backendRoute: "/resolve-model-data",
+    data: { staffAppearance: input },
+    returnResponse: true,
   });
 
-  return data;
+  if (!res?.data || !Array.isArray(res.data.staffAppearance)) return [];
+
+  return res.data.staffAppearance;
 };
+
+const resolve = async (
+  api: AxiosInstance,
+  data: DraftDataValue["staffAppearance"]["home"],
+  match: Label,
+  team?: Label,
+) => {
+  const input = buildResolveInput(data, match, team);
+  return fetchResolved(api, input);
+};
+
+const buildValueLabel = (data: ResolveOutput[]) => ({
+  value: resolveToValue(data, KEYS),
+  label: resolveToLabel(data, KEYS),
+});
 
 export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
@@ -46,33 +73,44 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
     type: StepType.FORM,
     fields: [],
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-    getDraftData: ({ draftData, postedDraftData, metaData }) => {
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
-      if (!getDataUrl) return { value: [], label: [] };
+      if (!getDataUrl || !api) return { value: [], label: [] };
 
       const {
         _id: matchId,
         home_team,
         away_team,
       } = postedDraftData[getDataUrl].match;
-      const { home, away } = draftData[getDataUrl].staffAppearance;
+
+      const match = {
+        id: matchId,
+        label: postedDraftData[getDataUrl].matchLabel || "",
+      };
+
+      const home = await resolve(
+        api,
+        draftData[getDataUrl].staffAppearance.home,
+        match,
+        home_team,
+      );
+      const away = await resolve(
+        api,
+        draftData[getDataUrl].staffAppearance.away,
+        match,
+        away_team,
+      );
+
+      const homeResult = buildValueLabel(home);
+      const awayResult = buildValueLabel(away);
 
       const value: StaffAppearanceForm[] = [
-        ...getStaffAppearanceValues(home, home_team, matchId),
-        ...getStaffAppearanceValues(away, away_team, matchId),
+        ...homeResult.value,
+        ...awayResult.value,
       ];
-
       const label: Record<string, any>[] = [
-        ...getStaffAppearanceLabels(
-          home,
-          home_team,
-          postedDraftData[getDataUrl].matchLabel,
-        ),
-        ...getStaffAppearanceLabels(
-          away,
-          away_team,
-          postedDraftData[getDataUrl].matchLabel,
-        ),
+        ...homeResult.label,
+        ...awayResult.label,
       ];
 
       return { value, label };

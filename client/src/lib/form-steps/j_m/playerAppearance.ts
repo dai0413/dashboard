@@ -1,14 +1,27 @@
-import { Form } from "@dai0413/myorg-shared/types/j_m/player-appearance";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/playerAppearance";
+import { AxiosInstance } from "axios";
+import { Select } from "@dai0413/myorg-shared";
 import { FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { PlayerAppearanceForm } from "../../../types/models/player-appearance";
 import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../types/types";
+import { createItemBase } from "../../api";
+import {
+  resolveToLabel,
+  resolveToValue,
+} from "../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../types/form/draftData";
 
-const calcTime = (
-  d: { start_time?: number; end_time?: number },
-  play_time?: number,
-): number | undefined => {
+type CalcWithData = Record<string, any> & {
+  start_time?: number;
+  end_time?: number;
+};
+
+const calcTime = (d: CalcWithData, play_time?: number): number | undefined => {
   let time: number | undefined;
 
   if (typeof d.start_time === "number") {
@@ -21,43 +34,57 @@ const calcTime = (
   return time;
 };
 
-const getPlayerAppearanceValues = (
-  draftData: Form[],
-  play_time?: number,
+const KEYS = ["match", "player", "team"] as const;
+
+const buildResolveInput = (
+  draftData: DraftDataValue["playerAppearance"]["home"],
+  match: Label,
   team?: Label,
-  matchId?: string,
-): PlayerAppearanceForm[] => {
-  const data: PlayerAppearanceForm[] = draftData.map((d) => {
+  play_time?: number,
+) => {
+  const data = draftData.map((d) => {
     return {
       ...d,
-      match: matchId,
-      player: d.player ? d.player.id : undefined,
-      team: team ? team?.id : undefined,
+      match,
+      team,
       time: calcTime(d, play_time),
     };
   });
-
   return data;
 };
 
-const getPlayerAppearanceLabels = (
-  draftData: Form[],
-  play_time?: number,
-  team?: Label,
-  matchLabel?: string,
-): Record<string, any>[] => {
-  const data: Record<string, any>[] = draftData.map((d) => {
-    return {
-      ...d,
-      match: matchLabel,
-      player: d.player ? d.player.label : undefined,
-      team: team ? team?.label : undefined,
-      time: calcTime(d, play_time),
-    };
+const fetchResolved = async (
+  api: AxiosInstance,
+  input: ResolveInput<{ player: Select.MODEL }>[],
+): Promise<ResolveOutput[]> => {
+  const res = await createItemBase({
+    apiInstance: api,
+    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
+    backendRoute: "/resolve-model-data",
+    data: { playerAppearance: input },
+    returnResponse: true,
   });
 
-  return data;
+  if (!res?.data || !Array.isArray(res.data.playerAppearance)) return [];
+
+  return res.data.playerAppearance;
 };
+
+const resolve = async (
+  api: AxiosInstance,
+  data: DraftDataValue["playerAppearance"]["home"],
+  match: Label,
+  team?: Label,
+  play_time?: number,
+) => {
+  const input = buildResolveInput(data, match, team, play_time);
+  return fetchResolved(api, input);
+};
+
+const buildValueLabel = (data: ResolveOutput[]) => ({
+  value: resolveToValue(data, KEYS),
+  label: resolveToLabel(data, KEYS),
+});
 
 export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
@@ -66,9 +93,9 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     type: StepType.FORM,
     fields: [],
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-    getDraftData: ({ draftData, postedDraftData, metaData }) => {
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
-      if (!getDataUrl) return { value: [], label: [] };
+      if (!getDataUrl || !api) return { value: [], label: [] };
 
       const {
         _id: matchId,
@@ -76,26 +103,37 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         away_team,
         play_time,
       } = postedDraftData[getDataUrl].match;
-      const { home, away } = draftData[getDataUrl].playerAppearance;
+
+      const match = {
+        id: matchId,
+        label: postedDraftData[getDataUrl].matchLabel || "",
+      };
+
+      const home = await resolve(
+        api,
+        draftData[getDataUrl].playerAppearance.home,
+        match,
+        home_team,
+        play_time,
+      );
+      const away = await resolve(
+        api,
+        draftData[getDataUrl].playerAppearance.away,
+        match,
+        away_team,
+        play_time,
+      );
+
+      const homeResult = buildValueLabel(home);
+      const awayResult = buildValueLabel(away);
 
       const value: PlayerAppearanceForm[] = [
-        ...getPlayerAppearanceValues(home, play_time, home_team, matchId),
-        ...getPlayerAppearanceValues(away, play_time, away_team, matchId),
+        ...homeResult.value,
+        ...awayResult.value,
       ];
-
       const label: Record<string, any>[] = [
-        ...getPlayerAppearanceLabels(
-          home,
-          play_time,
-          home_team,
-          postedDraftData[getDataUrl].matchLabel,
-        ),
-        ...getPlayerAppearanceLabels(
-          away,
-          play_time,
-          away_team,
-          postedDraftData[getDataUrl].matchLabel,
-        ),
+        ...homeResult.label,
+        ...awayResult.label,
       ];
 
       return { value, label };
