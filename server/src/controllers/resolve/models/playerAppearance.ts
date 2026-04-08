@@ -1,29 +1,22 @@
+import { Select } from "@dai0413/myorg-shared";
 import {
-  Label,
-  PlayerAppearancePopulatedSchema,
-  PlayerAppearancePopulateLabelSchema,
-} from "@dai0413/myorg-shared";
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/playerAppearance";
 import { Types } from "mongoose";
-import { PlayerRegistrationModel } from "src/models/player-registration.js";
-import z from "zod";
+import { PlayerRegistrationModel } from "../../../models/player-registration.js";
 
-type ResolveInput = Omit<
-  Partial<z.infer<typeof PlayerAppearancePopulatedSchema>>,
-  "team" | "match"
-> & {
-  match: Label;
-  team?: Label;
+type ResolveData = ResolveInput<{
+  player: Select.MODEL;
+}> & {
   season?: string[];
 };
-type ResolveOutput = Partial<
-  z.infer<typeof PlayerAppearancePopulateLabelSchema>
->;
 
 export const playerAppearance = async (
-  data: ResolveInput[],
+  data: ResolveData[],
 ): Promise<ResolveOutput[]> => {
   const resolvePlayer = async (
-    data: ResolveInput[],
+    data: ResolveData[],
   ): Promise<Partial<ResolveOutput>[]> => {
     // 同大会で登録中の選手（背番号一致または選手名一致で一件のみ合致）を探す
     const newData: Partial<ResolveOutput>[] = await Promise.all(

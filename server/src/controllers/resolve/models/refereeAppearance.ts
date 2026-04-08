@@ -1,26 +1,17 @@
 import {
-  Label,
-  RefereeAppearancePopulatedSchema,
-  RefereeAppearancePopulateLabelSchema,
-} from "@dai0413/myorg-shared";
-
-import z from "zod";
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
+import { Select } from "@dai0413/myorg-shared";
 import { RefereeModel } from "src/models/referee.js";
 
-type ResolveInput = Omit<
-  Partial<z.infer<typeof RefereeAppearancePopulatedSchema>>,
-  "match"
-> & {
-  match: Label;
-};
-type ResolveOutput = Partial<
-  z.infer<typeof RefereeAppearancePopulateLabelSchema>
->;
+type ResolveData = ResolveInput<{
+  referee: Select.MODEL;
+}>;
 
-export const refereeAppearance = async (data: ResolveInput[]) => {
+export const refereeAppearance = async (data: ResolveData[]) => {
   const newData: Partial<ResolveOutput>[] = await Promise.all(
     data.map(async (d) => {
-      let result = d;
       const findObj = d.referee ?? {};
 
       const findData = await RefereeModel.find(findObj)

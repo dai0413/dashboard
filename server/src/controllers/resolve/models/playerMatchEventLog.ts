@@ -1,62 +1,33 @@
 import {
-  Label,
-  PlayerMatchEventLogPopulatedSchema,
-  PlayerMatchEventLogPopulateLabelSchema,
-} from "@dai0413/myorg-shared";
-import z from "zod";
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
+import { Select } from "@dai0413/myorg-shared";
 import { MatchEventTypeModel } from "src/models/match-event-type.js";
 import { resolve } from "../utils/resolve.js";
 import { ResolveField } from "../types.js";
 
-type CandidatePlayers = {
-  key: string;
-} & Record<string, any>;
+type ResolveData = ResolveInput<{
+  match_event_type: Select.MODEL;
+}>;
 
-type ResolveInput = Omit<
-  Partial<z.infer<typeof PlayerMatchEventLogPopulatedSchema>>,
-  "team" | "match"
-> & {
-  match: Label;
-  team?: Label;
-  candidatePlayers?: CandidatePlayers[];
-  key?: string;
-};
-type ResolveOutput = Partial<
-  z.infer<typeof PlayerMatchEventLogPopulateLabelSchema>
->;
-
-const resolveFields: ResolveField<ResolveInput>[] = [
+const resolveFields: ResolveField<ResolveData>[] = [
   {
     key: "match_event_type",
     model: MatchEventTypeModel,
   },
 ];
 
-const removeFields: string[] = [];
+const removeFields: string[] = ["key", "candidatePlayers"];
 
 export const playerMatchEventLog = async (
-  data: ResolveInput[],
+  data: ResolveData[],
 ): Promise<ResolveOutput[]> => {
-  const resolvePlayer = async (data: ResolveInput[]) => {
-    const resolvedPlayers = data.map((d) => {
-      const player = d.candidatePlayers?.find(
-        (pa) => d.key && typeof d.key === "string" && pa.key === d.key,
-      )?.player;
-      return {
-        ...d,
-        player: player ? player : undefined,
-        player_name: player ? undefined : d.player_name,
-      };
-    });
-
-    return resolvedPlayers;
-  };
-
-  const resolvedPlayer = await resolvePlayer(data);
-  const resolvedMatchEventType = await resolve<
-    ResolveInput,
-    ResolveOutput & { key: string }
-  >(resolvedPlayer, resolveFields, removeFields);
+  const resolvedMatchEventType = await resolve<ResolveData, ResolveOutput>(
+    data,
+    resolveFields,
+    removeFields,
+  );
 
   return resolvedMatchEventType;
 };

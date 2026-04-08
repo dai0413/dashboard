@@ -7,8 +7,16 @@ import { MatchFormatModel } from "src/models/match-format.js";
 import { StadiumModel } from "src/models/stadium.js";
 import { ResolveField } from "../types.js";
 import { resolve } from "../utils/resolve.js";
+import { Select } from "@dai0413/myorg-shared";
 
-const resolveFields: ResolveField<ResolveInput>[] = [
+type ResolveData = ResolveInput<{
+  home_team: Select.MODEL;
+  away_team: Select.MODEL;
+  match_format: Select.MODEL;
+  stadium: Select.MODEL;
+}>;
+
+const resolveFields: ResolveField<ResolveData>[] = [
   {
     key: "home_team",
     model: TeamModel,
@@ -28,10 +36,10 @@ const resolveFields: ResolveField<ResolveInput>[] = [
   },
 ];
 
-const removeFields: string[] = ["competition_stage"];
+const removeFields: string[] = [];
 
-export const match = async (data: ResolveInput[]): Promise<ResolveOutput[]> => {
-  const resolved = await resolve<ResolveInput, ResolveOutput>(
+export const match = async (data: ResolveData[]): Promise<ResolveOutput[]> => {
+  const resolved = await resolve<ResolveData, ResolveOutput>(
     data,
     resolveFields,
     removeFields,
