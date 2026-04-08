@@ -287,12 +287,12 @@ export const match: FormStep<ModelType.MATCH>[] = [
       const resolvedOutput = buildValueLabel(resolvedData);
 
       const value = {
-        ...resolvedOutput.value,
-        date: resolvedOutput.value?.toString(),
+        ...resolvedOutput.value[0],
+        date: resolvedOutput.value[0].date?.toString(),
       };
 
       const label = {
-        ...resolvedOutput.label,
+        ...resolvedOutput.label[0],
       };
 
       return { value, label };
