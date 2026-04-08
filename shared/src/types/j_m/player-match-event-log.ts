@@ -6,7 +6,7 @@ import {
 } from "@dai0413/myorg-shared";
 import { z } from "zod";
 
-type Player = Partial<z.infer<typeof PlayerFormSchema>>;
+type Player = Partial<z.infer<typeof PlayerFormSchema>> & { number?: number };
 type MatchEventType = Partial<z.infer<typeof MatchEventTypeFormSchema>>;
 
 type PrePlayerMatchEventLogScrapedSchema = Omit<
@@ -15,7 +15,6 @@ type PrePlayerMatchEventLogScrapedSchema = Omit<
 > & {
   player: Player;
   match_event_type: MatchEventType;
-  key: string;
 };
 
 export type Scraped = Partial<PrePlayerMatchEventLogScrapedSchema>;
@@ -25,5 +24,4 @@ export type Form = Omit<
 > & {
   player?: Label;
   match_event_type?: Label;
-  key: string;
 };
