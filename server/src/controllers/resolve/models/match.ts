@@ -2,12 +2,13 @@ import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
-import { TeamModel } from "src/models/team.js";
-import { MatchFormatModel } from "src/models/match-format.js";
-import { StadiumModel } from "src/models/stadium.js";
+
 import { ResolveField } from "../types.js";
 import { resolve } from "../utils/resolve.js";
 import { Select } from "@dai0413/myorg-shared";
+import { TeamModel } from "../../../models/team.js";
+import { MatchFormatModel } from "../../../models/match-format.js";
+import { StadiumModel } from "../../../models/stadium.js";
 
 type ResolveData = ResolveInput<{
   home_team: Select.MODEL;

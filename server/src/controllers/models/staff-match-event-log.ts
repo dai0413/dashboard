@@ -1,6 +1,6 @@
 import { staffMatchEventLog } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 import { StaffMatchEventLogModel } from "../../models/staff-match-event-log.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";

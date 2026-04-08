@@ -1,6 +1,6 @@
 import { teamMatchFormation } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 import { TeamMatchFormationModel } from "../../models/team-match-formation.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";

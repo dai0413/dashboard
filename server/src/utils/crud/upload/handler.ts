@@ -1,10 +1,10 @@
 import { ControllerConfig } from "@dai0413/myorg-shared";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
-import { DecodedRequest } from "src/types.js";
 
 import { UploadJob } from "../../../models/upload-job.js";
 import { processUpload } from "./services/processUpload.js";
+import { DecodedRequest } from "../../../types.js";
 
 export const uploadItemHandler = async <
   TInput,

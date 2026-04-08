@@ -3,7 +3,7 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
 import { Select } from "@dai0413/myorg-shared";
-import { RefereeModel } from "src/models/referee.js";
+import { RefereeModel } from "../../../models/referee.js";
 
 type ResolveData = ResolveInput<{
   referee: Select.MODEL;

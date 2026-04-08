@@ -6,7 +6,7 @@ import { staff } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 import { StaffModel } from "../../models/staff.js";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 
 const { MONGO_MODEL } = staff(StaffModel);
 

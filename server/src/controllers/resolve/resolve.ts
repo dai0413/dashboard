@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import BadRequestError from "src/errors/bad-request.js";
 import { StatusCodes } from "http-status-codes";
 import {
   resolveMatch,
@@ -8,6 +7,7 @@ import {
   resolveRefereeAppearance,
   resolveStaffAppearance,
 } from "./models/index.js";
+import BadRequestError from "../../errors/bad-request.js";
 
 const resolverMap = {
   match: resolveMatch,

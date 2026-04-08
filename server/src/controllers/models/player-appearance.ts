@@ -1,6 +1,6 @@
 import { playerAppearance } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 import { PlayerAppearanceModel } from "../../models/player-appearance.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";

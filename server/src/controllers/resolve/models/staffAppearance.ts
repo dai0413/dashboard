@@ -4,7 +4,7 @@ import {
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
 import { Select } from "@dai0413/myorg-shared";
 import { Types } from "mongoose";
-import { StaffRegistrationModel } from "src/models/staff-registration.js";
+import { StaffRegistrationModel } from "../../../models/staff-registration.js";
 
 type ResolveData = ResolveInput<{
   staff: Select.MODEL;

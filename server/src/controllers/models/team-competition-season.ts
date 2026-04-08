@@ -4,7 +4,7 @@ import { Response } from "express";
 import { teamCompetitionSeason } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { TeamCompetitionSeasonModel } from "../../models/team-competition-season.js";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";

@@ -1,6 +1,6 @@
 import { refereeAppearance } from "@dai0413/myorg-shared";
 import { Response } from "express";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { RefereeAppearanceModel } from "../../models/referee-appearance.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";

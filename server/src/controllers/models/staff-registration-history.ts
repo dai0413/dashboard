@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { DecodedRequest } from "src/types.js";
+import { DecodedRequest } from "../../types.js";
 import { staffRegistrationHistory } from "@dai0413/myorg-shared";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { StaffRegistrationHistoryModel } from "../../models/staff-registration-history.js";

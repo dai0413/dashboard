@@ -1,12 +1,12 @@
 import { ControllerConfig } from "@dai0413/myorg-shared";
 import { stringify } from "csv-stringify";
 import csv from "csv-parser";
-import { DecodedRequest } from "src/types.js";
 
 import { uploadConfig, UploadConfigMap } from "../configs/index.js";
 import { cleanObject } from "../services/cleanObject.js";
 import { UploadJob } from "../../../../models/upload-job.js";
 import { formatZodError } from "./formatZodError.js";
+import { DecodedRequest } from "../../../../types.js";
 
 export async function processUpload<
   TInput,
