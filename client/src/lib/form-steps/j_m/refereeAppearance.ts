@@ -7,7 +7,7 @@ import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
-import { Label, Select } from "@dai0413/myorg-shared";
+import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
 import { AxiosInstance } from "axios";
 import {
   resolveToLabel,
@@ -36,8 +36,7 @@ const fetchResolved = async (
 ): Promise<ResolveOutput[]> => {
   const res = await createItemBase({
     apiInstance: api,
-    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    backendRoute: "/resolve-model-data",
+    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { refereeAppearance: input },
     returnResponse: true,
   });

@@ -45,8 +45,7 @@ const fetchResolved = async (
 ): Promise<ResolveOutput[]> => {
   const res = await createItemBase({
     apiInstance: api,
-    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    backendRoute: "/resolve-model-data",
+    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { match: input },
     returnResponse: true,
   });
@@ -56,7 +55,10 @@ const fetchResolved = async (
   return res.data.match;
 };
 
-const resolve = async (api: AxiosInstance, data: DraftDataValue["match"]) => {
+const resolve = async (
+  api: AxiosInstance,
+  data: Omit<DraftDataValue["match"], "competition_stage">,
+) => {
   const input: Input = [data];
   return fetchResolved(api, input);
 };
@@ -280,10 +282,10 @@ export const match: FormStep<ModelType.MATCH>[] = [
       const data = draftData[getDataUrl][ModelType.MATCH];
       if (!data || !api) return null;
 
-      const resolvedData = await resolve(
-        api,
-        draftData[getDataUrl][ModelType.MATCH],
-      );
+      const { competition_stage, ...rest } =
+        draftData[getDataUrl][ModelType.MATCH];
+
+      const resolvedData = await resolve(api, rest);
       const resolvedOutput = buildValueLabel(resolvedData);
 
       const value = {

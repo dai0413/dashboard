@@ -3,7 +3,7 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/playerAppearance";
 import { AxiosInstance } from "axios";
-import { Select } from "@dai0413/myorg-shared";
+import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import { FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { PlayerAppearanceForm } from "../../../types/models/player-appearance";
@@ -62,8 +62,7 @@ const fetchResolved = async (
 ): Promise<ResolveOutput[]> => {
   const res = await createItemBase({
     apiInstance: api,
-    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    backendRoute: "/resolve-model-data",
+    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { playerAppearance: input },
     returnResponse: true,
   });

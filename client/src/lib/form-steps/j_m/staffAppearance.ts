@@ -8,7 +8,7 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
 import { createItemBase } from "../../api";
-import { Select } from "@dai0413/myorg-shared";
+import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   resolveToLabel,
   resolveToValue,
@@ -43,8 +43,7 @@ const fetchResolved = async (
 ): Promise<ResolveOutput[]> => {
   const res = await createItemBase({
     apiInstance: api,
-    // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    backendRoute: "/resolve-model-data",
+    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { staffAppearance: input },
     returnResponse: true,
   });
