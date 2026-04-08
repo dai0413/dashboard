@@ -15,6 +15,7 @@ import {
   resolveToValue,
 } from "../utils/resolver/resolveToValue";
 import { DraftDataValue } from "../../../types/form/draftData";
+import { getSeasons } from "../utils/getDraftData/getSeasons";
 
 type CalcWithData = Record<string, any> & {
   start_time?: number;
@@ -39,6 +40,7 @@ const KEYS = ["match", "player", "team"] as const;
 const buildResolveInput = (
   draftData: DraftDataValue["playerAppearance"]["home"],
   match: Label,
+  season: string[],
   team?: Label,
   play_time?: number,
 ) => {
@@ -48,6 +50,7 @@ const buildResolveInput = (
       match,
       team,
       time: calcTime(d, play_time),
+      season,
     };
   });
   return data;
@@ -57,6 +60,7 @@ const fetchResolved = async (
   api: AxiosInstance,
   input: ResolveInput<{ player: Select.MODEL }>[],
 ): Promise<ResolveOutput[]> => {
+  console.log("input", input);
   const res = await createItemBase({
     apiInstance: api,
     // backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
@@ -74,10 +78,11 @@ const resolve = async (
   api: AxiosInstance,
   data: DraftDataValue["playerAppearance"]["home"],
   match: Label,
+  season: string[],
   team?: Label,
   play_time?: number,
 ) => {
-  const input = buildResolveInput(data, match, team, play_time);
+  const input = buildResolveInput(data, match, season, team, play_time);
   return fetchResolved(api, input);
 };
 
@@ -95,6 +100,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
+      const season = metaData.season;
       if (!getDataUrl || !api) return { value: [], label: [] };
 
       const {
@@ -102,6 +108,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         home_team,
         away_team,
         play_time,
+        date,
       } = postedDraftData[getDataUrl].match;
 
       const match = {
@@ -109,10 +116,14 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         label: postedDraftData[getDataUrl].matchLabel || "",
       };
 
+      const homeSeasons = await getSeasons(api, home_team.id, date);
+      const awaySeasons = await getSeasons(api, away_team.id, date);
+
       const home = await resolve(
         api,
         draftData[getDataUrl].playerAppearance.home,
         match,
+        [...new Set([season, ...homeSeasons])],
         home_team,
         play_time,
       );
@@ -120,6 +131,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         api,
         draftData[getDataUrl].playerAppearance.away,
         match,
+        [...new Set([season, ...awaySeasons])],
         away_team,
         play_time,
       );

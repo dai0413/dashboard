@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function teamCompetitionSeason<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   TeamCompetitionSeasonType,
@@ -54,6 +54,16 @@ export function teamCompetitionSeason<TDoc = any, TModel = any>(
         {
           field: "competition.level",
           type: "String",
+          populateAfter: true,
+        },
+        {
+          field: "season.start_date",
+          type: "Date",
+          populateAfter: true,
+        },
+        {
+          field: "season.end_date",
+          type: "Date",
           populateAfter: true,
         },
       ],

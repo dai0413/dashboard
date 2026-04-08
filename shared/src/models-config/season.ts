@@ -11,7 +11,7 @@ import { ParsedQs } from "qs";
 
 export function season<TDoc = any, TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
   TDoc,
   SeasonType,
@@ -35,6 +35,8 @@ export function season<TDoc = any, TModel = any>(
       query: [
         { field: "competition", type: "ObjectId" },
         { field: "current", type: "Boolean" },
+        { field: "start_date", type: "Date" },
+        { field: "end_date", type: "Date" },
       ],
       sort: { start_date: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
