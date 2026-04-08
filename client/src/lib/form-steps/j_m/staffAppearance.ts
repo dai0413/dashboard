@@ -15,12 +15,14 @@ import {
 } from "../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
 import { DraftDataValue } from "../../../types/form/draftData";
+import { getSeasons } from "../utils/getDraftData/getSeasons";
 
 const KEYS = ["match", "staff", "team"] as const;
 
 const buildResolveInput = (
   draftData: DraftDataValue["staffAppearance"]["home"],
   match: Label,
+  season: string[],
   team?: Label,
 ): ResolveInput<{ staff: Select.MODEL }>[] => {
   const data = draftData.map((d) => {
@@ -28,6 +30,7 @@ const buildResolveInput = (
       ...d,
       match,
       team: team,
+      season,
     };
   });
 
@@ -55,9 +58,10 @@ const resolve = async (
   api: AxiosInstance,
   data: DraftDataValue["staffAppearance"]["home"],
   match: Label,
+  season: string[],
   team?: Label,
 ) => {
-  const input = buildResolveInput(data, match, team);
+  const input = buildResolveInput(data, match, season, team);
   return fetchResolved(api, input);
 };
 
@@ -75,12 +79,14 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
+      const season = metaData.season;
       if (!getDataUrl || !api) return { value: [], label: [] };
 
       const {
         _id: matchId,
         home_team,
         away_team,
+        date,
       } = postedDraftData[getDataUrl].match;
 
       const match = {
@@ -88,16 +94,21 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
         label: postedDraftData[getDataUrl].matchLabel || "",
       };
 
+      const homeSeasons = await getSeasons(api, home_team.id, date);
+      const awaySeasons = await getSeasons(api, away_team.id, date);
+
       const home = await resolve(
         api,
         draftData[getDataUrl].staffAppearance.home,
         match,
+        [...new Set([season, ...homeSeasons])],
         home_team,
       );
       const away = await resolve(
         api,
         draftData[getDataUrl].staffAppearance.away,
         match,
+        [...new Set([season, ...awaySeasons])],
         away_team,
       );
 
