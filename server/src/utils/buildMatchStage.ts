@@ -16,7 +16,7 @@ const operatorMap: Record<Operator, string> = {
 const getTypedValue = (
   rawValue: string,
   type: string,
-  timeZone: "JST" | null = "JST"
+  timeZone: "JST" | null = "JST",
 ) => {
   const trimmed = rawValue.trim();
   switch (type) {
@@ -30,8 +30,12 @@ const getTypedValue = (
     case "Boolean":
       return trimmed === "true";
     case "Date":
-      const dateStr =
-        timeZone === "JST" ? trimmed + "T00:00:00+09:00" : trimmed;
+      let dateStr = trimmed;
+
+      if (timeZone === "JST" && /^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        dateStr = trimmed + "T00:00:00+09:00";
+      }
+
       const d = new Date(dateStr);
       if (isNaN(d.getTime()))
         throw new BadRequestError(`${trimmed} は日付として無効です`);
@@ -62,7 +66,7 @@ const parseValueWithOperator = (rawValue: string) => {
 export const buildMatchStage = (
   query: ParsedQs,
   queryConfig?: { field: string; type: string }[],
-  buildCustomMatch?: (query: ParsedQs) => Record<string, any>
+  buildCustomMatch?: (query: ParsedQs) => Record<string, any>,
 ) => {
   if (!queryConfig) return {};
 
@@ -94,7 +98,7 @@ export const buildMatchStage = (
       orConditions.push(
         ...rawValues.map((v) => ({
           [field]: getTypedValue(v, type),
-        }))
+        })),
       );
       continue;
     }
