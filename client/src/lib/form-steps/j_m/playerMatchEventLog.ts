@@ -16,6 +16,7 @@ import {
 } from "../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
 import { DraftDataValue } from "../../../types/form/draftData";
+import { PlayerAppearanceGet } from "../../../types/models/player-appearance";
 
 type PeriodLabelArg = {
   time?: number;
@@ -37,25 +38,39 @@ const calcPeriodLabel = (
 
 const buildResolveInput = (
   draftData: DraftDataValue["playerMatchEventLog"]["home"],
+  candidatePlayers: PlayerAppearanceGet[],
   match: Label,
   team?: Label,
   periods?: MatchFormatGet["period"],
-) => {
+): ResolveInput<{
+  match_event_type: Select.MODEL;
+}>[] => {
   const data = draftData.map((d) => {
+    const targetPlayer = candidatePlayers?.find(
+      (pa) =>
+        pa.player?.label === d.player?.name || pa.number === d.player?.number,
+    )?.player;
+
+    const player: Label | undefined = targetPlayer?.id
+      ? targetPlayer
+      : undefined;
+
     return {
       ...d,
       match,
       team,
+      player,
+      player_name: player ? undefined : d.player_name,
       period_label: calcPeriodLabel(d, periods),
     };
   });
+
   return data;
 };
 
 const fetchResolved = async (
   api: AxiosInstance,
   input: ResolveInput<{
-    player: Select.MODEL;
     match_event_type: Select.MODEL;
   }>[],
 ): Promise<ResolveOutput[]> => {
@@ -67,19 +82,20 @@ const fetchResolved = async (
     returnResponse: true,
   });
 
-  if (!res?.data || !Array.isArray(res.data.playerAppearance)) return [];
+  if (!res?.data || !Array.isArray(res.data.playerMatchEventLog)) return [];
 
-  return res.data.playerAppearance;
+  return res.data.playerMatchEventLog;
 };
 
 const resolve = async (
   api: AxiosInstance,
   data: DraftDataValue["playerMatchEventLog"]["home"],
+  candidatePlayers: PlayerAppearanceGet[],
   match: Label,
   team?: Label,
   periods?: MatchFormatGet["period"],
 ) => {
-  const input = buildResolveInput(data, match, team, periods);
+  const input = buildResolveInput(data, candidatePlayers, match, team, periods);
   return fetchResolved(api, input);
 };
 
@@ -113,9 +129,13 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
           label: postedDraftData[getDataUrl].matchLabel || "",
         };
 
+        const { home: homePlayers, away: awayPlayers } =
+          postedDraftData[getDataUrl].playerAppearance;
+
         const home = await resolve(
           api,
           draftData[getDataUrl].playerMatchEventLog.home,
+          homePlayers,
           match,
           home_team,
           periods,
@@ -124,6 +144,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
         const away = await resolve(
           api,
           draftData[getDataUrl].playerMatchEventLog.away,
+          awayPlayers,
           match,
           away_team,
           periods,
