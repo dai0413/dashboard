@@ -1,11 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
 import { getValues as get } from "@dai0413/scraping-logic/J";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
-
-import mongoose from "mongoose";
-import { result } from "./sample.js";
 
 const getValues = async (req: Request, res: Response) => {
   try {
@@ -19,7 +17,7 @@ const getValues = async (req: Request, res: Response) => {
       throw new BadRequestError("seasonを送信してください");
     }
 
-    // const result = await get(url);
+    const result = await get(url);
 
     if (result.ok) {
       res.status(StatusCodes.OK).json({ data: { ...result.data } });
