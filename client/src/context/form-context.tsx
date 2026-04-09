@@ -9,11 +9,9 @@ import {
 import { useAlert } from "./alert-context";
 import {
   DataSource,
-  DraftData,
   FilterConditionsByKey,
   FormFieldDefinition,
   FormStep,
-  PostedDraftData,
   QuickFilterItemsByKey,
   StepType,
 } from "../types/form";
@@ -36,6 +34,8 @@ import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
 import { From } from "../types/types";
 import { DataResoonse } from "../types/api";
+import { DraftData } from "../types/form/draftData";
+import { PostedDraftData } from "../types/form/postedDraftData";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -453,6 +453,7 @@ export const FormProvider = <T extends ModelType>({
           postedDraftData,
           metaData,
           res,
+          formLabel,
         });
         setPostedDraftData(newPostedDraftData);
       }
@@ -525,35 +526,42 @@ export const FormProvider = <T extends ModelType>({
         api,
         postedDraftData,
         draftData,
+        formLabel,
       });
       setDraftData({ ...draftData, ...newDraftData });
     }
 
     if (current.getDraftData) {
       if (current.many) {
-        const { value, label } = current.getDraftData({
+        const gettedDraftData = await current.getDraftData({
           draftData: {
             ...draftData,
             ...newDraftData,
           },
           postedDraftData,
           metaData,
+          api,
         });
-
-        setFormDatas(value);
-        setFormLabels(label);
+        if (gettedDraftData) {
+          const { value, label } = gettedDraftData;
+          setFormDatas(value);
+          setFormLabels(label);
+        }
       } else {
-        const { value, label } = current.getDraftData({
+        const gettedDraftData = await current.getDraftData({
           draftData: {
             ...draftData,
             ...newDraftData,
           },
           postedDraftData,
           metaData,
+          api,
         });
-
-        setFormData(value);
-        setFormLabel(label);
+        if (gettedDraftData) {
+          const { value, label } = gettedDraftData;
+          setFormData(value);
+          setFormLabel(label);
+        }
       }
     }
 
