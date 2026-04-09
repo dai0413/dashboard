@@ -22,7 +22,7 @@ const createField = (): FormFieldDefinition<ModelType.STATS_L>[] => {
   return fields;
 };
 
-export const statsL: FormStep<ModelType.STATS_L>[] = [
+export const single: FormStep<ModelType.STATS_L>[] = [
   {
     stepLabel: "試合を選択",
     type: StepType.FORM,

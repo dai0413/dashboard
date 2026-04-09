@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const team: FormStep<ModelType.TEAM>[] = [
+export const single: FormStep<ModelType.TEAM>[] = [
   {
     stepLabel: "チーム名を入力",
     type: StepType.FORM,

@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const staff: FormStep<ModelType.STAFF>[] = [
+export const bulk: FormStep<ModelType.STAFF>[] = [
   {
     stepLabel: "名前・生年月日・出身地を入力",
     type: StepType.FORM,

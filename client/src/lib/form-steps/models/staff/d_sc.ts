@@ -4,7 +4,7 @@ import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-export const staff: FormStep<ModelType.STAFF>[] = [
+export const d_sc: FormStep<ModelType.STAFF>[] = [
   {
     stepLabel: "D_SCデータを取得します",
     type: StepType.FORM,

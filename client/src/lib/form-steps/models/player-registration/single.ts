@@ -5,7 +5,7 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { convert } from "../../../convert/DBtoGetted";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
-export const playerRegistration: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
+export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "大会シーズン選択",
     type: StepType.FORM,

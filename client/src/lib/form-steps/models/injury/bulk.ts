@@ -7,7 +7,7 @@ import {
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
-export const injury: FormStep<ModelType.INJURY>[] = [
+export const bulk: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,

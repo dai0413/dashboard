@@ -4,7 +4,7 @@ import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-export const player: FormStep<ModelType.PLAYER>[] = [
+export const d_pc: FormStep<ModelType.PLAYER>[] = [
   {
     stepLabel: "D_PCデータを取得します",
     type: StepType.FORM,

@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
+export const single: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,

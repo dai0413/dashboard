@@ -3,7 +3,7 @@ import { ModelType } from "../../../../types/models";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 import { playerInMatch } from "../../utils/createQuickFilterItems/player/playerInMatch";
 
-export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
+export const single: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,

@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const matchEventType: FormStep<ModelType.MATCH_EVENT_TYPE>[] = [
+export const single: FormStep<ModelType.MATCH_EVENT_TYPE>[] = [
   {
     stepLabel: "大会ステージを選択",
     type: StepType.FORM,

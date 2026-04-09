@@ -15,7 +15,7 @@ import { AxiosInstance } from "axios";
 import { QuickFilterItem } from "../../../../types/table";
 import { MatchEventType } from "../../../../types/models/match-event-type";
 
-export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
+export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,

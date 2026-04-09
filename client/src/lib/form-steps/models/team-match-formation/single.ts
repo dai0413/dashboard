@@ -7,7 +7,7 @@ import { readItemsBase } from "../../../api";
 import { Formation } from "../../../../types/models/formation";
 import { PlayerAppearance } from "../../../../types/models/player-appearance";
 
-export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
+export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     stepLabel: "試合を選択",
     type: StepType.FORM,

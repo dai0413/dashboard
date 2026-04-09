@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const competition: FormStep<ModelType.COMPETITION>[] = [
+export const single: FormStep<ModelType.COMPETITION>[] = [
   {
     stepLabel: "名前",
     type: StepType.FORM,

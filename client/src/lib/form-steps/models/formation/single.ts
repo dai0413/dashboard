@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const formation: FormStep<ModelType.FORMATION>[] = [
+export const single: FormStep<ModelType.FORMATION>[] = [
   {
     stepLabel: "フォーメーション名を入力",
     type: StepType.FORM,

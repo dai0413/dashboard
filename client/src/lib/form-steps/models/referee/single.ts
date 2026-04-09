@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const referee: FormStep<ModelType.REFEREE>[] = [
+export const single: FormStep<ModelType.REFEREE>[] = [
   {
     stepLabel: "名前",
     type: StepType.FORM,

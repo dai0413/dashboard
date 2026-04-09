@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const season: FormStep<ModelType.SEASON>[] = [
+export const single: FormStep<ModelType.SEASON>[] = [
   {
     stepLabel: "大会を選択",
     type: StepType.FORM,

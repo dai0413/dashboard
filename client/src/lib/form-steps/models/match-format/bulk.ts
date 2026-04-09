@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 
-export const player: FormStep<ModelType.PLAYER>[] = [
+export const bulk: FormStep<ModelType.PLAYER>[] = [
   {
     stepLabel: "名前を入力",
     type: StepType.FORM,

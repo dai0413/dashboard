@@ -9,7 +9,7 @@ import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
 
-export const nationalCallUp: FormStep<ModelType.NATIONAL_CALLUP>[] = [
+export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "代表試合シリーズを選択",
     type: StepType.FORM,

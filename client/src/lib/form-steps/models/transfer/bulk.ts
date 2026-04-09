@@ -3,7 +3,7 @@ import { ModelType } from "../../../../types/models";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
 
-export const transfer: FormStep<ModelType.TRANSFER>[] = [
+export const bulk: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,

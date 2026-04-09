@@ -6,95 +6,94 @@ import { readItemsBase } from "../../../api";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
 
-export const staffRegistrationHistory: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] =
-  [
-    {
-      stepLabel: "D_SCデータを取得します",
-      type: StepType.FORM,
-      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
-      fetchValue: async (_data, api?: AxiosInstance) => {
-        if (!api) return [];
-        const res = await readItemsBase({
-          apiInstance: api,
-          backendRoute: API_PATHS.GET_NEW_DATA.D_SC.STAFF_REGISTRATION_HISTORY,
-          returnResponse: true,
-        });
+export const d_sc: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
+  {
+    stepLabel: "D_SCデータを取得します",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    fetchValue: async (_data, api?: AxiosInstance) => {
+      if (!api) return [];
+      const res = await readItemsBase({
+        apiInstance: api,
+        backendRoute: API_PATHS.GET_NEW_DATA.D_SC.STAFF_REGISTRATION_HISTORY,
+        returnResponse: true,
+      });
 
-        if (!res) return [];
+      if (!res) return [];
 
-        return res.data;
+      return res.data;
+    },
+    many: true,
+    onChange: onChangeFillChangesByRegistrationType,
+  },
+  {
+    stepLabel: "取得したデータを編集してください",
+    type: StepType.FORM,
+    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    fields: [
+      {
+        key: "season",
+        label: "大会シーズン",
+        fieldType: "table",
+        valueType: "option",
+        required: true,
       },
-      many: true,
-      onChange: onChangeFillChangesByRegistrationType,
-    },
-    {
-      stepLabel: "取得したデータを編集してください",
-      type: StepType.FORM,
-      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
-      fields: [
-        {
-          key: "season",
-          label: "大会シーズン",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-        {
-          key: "date",
-          label: "日付",
-          fieldType: "input",
-          valueType: "date",
-          dataSource: DataSource.BULK_COMMON,
-          width: "200px",
-        },
-        {
-          key: "registration_type",
-          label: "登録・抹消",
-          fieldType: "select",
-          valueType: "option",
-          dataSource: DataSource.BULK_COMMON,
-        },
-        {
-          key: "team",
-          label: "チーム",
-          fieldType: "table",
-          valueType: "option",
-          dataSource: DataSource.BULK_COMMON,
-        },
-        {
-          key: "staff",
-          label: "スタッフ",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-        {
-          key: "changes.role",
-          label: "役割",
-          fieldType: "input",
-          valueType: "text",
-        },
-        {
-          key: "changes.name",
-          label: "名前",
-          fieldType: "input",
-          valueType: "text",
-        },
-        {
-          key: "changes.en_name",
-          label: "英名",
-          fieldType: "input",
-          valueType: "text",
-        },
-        {
-          key: "changes.note",
-          label: "メモ",
-          fieldType: "input",
-          valueType: "text",
-        },
-      ],
-      onChange: onChangeFillChangesByRegistrationType,
-      validate: validateByRegistrationType,
-      many: true,
-    },
-  ];
+      {
+        key: "date",
+        label: "日付",
+        fieldType: "input",
+        valueType: "date",
+        dataSource: DataSource.BULK_COMMON,
+        width: "200px",
+      },
+      {
+        key: "registration_type",
+        label: "登録・抹消",
+        fieldType: "select",
+        valueType: "option",
+        dataSource: DataSource.BULK_COMMON,
+      },
+      {
+        key: "team",
+        label: "チーム",
+        fieldType: "table",
+        valueType: "option",
+        dataSource: DataSource.BULK_COMMON,
+      },
+      {
+        key: "staff",
+        label: "スタッフ",
+        fieldType: "table",
+        valueType: "option",
+        required: true,
+      },
+      {
+        key: "changes.role",
+        label: "役割",
+        fieldType: "input",
+        valueType: "text",
+      },
+      {
+        key: "changes.name",
+        label: "名前",
+        fieldType: "input",
+        valueType: "text",
+      },
+      {
+        key: "changes.en_name",
+        label: "英名",
+        fieldType: "input",
+        valueType: "text",
+      },
+      {
+        key: "changes.note",
+        label: "メモ",
+        fieldType: "input",
+        valueType: "text",
+      },
+    ],
+    onChange: onChangeFillChangesByRegistrationType,
+    validate: validateByRegistrationType,
+    many: true,
+  },
+];

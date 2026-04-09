@@ -2,7 +2,7 @@ import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
-export const injury: FormStep<ModelType.INJURY>[] = [
+export const single: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "選手を選択",
     type: StepType.FORM,

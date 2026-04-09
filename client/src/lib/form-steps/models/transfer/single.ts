@@ -4,7 +4,7 @@ import { setFromDate } from "./onChange/setFromDate";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
 
-export const transfer: FormStep<ModelType.TRANSFER>[] = [
+export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "移籍形態・選手を選択",
     type: StepType.FORM,

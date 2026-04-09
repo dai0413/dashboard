@@ -2,7 +2,7 @@ import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 
-export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
+export const single: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,
