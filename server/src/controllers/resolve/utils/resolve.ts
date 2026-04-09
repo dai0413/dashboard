@@ -31,6 +31,8 @@ export const resolve = async <Scraped, Form>(
         if (field.delete) {
           delete result[field.delete];
         }
+      } else {
+        delete result[field.key];
       }
     }
 
