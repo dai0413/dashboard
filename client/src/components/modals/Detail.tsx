@@ -67,7 +67,13 @@ const DetailModal = () => {
 
   const editOnClick = () => {
     open(modelType);
-    selected ? startForm(false, modelType || null, selected) : undefined;
+    selected
+      ? startForm({
+          newData: false,
+          model: modelType,
+          editItem: selected,
+        })
+      : undefined;
   };
 
   const deleteOnClick = () => {

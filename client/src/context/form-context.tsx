@@ -32,7 +32,7 @@ import { api } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
-import { From } from "../types/types";
+import { FormMode, From, InputMode } from "../types/types";
 import { DataResoonse } from "../types/api";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
@@ -69,26 +69,30 @@ const checkRequiredFields = <T extends ModelType>(
   return { success: true };
 };
 
-type FormMode = "create" | "update";
-enum InputMode {
-  SINGLE = "single",
-  MANY = "many",
-}
+type StartFormArgs<T extends ModelType> = {
+  newData: boolean;
+  model: T;
+  editItem?: GettedModelDataMap[T];
+  initialFormData?: FormTypeMap[T];
+  many?: boolean;
+  from?: From;
+  allRelated?: boolean;
+};
 
 type FormContextValue<T extends ModelType> = {
   modelType: T | null;
   inputMode: InputMode;
 
   formOperator: {
-    startForm: (
-      newData: boolean,
-      model: T | null,
-      editItem?: GettedModelDataMap[T],
-      initialFormData?: Partial<FormTypeMap[T]>,
-      many?: boolean,
-      from?: From,
-      allRelated?: boolean,
-    ) => void;
+    startForm: ({
+      newData,
+      model,
+      editItem,
+      initialFormData,
+      many,
+      from,
+      allRelated,
+    }: StartFormArgs<T>) => void;
   };
 
   isEditing: boolean;
@@ -163,7 +167,7 @@ export const FormProvider = <T extends ModelType>({
 
   const [isEditing, setIsEditing] = useState<boolean>(true);
 
-  const [formMode, setFormMode] = useState<FormMode>("create");
+  const [formMode, setFormMode] = useState<FormMode>(FormMode.CREATE);
   const [inputMode, setInputMode] = useState<InputMode>(InputMode.SINGLE);
 
   const [formSteps, setFormSteps] = useState<FormStep<T>[]>([]);
@@ -298,15 +302,15 @@ export const FormProvider = <T extends ModelType>({
     return resolved;
   }
 
-  const startForm = async (
-    newData: boolean,
-    model: T | null,
-    editItem?: GettedModelDataMap[T],
-    initialFormData?: FormTypeMap[T],
-    many?: boolean,
-    from?: From,
-    allRelated?: boolean,
-  ) => {
+  const startForm = async ({
+    newData,
+    model,
+    editItem,
+    initialFormData,
+    many,
+    from,
+    allRelated,
+  }: StartFormArgs<T>) => {
     if (!model) return;
 
     const newSteps = getSteps(model, many, from, allRelated);
@@ -322,7 +326,7 @@ export const FormProvider = <T extends ModelType>({
     many ? setInputMode(InputMode.MANY) : setInputMode(InputMode.SINGLE);
 
     if (newData) {
-      setFormMode("create");
+      setFormMode(FormMode.CREATE);
 
       if (initialFormData) {
         setInitialFormData(initialFormData);
@@ -340,7 +344,8 @@ export const FormProvider = <T extends ModelType>({
         resetFormDatas();
       }
     } else {
-      setFormMode("update");
+      setFormMode(FormMode.UPDATE);
+
       if (editItem) {
         const newFormData = {
           ...getDefault(model),
@@ -394,13 +399,15 @@ export const FormProvider = <T extends ModelType>({
     setFilterConditionsObj(null);
     setQuickFilterIteemsObj(null);
 
-    startForm(
-      true,
-      modelType,
-      undefined,
-      initialFormData ? initialFormData : undefined,
-      inputMode === "many",
-    );
+    if (modelType) {
+      startForm({
+        newData: true,
+        model: modelType,
+        editItem: undefined,
+        initialFormData: initialFormData ? initialFormData : undefined,
+        many: inputMode === "many",
+      });
+    }
   };
 
   const sendData = async (modelType: ModelType): Promise<boolean> => {
@@ -841,13 +848,24 @@ export const FormProvider = <T extends ModelType>({
       hasSingle && {
         label: "Single",
         onClick: () => {
-          startForm(true, model || null, undefined, formInitialData);
+          startForm({
+            newData: true,
+            model: model || null,
+            editItem: undefined,
+            initialFormData: formInitialData,
+          });
         },
       },
       hasBulk && {
         label: "Many",
         onClick: () => {
-          startForm(true, model || null, undefined, formInitialData, true);
+          startForm({
+            newData: true,
+            model: model || null,
+            editItem: undefined,
+            initialFormData: formInitialData,
+            many: true,
+          });
         },
       },
     ].filter(Boolean) as { label: string; onClick: () => void }[];

@@ -270,15 +270,12 @@ const AdminDashboard = () => {
             <div
               key={m.model}
               onClick={() => {
-                startForm(
-                  true,
-                  m.modelType,
-                  undefined,
-                  undefined,
-                  false,
-                  From.J_M,
-                  true,
-                );
+                startForm({
+                  newData: true,
+                  model: m.modelType,
+                  from: From.J_M,
+                  allRelated: true,
+                });
                 open(m.modelType);
               }}
             >
@@ -301,14 +298,12 @@ const AdminDashboard = () => {
             <div
               key={m.model}
               onClick={() => {
-                startForm(
-                  true,
-                  m.modelType,
-                  undefined,
-                  undefined,
-                  true,
-                  From.D_PC,
-                );
+                startForm({
+                  newData: true,
+                  model: m.modelType,
+                  many: true,
+                  from: From.D_PC,
+                });
                 open(m.modelType);
               }}
             >
@@ -331,14 +326,12 @@ const AdminDashboard = () => {
             <div
               key={m.model}
               onClick={() => {
-                startForm(
-                  true,
-                  m.modelType,
-                  undefined,
-                  undefined,
-                  true,
-                  From.D_SC,
-                );
+                startForm({
+                  newData: true,
+                  model: m.modelType,
+                  many: true,
+                  from: From.D_SC,
+                });
                 open(m.modelType);
               }}
             >

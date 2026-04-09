@@ -59,4 +59,16 @@ export enum From {
   D_ML = "d_ml",
   FL = "fl",
   J_M = "j_m",
+
+  NORMAL = "normal",
+}
+
+export enum InputMode {
+  SINGLE = "single",
+  MANY = "many",
+}
+
+export enum FormMode {
+  CREATE = "create",
+  UPDATE = "update",
 }
