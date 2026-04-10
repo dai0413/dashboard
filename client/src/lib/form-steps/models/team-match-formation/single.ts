@@ -2,16 +2,20 @@ import { key } from "@dai0413/myorg-shared/generateField";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 import { readItemsBase } from "../../../api";
 import { Formation } from "../../../../types/models/formation";
 import { PlayerAppearance } from "../../../../types/models/player-appearance";
 
+type BaseModel = ModelType.TEAM_MATCH_FORMATION;
+const baseModel = ModelType.TEAM_MATCH_FORMATION;
+
 export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     stepLabel: "試合を選択",
     type: StepType.FORM,
-    modelType: ModelType.TEAM_MATCH_FORMATION,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -26,7 +30,7 @@ export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     stepLabel: "チームを選択",
     type: StepType.FORM,
-    modelType: ModelType.TEAM_MATCH_FORMATION,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -103,7 +107,7 @@ export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     stepLabel: "フォーメーションを選択",
     type: StepType.FORM,
-    modelType: ModelType.TEAM_MATCH_FORMATION,
+    modelType: baseModel,
     fields: [
       {
         key: "formation",
@@ -114,4 +118,5 @@ export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

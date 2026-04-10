@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.STAFF;
+const baseModel = ModelType.STAFF;
 
 export const bulk: FormStep<ModelType.STAFF>[] = [
   {
     stepLabel: "名前・生年月日・出身地を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -52,4 +56,5 @@ export const bulk: FormStep<ModelType.STAFF>[] = [
     ],
     many: true,
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.COUNTRY;
+const baseModel = ModelType.COUNTRY;
 
 export const single: FormStep<ModelType.COUNTRY>[] = [
   {
     stepLabel: "国名を入力",
     type: StepType.FORM,
-    modelType: ModelType.COUNTRY,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -25,7 +29,7 @@ export const single: FormStep<ModelType.COUNTRY>[] = [
   {
     stepLabel: "コードを入力",
     type: StepType.FORM,
-    modelType: ModelType.COUNTRY,
+    modelType: baseModel,
     fields: [
       {
         key: "iso3",
@@ -44,7 +48,7 @@ export const single: FormStep<ModelType.COUNTRY>[] = [
   {
     stepLabel: "地域",
     type: StepType.FORM,
-    modelType: ModelType.COUNTRY,
+    modelType: baseModel,
     fields: [
       {
         key: "area",
@@ -75,7 +79,7 @@ export const single: FormStep<ModelType.COUNTRY>[] = [
   {
     stepLabel: "協会加入年度",
     type: StepType.FORM,
-    modelType: ModelType.COUNTRY,
+    modelType: baseModel,
     fields: [
       {
         key: "established_year",
@@ -103,4 +107,5 @@ export const single: FormStep<ModelType.COUNTRY>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

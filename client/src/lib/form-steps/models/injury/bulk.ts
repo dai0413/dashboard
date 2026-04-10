@@ -5,13 +5,17 @@ import {
   StepType,
 } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
+
+type BaseModel = ModelType.INJURY;
+const baseModel = ModelType.INJURY;
 
 export const bulk: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "doa",
@@ -25,7 +29,7 @@ export const bulk: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "選手を選択",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "doa",
@@ -98,4 +102,5 @@ export const bulk: FormStep<ModelType.INJURY>[] = [
       return obj;
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

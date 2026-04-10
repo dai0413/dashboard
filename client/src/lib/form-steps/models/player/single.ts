@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.PLAYER;
+const baseModel = ModelType.PLAYER;
 
 export const single: FormStep<ModelType.PLAYER>[] = [
   {
     stepLabel: "名前",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -25,7 +29,7 @@ export const single: FormStep<ModelType.PLAYER>[] = [
   {
     stepLabel: "生年月日・出身地",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER,
+    modelType: baseModel,
     fields: [
       {
         key: "dob",
@@ -41,4 +45,5 @@ export const single: FormStep<ModelType.PLAYER>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

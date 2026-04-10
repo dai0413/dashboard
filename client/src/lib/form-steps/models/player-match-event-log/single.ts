@@ -5,12 +5,16 @@ import { readItemBase } from "../../../api";
 import { MatchFormatGet } from "../../../../types/models/match-format";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 import { playerInMatch } from "../../utils/createQuickFilterItems/player/playerInMatch";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
+const baseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
 
 export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -25,7 +29,7 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "イベントタイプ選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "match_event_type",
@@ -40,7 +44,7 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
     stepLabel:
       "チーム選択(オウンゴールについては失点した選手,　チームは得点したチームにする)",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -56,7 +60,7 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
     stepLabel:
       "選手選択(オウンゴールについては失点した選手,　チームは得点したチームにする)",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -90,7 +94,7 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "時間・PK順番を入力",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "time",
@@ -185,4 +189,5 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
       };
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

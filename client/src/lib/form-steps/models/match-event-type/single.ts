@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.MATCH_EVENT_TYPE;
+const baseModel = ModelType.MATCH_EVENT_TYPE;
 
 export const single: FormStep<ModelType.MATCH_EVENT_TYPE>[] = [
   {
     stepLabel: "大会ステージを選択",
     type: StepType.FORM,
-    modelType: ModelType.MATCH_EVENT_TYPE,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -37,4 +41,5 @@ export const single: FormStep<ModelType.MATCH_EVENT_TYPE>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

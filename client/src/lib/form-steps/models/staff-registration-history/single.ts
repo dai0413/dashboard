@@ -1,13 +1,17 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
+
+type BaseModel = ModelType.STAFF_REGISTRATION_HISTORY;
+const baseModel = ModelType.STAFF_REGISTRATION_HISTORY;
 
 export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "登録or抹消を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "date",
@@ -27,7 +31,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "大会シーズン選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -41,7 +45,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -55,7 +59,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "スタッフ選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "staff",
@@ -70,7 +74,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "役割・名前・英名を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "changes.role",
@@ -102,4 +106,5 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       return data.registration_type === "deregister";
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

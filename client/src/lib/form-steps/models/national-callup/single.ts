@@ -1,15 +1,19 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
 import { leftReasonCheck } from "./validate/leftReasonCheck";
 import { teamCheck } from "./validate/teamCheck";
 
+type BaseModel = ModelType.NATIONAL_CALLUP;
+const baseModel = ModelType.NATIONAL_CALLUP;
+
 export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "代表試合シリーズを選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "series",
@@ -23,7 +27,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "選手を選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -46,7 +50,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "選手のチームを選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -66,7 +70,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "日付",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "number",
@@ -85,7 +89,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "詳細",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "is_captain",
@@ -122,7 +126,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "日付",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "joined_at",
@@ -141,7 +145,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "招集状況",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "status",
@@ -162,4 +166,5 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       return obj;
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

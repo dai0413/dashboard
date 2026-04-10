@@ -1,13 +1,17 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
 import { playerInMatch } from "../../utils/createQuickFilterItems/player/playerInMatch";
+
+type BaseModel = ModelType.PLAYER_APPEARANCE;
+const baseModel = ModelType.PLAYER_APPEARANCE;
 
 export const single: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -22,7 +26,7 @@ export const single: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -37,7 +41,7 @@ export const single: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
     stepLabel: "選手選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -67,7 +71,7 @@ export const single: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
     stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "number",
@@ -96,4 +100,5 @@ export const single: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

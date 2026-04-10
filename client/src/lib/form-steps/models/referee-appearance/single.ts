@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.REFEREE_APPEARANCE;
+const baseModel = ModelType.REFEREE_APPEARANCE;
 
 export const single: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,
-    modelType: ModelType.REFEREE_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -19,7 +23,7 @@ export const single: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
     stepLabel: "審判選択",
     type: StepType.FORM,
-    modelType: ModelType.REFEREE_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "referee",
@@ -49,7 +53,7 @@ export const single: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
     stepLabel: "役割を入力",
     type: StepType.FORM,
-    modelType: ModelType.REFEREE_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "role",
@@ -59,4 +63,5 @@ export const single: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

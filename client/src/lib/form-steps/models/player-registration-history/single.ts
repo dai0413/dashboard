@@ -1,14 +1,18 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { playerInSeason } from "../../utils/createQuickFilterItems/player/playerInSeason";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
+
+type BaseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
+const baseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
 
 export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "登録or抹消を入力",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "date",
@@ -28,7 +32,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "大会シーズン選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -42,7 +46,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -57,7 +61,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "選手選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -72,7 +76,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "changes.number",
@@ -140,4 +144,5 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       return data.registration_type === "deregister";
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

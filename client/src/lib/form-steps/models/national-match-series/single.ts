@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.NATIONAL_MATCH_SERIES;
+const baseModel = ModelType.NATIONAL_MATCH_SERIES;
 
 export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
   {
     stepLabel: "名称入力",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_MATCH_SERIES,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -19,7 +23,7 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
   {
     stepLabel: "国を選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_MATCH_SERIES,
+    modelType: baseModel,
     fields: [
       {
         key: "country",
@@ -32,7 +36,7 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
   {
     stepLabel: "年代を選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_MATCH_SERIES,
+    modelType: baseModel,
     fields: [
       {
         key: "age_group",
@@ -45,7 +49,7 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
   // {
   //   stepLabel: "試合を選択",
   //   type: StepType.FORM,
-  //   modelType: ModelType.NATIONAL_MATCH_SERIES,
+  //   modelType: baseModel,
   //   fields: [
   //     {
   //       key: "matchs",
@@ -57,7 +61,7 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
   {
     stepLabel: "日付",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_MATCH_SERIES,
+    modelType: baseModel,
     fields: [
       {
         key: "joined_at",
@@ -76,7 +80,7 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
   {
     stepLabel: "url",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_MATCH_SERIES,
+    modelType: baseModel,
     fields: [
       {
         key: "urls",
@@ -87,4 +91,5 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -1,13 +1,17 @@
 import { FormStep, DataSource, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
+
+type BaseModel = ModelType.STAFF_REGISTRATION_HISTORY;
+const baseModel = ModelType.STAFF_REGISTRATION_HISTORY;
 
 export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -21,7 +25,7 @@ export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -35,7 +39,7 @@ export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "date",
@@ -56,7 +60,7 @@ export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "役割・名前・英名を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -122,4 +126,5 @@ export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
     validate: validateByRegistrationType,
     many: true,
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

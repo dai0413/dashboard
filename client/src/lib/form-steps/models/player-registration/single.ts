@@ -1,15 +1,19 @@
 import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { readItemBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { convert } from "../../../convert/DBtoGetted";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
+type BaseModel = ModelType.PLAYER_REGISTRATION;
+const baseModel = ModelType.PLAYER_REGISTRATION;
+
 export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "大会シーズン選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -23,7 +27,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "選手選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -75,7 +79,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -89,7 +93,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "登録or抹消・日付・背番号・POS.・名前・英名・身長・体重を入力",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "registration_type",
@@ -157,7 +161,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
   {
     stepLabel: "2種登録・特別指定・HG・メモを入力",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "isTypeTwo",
@@ -185,4 +189,5 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

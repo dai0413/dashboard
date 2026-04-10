@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.STADIUM;
+const baseModel = ModelType.STADIUM;
 
 export const single: FormStep<ModelType.STADIUM>[] = [
   {
     stepLabel: "国を選択",
     type: StepType.FORM,
-    modelType: ModelType.STADIUM,
+    modelType: baseModel,
     fields: [
       {
         key: "country",
@@ -19,7 +23,7 @@ export const single: FormStep<ModelType.STADIUM>[] = [
   {
     stepLabel: "名称",
     type: StepType.FORM,
-    modelType: ModelType.STADIUM,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -45,7 +49,7 @@ export const single: FormStep<ModelType.STADIUM>[] = [
   {
     stepLabel: "別名",
     type: StepType.FORM,
-    modelType: ModelType.STADIUM,
+    modelType: baseModel,
     fields: [
       {
         key: "alt_names",
@@ -70,7 +74,7 @@ export const single: FormStep<ModelType.STADIUM>[] = [
   {
     stepLabel: "urlなど",
     type: StepType.FORM,
-    modelType: ModelType.STADIUM,
+    modelType: baseModel,
     fields: [
       {
         key: "transferurl",
@@ -86,4 +90,5 @@ export const single: FormStep<ModelType.STADIUM>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

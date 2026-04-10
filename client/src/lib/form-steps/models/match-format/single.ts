@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.MATCH_FORMAT;
+const baseModel = ModelType.MATCH_FORMAT;
 
 export const single: FormStep<ModelType.MATCH_FORMAT>[] = [
   {
     stepLabel: "フォーマット名",
     type: StepType.FORM,
-    modelType: ModelType.MATCH_FORMAT,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -19,7 +23,7 @@ export const single: FormStep<ModelType.MATCH_FORMAT>[] = [
   {
     stepLabel: "ピリオドを入力",
     type: StepType.FORM,
-    modelType: ModelType.MATCH_FORMAT,
+    modelType: baseModel,
     many: true,
     fields: [
       {
@@ -49,4 +53,5 @@ export const single: FormStep<ModelType.MATCH_FORMAT>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 
-export const single: FormStep<ModelType.COMPETITION>[] = [
+type BaseModel = ModelType.COMPETITION_STAGE;
+const baseModel = ModelType.COMPETITION_STAGE;
+
+export const single: FormStep<BaseModel>[] = [
   {
     stepLabel: "名前",
     type: StepType.FORM,
-    modelType: ModelType.COMPETITION,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -31,7 +35,7 @@ export const single: FormStep<ModelType.COMPETITION>[] = [
   {
     stepLabel: "国を選択",
     type: StepType.FORM,
-    modelType: ModelType.COMPETITION,
+    modelType: baseModel,
     fields: [
       {
         key: "country",
@@ -44,7 +48,7 @@ export const single: FormStep<ModelType.COMPETITION>[] = [
   {
     stepLabel: "大会規模・大会タイプ・大会レベル・年代・公式戦",
     type: StepType.FORM,
-    modelType: ModelType.COMPETITION,
+    modelType: baseModel,
     fields: [
       {
         key: "competition_type",
@@ -82,7 +86,7 @@ export const single: FormStep<ModelType.COMPETITION>[] = [
   {
     stepLabel: "URL",
     type: StepType.FORM,
-    modelType: ModelType.COMPETITION,
+    modelType: baseModel,
     fields: [
       {
         key: "transferurl",
@@ -98,4 +102,5 @@ export const single: FormStep<ModelType.COMPETITION>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

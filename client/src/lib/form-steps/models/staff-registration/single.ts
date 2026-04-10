@@ -1,15 +1,19 @@
 import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { readItemBase } from "../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { convert } from "../../../convert/DBtoGetted";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
 
+type BaseModel = ModelType.STAFF_REGISTRATION;
+const baseModel = ModelType.STAFF_REGISTRATION;
+
 export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   {
     stepLabel: "大会シーズン選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -23,7 +27,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   {
     stepLabel: "スタッフ選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "staff",
@@ -75,7 +79,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -89,7 +93,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
   {
     stepLabel: "登録or抹消・日付・役割・名前・英名を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_REGISTRATION,
+    modelType: baseModel,
     fields: [
       {
         key: "registration_type",
@@ -129,4 +133,5 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

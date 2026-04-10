@@ -1,12 +1,16 @@
 import { FormStep, FormUpdatePair, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { currentTransfer } from "../../utils/onChange/currentTransfer";
+
+type BaseModel = ModelType.INJURY;
+const baseModel = ModelType.INJURY;
 
 export const single: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "選手を選択",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -41,7 +45,7 @@ export const single: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "チームを選択",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -54,7 +58,7 @@ export const single: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "日付を入力",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "doa",
@@ -75,7 +79,7 @@ export const single: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "詳細",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "injured_part",
@@ -96,7 +100,7 @@ export const single: FormStep<ModelType.INJURY>[] = [
   {
     stepLabel: "公式発表のURLを入力",
     type: StepType.FORM,
-    modelType: ModelType.INJURY,
+    modelType: baseModel,
     fields: [
       {
         key: "URL",
@@ -107,4 +111,5 @@ export const single: FormStep<ModelType.INJURY>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

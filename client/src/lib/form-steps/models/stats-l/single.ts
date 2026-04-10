@@ -5,7 +5,11 @@ import {
   StepType,
 } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+
+type BaseModel = ModelType.STATS_L;
+const baseModel = ModelType.STATS_L;
 
 const createField = (): FormFieldDefinition<ModelType.STATS_L>[] => {
   const fields: FormFieldDefinition<ModelType.STATS_L>[] = numberFields.map(
@@ -26,7 +30,7 @@ export const single: FormStep<ModelType.STATS_L>[] = [
   {
     stepLabel: "試合を選択",
     type: StepType.FORM,
-    modelType: ModelType.STATS_L,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -41,7 +45,7 @@ export const single: FormStep<ModelType.STATS_L>[] = [
   {
     stepLabel: "チームを選択",
     type: StepType.FORM,
-    modelType: ModelType.STATS_L,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -55,7 +59,8 @@ export const single: FormStep<ModelType.STATS_L>[] = [
   {
     stepLabel: "スタッツを入力",
     type: StepType.FORM,
-    modelType: ModelType.STATS_L,
+    modelType: baseModel,
     fields: createField(),
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

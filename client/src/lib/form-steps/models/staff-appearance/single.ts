@@ -1,12 +1,16 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+
+type BaseModel = ModelType.STAFF_APPEARANCE;
+const baseModel = ModelType.STAFF_APPEARANCE;
 
 export const single: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -21,7 +25,7 @@ export const single: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -35,7 +39,7 @@ export const single: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     stepLabel: "スタッフ選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "staff",
@@ -65,7 +69,7 @@ export const single: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     stepLabel: "役割を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_APPEARANCE,
+    modelType: baseModel,
     fields: [
       {
         key: "role",
@@ -75,4 +79,5 @@ export const single: FormStep<ModelType.STAFF_APPEARANCE>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

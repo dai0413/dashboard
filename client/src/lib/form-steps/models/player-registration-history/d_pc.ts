@@ -2,15 +2,19 @@ import { AxiosInstance } from "axios";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { FormStep, DataSource, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { readItemsBase } from "../../../api";
 import { onChangeFillChangesByRegistrationType } from "./onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../utils/validate/validateByRegistrationType";
+
+type BaseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
+const baseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
 
 export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "D_PCデータを取得します",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fetchValue: async (_data, api?: AxiosInstance) => {
       if (!api) return [];
       const res = await readItemsBase({
@@ -29,7 +33,7 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
   {
     stepLabel: "取得したデータを編集してください",
     type: StepType.FORM,
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    modelType: baseModel,
     fields: [
       {
         key: "season",
@@ -132,4 +136,5 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
     validate: validateByRegistrationType,
     many: true,
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

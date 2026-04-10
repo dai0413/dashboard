@@ -5,15 +5,19 @@ import {
   StepType,
 } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setDate } from "./onChange/setDate";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
+
+type BaseModel = ModelType.NATIONAL_CALLUP;
+const baseModel = ModelType.NATIONAL_CALLUP;
 
 export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "代表試合シリーズを選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "series",
@@ -50,7 +54,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
   {
     stepLabel: "選手を選択",
     type: StepType.FORM,
-    modelType: ModelType.NATIONAL_CALLUP,
+    modelType: baseModel,
     fields: [
       {
         key: "position_group",
@@ -164,4 +168,5 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       return mainobj;
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

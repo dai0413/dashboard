@@ -14,12 +14,16 @@ import { convert as createLabel } from "../../../convert/CreateLabel";
 import { AxiosInstance } from "axios";
 import { QuickFilterItem } from "../../../../types/table";
 import { MatchEventType } from "../../../../types/models/match-event-type";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.STAFF_MATCH_EVENT_LOG;
+const baseModel = ModelType.STAFF_MATCH_EVENT_LOG;
 
 export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "試合選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "match",
@@ -36,7 +40,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "イベントタイプ選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "match_event_type",
@@ -50,7 +54,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "team",
@@ -64,7 +68,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "スタッフ選択",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "staff",
@@ -98,7 +102,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
   {
     stepLabel: "時間を入力",
     type: StepType.FORM,
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
+    modelType: baseModel,
     fields: [
       {
         key: "time",
@@ -164,6 +168,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
       return obj;
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];
 
 const readMatchEventType = async (

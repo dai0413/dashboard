@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.SEASON;
+const baseModel = ModelType.SEASON;
 
 export const single: FormStep<ModelType.SEASON>[] = [
   {
     stepLabel: "大会を選択",
     type: StepType.FORM,
-    modelType: ModelType.SEASON,
+    modelType: baseModel,
     fields: [
       {
         key: "competition",
@@ -19,7 +23,7 @@ export const single: FormStep<ModelType.SEASON>[] = [
   {
     stepLabel: "シーズン名・日付",
     type: StepType.FORM,
-    modelType: ModelType.SEASON,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -53,4 +57,5 @@ export const single: FormStep<ModelType.SEASON>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

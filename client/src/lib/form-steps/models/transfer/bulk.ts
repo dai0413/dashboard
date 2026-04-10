@@ -1,13 +1,17 @@
 import { FormStep, DataSource, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
+
+type BaseModel = ModelType.TRANSFER;
+const baseModel = ModelType.TRANSFER;
 
 export const bulk: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "共通要素を入力",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "doa",
@@ -43,7 +47,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "選手を選択",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "player",
@@ -130,4 +134,5 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
       return obj;
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

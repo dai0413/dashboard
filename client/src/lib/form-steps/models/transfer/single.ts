@@ -1,14 +1,18 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
 import { setFromDate } from "./onChange/setFromDate";
 import { setTeam } from "./onChange/setTeam";
 import { teamCheck } from "./validate/teamCheck";
+
+type BaseModel = ModelType.TRANSFER;
+const baseModel = ModelType.TRANSFER;
 
 export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "移籍形態・選手を選択",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "form",
@@ -35,7 +39,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "移籍元を選択",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "from_team",
@@ -57,7 +61,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "移籍先を選択",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "to_team",
@@ -86,7 +90,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "日付を入力",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "doa",
@@ -112,7 +116,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "背番号・ポジションを入力",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "number",
@@ -132,7 +136,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
   {
     stepLabel: "公式発表のURLを入力",
     type: StepType.FORM,
-    modelType: ModelType.TRANSFER,
+    modelType: baseModel,
     fields: [
       {
         key: "URL",
@@ -143,4 +147,5 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
       },
     ],
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

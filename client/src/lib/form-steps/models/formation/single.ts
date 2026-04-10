@@ -1,11 +1,15 @@
 import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createConfirmationStep } from "../../confirmationStep";
+
+type BaseModel = ModelType.FORMATION;
+const baseModel = ModelType.FORMATION;
 
 export const single: FormStep<ModelType.FORMATION>[] = [
   {
     stepLabel: "フォーメーション名を入力",
     type: StepType.FORM,
-    modelType: ModelType.FORMATION,
+    modelType: baseModel,
     fields: [
       {
         key: "name",
@@ -19,7 +23,7 @@ export const single: FormStep<ModelType.FORMATION>[] = [
   {
     stepLabel: "ポジションを選択",
     type: StepType.FORM,
-    modelType: ModelType.FORMATION,
+    modelType: baseModel,
     fields: [
       {
         key: "position_formation",
@@ -66,4 +70,5 @@ export const single: FormStep<ModelType.FORMATION>[] = [
       return { success: true };
     },
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];
