@@ -3,8 +3,9 @@ import { FormStepsConfig } from "../../types";
 import { single } from "./single";
 import { bulk } from "./bulk";
 import { d_sc } from "./d_sc";
+import { ModelType } from "../../../../types/models";
 
-export const staff: FormStepsConfig = {
+export const staff: FormStepsConfig<ModelType.STAFF> = {
   [InputMode.SINGLE]: {
     [From.NORMAL]: {
       label: "単一データ",

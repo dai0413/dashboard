@@ -3,8 +3,9 @@ import { single } from "./single";
 import { bulk } from "./bulk";
 import { d_pc } from "./d_pc";
 import { FormStepsConfig } from "../../types";
+import { ModelType } from "../../../../types/models";
 
-export const player: FormStepsConfig = {
+export const player: FormStepsConfig<ModelType.PLAYER> = {
   [InputMode.SINGLE]: {
     [From.NORMAL]: {
       label: "単一データ",

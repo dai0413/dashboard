@@ -2,8 +2,8 @@ import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createConfirmationStep } from "../../confirmationStep";
 
-type BaseModel = ModelType.COMPETITION_STAGE;
-const baseModel = ModelType.COMPETITION_STAGE;
+type BaseModel = ModelType.COMPETITION;
+const baseModel = ModelType.COMPETITION;
 
 export const single: FormStep<BaseModel>[] = [
   {

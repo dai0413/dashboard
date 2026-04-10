@@ -2,10 +2,10 @@ import { FormStep, StepType } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createConfirmationStep } from "../../confirmationStep";
 
-type BaseModel = ModelType.PLAYER;
-const baseModel = ModelType.PLAYER;
+type BaseModel = ModelType.MATCH_FORMAT;
+const baseModel = ModelType.MATCH_FORMAT;
 
-export const bulk: FormStep<ModelType.PLAYER>[] = [
+export const bulk: FormStep<ModelType.MATCH_FORMAT>[] = [
   {
     stepLabel: "名前を入力",
     type: StepType.FORM,
