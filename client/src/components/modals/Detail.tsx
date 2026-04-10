@@ -12,7 +12,7 @@ import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { FieldList } from "./index";
 import { FieldListData } from "../../types/types";
-import { hasSteps } from "../../lib/form-steps";
+import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
 
 import { useModal } from "../../context/modal-context";

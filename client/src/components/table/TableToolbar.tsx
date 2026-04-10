@@ -23,7 +23,7 @@ import { useAuth } from "../../context/auth-context";
 import { DropDownMenu } from "../ui";
 import { isDev } from "../../utils/env";
 import QuickFilterBar from "./QuickFilterBar";
-import { hasSteps } from "../../lib/form-steps";
+import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
 import { useListView } from "../../context/listView-context";
 import { useModal } from "../../context/modal-context";
