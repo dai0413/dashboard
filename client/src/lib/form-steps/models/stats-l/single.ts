@@ -1,9 +1,6 @@
 import { numberFields } from "@dai0413/myorg-shared";
-import {
-  FormFieldDefinition,
-  FormStep,
-  StepType,
-} from "../../../../types/form";
+import { FormStep, StepType } from "../../../../types/form";
+import { FormFieldDefinition } from "../../../../types/form/field";
 import { ModelType } from "../../../../types/models";
 import { createConfirmationStep } from "../../confirmationStep";
 import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";

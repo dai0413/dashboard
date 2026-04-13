@@ -1,4 +1,4 @@
-import { FormFieldDefinition } from "../../../types/form";
+import { FormFieldDefinition } from "../../../types/form/field";
 import { FormTypeMap } from "../../../types/models";
 import { ListView } from "../../table";
 import { RenderField } from "./Field";

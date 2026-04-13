@@ -10,11 +10,11 @@ import { useAlert } from "./alert-context";
 import {
   DataSource,
   FilterConditionsByKey,
-  FormFieldDefinition,
   FormStep,
   QuickFilterItemsByKey,
   StepType,
 } from "../types/form";
+import { FormFieldDefinition } from "../types/form/field";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";

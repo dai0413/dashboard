@@ -25,7 +25,7 @@ import {
   OptionTable,
 } from "../../../types/option";
 
-import { FormFieldDefinition } from "../../../types/form";
+import { FormFieldDefinition } from "../../../types/form/field";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
