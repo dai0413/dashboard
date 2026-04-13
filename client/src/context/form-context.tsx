@@ -19,7 +19,7 @@ import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
-import { getSteps } from "../lib/form-steps";
+import { getSteps } from "../lib/form-steps/core/getSteps";
 import { isEmptyObject, objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
 import {
@@ -32,7 +32,7 @@ import { api } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
-import { FormMode, From, InputMode } from "../types/types";
+import { FormMode, From, InputMode, StartFormArgs } from "../types/types";
 import { DataResoonse } from "../types/api";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
@@ -69,30 +69,12 @@ const checkRequiredFields = <T extends ModelType>(
   return { success: true };
 };
 
-type StartFormArgs<T extends ModelType> = {
-  newData: boolean;
-  model: T;
-  editItem?: GettedModelDataMap[T];
-  initialFormData?: FormTypeMap[T];
-  many?: boolean;
-  from?: From;
-  allRelated?: boolean;
-};
-
 type FormContextValue<T extends ModelType> = {
   modelType: T | null;
   inputMode: InputMode;
 
   formOperator: {
-    startForm: ({
-      newData,
-      model,
-      editItem,
-      initialFormData,
-      many,
-      from,
-      allRelated,
-    }: StartFormArgs<T>) => void;
+    startForm: ({}: StartFormArgs<T>) => void;
   };
 
   isEditing: boolean;
@@ -136,10 +118,6 @@ type FormContextValue<T extends ModelType> = {
 
   displayableField: DetailFieldDefinition[];
   getDiffKeys: (() => string[]) | undefined;
-  createFormMenuItems: (
-    modelType: T,
-    formInitialData: Partial<FormTypeMap[T]>,
-  ) => any[];
   autoFill: () => Promise<void>;
   filterConditionsObj: FilterConditionsByKey | null;
   removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
@@ -302,35 +280,44 @@ export const FormProvider = <T extends ModelType>({
     return resolved;
   }
 
-  const startForm = async ({
-    newData,
-    model,
-    editItem,
-    initialFormData,
-    many,
-    from,
-    allRelated,
-  }: StartFormArgs<T>) => {
-    if (!model) return;
+  const startForm = async (args: StartFormArgs<T>) => {
+    if (!args.modelType) {
+      console.error("error in startForm : modelType");
+      return;
+    }
 
-    const newSteps = getSteps(model, many, from, allRelated);
+    const stepsObj = getSteps({
+      modelType: args.modelType,
+      inputMode: args.inputMode,
+      from: args.formMode === FormMode.CREATE ? args.from : undefined,
+    });
+
+    if (!stepsObj) console.error("error in startForm : getSteps");
+
+    if (!stepsObj?.steps) return;
+
+    const newSteps = stepsObj?.steps;
 
     setFormSteps(newSteps);
 
-    if (!newData) {
+    if (args.formMode === FormMode.UPDATE) {
       setCurrentStep(newSteps.length - 1);
     } else {
       setCurrentStep(0);
     }
 
-    many ? setInputMode(InputMode.MANY) : setInputMode(InputMode.SINGLE);
+    if (args.inputMode === InputMode.MANY) {
+      setInputMode(InputMode.MANY);
+    } else {
+      setInputMode(InputMode.SINGLE);
+    }
 
-    if (newData) {
+    if (args.formMode === FormMode.CREATE) {
       setFormMode(FormMode.CREATE);
 
       if (initialFormData) {
         setInitialFormData(initialFormData);
-        const data = { ...getDefault(model), ...initialFormData };
+        const data = { ...getDefault(args.modelType), ...initialFormData };
 
         setFormData(data);
         setFormDatas([data]);
@@ -346,10 +333,10 @@ export const FormProvider = <T extends ModelType>({
     } else {
       setFormMode(FormMode.UPDATE);
 
-      if (editItem) {
+      if (args.editItem) {
         const newFormData = {
-          ...getDefault(model),
-          ...convertGettedToForm(model, editItem),
+          ...getDefault(args.modelType),
+          ...convertGettedToForm(args.modelType, args.editItem),
         };
         setFormData(newFormData);
 
@@ -358,10 +345,10 @@ export const FormProvider = <T extends ModelType>({
         setFormLabel(resolvedLabels);
       }
 
-      if (model === ModelType.MATCH_FORMAT) {
+      if (modelType === ModelType.MATCH_FORMAT) {
         const matchFormatEditItem =
-          editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
-        const dat = editItem && {
+          args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
+        const dat = args.editItem && {
           ...getDefault(ModelType.MATCH_FORMAT),
           ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
         };
@@ -382,7 +369,7 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
-    setModelType(model);
+    setModelType(modelType);
     setIsEditing(true);
     setFilterConditionsObj(null);
     setQuickFilterIteemsObj(null);
@@ -401,11 +388,11 @@ export const FormProvider = <T extends ModelType>({
 
     if (modelType) {
       startForm({
-        newData: true,
-        model: modelType,
-        editItem: undefined,
+        formMode: FormMode.CREATE,
+        from: From.NORMAL,
+        inputMode,
+        modelType,
         initialFormData: initialFormData ? initialFormData : undefined,
-        many: inputMode === "many",
       });
     }
   };
@@ -834,44 +821,6 @@ export const FormProvider = <T extends ModelType>({
     setMetaDataLabels(newMetaDataLabes);
   };
 
-  const createFormMenuItems = (
-    model: T,
-    formInitialData: Partial<FormTypeMap[T]>,
-  ) => {
-    const singleStep = getSteps(model, false);
-    const bulkStep = getSteps(model, true);
-
-    const hasSingle = singleStep && singleStep.length > 0;
-    const hasBulk = bulkStep && bulkStep.length > 0;
-
-    const menuItems = [
-      hasSingle && {
-        label: "Single",
-        onClick: () => {
-          startForm({
-            newData: true,
-            model: model || null,
-            editItem: undefined,
-            initialFormData: formInitialData,
-          });
-        },
-      },
-      hasBulk && {
-        label: "Many",
-        onClick: () => {
-          startForm({
-            newData: true,
-            model: model || null,
-            editItem: undefined,
-            initialFormData: formInitialData,
-            many: true,
-          });
-        },
-      },
-    ].filter(Boolean) as { label: string; onClick: () => void }[];
-
-    return menuItems;
-  };
   // ////////////////////////////////////////////////////// //
   const autoFill = async (): Promise<void> => {
     const current = formSteps[currentStep];
@@ -941,7 +890,6 @@ export const FormProvider = <T extends ModelType>({
 
     displayableField,
     getDiffKeys,
-    createFormMenuItems,
     autoFill,
     filterConditionsObj,
     removeFilterConditionsObj,

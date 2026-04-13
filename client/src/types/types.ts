@@ -1,3 +1,4 @@
+import { FormTypeMap, GettedModelDataMap, ModelType } from "./models";
 import { MatchGet } from "./models/match";
 
 export type TableHeader = {
@@ -72,3 +73,28 @@ export enum FormMode {
   CREATE = "create",
   UPDATE = "update",
 }
+
+export type GetStepsArgs<T extends keyof FormTypeMap> = {
+  modelType: T;
+  inputMode: InputMode;
+  from?: From;
+};
+
+type NewDataStartFormArgs<T extends ModelType> = {
+  modelType: T;
+  formMode: FormMode.CREATE;
+  inputMode: InputMode;
+  from: From;
+  initialFormData?: FormTypeMap[T];
+};
+
+type UpdateDataStartFormArgs<T extends ModelType> = {
+  modelType: T;
+  formMode: FormMode.UPDATE;
+  inputMode: InputMode;
+  editItem: GettedModelDataMap[T];
+};
+
+export type StartFormArgs<T extends ModelType> =
+  | NewDataStartFormArgs<T>
+  | UpdateDataStartFormArgs<T>;
