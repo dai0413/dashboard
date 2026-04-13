@@ -13,7 +13,7 @@ import { teamMatchFormation } from "./j_m/teamMatchFormation";
 import { Match } from "../../types/models/match";
 import { AddPostedDraftData } from "../../types/form/postedDraftData";
 
-export const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
+const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.MATCH]: [
     ...match,
     createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),

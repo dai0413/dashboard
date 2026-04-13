@@ -30,9 +30,11 @@ import { teamCompetitionSeason } from "../models/team-competition-season";
 import { teamMatchFormation } from "../models/team-match-formation";
 import { transfer } from "../models/transfer";
 
-export const formStepsMap: {
+type FormStepsMap = {
   [K in ModelType]?: FormStepsConfig<K>;
-} = {
+};
+
+export const formStepsMap: FormStepsMap = {
   [ModelType.COMPETITION]: competition,
   [ModelType.COMPETITION_STAGE]: competitionStage,
   [ModelType.COUNTRY]: country,
