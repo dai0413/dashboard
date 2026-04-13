@@ -11,7 +11,7 @@ import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
 import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { FieldList } from "./index";
-import { FieldListData } from "../../types/types";
+import { FieldListData, FormMode, InputMode } from "../../types/types";
 import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
 
@@ -69,8 +69,9 @@ const DetailModal = () => {
     open(modelType);
     selected
       ? startForm({
-          newData: false,
-          model: modelType,
+          modelType,
+          formMode: FormMode.UPDATE,
+          inputMode: InputMode.SINGLE,
           editItem: selected,
         })
       : undefined;

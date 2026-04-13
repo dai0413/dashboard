@@ -32,9 +32,13 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
+import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
+import { FormMode } from "../../types/types";
+
+type MenuItem = { label: string; onClick: () => void };
 
 type AddButtonProps = {
-  menuItems: { label: string; onClick: () => void }[];
+  menuItems: MenuItem[];
   dropdownRef: React.RefObject<HTMLDivElement | null>;
   isAddDropDownOpen: boolean;
   setIsAddDropDownOpen: (value: React.SetStateAction<boolean>) => void;
@@ -112,7 +116,9 @@ const TableToolbar = <K extends keyof FormTypeMap>({
 }: TableToolbarProps<K>) => {
   const { openFilter, filterConditions } = useFilter();
   const { openSort, sortConditions } = useSort();
-  const { createFormMenuItems } = useForm();
+  const {
+    formOperator: { startForm },
+  } = useForm();
   const {
     main: { handleSetAlert },
   } = useAlert();
@@ -237,8 +243,21 @@ const TableToolbar = <K extends keyof FormTypeMap>({
     <button onClick={handleDownload}>Download</button>,
   ];
 
-  const menuItems = modelType
-    ? createFormMenuItems(modelType, formInitialData ? formInitialData : {})
+  const menuItems: MenuItem[] = modelType
+    ? createFormMenuItems(modelType)
+        .filter((item) => item.label)
+        .map((item) => {
+          const { label, ...rest } = item;
+          return {
+            label: item.label,
+            onClick: () =>
+              startForm({
+                ...rest,
+                formMode: FormMode.CREATE,
+                initialFormData: formInitialData ? formInitialData : undefined,
+              }),
+          };
+        })
     : [];
 
   const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;

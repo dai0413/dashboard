@@ -5,7 +5,8 @@ import { Icon } from "../components/buttons/IconButton";
 import { useModal } from "../context/modal-context";
 import { ModelType } from "../types/models";
 import { useForm } from "../context/form-context";
-import { From } from "../types/types";
+import { FormMode, From, InputMode } from "../types/types";
+import { Items } from "./AdminDashboard/types";
 
 const models: {
   model: string;
@@ -189,63 +190,71 @@ const models: {
   },
 ];
 
-const d_pcItems: {
-  model: string;
-  desc: string;
-  link: string;
-  icon: Icon;
-  modelType: ModelType;
-}[] = [
+const d_pcItems: Items[] = [
   {
     model: "Player",
     desc: "選手",
     link: APP_ROUTES.PLAYER,
     icon: "player",
-    modelType: ModelType.PLAYER,
+    startFormArgs: {
+      modelType: ModelType.PLAYER,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.D_PC,
+    },
   },
   {
     model: "PlayerRegistrationHistory",
     desc: "選手の登録履歴",
     link: APP_ROUTES.PLAYER_REGISTRATION_HISTORY,
     icon: "player",
-    modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+    startFormArgs: {
+      modelType: ModelType.PLAYER_REGISTRATION_HISTORY,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.D_PC,
+    },
   },
 ];
 
-const d_scItems: {
-  model: string;
-  desc: string;
-  link: string;
-  icon: Icon;
-  modelType: ModelType;
-}[] = [
+const d_scItems: Items[] = [
   {
     model: "Staff",
     desc: "スタッフ",
     link: APP_ROUTES.STAFF,
     icon: "player",
-    modelType: ModelType.STAFF,
+    startFormArgs: {
+      modelType: ModelType.STAFF,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.D_SC,
+    },
   },
   {
     model: "StaffRegistrationHistory",
     desc: "スタッフの登録履歴",
     link: APP_ROUTES.STAFF_REGISTRATION_HISTORY,
     icon: "player",
-    modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+    startFormArgs: {
+      modelType: ModelType.STAFF_REGISTRATION_HISTORY,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.D_SC,
+    },
   },
 ];
 
-const matchRelatedItems: {
-  model: string;
-  desc: string;
-  icon: Icon;
-  modelType: ModelType;
-}[] = [
+const matchRelatedItems: Items[] = [
   {
     model: "Match",
     desc: "J_M",
     icon: "match",
-    modelType: ModelType.MATCH,
+    startFormArgs: {
+      modelType: ModelType.MATCH,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.J_M,
+    },
   },
 ];
 
@@ -271,12 +280,9 @@ const AdminDashboard = () => {
               key={m.model}
               onClick={() => {
                 startForm({
-                  newData: true,
-                  model: m.modelType,
-                  from: From.J_M,
-                  allRelated: true,
+                  ...m.startFormArgs,
                 });
-                open(m.modelType);
+                open(m.startFormArgs.modelType);
               }}
             >
               <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
@@ -299,12 +305,9 @@ const AdminDashboard = () => {
               key={m.model}
               onClick={() => {
                 startForm({
-                  newData: true,
-                  model: m.modelType,
-                  many: true,
-                  from: From.D_PC,
+                  ...m.startFormArgs,
                 });
-                open(m.modelType);
+                open(m.startFormArgs.modelType);
               }}
             >
               <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
@@ -327,12 +330,9 @@ const AdminDashboard = () => {
               key={m.model}
               onClick={() => {
                 startForm({
-                  newData: true,
-                  model: m.modelType,
-                  many: true,
-                  from: From.D_SC,
+                  ...m.startFormArgs,
                 });
-                open(m.modelType);
+                open(m.startFormArgs.modelType);
               }}
             >
               <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
