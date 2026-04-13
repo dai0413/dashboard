@@ -1,21 +1,21 @@
-import { FormStep, StepType } from "../../../types/form";
-import { ModelType } from "../../../types/models";
-import { StaffAppearanceForm } from "../../../types/models/staff-appearance";
-import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
-import { Label } from "../../../types/types";
+import { FormStep, StepType } from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
+import { StaffAppearanceForm } from "../../../../types/models/staff-appearance";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { Label } from "../../../../types/types";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
-import { createItemBase } from "../../api";
+import { createItemBase } from "../../../api";
 import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../utils/resolver/resolveToValue";
+} from "../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { DraftDataValue } from "../../../types/form/draftData";
-import { getSeasons } from "../utils/getDraftData/getSeasons";
+import { DraftDataValue } from "../../../../types/form/draftData";
+import { getSeasons } from "../../utils/getDraftData/getSeasons";
 
 const KEYS = ["match", "staff", "team"] as const;
 

@@ -10,18 +10,18 @@ import {
   FilterConditionsByKey,
   FormStep,
   StepType,
-} from "../../../types/form";
-import { ModelType } from "../../../types/models";
-import { createItemBase, readItemsBase } from "../../api";
-import { Season } from "../../../types/models/season";
-import { convert } from "../../convert/CreateLabel";
-import { CompetitionStage } from "../../../types/models/competition-stage";
+} from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
+import { createItemBase, readItemsBase } from "../../../api";
+import { Season } from "../../../../types/models/season";
+import { convert } from "../../../convert/CreateLabel";
+import { CompetitionStage } from "../../../../types/models/competition-stage";
 import { AxiosInstance } from "axios";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../types/form/draftData";
+} from "../../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../../types/form/draftData";
 
 const KEYS = [
   "home_team",

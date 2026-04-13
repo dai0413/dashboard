@@ -1,10 +1,10 @@
-import { FormStep, StepType } from "../../../types/form";
-import { ModelType } from "../../../types/models";
-import { PlayerMatchEventLogForm } from "../../../types/models/player-match-event-log";
-import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
-import { Label } from "../../../types/types";
-import { MatchFormatGet } from "../../../types/models/match-format";
-import { createItemBase } from "../../api";
+import { FormStep, StepType } from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
+import { PlayerMatchEventLogForm } from "../../../../types/models/player-match-event-log";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { Label } from "../../../../types/types";
+import { MatchFormatGet } from "../../../../types/models/match-format";
+import { createItemBase } from "../../../api";
 import {
   ResolveInput,
   ResolveOutput,
@@ -13,10 +13,10 @@ import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../utils/resolver/resolveToValue";
+} from "../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { DraftDataValue } from "../../../types/form/draftData";
-import { PlayerAppearanceGet } from "../../../types/models/player-appearance";
+import { DraftDataValue } from "../../../../types/form/draftData";
+import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
 
 type PeriodLabelArg = {
   time?: number;

@@ -1,17 +1,17 @@
-import { convert } from "../convert/DBtoGetted";
-import { convert as createLabel } from "../convert/CreateLabel";
-import { FormStep } from "../../types/form";
-import { ModelType } from "../../types/models";
-import { PlayerAppearance } from "../../types/models/player-appearance";
-import { createConfirmationStep } from "./confirmationStep";
-import { match } from "./j_m/match";
-import { playerAppearance } from "./j_m/playerAppearance";
-import { playerMatchEventLog } from "./j_m/playerMatchEventLog";
-import { staffAppearance } from "./j_m/staffAppearance";
-import { refereeAppearance } from "./j_m/refereeAppearance";
-import { teamMatchFormation } from "./j_m/teamMatchFormation";
-import { Match } from "../../types/models/match";
-import { AddPostedDraftData } from "../../types/form/postedDraftData";
+import { convert } from "../../convert/DBtoGetted";
+import { convert as createLabel } from "../../convert/CreateLabel";
+import { FormStep } from "../../../types/form";
+import { ModelType } from "../../../types/models";
+import { PlayerAppearance } from "../../../types/models/player-appearance";
+import { createConfirmationStep } from "../confirmationStep";
+import { match } from "../models/match/j_m";
+import { playerAppearance } from "../models/player-appearance/j_m";
+import { playerMatchEventLog } from "../models/player-match-event-log/j_m";
+import { staffAppearance } from "../models/staff-appearance/j_m";
+import { refereeAppearance } from "../models/referee-appearance/j_m";
+import { teamMatchFormation } from "../models/team-match-formation/j_m";
+import { Match } from "../../../types/models/match";
+import { AddPostedDraftData } from "../../../types/form/postedDraftData";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.MATCH]: [

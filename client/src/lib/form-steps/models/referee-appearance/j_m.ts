@@ -1,8 +1,8 @@
-import { FormStep, StepType } from "../../../types/form";
-import { ModelType } from "../../../types/models";
-import { RefereeAppearanceForm } from "../../../types/models/referee-appearance";
-import { setMatchTeam } from "../utils/createFilterConditions/setMatchTeam";
-import { createItemBase } from "../../api";
+import { FormStep, StepType } from "../../../../types/form";
+import { ModelType } from "../../../../types/models";
+import { RefereeAppearanceForm } from "../../../../types/models/referee-appearance";
+import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { createItemBase } from "../../../api";
 import {
   ResolveInput,
   ResolveOutput,
@@ -12,8 +12,8 @@ import { AxiosInstance } from "axios";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../types/form/draftData";
+} from "../../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../../types/form/draftData";
 
 const KEYS = ["match", "referee"] as const;
 
