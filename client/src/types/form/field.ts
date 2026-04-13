@@ -1,5 +1,5 @@
-import { DataSource } from "../form";
 import { FormTypeMap } from "../models";
+import { DataSource } from "./common";
 
 type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
