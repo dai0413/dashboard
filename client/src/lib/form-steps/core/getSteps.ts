@@ -1,17 +1,13 @@
 import { FormStep } from "../../../types/form";
 import { FormTypeMap } from "../../../types/models";
-import { From, InputMode } from "../../../types/types";
+import { From, GetStepsArgs } from "../../../types/types";
 import { formStepsMap } from "./formStepsMap";
 
 export const getSteps = <T extends keyof FormTypeMap>({
   modelType,
   inputMode,
   from = From.NORMAL,
-}: {
-  modelType: T;
-  inputMode: InputMode;
-  from?: From;
-}): {
+}: GetStepsArgs<T>): {
   label: string;
   steps: FormStep<T>[];
 } | null => {
