@@ -1,9 +1,9 @@
 import { APP_ROUTES } from "../../../lib/appRoutes";
 import { ModelType } from "../../../types/models";
 import { FormMode, From, InputMode } from "../../../types/types";
-import { Items } from "../types";
+import { Item } from "../types";
 
-export const d_pcItems: Items[] = [
+export const d_pcItems: Item[] = [
   {
     model: "Player",
     desc: "選手",

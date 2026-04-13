@@ -1,8 +1,8 @@
 import { ModelType } from "../../../types/models";
 import { FormMode, From, InputMode } from "../../../types/types";
-import { Items } from "../types";
+import { Item } from "../types";
 
-export const matchRelatedItems: Items[] = [
+export const matchRelatedItems: Item[] = [
   {
     model: "Match",
     desc: "J_M",

@@ -1,9 +1,9 @@
 import { APP_ROUTES } from "../../../lib/appRoutes";
 import { ModelType } from "../../../types/models";
 import { FormMode, From, InputMode } from "../../../types/types";
-import { Items } from "../types";
+import { Item } from "../types";
 
-export const d_scItems: Items[] = [
+export const d_scItems: Item[] = [
   {
     model: "Staff",
     desc: "スタッフ",
