@@ -3,13 +3,13 @@ import { FormTypeMap } from "../../../types/models";
 import { ListView } from "../../table";
 import { RenderField } from "./Field";
 import { useState } from "react";
-import { TableHeader } from "../../../types/types";
 import { IconButton, IconTextButton } from "../../buttons";
 import { useQuery } from "../../../context/query-context";
 import { useForm } from "../../../context/form-context";
 import { FilterProvider } from "../../../context/filter-context";
 import { SortProvider } from "../../../context/sort-context";
 import { ListViewProvider } from "../../../context/listView-context";
+import { TableHeader } from "../../../types/table";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   fields: FormFieldDefinition<T>[];

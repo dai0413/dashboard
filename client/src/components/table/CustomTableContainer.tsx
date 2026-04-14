@@ -10,13 +10,13 @@ import {
   QuickFilterItem,
   QuickFilterType,
   TableBase,
+  TableHeader,
   TableOperationFields,
 } from "../../types/table";
 
 import { SortProvider, useSort } from "../../context/sort-context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
 import { ListViewProvider, useListView } from "../../context/listView-context";
-import { TableHeader } from "../../types/types";
 import { AxiosResponse } from "axios";
 import { Loader2 } from "lucide-react";
 import {

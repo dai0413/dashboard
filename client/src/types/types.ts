@@ -1,14 +1,6 @@
 import { FormTypeMap, GettedModelDataMap, ModelType } from "./models";
 import { MatchGet } from "./models/match";
 
-export type TableHeader = {
-  label: string;
-  field: string;
-  getData?: (data: any) => string | Label;
-  width?: string;
-  isPrimary?: boolean;
-};
-
 export type Label = {
   label: string;
   id?: string;

@@ -8,7 +8,7 @@ import {
 import { api } from "../../context/api-context";
 import { readItemsBase } from "../../lib/api";
 import { convert } from "../../lib/convert/DBtoGetted";
-import { TableBase, TableFetch, TableOperationFields } from "../../types/table";
+import { TableOperationFields } from "../../types/table";
 import {
   FilterableFieldDefinition,
   QueryParams,
@@ -17,12 +17,12 @@ import {
 } from "@dai0413/myorg-shared";
 import { Data } from "../../types/types";
 import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
+import { TableFetch } from "../../types/table";
 
 type TableWithFetchProps<T extends ModelType> = Omit<
-  TableBase<T>,
+  TableFetch<T>,
   "modelType"
 > &
-  TableFetch &
   TableOperationFields & {
     modelType: T;
   };

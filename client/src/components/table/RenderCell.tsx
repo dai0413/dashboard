@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { LinkField, TableHeader } from "../../types/types";
+import { LinkField } from "../../types/types";
+import { TableHeader } from "../../types/table";
 import { isLabelObject } from "../../utils";
 import React from "react";
 
