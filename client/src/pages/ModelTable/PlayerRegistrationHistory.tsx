@@ -2,6 +2,7 @@ import { ModelTableContainer } from "../../components/table";
 import { usePlayerRegistrationHistory } from "../../context/models/player-registration-history";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { ColumnType } from "../../types/table";
 
 const PlayerRegistrationHistory = () => {
   const playerRegistrationHistoryContext = usePlayerRegistrationHistory();
@@ -11,26 +12,57 @@ const PlayerRegistrationHistory = () => {
       <ModelTableContainer
         title={"選手登録情報履歴"}
         headers={[
-          { label: "大会", field: "competition" },
-          { label: "シーズン", field: "season" },
-          { label: "日付", field: "date" },
-          { label: "チーム", field: "team" },
-          { label: "選手", field: "player" },
+          {
+            label: "大会",
+            field: "competition",
+            type: ColumnType.FIELD,
+            id: "competition",
+          },
+          {
+            label: "シーズン",
+            field: "season",
+            type: ColumnType.FIELD,
+            id: "season",
+          },
+          { label: "日付", field: "date", type: ColumnType.FIELD, id: "date" },
+          {
+            label: "チーム",
+            field: "team",
+            type: ColumnType.FIELD,
+            id: "team",
+          },
+          {
+            label: "選手",
+            field: "player",
+            type: ColumnType.FIELD,
+            id: "player",
+          },
           {
             label: "ポジション",
-            field: "changes.position_group",
+            id: "changes.position_group",
             getData: (data) => {
               let base: string = "";
               if (data.registration_type === "変更") {
                 base = "変更後→→→";
               }
-              return data.changes.position_group
+              return data.changes?.position_group
                 ? `${base}${data.changes.position_group}`
                 : "";
             },
+            type: ColumnType.CUSTOM,
           },
-          { label: "登録・抹消", field: "registration_type" },
-          { label: "状況", field: "registration_status" },
+          {
+            label: "登録・抹消",
+            field: "registration_type",
+            type: ColumnType.FIELD,
+            id: "registration_type",
+          },
+          {
+            label: "状況",
+            field: "registration_status",
+            type: ColumnType.FIELD,
+            id: "registration_status",
+          },
         ]}
         contextState={playerRegistrationHistoryContext}
         modelType={ModelType.PLAYER_REGISTRATION_HISTORY}

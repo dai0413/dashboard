@@ -14,6 +14,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
+import { ColumnType } from "../../types/table";
 
 const Tabs = NationalMatchSeriesTabItems.filter(
   (item) =>
@@ -129,11 +130,36 @@ const National = () => {
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
           headers={[
-            { label: "選手", field: "player" },
-            { label: "所属チーム", field: "team" },
-            { label: "招集状況", field: "status" },
-            { label: "背番号", field: "number" },
-            { label: "ポジション", field: "position_group" },
+            {
+              label: "選手",
+              field: "player",
+              type: ColumnType.FIELD,
+              id: "player",
+            },
+            {
+              label: "所属チーム",
+              field: "team",
+              type: ColumnType.FIELD,
+              id: "team",
+            },
+            {
+              label: "招集状況",
+              field: "status",
+              type: ColumnType.FIELD,
+              id: "status",
+            },
+            {
+              label: "背番号",
+              field: "number",
+              type: ColumnType.FIELD,
+              id: "number",
+            },
+            {
+              label: "ポジション",
+              field: "position_group",
+              type: ColumnType.FIELD,
+              id: "position_group",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,

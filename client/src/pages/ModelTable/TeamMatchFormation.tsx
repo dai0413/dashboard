@@ -2,6 +2,7 @@ import { ModelTableContainer } from "../../components/table";
 import { useTeamMatchFormation } from "../../context/models/team-match-formation";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { ColumnType } from "../../types/table";
 
 const TeamMatchFormation = () => {
   const teamMatchFormation = useTeamMatchFormation();
@@ -11,9 +12,24 @@ const TeamMatchFormation = () => {
       <ModelTableContainer
         title={"各試合のチームフォーメーション"}
         headers={[
-          { label: "試合", field: "match" },
-          { label: "チーム", field: "team" },
-          { label: "フォーメーション", field: "formation" },
+          {
+            label: "試合",
+            field: "match",
+            type: ColumnType.FIELD,
+            id: "match",
+          },
+          {
+            label: "チーム",
+            field: "team",
+            type: ColumnType.FIELD,
+            id: "team",
+          },
+          {
+            label: "フォーメーション",
+            field: "formation",
+            type: ColumnType.FIELD,
+            id: "formation",
+          },
         ]}
         contextState={teamMatchFormation}
         modelType={ModelType.TEAM_MATCH_FORMATION}

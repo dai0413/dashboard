@@ -13,6 +13,7 @@ import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
+import { ColumnType } from "../../types/table";
 
 const Tabs = MatchTabItems.filter(
   (item) =>
@@ -120,11 +121,40 @@ const Match = () => {
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
           headers={[
-            { label: "背番号", field: "number", width: "100px" },
-            { label: "ステータス", field: "play_status", width: "100px" },
-            { label: "選手", field: "player" },
-            { label: "ポジション", field: "position", width: "100px" },
-            { label: "時間", field: "time", width: "100px" },
+            {
+              label: "背番号",
+              field: "number",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "number",
+            },
+            {
+              label: "ステータス",
+              field: "play_status",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "play_status",
+            },
+            {
+              label: "選手",
+              field: "player",
+              type: ColumnType.FIELD,
+              id: "player",
+            },
+            {
+              label: "ポジション",
+              field: "position",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "position",
+            },
+            {
+              label: "時間",
+              field: "time",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "time",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
@@ -153,11 +183,40 @@ const Match = () => {
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
           headers={[
-            { label: "背番号", field: "number", width: "100px" },
-            { label: "ステータス", field: "play_status", width: "100px" },
-            { label: "選手", field: "player" },
-            { label: "ポジション", field: "position", width: "100px" },
-            { label: "時間", field: "time", width: "100px" },
+            {
+              label: "背番号",
+              field: "number",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "number",
+            },
+            {
+              label: "ステータス",
+              field: "play_status",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "play_status",
+            },
+            {
+              label: "選手",
+              field: "player",
+              type: ColumnType.FIELD,
+              id: "player",
+            },
+            {
+              label: "ポジション",
+              field: "position",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "position",
+            },
+            {
+              label: "時間",
+              field: "time",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "time",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
@@ -189,12 +248,47 @@ const Match = () => {
           <TableWithFetch
             modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
             headers={[
-              { label: "前後半", field: "period_label", width: "100px" },
-              { label: "時間", field: "time_name", width: "100px" },
-              { label: "特別時間", field: "special_time", width: "100px" },
-              { label: "チーム", field: "team", width: "100px" },
-              { label: "イベント", field: "match_event_type", width: "100px" },
-              { label: "選手", field: "player" },
+              {
+                label: "前後半",
+                field: "period_label",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "period_label",
+              },
+              {
+                label: "時間",
+                field: "time_name",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "time_name",
+              },
+              {
+                label: "特別時間",
+                field: "special_time",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "special_time",
+              },
+              {
+                label: "チーム",
+                field: "team",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "team",
+              },
+              {
+                label: "イベント",
+                field: "match_event_type",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "match_event_type",
+              },
+              {
+                label: "選手",
+                field: "player",
+                type: ColumnType.FIELD,
+                id: "player",
+              },
             ]}
             fetch={{
               apiRoute: API_PATHS.PLAYER_MATCH_EVENT_LOG.ROOT,
@@ -230,12 +324,47 @@ const Match = () => {
           <TableWithFetch
             modelType={ModelType.STAFF_MATCH_EVENT_LOG}
             headers={[
-              { label: "前後半", field: "period_label", width: "100px" },
-              { label: "時間", field: "time_name", width: "100px" },
-              { label: "特別時間", field: "special_time", width: "100px" },
-              { label: "チーム", field: "team", width: "100px" },
-              { label: "イベント", field: "match_event_type", width: "100px" },
-              { label: "スタッフ", field: "staff" },
+              {
+                label: "前後半",
+                field: "period_label",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "period_label",
+              },
+              {
+                label: "時間",
+                field: "time_name",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "time_name",
+              },
+              {
+                label: "特別時間",
+                field: "special_time",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "special_time",
+              },
+              {
+                label: "チーム",
+                field: "team",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "team",
+              },
+              {
+                label: "イベント",
+                field: "match_event_type",
+                width: "100px",
+                type: ColumnType.FIELD,
+                id: "match_event_type",
+              },
+              {
+                label: "スタッフ",
+                field: "staff",
+                type: ColumnType.FIELD,
+                id: "staff",
+              },
             ]}
             fetch={{
               apiRoute: API_PATHS.STAFF_MATCH_EVENT_LOG.ROOT,
@@ -273,8 +402,18 @@ const Match = () => {
           <TableWithFetch
             modelType={ModelType.TEAM_MATCH_FORMATION}
             headers={[
-              { label: "チーム", field: "team" },
-              { label: "フォーメーション", field: "formation" },
+              {
+                label: "チーム",
+                field: "team",
+                type: ColumnType.FIELD,
+                id: "team",
+              },
+              {
+                label: "フォーメーション",
+                field: "formation",
+                type: ColumnType.FIELD,
+                id: "formation",
+              },
             ]}
             fetch={{
               apiRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,

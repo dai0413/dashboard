@@ -2,6 +2,7 @@ import { ModelTableContainer } from "../../components/table";
 import { useCountry } from "../../context/models/country";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { ColumnType } from "../../types/table";
 
 const Country = () => {
   const countryContext = useCountry();
@@ -11,9 +12,20 @@ const Country = () => {
       <ModelTableContainer
         title={"国情報"}
         headers={[
-          { label: "国名", field: "name" },
-          { label: "英名", field: "en_name" },
-          { label: "地域", field: "area", width: "70px" },
+          { label: "国名", field: "name", type: ColumnType.FIELD, id: "name" },
+          {
+            label: "英名",
+            field: "en_name",
+            type: ColumnType.FIELD,
+            id: "en_name",
+          },
+          {
+            label: "地域",
+            field: "area",
+            width: "70px",
+            type: ColumnType.FIELD,
+            id: "area",
+          },
         ]}
         contextState={countryContext}
         modelType={ModelType.COUNTRY}

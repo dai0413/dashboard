@@ -2,6 +2,7 @@ import { ModelTableContainer } from "../../components/table";
 import { useNationalCallup } from "../../context/models/national-callup";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { ColumnType } from "../../types/table";
 
 const NationalMatchSeries = () => {
   const context = useNationalCallup();
@@ -11,11 +12,40 @@ const NationalMatchSeries = () => {
       <ModelTableContainer
         title={"代表招集リスト"}
         headers={[
-          { label: "代表試合シリーズ", field: "series", width: "250px" },
-          { label: "選手", field: "player" },
-          { label: "招集状況", field: "status", width: "100px" },
-          { label: "背番号", field: "number", width: "100px" },
-          { label: "ポジション", field: "position_group", width: "100px" },
+          {
+            label: "代表試合シリーズ",
+            field: "series",
+            width: "250px",
+            type: ColumnType.FIELD,
+            id: "series",
+          },
+          {
+            label: "選手",
+            field: "player",
+            type: ColumnType.FIELD,
+            id: "player",
+          },
+          {
+            label: "招集状況",
+            field: "status",
+            width: "100px",
+            type: ColumnType.FIELD,
+            id: "status",
+          },
+          {
+            label: "背番号",
+            field: "number",
+            width: "100px",
+            type: ColumnType.FIELD,
+            id: "number",
+          },
+          {
+            label: "ポジション",
+            field: "position_group",
+            width: "100px",
+            type: ColumnType.FIELD,
+            id: "position_group",
+          },
         ]}
         contextState={context}
         modelType={ModelType.NATIONAL_CALLUP}

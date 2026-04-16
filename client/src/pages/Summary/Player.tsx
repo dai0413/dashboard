@@ -15,6 +15,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useModal } from "../../context/modal-context";
+import { ColumnType } from "../../types/table";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -118,10 +119,30 @@ const Player = () => {
         <TableWithFetch
           modelType={ModelType.TRANSFER}
           headers={[
-            { label: "加入日", field: "from_date" },
-            { label: "移籍元", field: "from_team" },
-            { label: "移籍先", field: "to_team" },
-            { label: "形態", field: "form" },
+            {
+              label: "加入日",
+              field: "from_date",
+              type: ColumnType.FIELD,
+              id: "from_date",
+            },
+            {
+              label: "移籍元",
+              field: "from_team",
+              type: ColumnType.FIELD,
+              id: "from_team",
+            },
+            {
+              label: "移籍先",
+              field: "to_team",
+              type: ColumnType.FIELD,
+              id: "to_team",
+            },
+            {
+              label: "形態",
+              field: "form",
+              type: ColumnType.FIELD,
+              id: "form",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.TRANSFER.ROOT,
@@ -153,10 +174,25 @@ const Player = () => {
         <TableWithFetch
           modelType={ModelType.INJURY}
           headers={[
-            { label: "発表日", field: "doa" },
-            { label: "所属", field: "team" },
-            { label: "負傷箇所・診断結果", field: "injured_part" },
-            { label: "全治", field: "ttp" },
+            {
+              label: "発表日",
+              field: "doa",
+              type: ColumnType.FIELD,
+              id: "doa",
+            },
+            {
+              label: "所属",
+              field: "team",
+              type: ColumnType.FIELD,
+              id: "team",
+            },
+            {
+              label: "負傷箇所・診断結果",
+              field: "injured_part",
+              type: ColumnType.FIELD,
+              id: "injured_part",
+            },
+            { label: "全治", field: "ttp", type: ColumnType.FIELD, id: "ttp" },
           ]}
           fetch={{
             apiRoute: API_PATHS.INJURY.ROOT,
@@ -182,10 +218,30 @@ const Player = () => {
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
           headers={[
-            { label: "代表試合シリーズ", field: "series" },
-            { label: "招集状況", field: "status" },
-            { label: "背番号", field: "number" },
-            { label: "活動開始日", field: "joined_at" },
+            {
+              label: "代表試合シリーズ",
+              field: "series",
+              type: ColumnType.FIELD,
+              id: "series",
+            },
+            {
+              label: "招集状況",
+              field: "status",
+              type: ColumnType.FIELD,
+              id: "status",
+            },
+            {
+              label: "背番号",
+              field: "number",
+              type: ColumnType.FIELD,
+              id: "number",
+            },
+            {
+              label: "活動開始日",
+              field: "joined_at",
+              type: ColumnType.FIELD,
+              id: "joined_at",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
@@ -211,20 +267,51 @@ const Player = () => {
         <TableWithFetch
           modelType={ModelType.PLAYER_REGISTRATION}
           headers={[
-            { label: "シーズン", field: "season" },
-            { label: "大会", field: "competition" },
-            { label: "日付", field: "date" },
-            { label: "チーム", field: "team" },
-            { label: "登録・抹消", field: "registration_type" },
-            { label: "登録・抹消", field: "registration_status" },
+            {
+              label: "シーズン",
+              field: "season",
+              type: ColumnType.FIELD,
+              id: "season",
+            },
+            {
+              label: "大会",
+              field: "competition",
+              type: ColumnType.FIELD,
+              id: "competition",
+            },
+            {
+              label: "日付",
+              field: "date",
+              type: ColumnType.FIELD,
+              id: "date",
+            },
+            {
+              label: "チーム",
+              field: "team",
+              type: ColumnType.FIELD,
+              id: "team",
+            },
+            {
+              label: "登録・抹消",
+              field: "registration_type",
+              type: ColumnType.FIELD,
+              id: "registration_type",
+            },
+            {
+              label: "登録・抹消",
+              field: "registration_status",
+              type: ColumnType.FIELD,
+              id: "registration_status",
+            },
             {
               label: "2種・特別指定",
-              field: "special_type",
+              id: "special_type",
               getData: (data: PlayerRegistrationGet) => {
                 if (data.isSpecialDesignation) return "特別指定";
                 if (data.isTypeTwo) return "2種";
                 return "";
               },
+              type: ColumnType.CUSTOM,
             },
           ]}
           fetch={{

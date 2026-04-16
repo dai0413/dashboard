@@ -2,6 +2,7 @@ import { ModelTableContainer } from "../../components/table";
 import { useMatchFormat } from "../../context/models/match-format";
 import { ModelType } from "../../types/models";
 import { MatchFormatGet } from "../../types/models/match-format";
+import { ColumnType } from "../../types/table";
 import { periodField, periodOther } from "../../utils/displayField/periodField";
 
 const MatchFormat = () => {
@@ -12,34 +13,44 @@ const MatchFormat = () => {
       <ModelTableContainer
         title={"試合フォーマット情報"}
         headers={[
-          { label: "大会名", field: "name", width: "150px" },
+          {
+            label: "大会名",
+            field: "name",
+            width: "150px",
+            type: ColumnType.FIELD,
+            id: "name",
+          },
           {
             label: "前半",
-            field: "1st",
+            id: "1st",
             getData: (d: MatchFormatGet) => periodField(d, "前半"),
             width: "80px",
+            type: ColumnType.CUSTOM,
           },
           {
             label: "後半",
-            field: "2nd",
+            id: "2nd",
             getData: (d: MatchFormatGet) => periodField(d, "前半"),
             width: "80px",
+            type: ColumnType.CUSTOM,
           },
           {
             label: "延前",
-            field: "1ex",
+            id: "1ex",
             getData: (d: MatchFormatGet) => periodField(d, "延長前半"),
             width: "80px",
+            type: ColumnType.CUSTOM,
           },
           {
             label: "延後",
-            field: "2ex",
+            id: "2ex",
             getData: (d: MatchFormatGet) => periodField(d, "延長後半"),
             width: "80px",
+            type: ColumnType.CUSTOM,
           },
           {
             label: "その他",
-            field: "other",
+            id: "other",
             getData: (d: MatchFormatGet) =>
               periodOther(d, [
                 "前半",
@@ -50,12 +61,14 @@ const MatchFormat = () => {
                 "ゴールデンボール",
               ]),
             width: "80px",
+            type: ColumnType.CUSTOM,
           },
           {
             label: "PK",
-            field: "pk",
+            id: "pk",
             getData: (d: MatchFormatGet) => periodField(d, "PK"),
             width: "60px",
+            type: ColumnType.CUSTOM,
           },
         ]}
         contextState={context}

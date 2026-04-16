@@ -2,6 +2,7 @@ import { ModelTableContainer } from "../../components/table";
 import { useTeam } from "../../context/models/team";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
+import { ColumnType } from "../../types/table";
 
 const Team = () => {
   const teamContext = useTeam();
@@ -11,9 +12,20 @@ const Team = () => {
       <ModelTableContainer
         title={"チーム情報"}
         headers={[
-          { label: "チーム名", field: "team" },
-          { label: "略称", field: "abbr" },
-          { label: "ジャンル", field: "genre", width: "100px" },
+          {
+            label: "チーム名",
+            field: "team",
+            type: ColumnType.FIELD,
+            id: "team",
+          },
+          { label: "略称", field: "abbr", type: ColumnType.FIELD, id: "abbr" },
+          {
+            label: "ジャンル",
+            field: "genre",
+            width: "100px",
+            type: ColumnType.FIELD,
+            id: "genre",
+          },
         ]}
         contextState={teamContext}
         modelType={ModelType.TEAM}

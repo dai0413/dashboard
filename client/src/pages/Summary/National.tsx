@@ -13,6 +13,7 @@ import { isFilterable, isSortable } from "../../types/field";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
+import { ColumnType } from "../../types/table";
 
 const Tabs = NationalTabItems.filter(
   (item) =>
@@ -109,10 +110,28 @@ const National = () => {
         <TableWithFetch
           modelType={ModelType.COMPETITION}
           headers={[
-            { label: "大会名", field: "name" },
-            { label: "大会規模", field: "competition_type", width: "90px" },
-            { label: "大会タイプ", field: "category", width: "100px" },
-            { label: "年代", field: "age_group", width: "70px" },
+            { label: "大会名", field: "name", type: ColumnType.FIELD, id: "" },
+            {
+              label: "大会規模",
+              field: "competition_type",
+              width: "90px",
+              type: ColumnType.FIELD,
+              id: "",
+            },
+            {
+              label: "大会タイプ",
+              field: "category",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "",
+            },
+            {
+              label: "年代",
+              field: "age_group",
+              width: "70px",
+              type: ColumnType.FIELD,
+              id: "",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.COMPETITION.ROOT,
@@ -140,10 +159,32 @@ const National = () => {
         <TableWithFetch
           modelType={ModelType.NATIONAL_MATCH_SERIES}
           headers={[
-            { label: "名称", field: "name", width: "250px" },
-            { label: "年代", field: "age_group", width: "100px" },
-            { label: "招集日", field: "joined_at" },
-            { label: "解散日", field: "left_at" },
+            {
+              label: "名称",
+              field: "name",
+              width: "250px",
+              type: ColumnType.FIELD,
+              id: "name",
+            },
+            {
+              label: "年代",
+              field: "age_group",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "age_group",
+            },
+            {
+              label: "招集日",
+              field: "joined_at",
+              type: ColumnType.FIELD,
+              id: "joined_at",
+            },
+            {
+              label: "解散日",
+              field: "left_at",
+              type: ColumnType.FIELD,
+              id: "left_at",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
@@ -171,11 +212,41 @@ const National = () => {
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
           headers={[
-            { label: "代表試合シリーズ", field: "series", width: "250px" },
-            { label: "選手", field: "player", isPrimary: true },
-            { label: "招集状況", field: "status", width: "100px" },
-            { label: "背番号", field: "number", width: "100px" },
-            { label: "ポジション", field: "position_group", width: "100px" },
+            {
+              label: "代表試合シリーズ",
+              field: "series",
+              width: "250px",
+              type: ColumnType.FIELD,
+              id: "series",
+            },
+            {
+              label: "選手",
+              field: "player",
+              isPrimary: true,
+              type: ColumnType.FIELD,
+              id: "player",
+            },
+            {
+              label: "招集状況",
+              field: "status",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "status",
+            },
+            {
+              label: "背番号",
+              field: "number",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "number",
+            },
+            {
+              label: "ポジション",
+              field: "position_group",
+              width: "100px",
+              type: ColumnType.FIELD,
+              id: "position_group",
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
