@@ -1,25 +1,46 @@
 import { Label, QueryParams } from "@dai0413/myorg-shared";
-import { FormTypeMap, ModelType } from "../models";
+import { ModelType } from "../models";
 import { LinkField } from "../types";
 
-export type TableHeader = {
+export enum ColumnType {
+  FIELD = "field",
+  CUSTOM = "custom",
+}
+
+type Base = {
+  id: string;
   label: string;
-  field: string;
-  getData?: (data: any) => string | Label;
   width?: string;
   isPrimary?: boolean;
 };
 
-export type TableBase<K extends ModelType> = {
+type FieldHeader<T> = Base & {
+  type: ColumnType.FIELD;
+  field: keyof T;
+};
+
+type CustomHeader<T> = Base & {
+  type: ColumnType.CUSTOM;
+  getData: (data: T) => string | Label | (object & { id?: string });
+};
+
+export type TableHeader<T> = FieldHeader<T> | CustomHeader<T>;
+
+export type TableBase<T, F> = TableBase1<T> & TableFormProps<F>;
+
+type TableBase1<T> = {
   title?: string;
-  headers: TableHeader[];
+  headers: TableHeader<T>[];
   modelType?: ModelType | null;
-  formInitialData?: Partial<FormTypeMap[K]>;
   linkField?: LinkField[];
   pageNation?: "client" | "server";
 };
 
-export type TableFetch<K extends ModelType> = TableBase<K> & {
+type TableFormProps<F> = {
+  formInitialData?: Partial<F>;
+};
+
+export type TableFetch<T, F> = TableBase<T, F> & {
   fetch: {
     apiRoute: string;
     params?: QueryParams;
