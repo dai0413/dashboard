@@ -1,5 +1,5 @@
 import { ModelType } from "../../types/models";
-import { OptionsMap } from "../../utils/createOption";
+import { OptionsMap } from "../../utils/createOption/types/base";
 
 export const keyMap: Record<string, keyof OptionsMap> = {
   citizenship: ModelType.COUNTRY,

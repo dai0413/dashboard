@@ -10,7 +10,7 @@ export type TableEditProps<T> = {
   /** 複数データ編集モード */
   edit?: boolean;
   renderFieldCell?: (
-    header: TableHeader,
+    header: TableHeader<T>,
     row: T,
     rowIndex: number,
   ) => React.ReactNode;

@@ -5,6 +5,6 @@ export type TableDataProps<T> = {
   modelType?: ModelType;
   data: T[];
   totalCount?: number;
-  headers: TableHeader[];
+  headers: TableHeader<T>[];
   pageNation: "server" | "client";
 };

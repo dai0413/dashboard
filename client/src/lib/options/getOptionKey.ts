@@ -1,5 +1,5 @@
 import { FormTypeMap } from "../../types/models";
-import { OptionsMap } from "../../utils/createOption";
+import { OptionsMap } from "../../utils/createOption/types/base";
 import { keyMap } from "./keyMap";
 
 export function getOptionKey<T extends keyof FormTypeMap>(

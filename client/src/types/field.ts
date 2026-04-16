@@ -5,7 +5,7 @@ import {
   SortableFieldDefinition,
   SortField,
 } from "@dai0413/myorg-shared";
-import { OptionType } from "../utils/createOption";
+import { OptionType } from "../utils/createOption/types/base";
 import { ModelType } from "./models";
 import { QuickFilterType } from "./table";
 

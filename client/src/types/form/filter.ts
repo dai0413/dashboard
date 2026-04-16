@@ -1,5 +1,5 @@
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { OptionType } from "../../utils/createOption";
+import { OptionType } from "../../utils/createOption/types/base";
 import { FormTypeMap, ModelType } from "../models";
 import { AxiosInstance } from "axios";
 
