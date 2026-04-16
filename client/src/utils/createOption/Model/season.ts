@@ -1,11 +1,18 @@
 import { OptionArray, OptionTable } from "../../../types/option";
 import { SeasonGet } from "../../../types/models/season";
+import { ColumnType } from "../../../types/table";
+
+type Option = {
+  label: string;
+  key: string;
+  current: string | null;
+};
 
 export const season = (
   data: SeasonGet[],
-  table: boolean
-): OptionArray | OptionTable => {
-  const options = data.map((d) => ({
+  table: boolean,
+): OptionArray | OptionTable<Option> => {
+  const options: Option[] = data.map((d) => ({
     label: `${d.name}-${d.competition.label}`,
     key: d._id,
     current: d.current,
@@ -14,8 +21,13 @@ export const season = (
   if (table === true) {
     return {
       header: [
-        { label: "名前", field: "label" },
-        { label: "現在", field: "current" },
+        { label: "名前", field: "label", type: ColumnType.FIELD, id: "label" },
+        {
+          label: "現在",
+          field: "current",
+          type: ColumnType.FIELD,
+          id: "current",
+        },
       ],
       data: options,
     };

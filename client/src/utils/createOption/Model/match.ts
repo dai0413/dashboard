@@ -1,11 +1,24 @@
 import { OptionArray, OptionTable } from "../../../types/option";
 import { MatchGet } from "../../../types/models/match";
+import { Label } from "@dai0413/myorg-shared";
+import { ColumnType } from "../../../types/table";
+
+type Option = {
+  label: string;
+  key: string;
+  competition: string;
+  competition_stage: Label;
+  season: string;
+  match_week: number | undefined;
+  home_team: string;
+  away_team: string;
+};
 
 export const match = (
   data: MatchGet[],
   table: boolean,
-): OptionArray | OptionTable => {
-  const options = data.map((d) => ({
+): OptionArray | OptionTable<Option> => {
+  const options: Option[] = data.map((d) => ({
     label: `${d.competition.label}-
             ${d.competition_stage.label}-
             ${d.season.label}-
@@ -24,12 +37,42 @@ export const match = (
   if (table === true) {
     return {
       header: [
-        { label: "大会", field: "competition" },
-        { label: "大会ステージ", field: "competition_stage" },
-        { label: "シーズン", field: "season" },
-        { label: "節", field: "match_week" },
-        { label: "ホーム", field: "home_team" },
-        { label: "アウェイ", field: "away_team" },
+        {
+          label: "大会",
+          field: "competition",
+          type: ColumnType.FIELD,
+          id: "competition",
+        },
+        {
+          label: "大会ステージ",
+          field: "competition_stage",
+          type: ColumnType.FIELD,
+          id: "competition_stage",
+        },
+        {
+          label: "シーズン",
+          field: "season",
+          type: ColumnType.FIELD,
+          id: "season",
+        },
+        {
+          label: "節",
+          field: "match_week",
+          type: ColumnType.FIELD,
+          id: "match_week",
+        },
+        {
+          label: "ホーム",
+          field: "home_team",
+          type: ColumnType.FIELD,
+          id: "home_team",
+        },
+        {
+          label: "アウェイ",
+          field: "away_team",
+          type: ColumnType.FIELD,
+          id: "away_team",
+        },
       ],
       data: options,
     };

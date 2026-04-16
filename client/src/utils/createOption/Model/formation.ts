@@ -1,11 +1,13 @@
 import { OptionArray, OptionTable } from "../../../types/option";
 import { FormationGet } from "../../../types/models/formation";
+import { ColumnType } from "../../../types/table";
+import { Formation } from "../types/optionTable/formation";
 
 export const formation = (
   data: FormationGet[],
   table: boolean,
-): OptionArray | OptionTable => {
-  const options = data.map((d) => ({
+): OptionArray | OptionTable<Formation> => {
+  const options: Formation[] = data.map((d) => ({
     label: d.name,
     key: d._id,
     positions: d.position_formation.map((p) => p).join(","),
@@ -14,8 +16,20 @@ export const formation = (
   if (table === true) {
     return {
       header: [
-        { label: "名前", field: "label", width: "60px" },
-        { label: "ポジション", field: "positions", width: "220px" },
+        {
+          label: "名前",
+          field: "label",
+          width: "60px",
+          type: ColumnType.FIELD,
+          id: "label",
+        },
+        {
+          label: "ポジション",
+          field: "positions",
+          width: "220px",
+          type: ColumnType.FIELD,
+          id: "positions",
+        },
       ],
       data: options,
     };
