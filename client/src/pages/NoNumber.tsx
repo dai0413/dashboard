@@ -4,6 +4,7 @@ import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
+import { ColumnType } from "../types/table";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -24,9 +25,24 @@ const NoNumber = () => {
           },
         }}
         headers={[
-          { label: "加入日", field: "from_date" },
-          { label: "選手", field: "player" },
-          { label: "移籍先", field: "to_team" },
+          {
+            label: "加入日",
+            field: "from_date",
+            type: ColumnType.FIELD,
+            id: "from_date",
+          },
+          {
+            label: "選手",
+            field: "player",
+            type: ColumnType.FIELD,
+            id: "player",
+          },
+          {
+            label: "移籍先",
+            field: "to_team",
+            type: ColumnType.FIELD,
+            id: "to_team",
+          },
         ]}
         modelType={ModelType.TRANSFER}
         filterField={fieldDefinition[ModelType.TRANSFER]

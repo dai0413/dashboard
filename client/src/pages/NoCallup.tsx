@@ -2,6 +2,7 @@ import { TableWithFetch } from "../components/table";
 import { ModelType } from "../types/models";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
+import { ColumnType } from "../types/table";
 
 const NoCallUp = () => {
   const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
@@ -15,10 +16,33 @@ const NoCallUp = () => {
         }}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         headers={[
-          { label: "名称", field: "name", width: "250px" },
-          { label: "国名", field: "country", width: "100px" },
-          { label: "年代", field: "age_group", width: "100px" },
-          { label: "招集日", field: "joined_at" },
+          {
+            label: "名称",
+            field: "name",
+            width: "250px",
+            type: ColumnType.FIELD,
+            id: "name",
+          },
+          {
+            label: "国名",
+            field: "country",
+            width: "100px",
+            type: ColumnType.FIELD,
+            id: "country",
+          },
+          {
+            label: "年代",
+            field: "age_group",
+            width: "100px",
+            type: ColumnType.FIELD,
+            id: "age_group",
+          },
+          {
+            label: "招集日",
+            field: "joined_at",
+            type: ColumnType.FIELD,
+            id: "joined_at",
+          },
         ]}
         linkField={[
           {

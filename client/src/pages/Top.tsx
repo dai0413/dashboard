@@ -7,6 +7,7 @@ import { useTopPage } from "../context/top-page-context";
 import { ListViewProvider } from "../context/listView-context";
 import { FilterProvider } from "../context/filter-context";
 import { SortProvider } from "../context/sort-context";
+import { ColumnType } from "../types/table";
 
 const Main = () => {
   const { isLoading, transfers, injuries, readItems } = useTopPage();
@@ -31,10 +32,30 @@ const Main = () => {
                       pageNation="client"
                       data={transfers}
                       headers={[
-                        { label: "発表日", field: "doa" },
-                        { label: "移籍元", field: "from_team" },
-                        { label: "移籍先", field: "to_team" },
-                        { label: "名前", field: "player" },
+                        {
+                          label: "発表日",
+                          field: "doa",
+                          type: ColumnType.FIELD,
+                          id: "doa",
+                        },
+                        {
+                          label: "移籍元",
+                          field: "from_team",
+                          type: ColumnType.FIELD,
+                          id: "from_team",
+                        },
+                        {
+                          label: "移籍先",
+                          field: "to_team",
+                          type: ColumnType.FIELD,
+                          id: "to_team",
+                        },
+                        {
+                          label: "名前",
+                          field: "player",
+                          type: ColumnType.FIELD,
+                          id: "player",
+                        },
                       ]}
                       isLoading={isLoading}
                     />
@@ -63,9 +84,24 @@ const Main = () => {
                       pageNation="client"
                       data={injuries}
                       headers={[
-                        { label: "発表日", field: "doa" },
-                        { label: "名前", field: "player" },
-                        { label: "負傷箇所", field: "injured_part" },
+                        {
+                          label: "発表日",
+                          field: "doa",
+                          type: ColumnType.FIELD,
+                          id: "doa",
+                        },
+                        {
+                          label: "名前",
+                          field: "player",
+                          type: ColumnType.FIELD,
+                          id: "player",
+                        },
+                        {
+                          label: "負傷箇所",
+                          field: "injured_part",
+                          type: ColumnType.FIELD,
+                          id: "injured_part",
+                        },
                       ]}
                       isLoading={isLoading}
                     />

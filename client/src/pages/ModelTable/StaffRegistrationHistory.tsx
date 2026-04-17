@@ -55,12 +55,6 @@ const StaffRegistrationHistory = () => {
             type: ColumnType.FIELD,
             id: "registration_type",
           },
-          {
-            label: "状況",
-            field: "registration_status",
-            type: ColumnType.FIELD,
-            id: "registration_status",
-          },
         ]}
         contextState={staffRegistrationHistoryContext}
         modelType={ModelType.STAFF_REGISTRATION_HISTORY}
