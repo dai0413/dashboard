@@ -1,46 +1,70 @@
 import { Link } from "react-router-dom";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { LinkField } from "../../types/types";
-import { TableHeader } from "../../types/table";
+import { ColumnType, TableHeader } from "../../types/table";
 import { isLabelObject } from "../../utils";
 import React from "react";
 
-const RenderCell = (
-  header: TableHeader,
-  row: Record<string, any>,
+type BaseRow = {
+  key?: string;
+  _id?: string;
+};
+
+const RenderCell = <T extends BaseRow>(
+  header: TableHeader<T>,
+  row: T,
   form: boolean,
   linkField?: LinkField[],
 ): React.ReactNode => {
-  if ("element" in row && React.isValidElement(row.element)) {
+  if (
+    header.type === ColumnType.FIELD &&
+    "element" in row &&
+    React.isValidElement(row.element)
+  ) {
     if (row.key === header.field) return row.element;
   }
 
-  const value = header.getData ? header.getData(row) : row[header.field];
+  const value =
+    header.type === ColumnType.CUSTOM ? header.getData(row) : row[header.field];
 
-  const isObject = isLabelObject(value);
-  let content = value;
+  const convertDisplayValue = (value: unknown): string => {
+    if (typeof value === "undefined") return "";
 
-  if (Array.isArray(value)) {
-    content = value.join(", ");
-  } else if (header.field === "date" || value instanceof Date) {
-    content = toDateKey(value, false);
-  }
+    if (value == null) return "";
+
+    if (isLabelObject(value)) return value.label;
+
+    if (Array.isArray(value)) return value.join(", ");
+
+    if (value instanceof Date) return toDateKey(value, false) || "";
+
+    return String(value);
+  };
+
   const field =
-    linkField && linkField.find((field) => field.field === header.field);
+    linkField &&
+    linkField.find(
+      (field) =>
+        header.type === ColumnType.FIELD && field.field === header.field,
+    );
+
+  const hasId = (row: any): row is { id: string } => {
+    return row && typeof row === "object" && "id" in row;
+  };
 
   // ① オブジェクトでidを持つ場合
-  if (!form && field && typeof value === "object" && value !== null) {
+  if (!form && field && hasId(value)) {
     if (typeof value.id === "string" && value.id !== "undefined") {
       return (
         <Link
           to={`${field.to}/${value.id}`}
           className="hover:text-blue-600 underline"
         >
-          {isObject ? value.label : content}
+          {convertDisplayValue(value)}
         </Link>
       );
     } else {
-      return isObject ? value.label : content;
+      return convertDisplayValue(value);
     }
   }
 
@@ -52,13 +76,13 @@ const RenderCell = (
           to={`${field.to}/${row._id}`}
           className="hover:text-blue-600 underline"
         >
-          {isObject ? value.label : content}
+          {convertDisplayValue(value)}
         </Link>
       );
     }
   }
 
-  return isObject ? value.label : content;
+  return convertDisplayValue(value);
 };
 
 export default RenderCell;

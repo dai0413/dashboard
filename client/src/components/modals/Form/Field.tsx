@@ -12,18 +12,14 @@ import {
   isSortable,
 } from "../../../types/field";
 
-import { FormTypeMap, ModelType } from "../../../types/models";
+import { FormTypeMap, ModelDataMap, ModelType } from "../../../types/models";
 import {
   convertToOption,
   getDefaultOptions,
-  OptionsMap,
-} from "../../../utils/createOption";
+} from "../../../utils/createOption/createOption";
+import { OptionsMap, OptionType } from "../../../utils/createOption/types/base";
 import { convert } from "../../../lib/convert/DBtoGetted";
-import {
-  ModelDataOptions,
-  OptionArray,
-  OptionTable,
-} from "../../../types/option";
+import { ModelDataOptions, OptionArray } from "../../../types/option";
 
 import { FormFieldDefinition } from "../../../types/form/field";
 import {
@@ -39,6 +35,7 @@ import { X } from "lucide-react";
 import { optionRouteMap, getOptionKey } from "../../../lib/options";
 import { useForm } from "../../../context/form-context";
 import { QuickFilterItem } from "../../../types/table";
+import { ModelDataOptionConfigMap } from "../../../utils/createOption/types/optionTable";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -62,9 +59,11 @@ export const RenderField = <T extends keyof FormTypeMap>({
     field;
   const formDataKey = key as keyof FormTypeMap[T];
 
-  const [optionKey, setOptionKey] = useState<keyof OptionsMap | null>(null);
+  const [optionKey, setOptionKey] = useState<keyof OptionsMap>(
+    OptionType.OPERATOR,
+  );
   const [optionTableData, setOptionTableData] =
-    useState<ModelDataOptions | null>(null);
+    useState<ModelDataOptions<any> | null>(null);
   const [optionIsLoading, setOptionIsLoading] = useState<boolean>(false);
 
   const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
@@ -83,7 +82,7 @@ export const RenderField = <T extends keyof FormTypeMap>({
     filterConditions?: FilterableFieldDefinition[],
     sortConditions?: SortableFieldDefinition[],
     page?: number,
-  ): Promise<ModelDataOptions | undefined> => {
+  ): Promise<ModelDataOptions<OptionsMap[typeof optionKey]> | undefined> => {
     const crudRoutes = optionRouteMap[nextOptionKey];
 
     if (!crudRoutes) {
@@ -98,7 +97,8 @@ export const RenderField = <T extends keyof FormTypeMap>({
       return;
     }
 
-    const optionKey = nextOptionKey as ModelType;
+    const optionKey: keyof ModelDataOptionConfigMap =
+      nextOptionKey as keyof ModelDataOptionConfigMap;
 
     const params: Record<string, any> = {
       getAll: true,
@@ -122,17 +122,20 @@ export const RenderField = <T extends keyof FormTypeMap>({
 
     if (!response) return undefined;
 
-    const getted = convert(optionKey, response.data);
+    const getted = convert(
+      optionKey,
+      response.data as ModelDataMap[typeof optionKey],
+    ) as unknown as ModelDataOptionConfigMap[typeof optionKey]["input"];
 
-    const optionTableData = {
-      option: convertToOption(
-        optionKey,
-        getted as unknown as OptionsMap[T],
-        true,
-      ) as OptionTable,
+    const option: ModelDataOptions<OptionsMap[typeof optionKey]>["option"] =
+      convertToOption(optionKey, getted, true) as unknown as ModelDataOptions<
+        OptionsMap[typeof optionKey]
+      >["option"];
+
+    const optionTableData: ModelDataOptions<OptionsMap[typeof optionKey]> = {
+      option,
       page: page ? page : response.page || 1,
       totalCount: response.totalCount || 1,
-      isLoading: false,
     };
 
     return optionTableData;

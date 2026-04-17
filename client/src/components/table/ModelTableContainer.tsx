@@ -4,7 +4,7 @@ import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { FormTypeMap, ModelType } from "../../types/models";
+import { FormTypeMap, GettedModelDataMap } from "../../types/models";
 
 import { SortProvider, useSort } from "../../context/sort-context";
 import { ModelRouteMap } from "../../types/models";
@@ -21,17 +21,17 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 
-type ModelBase<K extends keyof FormTypeMap> = Omit<
-  TableBase<K>,
+type ModelBase<K extends keyof GettedModelDataMap> = Omit<
+  TableBase<GettedModelDataMap[K], FormTypeMap[K]>,
   "modelType"
 > & {
-  modelType: ModelType;
+  modelType: K;
   contextState: ModelContext<K>;
 };
 
-type TableContainerProps<K extends keyof FormTypeMap> = ModelBase<K>;
+type TableContainerProps<K extends keyof GettedModelDataMap> = ModelBase<K>;
 
-const TableContainer = <K extends keyof FormTypeMap>(
+const TableContainer = <K extends keyof GettedModelDataMap>(
   props: TableContainerProps<K>,
 ) => {
   const { closeSort, sortConditions } = useSort();
@@ -122,7 +122,7 @@ const TableContainer = <K extends keyof FormTypeMap>(
           </div>
         </div>
       ) : items && items?.length > 0 && props.headers ? (
-        <ListView
+        <ListView<GettedModelDataMap[K]>
           modelType={props.modelType}
           data={items}
           totalCount={totalCount}

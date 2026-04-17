@@ -4,7 +4,6 @@ import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { FormTypeMap, ModelType } from "../../types/models";
 import { ModelRouteMap } from "../../types/models";
 import {
   QuickFilterItem,
@@ -44,12 +43,12 @@ type TableForm = {
   selectedKey?: string[];
 };
 
-type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
+type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
   TableOperationFields &
   TablePage &
   TableForm & {
-    headers?: TableHeader[];
-    items?: any[];
+    headers?: TableHeader<T>[];
+    items?: T[];
     itemsLoading?: boolean;
 
     uploadFile?: (
@@ -64,9 +63,9 @@ type Original<K extends ModelType> = Omit<TableBase<K>, "headers"> &
     noItemMessage?: ReactNode;
   };
 
-type TableContainerProps<K extends keyof FormTypeMap> = Original<K>;
+type TableContainerProps<T, F> = Original<T, F>;
 
-const TableContainer = <K extends keyof FormTypeMap>({
+const TableContainer = <K, F>({
   title,
   headers,
   modelType,
@@ -89,7 +88,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
   quickFilterType,
   quickFilterItems,
   noItemMessage,
-}: TableContainerProps<K>) => {
+}: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
@@ -197,7 +196,7 @@ const TableContainer = <K extends keyof FormTypeMap>({
           </div>
         </div>
       ) : items && items?.length > 0 && headers ? (
-        <ListView
+        <ListView<K>
           modelType={modelType ? modelType : undefined}
           data={items}
           totalCount={totalCount}
@@ -227,8 +226,11 @@ const TableContainer = <K extends keyof FormTypeMap>({
   );
 };
 
-const CustomTableContainer = <K extends keyof FormTypeMap>(
-  props: TableContainerProps<K>,
+const CustomTableContainer = <
+  K extends Record<string, any>,
+  F extends Record<string, any>,
+>(
+  props: TableContainerProps<K, F>,
 ) => {
   return (
     <FilterProvider>

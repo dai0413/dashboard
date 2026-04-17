@@ -43,7 +43,7 @@ const OptionProvider = ({ children }: { children: React.ReactNode }) => {
       apiInstance: api,
       backendRoute: route,
       onSuccess: (data: ModelDataMap[T]) => {
-        fetchedItem = createLabel(key, data);
+        fetchedItem = createLabel(key, data as ModelDataMap[typeof key]);
       },
     });
 

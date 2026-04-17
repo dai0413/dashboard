@@ -9,7 +9,7 @@ import { useForm } from "../../../context/form-context";
 import { FilterProvider } from "../../../context/filter-context";
 import { SortProvider } from "../../../context/sort-context";
 import { ListViewProvider } from "../../../context/listView-context";
-import { TableHeader } from "../../../types/table";
+import { ColumnType, TableHeader } from "../../../types/table";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   fields: FormFieldDefinition<T>[];
@@ -31,7 +31,8 @@ const ManyField = <T extends keyof FormTypeMap>({
   };
   const [focus, setFocus] = useState<Focus | null>(null);
 
-  const formData = focus && many?.state[focus.rowIndex];
+  const formData: FormTypeMap[T] | undefined | null =
+    focus && many?.state[focus.rowIndex];
   const formLabel = focus && many?.stateLabel[focus.rowIndex];
 
   const handleSetPage = (p: number) => setPage("formPage", p);
@@ -50,11 +51,13 @@ const ManyField = <T extends keyof FormTypeMap>({
       );
   }
 
-  const headers = fields
+  const headers: TableHeader<FormTypeMap[T]>[] = fields
     ? fields?.map((field) => ({
+        id: field.key as string,
         label: field.label,
-        field: field.key as string,
+        field: field.key as keyof FormTypeMap[T],
         width: field.width,
+        type: ColumnType.FIELD,
       }))
     : [];
 
@@ -67,16 +70,16 @@ const ManyField = <T extends keyof FormTypeMap>({
 
   return (
     <>
-      <ListView
+      <ListView<FormTypeMap[T]>
         pageNation="client"
         data={many?.state.length === 0 ? [{}] : many?.state || []}
         headers={headers}
         renderFieldCell={(
-          header: TableHeader,
+          header: TableHeader<FormTypeMap[T]>,
           formData: FormTypeMap[T],
           rowIndex: number,
         ) => {
-          const field = fields?.find((f) => f.key === header.field);
+          const field = fields?.find((f) => f.key === header.id);
           if (!field) return null;
 
           const targetObj = many?.stateLabel[rowIndex];

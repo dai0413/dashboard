@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { CustomTableContainer } from "../../components/table";
 import {
+  FormTypeMap,
   GettedModelDataMap,
   ModelDataMap,
-  ModelType,
 } from "../../types/models";
 import { api } from "../../context/api-context";
 import { readItemsBase } from "../../lib/api";
@@ -19,15 +19,15 @@ import { Data } from "../../types/types";
 import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
 import { TableFetch } from "../../types/table";
 
-type TableWithFetchProps<T extends ModelType> = Omit<
-  TableFetch<T>,
+type TableWithFetchProps<K extends keyof GettedModelDataMap> = Omit<
+  TableFetch<GettedModelDataMap[K], FormTypeMap[K]>,
   "modelType"
 > &
   TableOperationFields & {
-    modelType: T;
+    modelType: K;
   };
 
-const TableWithFetch = <T extends ModelType>({
+const TableWithFetch = <K extends keyof GettedModelDataMap>({
   pageNation,
   title,
   modelType,
@@ -38,8 +38,8 @@ const TableWithFetch = <T extends ModelType>({
   linkField = [],
   detailLinkValue,
   formInitialData,
-}: TableWithFetchProps<T>) => {
-  const [data, setData] = useState<Data<GettedModelDataMap[T]>>({
+}: TableWithFetchProps<K>) => {
+  const [data, setData] = useState<Data<GettedModelDataMap[K]>>({
     data: [],
     page: 1,
     totalCount: 1,
@@ -69,7 +69,7 @@ const TableWithFetch = <T extends ModelType>({
       apiInstance: api,
       backendRoute: apiRoute,
       params: readParams,
-      onSuccess: (resBody: ResBody<ModelDataMap[T][]>) =>
+      onSuccess: (resBody: ResBody<ModelDataMap[K][]>) =>
         setData({
           data: convert(modelType, resBody.data),
           totalCount: resBody.totalCount ? resBody.totalCount : 1,

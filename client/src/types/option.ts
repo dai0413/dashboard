@@ -5,7 +5,7 @@ export type OptionArray = Array<
 >;
 export type OptionTable<T> = {
   header: TableHeader<T>[];
-  data: OptionArray;
+  data: T[];
 };
 
 export type ModelDataOptions<T> = {

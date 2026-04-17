@@ -30,7 +30,7 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
   return pages;
 }
 
-const ListView = <T extends Record<string, any>>({
+const ListView = <T,>({
   modelType,
   data = [],
   totalCount,

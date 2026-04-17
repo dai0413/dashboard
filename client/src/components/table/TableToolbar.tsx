@@ -16,7 +16,7 @@ import {
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 import { useForm } from "../../context/form-context";
-import { FormTypeMap, ModelType } from "../../types/models";
+import { ModelType } from "../../types/models";
 import { useEffect, useRef, useState } from "react";
 import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
@@ -94,11 +94,11 @@ const AddButton = ({
   );
 };
 
-type TableToolbarProps<K extends keyof FormTypeMap> = {
+type TableToolbarProps<T> = {
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
-  formInitialData?: Partial<FormTypeMap[K]>;
+  formInitialData?: Partial<T>;
   reloadFun?: (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
@@ -106,7 +106,7 @@ type TableToolbarProps<K extends keyof FormTypeMap> = {
   quickFilterItems: QuickFilterItem[];
 };
 
-const TableToolbar = <K extends keyof FormTypeMap>({
+const TableToolbar = <K extends Record<string, any>>({
   modelType,
   uploadFile,
   downloadFile,

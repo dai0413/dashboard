@@ -13,13 +13,14 @@ import { useQuery } from "../../context/query-context";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
 import { DetailFieldDefinition } from "../../types/field";
-import { DataSource, FormStep } from "../../types/form";
+import { DataSource, FormFieldDefinition, FormStep } from "../../types/form";
 import { get } from "lodash";
 import { useModal } from "../../context/modal-context";
 import { FilterProvider } from "../../context/filter-context";
 import { SortProvider } from "../../context/sort-context";
 import { ListViewProvider } from "../../context/listView-context";
 import { isEmptyObject } from "../../utils";
+import { ColumnType, TableHeader } from "../../types/table";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -155,34 +156,48 @@ const Form = <T extends keyof FormTypeMap>() => {
     });
   };
 
-  const confirmBulkDataHeaders = useMemo(() => {
-    const nextConfirmBulkDataHeaders =
+  type ConfirmBulkDataHeader = TableHeader<DisplayRow> & {
+    fieldType: FormFieldDefinition<T>["fieldType"];
+    valueType: FormFieldDefinition<T>["valueType"];
+  };
+
+  const confirmBulkDataHeaders: ConfirmBulkDataHeader[] = useMemo(() => {
+    const nextConfirmBulkDataHeaders: ConfirmBulkDataHeader[] =
       formSteps
         ?.filter((step) => step.many && step.modelType === modelType)
         .flatMap((s) =>
           (s.fields ?? [])
-            .map((field) => ({
-              label: field.label,
-              field: field.key as string,
-              width: field.width,
-              fieldType: field.fieldType,
-              valueType: field.valueType,
-            }))
+            .map(
+              (field) =>
+                ({
+                  type: ColumnType.FIELD,
+                  id: field.key as string,
+                  label: field.label,
+                  field: field.key as string,
+                  width: field.width,
+                  fieldType: field.fieldType,
+                  valueType: field.valueType,
+                }) satisfies ConfirmBulkDataHeader,
+            )
             .filter((h) =>
-              (many?.state ?? []).some((d) => hasNestedKey(d, h.field)),
+              (many?.state ?? []).some((d) =>
+                hasNestedKey(d, h.field as string),
+              ),
             ),
         ) ?? [];
 
     return nextConfirmBulkDataHeaders;
   }, [formSteps, many?.state]);
 
-  const confirmBulkData = useMemo(() => {
+  type DisplayRow = Record<string, string | number | undefined>;
+
+  const confirmBulkData: DisplayRow[] = useMemo(() => {
     return (many?.stateLabel ?? [])
       .map((d) => {
-        const row: Record<string, string | number | undefined> = {};
+        const row: DisplayRow = {};
 
         confirmBulkDataHeaders.forEach((h) => {
-          const key = h.field;
+          const key = h.id;
           const value = get(d, key);
 
           let displayValue: string | number | undefined;

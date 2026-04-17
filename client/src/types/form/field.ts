@@ -1,7 +1,7 @@
 import { FormTypeMap } from "../models";
 import { DataSource } from "./common";
 
-type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T];
+type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
 type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   key: FieldKey<T>;

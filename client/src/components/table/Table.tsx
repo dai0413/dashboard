@@ -6,10 +6,10 @@ import { IconButton } from "../buttons";
 import { useEffect, useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
-import { TableProps } from "../../types/table";
+import { ColumnType, TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
 
-const Table = <T extends Record<string, any>>({
+const Table = <T,>({
   modelType,
   data = [],
   headers = [],
@@ -45,6 +45,14 @@ const Table = <T extends Record<string, any>>({
     return targetData;
   }, [data, itemsPerPage, pageNum]);
 
+  const hasId = (row: any): row is { _id: string } => {
+    return row && typeof row === "object" && "_id" in row;
+  };
+
+  const hasKey = (row: any): row is { key: string } => {
+    return row && typeof row === "object" && "key" in row;
+  };
+
   return (
     <table className="w-full table-fixed border">
       <thead className="sticky top-0 bg-gray-200 z-10">
@@ -55,7 +63,7 @@ const Table = <T extends Record<string, any>>({
           {headers.map((header) => (
             <th
               scope="col"
-              key={header.field}
+              key={header.id}
               className="px-4 py-2 border"
               style={
                 header.width
@@ -121,7 +129,7 @@ const Table = <T extends Record<string, any>>({
       {!isLoading && paginatedData.length > 0 && (
         <tbody>
           {paginatedData.map((row, i) => (
-            <tr key={row._id ?? row.key ?? i}>
+            <tr key={hasId(row) ? row._id : hasKey(row) ? row.key : i}>
               {edit && (
                 <th
                   className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -139,35 +147,40 @@ const Table = <T extends Record<string, any>>({
                 </th>
               )}
               {headers.map((header) => {
-                const value = header.getData
-                  ? header.getData(row)
-                  : row[header.field];
+                const toTitleString = (value: unknown): string => {
+                  if (typeof value === "undefined") return "";
 
-                const title =
-                  typeof value === "boolean"
-                    ? value.toString()
-                    : value instanceof Date
-                      ? toDateKey(value)
-                      : isLabelObject(value)
-                        ? value.label
-                        : value;
+                  if (value == null) return "";
+
+                  if (typeof value === "string") return value;
+
+                  if (typeof value === "boolean") return value.toString();
+
+                  if (value instanceof Date) return toDateKey(value) || "";
+
+                  if (isLabelObject(value)) return value.label;
+
+                  return String(value);
+                };
+
+                const isObject = typeof row === "object" && row !== null;
 
                 return (
                   <td
-                    key={`${header.field}`}
+                    key={header.id}
                     className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
-                      ${selectedKey.includes(row.key) ? "bg-blue-100" : ""}
+                      ${hasKey(row) && selectedKey.includes(row.key) ? "bg-blue-100" : ""}
                       ${
                         edit &&
-                        typeof header.field === "string" &&
-                        selectedKey.includes(header.field)
+                        header.type === ColumnType.FIELD &&
+                        selectedKey.includes(String(header.field))
                           ? "border-2 border-blue-700"
                           : ""
                       }
 
                     `}
-                    title={title}
+                    title={toTitleString(row)}
                     style={{
                       width: `${renderFieldCell ? "200px" : "150px"}`,
                     }}
@@ -179,21 +192,23 @@ const Table = <T extends Record<string, any>>({
                           row,
                           itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
                         )
-                      : RenderCell(header, row, form, linkField)}
+                      : isObject && RenderCell(header, row, form, linkField)}
                   </td>
                 );
               })}
               {detailLink && !form && (
                 <td
                   className={`px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap ${
-                    selectedKey.includes(row.key) ? "bg-blue-100" : ""
+                    hasKey(row) && selectedKey.includes(row.key)
+                      ? "bg-blue-100"
+                      : ""
                   }`}
                   style={{ width: "80px" }}
                 >
                   <button
                     className="underline hover:text-blue-600 cursor-pointer"
                     onClick={() => {
-                      modelType && open(modelType, row._id);
+                      modelType && hasId(row) && open(modelType, row._id);
                     }}
                   >
                     詳細
@@ -203,7 +218,9 @@ const Table = <T extends Record<string, any>>({
               {form && (
                 <td
                   className={`px-4 py-2 border ${
-                    selectedKey.includes(row.key) ? "bg-blue-100" : ""
+                    hasKey(row) && selectedKey.includes(row.key)
+                      ? "bg-blue-100"
+                      : ""
                   }`}
                 >
                   <button
@@ -212,7 +229,7 @@ const Table = <T extends Record<string, any>>({
                     onClick={() => onClick?.(row)}
                   >
                     <div className="flex justify-center items-center">
-                      {selectedKey.includes(row.key) ? (
+                      {hasKey(row) && selectedKey.includes(row.key) ? (
                         <XMarkIcon className="w-6 h-6" />
                       ) : (
                         <PlusCircleIcon className="w-6 h-6" />
