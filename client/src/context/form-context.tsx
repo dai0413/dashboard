@@ -315,9 +315,9 @@ export const FormProvider = <T extends ModelType>({
     if (args.formMode === FormMode.CREATE) {
       setFormMode(FormMode.CREATE);
 
-      if (initialFormData) {
-        setInitialFormData(initialFormData);
-        const data = { ...getDefault(args.modelType), ...initialFormData };
+      if (args.initialFormData) {
+        setInitialFormData(args.initialFormData);
+        const data = { ...getDefault(args.modelType), ...args.initialFormData };
 
         setFormData(data);
         setFormDatas([data]);
