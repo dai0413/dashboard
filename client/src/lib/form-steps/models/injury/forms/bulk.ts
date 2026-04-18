@@ -1,12 +1,7 @@
-import {
-  DataSource,
-  FormStep,
-  FormUpdatePair,
-  StepType,
-} from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { createConfirmationStep } from "../../confirmationStep";
-import { currentTransfer } from "../../utils/onChange/currentTransfer";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { updateTeam } from "../onChanges/updateTeam";
 
 type BaseModel = ModelType.INJURY;
 const baseModel = ModelType.INJURY;
@@ -80,27 +75,7 @@ export const bulk: FormStep<ModelType.INJURY>[] = [
       },
     ],
     many: true,
-    onChange: async (formData, api) => {
-      const { to_team, to_team_name } = await currentTransfer({
-        formData,
-        api,
-      });
-
-      let obj: FormUpdatePair = [];
-      if (to_team_name) {
-        obj.push({
-          key: "team_name",
-          value: to_team_name,
-        });
-      } else if (to_team) {
-        obj.push({
-          key: "team",
-          value: to_team,
-        });
-      }
-
-      return obj;
-    },
+    onChange: updateTeam,
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];
