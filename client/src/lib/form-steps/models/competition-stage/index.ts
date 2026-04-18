@@ -1,7 +1,7 @@
 import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
-import { single } from "./single";
-import { bulk } from "./bulk";
+import { single } from "./forms/single";
+import { bulk } from "./forms/bulk";
 import { ModelType } from "../../../../types/models";
 
 export const competitionStage: FormStepsConfig<ModelType.COMPETITION_STAGE> = {
