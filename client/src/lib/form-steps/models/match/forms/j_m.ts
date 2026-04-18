@@ -23,6 +23,7 @@ import {
 } from "../../../utils/resolver/resolveToValue";
 import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
+import { validateStadiumEitherOne } from "../validations/stadium";
 
 const KEYS = [
   "home_team",
@@ -314,5 +315,6 @@ export const match: FormStep<ModelType.MATCH>[] = [
       "sofaurl",
       "urls",
     ]),
+    validate: validateStadiumEitherOne,
   },
 ];
