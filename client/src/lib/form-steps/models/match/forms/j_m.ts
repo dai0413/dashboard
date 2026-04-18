@@ -10,18 +10,19 @@ import {
   FilterConditionsByKey,
   FormStep,
   StepType,
-} from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { createItemBase, readItemsBase } from "../../../api";
-import { Season } from "../../../../types/models/season";
-import { convert } from "../../../convert/CreateLabel";
-import { CompetitionStage } from "../../../../types/models/competition-stage";
+} from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { createItemBase, readItemsBase } from "../../../../api";
+import { Season } from "../../../../../types/models/season";
+import { convert } from "../../../../convert/CreateLabel";
+import { CompetitionStage } from "../../../../../types/models/competition-stage";
 import { AxiosInstance } from "axios";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../../types/form/draftData";
+} from "../../../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../../../types/form/draftData";
+import { getFields } from "../fields";
 
 const KEYS = [
   "home_team",
@@ -174,15 +175,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "更新する試合の大会ステージを入力",
     type: StepType.FORM,
-    fields: [
-      {
-        key: "competition_stage",
-        label: "大会ステージ",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["competition_stage"]),
   },
   {
     modelType: ModelType.MATCH,
@@ -301,118 +294,25 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "取得したデータを編集してください",
     type: StepType.FORM,
-    fields: [
-      {
-        key: "home_team",
-        label: "ホームチーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "away_team",
-        label: "アウェイチーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "stadium",
-        label: "スタジアム",
-        fieldType: "table",
-        valueType: "option",
-      },
-      {
-        key: "stadium_name",
-        label: "登録外スタジアム",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "match_format",
-        label: "試合形式",
-        fieldType: "table",
-        valueType: "option",
-      },
-      {
-        key: "match_week",
-        label: "節",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "date",
-        label: "日付",
-        fieldType: "input",
-        valueType: "datetime-local",
-      },
-      {
-        key: "audience",
-        label: "観客数",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "home_goal",
-        label: "ホーム得点",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "away_goal",
-        label: "アウェイ得点",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "home_pk_goal",
-        label: "ホームPK得点",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "away_pk_goal",
-        label: "アウェイPK得点",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "weather",
-        label: "天気",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "temperature",
-        label: "気温",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "humidity",
-        label: "湿度",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "transferurl",
-        label: "transferurl",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "sofaurl",
-        label: "sofaurl",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "urls",
-        label: "urls",
-        fieldType: "textarea",
-        valueType: "text",
-        multi: true,
-      },
-    ],
+    fields: getFields([
+      "home_team",
+      "away_team",
+      "stadium",
+      "stadium_name",
+      "match_format",
+      "match_week",
+      "date",
+      "audience",
+      "home_goal",
+      "away_goal",
+      "home_pk_goal",
+      "away_pk_goal",
+      "weather",
+      "temperature",
+      "humidity",
+      "transferurl",
+      "sofaurl",
+      "urls",
+    ]),
   },
 ];

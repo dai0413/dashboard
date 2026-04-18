@@ -2,7 +2,7 @@ import { ModelType } from "../../../../types/models";
 import { From, InputMode } from "../../../../types/types";
 import { getJ_Msteps } from "../../core/getJ_Msteps";
 import { FormStepsConfig } from "../../types";
-import { single } from "./single";
+import { single } from "./forms/single";
 
 export const match: FormStepsConfig<ModelType.MATCH> = {
   [InputMode.SINGLE]: {
