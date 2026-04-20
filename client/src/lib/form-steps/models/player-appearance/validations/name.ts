@@ -2,12 +2,12 @@ import { AlertStatus } from "../../../../../types/alert";
 import { FormTypeMap, ModelType } from "../../../../../types/models";
 import { validateEitherOne } from "../../../utils/validate/eitherOne";
 
-export const validateStadiumEitherOne = (
-  formData: Partial<FormTypeMap[ModelType.MATCH]>,
+export const validatePlayerEitherOne = (
+  formData: Partial<FormTypeMap[ModelType.PLAYER_APPEARANCE]>,
 ): AlertStatus =>
   validateEitherOne(
     formData,
-    "stadium",
-    "stadium_name",
-    "スタジアムは選択、または入力してください",
+    "player",
+    "player_name",
+    "選手は選択、または入力してください",
   );

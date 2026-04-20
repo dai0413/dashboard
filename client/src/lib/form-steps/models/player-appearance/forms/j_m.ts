@@ -4,18 +4,20 @@ import {
 } from "@dai0413/myorg-shared/types/resolver/playerAppearance";
 import { AxiosInstance } from "axios";
 import { API_PATHS, Select } from "@dai0413/myorg-shared";
-import { FormStep, StepType } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { PlayerAppearanceForm } from "../../../../types/models/player-appearance";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { Label } from "../../../../types/types";
-import { createItemBase } from "../../../api";
+import { FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { PlayerAppearanceForm } from "../../../../../types/models/player-appearance";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { Label } from "../../../../../types/types";
+import { createItemBase } from "../../../../api";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../../types/form/draftData";
-import { getSeasons } from "../../utils/getDraftData/getSeasons";
+} from "../../../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../../../types/form/draftData";
+import { getSeasons } from "../../../utils/getDraftData/getSeasons";
+import { getFields } from "../fields";
+import { validatePlayerEitherOne } from "../validations/name";
 
 type CalcWithData = Record<string, any> & {
   start_time?: number;
@@ -154,70 +156,17 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     modelType: ModelType.PLAYER_APPEARANCE,
     stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
     type: StepType.FORM,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "team",
-        label: "チーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "player",
-        label: "選手",
-        fieldType: "table",
-        valueType: "option",
-      },
-      {
-        key: "player_name",
-        label: "登録外選手",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "number",
-        label: "背番号",
-        fieldType: "input",
-        valueType: "number",
-      },
-
-      {
-        key: "play_status",
-        label: "ステータス",
-        fieldType: "select",
-        valueType: "option",
-      },
-      {
-        key: "position",
-        label: "ポジション",
-        fieldType: "select",
-        valueType: "option",
-      },
-      {
-        key: "time",
-        label: "プレイ時間",
-        fieldType: "input",
-        valueType: "number",
-      },
-    ],
-    validate: (data) => {
-      if (!data.player && !data.player_name) {
-        return {
-          success: false,
-          message: "選手を選択・または入力してください",
-        };
-      }
-      return {
-        success: true,
-      };
-    },
+    fields: getFields([
+      "match",
+      "team",
+      "player",
+      "player_name",
+      "number",
+      "play_status",
+      "position",
+      "time",
+    ]),
+    validate: validatePlayerEitherOne,
     many: true,
   },
 ];

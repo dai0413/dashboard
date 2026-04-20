@@ -5,7 +5,7 @@ import { ModelType } from "../../../types/models";
 import { PlayerAppearance } from "../../../types/models/player-appearance";
 import { createConfirmationStep } from "../confirmationStep";
 import { match } from "../models/match/forms/j_m";
-import { playerAppearance } from "../models/player-appearance/j_m";
+import { playerAppearance } from "../models/player-appearance/forms/j_m";
 import { playerMatchEventLog } from "../models/player-match-event-log/j_m";
 import { staffAppearance } from "../models/staff-appearance/j_m";
 import { refereeAppearance } from "../models/referee-appearance/j_m";
