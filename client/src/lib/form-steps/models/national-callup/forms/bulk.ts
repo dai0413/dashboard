@@ -1,0 +1,62 @@
+import {
+  DataSource,
+  FormStep,
+  FormUpdatePair,
+  StepType,
+} from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { getFields } from "../fields";
+import { updateDatesFromSeries } from "../onChanges/updateDatesFromSeries";
+import { updateDatesFromStatus } from "../onChanges/updateDatesFromStatus";
+import { updateTeamFromTransfer } from "../onChanges/updateTeamFromTransfer";
+import { teamCheck } from "../validations/teamCheck";
+
+type BaseModel = ModelType.NATIONAL_CALLUP;
+const baseModel = ModelType.NATIONAL_CALLUP;
+
+export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
+  {
+    stepLabel: "代表試合シリーズを選択",
+    type: StepType.FORM,
+    modelType: baseModel,
+    fields: getFields(["series"]),
+    dataSource: DataSource.BULK_COMMON,
+    onChange: updateDatesFromSeries,
+  },
+  {
+    stepLabel: "選手を選択",
+    type: StepType.FORM,
+    modelType: baseModel,
+    fields: getFields([
+      "position_group",
+      "player",
+      "team",
+      "team_name",
+      "number",
+      "is_captain",
+      "is_overage",
+      "is_backup",
+      "is_training_partner",
+      "is_additional_call",
+      "joined_at",
+      "left_at",
+      "status",
+      "left_reason",
+    ]),
+    many: true,
+    validate: (formData) => teamCheck(formData, "team", "team_name"),
+    onChange: async (formData, api) => {
+      const teamObj = await updateTeamFromTransfer(
+        formData,
+        api,
+        formData.joined_at ? formData.joined_at : undefined,
+      );
+      const dateobj = updateDatesFromStatus(formData);
+
+      const mainobj: FormUpdatePair = [...teamObj, ...dateobj];
+      return mainobj;
+    },
+  },
+  createConfirmationStep<BaseModel>(baseModel),
+];

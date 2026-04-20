@@ -1,7 +1,9 @@
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 import { FormUpdatePair } from "../../../../../types/form";
 
-export function setDate(formData: Partial<NationalCallupForm>): FormUpdatePair {
+export function updateDatesFromStatus(
+  formData: Partial<NationalCallupForm>,
+): FormUpdatePair {
   let obj: FormUpdatePair = [];
 
   if (formData.status) {

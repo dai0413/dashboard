@@ -3,10 +3,10 @@ import { currentTransfer } from "../../../utils/onChange/currentTransfer";
 import { FormUpdatePair } from "../../../../../types/form";
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 
-export async function setTeam(
+export async function updateTeamFromTransfer(
   formData: Partial<NationalCallupForm>,
   api: AxiosInstance,
-  from_date?: string
+  from_date?: string,
 ): Promise<FormUpdatePair> {
   const { to_team, to_team_name } = await currentTransfer({
     formData,

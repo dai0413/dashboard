@@ -6,7 +6,7 @@ import {
 import { country } from "../CreateLabel/country";
 
 export const nationalMatchSeries = (
-  t: NationalMatchSeries
+  t: NationalMatchSeries,
 ): NationalMatchSeriesGet => {
   const age_group = ageGroup().find((item) => item.key === t.age_group)?.label;
 
