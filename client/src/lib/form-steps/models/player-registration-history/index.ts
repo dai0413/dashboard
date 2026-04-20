@@ -1,8 +1,8 @@
 import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
-import { single } from "./single";
-import { bulk } from "./bulk";
-import { d_pc } from "./d_pc";
+import { single } from "./forms/single";
+import { bulk } from "./forms/bulk";
+import { d_pc } from "./forms/d_pc";
 import { ModelType } from "../../../../types/models";
 
 export const playerRegistrationHistory: FormStepsConfig<ModelType.PLAYER_REGISTRATION_HISTORY> =
