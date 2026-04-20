@@ -1,10 +1,10 @@
-import { FormStep, StepType } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { PlayerMatchEventLogForm } from "../../../../types/models/player-match-event-log";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { Label } from "../../../../types/types";
-import { MatchFormatGet } from "../../../../types/models/match-format";
-import { createItemBase } from "../../../api";
+import { FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { PlayerMatchEventLogForm } from "../../../../../types/models/player-match-event-log";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { Label } from "../../../../../types/types";
+import { MatchFormatGet } from "../../../../../types/models/match-format";
+import { createItemBase } from "../../../../api";
 import {
   ResolveInput,
   ResolveOutput,
@@ -13,10 +13,14 @@ import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../../utils/resolver/resolveToValue";
+} from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { DraftDataValue } from "../../../../types/form/draftData";
-import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
+import { DraftDataValue } from "../../../../../types/form/draftData";
+import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
+import { getFields } from "../fields";
+import { combineValidations } from "../../../utils/validate/combine";
+import { validatePlayerRequiredForEvent } from "../validations/player";
+import { validateExclusiveSpecialTime } from "../validations/special_time";
 
 type PeriodLabelArg = {
   time?: number;
@@ -169,98 +173,21 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
       modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
       stepLabel: "詳細を入力",
       type: StepType.FORM,
-      fields: [
-        {
-          key: "match",
-          label: "試合",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-        {
-          key: "team",
-          label: "チーム",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-        {
-          key: "match_event_type",
-          label: "イベントタイプ",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-        {
-          key: "player",
-          label: "選手",
-          fieldType: "table",
-          valueType: "option",
-        },
-        {
-          key: "player_name",
-          label: "登録外選手",
-          fieldType: "input",
-          valueType: "text",
-        },
-        {
-          key: "time",
-          label: "試合全体のうちの時間(後半 20 分は 65 と入力)",
-          fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "add_time",
-          label: "追加タイム",
-          fieldType: "input",
-          valueType: "number",
-        },
-        {
-          key: "special_time",
-          label: "特別時間",
-          fieldType: "select",
-          valueType: "option",
-        },
-        {
-          key: "order",
-          label: "PKなど順番",
-          fieldType: "input",
-          valueType: "number",
-        },
-      ],
-      validate: (data) => {
-        if (
-          data.match_event_type !== "オウンゴール" &&
-          !data.player &&
-          !data.player_name
-        ) {
-          return {
-            success: false,
-            message: "選手を選択・または入力してください",
-          };
-        }
-
-        if (data.special_time) {
-          if (data.time) {
-            return {
-              success: false,
-              message:
-                "特別時間(special_time)を入力する場合はtimeを入力できません",
-            };
-          }
-
-          if (data.add_time) {
-            return {
-              success: false,
-              message:
-                "特別時間(special_time)を入力する場合はadd_timeを入力できません",
-            };
-          }
-        }
-        return {
-          success: true,
-        };
-      },
+      fields: getFields([
+        "match",
+        "team",
+        "match_event_type",
+        "player",
+        "player_name",
+        "time",
+        "add_time",
+        "special_time",
+        "order",
+      ]),
+      validate: combineValidations(
+        validatePlayerRequiredForEvent,
+        validateExclusiveSpecialTime,
+      ),
       many: true,
     },
   ];
