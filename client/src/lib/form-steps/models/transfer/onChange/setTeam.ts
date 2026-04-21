@@ -5,8 +5,9 @@ import { TransferForm } from "../../../../../types/models/transfer";
 
 export async function setTeam(
   formData: Partial<TransferForm>,
-  api: AxiosInstance
+  api?: AxiosInstance,
 ): Promise<FormUpdatePair> {
+  if (!api) return [];
   const { from_team, from_team_name, to_team, to_team_name, position } =
     await currentTransfer({
       formData,

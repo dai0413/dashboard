@@ -15,9 +15,10 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   fields?: FormFieldDefinition<K>[];
   skip?: (data: FormTypeMap[K]) => boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
-  onChange?:
-    | ((data: FormTypeMap[K], api: AxiosInstance) => Promise<FormUpdatePair>)
-    | ((data: FormTypeMap[K]) => FormUpdatePair);
+  onChange?: (
+    data: FormTypeMap[K],
+    api?: AxiosInstance,
+  ) => Promise<FormUpdatePair>;
   createFilterConditions?: CreateFilterConditions<K>;
   createQuickFilterItems?: CreateQuickFilterItems<K>;
   addDraftData?: AddDraftData<K>;

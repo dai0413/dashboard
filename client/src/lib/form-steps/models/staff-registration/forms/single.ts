@@ -24,7 +24,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
     fields: getFields(["staff"]),
     onChange: async (formData, api) => {
       let obj: FormUpdatePair = [];
-      if (!formData.staff) return [];
+      if (!formData.staff || !api) return [];
 
       // name, en_name の設定
       const res = await readItemBase({

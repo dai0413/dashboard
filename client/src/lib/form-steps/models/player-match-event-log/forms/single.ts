@@ -56,7 +56,7 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
 
       const time = data.time;
       const add_time = data.add_time;
-      if (time == null) return [];
+      if (time == null || !api) return [];
 
       const time_name = add_time ? `${time}+${add_time}` : `${time}`;
       obj.push({ key: "time_name", value: time_name });

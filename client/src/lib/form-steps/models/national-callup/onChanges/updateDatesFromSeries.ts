@@ -9,9 +9,9 @@ import { ModelType } from "../../../../../types/models";
 
 export async function updateDatesFromSeries(
   formData: Partial<NationalCallupForm>,
-  api: AxiosInstance,
+  api?: AxiosInstance,
 ): Promise<FormUpdatePair> {
-  if (!formData.series) return [];
+  if (!formData.series || !api) return [];
 
   const res = await readItemBase({
     apiInstance: api,

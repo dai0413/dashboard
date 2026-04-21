@@ -5,8 +5,9 @@ import { currentTransfer } from "../../../utils/onChange/currentTransfer";
 
 export const updateTeam = async (
   formData: FormTypeMap[ModelType.INJURY],
-  api: AxiosInstance,
+  api?: AxiosInstance,
 ) => {
+  if (!api) return [];
   const { to_team, to_team_name } = await currentTransfer({
     formData,
     api,

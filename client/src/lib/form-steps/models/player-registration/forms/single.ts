@@ -24,7 +24,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
     fields: getFields(["player"]),
     onChange: async (formData, api) => {
       let obj: FormUpdatePair = [];
-      if (!formData.player) return [];
+      if (!formData.player || !api) return [];
 
       // name, en_name の設定
       const res = await readItemBase({

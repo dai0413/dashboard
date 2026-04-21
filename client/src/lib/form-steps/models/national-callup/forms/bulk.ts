@@ -52,7 +52,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         api,
         formData.joined_at ? formData.joined_at : undefined,
       );
-      const dateobj = updateDatesFromStatus(formData);
+      const dateobj = await updateDatesFromStatus(formData);
 
       const mainobj: FormUpdatePair = [...teamObj, ...dateobj];
       return mainobj;

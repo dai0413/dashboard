@@ -7,10 +7,10 @@ import { AxiosInstance } from "axios";
 
 export const onChangeFillChangesByRegistrationType = async (
   formData: FormTypeMap[ModelType.STAFF_REGISTRATION_HISTORY],
-  api: AxiosInstance,
+  api?: AxiosInstance,
 ) => {
   let obj: FormUpdatePair = [];
-  if (!formData.staff) return [];
+  if (!formData.staff || !api) return [];
   if (formData.registration_type === "register") {
     // name, en_name の設定
     const res = await readItemBase({

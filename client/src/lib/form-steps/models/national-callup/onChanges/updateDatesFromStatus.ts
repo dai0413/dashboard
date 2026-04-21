@@ -1,9 +1,9 @@
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 import { FormUpdatePair } from "../../../../../types/form";
 
-export function updateDatesFromStatus(
+export async function updateDatesFromStatus(
   formData: Partial<NationalCallupForm>,
-): FormUpdatePair {
+): Promise<FormUpdatePair> {
   let obj: FormUpdatePair = [];
 
   if (formData.status) {
