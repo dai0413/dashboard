@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../types/models";
 import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
-import { single } from "./single";
+import { single } from "./forms/single";
 
 export const season: FormStepsConfig<ModelType.SEASON> = {
   [InputMode.SINGLE]: {
