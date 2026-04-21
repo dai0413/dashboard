@@ -1,8 +1,8 @@
-import { FormStep, StepType } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { RefereeAppearanceForm } from "../../../../types/models/referee-appearance";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { createItemBase } from "../../../api";
+import { FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { RefereeAppearanceForm } from "../../../../../types/models/referee-appearance";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { createItemBase } from "../../../../api";
 import {
   ResolveInput,
   ResolveOutput,
@@ -12,8 +12,10 @@ import { AxiosInstance } from "axios";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../../types/form/draftData";
+} from "../../../utils/resolver/resolveToValue";
+import { DraftDataValue } from "../../../../../types/form/draftData";
+import { getFields } from "../fields";
+import { validateRefereeEitherOne } from "../validations/referee";
 
 const KEYS = ["match", "referee"] as const;
 
@@ -97,44 +99,8 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
     modelType: ModelType.REFEREE_APPEARANCE,
     stepLabel: "詳細を入力",
     type: StepType.FORM,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "referee",
-        label: "審判",
-        fieldType: "table",
-        valueType: "option",
-      },
-      {
-        key: "referee_name",
-        label: "登録外審判",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "role",
-        label: "役割",
-        fieldType: "input",
-        valueType: "text",
-      },
-    ],
-    validate: (data) => {
-      if (!data.referee && !data.referee_name) {
-        return {
-          success: false,
-          message: "審判を選択・または入力してください",
-        };
-      }
-      return {
-        success: true,
-      };
-    },
+    fields: getFields(["match", "referee", "referee_name", "role"]),
+    validate: validateRefereeEitherOne,
     many: true,
   },
 ];
