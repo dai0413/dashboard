@@ -6,7 +6,8 @@ import { AddDraftData, GetDraftData } from "./draftData";
 import { AddPostedDraftData } from "./postedDraftData";
 import { CreateFilterConditions } from "./filter";
 import { CreateQuickFilterItems } from "./quickFilter";
-import { FormUpdatePair, StepType } from "./common";
+import { StepType } from "./common";
+import { OnChange } from "./onChange";
 
 type BaseFormStep<K extends keyof FormTypeMap> = {
   modelType: ModelType;
@@ -15,10 +16,7 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   fields?: FormFieldDefinition<K>[];
   skip?: (data: FormTypeMap[K]) => boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
-  onChange?: (
-    data: FormTypeMap[K],
-    api?: AxiosInstance,
-  ) => Promise<FormUpdatePair>;
+  onChange?: OnChange<FormTypeMap[K]>;
   createFilterConditions?: CreateFilterConditions<K>;
   createQuickFilterItems?: CreateQuickFilterItems<K>;
   addDraftData?: AddDraftData<K>;

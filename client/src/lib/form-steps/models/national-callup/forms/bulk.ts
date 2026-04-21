@@ -1,3 +1,4 @@
+import { AxiosInstance } from "axios";
 import {
   DataSource,
   FormStep,
@@ -6,6 +7,7 @@ import {
 } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { combineOnChanges } from "../../../utils/onChange/combine";
 import { getFields } from "../fields";
 import { updateDatesFromSeries } from "../onChanges/updateDatesFromSeries";
 import { updateDatesFromStatus } from "../onChanges/updateDatesFromStatus";
@@ -46,17 +48,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData, "team", "team_name"),
-    onChange: async (formData, api) => {
-      const teamObj = await updateTeamFromTransfer(
-        formData,
-        api,
-        formData.joined_at ? formData.joined_at : undefined,
-      );
-      const dateobj = await updateDatesFromStatus(formData);
-
-      const mainobj: FormUpdatePair = [...teamObj, ...dateobj];
-      return mainobj;
-    },
+    onChange: combineOnChanges(updateTeamFromTransfer, updateDatesFromStatus),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

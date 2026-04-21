@@ -1,6 +1,7 @@
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { combineOnChanges } from "../../../utils/onChange/combine";
 import { getFields } from "../fields";
 import { setFromDate } from "../onChange/setFromDate";
 import { setTeam } from "../onChange/setTeam";
@@ -15,13 +16,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["form", "player"]),
-    onChange: async (formData, api) => {
-      const teamObj = await setTeam(formData, api);
-
-      const from_dateObj = setFromDate(formData);
-
-      return [...teamObj, ...from_dateObj];
-    },
+    onChange: combineOnChanges(setTeam, setFromDate),
   },
   {
     stepLabel: "移籍元を選択",

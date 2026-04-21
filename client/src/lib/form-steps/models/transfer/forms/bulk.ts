@@ -36,11 +36,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData),
-    onChange: async (formData, api) => {
-      const obj = setTeam(formData, api);
-
-      return obj;
-    },
+    onChange: setTeam,
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];
