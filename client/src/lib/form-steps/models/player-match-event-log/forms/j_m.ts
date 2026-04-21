@@ -21,24 +21,9 @@ import { getFields } from "../fields";
 import { combineValidations } from "../../../utils/validate/combine";
 import { validatePlayerRequiredForEvent } from "../validations/player";
 import { validateExclusiveSpecialTime } from "../../../utils/validate/special_time";
-
-type PeriodLabelArg = {
-  time?: number;
-} & Record<string, any>;
+import { calcPeriodLabel } from "../../../utils/onChange/calcPeriodLabel";
 
 const KEYS = ["match", "player", "team", "match_event_type"] as const;
-
-const calcPeriodLabel = (
-  d: PeriodLabelArg,
-  periods?: MatchFormatGet["period"],
-): string | undefined => {
-  const period_label = periods?.find((p) => {
-    if (p.start == null || p.end == null || !d.time) return false;
-    return Number(p.start) < d.time && d.time <= Number(p.end);
-  })?.period_label;
-
-  return period_label;
-};
 
 const buildResolveInput = (
   draftData: DraftDataValue["playerMatchEventLog"]["home"],
