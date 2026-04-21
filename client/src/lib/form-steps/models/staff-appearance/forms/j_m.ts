@@ -1,21 +1,23 @@
-import { FormStep, StepType } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { StaffAppearanceForm } from "../../../../types/models/staff-appearance";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { Label } from "../../../../types/types";
+import { FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { StaffAppearanceForm } from "../../../../../types/models/staff-appearance";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { Label } from "../../../../../types/types";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
-import { createItemBase } from "../../../api";
+import { createItemBase } from "../../../../api";
 import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   resolveToLabel,
   resolveToValue,
-} from "../../utils/resolver/resolveToValue";
+} from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { DraftDataValue } from "../../../../types/form/draftData";
-import { getSeasons } from "../../utils/getDraftData/getSeasons";
+import { DraftDataValue } from "../../../../../types/form/draftData";
+import { getSeasons } from "../../../utils/getDraftData/getSeasons";
+import { getFields } from "../fields";
+import { validateStaffEitherOne } from "../validations/staff";
 
 const KEYS = ["match", "staff", "team"] as const;
 
@@ -131,51 +133,8 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
     modelType: ModelType.STAFF_APPEARANCE,
     stepLabel: "詳細を入力",
     type: StepType.FORM,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "team",
-        label: "チーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "staff",
-        label: "スタッフ",
-        fieldType: "table",
-        valueType: "option",
-      },
-      {
-        key: "staff_name",
-        label: "登録外スタッフ",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "role",
-        label: "役割",
-        fieldType: "input",
-        valueType: "text",
-      },
-    ],
-    validate: (data) => {
-      if (!data.staff && !data.staff_name) {
-        return {
-          success: false,
-          message: "スタッフを選択・または入力してください",
-        };
-      }
-      return {
-        success: true,
-      };
-    },
+    fields: getFields(["match", "team", "staff", "staff_name", "role"]),
+    validate: validateStaffEitherOne,
     many: true,
   },
 ];
