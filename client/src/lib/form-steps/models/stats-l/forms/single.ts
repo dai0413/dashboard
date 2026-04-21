@@ -1,9 +1,10 @@
 import { numberFields } from "@dai0413/myorg-shared";
-import { FormStep, StepType } from "../../../../types/form";
-import { FormFieldDefinition } from "../../../../types/form/field";
-import { ModelType } from "../../../../types/models";
-import { createConfirmationStep } from "../../confirmationStep";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
+import { FormStep, StepType } from "../../../../../types/form";
+import { FormFieldDefinition } from "../../../../../types/form/field";
+import { ModelType } from "../../../../../types/models";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { getFields } from "../fields";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
@@ -28,30 +29,14 @@ export const single: FormStep<ModelType.STATS_L>[] = [
     stepLabel: "試合を選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["match"]),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
   },
   {
     stepLabel: "チームを選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "team",
-        label: "チーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["team"]),
   },
   {
     stepLabel: "スタッツを入力",
