@@ -1,10 +1,4 @@
-import { AxiosInstance } from "axios";
-import {
-  DataSource,
-  FormStep,
-  FormUpdatePair,
-  StepType,
-} from "../../../../../types/form";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { combineOnChanges } from "../../../utils/onChange/combine";

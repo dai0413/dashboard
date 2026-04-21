@@ -6,14 +6,15 @@ import { AddDraftData, GetDraftData } from "./draftData";
 import { AddPostedDraftData } from "./postedDraftData";
 import { CreateFilterConditions } from "./filter";
 import { CreateQuickFilterItems } from "./quickFilter";
-import { StepType } from "./common";
 import { OnChange } from "./onChange";
+import { DataSource, StepType } from "./common";
 
 type BaseFormStep<K extends keyof FormTypeMap> = {
   modelType: ModelType;
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
+  dataSource?: DataSource;
   skip?: (data: FormTypeMap[K]) => boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
   onChange?: OnChange<FormTypeMap[K]>;

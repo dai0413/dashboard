@@ -72,6 +72,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "更新する試合の大会を入力",
     type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
     fields: [
       {
         key: "competition",
@@ -79,7 +80,6 @@ export const match: FormStep<ModelType.MATCH>[] = [
         fieldType: "table",
         valueType: "option",
         required: true,
-        dataSource: DataSource.META_DATA,
       },
     ],
     createFilterConditions: async ({ metaData, api }) => {
@@ -124,6 +124,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "更新する試合の大会ステージを入力",
     type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
     fields: [
       {
         key: "season",
@@ -131,7 +132,6 @@ export const match: FormStep<ModelType.MATCH>[] = [
         fieldType: "table",
         valueType: "option",
         required: true,
-        dataSource: DataSource.META_DATA,
       },
     ],
     createFilterConditions: async ({ metaData, api }) => {
@@ -182,6 +182,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     modelType: ModelType.MATCH,
     stepLabel: "更新する試合のJ_M:URLを入力",
     type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
     fields: [
       {
         key: "getDataUrl",
@@ -189,14 +190,12 @@ export const match: FormStep<ModelType.MATCH>[] = [
         fieldType: "input",
         valueType: "text",
         required: true,
-        dataSource: DataSource.META_DATA,
       },
       {
         key: "getPositionUrl",
         label: "ポジション取得url",
         fieldType: "input",
         valueType: "text",
-        dataSource: DataSource.META_DATA,
       },
     ],
   },

@@ -11,13 +11,13 @@ export const bulk: FormStep<ModelType.INJURY>[] = [
     stepLabel: "共通要素を入力",
     type: StepType.FORM,
     modelType: baseModel,
+    dataSource: DataSource.BULK_COMMON,
     fields: [
       {
         key: "doa",
         label: "発表日",
         fieldType: "input",
         valueType: "date",
-        dataSource: DataSource.BULK_COMMON,
       },
     ],
   },

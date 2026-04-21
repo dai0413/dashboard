@@ -455,17 +455,23 @@ const Form = <T extends keyof FormTypeMap>() => {
                     key={field.key as string}
                     field={field}
                     formData={
-                      field.dataSource === DataSource.BULK_COMMON
+                      formSteps[currentStep].dataSource ===
+                      DataSource.BULK_COMMON
                         ? many?.bulkCommonData || {}
                         : single.state
                     }
                     formLabel={
-                      field.dataSource === DataSource.BULK_COMMON
+                      formSteps[currentStep].dataSource ===
+                      DataSource.BULK_COMMON
                         ? many?.bulkCommonLabel || {}
                         : stateLabel
                     }
                     handleFormData={(key, value) =>
-                      handleFormData(key, value, field.dataSource)
+                      handleFormData(
+                        key,
+                        value,
+                        formSteps[currentStep].dataSource,
+                      )
                     }
                     supportButton={!formSteps[currentStep].many}
                   />

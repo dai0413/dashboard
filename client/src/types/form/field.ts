@@ -1,5 +1,4 @@
 import { FormTypeMap } from "../models";
-import { DataSource } from "./common";
 
 type FieldKey<T extends keyof FormTypeMap> = keyof FormTypeMap[T] | string;
 
@@ -12,7 +11,6 @@ type FieldDefinitionBase<T extends keyof FormTypeMap> = {
   overwriteByMany?: boolean;
   lengthInArray?: number;
   uniqueInArray?: boolean;
-  dataSource?: DataSource;
 };
 
 type MultiValueField<T extends keyof FormTypeMap> = FieldDefinitionBase<T> & {
