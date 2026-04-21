@@ -4,17 +4,20 @@ import {
   FormUpdatePair,
   QuickFilterItemsByKey,
   StepType,
-} from "../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../types/models";
-import { readItemBase, readItemsBase } from "../../../api";
-import { MatchFormatGet } from "../../../../types/models/match-format";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { convert } from "../../../convert/DBtoGetted";
-import { convert as createLabel } from "../../../convert/CreateLabel";
+} from "../../../../../types/form";
+import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { readItemBase, readItemsBase } from "../../../../api";
+import { MatchFormatGet } from "../../../../../types/models/match-format";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { convert } from "../../../../convert/DBtoGetted";
+import { convert as createLabel } from "../../../../convert/CreateLabel";
 import { AxiosInstance } from "axios";
-import { QuickFilterItem } from "../../../../types/table";
-import { MatchEventType } from "../../../../types/models/match-event-type";
-import { createConfirmationStep } from "../../confirmationStep";
+import { QuickFilterItem } from "../../../../../types/table";
+import { MatchEventType } from "../../../../../types/models/match-event-type";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { getFields } from "../fields";
+import { validateStaffRequiredForEvent } from "../validations/staff";
+import { validateExclusiveSpecialTime } from "../../../utils/validate/special_time";
 
 type BaseModel = ModelType.STAFF_MATCH_EVENT_LOG;
 const baseModel = ModelType.STAFF_MATCH_EVENT_LOG;
@@ -24,15 +27,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
     stepLabel: "試合選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["match"]),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     createQuickFilterItems: async (args) =>
       readMatchEventType(args.data, args.api),
@@ -41,88 +36,27 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
     stepLabel: "イベントタイプ選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "match_event_type",
-        label: "イベントタイプ",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["match_event_type"]),
   },
   {
     stepLabel: "チーム選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "team",
-        label: "チーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["team"]),
   },
   {
     stepLabel: "スタッフ選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "staff",
-        label: "スタッフ",
-        fieldType: "table",
-        valueType: "option",
-      },
-      {
-        key: "staff_name",
-        label: "登録外スタッフ",
-        fieldType: "input",
-        valueType: "text",
-      },
-    ],
-    validate: (data) => {
-      if (
-        data.match_event_type !== "オウンゴール" &&
-        !data.staff &&
-        !data.staff_name
-      ) {
-        return {
-          success: false,
-          message: "スタッフを選択・または入力してください",
-        };
-      }
-      return {
-        success: true,
-      };
-    },
+    fields: getFields(["staff", "staff_name"]),
+    validate: validateStaffRequiredForEvent,
   },
   {
     stepLabel: "時間を入力",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "time",
-        label: "試合全体のうちの時間(後半 20 分は 65 と入力)",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "add_time",
-        label: "追加タイム",
-        fieldType: "input",
-        valueType: "number",
-      },
-      {
-        key: "special_time",
-        label: "特別時間",
-        fieldType: "select",
-        valueType: "option",
-      },
-    ],
+    fields: getFields(["time", "add_time", "special_time"]),
+    validate: validateExclusiveSpecialTime,
     onChange: async (
       data: FormTypeMap[ModelType.STAFF_MATCH_EVENT_LOG],
       api,

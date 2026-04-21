@@ -1,4 +1,4 @@
-import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { FormTypeMap, ModelType } from "../../../../types/models";
 
 export const validateExclusiveSpecialTime = (
   data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],

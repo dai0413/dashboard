@@ -20,7 +20,7 @@ import { PlayerAppearanceGet } from "../../../../../types/models/player-appearan
 import { getFields } from "../fields";
 import { combineValidations } from "../../../utils/validate/combine";
 import { validatePlayerRequiredForEvent } from "../validations/player";
-import { validateExclusiveSpecialTime } from "../validations/special_time";
+import { validateExclusiveSpecialTime } from "../../../utils/validate/special_time";
 
 type PeriodLabelArg = {
   time?: number;

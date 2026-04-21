@@ -8,7 +8,7 @@ import { playerInMatch } from "../../../utils/createQuickFilterItems/player/play
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
 import { validatePlayerRequiredForEvent } from "../validations/player";
-import { validateExclusiveSpecialTime } from "../validations/special_time";
+import { validateExclusiveSpecialTime } from "../../../utils/validate/special_time";
 
 type BaseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
 const baseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
