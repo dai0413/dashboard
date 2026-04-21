@@ -9,7 +9,7 @@ import { playerAppearance } from "../models/player-appearance/forms/j_m";
 import { playerMatchEventLog } from "../models/player-match-event-log/forms/j_m";
 import { staffAppearance } from "../models/staff-appearance/forms/j_m";
 import { refereeAppearance } from "../models/referee-appearance/forms/j_m";
-import { teamMatchFormation } from "../models/team-match-formation/j_m";
+import { teamMatchFormation } from "../models/team-match-formation/forms/j_m";
 import { Match } from "../../../types/models/match";
 import { AddPostedDraftData } from "../../../types/form/postedDraftData";
 

@@ -1,11 +1,12 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormStep, StepType } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { readItemsBase } from "../../../api";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { Formation } from "../../../../types/models/formation";
+import { FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { readItemsBase } from "../../../../api";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { Formation } from "../../../../../types/models/formation";
 import { key } from "@dai0413/myorg-shared/generateField";
-import { DraftData } from "../../../../types/form/draftData";
+import { DraftData } from "../../../../../types/form/draftData";
+import { getFields } from "../fields";
 
 export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
@@ -122,29 +123,7 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     modelType: ModelType.TEAM_MATCH_FORMATION,
     stepLabel: "フォーメーションを入力",
     type: StepType.FORM,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "team",
-        label: "チーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-      {
-        key: "formation",
-        label: "フォーメーション",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["match", "team", "formation"]),
     many: true,
   },
 ];

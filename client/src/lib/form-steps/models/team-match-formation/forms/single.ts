@@ -1,12 +1,13 @@
 import { key } from "@dai0413/myorg-shared/generateField";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormStep, StepType } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
-import { createConfirmationStep } from "../../confirmationStep";
-import { setMatchTeam } from "../../utils/createFilterConditions/setMatchTeam";
-import { readItemsBase } from "../../../api";
-import { Formation } from "../../../../types/models/formation";
-import { PlayerAppearance } from "../../../../types/models/player-appearance";
+import { FormStep, StepType } from "../../../../../types/form";
+import { ModelType } from "../../../../../types/models";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
+import { readItemsBase } from "../../../../api";
+import { Formation } from "../../../../../types/models/formation";
+import { PlayerAppearance } from "../../../../../types/models/player-appearance";
+import { getFields } from "../fields";
 
 type BaseModel = ModelType.TEAM_MATCH_FORMATION;
 const baseModel = ModelType.TEAM_MATCH_FORMATION;
@@ -16,30 +17,14 @@ export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     stepLabel: "試合を選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "match",
-        label: "試合",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["match"]),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
   },
   {
     stepLabel: "チームを選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "team",
-        label: "チーム",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["team"]),
     onChange: async (data, api) => {
       const { match, team } = data;
       if (!match || !team || !api) return [];
@@ -108,15 +93,7 @@ export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     stepLabel: "フォーメーションを選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: [
-      {
-        key: "formation",
-        label: "フォーメーション",
-        fieldType: "table",
-        valueType: "option",
-        required: true,
-      },
-    ],
+    fields: getFields(["formation"]),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];
