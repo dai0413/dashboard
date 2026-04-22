@@ -63,7 +63,7 @@ const Table = <T,>({
           {headers.map((header) => (
             <th
               scope="col"
-              key={header.id}
+              key={`${header.id}-${header.label}`}
               className="px-4 py-2 border"
               style={
                 header.width
@@ -167,7 +167,7 @@ const Table = <T,>({
 
                 return (
                   <td
-                    key={header.id}
+                    key={`${header.id}-${header.label}`}
                     className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${hasKey(row) && selectedKey.includes(row.key) ? "bg-blue-100" : ""}
