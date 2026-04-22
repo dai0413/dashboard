@@ -20,7 +20,7 @@ import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/updateFormValue";
 import { getSteps } from "../lib/form-steps/core/getSteps";
-import { isEmptyObject, objectIsEqual } from "../utils";
+import { objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
 import {
   DetailFieldDefinition,
@@ -84,7 +84,7 @@ type FormContextValue<T extends ModelType> = {
     handleFormData: <K extends keyof FormTypeMap[T]>(
       key: K,
       value: FormTypeMap[T][K] | undefined,
-      dataSource?: DataSource,
+      dataSource: DataSource | undefined,
     ) => void;
     state: Record<string, any>;
     stateLabel: Record<string, any>;
@@ -98,7 +98,7 @@ type FormContextValue<T extends ModelType> = {
       key: K,
       value: FormTypeMap[T][K] | undefined,
     ) => void;
-    addFormDatas: (baseCopy: boolean, setPage?: (p: number) => void) => void;
+    addFormDatas: (setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
     renderConfirmMes: (
       confirmData: Record<string, string | number | undefined>[],
@@ -401,7 +401,7 @@ export const FormProvider = <T extends ModelType>({
     let res: DataResoonse | null = null;
     if (!modelContext || !modelType) return false;
 
-    if (inputMode === "single") {
+    if (inputMode === InputMode.SINGLE) {
       let item: FormTypeMap[T];
       if (modelType === ModelType.MATCH_FORMAT) {
         item = { ...formData, period: formDatas };
@@ -409,7 +409,7 @@ export const FormProvider = <T extends ModelType>({
         item = formData;
       }
 
-      if (formMode === "create") {
+      if (formMode === FormMode.CREATE) {
         res = await modelContext.createItem(item);
       } else {
         const difKeys = getDiffKeys && getDiffKeys();
@@ -432,7 +432,7 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
-    if (inputMode === "many") {
+    if (inputMode === InputMode.MANY) {
       res = await modelContext.createItems(formDatas);
     }
 
@@ -478,10 +478,22 @@ export const FormProvider = <T extends ModelType>({
     const current = formSteps[currentStep];
 
     if (!current) return;
-    setInputMode(current.many ? InputMode.MANY : InputMode.SINGLE);
+    const newInputMode = current.many ? InputMode.MANY : InputMode.SINGLE;
+    setInputMode(newInputMode);
     const onChange = current.onChange;
     const isArray = current.many;
-    const checkData = isArray ? states : state;
+    const checkData =
+      current.dataSource === DataSource.BULK_COMMON
+        ? bulkCommonData
+        : isArray === true
+          ? states
+          : state;
+
+    let newFormData = { ...formData };
+    let newFormLabel = { ...formLabel };
+
+    let newBulkCommonData = bulkCommonData;
+    let newBulkCommonLabel = bulkCommonLabel;
 
     // --- 必須チェック ---
     const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
@@ -503,14 +515,73 @@ export const FormProvider = <T extends ModelType>({
     }
 
     // --- onChange 関数による値変更 ---
-    if (inputMode === "single" && formMode === "create" && onChange) {
-      const updatePaires = await onChange(formData, api);
+    if (onChange) {
+      if (Array.isArray(checkData)) {
+        const results = await Promise.all(
+          formDatas.map(async (value, index) => {
+            const { formData: changedData, formLabel: changedLabel } =
+              await onChange(
+                { ...bulkCommonData, ...value },
+                formLabels[index],
+                api,
+              );
 
-      updatePaires.forEach((da) => {
-        singleHandleFormData(da.key as keyof FormTypeMap[T], da.value);
-      });
+            return {
+              formData: {
+                ...value,
+                ...(changedData ?? {}),
+              },
+              formLabel: {
+                ...formLabels[index],
+                ...(changedLabel ?? {}),
+              },
+            };
+          }),
+        );
+
+        const newFormDatas = results.map((r) => r.formData);
+        const newFormLabels = results.map((r) => r.formLabel);
+
+        setFormDatas(newFormDatas);
+        setFormLabels(newFormLabels);
+      } else {
+        const { formData: onChangedFormData, formLabel: onChangedFormLabel } =
+          await onChange(formData, formLabel, api);
+        newFormData = { ...newFormData, ...onChangedFormData };
+        newFormLabel = { ...newFormLabel, ...onChangedFormLabel };
+
+        setFormData(newFormData);
+        setFormLabel(newFormLabel);
+      }
+
+      // 多数データ入力の共通要素適用
+      if (current.dataSource === DataSource.BULK_COMMON) {
+        const {
+          formData: onChangedBulkCommonData,
+          formLabel: onChangedBulkCommonLabel,
+        } = await onChange(bulkCommonData, bulkCommonLabel, api);
+        newBulkCommonData = {
+          ...newBulkCommonData,
+          ...onChangedBulkCommonData,
+        };
+        newBulkCommonLabel = {
+          ...newBulkCommonLabel,
+          ...onChangedBulkCommonLabel,
+        };
+
+        setBulkCommonData(newBulkCommonData);
+        setBulkCommonLabel(newBulkCommonLabel);
+        setFormDatas([newBulkCommonData]);
+        setFormLabels([newBulkCommonLabel]);
+      }
     }
 
+    if (current.dataSource === DataSource.BULK_COMMON) {
+      setFormDatas([newBulkCommonData]);
+      setFormLabels([newBulkCommonLabel]);
+    }
+
+    // draftData関連
     let newDraftData: DraftData = {};
 
     if (current.addDraftData) {
@@ -559,45 +630,16 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
-    if (current.many && formMode === "create") {
+    if (current.many && formMode === FormMode.CREATE) {
       const fetchValue = current.fetchValue;
-      let arrayCheckData = formDatas;
       if (fetchValue) {
         const fetchedValues = await fetchValue(formData, api);
         setFormDatas(fetchedValues);
-        arrayCheckData = fetchedValues;
         const resolvedLabels = await Promise.all(
           fetchedValues.map((v) => resolveForeignKeyLabels(v)),
         );
         setFormLabels(resolvedLabels);
       }
-
-      if (onChange) {
-        await Promise.all(
-          arrayCheckData.map(async (value, index) => {
-            const updatePaires = await onChange(value, api);
-
-            updatePaires.forEach((da) => {
-              handleFormData(index, da.key as keyof FormTypeMap[T], da.value);
-            });
-          }),
-        );
-      }
-    }
-
-    // --- many入力時の共通要素
-    if (
-      inputMode === "many" &&
-      bulkCommonData &&
-      !isEmptyObject(bulkCommonData) &&
-      current.fields
-    ) {
-      current.fields.forEach((field) => {
-        if (field.dataSource === DataSource.BULK_COMMON) {
-          setFormDatas([bulkCommonData]);
-          setFormLabels([bulkCommonLabel]);
-        }
-      });
     }
 
     let nextStepIndex = Math.min(
@@ -606,7 +648,7 @@ export const FormProvider = <T extends ModelType>({
     );
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    if (inputMode === "single") {
+    if (newInputMode === InputMode.SINGLE) {
       while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
         nextStepIndex++;
       }
@@ -774,7 +816,6 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const addFormDatas = (
-    baseCopy: boolean,
     setPage?: (p: number) => void,
     formData?: FormTypeMap[T],
   ) => {
@@ -784,14 +825,14 @@ export const FormProvider = <T extends ModelType>({
     const newFormDatas = [
       ...formDatas,
       {
-        ...(baseCopy ? baseData : {}),
+        ...baseData,
         ...(formData || {}),
       },
     ];
     const newFormLabels = [
       ...formLabels,
       {
-        ...(baseCopy ? baseLabel : {}),
+        ...baseLabel,
         ...(formData || {}),
       },
     ];
@@ -824,16 +865,31 @@ export const FormProvider = <T extends ModelType>({
   // ////////////////////////////////////////////////////// //
   const autoFill = async (): Promise<void> => {
     const current = formSteps[currentStep];
+    const onChange = current?.onChange;
 
-    if (current?.onChange) {
-      for (const [dataIndex, formData] of formDatas.entries()) {
-        if (!formData) continue;
-        const updatePaires = await current.onChange(formData, api);
+    if (onChange) {
+      const results = await Promise.all(
+        formDatas.map(async (value, index) => {
+          const { formData: changedData, formLabel: changedLabel } =
+            await onChange(value, formLabels[index], api);
 
-        for (const da of updatePaires) {
-          handleFormData(dataIndex, da.key as keyof FormTypeMap[T], da.value);
-        }
-      }
+          return {
+            formData: {
+              ...value,
+              ...(changedData ?? {}),
+            },
+            formLabel: {
+              ...formLabels[index],
+              ...(changedLabel ?? {}),
+            },
+          };
+        }),
+      );
+
+      const newDatas = results.map((r) => r.formData);
+      const newLabels = results.map((r) => r.formLabel);
+      setFormDatas(newDatas);
+      setFormLabels(newLabels);
     }
   };
 
