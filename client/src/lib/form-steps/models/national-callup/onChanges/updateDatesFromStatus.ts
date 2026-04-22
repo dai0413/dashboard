@@ -1,21 +1,27 @@
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
-import { FormUpdatePair } from "../../../../../types/form";
+import { OnChange } from "../../../../../types/form/onChange";
 
-export async function updateDatesFromStatus(
-  formData: Partial<NationalCallupForm>,
-): Promise<FormUpdatePair> {
-  let obj: FormUpdatePair = [];
+export const updateDatesFromStatus: OnChange<NationalCallupForm> = async (
+  formData,
+) => {
+  let newFormData: Partial<NationalCallupForm> = {};
+  let newFormLabel: Partial<Record<string, any>> = {};
 
   if (formData.status) {
     if (formData.status === "declined") {
-      obj.push({ key: "joined_at", value: undefined });
-      obj.push({ key: "left_at", value: undefined });
+      delete newFormData["joined_at"];
+      delete newFormLabel["joined_at"];
+
+      delete newFormData["left_at"];
+      delete newFormLabel["left_at"];
     } else if (formData.status === "withdrawn") {
-      obj.push({ key: "left_at", value: undefined });
+      delete newFormData["left_at"];
+      delete newFormLabel["left_at"];
     } else if (formData.status === "joined") {
-      obj.push({ key: "left_reason", value: undefined });
+      delete newFormData["left_reason"];
+      delete newFormLabel["left_reason"];
     }
   }
 
-  return obj;
-}
+  return { formData: newFormData, formLabel: newFormLabel };
+};

@@ -1,7 +1,10 @@
 import { AxiosInstance } from "axios";
-import { FormUpdatePair } from "./common";
 
 export type OnChange<T> = (
-  data: Partial<T>,
+  formData: T,
+  formLabel: Record<string, any>,
   api?: AxiosInstance,
-) => Promise<FormUpdatePair>;
+) => Promise<{
+  formData: Partial<T>;
+  formLabel: Partial<Record<string, any>>;
+}>;

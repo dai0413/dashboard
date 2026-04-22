@@ -1,16 +1,18 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { OnChange } from "../../../../../types/form/onChange";
-import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { ModelType } from "../../../../../types/models";
 import { readItemBase } from "../../../../api";
 import { convert } from "../../../../convert/DBtoGetted";
-import { FormUpdatePair } from "../../../../../types/form";
+import { PlayerRegistrationForm } from "../../../../../types/models/player-registration";
 
-export const updateName: OnChange<
-  FormTypeMap[ModelType.PLAYER_REGISTRATION]
-> = async (data, api) => {
-  const playerId = data.player;
+export const updateName: OnChange<PlayerRegistrationForm> = async (
+  formData,
+  formLabel,
+  api,
+) => {
+  const playerId = formData.player;
 
-  if (!playerId || !api) return [];
+  if (!playerId || !api) return { formData, formLabel };
 
   const res = await readItemBase({
     apiInstance: api,
@@ -18,14 +20,21 @@ export const updateName: OnChange<
     returnResponse: true,
   });
 
-  if (!res?.data) return [];
+  if (!res?.data) return { formData, formLabel };
 
   const { name, en_name } = convert(ModelType.PLAYER, res.data);
 
-  const updates: FormUpdatePair = [];
+  let returnValue: Partial<PlayerRegistrationForm> = {};
+  let returnFormLabel: Record<string, any> = {};
 
-  if (name) updates.push({ key: "name", value: name });
-  if (en_name) updates.push({ key: "en_name", value: en_name });
+  if (name) {
+    returnValue["name"] = name;
+    returnFormLabel["name"] = name;
+  }
+  if (en_name) {
+    returnValue["en_name"] = en_name;
+    returnFormLabel["en_name"] = en_name;
+  }
 
-  return updates;
+  return { formData: returnValue, formLabel: returnFormLabel };
 };

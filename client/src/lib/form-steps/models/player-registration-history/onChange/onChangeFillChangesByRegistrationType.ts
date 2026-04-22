@@ -1,16 +1,19 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormUpdatePair } from "../../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { ModelType } from "../../../../../types/models";
 import { readItemBase, readItemsBase } from "../../../../api";
 import { convert } from "../../../../convert/DBtoGetted";
-import { AxiosInstance } from "axios";
+import { PlayerRegistrationHistoryForm } from "../../../../../types/models/player-registration-history";
+import { OnChange } from "../../../../../types/form/onChange";
+import { set } from "lodash";
 
-export const onChangeFillChangesByRegistrationType = async (
-  formData: FormTypeMap[ModelType.PLAYER_REGISTRATION_HISTORY],
-  api?: AxiosInstance,
-) => {
-  let obj: FormUpdatePair = [];
-  if (!formData.player || !api) return [];
+export const onChangeFillChangesByRegistrationType: OnChange<
+  PlayerRegistrationHistoryForm
+> = async (formData, formLabel, api?) => {
+  if (!formData.player || !api) return { formData, formLabel };
+
+  let returnValue: Partial<PlayerRegistrationHistoryForm> = {};
+  let returnFormLabel: Record<string, any> = {};
+
   if (formData.registration_type === "register") {
     // name, en_name の設定
     const res = await readItemBase({
@@ -22,22 +25,18 @@ export const onChangeFillChangesByRegistrationType = async (
     const { name, en_name } = convert(ModelType.PLAYER, res.data);
 
     if (name) {
-      obj.push({
-        key: "changes.name",
-        value: name,
-      });
+      returnValue = set(returnValue, "changes.name", name);
+      returnFormLabel["changes.name"] = name;
     }
 
     if (en_name) {
-      obj.push({
-        key: "changes.en_name",
-        value: en_name,
-      });
+      returnValue = set(returnValue, "changes.en_name", en_name);
+      returnFormLabel["changes.en_name"] = en_name;
     }
   }
 
   if (formData.registration_type === "deregister") {
-    if (!formData.season || !formData.team) return [];
+    if (!formData.season || !formData.team) return { formData, formLabel };
     const res = await readItemsBase({
       apiInstance: api,
       backendRoute: API_PATHS.PLAYER_REGISTRATION_HISTORY.ROOT,
@@ -52,8 +51,8 @@ export const onChangeFillChangesByRegistrationType = async (
       returnResponse: true,
     });
 
-    if (!res) return [];
-    if (res.data.length === 0) return [];
+    if (!res) return { formData, formLabel };
+    if (res.data.length === 0) return { formData, formLabel };
 
     const { changes } = convert(
       ModelType.PLAYER_REGISTRATION_HISTORY,
@@ -68,10 +67,13 @@ export const onChangeFillChangesByRegistrationType = async (
     }
 
     if (changes) {
-      const result = flattenChanges(changes);
-      obj.push(...result);
+      const flattedChanges = flattenChanges(changes);
+      flattedChanges.forEach((change) => {
+        returnValue = set(returnValue, change.key, change.value);
+        returnFormLabel[change.key] = change.value;
+      });
     }
   }
 
-  return obj;
+  return { formData: returnValue, formLabel: returnFormLabel };
 };

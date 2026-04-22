@@ -1,13 +1,13 @@
-import { AxiosInstance } from "axios";
 import { currentTransfer } from "../../../utils/onChange/currentTransfer";
-import { FormUpdatePair } from "../../../../../types/form";
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
+import { OnChange } from "../../../../../types/form/onChange";
 
-export async function updateTeamFromTransfer(
-  formData: Partial<NationalCallupForm>,
-  api?: AxiosInstance,
-): Promise<FormUpdatePair> {
-  if (!api) return [];
+export const updateTeamFromTransfer: OnChange<NationalCallupForm> = async (
+  formData,
+  formLabel,
+  api,
+) => {
+  if (!api) return { formData, formLabel };
   const { to_team, to_team_name } = await currentTransfer({
     formData,
     api,
@@ -15,18 +15,16 @@ export async function updateTeamFromTransfer(
     from_date: formData.joined_at || undefined,
   });
 
-  let obj: FormUpdatePair = [];
+  let returnValue: Partial<NationalCallupForm> = {};
+  let returnFormLabel: Record<string, any> = {};
+
   if (to_team_name) {
-    obj.push({
-      key: "team_name",
-      value: to_team_name,
-    });
+    returnValue["team_name"] = to_team_name;
+    returnFormLabel["team_name"] = to_team_name;
   } else if (to_team) {
-    obj.push({
-      key: "team",
-      value: to_team,
-    });
+    returnValue["team"] = to_team.key;
+    returnFormLabel["team"] = to_team.label;
   }
 
-  return obj;
-}
+  return { formData: returnValue, formLabel: returnFormLabel };
+};

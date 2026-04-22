@@ -1,13 +1,23 @@
 import { OnChange } from "../../../../../types/form/onChange";
-import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { PlayerRegistrationForm } from "../../../../../types/models/player-registration";
 import { currentTransfer } from "../../../utils/onChange/currentTransfer";
 
-export const updateTeam: OnChange<
-  FormTypeMap[ModelType.PLAYER_REGISTRATION]
-> = async (data, api) => {
-  if (!data.player || !api) return [];
+export const updateTeam: OnChange<PlayerRegistrationForm> = async (
+  formData,
+  formLabel,
+  api?,
+) => {
+  if (!formData.player || !api) return { formData, formLabel };
 
-  const { to_team } = await currentTransfer({ formData: data, api });
+  const { to_team } = await currentTransfer({ formData: formData, api });
 
-  return to_team ? [{ key: "team", value: to_team }] : [];
+  let returnValue: Partial<PlayerRegistrationForm> = {};
+  let returnFormLabel: Record<string, any> = {};
+
+  if (to_team) {
+    returnValue["team"] = to_team.key;
+    returnFormLabel["team"] = to_team.label;
+  }
+
+  return { formData: returnValue, formLabel: returnFormLabel };
 };

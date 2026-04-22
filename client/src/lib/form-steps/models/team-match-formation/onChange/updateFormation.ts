@@ -4,7 +4,7 @@ import { OnChange } from "../../../../../types/form/onChange";
 import { PlayerAppearance } from "../../../../../types/models/player-appearance";
 import { readItemsBase } from "../../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { FormTypeMap, ModelType } from "../../../../../types/models";
+import { TeamMatchFormationForm } from "../../../../../types/models/team-match-formation";
 
 const fetchPlayerAppearances = async (
   api: AxiosInstance,
@@ -45,27 +45,27 @@ const fetchFormationByKey = async (
 };
 
 export const updateFormationFromLineup: OnChange<
-  FormTypeMap[ModelType.TEAM_MATCH_FORMATION]
-> = async (data, api) => {
-  const matchId = data.match;
-  const teamId = data.team;
+  TeamMatchFormationForm
+> = async (formData, formLabel, api) => {
+  const matchId = formData.match;
+  const teamId = formData.team;
 
-  if (matchId == null || teamId == null || !api) return [];
+  if (matchId == null || teamId == null || !api) return { formData, formLabel };
 
   const playerAppearance = await fetchPlayerAppearances(api, matchId, teamId);
 
-  if (!playerAppearance) return [];
+  if (!playerAppearance) return { formData, formLabel };
 
   const positions = extractPositions(playerAppearance);
 
   const formation = await fetchFormationByKey(api, key(positions));
 
-  if (!formation) return [];
+  if (!formation) return { formData, formLabel };
 
-  return [
-    {
-      key: "formation",
-      value: { key: formation.id, label: formation.label },
-    },
-  ];
+  let returnValue: Partial<TeamMatchFormationForm> = {};
+  let returnFormLabel: Record<string, any> = {};
+  returnValue["formation"] = formation.id;
+  returnFormLabel["formation"] = formation.label;
+
+  return { formData: returnValue, formLabel: returnFormLabel };
 };

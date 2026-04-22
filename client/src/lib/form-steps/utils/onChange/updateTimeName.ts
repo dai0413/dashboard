@@ -1,14 +1,21 @@
-import { FormUpdatePair } from "../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../types/models";
+import { OnChange } from "../../../../types/form/onChange";
+import { PlayerMatchEventLogForm } from "../../../../types/models/player-match-event-log";
 
-export const updateTimeName = async (
-  data: Partial<FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG]>,
-): Promise<FormUpdatePair> => {
-  if (data.time == null) return [];
+export const updateTimeName: OnChange<PlayerMatchEventLogForm> = async (
+  formData,
+  formLabel,
+) => {
+  if (formData.time == null) return { formData, formLabel };
 
-  const time_name = data.add_time
-    ? `${data.time}+${data.add_time}`
-    : `${data.time}`;
+  let returnValue: Partial<PlayerMatchEventLogForm> = {};
+  let returnFormLabel: Record<string, any> = {};
 
-  return [{ key: "time_name", value: time_name }];
+  const time_name = formData.add_time
+    ? `${formData.time}+${formData.add_time}`
+    : `${formData.time}`;
+
+  returnValue["time_name"] = time_name;
+  returnFormLabel["time_name"] = time_name;
+
+  return { formData: returnValue, formLabel: returnFormLabel };
 };

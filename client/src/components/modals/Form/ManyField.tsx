@@ -22,7 +22,7 @@ const ManyField = <T extends keyof FormTypeMap>({
   isTableOpen,
   toggleTableOpen,
 }: RenderFieldProps<T>) => {
-  const { many, inputMode, autoFill } = useForm<T>();
+  const { many, autoFill } = useForm<T>();
 
   const { page, setPage } = useQuery();
   type Focus = {
@@ -130,10 +130,7 @@ const ManyField = <T extends keyof FormTypeMap>({
             icon="add"
             color="blue"
             onClick={() => {
-              many?.addFormDatas(
-                inputMode === "many" ? true : false,
-                handleSetPage,
-              );
+              many?.addFormDatas(handleSetPage);
             }}
           >
             データ追加

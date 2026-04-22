@@ -1,30 +1,25 @@
-import { AxiosInstance } from "axios";
-import { FormUpdatePair } from "../../../../../types/form";
-import { FormTypeMap, ModelType } from "../../../../../types/models";
 import { currentTransfer } from "../../../utils/onChange/currentTransfer";
+import { OnChange } from "../../../../../types/form/onChange";
+import { InjuryForm } from "../../../../../types/models/injury";
 
-export const updateTeam = async (
-  formData: FormTypeMap[ModelType.INJURY],
-  api?: AxiosInstance,
+export const updateTeam: OnChange<InjuryForm> = async (
+  formData,
+  formLabel,
+  api,
 ) => {
-  if (!api) return [];
-  const { to_team, to_team_name } = await currentTransfer({
+  if (!api) return { formData, formLabel };
+  const { to_team } = await currentTransfer({
     formData,
     api,
   });
 
-  let obj: FormUpdatePair = [];
-  if (to_team_name) {
-    obj.push({
-      key: "team_name",
-      value: to_team_name,
-    });
-  } else if (to_team) {
-    obj.push({
-      key: "team",
-      value: to_team,
-    });
+  let returnValue: Partial<InjuryForm> = {};
+  let returnFormLabel: Record<string, any> = {};
+
+  if (to_team) {
+    returnValue["team"] = to_team.key;
+    returnFormLabel["team"] = to_team.label;
   }
 
-  return obj;
+  return { formData: returnValue, formLabel: returnFormLabel };
 };

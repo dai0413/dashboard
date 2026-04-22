@@ -1,17 +1,17 @@
-import { AxiosInstance } from "axios";
-import { FormUpdatePair } from "../../../../../types/form";
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 import { readItemBase } from "../../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 import { convert } from "../../../../convert/DBtoGetted";
 import { ModelType } from "../../../../../types/models";
+import { OnChange } from "../../../../../types/form/onChange";
 
-export async function updateDatesFromSeries(
-  formData: Partial<NationalCallupForm>,
-  api?: AxiosInstance,
-): Promise<FormUpdatePair> {
-  if (!formData.series || !api) return [];
+export const updateDatesFromSeries: OnChange<NationalCallupForm> = async (
+  formData,
+  formLabel,
+  api,
+) => {
+  if (!formData.series || !api) return { formData, formLabel };
 
   const res = await readItemBase({
     apiInstance: api,
@@ -19,33 +19,26 @@ export async function updateDatesFromSeries(
     returnResponse: true,
   });
 
-  if (!res) return [];
+  if (!res) return { formData, formLabel };
 
   const data: NationalMatchSeriesGet = convert(
     ModelType.NATIONAL_MATCH_SERIES,
     res.data,
   );
 
-  if (!data) return [];
+  if (!data) return { formData, formLabel };
 
   const { joined_at, left_at } = data;
 
-  let obj: FormUpdatePair = [];
-  if (joined_at) {
-    obj.push({
-      key: "joined_at",
-      value: joined_at,
-    });
-  }
+  const returnValue = {
+    joined_at: joined_at?.toISOString(),
+    left_at: left_at?.toISOString(),
+  };
 
-  if (left_at) {
-    obj.push({
-      key: "left_at",
-      value: left_at,
-    });
-  }
+  const returnFormLabel = {
+    joined_at,
+    left_at,
+  };
 
-  console.log("obj", obj);
-
-  return obj;
-}
+  return { formData: returnValue, formLabel: returnFormLabel };
+};

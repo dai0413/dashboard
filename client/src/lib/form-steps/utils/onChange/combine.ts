@@ -1,15 +1,25 @@
-import { FormUpdatePair } from "../../../../types/form";
 import { OnChange } from "../../../../types/form/onChange";
 
 export const combineOnChanges =
   <T>(...handlers: OnChange<T>[]): OnChange<T> =>
-  async (data, api) => {
-    const updates: FormUpdatePair = [];
+  async (formData, formLabel, api) => {
+    let currentData = { ...formData };
+    let currentLabel = { ...formLabel };
 
     for (const h of handlers) {
-      const result = await h(data, api);
-      updates.push(...result);
+      const res = await h(currentData, currentLabel, api);
+
+      if (res.formData) {
+        currentData = { ...currentData, ...res.formData };
+      }
+
+      if (res.formLabel) {
+        currentLabel = { ...currentLabel, ...res.formLabel };
+      }
     }
 
-    return updates;
+    return {
+      formData: currentData,
+      formLabel: currentLabel,
+    };
   };
