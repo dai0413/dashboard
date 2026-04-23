@@ -18,6 +18,9 @@ type ListViewContextType = {
 
   itemsPerPage: number | null;
   setItemsPerPage: (n: number | null) => void;
+
+  columnVisibility: Record<string, boolean>;
+  setColumnVisibility: (v: Record<string, boolean>) => void;
 };
 
 const ListViewContext = createContext<ListViewContextType | null>(null);
@@ -28,6 +31,9 @@ const ListViewProvider = ({ children }: { children: ReactNode }) => {
   const [rowSpacing, setRowSpacing] = useState<RowSpacing>("narrow");
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
   const [itemsPerPage, setItemsPerPage] = useState<number | null>(null);
+  const [columnVisibility, setColumnVisibility] = useState<
+    Record<string, boolean>
+  >({});
 
   const triggerUpdate = () => {
     setUpdateTrigger((v) => !v);
@@ -44,6 +50,8 @@ const ListViewProvider = ({ children }: { children: ReactNode }) => {
     triggerUpdate,
     itemsPerPage,
     setItemsPerPage,
+    columnVisibility,
+    setColumnVisibility,
   };
 
   return (

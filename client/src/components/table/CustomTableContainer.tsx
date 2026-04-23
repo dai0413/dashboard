@@ -9,6 +9,7 @@ import {
   QuickFilterItem,
   QuickFilterType,
   TableBase,
+  TableEditProps,
   TableHeader,
   TableOperationFields,
 } from "../../types/table";
@@ -61,7 +62,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     quickFilterType?: QuickFilterType;
     quickFilterItems?: QuickFilterItem[];
     noItemMessage?: ReactNode;
-  };
+  } & TableEditProps<T>;
 
 type TableContainerProps<T, F> = Original<T, F>;
 
@@ -88,11 +89,12 @@ const TableContainer = <K, F>({
   quickFilterType,
   quickFilterItems,
   noItemMessage,
+  renderFieldCell,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
-  const { updateTrigger, itemsPerPage } = useListView();
+  const { updateTrigger, itemsPerPage, setColumnVisibility } = useListView();
 
   const handleApplyFilter = useCallback(
     async (
@@ -118,6 +120,18 @@ const TableContainer = <K, F>({
     },
     [filterField],
   );
+
+  useEffect(() => {
+    const initialVisibility = headers?.reduce(
+      (acc, h) => {
+        acc[h.id] = h.defaultDisplay ?? true;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
+
+    initialVisibility && setColumnVisibility(initialVisibility);
+  }, [headers]);
 
   useEffect(() => {
     const filterConditions = filterField
@@ -182,12 +196,13 @@ const TableContainer = <K, F>({
 
       <Filter filterableField={filterField || []} onApply={handleApplyFilter} />
       <Sort sortableField={sortField || []} onApply={handleApplyFilter} />
-      <TableToolbar
+      <TableToolbar<K, F>
         modelType={modelType}
         uploadFile={uploadFile}
         initialData={initialData}
         reloadFun={reloadFun}
         quickFilterItems={quickFilterItemsParam}
+        headers={headers}
       />
       {itemsLoading || quickFilterLoading ? (
         <div className="flex items-center justify-center py-16">
@@ -211,6 +226,7 @@ const TableContainer = <K, F>({
           form={form}
           onClick={onClick}
           selectedKey={selectedKey}
+          renderFieldCell={renderFieldCell}
         />
       ) : (
         <div className="flex items-center justify-center py-16">

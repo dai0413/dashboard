@@ -1,6 +1,6 @@
 import { FormFieldDefinition } from "../../../types/form/field";
 import { FormTypeMap } from "../../../types/models";
-import { ListView } from "../../table";
+import { CustomTableContainer } from "../../table";
 import { RenderField } from "./Field";
 import { useState } from "react";
 import { IconButton, IconTextButton } from "../../buttons";
@@ -51,11 +51,11 @@ const ManyField = <T extends keyof FormTypeMap>({
       );
   }
 
-  const headers: TableHeader<FormTypeMap[T]>[] = fields
+  const headers: TableHeader<Record<string, any>>[] = fields
     ? fields?.map((field) => ({
         id: field.key as string,
         label: field.label,
-        field: field.key as keyof FormTypeMap[T],
+        field: field.key as keyof Record<string, any>,
         width: field.width,
         type: ColumnType.FIELD,
       }))
@@ -70,13 +70,13 @@ const ManyField = <T extends keyof FormTypeMap>({
 
   return (
     <>
-      <ListView<FormTypeMap[T]>
+      <CustomTableContainer
         pageNation="client"
-        data={many?.state.length === 0 ? [{}] : many?.state || []}
+        items={many?.state.length === 0 ? [{}] : many?.state || []}
         headers={headers}
         renderFieldCell={(
-          header: TableHeader<FormTypeMap[T]>,
-          formData: FormTypeMap[T],
+          header: TableHeader<Record<string, any>>,
+          formData: Record<string, any>,
           rowIndex: number,
         ) => {
           const field = fields?.find((f) => f.key === header.id);
@@ -116,9 +116,8 @@ const ManyField = <T extends keyof FormTypeMap>({
               />
             );
         }}
-        currentPage={page.formPage}
-        onPageChange={(p: number) => setPage("formPage", p)}
-        itemsPerPage={10}
+        pageNum={page.formPage}
+        handlePageChange={async (p: number) => setPage("formPage", p)}
         edit={true}
         deleteOnClick={many?.deleteFormDatas}
         selectedKey={requiredField}

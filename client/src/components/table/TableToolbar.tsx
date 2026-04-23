@@ -4,6 +4,7 @@ import {
   Bars3Icon,
   AdjustmentsVerticalIcon,
   ArrowPathIcon,
+  ViewColumnsIcon,
 } from "@heroicons/react/24/outline";
 
 import {
@@ -27,13 +28,14 @@ import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
 import { useListView } from "../../context/listView-context";
 import { useModal } from "../../context/modal-context";
-import { QuickFilterItem } from "../../types/table";
+import { QuickFilterItem, TableHeader } from "../../types/table";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
 import { FormMode } from "../../types/types";
+import CheckMenuItem from "../ui/CheckMenuItem";
 
 type MenuItem = { label: string; onClick: () => void };
 
@@ -84,6 +86,7 @@ const AddButton = ({
                 setIsAddDropDownOpen((prev) => !prev);
                 openForm();
               }}
+              className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
             >
               {item.label}
             </button>
@@ -94,12 +97,12 @@ const AddButton = ({
   );
 };
 
-type TableToolbarProps<T> = {
+type TableToolbarProps<Data, Form> = {
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
   initialData?: {
-    formData?: Partial<T>;
+    formData?: Partial<Form>;
     metaData?: Record<string, any>;
   };
   reloadFun?: (
@@ -107,16 +110,18 @@ type TableToolbarProps<T> = {
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
   quickFilterItems: QuickFilterItem[];
+  headers?: TableHeader<Data>[];
 };
 
-const TableToolbar = <K extends Record<string, any>>({
+const TableToolbar = <Data, Form>({
   modelType,
   uploadFile,
   downloadFile,
   initialData,
   reloadFun,
   quickFilterItems,
-}: TableToolbarProps<K>) => {
+  headers,
+}: TableToolbarProps<Data, Form>) => {
   const { openFilter, filterConditions } = useFilter();
   const { openSort, sortConditions } = useSort();
   const {
@@ -135,6 +140,8 @@ const TableToolbar = <K extends Record<string, any>>({
     setViewMode,
     triggerUpdate,
     setItemsPerPage,
+    columnVisibility,
+    setColumnVisibility,
   } = useListView();
 
   const {
@@ -153,9 +160,11 @@ const TableToolbar = <K extends Record<string, any>>({
   };
 
   const [isAddDropDownOpen, setIsAddDropDownOpen] = useState<boolean>(false);
-  const [isFolderOpen, SetIsFolderOpen] = useState<boolean>(false);
+  const [isFolderOpen, setIsFolderOpen] = useState<boolean>(false);
+  const [isFieldSelectOpen, setIsFieldSelectOpen] = useState<boolean>(false);
   const addDropdownRef = useRef<HTMLDivElement | null>(null);
   const folderDropdownRef = useRef<HTMLDivElement | null>(null);
+  const fieldSelectRef = useRef<HTMLDivElement | null>(null);
 
   const onClickTable = () => {
     setViewMode("table");
@@ -202,8 +211,13 @@ const TableToolbar = <K extends Record<string, any>>({
         return;
       }
 
+      if (fieldSelectRef.current && fieldSelectRef.current.contains(target)) {
+        return;
+      }
+
       setIsAddDropDownOpen(false);
-      SetIsFolderOpen(false);
+      setIsFolderOpen(false);
+      setIsFieldSelectOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -213,12 +227,12 @@ const TableToolbar = <K extends Record<string, any>>({
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!uploadFile) {
       handleSetAlert({ success: false, message: "未対応のモデルです" });
-      return SetIsFolderOpen(false);
+      return setIsFolderOpen(false);
     }
     const file = e.target.files?.[0];
     if (file) {
       await uploadFile(file);
-      SetIsFolderOpen(false);
+      setIsFolderOpen(false);
 
       triggerUpdate();
     }
@@ -227,10 +241,10 @@ const TableToolbar = <K extends Record<string, any>>({
   const handleDownload = async () => {
     if (!downloadFile) {
       handleSetAlert({ success: false, message: "未対応のモデルです" });
-      return SetIsFolderOpen(false);
+      return setIsFolderOpen(false);
     }
     await downloadFile();
-    SetIsFolderOpen(false);
+    setIsFolderOpen(false);
   };
 
   const folderMenu = [
@@ -261,6 +275,62 @@ const TableToolbar = <K extends Record<string, any>>({
               }),
           };
         })
+    : [];
+
+  const handleSelectAll = (headers: TableHeader<Data>[]) => {
+    const next: Record<string, boolean> = {};
+
+    headers.forEach((h) => {
+      next[h.id] = true;
+    });
+
+    setColumnVisibility(next);
+  };
+
+  const handleClearAll = (headers: TableHeader<Data>[]) => {
+    const next: Record<string, boolean> = {};
+
+    headers.forEach((h) => {
+      next[h.id] = false;
+    });
+
+    setColumnVisibility(next);
+  };
+
+  const fieldSelectMenuItems = headers
+    ? [
+        <button
+          key="select-all"
+          onClick={() => handleSelectAll(headers)}
+          className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+        >
+          すべて表示
+        </button>,
+
+        <button
+          key="clear-all"
+          onClick={() => handleClearAll(headers)}
+          className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+        >
+          すべて非表示
+        </button>,
+
+        <div key="divider" className="border-t my-1" />,
+
+        ...headers.map((h) => (
+          <CheckMenuItem
+            key={h.id}
+            label={h.label}
+            checked={columnVisibility[h.id]}
+            onChange={() =>
+              setColumnVisibility({
+                ...columnVisibility,
+                [h.id]: !columnVisibility[h.id],
+              })
+            }
+          />
+        )),
+      ]
     : [];
 
   const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
@@ -319,6 +389,20 @@ const TableToolbar = <K extends Record<string, any>>({
             <Squares2X2Icon className="w-6 h-6" />
             <span className="hidden lg:inline">タイル</span>
           </button>
+        </div>
+
+        <div className="relative" ref={fieldSelectRef}>
+          <button
+            onClick={() => setIsFieldSelectOpen((prev) => !prev)}
+            className="cursor-pointer flex items-center gap-x-2"
+          >
+            <ViewColumnsIcon className="w-6 h-6" />
+            <span className="hidden lg:inline">フィールド</span>
+          </button>
+
+          {isFieldSelectOpen && (
+            <DropDownMenu menuItems={fieldSelectMenuItems} />
+          )}
         </div>
 
         <button
@@ -397,7 +481,7 @@ const TableToolbar = <K extends Record<string, any>>({
                 className="relative inline-block text-left"
               >
                 <button
-                  onClick={() => SetIsFolderOpen(!isFolderOpen)}
+                  onClick={() => setIsFolderOpen(!isFolderOpen)}
                   className="cursor-pointer flex items-center gap-x-2 text-blue-500"
                   type="button"
                 >

@@ -108,12 +108,13 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
 
       <Filter filterableField={filterField} onApply={handleApplyFilter} />
       <Sort sortableField={sortField} onApply={handleApplyFilter} />
-      <TableToolbar
+      <TableToolbar<GettedModelDataMap[K], FormTypeMap[K]>
         modelType={props.modelType}
         uploadFile={uploadFile}
         downloadFile={downloadFile}
         initialData={props.initialData}
         quickFilterItems={[]}
+        headers={props.headers}
       />
       {tableIsLoading ? (
         <div className="flex items-center justify-center py-16">

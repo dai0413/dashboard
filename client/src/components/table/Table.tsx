@@ -25,13 +25,18 @@ const Table = <T,>({
   renderFieldCell,
   deleteOnClick,
 }: TableProps<T>) => {
-  const { pageNum, rowSpacing, setPageNum } = useListView();
+  const { pageNum, rowSpacing, setPageNum, columnVisibility } = useListView();
 
   const {
     detail: { open },
   } = useModal();
 
   useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
+
+  const visibleHeaders = useMemo(
+    () => headers.filter((h) => columnVisibility[h.id]),
+    [headers, columnVisibility],
+  );
 
   const paginatedData = useMemo(() => {
     const targetData =
@@ -59,7 +64,7 @@ const Table = <T,>({
           {edit && (
             <th className="bg-gray-200 border" style={{ width: "35px" }}></th>
           )}
-          {headers.map((header) => (
+          {visibleHeaders.map((header) => (
             <th
               scope="col"
               key={`${header.id}-${header.label}`}
@@ -88,7 +93,7 @@ const Table = <T,>({
       {!isLoading && paginatedData.length == 0 && (
         <tbody>
           <tr>
-            <td colSpan={headers.length}>
+            <td colSpan={visibleHeaders.length}>
               <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                 <IconButton
                   icon="delete"
@@ -106,7 +111,7 @@ const Table = <T,>({
         <tbody aria-busy={isLoading}>
           {[...Array(itemsPerPage)].map((_, i) => (
             <tr key={i} className="animate-pulse border-t">
-              {headers.map((_, j) => (
+              {visibleHeaders.map((_, j) => (
                 <td key={j} className="px-4 py-2 border">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </td>
@@ -145,7 +150,7 @@ const Table = <T,>({
                   </div>
                 </th>
               )}
-              {headers.map((header) => {
+              {visibleHeaders.map((header) => {
                 const isObject = typeof row === "object" && row !== null;
                 const displayValue = toDisplayValue(header, row);
 

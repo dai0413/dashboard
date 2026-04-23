@@ -24,18 +24,24 @@ export const Tile = <T,>({
   renderFieldCell,
   deleteOnClick,
 }: TableProps<T>) => {
-  const { pageNum, rowSpacing } = useListView();
+  const { pageNum, rowSpacing, columnVisibility } = useListView();
 
   const {
     detail: { open },
   } = useModal();
 
-  const primaryHeaders = headers.filter((h) => h.isPrimary);
+  const visibleHeaders = useMemo(
+    () => headers.filter((h) => columnVisibility[h.id]),
+    [headers, columnVisibility],
+  );
+  const primaryHeaders = visibleHeaders.filter((h) => h.isPrimary);
 
   const fallbackPrimary =
-    primaryHeaders.length > 0 ? primaryHeaders : headers.slice(0, 1);
+    primaryHeaders.length > 0 ? primaryHeaders : visibleHeaders.slice(0, 1);
 
-  const secondaryHeaders = headers.filter((h) => !fallbackPrimary.includes(h));
+  const secondaryHeaders = visibleHeaders.filter(
+    (h) => !fallbackPrimary.includes(h),
+  );
 
   const [openKeys, setOpenKeys] = useState<(string | undefined)[]>([]);
 

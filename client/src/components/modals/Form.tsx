@@ -8,17 +8,19 @@ import { useForm } from "../../context/form-context";
 import { useMemo, useState } from "react";
 import { RenderField } from "./Form/Field";
 import RenderManyField from "./Form/ManyField";
-import { ListView } from "../table/";
+import { CustomTableContainer } from "../table/";
 import { useQuery } from "../../context/query-context";
 import { FieldList } from "../modals/index";
 import { FieldListData } from "../../types/types";
 import { DetailFieldDefinition } from "../../types/field";
-import { DataSource, FormFieldDefinition, FormStep } from "../../types/form";
+import {
+  DataSource,
+  FormFieldDefinition,
+  FormStep,
+  StepType,
+} from "../../types/form";
 import { get } from "lodash";
 import { useModal } from "../../context/modal-context";
-import { FilterProvider } from "../../context/filter-context";
-import { SortProvider } from "../../context/sort-context";
-import { ListViewProvider } from "../../context/listView-context";
 import { isEmptyObject } from "../../utils";
 import { ColumnType, TableHeader } from "../../types/table";
 
@@ -187,7 +189,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         ) ?? [];
 
     return nextConfirmBulkDataHeaders;
-  }, [formSteps, many?.state]);
+  }, [formSteps, many?.state, currentStep]);
 
   type DisplayRow = Record<string, string | number | undefined>;
 
@@ -220,7 +222,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         return row;
       })
       .filter((row) => Object.keys(row).length > 0);
-  }, [many?.stateLabel]);
+  }, [many?.stateLabel, confirmBulkDataHeaders]);
 
   const data: FieldListData = {};
   displayableField.forEach((display) => {
@@ -369,7 +371,7 @@ const Form = <T extends keyof FormTypeMap>() => {
     >
       {!formSteps || formSteps.length === 0 ? null : (
         <>
-          {formSteps[currentStep].type === "confirm" ? (
+          {formSteps[currentStep].type === StepType.CONFIRM ? (
             <div className="space-y-2 text-sm text-gray-700">
               {formMode === "update" &&
                 alert.success &&
@@ -412,20 +414,15 @@ const Form = <T extends keyof FormTypeMap>() => {
 
                   {many?.renderConfirmMes(confirmBulkData)}
 
-                  <FilterProvider>
-                    <SortProvider>
-                      <ListViewProvider>
-                        <ListView
-                          pageNation="client"
-                          data={confirmBulkData || []}
-                          headers={confirmBulkDataHeaders || []}
-                          currentPage={page.formPage}
-                          onPageChange={(p: number) => setPage("formPage", p)}
-                          itemsPerPage={10}
-                        />
-                      </ListViewProvider>
-                    </SortProvider>
-                  </FilterProvider>
+                  <CustomTableContainer
+                    pageNation="client"
+                    items={confirmBulkData || []}
+                    headers={confirmBulkDataHeaders || []}
+                    pageNum={page.formPage}
+                    handlePageChange={async (p: number) =>
+                      setPage("formPage", p)
+                    }
+                  />
                 </>
               )}
             </div>
