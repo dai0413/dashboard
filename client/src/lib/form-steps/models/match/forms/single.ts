@@ -1,6 +1,7 @@
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
 import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
 
@@ -13,6 +14,7 @@ export const single: FormStep<ModelType.MATCH>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["competition_stage"]),
+    createFilterConditions: setTeamByCompetition,
   },
   {
     stepLabel: "ホームチームを選択",

@@ -24,6 +24,7 @@ import {
 import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
+import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
 
 const KEYS = [
   "home_team",
@@ -177,6 +178,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     stepLabel: "更新する試合の大会ステージを入力",
     type: StepType.FORM,
     fields: getFields(["competition_stage"]),
+    createFilterConditions: setTeamByCompetition,
   },
   {
     modelType: ModelType.MATCH,
