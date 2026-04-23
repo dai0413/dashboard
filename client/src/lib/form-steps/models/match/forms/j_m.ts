@@ -5,14 +5,9 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
 
-import {
-  DataSource,
-  FilterConditionsByKey,
-  FormStep,
-  StepType,
-} from "../../../../../types/form";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
-import { createItemBase, readItemsBase } from "../../../../api";
+import { createItemBase } from "../../../../api";
 import { Season } from "../../../../../types/models/season";
 import { convert } from "../../../../convert/CreateLabel";
 import { CompetitionStage } from "../../../../../types/models/competition-stage";
@@ -25,6 +20,7 @@ import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
 import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
+import { createFilterFromParent } from "../../../utils/createFilterConditions/createFilterFromParent";
 
 const KEYS = [
   "home_team",
@@ -84,46 +80,22 @@ export const match: FormStep<ModelType.MATCH>[] = [
       },
     ],
     createFilterConditions: async ({ metaData, api }) => {
-      const competition = metaData?.competition;
-
-      if (!competition || !api) return null;
-
-      const resBody = await readItemsBase({
-        apiInstance: api,
-        params: { competition: competition as string },
-        backendRoute: API_PATHS.SEASON.ROOT,
-        returnResponse: true,
+      if (!metaData || !metaData.competition || !api) return null;
+      return createFilterFromParent({
+        readItemParams: {
+          apiInstance: api,
+          params: { competition: metaData.competition as string },
+          backendRoute: API_PATHS.SEASON.ROOT,
+        },
+        convertValueLabel: (data: Season) => convert(ModelType.SEASON, data),
+        filterKey: "season",
+        label: "シーズン",
       });
-
-      if (!resBody || !resBody.data) return null;
-
-      const seasons: Season[] = resBody.data;
-
-      const seasonIds = seasons.map((s) => s._id);
-      const seasonValueLabels = seasons.map((s) =>
-        convert(ModelType.SEASON, s),
-      );
-      let returnObj: FilterConditionsByKey | null = {
-        season: [
-          {
-            key: "_id",
-            label: "シーズン",
-            type: "string",
-            filterKey: "season",
-            filterable: true,
-            value: seasonIds,
-            valueLabel: seasonValueLabels,
-            operator: "equals",
-          },
-        ],
-      };
-
-      return returnObj;
     },
   },
   {
     modelType: ModelType.MATCH,
-    stepLabel: "更新する試合の大会ステージを入力",
+    stepLabel: "更新する試合のシーズンを入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
     fields: [
@@ -136,41 +108,18 @@ export const match: FormStep<ModelType.MATCH>[] = [
       },
     ],
     createFilterConditions: async ({ metaData, api }) => {
-      const season = metaData?.season;
-
-      if (!season || !api) return null;
-
-      const resBody = await readItemsBase({
-        apiInstance: api,
-        params: { season: season as string },
-        backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
-        returnResponse: true,
+      if (!metaData || !metaData.season || !api) return null;
+      return createFilterFromParent({
+        readItemParams: {
+          apiInstance: api,
+          params: { season: metaData.season as string },
+          backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
+        },
+        convertValueLabel: (data: CompetitionStage) =>
+          convert(ModelType.COMPETITION_STAGE, data),
+        filterKey: "competition-stage",
+        label: "大会ステージ",
       });
-
-      if (!resBody || !resBody.data) return null;
-
-      const competitionStages: CompetitionStage[] = resBody.data;
-
-      const competitionStageIds = competitionStages.map((s) => s._id);
-      const competitionStageValueLabels = competitionStages.map((s) =>
-        convert(ModelType.COMPETITION_STAGE, s),
-      );
-      let returnObj: FilterConditionsByKey | null = {
-        "competition-stage": [
-          {
-            key: "_id",
-            label: "シーズン",
-            type: "string",
-            filterKey: "competitionStage",
-            filterable: true,
-            value: competitionStageIds,
-            valueLabel: competitionStageValueLabels,
-            operator: "equals",
-          },
-        ],
-      };
-
-      return returnObj;
     },
   },
   {

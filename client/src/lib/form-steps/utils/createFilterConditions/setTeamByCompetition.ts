@@ -57,6 +57,9 @@ export const setTeamByCompetition: CreateFilterConditions<
   if (!resBody || !resBody.data) return null;
 
   const teamCompetitionSeasons: TeamCompetitionSeason[] = resBody.data;
+
+  if (teamCompetitionSeasons.length === 0) return null;
+
   const values = teamCompetitionSeasons.map((teamCompetitionSeason) => {
     return teamCompetitionSeason.team._id;
   });
