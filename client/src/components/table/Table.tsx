@@ -1,13 +1,12 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { isLabelObject } from "../../utils";
 import { IconButton } from "../buttons";
 import { useEffect, useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { ColumnType, TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
+import { toDisplayValue } from "../../utils/toDisplayValue";
 
 const Table = <T,>({
   modelType,
@@ -147,23 +146,8 @@ const Table = <T,>({
                 </th>
               )}
               {headers.map((header) => {
-                const toTitleString = (value: unknown): string => {
-                  if (typeof value === "undefined") return "";
-
-                  if (value == null) return "";
-
-                  if (typeof value === "string") return value;
-
-                  if (typeof value === "boolean") return value.toString();
-
-                  if (value instanceof Date) return toDateKey(value) || "";
-
-                  if (isLabelObject(value)) return value.label;
-
-                  return String(value);
-                };
-
                 const isObject = typeof row === "object" && row !== null;
+                const displayValue = toDisplayValue(header, row);
 
                 return (
                   <td
@@ -180,7 +164,7 @@ const Table = <T,>({
                       }
 
                     `}
-                    title={toTitleString(row)}
+                    title={displayValue}
                     style={{
                       width: `${renderFieldCell ? "200px" : "150px"}`,
                     }}
@@ -192,7 +176,8 @@ const Table = <T,>({
                           row,
                           itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
                         )
-                      : isObject && RenderCell(header, row, form, linkField)}
+                      : isObject &&
+                        RenderCell(displayValue, header, row, form, linkField)}
                   </td>
                 );
               })}

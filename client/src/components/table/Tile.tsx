@@ -1,12 +1,11 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
-import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { isLabelObject } from "../../utils";
 import { useEffect, useMemo, useState } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
-import { ColumnType, TableProps } from "../../types/table";
+import { TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
+import { toDisplayValue } from "../../utils/toDisplayValue";
 
 export const Tile = <T,>({
   modelType,
@@ -116,11 +115,20 @@ export const Tile = <T,>({
             <div className="flex items-center justify-between">
               <div className="flex gap-4 text-sm">
                 {fallbackPrimary.map((header) => {
+                  const displayValue = toDisplayValue(header, row);
+
                   return (
                     <div key={header.id} className="flex gap-2">
                       <span className="text-gray-500">{header.label}</span>
                       <span className="font-medium">
-                        {isObject && RenderCell(header, row, form, linkField)}
+                        {isObject &&
+                          RenderCell(
+                            displayValue,
+                            header,
+                            row,
+                            form,
+                            linkField,
+                          )}
                       </span>
                     </div>
                   );
@@ -167,25 +175,13 @@ export const Tile = <T,>({
             {isOpen && (
               <div className="mt-3 space-y-1 border-t pt-2">
                 {secondaryHeaders.map((header) => {
-                  const value =
-                    header.type === ColumnType.CUSTOM
-                      ? header.getData(row)
-                      : (row as any)[header.field];
-
-                  const title =
-                    typeof value === "boolean"
-                      ? value.toString()
-                      : value instanceof Date
-                        ? toDateKey(value)
-                        : isLabelObject(value)
-                          ? value.label
-                          : value;
+                  const displayValue = toDisplayValue(header, row);
 
                   return (
                     <div
                       key={header.id}
                       className="flex justify-between text-sm"
-                      title={title}
+                      title={displayValue}
                     >
                       <span className="text-gray-500">{header.label}</span>
                       <span className="font-medium text-right ml-2">
@@ -199,7 +195,13 @@ export const Tile = <T,>({
                                 : index,
                             )
                           : isObject &&
-                            RenderCell(header, row, form, linkField)}
+                            RenderCell(
+                              displayValue,
+                              header,
+                              row,
+                              form,
+                              linkField,
+                            )}
                       </span>
                     </div>
                   );

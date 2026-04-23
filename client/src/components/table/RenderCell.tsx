@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
-import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { LinkField } from "../../types/types";
 import { ColumnType, TableHeader } from "../../types/table";
-import { isLabelObject } from "../../utils";
 import React from "react";
 
 type BaseRow = {
@@ -11,6 +9,7 @@ type BaseRow = {
 };
 
 const RenderCell = <T extends BaseRow>(
+  displayValue: string,
   header: TableHeader<T>,
   row: T,
   form: boolean,
@@ -27,26 +26,8 @@ const RenderCell = <T extends BaseRow>(
   const value =
     header.type === ColumnType.CUSTOM ? header.getData(row) : row[header.field];
 
-  const convertDisplayValue = (value: unknown): string => {
-    if (typeof value === "undefined") return "";
-
-    if (value == null) return "";
-
-    if (isLabelObject(value)) return value.label;
-
-    if (Array.isArray(value)) return value.join(", ");
-
-    if (value instanceof Date) return toDateKey(value, false) || "";
-
-    return String(value);
-  };
-
   const field =
-    linkField &&
-    linkField.find(
-      (field) =>
-        header.type === ColumnType.FIELD && field.field === header.field,
-    );
+    linkField && linkField.find((field) => field.field === header.id);
 
   const hasId = (row: any): row is { id: string } => {
     return row && typeof row === "object" && "id" in row;
@@ -60,11 +41,11 @@ const RenderCell = <T extends BaseRow>(
           to={`${field.to}/${value.id}`}
           className="hover:text-blue-600 underline"
         >
-          {convertDisplayValue(value)}
+          {displayValue}
         </Link>
       );
     } else {
-      return convertDisplayValue(value);
+      return displayValue;
     }
   }
 
@@ -76,13 +57,13 @@ const RenderCell = <T extends BaseRow>(
           to={`${field.to}/${row._id}`}
           className="hover:text-blue-600 underline"
         >
-          {convertDisplayValue(value)}
+          {displayValue}
         </Link>
       );
     }
   }
 
-  return convertDisplayValue(value);
+  return displayValue;
 };
 
 export default RenderCell;
