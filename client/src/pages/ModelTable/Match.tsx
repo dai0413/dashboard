@@ -13,18 +13,26 @@ const Match = () => {
       <ModelTableContainer
         title={"試合情報"}
         headers={[
-          { label: "日付", field: "date", type: ColumnType.FIELD, id: "date" },
+          {
+            label: "日付",
+            field: "date",
+            type: ColumnType.FIELD,
+            id: "date",
+            defaultDisplay: true,
+          },
           {
             label: "シーズン",
             field: "season",
             type: ColumnType.FIELD,
             id: "season",
+            defaultDisplay: true,
           },
           {
             label: "大会",
             field: "competition",
             type: ColumnType.FIELD,
             id: "competition",
+            defaultDisplay: true,
           },
           {
             label: "ステージ",
@@ -32,6 +40,7 @@ const Match = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "competition_stage",
+            defaultDisplay: true,
           },
           {
             label: "節",
@@ -39,16 +48,19 @@ const Match = () => {
             width: "80px",
             type: ColumnType.FIELD,
             id: "match_week",
+            defaultDisplay: true,
           },
           {
             label: "ホーム",
             field: "home_team",
             type: ColumnType.FIELD,
             id: "home_team",
+            defaultDisplay: true,
           },
           {
             label: "結果",
             id: "result",
+            defaultDisplay: true,
             getData: (d: MatchGet) => {
               // ゴール数がある場合
               const score =
@@ -71,6 +83,7 @@ const Match = () => {
             field: "away_team",
             type: ColumnType.FIELD,
             id: "away_team",
+            defaultDisplay: true,
           },
         ]}
         contextState={context}

@@ -12,6 +12,7 @@ type Base = {
   label: string;
   width?: string;
   isPrimary?: boolean;
+  defaultDisplay: boolean;
 };
 
 type FieldHeader<T> = Base & {

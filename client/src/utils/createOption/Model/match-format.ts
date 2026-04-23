@@ -15,7 +15,13 @@ export const matchFormat = (
   if (table === true) {
     return {
       header: [
-        { label: "名前", field: "label", type: ColumnType.FIELD, id: "label" },
+        {
+          label: "名前",
+          field: "label",
+          type: ColumnType.FIELD,
+          id: "label",
+          defaultDisplay: true,
+        },
       ],
       data: options,
     };

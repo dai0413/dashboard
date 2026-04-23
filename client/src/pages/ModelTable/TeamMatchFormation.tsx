@@ -17,18 +17,21 @@ const TeamMatchFormation = () => {
             field: "match",
             type: ColumnType.FIELD,
             id: "match",
+            defaultDisplay: true,
           },
           {
             label: "チーム",
             field: "team",
             type: ColumnType.FIELD,
             id: "team",
+            defaultDisplay: true,
           },
           {
             label: "フォーメーション",
             field: "formation",
             type: ColumnType.FIELD,
             id: "formation",
+            defaultDisplay: true,
           },
         ]}
         contextState={teamMatchFormation}

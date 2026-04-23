@@ -13,29 +13,50 @@ const Staff = () => {
       <ModelTableContainer
         title={"監督・コーチ情報"}
         headers={[
-          { label: "名前", field: "name", type: ColumnType.FIELD, id: "name" },
+          {
+            label: "名前",
+            field: "name",
+            type: ColumnType.FIELD,
+            id: "name",
+            defaultDisplay: true,
+          },
           {
             label: "英名",
             field: "en_name",
             type: ColumnType.FIELD,
             id: "en_name",
+            defaultDisplay: true,
           },
           {
             label: "生年月日",
             field: "dob",
             type: ColumnType.FIELD,
             id: "dob",
+            defaultDisplay: true,
           },
-          { label: "出身地", field: "pob", type: ColumnType.FIELD, id: "pob" },
+          {
+            label: "出身地",
+            field: "pob",
+            type: ColumnType.FIELD,
+            id: "pob",
+            defaultDisplay: true,
+          },
           {
             label: "国籍",
             id: "citizenship",
+            defaultDisplay: true,
             getData: (data: StaffGet) => {
               return data.citizenship?.map((c) => c.label).join(",") || "";
             },
             type: ColumnType.CUSTOM,
           },
-          { label: "選手", field: "player", type: ColumnType.FIELD, id: "" },
+          {
+            label: "選手",
+            field: "player",
+            type: ColumnType.FIELD,
+            id: "player",
+            defaultDisplay: true,
+          },
         ]}
         contextState={staffContext}
         modelType={ModelType.STAFF}

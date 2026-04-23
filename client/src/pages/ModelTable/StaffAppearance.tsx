@@ -17,20 +17,29 @@ const StaffAppearance = () => {
             field: "match",
             type: ColumnType.FIELD,
             id: "match",
+            defaultDisplay: true,
           },
           {
             label: "スタッフ",
             field: "staff",
             type: ColumnType.FIELD,
             id: "staff",
+            defaultDisplay: true,
           },
           {
             label: "チーム",
             field: "team",
             type: ColumnType.FIELD,
             id: "team",
+            defaultDisplay: true,
           },
-          { label: "役割", field: "role", type: ColumnType.FIELD, id: "role" },
+          {
+            label: "役割",
+            field: "role",
+            type: ColumnType.FIELD,
+            id: "role",
+            defaultDisplay: true,
+          },
         ]}
         contextState={staffAppearanceContext}
         modelType={ModelType.STAFF_APPEARANCE}

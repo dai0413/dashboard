@@ -135,30 +135,35 @@ const National = () => {
               field: "player",
               type: ColumnType.FIELD,
               id: "player",
+              defaultDisplay: true,
             },
             {
               label: "所属チーム",
               field: "team",
               type: ColumnType.FIELD,
               id: "team",
+              defaultDisplay: true,
             },
             {
               label: "招集状況",
               field: "status",
               type: ColumnType.FIELD,
               id: "status",
+              defaultDisplay: true,
             },
             {
               label: "背番号",
               field: "number",
               type: ColumnType.FIELD,
               id: "number",
+              defaultDisplay: true,
             },
             {
               label: "ポジション",
               field: "position_group",
               type: ColumnType.FIELD,
               id: "position_group",
+              defaultDisplay: true,
             },
           ]}
           fetch={{

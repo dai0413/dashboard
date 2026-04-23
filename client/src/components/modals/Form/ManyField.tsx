@@ -58,6 +58,7 @@ const ManyField = <T extends keyof FormTypeMap>({
         field: field.key as keyof Record<string, any>,
         width: field.width,
         type: ColumnType.FIELD,
+        defaultDisplay: true,
       }))
     : [];
 

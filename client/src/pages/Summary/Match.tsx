@@ -127,6 +127,7 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "number",
+              defaultDisplay: true,
             },
             {
               label: "ステータス",
@@ -134,12 +135,14 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "play_status",
+              defaultDisplay: true,
             },
             {
               label: "選手",
               field: "player",
               type: ColumnType.FIELD,
               id: "player",
+              defaultDisplay: true,
             },
             {
               label: "ポジション",
@@ -147,6 +150,7 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "position",
+              defaultDisplay: true,
             },
             {
               label: "時間",
@@ -154,6 +158,7 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "time",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -191,6 +196,7 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "number",
+              defaultDisplay: true,
             },
             {
               label: "ステータス",
@@ -198,12 +204,14 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "play_status",
+              defaultDisplay: true,
             },
             {
               label: "選手",
               field: "player",
               type: ColumnType.FIELD,
               id: "player",
+              defaultDisplay: true,
             },
             {
               label: "ポジション",
@@ -211,6 +219,7 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "position",
+              defaultDisplay: true,
             },
             {
               label: "時間",
@@ -218,6 +227,7 @@ const Match = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "time",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -258,6 +268,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "period_label",
+                defaultDisplay: true,
               },
               {
                 label: "時間",
@@ -265,6 +276,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "time_name",
+                defaultDisplay: true,
               },
               {
                 label: "特別時間",
@@ -272,6 +284,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "special_time",
+                defaultDisplay: true,
               },
               {
                 label: "チーム",
@@ -279,6 +292,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "team",
+                defaultDisplay: true,
               },
               {
                 label: "イベント",
@@ -286,12 +300,14 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "match_event_type",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
                 field: "player",
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -336,6 +352,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "period_label",
+                defaultDisplay: true,
               },
               {
                 label: "時間",
@@ -343,6 +360,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "time_name",
+                defaultDisplay: true,
               },
               {
                 label: "特別時間",
@@ -350,6 +368,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "special_time",
+                defaultDisplay: true,
               },
               {
                 label: "チーム",
@@ -357,6 +376,7 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "team",
+                defaultDisplay: true,
               },
               {
                 label: "イベント",
@@ -364,12 +384,14 @@ const Match = () => {
                 width: "100px",
                 type: ColumnType.FIELD,
                 id: "match_event_type",
+                defaultDisplay: true,
               },
               {
                 label: "スタッフ",
                 field: "staff",
                 type: ColumnType.FIELD,
                 id: "staff",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -415,12 +437,14 @@ const Match = () => {
                 field: "team",
                 type: ColumnType.FIELD,
                 id: "team",
+                defaultDisplay: true,
               },
               {
                 label: "フォーメーション",
                 field: "formation",
                 type: ColumnType.FIELD,
                 id: "formation",
+                defaultDisplay: true,
               },
             ]}
             fetch={{

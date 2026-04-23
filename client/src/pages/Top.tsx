@@ -37,24 +37,28 @@ const Main = () => {
                           field: "doa",
                           type: ColumnType.FIELD,
                           id: "doa",
+                          defaultDisplay: true,
                         },
                         {
                           label: "移籍元",
                           field: "from_team",
                           type: ColumnType.FIELD,
                           id: "from_team",
+                          defaultDisplay: true,
                         },
                         {
                           label: "移籍先",
                           field: "to_team",
                           type: ColumnType.FIELD,
                           id: "to_team",
+                          defaultDisplay: true,
                         },
                         {
                           label: "名前",
                           field: "player",
                           type: ColumnType.FIELD,
                           id: "player",
+                          defaultDisplay: true,
                         },
                       ]}
                       isLoading={isLoading}
@@ -89,18 +93,21 @@ const Main = () => {
                           field: "doa",
                           type: ColumnType.FIELD,
                           id: "doa",
+                          defaultDisplay: true,
                         },
                         {
                           label: "名前",
                           field: "player",
                           type: ColumnType.FIELD,
                           id: "player",
+                          defaultDisplay: true,
                         },
                         {
                           label: "負傷箇所",
                           field: "injured_part",
                           type: ColumnType.FIELD,
                           id: "injured_part",
+                          defaultDisplay: true,
                         },
                       ]}
                       isLoading={isLoading}

@@ -17,6 +17,7 @@ const Competition = () => {
             field: "competition",
             type: ColumnType.FIELD,
             id: "competition",
+            defaultDisplay: true,
           },
           {
             label: "シーズン",
@@ -24,6 +25,7 @@ const Competition = () => {
             width: "120px",
             type: ColumnType.FIELD,
             id: "name",
+            defaultDisplay: true,
           },
           {
             label: "現在",
@@ -31,6 +33,7 @@ const Competition = () => {
             width: "70px",
             type: ColumnType.FIELD,
             id: "current",
+            defaultDisplay: true,
           },
         ]}
         contextState={seasonContext}

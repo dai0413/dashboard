@@ -22,6 +22,7 @@ const NoCallUp = () => {
             width: "250px",
             type: ColumnType.FIELD,
             id: "name",
+            defaultDisplay: true,
           },
           {
             label: "国名",
@@ -29,6 +30,7 @@ const NoCallUp = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "country",
+            defaultDisplay: true,
           },
           {
             label: "年代",
@@ -36,12 +38,14 @@ const NoCallUp = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "age_group",
+            defaultDisplay: true,
           },
           {
             label: "招集日",
             field: "joined_at",
             type: ColumnType.FIELD,
             id: "joined_at",
+            defaultDisplay: true,
           },
         ]}
         linkField={[

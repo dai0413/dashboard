@@ -17,14 +17,22 @@ const Team = () => {
             field: "team",
             type: ColumnType.FIELD,
             id: "team",
+            defaultDisplay: true,
           },
-          { label: "略称", field: "abbr", type: ColumnType.FIELD, id: "abbr" },
+          {
+            label: "略称",
+            field: "abbr",
+            type: ColumnType.FIELD,
+            id: "abbr",
+            defaultDisplay: true,
+          },
           {
             label: "ジャンル",
             field: "genre",
             width: "100px",
             type: ColumnType.FIELD,
             id: "genre",
+            defaultDisplay: true,
           },
         ]}
         contextState={teamContext}

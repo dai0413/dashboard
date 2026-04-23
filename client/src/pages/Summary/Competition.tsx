@@ -191,6 +191,7 @@ const Competition = () => {
               field: "team",
               type: ColumnType.FIELD,
               id: "team",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -232,6 +233,7 @@ const Competition = () => {
               width: "170px",
               type: ColumnType.FIELD,
               id: "name",
+              defaultDisplay: true,
             },
             {
               label: "ステージタイプ",
@@ -239,6 +241,7 @@ const Competition = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "stage_type",
+              defaultDisplay: true,
             },
             {
               label: "LEG",
@@ -246,6 +249,7 @@ const Competition = () => {
               width: "50px",
               type: ColumnType.FIELD,
               id: "leg",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -276,6 +280,7 @@ const Competition = () => {
               getData: (d: MatchGet) => toDateKey(d.date) || "",
               type: ColumnType.CUSTOM,
               id: "date",
+              defaultDisplay: true,
             },
             {
               label: "節",
@@ -283,6 +288,7 @@ const Competition = () => {
               width: "80px",
               type: ColumnType.FIELD,
               id: "match_week",
+              defaultDisplay: true,
             },
             {
               label: "ステージ",
@@ -290,17 +296,20 @@ const Competition = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "competition_stage",
+              defaultDisplay: true,
             },
             {
               label: "ホーム",
               field: "home_team",
               type: ColumnType.FIELD,
               id: "home_team",
+              defaultDisplay: true,
             },
             {
               label: "結果",
               type: ColumnType.CUSTOM,
               id: "result",
+              defaultDisplay: true,
               getData: (d: MatchGet) => {
                 // ゴール数がある場合
                 const score =
@@ -322,6 +331,7 @@ const Competition = () => {
               field: "away_team",
               type: ColumnType.FIELD,
               id: "away_team",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -366,6 +376,7 @@ const Competition = () => {
               field: "date",
               type: ColumnType.FIELD,
               id: "date",
+              defaultDisplay: true,
             },
             {
               label: "チーム",
@@ -373,6 +384,7 @@ const Competition = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "team",
+              defaultDisplay: true,
             },
             {
               label: "ポジション",
@@ -380,10 +392,12 @@ const Competition = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "position_group",
+              defaultDisplay: true,
             },
             {
               label: "背番号",
               id: "number",
+              defaultDisplay: true,
               getData: (data: PlayerRegistrationGet) => {
                 return data.number ? String(data.number) : "";
               },
@@ -396,10 +410,12 @@ const Competition = () => {
               isPrimary: true,
               type: ColumnType.FIELD,
               id: "player",
+              defaultDisplay: true,
             },
             {
               label: "抹消",
               id: "registration_status",
+              defaultDisplay: true,
               getData: (data: PlayerRegistrationGet) => {
                 if (data.registration_status === "抹消済み") return "済";
                 return "";
@@ -410,6 +426,7 @@ const Competition = () => {
             {
               label: "2種特指",
               id: "special_type",
+              defaultDisplay: true,
               getData: (data: PlayerRegistrationGet) => {
                 if (data.isSpecialDesignation) return "特別指定";
                 if (data.isTypeTwo) return "2種";

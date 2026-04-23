@@ -22,6 +22,7 @@ export const competitionStage = (
           width: "200px",
           type: ColumnType.FIELD,
           id: "label",
+          defaultDisplay: true,
         },
         {
           label: "シーズン",
@@ -29,6 +30,7 @@ export const competitionStage = (
           width: "80px",
           type: ColumnType.FIELD,
           id: "season",
+          defaultDisplay: true,
         },
       ],
       data: options,

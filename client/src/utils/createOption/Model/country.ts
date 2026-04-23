@@ -15,7 +15,13 @@ export const country = (
   if (table === true) {
     return {
       header: [
-        { label: "国名", field: "label", type: ColumnType.FIELD, id: "label" },
+        {
+          label: "国名",
+          field: "label",
+          type: ColumnType.FIELD,
+          id: "label",
+          defaultDisplay: true,
+        },
       ],
       data: options,
     };

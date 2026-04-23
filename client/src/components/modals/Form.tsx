@@ -179,6 +179,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                   width: field.width,
                   fieldType: field.fieldType,
                   valueType: field.valueType,
+                  defaultDisplay: true,
                 }) satisfies ConfirmBulkDataHeader,
             )
             .filter((h) =>

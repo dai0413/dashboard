@@ -21,8 +21,20 @@ export const staff = (
   if (table === true) {
     return {
       header: [
-        { label: "名前", field: "label", type: ColumnType.FIELD, id: "label" },
-        { label: "生年月日", field: "dob", type: ColumnType.FIELD, id: "dob" },
+        {
+          label: "名前",
+          field: "label",
+          type: ColumnType.FIELD,
+          id: "label",
+          defaultDisplay: true,
+        },
+        {
+          label: "生年月日",
+          field: "dob",
+          type: ColumnType.FIELD,
+          id: "dob",
+          defaultDisplay: true,
+        },
       ],
       data: options,
     };

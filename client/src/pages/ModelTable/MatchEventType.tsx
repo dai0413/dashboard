@@ -12,19 +12,33 @@ const MatchEventType = () => {
       <ModelTableContainer
         title={"試合イベント情報"}
         headers={[
-          { label: "名前", field: "name", type: ColumnType.FIELD, id: "name" },
+          {
+            label: "名前",
+            field: "name",
+            type: ColumnType.FIELD,
+            id: "name",
+            defaultDisplay: true,
+          },
           {
             label: "英名",
             field: "en_name",
             type: ColumnType.FIELD,
             id: "en_name",
+            defaultDisplay: true,
           },
-          { label: "略称", field: "abbr", type: ColumnType.FIELD, id: "abbr" },
+          {
+            label: "略称",
+            field: "abbr",
+            type: ColumnType.FIELD,
+            id: "abbr",
+            defaultDisplay: true,
+          },
           {
             label: "イベントタイプ",
             field: "event_type",
             type: ColumnType.FIELD,
             id: "event_type",
+            defaultDisplay: true,
           },
         ]}
         contextState={context}

@@ -12,12 +12,19 @@ const Country = () => {
       <ModelTableContainer
         title={"国情報"}
         headers={[
-          { label: "国名", field: "name", type: ColumnType.FIELD, id: "name" },
+          {
+            label: "国名",
+            field: "name",
+            type: ColumnType.FIELD,
+            id: "name",
+            defaultDisplay: true,
+          },
           {
             label: "英名",
             field: "en_name",
             type: ColumnType.FIELD,
             id: "en_name",
+            defaultDisplay: true,
           },
           {
             label: "地域",
@@ -25,6 +32,7 @@ const Country = () => {
             width: "70px",
             type: ColumnType.FIELD,
             id: "area",
+            defaultDisplay: true,
           },
         ]}
         contextState={countryContext}

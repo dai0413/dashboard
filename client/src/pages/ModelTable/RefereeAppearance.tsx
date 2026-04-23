@@ -17,14 +17,22 @@ const RefereeAppearance = () => {
             field: "match",
             type: ColumnType.FIELD,
             id: "match",
+            defaultDisplay: true,
           },
           {
             label: "審判",
             field: "referee",
             type: ColumnType.FIELD,
             id: "referee",
+            defaultDisplay: true,
           },
-          { label: "役割", field: "role", type: ColumnType.FIELD, id: "role" },
+          {
+            label: "役割",
+            field: "role",
+            type: ColumnType.FIELD,
+            id: "role",
+            defaultDisplay: true,
+          },
         ]}
         contextState={refereeAppearanceContext}
         modelType={ModelType.REFEREE_APPEARANCE}

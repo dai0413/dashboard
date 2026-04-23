@@ -22,6 +22,7 @@ export const formation = (
           width: "60px",
           type: ColumnType.FIELD,
           id: "label",
+          defaultDisplay: true,
         },
         {
           label: "ポジション",
@@ -29,6 +30,7 @@ export const formation = (
           width: "220px",
           type: ColumnType.FIELD,
           id: "positions",
+          defaultDisplay: true,
         },
       ],
       data: options,

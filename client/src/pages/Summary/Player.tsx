@@ -124,24 +124,28 @@ const Player = () => {
               field: "from_date",
               type: ColumnType.FIELD,
               id: "from_date",
+              defaultDisplay: true,
             },
             {
               label: "移籍元",
               field: "from_team",
               type: ColumnType.FIELD,
               id: "from_team",
+              defaultDisplay: true,
             },
             {
               label: "移籍先",
               field: "to_team",
               type: ColumnType.FIELD,
               id: "to_team",
+              defaultDisplay: true,
             },
             {
               label: "形態",
               field: "form",
               type: ColumnType.FIELD,
               id: "form",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -181,20 +185,29 @@ const Player = () => {
               field: "doa",
               type: ColumnType.FIELD,
               id: "doa",
+              defaultDisplay: true,
             },
             {
               label: "所属",
               field: "team",
               type: ColumnType.FIELD,
               id: "team",
+              defaultDisplay: true,
             },
             {
               label: "負傷箇所・診断結果",
               field: "injured_part",
               type: ColumnType.FIELD,
               id: "injured_part",
+              defaultDisplay: true,
             },
-            { label: "全治", field: "ttp", type: ColumnType.FIELD, id: "ttp" },
+            {
+              label: "全治",
+              field: "ttp",
+              type: ColumnType.FIELD,
+              id: "ttp",
+              defaultDisplay: true,
+            },
           ]}
           fetch={{
             apiRoute: API_PATHS.INJURY.ROOT,
@@ -225,24 +238,28 @@ const Player = () => {
               field: "series",
               type: ColumnType.FIELD,
               id: "series",
+              defaultDisplay: true,
             },
             {
               label: "招集状況",
               field: "status",
               type: ColumnType.FIELD,
               id: "status",
+              defaultDisplay: true,
             },
             {
               label: "背番号",
               field: "number",
               type: ColumnType.FIELD,
               id: "number",
+              defaultDisplay: true,
             },
             {
               label: "活動開始日",
               field: "joined_at",
               type: ColumnType.FIELD,
               id: "joined_at",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -274,40 +291,47 @@ const Player = () => {
               field: "season",
               type: ColumnType.FIELD,
               id: "season",
+              defaultDisplay: true,
             },
             {
               label: "大会",
               field: "competition",
               type: ColumnType.FIELD,
               id: "competition",
+              defaultDisplay: true,
             },
             {
               label: "日付",
               field: "date",
               type: ColumnType.FIELD,
               id: "date",
+              defaultDisplay: true,
             },
             {
               label: "チーム",
               field: "team",
               type: ColumnType.FIELD,
               id: "team",
+              defaultDisplay: true,
             },
             {
               label: "登録・抹消",
               field: "registration_type",
               type: ColumnType.FIELD,
               id: "registration_type",
+              defaultDisplay: true,
             },
             {
               label: "登録・抹消",
               field: "registration_status",
               type: ColumnType.FIELD,
               id: "registration_status",
+              defaultDisplay: true,
             },
             {
               label: "2種・特別指定",
               id: "special_type",
+              defaultDisplay: true,
               getData: (data: PlayerRegistrationGet) => {
                 if (data.isSpecialDesignation) return "特別指定";
                 if (data.isTypeTwo) return "2種";

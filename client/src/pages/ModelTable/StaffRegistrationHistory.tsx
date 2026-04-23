@@ -17,29 +17,40 @@ const StaffRegistrationHistory = () => {
             field: "competition",
             type: ColumnType.FIELD,
             id: "competition",
+            defaultDisplay: true,
           },
           {
             label: "シーズン",
             field: "season",
             type: ColumnType.FIELD,
             id: "season",
+            defaultDisplay: true,
           },
-          { label: "日付", field: "date", type: ColumnType.FIELD, id: "date" },
+          {
+            label: "日付",
+            field: "date",
+            type: ColumnType.FIELD,
+            id: "date",
+            defaultDisplay: true,
+          },
           {
             label: "チーム",
             field: "team",
             type: ColumnType.FIELD,
             id: "team",
+            defaultDisplay: true,
           },
           {
             label: "スタッフ",
             field: "staff",
             type: ColumnType.FIELD,
             id: "staff",
+            defaultDisplay: true,
           },
           {
             label: "役割",
             id: "changes.role",
+            defaultDisplay: true,
             getData: (data) => {
               let base: string = "";
               if (data.registration_type === "変更") {
@@ -54,6 +65,7 @@ const StaffRegistrationHistory = () => {
             field: "registration_type",
             type: ColumnType.FIELD,
             id: "registration_type",
+            defaultDisplay: true,
           },
         ]}
         contextState={staffRegistrationHistoryContext}

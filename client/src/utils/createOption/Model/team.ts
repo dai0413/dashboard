@@ -35,6 +35,7 @@ export const team = (
           id: "label",
           width: "200px",
           type: ColumnType.FIELD,
+          defaultDisplay: true,
         },
         {
           label: "略称",
@@ -42,6 +43,7 @@ export const team = (
           id: "abbr",
           width: "100px",
           type: ColumnType.FIELD,
+          defaultDisplay: true,
         },
         {
           label: "国",
@@ -49,6 +51,7 @@ export const team = (
           id: "country",
           width: "100px",
           type: ColumnType.FIELD,
+          defaultDisplay: true,
         },
         {
           label: "年代",
@@ -56,6 +59,7 @@ export const team = (
           id: "age_group",
           width: "100px",
           type: ColumnType.FIELD,
+          defaultDisplay: true,
         },
       ],
       data: options,

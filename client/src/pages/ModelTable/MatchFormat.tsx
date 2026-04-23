@@ -19,10 +19,12 @@ const MatchFormat = () => {
             width: "150px",
             type: ColumnType.FIELD,
             id: "name",
+            defaultDisplay: true,
           },
           {
             label: "前半",
             id: "1st",
+            defaultDisplay: true,
             getData: (d: MatchFormatGet) => periodField(d, "前半"),
             width: "80px",
             type: ColumnType.CUSTOM,
@@ -30,6 +32,7 @@ const MatchFormat = () => {
           {
             label: "後半",
             id: "2nd",
+            defaultDisplay: true,
             getData: (d: MatchFormatGet) => periodField(d, "前半"),
             width: "80px",
             type: ColumnType.CUSTOM,
@@ -37,6 +40,7 @@ const MatchFormat = () => {
           {
             label: "延前",
             id: "1ex",
+            defaultDisplay: true,
             getData: (d: MatchFormatGet) => periodField(d, "延長前半"),
             width: "80px",
             type: ColumnType.CUSTOM,
@@ -44,6 +48,7 @@ const MatchFormat = () => {
           {
             label: "延後",
             id: "2ex",
+            defaultDisplay: true,
             getData: (d: MatchFormatGet) => periodField(d, "延長後半"),
             width: "80px",
             type: ColumnType.CUSTOM,
@@ -51,6 +56,7 @@ const MatchFormat = () => {
           {
             label: "その他",
             id: "other",
+            defaultDisplay: true,
             getData: (d: MatchFormatGet) =>
               periodOther(d, [
                 "前半",
@@ -66,6 +72,7 @@ const MatchFormat = () => {
           {
             label: "PK",
             id: "pk",
+            defaultDisplay: true,
             getData: (d: MatchFormatGet) => periodField(d, "PK"),
             width: "60px",
             type: ColumnType.CUSTOM,

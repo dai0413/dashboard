@@ -21,12 +21,19 @@ export const season = (
   if (table === true) {
     return {
       header: [
-        { label: "名前", field: "label", type: ColumnType.FIELD, id: "label" },
+        {
+          label: "名前",
+          field: "label",
+          type: ColumnType.FIELD,
+          id: "label",
+          defaultDisplay: true,
+        },
         {
           label: "現在",
           field: "current",
           type: ColumnType.FIELD,
           id: "current",
+          defaultDisplay: true,
         },
       ],
       data: options,

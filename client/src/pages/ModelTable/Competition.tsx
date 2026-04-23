@@ -17,6 +17,7 @@ const Competition = () => {
             field: "name",
             type: ColumnType.FIELD,
             id: "name",
+            defaultDisplay: true,
           },
           {
             label: "国",
@@ -24,6 +25,7 @@ const Competition = () => {
             width: "70px",
             type: ColumnType.FIELD,
             id: "country",
+            defaultDisplay: true,
           },
           {
             label: "大会規模",
@@ -31,6 +33,7 @@ const Competition = () => {
             width: "90px",
             type: ColumnType.FIELD,
             id: "competition_type",
+            defaultDisplay: true,
           },
           {
             label: "大会タイプ",
@@ -38,6 +41,7 @@ const Competition = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "category",
+            defaultDisplay: true,
           },
           {
             label: "年代",
@@ -45,6 +49,7 @@ const Competition = () => {
             width: "70px",
             type: ColumnType.FIELD,
             id: "age_group",
+            defaultDisplay: true,
           },
         ]}
         contextState={competitionContext}

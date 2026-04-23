@@ -13,6 +13,7 @@ const createField = (): TableHeader<StatsLGet>[] => {
       field: key as keyof StatsLGet,
       type: ColumnType.FIELD,
       id: "key",
+      defaultDisplay: false,
     };
   });
 
@@ -32,12 +33,14 @@ const StatsL = () => {
             field: "match",
             type: ColumnType.FIELD,
             id: "match",
+            defaultDisplay: true,
           },
           {
             label: "チーム",
             field: "team",
             type: ColumnType.FIELD,
             id: "team",
+            defaultDisplay: true,
           },
           ...createField(),
         ]}

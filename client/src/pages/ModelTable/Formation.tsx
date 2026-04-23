@@ -18,6 +18,7 @@ const fields = positions.map((p) => ({
   label: p.key,
   getData: (data: FormationGet) => getData(data, p.key),
   width: "70px",
+  defaultDisplay: false,
 })) satisfies TableHeader<FormationGet>[];
 
 const Formation = () => {
@@ -34,6 +35,7 @@ const Formation = () => {
             width: "100px",
             id: "name",
             type: ColumnType.FIELD,
+            defaultDisplay: true,
           },
           ...fields,
         ]}

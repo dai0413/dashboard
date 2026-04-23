@@ -17,31 +17,42 @@ const Competition = () => {
             field: "competition",
             type: ColumnType.FIELD,
             id: "competition",
+            defaultDisplay: true,
           },
           {
             label: "シーズン",
             field: "season",
             type: ColumnType.FIELD,
             id: "season",
+            defaultDisplay: true,
           },
           {
             label: "ステージタイプ",
             field: "stage_type",
             type: ColumnType.FIELD,
             id: "stage_type",
+            defaultDisplay: true,
           },
-          { label: "名前", field: "name", type: ColumnType.FIELD, id: "name" },
+          {
+            label: "名前",
+            field: "name",
+            type: ColumnType.FIELD,
+            id: "name",
+            defaultDisplay: true,
+          },
           {
             label: "ラウンド",
             field: "round_number",
             type: ColumnType.FIELD,
             id: "round_number",
+            defaultDisplay: true,
           },
           {
             label: "複数試合制",
             field: "leg",
             type: ColumnType.FIELD,
             id: "leg",
+            defaultDisplay: true,
           },
         ]}
         contextState={context}

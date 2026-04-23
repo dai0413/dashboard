@@ -18,6 +18,7 @@ const Stadium = () => {
             width: "120px",
             type: ColumnType.FIELD,
             id: "name",
+            defaultDisplay: true,
           },
           {
             label: "別名",
@@ -25,12 +26,14 @@ const Stadium = () => {
             width: "200px",
             type: ColumnType.FIELD,
             id: "alt_names",
+            defaultDisplay: true,
           },
           {
             label: "国",
             field: "country",
             type: ColumnType.FIELD,
             id: "country",
+            defaultDisplay: true,
           },
         ]}
         contextState={stadiumContext}

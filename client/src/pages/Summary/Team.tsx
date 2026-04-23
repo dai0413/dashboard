@@ -453,6 +453,7 @@ const Team = () => {
                 width: "70px",
                 type: ColumnType.FIELD,
                 id: "position",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
@@ -460,6 +461,7 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -502,6 +504,7 @@ const Team = () => {
                 field: "from_date",
                 type: ColumnType.FIELD,
                 id: "from_date",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
@@ -509,18 +512,21 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
               {
                 label: "移籍元",
                 field: "from_team",
                 type: ColumnType.FIELD,
                 id: "from_team",
+                defaultDisplay: true,
               },
               {
                 label: "ポジション",
                 field: "position",
                 type: ColumnType.FIELD,
                 id: "position",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -570,6 +576,7 @@ const Team = () => {
                 field: "from_date",
                 type: ColumnType.FIELD,
                 id: "from_date",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
@@ -577,18 +584,21 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
               {
                 label: "移籍元",
                 field: "from_team",
                 type: ColumnType.FIELD,
                 id: "from_team",
+                defaultDisplay: true,
               },
               {
                 label: "形態",
                 field: "form",
                 type: ColumnType.FIELD,
                 id: "form",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -634,6 +644,7 @@ const Team = () => {
                 field: "from_date",
                 type: ColumnType.FIELD,
                 id: "from_date",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
@@ -641,18 +652,21 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
               {
                 label: "移籍先",
                 field: "to_team",
                 type: ColumnType.FIELD,
                 id: "to_team",
+                defaultDisplay: true,
               },
               {
                 label: "形態",
                 field: "form",
                 type: ColumnType.FIELD,
                 id: "form",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -697,6 +711,7 @@ const Team = () => {
                 field: "from_date",
                 type: ColumnType.FIELD,
                 id: "from_date",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
@@ -704,18 +719,21 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
               {
                 label: "移籍先",
                 field: "to_team",
                 type: ColumnType.FIELD,
                 id: "to_team",
+                defaultDisplay: true,
               },
               {
                 label: "形態",
                 field: "form",
                 type: ColumnType.FIELD,
                 id: "form",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -761,6 +779,7 @@ const Team = () => {
                 field: "doa",
                 type: ColumnType.FIELD,
                 id: "doa",
+                defaultDisplay: true,
               },
               {
                 label: "選手",
@@ -768,18 +787,21 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
               {
                 label: "負傷箇所・診断結果",
                 field: "injured_part",
                 type: ColumnType.FIELD,
                 id: "injured_part",
+                defaultDisplay: true,
               },
               {
                 label: "全治",
                 field: "ttp",
                 type: ColumnType.FIELD,
                 id: "ttp",
+                defaultDisplay: true,
               },
             ]}
             fetch={{
@@ -820,18 +842,21 @@ const Team = () => {
                 id: "date",
                 getData: (d: MatchGet) => toDateKey(d.date) || "",
                 type: ColumnType.CUSTOM,
+                defaultDisplay: true,
               },
               {
                 label: "大会",
                 field: "competition",
                 type: ColumnType.FIELD,
                 id: "competition",
+                defaultDisplay: true,
               },
               {
                 label: "ステージ",
                 field: "competition_stage",
                 type: ColumnType.FIELD,
                 id: "competition_stage",
+                defaultDisplay: true,
               },
               {
                 label: "節",
@@ -839,10 +864,12 @@ const Team = () => {
                 width: "80px",
                 type: ColumnType.FIELD,
                 id: "match_week",
+                defaultDisplay: true,
               },
               {
                 label: "相手",
                 id: "vsTeam",
+                defaultDisplay: true,
                 getData: (d: MatchGet) => {
                   const isHome = d.home_team.id === id;
                   const vsTeam = isHome ? d.away_team : d.home_team;
@@ -854,6 +881,7 @@ const Team = () => {
               {
                 label: "結果",
                 id: "result",
+                defaultDisplay: true,
                 getData: (d: MatchGet) => {
                   const isHome = d.home_team.id === id;
                   const goal = isHome ? d.home_goal : d.away_goal;
@@ -911,10 +939,12 @@ const Team = () => {
                 field: "season",
                 type: ColumnType.FIELD,
                 id: "season",
+                defaultDisplay: true,
               },
               {
                 label: "背番号",
                 id: "number",
+                defaultDisplay: true,
                 getData: (data: PlayerRegistrationGet) => {
                   return data.number ? String(data.number) : "";
                 },
@@ -926,16 +956,19 @@ const Team = () => {
                 isPrimary: true,
                 type: ColumnType.FIELD,
                 id: "player",
+                defaultDisplay: true,
               },
               {
                 label: "登録中・抹消済",
                 field: "registration_status",
                 type: ColumnType.FIELD,
                 id: "registration_status",
+                defaultDisplay: true,
               },
               {
                 label: "2種・特別指定",
                 id: "special_type",
+                defaultDisplay: true,
                 getData: (data: PlayerRegistrationGet) => {
                   if (data.isSpecialDesignation) return "特別指定";
                   if (data.isTypeTwo) return "2種";

@@ -30,18 +30,21 @@ const NoNumber = () => {
             field: "from_date",
             type: ColumnType.FIELD,
             id: "from_date",
+            defaultDisplay: true,
           },
           {
             label: "選手",
             field: "player",
             type: ColumnType.FIELD,
             id: "player",
+            defaultDisplay: true,
           },
           {
             label: "移籍先",
             field: "to_team",
             type: ColumnType.FIELD,
             id: "to_team",
+            defaultDisplay: true,
           },
         ]}
         modelType={ModelType.TRANSFER}

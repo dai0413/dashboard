@@ -18,12 +18,14 @@ const NationalMatchSeries = () => {
             width: "250px",
             type: ColumnType.FIELD,
             id: "series",
+            defaultDisplay: true,
           },
           {
             label: "選手",
             field: "player",
             type: ColumnType.FIELD,
             id: "player",
+            defaultDisplay: true,
           },
           {
             label: "招集状況",
@@ -31,6 +33,7 @@ const NationalMatchSeries = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "status",
+            defaultDisplay: true,
           },
           {
             label: "背番号",
@@ -38,6 +41,7 @@ const NationalMatchSeries = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "number",
+            defaultDisplay: true,
           },
           {
             label: "ポジション",
@@ -45,6 +49,7 @@ const NationalMatchSeries = () => {
             width: "100px",
             type: ColumnType.FIELD,
             id: "position_group",
+            defaultDisplay: true,
           },
         ]}
         contextState={context}

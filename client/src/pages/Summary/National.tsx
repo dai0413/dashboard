@@ -110,27 +110,36 @@ const National = () => {
         <TableWithFetch
           modelType={ModelType.COMPETITION}
           headers={[
-            { label: "大会名", field: "name", type: ColumnType.FIELD, id: "" },
+            {
+              label: "大会名",
+              field: "name",
+              type: ColumnType.FIELD,
+              id: "name",
+              defaultDisplay: true,
+            },
             {
               label: "大会規模",
               field: "competition_type",
               width: "90px",
               type: ColumnType.FIELD,
-              id: "",
+              id: "competition_type",
+              defaultDisplay: true,
             },
             {
               label: "大会タイプ",
               field: "category",
               width: "100px",
               type: ColumnType.FIELD,
-              id: "",
+              id: "category",
+              defaultDisplay: true,
             },
             {
               label: "年代",
               field: "age_group",
               width: "70px",
               type: ColumnType.FIELD,
-              id: "",
+              id: "age_group",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -167,6 +176,7 @@ const National = () => {
               width: "250px",
               type: ColumnType.FIELD,
               id: "name",
+              defaultDisplay: true,
             },
             {
               label: "年代",
@@ -174,18 +184,21 @@ const National = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "age_group",
+              defaultDisplay: true,
             },
             {
               label: "招集日",
               field: "joined_at",
               type: ColumnType.FIELD,
               id: "joined_at",
+              defaultDisplay: true,
             },
             {
               label: "解散日",
               field: "left_at",
               type: ColumnType.FIELD,
               id: "left_at",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
@@ -222,6 +235,7 @@ const National = () => {
               width: "250px",
               type: ColumnType.FIELD,
               id: "series",
+              defaultDisplay: true,
             },
             {
               label: "選手",
@@ -229,6 +243,7 @@ const National = () => {
               isPrimary: true,
               type: ColumnType.FIELD,
               id: "player",
+              defaultDisplay: true,
             },
             {
               label: "招集状況",
@@ -236,6 +251,7 @@ const National = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "status",
+              defaultDisplay: true,
             },
             {
               label: "背番号",
@@ -243,6 +259,7 @@ const National = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "number",
+              defaultDisplay: true,
             },
             {
               label: "ポジション",
@@ -250,6 +267,7 @@ const National = () => {
               width: "100px",
               type: ColumnType.FIELD,
               id: "position_group",
+              defaultDisplay: true,
             },
           ]}
           fetch={{
