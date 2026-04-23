@@ -37,7 +37,7 @@ const TableWithFetch = <K extends keyof GettedModelDataMap>({
   sortField = [],
   linkField = [],
   detailLinkValue,
-  formInitialData,
+  initialData,
 }: TableWithFetchProps<K>) => {
   const [data, setData] = useState<Data<GettedModelDataMap[K]>>({
     data: [],
@@ -112,7 +112,7 @@ const TableWithFetch = <K extends keyof GettedModelDataMap>({
         fetchData(filterConditions, sortConditions, params)
       }
       detailLinkValue={detailLinkValue}
-      formInitialData={formInitialData}
+      initialData={initialData}
     />
   );
 };

@@ -164,8 +164,10 @@ const Player = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          formInitialData={{
-            player: id,
+          initialData={{
+            formData: {
+              player: id,
+            },
           }}
         />
       )}
@@ -210,7 +212,7 @@ const Player = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          formInitialData={formInitialData}
+          initialData={{ formData: formInitialData }}
         />
       )}
 
@@ -259,7 +261,7 @@ const Player = () => {
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
             },
           ]}
-          formInitialData={formInitialData}
+          initialData={{ formData: formInitialData }}
         />
       )}
 
@@ -335,7 +337,7 @@ const Player = () => {
             },
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
           ]}
-          formInitialData={formInitialData}
+          initialData={{ formData: formInitialData }}
         />
       )}
     </div>

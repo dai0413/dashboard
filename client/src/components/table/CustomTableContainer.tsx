@@ -70,7 +70,7 @@ const TableContainer = <K, F>({
   headers,
   modelType,
   pageNation,
-  formInitialData,
+  initialData,
   linkField,
   items,
   itemsLoading,
@@ -185,7 +185,7 @@ const TableContainer = <K, F>({
       <TableToolbar
         modelType={modelType}
         uploadFile={uploadFile}
-        formInitialData={formInitialData}
+        initialData={initialData}
         reloadFun={reloadFun}
         quickFilterItems={quickFilterItemsParam}
       />

@@ -37,7 +37,10 @@ type TableBase1<T> = {
 };
 
 type TableFormProps<F> = {
-  formInitialData?: Partial<F>;
+  initialData?: {
+    formData?: Partial<F>;
+    metaData?: Record<string, any>;
+  };
 };
 
 export type TableFetch<T, F> = TableBase<T, F> & {

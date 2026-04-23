@@ -213,8 +213,11 @@ const Competition = () => {
               to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
-          formInitialData={{
-            season: selectedSeason?._id,
+          initialData={{
+            formData: { season: selectedSeason?._id },
+            metaData: {
+              competition: id,
+            },
           }}
         />
       )}
@@ -255,8 +258,11 @@ const Competition = () => {
           sortField={fieldDefinition[ModelType.COMPETITION_STAGE]
             .filter(isSortable)
             .filter((file) => file.key !== "competition")}
-          formInitialData={{
-            season: selectedSeason?._id,
+          initialData={{
+            formData: { season: selectedSeason?._id },
+            metaData: {
+              competition: id,
+            },
           }}
         />
       )}
@@ -342,6 +348,12 @@ const Competition = () => {
               to: APP_ROUTES.MATCH_SUMMARY,
             },
           ]}
+          initialData={{
+            metaData: {
+              season: selectedSeason?._id,
+              competition: id,
+            },
+          }}
         />
       )}
 

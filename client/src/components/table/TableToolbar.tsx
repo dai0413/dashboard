@@ -98,7 +98,10 @@ type TableToolbarProps<T> = {
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
-  formInitialData?: Partial<T>;
+  initialData?: {
+    formData?: Partial<T>;
+    metaData?: Record<string, any>;
+  };
   reloadFun?: (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
@@ -110,7 +113,7 @@ const TableToolbar = <K extends Record<string, any>>({
   modelType,
   uploadFile,
   downloadFile,
-  formInitialData,
+  initialData,
   reloadFun,
   quickFilterItems,
 }: TableToolbarProps<K>) => {
@@ -254,7 +257,7 @@ const TableToolbar = <K extends Record<string, any>>({
               startForm({
                 ...rest,
                 formMode: FormMode.CREATE,
-                initialFormData: formInitialData ? formInitialData : undefined,
+                initialData: initialData ? initialData : undefined,
               }),
           };
         })

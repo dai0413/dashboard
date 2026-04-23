@@ -484,7 +484,7 @@ const Team = () => {
                 to: APP_ROUTES.PLAYER_SUMMARY,
               },
             ]}
-            formInitialData={{ to_team: id }}
+            initialData={{ formData: { to_team: id } }}
           />
         </>
       )}
@@ -552,7 +552,7 @@ const Team = () => {
                 to: APP_ROUTES.TEAM_SUMMARY,
               },
             ]}
-            formInitialData={{ to_team: id }}
+            initialData={{ formData: { to_team: id } }}
           />
         </>
       )}
@@ -616,7 +616,7 @@ const Team = () => {
                 to: APP_ROUTES.TEAM_SUMMARY,
               },
             ]}
-            formInitialData={{ to_team: id }}
+            initialData={{ formData: { to_team: id } }}
           />
         </>
       )}
@@ -679,7 +679,7 @@ const Team = () => {
                 to: APP_ROUTES.TEAM_SUMMARY,
               },
             ]}
-            formInitialData={{ from_team: id }}
+            initialData={{ formData: { from_team: id } }}
           />
         </>
       )}
@@ -743,7 +743,7 @@ const Team = () => {
                 to: APP_ROUTES.TEAM_SUMMARY,
               },
             ]}
-            formInitialData={{ from_team: id }}
+            initialData={{ formData: { from_team: id } }}
           />
         </>
       )}
@@ -802,7 +802,7 @@ const Team = () => {
                 to: APP_ROUTES.PLAYER_SUMMARY,
               },
             ]}
-            formInitialData={{ team: id }}
+            initialData={{ formData: { team: id } }}
           />
         </>
       )}

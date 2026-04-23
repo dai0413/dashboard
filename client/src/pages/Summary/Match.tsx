@@ -172,9 +172,11 @@ const Match = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
-          formInitialData={{
-            match: id,
-            team: selected?.home_team.id,
+          initialData={{
+            formData: {
+              match: id,
+              team: selected?.home_team.id,
+            },
           }}
         />
       )}
@@ -234,9 +236,11 @@ const Match = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
-          formInitialData={{
-            match: id,
-            team: selected?.away_team.id,
+          initialData={{
+            formData: {
+              match: id,
+              team: selected?.away_team.id,
+            },
           }}
         />
       )}
@@ -311,8 +315,10 @@ const Match = () => {
                 to: APP_ROUTES.PLAYER_SUMMARY,
               },
             ]}
-            formInitialData={{
-              match: id,
+            initialData={{
+              formData: {
+                match: id,
+              },
             }}
           />
         )}
@@ -389,8 +395,10 @@ const Match = () => {
                 // },
               ]
             }
-            formInitialData={{
-              match: id,
+            initialData={{
+              formData: {
+                match: id,
+              },
             }}
           />
         )}
@@ -435,8 +443,10 @@ const Match = () => {
                 to: APP_ROUTES.TEAM_SUMMARY,
               },
             ]}
-            formInitialData={{
-              match: id,
+            initialData={{
+              formData: {
+                match: id,
+              },
             }}
           />
         )}

@@ -315,17 +315,29 @@ export const FormProvider = <T extends ModelType>({
     if (args.formMode === FormMode.CREATE) {
       setFormMode(FormMode.CREATE);
 
-      if (args.initialFormData) {
-        setInitialFormData(args.initialFormData);
-        const data = { ...getDefault(args.modelType), ...args.initialFormData };
+      if (args.initialData) {
+        if (args.initialData.formData) {
+          setInitialFormData(args.initialData.formData);
+          const data = {
+            ...getDefault(args.modelType),
+            ...args.initialData.formData,
+          };
 
-        setFormData(data);
-        setFormDatas([data]);
-        setBulkCommonData(data);
-        const resolvedLabels = await resolveForeignKeyLabels(data);
-        setFormLabel(resolvedLabels);
-        setFormLabels([resolvedLabels]);
-        setBulkCommonLabel(resolvedLabels);
+          setFormData(data);
+          setFormDatas([data]);
+          setBulkCommonData(data);
+          const resolvedLabels = await resolveForeignKeyLabels(data);
+          setFormLabel(resolvedLabels);
+          setFormLabels([resolvedLabels]);
+          setBulkCommonLabel(resolvedLabels);
+        }
+        if (args.initialData.metaData) {
+          setMetaData(args.initialData.metaData);
+          const resolvedLabels = await resolveForeignKeyLabels(
+            args.initialData.metaData,
+          );
+          setMetaDataLabel(resolvedLabels);
+        }
       } else {
         resetFormData();
         resetFormDatas();
@@ -392,7 +404,9 @@ export const FormProvider = <T extends ModelType>({
         from: From.NORMAL,
         inputMode,
         modelType,
-        initialFormData: initialFormData ? initialFormData : undefined,
+        initialData: initialFormData
+          ? { formData: initialFormData, metaData: undefined }
+          : undefined,
       });
     }
   };

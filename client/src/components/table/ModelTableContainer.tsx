@@ -112,7 +112,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
         modelType={props.modelType}
         uploadFile={uploadFile}
         downloadFile={downloadFile}
-        formInitialData={props.formInitialData}
+        initialData={props.initialData}
         quickFilterItems={[]}
       />
       {tableIsLoading ? (

@@ -185,14 +185,16 @@ const National = () => {
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
           ]}
-          formInitialData={{
-            series: id,
-            joined_at: selected?.joined_at
-              ? toDateKey(selected?.joined_at)
-              : undefined,
-            left_at: selected?.left_at
-              ? toDateKey(selected?.left_at)
-              : undefined,
+          initialData={{
+            formData: {
+              series: id,
+              joined_at: selected?.joined_at
+                ? toDateKey(selected?.joined_at)
+                : undefined,
+              left_at: selected?.left_at
+                ? toDateKey(selected?.left_at)
+                : undefined,
+            },
           }}
         />
       )}

@@ -149,8 +149,10 @@ const National = () => {
               to: APP_ROUTES.COMPETITION_SUMMARY,
             },
           ]}
-          formInitialData={{
-            country: id,
+          initialData={{
+            formData: {
+              country: id,
+            },
           }}
         />
       )}
@@ -202,8 +204,10 @@ const National = () => {
               to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
             },
           ]}
-          formInitialData={{
-            country: id,
+          initialData={{
+            formData: {
+              country: id,
+            },
           }}
         />
       )}

@@ -77,7 +77,10 @@ type NewDataStartFormArgs<T extends ModelType> = {
   formMode: FormMode.CREATE;
   inputMode: InputMode;
   from: From;
-  initialFormData?: FormTypeMap[T];
+  initialData?: {
+    formData?: FormTypeMap[T];
+    metaData?: Record<string, any>;
+  };
 };
 
 type UpdateDataStartFormArgs<T extends ModelType> = {
