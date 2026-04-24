@@ -915,9 +915,7 @@ export const FormProvider = <T extends ModelType>({
   const displayableField = useMemo(
     () =>
       modelType
-        ? (fieldDefinition[modelType].filter(
-            isDisplayOnDetail,
-          ) as DetailFieldDefinition[])
+        ? fieldDefinition[modelType]?.filter(isDisplayOnDetail) || []
         : [],
     [modelType],
   );

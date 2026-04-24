@@ -10,7 +10,6 @@ import {
   QuickFilterType,
   TableBase,
   TableEditProps,
-  TableHeader,
   TableOperationFields,
 } from "../../types/table";
 
@@ -23,8 +22,8 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { isModelType, isSortable } from "../../types/field";
-import { fieldDefinition } from "../../lib/model-fields";
+import { isModelType, UIFieldDefinition } from "../../types/field";
+import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
 import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
 import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
 
@@ -48,7 +47,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
   TableOperationFields &
   TablePage &
   TableForm & {
-    headers?: TableHeader<T>[];
+    fieldDefinitions?: UIFieldDefinition<T>[];
     items?: T[];
     itemsLoading?: boolean;
 
@@ -68,7 +67,7 @@ type TableContainerProps<T, F> = Original<T, F>;
 
 const TableContainer = <K, F>({
   title,
-  headers,
+  fieldDefinitions,
   modelType,
   pageNation,
   initialData,
@@ -90,6 +89,7 @@ const TableContainer = <K, F>({
   quickFilterItems,
   noItemMessage,
   renderFieldCell,
+  edit,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -122,16 +122,16 @@ const TableContainer = <K, F>({
   );
 
   useEffect(() => {
-    const initialVisibility = headers?.reduce(
+    const initialVisibility = fieldDefinitions?.reduce(
       (acc, h) => {
-        acc[h.id] = h.defaultDisplay ?? true;
+        acc[h.key] = h.displayOnTable ?? true;
         return acc;
       },
       {} as Record<string, boolean>,
     );
 
     initialVisibility && setColumnVisibility(initialVisibility);
-  }, [headers]);
+  }, [fieldDefinitions]);
 
   useEffect(() => {
     const filterConditions = filterField
@@ -145,10 +145,11 @@ const TableContainer = <K, F>({
   }, [filterField]);
 
   useEffect(() => {
-    const sortableField =
-      modelType && isModelType(modelType)
-        ? fieldDefinition[modelType].filter(isSortable)
-        : undefined;
+    if (!modelType || !isModelType(modelType)) return;
+    const defs = fieldDefinition[modelType];
+    if (!defs) return;
+
+    const sortableField = getSortableFields(modelType);
     sortableField && resetSort(sortableField);
   }, [modelType]);
 
@@ -202,7 +203,7 @@ const TableContainer = <K, F>({
         initialData={initialData}
         reloadFun={reloadFun}
         quickFilterItems={quickFilterItemsParam}
-        headers={headers}
+        headers={fieldDefinitions}
       />
       {itemsLoading || quickFilterLoading ? (
         <div className="flex items-center justify-center py-16">
@@ -210,12 +211,12 @@ const TableContainer = <K, F>({
             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
           </div>
         </div>
-      ) : items && items?.length > 0 && headers ? (
+      ) : items && items?.length > 0 && fieldDefinitions ? (
         <ListView<K>
           modelType={modelType ? modelType : undefined}
           data={items}
           totalCount={totalCount}
-          headers={headers}
+          headers={fieldDefinitions}
           pageNation={pageNation ? pageNation : "client"}
           linkField={linkField}
           detailLink={detailLink}
@@ -227,6 +228,7 @@ const TableContainer = <K, F>({
           onClick={onClick}
           selectedKey={selectedKey}
           renderFieldCell={renderFieldCell}
+          edit={edit}
         />
       ) : (
         <div className="flex items-center justify-center py-16">

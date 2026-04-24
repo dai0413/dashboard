@@ -53,12 +53,14 @@ const ManyField = <T extends keyof FormTypeMap>({
 
   const headers: TableHeader<Record<string, any>>[] = fields
     ? fields?.map((field) => ({
-        id: field.key as string,
+        key: field.key as string,
         label: field.label,
         field: field.key as keyof Record<string, any>,
         width: field.width,
-        type: ColumnType.FIELD,
+        type: "string",
         defaultDisplay: true,
+        displayOnTable: true,
+        getValueType: ColumnType.FIELD,
       }))
     : [];
 
@@ -74,13 +76,13 @@ const ManyField = <T extends keyof FormTypeMap>({
       <CustomTableContainer
         pageNation="client"
         items={many?.state.length === 0 ? [{}] : many?.state || []}
-        headers={headers}
+        fieldDefinitions={headers}
         renderFieldCell={(
           header: TableHeader<Record<string, any>>,
           formData: Record<string, any>,
           rowIndex: number,
         ) => {
-          const field = fields?.find((f) => f.key === header.id);
+          const field = fields?.find((f) => f.key === header.key);
           if (!field) return null;
 
           const targetObj = many?.stateLabel[rowIndex];

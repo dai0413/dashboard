@@ -16,7 +16,7 @@ const RenderCell = <T extends BaseRow>(
   linkField?: LinkField[],
 ): React.ReactNode => {
   if (
-    header.type === ColumnType.FIELD &&
+    header.getValueType === ColumnType.FIELD &&
     "element" in row &&
     React.isValidElement(row.element)
   ) {
@@ -24,10 +24,12 @@ const RenderCell = <T extends BaseRow>(
   }
 
   const value =
-    header.type === ColumnType.CUSTOM ? header.getData(row) : row[header.field];
+    header.getValueType === ColumnType.CUSTOM
+      ? header.getData(row)
+      : row[header.field];
 
   const field =
-    linkField && linkField.find((field) => field.field === header.id);
+    linkField && linkField.find((field) => field.field === header.key);
 
   const hasId = (row: any): row is { id: string } => {
     return row && typeof row === "object" && "id" in row;

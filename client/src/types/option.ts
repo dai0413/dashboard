@@ -1,10 +1,10 @@
-import { TableHeader } from "./table";
+import { UIFieldDefinition } from "./field";
 
 export type OptionArray = Array<
   { key: string; label: string } & Record<string, any>
 >;
 export type OptionTable<T> = {
-  header: TableHeader<T>[];
+  fields: UIFieldDefinition<T>[];
   data: T[];
 };
 

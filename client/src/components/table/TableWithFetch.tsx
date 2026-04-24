@@ -31,7 +31,7 @@ const TableWithFetch = <K extends keyof GettedModelDataMap>({
   pageNation,
   title,
   modelType,
-  headers,
+  fieldDefinitions,
   fetch: { apiRoute, params },
   filterField = [],
   sortField = [],
@@ -100,7 +100,7 @@ const TableWithFetch = <K extends keyof GettedModelDataMap>({
       modelType={modelType}
       items={data.data}
       title={title}
-      headers={headers}
+      fieldDefinitions={fieldDefinitions}
       filterField={filterField}
       sortField={sortField}
       itemsLoading={data.isLoading}

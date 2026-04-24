@@ -31,7 +31,7 @@ export const Tile = <T,>({
   } = useModal();
 
   const visibleHeaders = useMemo(
-    () => headers.filter((h) => columnVisibility[h.id]),
+    () => headers.filter((h) => columnVisibility[h.key]),
     [headers, columnVisibility],
   );
   const primaryHeaders = visibleHeaders.filter((h) => h.isPrimary);
@@ -124,7 +124,7 @@ export const Tile = <T,>({
                   const displayValue = toDisplayValue(header, row);
 
                   return (
-                    <div key={header.id} className="flex gap-2">
+                    <div key={header.key} className="flex gap-2">
                       <span className="text-gray-500">{header.label}</span>
                       <span className="font-medium">
                         {isObject &&
@@ -185,7 +185,7 @@ export const Tile = <T,>({
 
                   return (
                     <div
-                      key={header.id}
+                      key={header.key}
                       className="flex justify-between text-sm"
                       title={displayValue}
                     >

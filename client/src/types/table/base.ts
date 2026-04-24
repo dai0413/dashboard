@@ -1,29 +1,30 @@
-import { Label, QueryParams } from "@dai0413/myorg-shared";
+import { BaseField, Label, QueryParams } from "@dai0413/myorg-shared";
 import { ModelType } from "../models";
 import { LinkField } from "../types";
+import { UIFieldDefinition } from "../field";
 
 export enum ColumnType {
   FIELD = "field",
   CUSTOM = "custom",
 }
 
-type Base = {
-  id: string;
-  label: string;
+type TableHeaderBase = {
   width?: string;
   isPrimary?: boolean;
-  defaultDisplay: boolean;
+  displayOnTable: boolean;
 };
 
-type FieldHeader<T> = Base & {
-  type: ColumnType.FIELD;
-  field: keyof T;
-};
+type FieldHeader<T> = BaseField &
+  TableHeaderBase & {
+    getValueType: ColumnType.FIELD;
+    field: keyof T;
+  };
 
-type CustomHeader<T> = Base & {
-  type: ColumnType.CUSTOM;
-  getData: (data: T) => string | Label | (object & { id?: string });
-};
+type CustomHeader<T> = BaseField &
+  TableHeaderBase & {
+    getValueType: ColumnType.CUSTOM;
+    getData: (data: T) => string | Label | (object & { id?: string });
+  };
 
 export type TableHeader<T> = FieldHeader<T> | CustomHeader<T>;
 
@@ -31,7 +32,7 @@ export type TableBase<T, F> = TableBase1<T> & TableFormProps<F>;
 
 type TableBase1<T> = {
   title?: string;
-  headers: TableHeader<T>[];
+  fieldDefinitions: UIFieldDefinition<T>[];
   modelType?: ModelType | null;
   linkField?: LinkField[];
   pageNation?: "client" | "server";

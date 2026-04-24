@@ -6,8 +6,7 @@ import Alert from "../layout/Alert";
 import { useAlert } from "../../context/alert-context";
 import { useForm } from "../../context/form-context";
 
-import { fieldDefinition } from "../../lib/model-fields";
-import { DetailFieldDefinition, isDisplayOnDetail } from "../../types/field";
+import { getOnDetailFields } from "../../lib/model-fields";
 import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { FieldList } from "./index";
@@ -17,6 +16,7 @@ import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
 
 import { useModal } from "../../context/modal-context";
 import { useModelContext } from "../../context/models/model-wrapper";
+import { ColumnType } from "../../types/table";
 
 const SkeletonFieldList: React.FC<{ rows?: number }> = ({ rows = 6 }) => (
   <div className="space-y-2 text-sm text-gray-700 animate-pulse">
@@ -59,11 +59,7 @@ const DetailModal = () => {
 
   const { isLoading, selected, deleteItem } = modelContext;
 
-  const displayableField = modelType
-    ? (fieldDefinition[modelType].filter(
-        isDisplayOnDetail,
-      ) as DetailFieldDefinition[])
-    : [];
+  const displayableField = modelType ? getOnDetailFields(modelType) : [];
 
   const editOnClick = () => {
     open(modelType);
@@ -95,15 +91,21 @@ const DetailModal = () => {
         displayValue =
           typeof value === "undefined" || typeof value === null ? "" : value;
 
+        const field = displayableField.find((fie) => fie.key === key);
+        if (field?.getValueType === ColumnType.CUSTOM) {
+          displayValue = field.getData(selected);
+        }
+
         // match-format対応
         if (modelType === ModelType.MATCH_FORMAT && key === "period") {
-          const fields = displayableField.filter((fie) => !!fie.getValue);
+          const fields = displayableField.filter(
+            (fie) => fie.getValueType === ColumnType.CUSTOM,
+          );
 
           fields.forEach((field) => {
-            if (field.getValue)
-              acc[field.key] = {
-                value: field.getValue(selected),
-              };
+            acc[field.key] = {
+              value: field.getData(selected),
+            };
           });
         }
         // registration-history対応
@@ -112,14 +114,14 @@ const DetailModal = () => {
             modelType === ModelType.STAFF_REGISTRATION_HISTORY) &&
           key === "changes"
         ) {
-          const fields = displayableField.filter((fie) => !!fie.getValue);
+          const fields = displayableField.filter(
+            (fie) => fie.getValueType === ColumnType.CUSTOM,
+          );
 
           fields.forEach((field) => {
-            if (field.getValue) {
-              acc[field.key] = {
-                value: field.getValue(selected),
-              };
-            }
+            acc[field.key] = {
+              value: field.getData(selected),
+            };
           });
         }
 

@@ -281,7 +281,7 @@ const TableToolbar = <Data, Form>({
     const next: Record<string, boolean> = {};
 
     headers.forEach((h) => {
-      next[h.id] = true;
+      next[h.key] = true;
     });
 
     setColumnVisibility(next);
@@ -291,7 +291,7 @@ const TableToolbar = <Data, Form>({
     const next: Record<string, boolean> = {};
 
     headers.forEach((h) => {
-      next[h.id] = false;
+      next[h.key] = false;
     });
 
     setColumnVisibility(next);
@@ -319,13 +319,13 @@ const TableToolbar = <Data, Form>({
 
         ...headers.map((h) => (
           <CheckMenuItem
-            key={h.id}
+            key={h.key}
             label={h.label}
-            checked={columnVisibility[h.id]}
+            checked={columnVisibility[h.key]}
             onChange={() =>
               setColumnVisibility({
                 ...columnVisibility,
-                [h.id]: !columnVisibility[h.id],
+                [h.key]: !columnVisibility[h.key],
               })
             }
           />

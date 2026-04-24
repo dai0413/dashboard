@@ -20,10 +20,12 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
+import { fieldDefinition } from "../../lib/model-fields";
+import { isFilterable, isSortable } from "../../types/field";
 
 type ModelBase<K extends keyof GettedModelDataMap> = Omit<
   TableBase<GettedModelDataMap[K], FormTypeMap[K]>,
-  "modelType"
+  "modelType" | "fieldDefinitions"
 > & {
   modelType: K;
   contextState: ModelContext<K>;
@@ -37,7 +39,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
-  const { itemsPerPage } = useListView();
+  const { itemsPerPage, setColumnVisibility } = useListView();
   const {
     main: { handleSetAlert },
   } = useAlert();
@@ -45,8 +47,6 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   const {
     items,
     isLoading,
-    filterableField,
-    sortableField,
     page,
     totalCount,
     readItems,
@@ -60,8 +60,30 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   }, []);
 
   const tableIsLoading = useMemo(() => isLoading, [isLoading]);
-  const filterField = useMemo(() => filterableField, [filterableField]);
-  const sortField = useMemo(() => sortableField, [sortableField]);
+  const headers = useMemo(
+    () => fieldDefinition[props.modelType],
+    [props.modelType],
+  );
+  const filterField = useMemo(
+    () => fieldDefinition[props.modelType]?.filter(isFilterable) || [],
+    [props.modelType],
+  );
+  const sortField = useMemo(
+    () => fieldDefinition[props.modelType]?.filter(isSortable) || [],
+    [props.modelType],
+  );
+
+  useEffect(() => {
+    const initialVisibility = fieldDefinition[props.modelType]?.reduce(
+      (acc, h) => {
+        acc[h.key] = h.displayOnTable ?? true;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
+
+    initialVisibility && setColumnVisibility(initialVisibility);
+  }, [props.modelType]);
 
   const handleApplyFilter = async (
     filterConditions: FilterableFieldDefinition[],
@@ -114,7 +136,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
         downloadFile={downloadFile}
         initialData={props.initialData}
         quickFilterItems={[]}
-        headers={props.headers}
+        headers={headers}
       />
       {tableIsLoading ? (
         <div className="flex items-center justify-center py-16">
@@ -122,12 +144,12 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
           </div>
         </div>
-      ) : items && items?.length > 0 && props.headers ? (
+      ) : items && items?.length > 0 && headers ? (
         <ListView<GettedModelDataMap[K]>
           modelType={props.modelType}
           data={items}
           totalCount={totalCount}
-          headers={props.headers}
+          headers={headers}
           pageNation="server"
           linkField={props.linkField}
           detailLink={detailLink}

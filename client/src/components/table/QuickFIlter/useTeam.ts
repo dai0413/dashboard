@@ -84,7 +84,7 @@ export const useTeam = (): {
     const obj = ageGroup().find((a) => a.key === ageGroupKey);
 
     const defaultFieldObj = fieldDefinition[ModelType.TEAM]
-      .filter(isFilterable)
+      ?.filter(isFilterable)
       .find((f) => f.key === "age_group");
 
     if (!obj || !defaultFieldObj) return undefined;

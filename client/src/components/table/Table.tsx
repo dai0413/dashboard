@@ -34,7 +34,7 @@ const Table = <T,>({
   useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
 
   const visibleHeaders = useMemo(
-    () => headers.filter((h) => columnVisibility[h.id]),
+    () => headers.filter((h) => columnVisibility[h.key]),
     [headers, columnVisibility],
   );
 
@@ -67,7 +67,7 @@ const Table = <T,>({
           {visibleHeaders.map((header) => (
             <th
               scope="col"
-              key={`${header.id}-${header.label}`}
+              key={`${header.key}-${header.label}`}
               className="px-4 py-2 border"
               style={
                 header.width
@@ -156,13 +156,13 @@ const Table = <T,>({
 
                 return (
                   <td
-                    key={`${header.id}-${header.label}`}
+                    key={`${header.key}-${header.label}`}
                     className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${hasKey(row) && selectedKey.includes(row.key) ? "bg-blue-100" : ""}
                       ${
                         edit &&
-                        header.type === ColumnType.FIELD &&
+                        header.getValueType === ColumnType.FIELD &&
                         selectedKey.includes(String(header.field))
                           ? "border-2 border-blue-700"
                           : ""

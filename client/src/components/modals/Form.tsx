@@ -172,14 +172,15 @@ const Form = <T extends keyof FormTypeMap>() => {
             .map(
               (field) =>
                 ({
-                  type: ColumnType.FIELD,
-                  id: field.key as string,
+                  type: "string",
+                  getValueType: ColumnType.FIELD,
+                  key: field.key as string,
                   label: field.label,
                   field: field.key as string,
                   width: field.width,
                   fieldType: field.fieldType,
                   valueType: field.valueType,
-                  defaultDisplay: true,
+                  displayOnTable: true,
                 }) satisfies ConfirmBulkDataHeader,
             )
             .filter((h) =>
@@ -200,7 +201,7 @@ const Form = <T extends keyof FormTypeMap>() => {
         const row: DisplayRow = {};
 
         confirmBulkDataHeaders.forEach((h) => {
-          const key = h.id;
+          const key = h.key;
           const value = get(d, key);
 
           let displayValue: string | number | undefined;
@@ -418,7 +419,7 @@ const Form = <T extends keyof FormTypeMap>() => {
                   <CustomTableContainer
                     pageNation="client"
                     items={confirmBulkData || []}
-                    headers={confirmBulkDataHeaders || []}
+                    fieldDefinitions={confirmBulkDataHeaders || []}
                     pageNum={page.formPage}
                     handlePageChange={async (p: number) =>
                       setPage("formPage", p)

@@ -19,8 +19,6 @@ import {
   uploadFileBase,
 } from "../lib/api";
 import { cleanData } from ".";
-import { fieldDefinition } from "../lib/model-fields";
-import { isFilterable, isSortable } from "../types/field";
 import { QueryParams, ResBody, UploadJobType } from "@dai0413/myorg-shared";
 
 export function createModelContext<T extends ModelType>(
@@ -199,12 +197,6 @@ export function createModelContext<T extends ModelType>(
     const handleLoading = (time: "start" | "end") =>
       time === "start" ? setIsLoading(true) : setIsLoading(false);
 
-    const filterableField =
-      fieldDefinition[ContextModelString].filter(isFilterable);
-
-    const sortableField =
-      fieldDefinition[ContextModelString].filter(isSortable);
-
     const value: MetaCrudContext<T> = {
       items,
       totalCount,
@@ -222,8 +214,6 @@ export function createModelContext<T extends ModelType>(
       downloadFile,
       resetItems,
       isLoading,
-      filterableField,
-      sortableField,
       uploadJob,
     };
 

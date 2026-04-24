@@ -1,9 +1,4 @@
-import {
-  FilterableFieldDefinition,
-  QueryParams,
-  SortableFieldDefinition,
-  UploadJobType,
-} from "@dai0413/myorg-shared";
+import { QueryParams, UploadJobType } from "@dai0413/myorg-shared";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 import { AxiosResponse } from "axios";
 import { DataResoonse } from "./api";
@@ -34,8 +29,6 @@ export type MetaCrudContext<K extends ModelType> = {
 
   resetItems: () => void;
   isLoading: boolean;
-  filterableField: FilterableFieldDefinition[];
-  sortableField: SortableFieldDefinition[];
 
   uploadJob: UploadJobType | null;
 };

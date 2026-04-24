@@ -23,6 +23,7 @@ export type Team = {
   transferurl?: string;
   sofaurl?: string;
   old_id?: string;
+  normalized_name: string;
 };
 
 type TeamPost = Omit<Team, "_id" | "country"> & {

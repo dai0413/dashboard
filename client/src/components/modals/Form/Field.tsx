@@ -3,13 +3,14 @@ import { InputField, SelectField } from "../../field";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
 import { useEffect, useMemo, useState } from "react";
-import { fieldDefinition } from "../../../lib/model-fields";
 import {
-  isFilterable,
+  getFilterableFields,
+  getSortableFields,
+} from "../../../lib/model-fields";
+import {
   isModelType,
   isOptionType,
   isQuickFilterType,
-  isSortable,
 } from "../../../types/field";
 
 import { FormTypeMap, ModelDataMap, ModelType } from "../../../types/models";
@@ -219,9 +220,17 @@ export const RenderField = <T extends keyof FormTypeMap>({
       return filterConditionsObj[optionKey];
     }
 
-    return optionKey && isModelType(optionKey)
-      ? fieldDefinition[optionKey].filter(isFilterable)
-      : undefined;
+    if (!optionKey || !isModelType(optionKey)) return;
+    const filterableField = getFilterableFields(optionKey);
+
+    return filterableField;
+  }, [optionKey]);
+
+  const sortField = useMemo(() => {
+    if (!optionKey || !isModelType(optionKey)) return;
+    const sortableField = getSortableFields(optionKey);
+
+    return sortableField;
   }, [optionKey]);
 
   const quickFilterItems: QuickFilterItem[] = useMemo(() => {
@@ -251,14 +260,12 @@ export const RenderField = <T extends keyof FormTypeMap>({
           modelType={
             optionKey && isModelType(optionKey) ? optionKey : undefined
           }
-          headers={optionTableData ? optionTableData.option.header : undefined}
+          fieldDefinitions={
+            optionTableData ? optionTableData.option.fields : []
+          }
           items={optionTableData ? optionTableData.option.data : undefined}
           filterField={filterField}
-          sortField={
-            optionKey && isModelType(optionKey)
-              ? fieldDefinition[optionKey].filter(isSortable)
-              : undefined
-          }
+          sortField={sortField}
           itemsLoading={optionIsLoading}
           pageNum={optionTableData ? optionTableData.page || 1 : 1}
           totalCount={optionTableData ? optionTableData.totalCount : undefined}

@@ -1,41 +1,37 @@
-import {
-  BaseField,
-  FilterableFieldDefinition,
-  FilterField,
-  SortableFieldDefinition,
-  SortField,
-} from "@dai0413/myorg-shared";
+import { BaseField, FilterField, SortField } from "@dai0413/myorg-shared";
 import { OptionType } from "../utils/createOption/types/base";
 import { ModelType } from "./models";
-import { QuickFilterType } from "./table";
+import { QuickFilterType, TableHeader } from "./table";
 
 // 詳細画面用
-type DetailField = {
+export type DetailField = {
   displayOnDetail: boolean;
-  getValue?: (data: any) => string;
 };
 
 export type DetailFieldDefinition = BaseField & DetailField;
 
 // 統合型（UIでよく使う）
-export type UIFieldDefinition = BaseField &
+export type UIFieldDefinition<T> = BaseField &
+  TableHeader<T> &
   Partial<FilterField> &
   Partial<SortField> &
   Partial<DetailField>;
 
-export function isFilterable(
-  f: UIFieldDefinition,
-): f is FilterableFieldDefinition {
+export function isFilterable<T>(
+  f: UIFieldDefinition<T>,
+): f is UIFieldDefinition<T> & FilterField {
   return f.filterable === true && f.type !== undefined;
 }
 
-export function isSortable(f: UIFieldDefinition): f is SortableFieldDefinition {
-  return f.sortable === true;
+export function isSortable<T>(
+  f: UIFieldDefinition<T>,
+): f is UIFieldDefinition<T> & SortField {
+  return typeof f.sortable === "boolean" && f.sortable === true;
 }
 
-export function isDisplayOnDetail(
-  f: UIFieldDefinition,
-): f is DetailFieldDefinition {
+export function isDisplayOnDetail<T>(
+  f: UIFieldDefinition<T>,
+): f is UIFieldDefinition<T> & DetailField {
   return f.displayOnDetail === true;
 }
 

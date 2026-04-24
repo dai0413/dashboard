@@ -4,7 +4,9 @@ import { isLabelObject } from "./isLabelObject";
 
 export const toDisplayValue = <T>(header: TableHeader<T>, row: T): string => {
   const value =
-    header.type === ColumnType.CUSTOM ? header.getData(row) : row[header.field];
+    header.getValueType === ColumnType.CUSTOM
+      ? header.getData(row)
+      : row[header.field];
 
   const convertDisplayValue = (value: unknown): string => {
     if (typeof value === "undefined") return "";
