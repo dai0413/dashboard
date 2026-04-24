@@ -14,13 +14,14 @@ export const matchFormat = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "名前",
           field: "label",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

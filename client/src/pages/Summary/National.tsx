@@ -109,37 +109,41 @@ const National = () => {
       {selectedTab === "competition" && id && (
         <TableWithFetch
           modelType={ModelType.COMPETITION}
-          headers={[
+          fieldDefinitions={[
             {
               label: "大会名",
               field: "name",
-              type: ColumnType.FIELD,
-              id: "name",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "name",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "大会規模",
               field: "competition_type",
               width: "90px",
-              type: ColumnType.FIELD,
-              id: "competition_type",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "competition_type",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "大会タイプ",
               field: "category",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "category",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "category",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "年代",
               field: "age_group",
               width: "70px",
-              type: ColumnType.FIELD,
-              id: "age_group",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "age_group",
+              displayOnTable: true,
+              type: "select",
             },
           ]}
           fetch={{
@@ -147,10 +151,10 @@ const National = () => {
             params: { getAll: true, country: id, sort: "_id" },
           }}
           filterField={fieldDefinition[ModelType.COMPETITION]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "country")}
           sortField={fieldDefinition[ModelType.COMPETITION]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "country")}
           linkField={[
             {
@@ -169,36 +173,40 @@ const National = () => {
       {selectedTab === "series" && id && (
         <TableWithFetch
           modelType={ModelType.NATIONAL_MATCH_SERIES}
-          headers={[
+          fieldDefinitions={[
             {
               label: "名称",
               field: "name",
               width: "250px",
-              type: ColumnType.FIELD,
-              id: "name",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "name",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "年代",
               field: "age_group",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "age_group",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "age_group",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "招集日",
               field: "joined_at",
-              type: ColumnType.FIELD,
-              id: "joined_at",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "joined_at",
+              displayOnTable: true,
+              type: "Date",
             },
             {
               label: "解散日",
               field: "left_at",
-              type: ColumnType.FIELD,
-              id: "left_at",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "left_at",
+              displayOnTable: true,
+              type: "Date",
             },
           ]}
           fetch={{
@@ -206,10 +214,10 @@ const National = () => {
             params: { getAll: true, country: id, sort: "-_id" },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "country")}
           sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "country")}
           linkField={[
             {
@@ -228,46 +236,51 @@ const National = () => {
       {selectedTab === "player" && id && (
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
-          headers={[
+          fieldDefinitions={[
             {
               label: "代表試合シリーズ",
               field: "series",
               width: "250px",
-              type: ColumnType.FIELD,
-              id: "series",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "series",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "選手",
               field: "player",
               isPrimary: true,
-              type: ColumnType.FIELD,
-              id: "player",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "player",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "招集状況",
               field: "status",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "status",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "status",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "背番号",
               field: "number",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "number",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "number",
+              displayOnTable: true,
+              type: "number",
             },
             {
               label: "ポジション",
               field: "position_group",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "position_group",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "position_group",
+              displayOnTable: true,
+              type: "select",
             },
           ]}
           fetch={{
@@ -278,10 +291,10 @@ const National = () => {
               sort: "-series,position_group_order,number",
             },
           }}
-          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP].filter(
+          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]?.filter(
             isFilterable,
           )}
-          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP].filter(
+          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]?.filter(
             isSortable,
           )}
           linkField={[

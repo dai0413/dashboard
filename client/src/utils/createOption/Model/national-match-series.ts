@@ -26,27 +26,30 @@ export const nationalMatchSeries = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "シリーズ名",
           field: "label",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "国名",
           field: "country",
-          type: ColumnType.FIELD,
-          id: "country",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "country",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "年代・種別",
           field: "age_group",
-          type: ColumnType.FIELD,
-          id: "age_group",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "age_group",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

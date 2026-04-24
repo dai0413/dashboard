@@ -17,6 +17,14 @@ export const toDisplayValue = <T>(header: TableHeader<T>, row: T): string => {
 
     if (Array.isArray(value)) return value.join(", ");
 
+    if (header.type === "Date") {
+      return toDateKey(value as string, false) || "";
+    }
+
+    if (header.type === "datetime-local") {
+      return toDateKey(value as string, true) || "";
+    }
+
     if (value instanceof Date) return toDateKey(value, false) || "";
 
     return String(value);

@@ -20,20 +20,22 @@ export const stadium = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "名前",
           field: "label",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "国",
           field: "country",
-          type: ColumnType.FIELD,
-          id: "country",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "country",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

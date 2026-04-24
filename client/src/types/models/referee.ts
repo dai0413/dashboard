@@ -13,6 +13,7 @@ export type Referee = {
   transferurl?: string;
   sofaurl?: string;
   old_id?: string;
+  normalized_en_name: string;
 };
 
 type RefereePost = Omit<Referee, "_id" | "player" | "citizenship" | "dob"> & {

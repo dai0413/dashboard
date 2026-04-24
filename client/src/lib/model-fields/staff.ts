@@ -1,37 +1,51 @@
 import { UIFieldDefinition } from "../../types/field";
+import { StaffGet } from "../../types/models/staff";
+import { ColumnType } from "../../types/table";
 
-export const staff: UIFieldDefinition[] = [
+export const staff: UIFieldDefinition<StaffGet>[] = [
   {
     key: "name",
+    field: "name",
     label: "名前",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "en_name",
+    field: "en_name",
     label: "英名",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "normalized_en_name",
+    field: "normalized_en_name",
     label: "正規化英名",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "dob",
+    field: "dob",
     label: "生年月日",
     type: "Date",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "citizenship",
@@ -40,29 +54,43 @@ export const staff: UIFieldDefinition[] = [
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.CUSTOM,
+    getData: (data: StaffGet) => {
+      return data.citizenship?.map((c) => c.label).join(",") || "";
+    },
   },
   {
     key: "pob",
+    field: "pob",
     label: "出身地",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "player",
+    field: "player",
     label: "選手",
     type: "select",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "old_id",
+    field: "old_id",
     label: "旧ID",
     type: "string",
     filterable: false,
     sortable: false,
     displayOnDetail: true,
+    displayOnTable: false,
+    getValueType: ColumnType.FIELD,
   },
 ];

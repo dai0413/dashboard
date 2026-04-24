@@ -20,20 +20,22 @@ export const season = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "名前",
           field: "label",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "現在",
           field: "current",
-          type: ColumnType.FIELD,
-          id: "current",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "current",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

@@ -1,44 +1,61 @@
 import { UIFieldDefinition } from "../../types/field";
+import { MatchEventTypeGet } from "../../types/models/match-event-type";
+import { ColumnType } from "../../types/table";
 
-export const matchEventType: UIFieldDefinition[] = [
+export const matchEventType: UIFieldDefinition<MatchEventTypeGet>[] = [
   {
     key: "name",
+    field: "name",
     label: "名前",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "en_name",
+    field: "en_name",
     label: "英名",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "abbr",
+    field: "abbr",
     label: "略称",
     type: "string",
     filterable: true,
     sortable: true,
-    displayOnDetail: true,
+    displayOnDetail: false,
+    displayOnTable: false,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "event_type",
+    field: "event_type",
     label: "イベントタイプ",
     type: "select",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "old_id",
+    field: "old_id",
     label: "旧id",
     type: "string",
     filterable: false,
     sortable: false,
-    displayOnDetail: true,
+    displayOnDetail: false,
+    displayOnTable: false,
+    getValueType: ColumnType.FIELD,
   },
 ];

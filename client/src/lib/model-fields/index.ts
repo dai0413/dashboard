@@ -1,4 +1,4 @@
-import { ModelType } from "../../types/models";
+import { GettedModelDataMap, ModelType } from "../../types/models";
 import { transfer } from "./transfer";
 import { injury } from "./injury";
 import { player } from "./player";
@@ -28,8 +28,18 @@ import { staffRegistrationHistory } from "./staff-registration-history";
 import { staffRegistration } from "./staff-registration";
 import { statsL } from "./stats-l";
 import { refereeAppearance } from "./referee-appearance";
+import {
+  DetailField,
+  isDisplayOnDetail,
+  isFilterable,
+  isSortable,
+  UIFieldDefinition,
+} from "../../types/field";
+import { FilterField, SortField } from "@dai0413/myorg-shared";
 
-export const fieldDefinition = {
+export const fieldDefinition: {
+  [K in ModelType]?: UIFieldDefinition<GettedModelDataMap[K]>[];
+} = {
   [ModelType.COMPETITION_STAGE]: competitionStage,
   [ModelType.COMPETITION]: competition,
   [ModelType.COUNTRY]: country,
@@ -60,3 +70,30 @@ export const fieldDefinition = {
   [ModelType.TEAM]: team,
   [ModelType.TRANSFER]: transfer,
 };
+
+export function getSortableFields<K extends ModelType>(
+  modelType: K,
+): (UIFieldDefinition<GettedModelDataMap[K]> & SortField)[] {
+  const defs = fieldDefinition[modelType];
+  if (!defs) return [];
+
+  return defs.filter(isSortable);
+}
+
+export function getFilterableFields<K extends ModelType>(
+  modelType: K,
+): (UIFieldDefinition<GettedModelDataMap[K]> & FilterField)[] {
+  const defs = fieldDefinition[modelType];
+  if (!defs) return [];
+
+  return defs.filter(isFilterable);
+}
+
+export function getOnDetailFields<K extends ModelType>(
+  modelType: K,
+): (UIFieldDefinition<GettedModelDataMap[K]> & DetailField)[] {
+  const defs = fieldDefinition[modelType];
+  if (!defs) return [];
+
+  return defs.filter(isDisplayOnDetail);
+}

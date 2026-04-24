@@ -1,39 +1,55 @@
 import { UIFieldDefinition } from "../../types/field";
+import { StaffAppearanceGet } from "../../types/models/staff-appearance";
+import { ColumnType } from "../../types/table";
 
-export const staffAppearance: UIFieldDefinition[] = [
+export const staffAppearance: UIFieldDefinition<StaffAppearanceGet>[] = [
   {
     key: "match",
+    field: "match",
+    width: "120px",
     filterKey: "match",
     label: "試合",
     type: "select",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "staff",
+    field: "staff",
     filterKey: "staff.name",
     label: "選手",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "team",
+    field: "team",
+    width: "70px",
     filterKey: "team.team",
     label: "チーム",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "role",
+    field: "role",
     label: "役割",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
 ];

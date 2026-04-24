@@ -14,13 +14,14 @@ export const country = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
+          type: "string",
           label: "国名",
           field: "label",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          key: "label",
+          displayOnTable: true,
+          getValueType: ColumnType.FIELD,
         },
       ],
       data: options,

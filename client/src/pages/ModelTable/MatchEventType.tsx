@@ -2,7 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { useMatchEventType } from "../../context/models/match-event-type";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { ModelType } from "../../types/models";
-import { ColumnType } from "../../types/table";
 
 const MatchEventType = () => {
   const context = useMatchEventType();
@@ -11,36 +10,6 @@ const MatchEventType = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"試合イベント情報"}
-        headers={[
-          {
-            label: "名前",
-            field: "name",
-            type: ColumnType.FIELD,
-            id: "name",
-            defaultDisplay: true,
-          },
-          {
-            label: "英名",
-            field: "en_name",
-            type: ColumnType.FIELD,
-            id: "en_name",
-            defaultDisplay: true,
-          },
-          {
-            label: "略称",
-            field: "abbr",
-            type: ColumnType.FIELD,
-            id: "abbr",
-            defaultDisplay: true,
-          },
-          {
-            label: "イベントタイプ",
-            field: "event_type",
-            type: ColumnType.FIELD,
-            id: "event_type",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={context}
         modelType={ModelType.MATCH_EVENT_TYPE}
         linkField={[

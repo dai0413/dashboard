@@ -120,45 +120,50 @@ const Match = () => {
       {selectedTab === "home" && id && selected?.home_team.id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
-          headers={[
+          fieldDefinitions={[
             {
               label: "背番号",
               field: "number",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "number",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "number",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "ステータス",
               field: "play_status",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "play_status",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "play_status",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "選手",
               field: "player",
-              type: ColumnType.FIELD,
-              id: "player",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "player",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "ポジション",
               field: "position",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "position",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "position",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "時間",
               field: "time",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "time",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "time",
+              displayOnTable: true,
+              type: "number",
             },
           ]}
           fetch={{
@@ -166,10 +171,10 @@ const Match = () => {
             params: { getAll: true, match: id, team: selected.home_team.id },
           }}
           filterField={fieldDefinition[ModelType.PLAYER_APPEARANCE]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "match" && file.key !== "team")}
           sortField={fieldDefinition[ModelType.PLAYER_APPEARANCE]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "match" && file.key !== "team")}
           linkField={[
             {
@@ -189,45 +194,50 @@ const Match = () => {
       {selectedTab === "away" && id && selected?.away_team.id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
-          headers={[
+          fieldDefinitions={[
             {
               label: "背番号",
               field: "number",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "number",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "number",
+              displayOnTable: true,
+              type: "number",
             },
             {
               label: "ステータス",
               field: "play_status",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "play_status",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "play_status",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "選手",
               field: "player",
-              type: ColumnType.FIELD,
-              id: "player",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "player",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "ポジション",
               field: "position",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "position",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "position",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "時間",
               field: "time",
               width: "100px",
-              type: ColumnType.FIELD,
-              id: "time",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "time",
+              displayOnTable: true,
+              type: "number",
             },
           ]}
           fetch={{
@@ -235,10 +245,10 @@ const Match = () => {
             params: { getAll: true, match: id, team: selected.away_team.id },
           }}
           filterField={fieldDefinition[ModelType.PLAYER_APPEARANCE]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "match" && file.key !== "team")}
           sortField={fieldDefinition[ModelType.PLAYER_APPEARANCE]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "match" && file.key !== "team")}
           linkField={[
             {
@@ -261,53 +271,59 @@ const Match = () => {
         selected?.away_team.id && (
           <TableWithFetch
             modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
-            headers={[
+            fieldDefinitions={[
               {
                 label: "前後半",
                 field: "period_label",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "period_label",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "period_label",
+                displayOnTable: true,
+                type: "select",
               },
               {
                 label: "時間",
                 field: "time_name",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "time_name",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "time_name",
+                displayOnTable: true,
+                type: "number",
               },
               {
                 label: "特別時間",
                 field: "special_time",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "special_time",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "special_time",
+                displayOnTable: true,
+                type: "select",
               },
               {
                 label: "チーム",
                 field: "team",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "team",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "team",
+                displayOnTable: true,
+                type: "string",
               },
               {
                 label: "イベント",
                 field: "match_event_type",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "match_event_type",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "match_event_type",
+                displayOnTable: true,
+                type: "string",
               },
               {
                 label: "選手",
                 field: "player",
-                type: ColumnType.FIELD,
-                id: "player",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "player",
+                displayOnTable: true,
+                type: "string",
               },
             ]}
             fetch={{
@@ -320,10 +336,10 @@ const Match = () => {
               },
             }}
             filterField={fieldDefinition[ModelType.PLAYER_MATCH_EVENT_LOG]
-              .filter(isFilterable)
+              ?.filter(isFilterable)
               .filter((file) => file.key !== "match")}
             sortField={fieldDefinition[ModelType.PLAYER_MATCH_EVENT_LOG]
-              .filter(isSortable)
+              ?.filter(isSortable)
               .filter((file) => file.key !== "match")}
             linkField={[
               {
@@ -349,53 +365,59 @@ const Match = () => {
         selected?.away_team.id && (
           <TableWithFetch
             modelType={ModelType.STAFF_MATCH_EVENT_LOG}
-            headers={[
+            fieldDefinitions={[
               {
                 label: "前後半",
                 field: "period_label",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "period_label",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "period_label",
+                displayOnTable: true,
+                type: "select",
               },
               {
                 label: "時間",
                 field: "time_name",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "time_name",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "time_name",
+                displayOnTable: true,
+                type: "number",
               },
               {
                 label: "特別時間",
                 field: "special_time",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "special_time",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "special_time",
+                displayOnTable: true,
+                type: "select",
               },
               {
                 label: "チーム",
                 field: "team",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "team",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "team",
+                displayOnTable: true,
+                type: "string",
               },
               {
                 label: "イベント",
                 field: "match_event_type",
                 width: "100px",
-                type: ColumnType.FIELD,
-                id: "match_event_type",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "match_event_type",
+                displayOnTable: true,
+                type: "string",
               },
               {
                 label: "スタッフ",
                 field: "staff",
-                type: ColumnType.FIELD,
-                id: "staff",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "staff",
+                displayOnTable: true,
+                type: "string",
               },
             ]}
             fetch={{
@@ -408,10 +430,10 @@ const Match = () => {
               },
             }}
             filterField={fieldDefinition[ModelType.STAFF_MATCH_EVENT_LOG]
-              .filter(isFilterable)
+              ?.filter(isFilterable)
               .filter((file) => file.key !== "match")}
             sortField={fieldDefinition[ModelType.STAFF_MATCH_EVENT_LOG]
-              .filter(isSortable)
+              ?.filter(isSortable)
               .filter((file) => file.key !== "match")}
             linkField={
               [
@@ -435,20 +457,22 @@ const Match = () => {
         selected?.away_team.id && (
           <TableWithFetch
             modelType={ModelType.TEAM_MATCH_FORMATION}
-            headers={[
+            fieldDefinitions={[
               {
                 label: "チーム",
                 field: "team",
-                type: ColumnType.FIELD,
-                id: "team",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "team",
+                displayOnTable: true,
+                type: "string",
               },
               {
                 label: "フォーメーション",
                 field: "formation",
-                type: ColumnType.FIELD,
-                id: "formation",
-                defaultDisplay: true,
+                getValueType: ColumnType.FIELD,
+                key: "formation",
+                displayOnTable: true,
+                type: "string",
               },
             ]}
             fetch={{
@@ -460,10 +484,10 @@ const Match = () => {
               },
             }}
             filterField={fieldDefinition[ModelType.TEAM_MATCH_FORMATION]
-              .filter(isFilterable)
+              ?.filter(isFilterable)
               .filter((file) => file.key !== "match")}
             sortField={fieldDefinition[ModelType.TEAM_MATCH_FORMATION]
-              .filter(isSortable)
+              ?.filter(isSortable)
               .filter((file) => file.key !== "match")}
             linkField={[
               {

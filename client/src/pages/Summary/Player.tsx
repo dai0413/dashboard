@@ -118,34 +118,38 @@ const Player = () => {
       {selectedTab === "transfer" && id && (
         <TableWithFetch
           modelType={ModelType.TRANSFER}
-          headers={[
+          fieldDefinitions={[
             {
               label: "加入日",
               field: "from_date",
-              type: ColumnType.FIELD,
-              id: "from_date",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "from_date",
+              displayOnTable: true,
+              type: "Date",
             },
             {
               label: "移籍元",
               field: "from_team",
-              type: ColumnType.FIELD,
-              id: "from_team",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "from_team",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "移籍先",
               field: "to_team",
-              type: ColumnType.FIELD,
-              id: "to_team",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "to_team",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "形態",
               field: "form",
-              type: ColumnType.FIELD,
-              id: "form",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "form",
+              displayOnTable: true,
+              type: "select",
             },
           ]}
           fetch={{
@@ -153,10 +157,10 @@ const Player = () => {
             params: { getAll: true, player: id, sort: "-from_date,-_id" },
           }}
           filterField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "player")}
           sortField={fieldDefinition[ModelType.TRANSFER]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "player")}
           linkField={[
             {
@@ -179,34 +183,38 @@ const Player = () => {
       {selectedTab === "injury" && id && (
         <TableWithFetch
           modelType={ModelType.INJURY}
-          headers={[
+          fieldDefinitions={[
             {
               label: "発表日",
               field: "doa",
-              type: ColumnType.FIELD,
-              id: "doa",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "doa",
+              displayOnTable: true,
+              type: "Date",
             },
             {
               label: "所属",
               field: "team",
-              type: ColumnType.FIELD,
-              id: "team",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "team",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "負傷箇所・診断結果",
               field: "injured_part",
-              type: ColumnType.FIELD,
-              id: "injured_part",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "injured_part",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "全治",
               field: "ttp",
-              type: ColumnType.FIELD,
-              id: "ttp",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "ttp",
+              displayOnTable: true,
+              type: "string",
             },
           ]}
           fetch={{
@@ -214,10 +222,10 @@ const Player = () => {
             params: { getAll: true, player: id },
           }}
           filterField={fieldDefinition[ModelType.INJURY]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "player")}
           sortField={fieldDefinition[ModelType.INJURY]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "player")}
           linkField={[
             {
@@ -232,34 +240,38 @@ const Player = () => {
       {selectedTab === "nationality" && id && (
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
-          headers={[
+          fieldDefinitions={[
             {
               label: "代表試合シリーズ",
               field: "series",
-              type: ColumnType.FIELD,
-              id: "series",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "series",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "招集状況",
               field: "status",
-              type: ColumnType.FIELD,
-              id: "status",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "status",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "背番号",
               field: "number",
-              type: ColumnType.FIELD,
-              id: "number",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "number",
+              displayOnTable: true,
+              type: "number",
             },
             {
               label: "活動開始日",
               field: "joined_at",
-              type: ColumnType.FIELD,
-              id: "joined_at",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "joined_at",
+              displayOnTable: true,
+              type: "Date",
             },
           ]}
           fetch={{
@@ -267,10 +279,10 @@ const Player = () => {
             params: { getAll: true, player: id },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "player")}
           sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "player")}
           linkField={[
             {
@@ -285,59 +297,66 @@ const Player = () => {
       {selectedTab === "registration" && id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_REGISTRATION}
-          headers={[
+          fieldDefinitions={[
             {
               label: "シーズン",
               field: "season",
-              type: ColumnType.FIELD,
-              id: "season",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "season",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "大会",
               field: "competition",
-              type: ColumnType.FIELD,
-              id: "competition",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "competition",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "日付",
               field: "date",
-              type: ColumnType.FIELD,
-              id: "date",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "date",
+              displayOnTable: true,
+              type: "Date",
             },
             {
               label: "チーム",
               field: "team",
-              type: ColumnType.FIELD,
-              id: "team",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "team",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "登録・抹消",
               field: "registration_type",
-              type: ColumnType.FIELD,
-              id: "registration_type",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "registration_type",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "登録・抹消",
               field: "registration_status",
-              type: ColumnType.FIELD,
-              id: "registration_status",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "registration_status",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "2種・特別指定",
-              id: "special_type",
-              defaultDisplay: true,
+              key: "special_type",
+              displayOnTable: true,
               getData: (data: PlayerRegistrationGet) => {
                 if (data.isSpecialDesignation) return "特別指定";
                 if (data.isTypeTwo) return "2種";
                 return "";
               },
-              type: ColumnType.CUSTOM,
+              getValueType: ColumnType.CUSTOM,
+              type: "string",
             },
           ]}
           fetch={{
@@ -349,10 +368,10 @@ const Player = () => {
             },
           }}
           filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "player")}
           sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "player")}
           linkField={[
             {

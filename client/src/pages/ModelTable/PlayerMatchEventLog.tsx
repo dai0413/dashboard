@@ -2,7 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { usePlayerMatchEventLog } from "../../context/models/player-match-event-log";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { ColumnType } from "../../types/table";
 
 const PlayerMatchEventLog = () => {
   const playerMatchEventLogContext = usePlayerMatchEventLog();
@@ -11,57 +10,6 @@ const PlayerMatchEventLog = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"選手の試合イベントログ"}
-        headers={[
-          {
-            label: "試合",
-            field: "match",
-            type: ColumnType.FIELD,
-            id: "match",
-            defaultDisplay: true,
-          },
-          {
-            label: "チーム",
-            field: "team",
-            type: ColumnType.FIELD,
-            id: "team",
-            defaultDisplay: true,
-          },
-          {
-            label: "イベントタイプ",
-            field: "match_event_type",
-            type: ColumnType.FIELD,
-            id: "match_event_type",
-            defaultDisplay: true,
-          },
-          {
-            label: "選手",
-            field: "player",
-            type: ColumnType.FIELD,
-            id: "player",
-            defaultDisplay: true,
-          },
-          {
-            label: "前後半",
-            field: "period_label",
-            type: ColumnType.FIELD,
-            id: "period_label",
-            defaultDisplay: true,
-          },
-          {
-            label: "時間",
-            field: "time_name",
-            type: ColumnType.FIELD,
-            id: "time_name",
-            defaultDisplay: true,
-          },
-          {
-            label: "特別時間",
-            field: "special_time",
-            type: ColumnType.FIELD,
-            id: "special_time",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={playerMatchEventLogContext}
         modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
         linkField={[

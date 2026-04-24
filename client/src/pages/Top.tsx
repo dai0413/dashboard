@@ -1,12 +1,9 @@
 import { useEffect } from "react";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { ListView } from "../components/table";
+import { CustomTableContainer } from "../components/table";
 import { LinkButton } from "../components/buttons";
 import { Arrow } from "../components/ui";
 import { useTopPage } from "../context/top-page-context";
-import { ListViewProvider } from "../context/listView-context";
-import { FilterProvider } from "../context/filter-context";
-import { SortProvider } from "../context/sort-context";
 import { ColumnType } from "../types/table";
 
 const Main = () => {
@@ -25,47 +22,47 @@ const Main = () => {
               <h2 className="text-xl font-semibold text-gray-700 mb-4">
                 {"移籍情報"}
               </h2>
-              <FilterProvider>
-                <SortProvider>
-                  <ListViewProvider>
-                    <ListView
-                      pageNation="client"
-                      data={transfers}
-                      headers={[
-                        {
-                          label: "発表日",
-                          field: "doa",
-                          type: ColumnType.FIELD,
-                          id: "doa",
-                          defaultDisplay: true,
-                        },
-                        {
-                          label: "移籍元",
-                          field: "from_team",
-                          type: ColumnType.FIELD,
-                          id: "from_team",
-                          defaultDisplay: true,
-                        },
-                        {
-                          label: "移籍先",
-                          field: "to_team",
-                          type: ColumnType.FIELD,
-                          id: "to_team",
-                          defaultDisplay: true,
-                        },
-                        {
-                          label: "名前",
-                          field: "player",
-                          type: ColumnType.FIELD,
-                          id: "player",
-                          defaultDisplay: true,
-                        },
-                      ]}
-                      isLoading={isLoading}
-                    />
-                  </ListViewProvider>
-                </SortProvider>
-              </FilterProvider>
+
+              <CustomTableContainer
+                pageNation="client"
+                items={transfers}
+                fieldDefinitions={[
+                  {
+                    label: "発表日",
+                    field: "doa",
+                    getValueType: ColumnType.FIELD,
+                    key: "doa",
+                    displayOnTable: true,
+                    type: "Date",
+                  },
+                  {
+                    label: "移籍元",
+                    field: "from_team",
+                    getValueType: ColumnType.FIELD,
+                    key: "from_team",
+                    displayOnTable: true,
+                    type: "string",
+                  },
+                  {
+                    label: "移籍先",
+                    field: "to_team",
+                    getValueType: ColumnType.FIELD,
+                    key: "to_team",
+                    displayOnTable: true,
+                    type: "string",
+                  },
+                  {
+                    label: "名前",
+                    field: "player",
+                    getValueType: ColumnType.FIELD,
+                    key: "player",
+                    displayOnTable: true,
+                    type: "string",
+                  },
+                ]}
+                itemsLoading={isLoading}
+                pageNum={1}
+              />
               <LinkButton to={APP_ROUTES.TRANSFER} color={"green"}>
                 <>
                   詳細へ
@@ -81,40 +78,38 @@ const Main = () => {
                 {"怪我情報"}
               </h2>
 
-              <FilterProvider>
-                <SortProvider>
-                  <ListViewProvider>
-                    <ListView
-                      pageNation="client"
-                      data={injuries}
-                      headers={[
-                        {
-                          label: "発表日",
-                          field: "doa",
-                          type: ColumnType.FIELD,
-                          id: "doa",
-                          defaultDisplay: true,
-                        },
-                        {
-                          label: "名前",
-                          field: "player",
-                          type: ColumnType.FIELD,
-                          id: "player",
-                          defaultDisplay: true,
-                        },
-                        {
-                          label: "負傷箇所",
-                          field: "injured_part",
-                          type: ColumnType.FIELD,
-                          id: "injured_part",
-                          defaultDisplay: true,
-                        },
-                      ]}
-                      isLoading={isLoading}
-                    />
-                  </ListViewProvider>
-                </SortProvider>
-              </FilterProvider>
+              <CustomTableContainer
+                pageNation="client"
+                items={injuries}
+                fieldDefinitions={[
+                  {
+                    label: "発表日",
+                    field: "doa",
+                    getValueType: ColumnType.FIELD,
+                    key: "doa",
+                    displayOnTable: true,
+                    type: "Date",
+                  },
+                  {
+                    label: "名前",
+                    field: "player",
+                    getValueType: ColumnType.FIELD,
+                    key: "player",
+                    displayOnTable: true,
+                    type: "string",
+                  },
+                  {
+                    label: "負傷箇所",
+                    field: "injured_part",
+                    getValueType: ColumnType.FIELD,
+                    key: "injured_part",
+                    displayOnTable: true,
+                    type: "string",
+                  },
+                ]}
+                itemsLoading={isLoading}
+                pageNum={1}
+              />
               <LinkButton to={APP_ROUTES.INJURY} color={"green"}>
                 <>
                   詳細へ

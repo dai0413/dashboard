@@ -15,37 +15,41 @@ const NoCallUp = () => {
           apiRoute: API_PATHS.AGGREGATE.NATIONAL_CALLUP.SERIES_COUNT(japan),
         }}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
-        headers={[
+        fieldDefinitions={[
           {
             label: "名称",
             field: "name",
             width: "250px",
-            type: ColumnType.FIELD,
-            id: "name",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "name",
+            displayOnTable: true,
+            type: "string",
           },
           {
             label: "国名",
             field: "country",
             width: "100px",
-            type: ColumnType.FIELD,
-            id: "country",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "country",
+            displayOnTable: true,
+            type: "string",
           },
           {
             label: "年代",
             field: "age_group",
             width: "100px",
-            type: ColumnType.FIELD,
-            id: "age_group",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "age_group",
+            displayOnTable: true,
+            type: "select",
           },
           {
             label: "招集日",
             field: "joined_at",
-            type: ColumnType.FIELD,
-            id: "joined_at",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "joined_at",
+            displayOnTable: true,
+            type: "Date",
           },
         ]}
         linkField={[

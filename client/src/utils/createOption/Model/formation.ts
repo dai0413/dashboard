@@ -15,22 +15,24 @@ export const formation = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "名前",
           field: "label",
           width: "60px",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "ポジション",
           field: "positions",
           width: "220px",
-          type: ColumnType.FIELD,
-          id: "positions",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "positions",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

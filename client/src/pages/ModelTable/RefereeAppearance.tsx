@@ -2,7 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { useRefereeAppearance } from "../../context/models/referee-appearance";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { ColumnType } from "../../types/table";
 
 const RefereeAppearance = () => {
   const refereeAppearanceContext = useRefereeAppearance();
@@ -11,29 +10,6 @@ const RefereeAppearance = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"審判の出場履歴"}
-        headers={[
-          {
-            label: "試合",
-            field: "match",
-            type: ColumnType.FIELD,
-            id: "match",
-            defaultDisplay: true,
-          },
-          {
-            label: "審判",
-            field: "referee",
-            type: ColumnType.FIELD,
-            id: "referee",
-            defaultDisplay: true,
-          },
-          {
-            label: "役割",
-            field: "role",
-            type: ColumnType.FIELD,
-            id: "role",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={refereeAppearanceContext}
         modelType={ModelType.REFEREE_APPEARANCE}
         linkField={[

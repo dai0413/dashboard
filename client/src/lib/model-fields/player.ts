@@ -1,52 +1,72 @@
 import { UIFieldDefinition } from "../../types/field";
+import { PlayerGet } from "../../types/models/player";
+import { ColumnType } from "../../types/table";
 
-export const player: UIFieldDefinition[] = [
+export const player: UIFieldDefinition<PlayerGet>[] = [
   {
     key: "name",
+    field: "name",
     label: "名前",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "en_name",
+    field: "en_name",
     label: "英名",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "normalized_en_name",
+    field: "normalized_en_name",
     label: "正規化英名",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "dob",
+    field: "dob",
     label: "生年月日",
     type: "Date",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "pob",
+    field: "pob",
     label: "出身地",
     type: "string",
     filterable: true,
     sortable: true,
     displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.FIELD,
   },
   {
     key: "old_id",
+    field: "old_id",
     label: "旧ID",
     type: "string",
     filterable: false,
     sortable: false,
     displayOnDetail: true,
+    displayOnTable: false,
+    getValueType: ColumnType.FIELD,
   },
 ];

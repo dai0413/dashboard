@@ -2,7 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { useTeamCompetitionSeason } from "../../context/models/team-competition-season";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { ColumnType } from "../../types/table";
 
 const TeamCompetitionSeason = () => {
   const teamCompetitionSeason = useTeamCompetitionSeason();
@@ -11,30 +10,6 @@ const TeamCompetitionSeason = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"チームの大会参加記録"}
-        headers={[
-          {
-            label: "チーム",
-            field: "team",
-            type: ColumnType.FIELD,
-            id: "team",
-            defaultDisplay: true,
-          },
-          {
-            label: "シーズン",
-            field: "season",
-            width: "120px",
-            type: ColumnType.FIELD,
-            id: "season",
-            defaultDisplay: true,
-          },
-          {
-            label: "大会名",
-            field: "competition",
-            type: ColumnType.FIELD,
-            id: "competition",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={teamCompetitionSeason}
         modelType={ModelType.TEAM_COMPETITION_SEASON}
         linkField={[

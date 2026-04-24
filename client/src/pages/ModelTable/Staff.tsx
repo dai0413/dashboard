@@ -2,8 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { useStaff } from "../../context/models/staff";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { StaffGet } from "../../types/models/staff";
-import { ColumnType } from "../../types/table";
 
 const Staff = () => {
   const staffContext = useStaff();
@@ -12,52 +10,6 @@ const Staff = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"監督・コーチ情報"}
-        headers={[
-          {
-            label: "名前",
-            field: "name",
-            type: ColumnType.FIELD,
-            id: "name",
-            defaultDisplay: true,
-          },
-          {
-            label: "英名",
-            field: "en_name",
-            type: ColumnType.FIELD,
-            id: "en_name",
-            defaultDisplay: true,
-          },
-          {
-            label: "生年月日",
-            field: "dob",
-            type: ColumnType.FIELD,
-            id: "dob",
-            defaultDisplay: true,
-          },
-          {
-            label: "出身地",
-            field: "pob",
-            type: ColumnType.FIELD,
-            id: "pob",
-            defaultDisplay: true,
-          },
-          {
-            label: "国籍",
-            id: "citizenship",
-            defaultDisplay: true,
-            getData: (data: StaffGet) => {
-              return data.citizenship?.map((c) => c.label).join(",") || "";
-            },
-            type: ColumnType.CUSTOM,
-          },
-          {
-            label: "選手",
-            field: "player",
-            type: ColumnType.FIELD,
-            id: "player",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={staffContext}
         modelType={ModelType.STAFF}
         linkField={[

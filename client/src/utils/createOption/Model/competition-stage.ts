@@ -15,22 +15,24 @@ export const competitionStage = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "シリーズ名",
           field: "label",
           width: "200px",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "シーズン",
           field: "season",
           width: "80px",
-          type: ColumnType.FIELD,
-          id: "season",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "season",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

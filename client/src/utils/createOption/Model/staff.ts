@@ -20,20 +20,22 @@ export const staff = (
 
   if (table === true) {
     return {
-      header: [
+      fields: [
         {
           label: "名前",
           field: "label",
-          type: ColumnType.FIELD,
-          id: "label",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "label",
+          displayOnTable: true,
+          type: "string",
         },
         {
           label: "生年月日",
           field: "dob",
-          type: ColumnType.FIELD,
-          id: "dob",
-          defaultDisplay: true,
+          getValueType: ColumnType.FIELD,
+          key: "dob",
+          displayOnTable: true,
+          type: "string",
         },
       ],
       data: options,

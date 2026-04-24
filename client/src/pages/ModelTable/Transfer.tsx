@@ -2,7 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { useTransfer } from "../../context/models/transfer";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { ColumnType } from "../../types/table";
 
 const Transfer = () => {
   const transferContext = useTransfer();
@@ -11,50 +10,6 @@ const Transfer = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"移籍情報"}
-        headers={[
-          {
-            label: "発表日",
-            field: "doa",
-            type: ColumnType.FIELD,
-            id: "doa",
-            defaultDisplay: true,
-          },
-          {
-            label: "名前",
-            field: "player",
-            type: ColumnType.FIELD,
-            id: "player",
-            defaultDisplay: true,
-          },
-          {
-            label: "移籍元",
-            field: "from_team",
-            type: ColumnType.FIELD,
-            id: "from_team",
-            defaultDisplay: true,
-          },
-          {
-            label: "移籍先",
-            field: "to_team",
-            type: ColumnType.FIELD,
-            id: "to_team",
-            defaultDisplay: true,
-          },
-          {
-            label: "形態",
-            field: "form",
-            type: ColumnType.FIELD,
-            id: "form",
-            defaultDisplay: true,
-          },
-          {
-            label: "加入日",
-            field: "from_date",
-            type: ColumnType.FIELD,
-            id: "from_date",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={transferContext}
         modelType={ModelType.TRANSFER}
         linkField={[

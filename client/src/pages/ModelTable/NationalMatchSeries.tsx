@@ -2,7 +2,6 @@ import { ModelTableContainer } from "../../components/table";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { ModelType } from "../../types/models";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { ColumnType } from "../../types/table";
 
 const NationalMatchSeries = () => {
   const nationalMatchSeriesContext = useNationalMatchSeries();
@@ -11,46 +10,6 @@ const NationalMatchSeries = () => {
     <div className="p-6">
       <ModelTableContainer
         title={"代表試合シリーズ情報"}
-        headers={[
-          {
-            label: "名称",
-            field: "name",
-            width: "250px",
-            type: ColumnType.FIELD,
-            id: "name",
-            defaultDisplay: true,
-          },
-          {
-            label: "国名",
-            field: "country",
-            width: "100px",
-            type: ColumnType.FIELD,
-            id: "country",
-            defaultDisplay: true,
-          },
-          {
-            label: "年代",
-            field: "age_group",
-            width: "100px",
-            type: ColumnType.FIELD,
-            id: "age_group",
-            defaultDisplay: true,
-          },
-          {
-            label: "招集日",
-            field: "joined_at",
-            type: ColumnType.FIELD,
-            id: "joined_at",
-            defaultDisplay: true,
-          },
-          {
-            label: "解散日",
-            field: "left_at",
-            type: ColumnType.FIELD,
-            id: "left_at",
-            defaultDisplay: true,
-          },
-        ]}
         contextState={nationalMatchSeriesContext}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         linkField={[

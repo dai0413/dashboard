@@ -129,41 +129,46 @@ const National = () => {
       {selectedTab === "player" && id && (
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
-          headers={[
+          fieldDefinitions={[
             {
               label: "選手",
               field: "player",
-              type: ColumnType.FIELD,
-              id: "player",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "player",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "所属チーム",
               field: "team",
-              type: ColumnType.FIELD,
-              id: "team",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "team",
+              displayOnTable: true,
+              type: "string",
             },
             {
               label: "招集状況",
               field: "status",
-              type: ColumnType.FIELD,
-              id: "status",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "status",
+              displayOnTable: true,
+              type: "select",
             },
             {
               label: "背番号",
               field: "number",
-              type: ColumnType.FIELD,
-              id: "number",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "number",
+              displayOnTable: true,
+              type: "number",
             },
             {
               label: "ポジション",
               field: "position_group",
-              type: ColumnType.FIELD,
-              id: "position_group",
-              defaultDisplay: true,
+              getValueType: ColumnType.FIELD,
+              key: "position_group",
+              displayOnTable: true,
+              type: "select",
             },
           ]}
           fetch={{
@@ -175,10 +180,10 @@ const National = () => {
             },
           }}
           filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
-            .filter(isFilterable)
+            ?.filter(isFilterable)
             .filter((file) => file.key !== "series")}
           sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]
-            .filter(isSortable)
+            ?.filter(isSortable)
             .filter((file) => file.key !== "series")}
           linkField={[
             {

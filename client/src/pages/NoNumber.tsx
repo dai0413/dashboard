@@ -24,35 +24,38 @@ const NoNumber = () => {
             endDate: String(new Date()),
           },
         }}
-        headers={[
+        fieldDefinitions={[
           {
             label: "加入日",
             field: "from_date",
-            type: ColumnType.FIELD,
-            id: "from_date",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "from_date",
+            displayOnTable: true,
+            type: "Date",
           },
           {
             label: "選手",
             field: "player",
-            type: ColumnType.FIELD,
-            id: "player",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "player",
+            displayOnTable: true,
+            type: "string",
           },
           {
             label: "移籍先",
             field: "to_team",
-            type: ColumnType.FIELD,
-            id: "to_team",
-            defaultDisplay: true,
+            getValueType: ColumnType.FIELD,
+            key: "to_team",
+            displayOnTable: true,
+            type: "string",
           },
         ]}
         modelType={ModelType.TRANSFER}
         filterField={fieldDefinition[ModelType.TRANSFER]
-          .filter(isFilterable)
+          ?.filter(isFilterable)
           .filter((file) => file.key !== "to_team")}
         sortField={fieldDefinition[ModelType.TRANSFER]
-          .filter(isSortable)
+          ?.filter(isSortable)
           .filter((file) => file.key !== "to_team")}
         linkField={[
           {
