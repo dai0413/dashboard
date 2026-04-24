@@ -62,6 +62,7 @@ const Main = () => {
                 ]}
                 itemsLoading={isLoading}
                 pageNum={1}
+                noToolBar={false}
               />
               <LinkButton to={APP_ROUTES.TRANSFER} color={"green"}>
                 <>
@@ -109,6 +110,7 @@ const Main = () => {
                 ]}
                 itemsLoading={isLoading}
                 pageNum={1}
+                noToolBar={false}
               />
               <LinkButton to={APP_ROUTES.INJURY} color={"green"}>
                 <>

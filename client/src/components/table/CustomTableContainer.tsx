@@ -61,6 +61,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     quickFilterType?: QuickFilterType;
     quickFilterItems?: QuickFilterItem[];
     noItemMessage?: ReactNode;
+    noToolBar?: false;
   } & TableEditProps<T>;
 
 type TableContainerProps<T, F> = Original<T, F>;
@@ -90,6 +91,7 @@ const TableContainer = <K, F>({
   noItemMessage,
   renderFieldCell,
   edit,
+  noToolBar,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -197,14 +199,16 @@ const TableContainer = <K, F>({
 
       <Filter filterableField={filterField || []} onApply={handleApplyFilter} />
       <Sort sortableField={sortField || []} onApply={handleApplyFilter} />
-      <TableToolbar<K, F>
-        modelType={modelType}
-        uploadFile={uploadFile}
-        initialData={initialData}
-        reloadFun={reloadFun}
-        quickFilterItems={quickFilterItemsParam}
-        headers={fieldDefinitions}
-      />
+      {noToolBar !== false && (
+        <TableToolbar<K, F>
+          modelType={modelType}
+          uploadFile={uploadFile}
+          initialData={initialData}
+          reloadFun={reloadFun}
+          quickFilterItems={quickFilterItemsParam}
+          headers={fieldDefinitions}
+        />
+      )}
       {itemsLoading || quickFilterLoading ? (
         <div className="flex items-center justify-center py-16">
           <div className="bg-gray-50 px-8 py-10 text-center">
