@@ -27,7 +27,6 @@ import {
   isDisplayOnDetail,
   isModelType,
 } from "../types/field";
-import { useOptions } from "./options-provider";
 import { api } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
@@ -36,6 +35,7 @@ import { FormMode, From, InputMode, StartFormArgs } from "../types/types";
 import { DataResoonse } from "../types/api";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
+import { getLabelById } from "../utils/getLabelById";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -137,8 +137,6 @@ export const FormProvider = <T extends ModelType>({
   const {
     modal: { handleSetAlert, resetAlert },
   } = useAlert();
-
-  const { getLabelById } = useOptions();
 
   const [modelType, setModelType] = useState<T | null>(null);
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -270,10 +268,12 @@ export const FormProvider = <T extends ModelType>({
 
       if (Array.isArray(id)) {
         resolved[key] = (
-          await Promise.all(id.map((i) => getLabelById(key as ModelType, i)))
+          await Promise.all(
+            id.map((i) => getLabelById(api, key as ModelType, i)),
+          )
         ).filter(Boolean);
       } else {
-        resolved[key] = await getLabelById(key as ModelType, id);
+        resolved[key] = await getLabelById(api, key as ModelType, id);
       }
     }
 
