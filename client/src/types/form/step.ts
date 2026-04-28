@@ -8,6 +8,7 @@ import { CreateFilterConditions } from "./filter";
 import { CreateQuickFilterItems } from "./quickFilter";
 import { OnChange } from "./onChange";
 import { DataSource, StepType } from "./common";
+import { AddOptions } from "./option";
 
 type BaseFormStep<K extends keyof FormTypeMap> = {
   modelType: ModelType;
@@ -22,6 +23,7 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   createQuickFilterItems?: CreateQuickFilterItems<K>;
   addDraftData?: AddDraftData<K>;
   addPostedDraftData?: AddPostedDraftData;
+  addOptions?: AddOptions<K>;
 };
 
 type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {

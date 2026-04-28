@@ -132,6 +132,7 @@ const Form = <T extends keyof FormTypeMap>() => {
       processStep,
     },
 
+    options,
     getDiffKeys,
     displayableField,
   } = useForm<T>();
@@ -277,7 +278,9 @@ const Form = <T extends keyof FormTypeMap>() => {
             da.value = toDateKey(value as string | number | Date, true) || "";
 
           if (value && Array.isArray(value))
-            da.value = value.filter((u) => u.trim() !== "").join(", ");
+            da.value = value
+              .filter((u) => (typeof u === "string" ? u.trim() !== "" : u))
+              .join(", ");
         }
       }
 
@@ -465,14 +468,16 @@ const Form = <T extends keyof FormTypeMap>() => {
                         ? many?.bulkCommonLabel || {}
                         : stateLabel
                     }
-                    handleFormData={(key, value) =>
+                    handleFormData={(props) =>
                       handleFormData(
-                        key,
-                        value,
+                        props.key,
+                        props.value,
                         formSteps[currentStep].dataSource,
+                        props.isArray,
                       )
                     }
                     supportButton={!formSteps[currentStep].many}
+                    options={options}
                   />
                 </div>
               );

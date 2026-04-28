@@ -1,7 +1,8 @@
 import { BaseField, FilterField, SortField } from "@dai0413/myorg-shared";
-import { OptionType } from "../utils/createOption/types/base";
+import { CustomOptionType, OptionType } from "../utils/createOption/types/base";
 import { ModelType } from "./models";
 import { QuickFilterType, TableHeader } from "./table";
+import { OptionSource } from "./form/option";
 
 // 詳細画面用
 export type DetailField = {
@@ -35,14 +36,25 @@ export function isDisplayOnDetail<T>(
   return f.displayOnDetail === true;
 }
 
-export function isModelType(value: string): value is ModelType {
+export function isModelType(value: unknown): value is ModelType {
   return Object.values(ModelType).includes(value as ModelType);
 }
 
-export function isOptionType(value: string): value is OptionType {
+export function isOptionType(value: unknown): value is OptionType {
   return Object.values(OptionType).includes(value as OptionType);
+}
+
+export function isCustomOptionType(value: unknown): value is CustomOptionType {
+  return Object.values(CustomOptionType).includes(value as CustomOptionType);
 }
 
 export function isQuickFilterType(value: string): value is QuickFilterType {
   return Object.values(QuickFilterType).includes(value as QuickFilterType);
+}
+
+export function resolveOptionSource(key: unknown): OptionSource | null {
+  if (isOptionType(key)) return OptionSource.PRESET;
+  if (isCustomOptionType(key)) return OptionSource.CUSTOM;
+  if (isModelType(key)) return OptionSource.REMOTE;
+  return null;
 }

@@ -22,7 +22,7 @@ const ManyField = <T extends keyof FormTypeMap>({
   isTableOpen,
   toggleTableOpen,
 }: RenderFieldProps<T>) => {
-  const { many, autoFill } = useForm<T>();
+  const { many, autoFill, options } = useForm<T>();
 
   const { page, setPage } = useQuery();
   type Focus = {
@@ -44,9 +44,10 @@ const ManyField = <T extends keyof FormTypeMap>({
           field={focus.field}
           formData={formData}
           formLabel={formLabel}
-          handleFormData={(key, value) =>
-            many?.handleFormData(focus.rowIndex, key, value)
+          handleFormData={(props) =>
+            many?.handleFormData(focus.rowIndex, props.key, props.value)
           }
+          options={options}
         />
       );
   }
@@ -113,9 +114,10 @@ const ManyField = <T extends keyof FormTypeMap>({
                 field={field}
                 formData={formData}
                 formLabel={formLabel || []}
-                handleFormData={(key, value) =>
-                  many?.handleFormData(rowIndex, key, value)
+                handleFormData={(props) =>
+                  many?.handleFormData(rowIndex, props.key, value)
                 }
+                options={options}
               />
             );
         }}
