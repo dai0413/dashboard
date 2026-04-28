@@ -36,6 +36,7 @@ import { DataResoonse } from "../types/api";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
 import { getLabelById } from "../utils/getLabelById";
+import { OptionArray, OptionTable } from "../types/form/option";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -85,6 +86,7 @@ type FormContextValue<T extends ModelType> = {
       key: K,
       value: FormTypeMap[T][K] | undefined,
       dataSource: DataSource | undefined,
+      isArray?: boolean,
     ) => void;
     state: Record<string, any>;
     stateLabel: Record<string, any>;
@@ -97,6 +99,8 @@ type FormContextValue<T extends ModelType> = {
       index: number,
       key: K,
       value: FormTypeMap[T][K] | undefined,
+      dataSource?: DataSource,
+      isArray?: boolean,
     ) => void;
     addFormDatas: (setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
@@ -115,6 +119,8 @@ type FormContextValue<T extends ModelType> = {
     handleStep: (nextStepIndex: number) => void;
     processStep: () => Promise<void>;
   };
+
+  options: Record<string, OptionArray | OptionTable<any>>;
 
   displayableField: DetailFieldDefinition[];
   getDiffKeys: (() => string[]) | undefined;
@@ -180,6 +186,19 @@ export const FormProvider = <T extends ModelType>({
 
   const [stateLabel, setStateLabel] = useState<Record<string, any>>({});
   const [stateLabels, setStateLabels] = useState<Record<string, any>[]>([]);
+
+  useEffect(() => {
+    console.log("metaData", metaData);
+    console.log("metaDataLabel", metaDataLabel);
+  }, [metaData]);
+
+  const [options, setOptions] = useState<
+    Record<string, OptionArray | OptionTable<any>>
+  >({});
+
+  const resetOptions = () => {
+    setOptions({});
+  };
 
   useEffect(() => {
     const newState: Record<string, any> = { ...formData, ...metaData };
@@ -391,6 +410,7 @@ export const FormProvider = <T extends ModelType>({
     resetFormData();
     resetFormDatas();
     resetDraftData();
+    resetOptions();
 
     setCurrentStep(0);
     resetAlert();
@@ -644,6 +664,7 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
+    // fetchValues 関連
     if (current.many && formMode === FormMode.CREATE) {
       const fetchValue = current.fetchValue;
       if (fetchValue) {
@@ -654,6 +675,18 @@ export const FormProvider = <T extends ModelType>({
         );
         setFormLabels(resolvedLabels);
       }
+    }
+
+    // options関連
+    if (current.addOptions) {
+      const newOptions = await current.addOptions({
+        data: formData,
+        metaData,
+        api,
+        formLabel,
+      });
+      console.log("newOptions", newOptions);
+      setOptions({ ...options, ...newOptions });
     }
 
     let nextStepIndex = Math.min(
@@ -742,18 +775,42 @@ export const FormProvider = <T extends ModelType>({
     key: K,
     value: FormTypeMap[T][K] | undefined,
     dataSource?: DataSource,
+    isArray?: boolean,
   ) => {
     if (dataSource === DataSource.BULK_COMMON) {
-      return setBulkCommonData((prev) =>
-        updateFormValue(prev, key, value, setBulkCommonLabel),
+      const { updatedValue, updatedLabel } = updateFormValue(
+        bulkCommonData,
+        bulkCommonLabel,
+        key,
+        value,
+        isArray,
       );
-    }
-    if (dataSource === DataSource.META_DATA) {
-      return setMetaData((prev) =>
-        updateFormValue(prev, key as string, value, setMetaDataLabel),
+
+      setBulkCommonData(updatedValue);
+      setBulkCommonLabel(updatedLabel);
+    } else if (dataSource === DataSource.META_DATA) {
+      const { updatedValue, updatedLabel } = updateFormValue(
+        metaData,
+        metaDataLabel,
+        key as string,
+        value,
+        isArray,
       );
+
+      setMetaData(updatedValue);
+      setMetaDataLabel(updatedLabel);
+    } else {
+      const { updatedValue, updatedLabel } = updateFormValue(
+        formData,
+        formLabel,
+        key,
+        value,
+        isArray,
+      );
+
+      setFormData(updatedValue);
+      setFormLabel(updatedLabel);
     }
-    setFormData((prev) => updateFormValue(prev, key, value, setFormLabel));
   };
 
   const resetFormData = () => {
@@ -791,42 +848,55 @@ export const FormProvider = <T extends ModelType>({
     key: K,
     value: FormTypeMap[T][K] | undefined,
     dataSource?: DataSource,
+    isArray?: boolean,
   ) => {
     if (dataSource === DataSource.META_DATA) {
-      return setMetaDatas((prev) => {
-        const newData = prev.map((item, i) =>
-          i === index
-            ? updateFormValue(item, key as string, value, (updater) =>
-                setMetaDataLabels((prevLabels) => {
-                  const arr = [...(prevLabels ?? [])];
-                  // 存在チェック：なければ空オブジェクトを入れておく
-                  if (!arr[index]) arr[index] = {};
-                  arr[index] = updater(arr[index] ?? {});
-                  return arr;
-                }),
-              )
-            : item,
-        );
-        return newData;
-      });
-    }
+      const newDatas = metaDatas.map((data, targetI) => {
+        const label = metaDataLabels[index];
+        if (index === targetI) {
+          const { updatedValue, updatedLabel } = updateFormValue(
+            data,
+            label,
+            String(key),
+            value,
+            isArray,
+          );
 
-    setFormDatas((prev) => {
-      const newData = prev.map((item, i) =>
-        i === index
-          ? updateFormValue(item, key, value, (updater) =>
-              setFormLabels((prevLabels) => {
-                const arr = [...(prevLabels ?? [])];
-                // 存在チェック：なければ空オブジェクトを入れておく
-                if (!arr[index]) arr[index] = {};
-                arr[index] = updater(arr[index] ?? {});
-                return arr;
-              }),
-            )
-          : item,
-      );
-      return newData;
-    });
+          return { updatedValue, updatedLabel };
+        } else {
+          return { updatedValue: data, updatedLabel: label };
+        }
+      });
+
+      const newMetaDatas = newDatas.map((d) => d.updatedValue);
+      const newMetaDataLabels = newDatas.map((d) => d.updatedValue);
+
+      setMetaDatas(newMetaDatas);
+      setMetaDataLabels(newMetaDataLabels);
+    } else {
+      const newDatas = formDatas.map((data, targetI) => {
+        const label = formLabels[index];
+        if (index === targetI) {
+          const { updatedValue, updatedLabel } = updateFormValue(
+            data,
+            label,
+            key,
+            value,
+            isArray,
+          );
+
+          return { updatedValue, updatedLabel };
+        } else {
+          return { updatedValue: data, updatedLabel: label };
+        }
+      });
+
+      const newFormDatas = newDatas.map((d) => d.updatedValue);
+      const newFormLabels = newDatas.map((d) => d.updatedValue);
+
+      setFormDatas(newFormDatas);
+      setFormLabels(newFormLabels);
+    }
   };
 
   const addFormDatas = (
@@ -955,6 +1025,8 @@ export const FormProvider = <T extends ModelType>({
       handleStep,
       processStep,
     },
+
+    options,
 
     displayableField,
     getDiffKeys,

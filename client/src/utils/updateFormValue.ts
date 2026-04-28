@@ -28,77 +28,120 @@ function deleteDeepValue(obj: any, path: string[]) {
   return newObj;
 }
 
-export function updateFormValue<T extends object, K extends keyof T>(
-  prev: T,
-  key: K,
-  value: T[K] | undefined,
-  setLabels?:
-    | ((updater: (prev: Record<string, any>) => Record<string, any>) => void)
-    | null
-): T {
-  // ✅ 空文字またはnullならundefinedに置き換え
-  const normalizedValue = value === "" || value === null ? undefined : value;
+function getDeepValue(obj: any, path: string | string[]) {
+  const keys = Array.isArray(path) ? path : path.split(".");
 
-  // ドット区切りキー対応
-  const path = String(key).split(".");
+  let cur = obj;
 
-  // Label オブジェクトか？
-  const isLabelObj =
-    typeof normalizedValue === "object" &&
-    normalizedValue &&
-    "key" in normalizedValue &&
-    "label" in normalizedValue;
-
-  // setLabels の更新（深いパス対応）
-  if (setLabels) {
-    setLabels((prevLabel) => {
-      if (normalizedValue === undefined) {
-        return deleteDeepValue(prevLabel, path);
-      }
-      if (isLabelObj) {
-        return setDeepValue(prevLabel, path, (normalizedValue as any).label);
-      }
-      return setDeepValue(prevLabel, path, normalizedValue);
-    });
+  for (const key of keys) {
+    if (cur == null) return undefined;
+    cur = cur[key];
   }
 
-  // 保存する値（Labelの場合は .key の方）
-  const storedValue = isLabelObj
-    ? (normalizedValue as any).key
-    : normalizedValue;
-
-  // フォーム値の更新（深いパス対応）
-  if (storedValue === undefined) {
-    return deleteDeepValue(prev, path);
-  }
-
-  const next = setDeepValue(prev, path, storedValue);
-  return next;
+  return cur;
 }
 
-// export function updateNestedValue<T extends object>(
-//   obj: T,
-//   path: string,
-//   value: any
-// ): T {
-//   const keys = path
-//     .replace(/\[(\d+)\]/g, ".$1") // matchFormat[0].name → matchFormat.0.name
-//     .split(".");
+const normalize = (val: any) => (val === "" || val === null ? undefined : val);
 
-//   const newObj: any = { ...obj };
-//   let current: any = newObj;
+const isLabelObj = (val: any) =>
+  typeof val === "object" && val && "key" in val && "label" in val;
 
-//   keys.forEach((key, index) => {
-//     if (index === keys.length - 1) {
-//       current[key] = value;
-//     } else {
-//       // 中間オブジェクトや配列をコピーして immutability を保つ
-//       current[key] = Array.isArray(current[key])
-//         ? [...current[key]]
-//         : { ...current[key] };
-//       current = current[key];
-//     }
-//   });
+const isSame = (a: any, b: any) => {
+  if (isLabelObj(a) && isLabelObj(b)) return a.key === b.key;
+  if (isLabelObj(a) && !isLabelObj(b)) return a.key === b;
+  if (!isLabelObj(a) && isLabelObj(b)) return a === b.key;
 
-//   return newObj;
-// }
+  return a === b;
+};
+
+const getKey = (v: any) => (isLabelObj(v) ? v.key : v);
+const getLabel = (v: any) => (isLabelObj(v) ? v.label : v);
+
+type UpdateResult<T extends object> = {
+  updatedValue: T;
+  updatedLabel: Record<string, any>;
+};
+
+type LabelObj = {
+  key: string;
+  label: string;
+};
+
+export function updateFormValue<T extends object, K extends keyof T>(
+  prev: T,
+  prevLabel: Record<string, any>,
+  key: K,
+  value: T[K] | LabelObj | undefined,
+  isArray?: boolean,
+): UpdateResult<T> {
+  console.log("start", value);
+
+  const path = String(key).split(".");
+
+  const normalizedValue = normalize(value);
+
+  const currentValue = getDeepValue(prev, path);
+  const currentLabel = getDeepValue(prevLabel, path);
+
+  let storedValue;
+  let labelValue;
+
+  if (isArray) {
+    const currentValArr = Array.isArray(currentValue) ? currentValue : [];
+    const currentLabelArr = Array.isArray(currentLabel) ? currentLabel : [];
+
+    const targetKey = isLabelObj(normalizedValue)
+      ? getKey(normalizedValue)
+      : normalizedValue;
+
+    const targetLabel = isLabelObj(normalizedValue)
+      ? getLabel(normalizedValue)
+      : normalizedValue;
+
+    const exists = currentValArr.some((v) => v === targetKey);
+
+    if (exists) {
+      const nextVal = currentValArr.filter((v) => v !== targetKey);
+      const index = currentValArr.findIndex((v) => v === targetKey);
+
+      const nextLabel = currentLabelArr.filter((_, i) => i !== index);
+
+      storedValue = nextVal;
+      labelValue = nextLabel;
+    } else {
+      storedValue = [...currentValArr, targetKey];
+      labelValue = [...currentLabelArr, targetLabel];
+    }
+  } else {
+    if (isSame(currentValue, normalizedValue)) {
+      storedValue = undefined;
+      labelValue = undefined;
+    } else {
+      storedValue = isLabelObj(normalizedValue)
+        ? getKey(normalizedValue)
+        : normalizedValue;
+      labelValue = isLabelObj(normalizedValue)
+        ? getLabel(normalizedValue)
+        : normalizedValue;
+    }
+  }
+
+  const isEmpty =
+    storedValue === undefined ||
+    (Array.isArray(storedValue) && storedValue.length === 0);
+
+  const updatedValue = isEmpty
+    ? deleteDeepValue(prev, path)
+    : setDeepValue(prev, path, storedValue);
+
+  const updatedLabel = isEmpty
+    ? deleteDeepValue(prevLabel, path)
+    : setDeepValue(prevLabel, path, labelValue);
+
+  console.log("final value", updatedValue, updatedLabel);
+
+  return {
+    updatedValue,
+    updatedLabel,
+  };
+}
