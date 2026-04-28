@@ -43,8 +43,8 @@ const AdminDashboard = () => {
           データモデル
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {models.map((m) => (
-            <Link key={m.model} to={m.link}>
+          {models.map((m, i) => (
+            <Link key={`${m.model}-${i}`} to={m.link}>
               <div className="py-4 px-3 border-2 rounded-lg hover:border-green-500 hover:shadow transition">
                 <IconButton icon={m.icon} />
                 <h2 className="text-lg font-bold mb-2">{m.desc}</h2>

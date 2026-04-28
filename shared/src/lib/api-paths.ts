@@ -198,6 +198,18 @@ export const API_PATHS = {
   UPLOAD_STATUS: (jobId: string = ":id") => `/upload-status/${jobId}`,
 
   GET_NEW_DATA: {
+    D_ML: {
+      CARD_IDS: "/get-new-data/d-ml/card-ids",
+    },
+    D_M: {
+      VALUES: "/get-new-data/d-m/values",
+      MATCH: "/get-new-data/d-m/match",
+      PLAYER_APPEARANCE: "/get-new-data/d-m/player-appearance",
+      PLAYER_MATCH_EVENT_LOG: "/get-new-data/d-m/player-match-event-log",
+      STAFF_APPEARANCE: "/get-new-data/d-m/staff-appearance",
+      STAFF_MATCH_EVENT_LOG: "/get-new-data/d-m/staff-match-event-log",
+      REFEREE_APPEARANCE: "/get-new-data/d-m/referee-appearance",
+    },
     D_PC: {
       PLAYER: "/get-new-data/d-pc/player",
       PLAYER_UPDATE: "/get-new-data/d-pc/player-update",

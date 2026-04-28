@@ -14,4 +14,15 @@ export const matchRelatedItems: Item[] = [
       from: From.J_M,
     },
   },
+  {
+    model: "Match",
+    desc: "D_ML",
+    icon: "match",
+    startFormArgs: {
+      modelType: ModelType.MATCH,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.D_ML,
+    },
+  },
 ];

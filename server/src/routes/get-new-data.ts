@@ -11,22 +11,36 @@ import {
   getStaffRegistrationHistories,
 } from "../controllers/get-new-data/d_sc/index.js";
 
-import { getValues } from "../controllers/get-new-data/j_m/index.js";
+import { getValues as getValuesJ_M } from "../controllers/get-new-data/j_m/index.js";
 
 import { getPositions } from "../controllers/get-new-data/sn_m/index.js";
+
+import { getValues as getValuesD_M } from "../controllers/get-new-data/d_m/values.js";
+
+import { getCardIds } from "../controllers/get-new-data/d_ml/card_ids.js";
 
 // D_PC
 router.route(API_PATHS.GET_NEW_DATA.D_PC.PLAYER).get(getPlayers);
 router
   .route(API_PATHS.GET_NEW_DATA.D_PC.PLAYER_REGISTRATION_HISTORY)
   .get(getPlayerRegistrationHistories);
+
+// D_SC
 router.route(API_PATHS.GET_NEW_DATA.D_SC.STAFF).get(getStaffs);
 router
   .route(API_PATHS.GET_NEW_DATA.D_SC.STAFF_REGISTRATION_HISTORY)
   .get(getStaffRegistrationHistories);
 
+// D_M
+// router.route(API_PATHS.GET_NEW_DATA.D_M.VALUES).get(getValuesD_M);
+router.route("/get-new-data/d-m/values").post(getValuesD_M);
+
+// D_ML
+// router.route(API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS).get(getValuesD_M);
+router.route("/get-new-data/d-ml/card-ids").post(getCardIds);
+
 // J_M
-router.route(API_PATHS.GET_NEW_DATA.J_M.MATCH).post(getValues);
+router.route(API_PATHS.GET_NEW_DATA.J_M.MATCH).post(getValuesJ_M);
 
 //SN_M
 router.route(API_PATHS.GET_NEW_DATA.SN_M.POSITION).post(getPositions);

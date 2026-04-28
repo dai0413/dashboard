@@ -14,9 +14,9 @@ export const Section = ({ title, items, onClick }: Props) => (
     </h2>
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-      {items.map((item) => (
+      {items.map((item, i) => (
         <ItemCard
-          key={item.model}
+          key={`${item.model}-${i}`}
           item={item}
           onClick={() => onClick?.(item)}
         />
