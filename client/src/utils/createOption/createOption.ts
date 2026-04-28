@@ -1,4 +1,4 @@
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../types/form/option";
 import { ModelType } from "../../types/models";
 import {
   competition,
@@ -42,7 +42,7 @@ import {
   play_status,
 } from "@dai0413/myorg-shared";
 import { ModelDataOptionConfigMap } from "./types/optionTable";
-import { DefaultOptionMap, OptionType } from "./types/base";
+import { CustomOptionType, DefaultOptionMap, OptionType } from "./types/base";
 
 type Converter<T extends keyof ModelDataOptionConfigMap> = (
   data: ModelDataOptionConfigMap[T]["input"],
@@ -107,6 +107,7 @@ const defaultOptions: Partial<{ [K in keyof DefaultOptionMap]: OptionArray }> =
     [OptionType.POSITION_FORMATION]: position_formation(),
     [OptionType.SPECIAL_TIME]: special_time(),
     [OptionType.PLAY_STATUS]: play_status(),
+    [CustomOptionType.CARD_IDS]: [],
   };
 
 // 実装

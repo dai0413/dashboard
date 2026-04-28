@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { CompetitionStageGet } from "../../../types/models/competition-stage";
 import { ColumnType } from "../../../types/table";
 import { CompetitionStage } from "../types/optionTable/competition-stage";

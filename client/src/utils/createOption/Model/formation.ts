@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { FormationGet } from "../../../types/models/formation";
 import { ColumnType } from "../../../types/table";
 import { Formation } from "../types/optionTable/formation";

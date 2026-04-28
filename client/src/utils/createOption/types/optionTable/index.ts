@@ -1,5 +1,5 @@
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
-import { OptionArray, OptionTable } from "../../../../types/option";
+import { OptionArray, OptionTable } from "../../../../types/form/option";
 import { Competition } from "./competition";
 import { CompetitionStage } from "./competition-stage";
 import { Country } from "./country";

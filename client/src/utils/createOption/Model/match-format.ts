@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { MatchFormatGet } from "../../../types/models/match-format";
 import { ColumnType } from "../../../types/table";
 import { MatchFormat } from "../types/optionTable/match-format";

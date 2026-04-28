@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { MatchEventTypeGet } from "../../../types/models/match-event-type";
 import { ColumnType } from "../../../types/table";
 import { MatchEventType } from "../types/optionTable/match-event-type";

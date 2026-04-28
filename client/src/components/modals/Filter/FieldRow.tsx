@@ -1,7 +1,7 @@
 import { IconButton } from "../../buttons/index";
 import { SelectField } from "../../field";
 import FilterFields from "../../field/FilterFields";
-import { OptionArray } from "../../../types/option";
+import { OptionArray } from "../../../types/form/option";
 import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
 import React, { useEffect, useState } from "react";
 import { getDefaultOptions } from "../../../utils/createOption/createOption";

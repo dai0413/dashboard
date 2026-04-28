@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { NationalMatchSeriesGet } from "../../../types/models/national-match-series";
 import { ageGroup } from "@dai0413/myorg-shared";
 import { ColumnType } from "../../../types/table";

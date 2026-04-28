@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { SeasonGet } from "../../../types/models/season";
 import { ColumnType } from "../../../types/table";
 

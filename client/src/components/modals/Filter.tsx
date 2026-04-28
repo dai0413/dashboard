@@ -8,7 +8,7 @@ import { IconButton, IconTextButton, LinkButtonGroup } from "../buttons/index";
 import { useFilter } from "../../context/filter-context";
 import { Modal } from "../ui";
 import FieldRow from "./Filter/FieldRow";
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../types/form/option";
 import { useSort } from "../../context/sort-context";
 
 type FilterProps = {

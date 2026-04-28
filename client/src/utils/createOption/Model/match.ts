@@ -1,4 +1,4 @@
-import { OptionArray, OptionTable } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { MatchGet } from "../../../types/models/match";
 import { Label } from "@dai0413/myorg-shared";
 import { ColumnType } from "../../../types/table";

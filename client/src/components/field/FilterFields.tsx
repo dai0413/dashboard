@@ -1,5 +1,5 @@
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../types/form/option";
 import { InputField, SelectField } from "../field";
 
 type FilterFieldsProps = {

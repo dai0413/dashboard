@@ -1,5 +1,5 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../types/form/option";
 import { X } from "lucide-react";
 
 type SelectFieldProps = {

@@ -1,4 +1,4 @@
-import { OptionArray } from "../../../types/option";
+import { OptionArray, OptionTable } from "../../../types/form/option";
 import { ModelDataOptionConfigMap } from "./optionTable";
 
 export enum OptionType {
@@ -30,6 +30,10 @@ export enum OptionType {
   PLAY_STATUS = "play_status",
 }
 
+export enum CustomOptionType {
+  CARD_IDS = "card_ids",
+}
+
 export type DefaultOptionMap = {
   [OptionType.OPERATOR]: OptionArray;
   [OptionType.GENRE]: OptionArray;
@@ -57,6 +61,7 @@ export type DefaultOptionMap = {
   [OptionType.POSITION_FORMATION]: OptionArray;
   [OptionType.SPECIAL_TIME]: OptionArray;
   [OptionType.PLAY_STATUS]: OptionArray;
+  [CustomOptionType.CARD_IDS]: OptionTable<any>;
 };
 
 export type OptionsMap = DefaultOptionMap & ModelDataOptionConfigMap;

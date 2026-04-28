@@ -6,7 +6,7 @@ import { TeamTabItems } from "../../constants/menuItems";
 import { api } from "../../context/api-context";
 import { useModal } from "../../context/modal-context";
 import { ModelType } from "../../types/models";
-import { OptionArray } from "../../types/option";
+import { OptionArray } from "../../types/form/option";
 import { isFilterable, isSortable } from "../../types/field";
 import {
   TeamCompetitionSeason,
