@@ -1,55 +1,27 @@
-import { CustomTableContainer } from "../../table";
 import { InputField, SelectField } from "../../field";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
-import { useEffect, useMemo, useState } from "react";
-import {
-  getFilterableFields,
-  getSortableFields,
-} from "../../../lib/model-fields";
-import {
-  isModelType,
-  isOptionType,
-  isQuickFilterType,
-  resolveOptionSource,
-} from "../../../types/field";
-
-import { FormTypeMap, ModelDataMap, ModelType } from "../../../types/models";
-import {
-  convertToOption,
-  getDefaultOptions,
-} from "../../../utils/createOption/createOption";
+import { useEffect, useState } from "react";
+import { resolveOptionSource } from "../../../types/field";
+import { FormTypeMap } from "../../../types/models";
+import { getDefaultOptions } from "../../../utils/createOption/createOption";
 import {
   DefaultOptionMap,
   OptionsMap,
   OptionType,
 } from "../../../utils/createOption/types/base";
-import { convert } from "../../../lib/convert/DBtoGetted";
 import {
   ModelDataOptions,
   OptionArray,
   OptionSource,
   OptionTable,
 } from "../../../types/form/option";
-
 import { FormFieldDefinition } from "../../../types/form/field";
-import {
-  FilterableFieldDefinition,
-  SortableFieldDefinition,
-} from "@dai0413/myorg-shared";
-import { readItemsBase } from "../../../lib/api";
-import { api } from "../../../context/api-context";
-import { AxiosInstance } from "axios";
-import { DataResoonse } from "../../../types/api";
-import { normalizeFiltersForApi } from "../../../utils/normalizeFiltersForApi";
-import { X } from "lucide-react";
-import { optionRouteMap, getOptionKey } from "../../../lib/options";
-import { useForm } from "../../../context/form-context";
-import { QuickFilterItem } from "../../../types/table";
-import { ModelDataOptionConfigMap } from "../../../utils/createOption/types/optionTable";
+import { getOptionKey } from "../../../lib/options";
 import { OptionProvider } from "../../../context/options-provider";
 import { HandleFormData } from "../../../types/form/handleFormData";
 import { UpdateMode } from "../../../types/form";
+import { TableFieldRenderer } from "./Field/renderers/TableFieldRenderer";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -86,100 +58,6 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     null,
   );
 
-  const { filterConditionsObj, quickFilterItemsObj } = useForm();
-
-  const handleLoading = (time: "start" | "end") => {
-    setOptionIsLoading(time === "start");
-  };
-
-  const readOptions = async (
-    api: AxiosInstance,
-    nextOptionKey: ModelType,
-    filterConditions?: FilterableFieldDefinition[],
-    sortConditions?: SortableFieldDefinition[],
-    page?: number,
-  ): Promise<ModelDataOptions<OptionsMap[typeof optionKey]> | undefined> => {
-    const crudRoutes = optionRouteMap[nextOptionKey];
-
-    if (!crudRoutes) {
-      console.error("optionRouteMapにキーが存在しません:", nextOptionKey);
-      return;
-    }
-
-    const { ROOT: route } = crudRoutes;
-
-    if (!route) {
-      console.error("ROOT が未定義です:", nextOptionKey);
-      return;
-    }
-
-    const optionKey: keyof ModelDataOptionConfigMap =
-      nextOptionKey as keyof ModelDataOptionConfigMap;
-
-    const params: Record<string, any> = {
-      getAll: true,
-    };
-
-    if (filterConditions && filterConditions.length > 0) {
-      params.filters = JSON.stringify(normalizeFiltersForApi(filterConditions));
-    }
-
-    if (sortConditions && sortConditions.length > 0) {
-      params.sorts = JSON.stringify(sortConditions);
-    }
-
-    const response: DataResoonse | undefined = await readItemsBase({
-      apiInstance: api,
-      backendRoute: route,
-      params,
-      handleLoading: handleLoading,
-      returnResponse: true,
-    });
-
-    if (!response) return undefined;
-
-    const getted = convert(
-      optionKey,
-      response.data as ModelDataMap[typeof optionKey],
-    ) as unknown as ModelDataOptionConfigMap[typeof optionKey]["input"];
-
-    const option: ModelDataOptions<OptionsMap[typeof optionKey]>["option"] =
-      convertToOption(optionKey, getted, true) as unknown as ModelDataOptions<
-        OptionsMap[typeof optionKey]
-      >["option"];
-
-    const optionTableData: ModelDataOptions<OptionsMap[typeof optionKey]> = {
-      option,
-      page: page ? page : response.page || 1,
-      totalCount: response.totalCount || 1,
-    };
-
-    return optionTableData;
-  };
-
-  const handlePageChange = async (
-    page: number,
-    filterConditions?: FilterableFieldDefinition[],
-    sortConditions?: SortableFieldDefinition[],
-  ): Promise<void> => {
-    setOptionIsLoading(true);
-
-    if (!optionKey) return setOptionIsLoading(false);
-    if (!isModelType(optionKey)) return setOptionIsLoading(false);
-    const optionTableData = await readOptions(
-      api,
-      optionKey,
-      filterConditions,
-      sortConditions,
-      page,
-    );
-
-    if (!optionTableData) return setOptionIsLoading(false);
-
-    setOptionTableData(optionTableData);
-    setOptionIsLoading(false);
-  };
-
   useEffect(() => {
     if (!key) return;
 
@@ -212,138 +90,32 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     }
   }, [key]);
 
-  const value = get(formData, formDataKey) as string | number | Date;
-
-  const filterField = useMemo(() => {
-    const valid = isModelType(optionKey) || isOptionType(optionKey);
-
-    if (filterConditionsObj && valid) {
-      return filterConditionsObj[optionKey];
-    }
-
-    if (!optionKey || !isModelType(optionKey)) return;
-    const filterableField = getFilterableFields(optionKey);
-
-    return filterableField;
-  }, [optionKey]);
-
-  const sortField = useMemo(() => {
-    if (!optionKey || !isModelType(optionKey)) return;
-    const sortableField = getSortableFields(optionKey);
-
-    return sortableField;
-  }, [optionKey]);
-
-  const quickFilterItems: QuickFilterItem[] = useMemo(() => {
-    const valid = isModelType(optionKey) || isOptionType(optionKey);
-
-    if (!quickFilterItemsObj || !valid) return [];
-    return quickFilterItemsObj[optionKey] || [];
-  }, [optionKey]);
+  const formDataValue = get(formData, formDataKey);
+  const formDataLabel = get(formLabel, formDataKey) || "";
 
   if (fieldType === "table")
     return (
-      <>
-        <div className="flex mb-2 text-gray-700">
-          <div className="px-5">
-            選択中:{" "}
-            {Array.isArray(formLabel[formDataKey as string])
-              ? formLabel[formDataKey as string].join(" , ")
-              : formLabel[formDataKey as string] || "未選択"}
-          </div>
-          <button
-            type="button"
-            onClick={() =>
-              handleFormData({
-                key: formDataKey,
-                value: undefined,
-                field,
-              })
-            }
-            className="hover:cursor-pointer flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
-            title="Clear"
-          >
-            選択解除
-            <X size={16} />
-          </button>
-        </div>
-        <CustomTableContainer
-          pageNation="client"
-          modelType={
-            optionKey && isModelType(optionKey) ? optionKey : undefined
-          }
-          fieldDefinitions={
-            optionTableData ? optionTableData.option.fields : []
-          }
-          items={optionTableData ? optionTableData.option.data : undefined}
-          filterField={filterField}
-          sortField={sortField}
-          itemsLoading={optionIsLoading}
-          pageNum={optionTableData ? optionTableData.page || 1 : 1}
-          totalCount={optionTableData ? optionTableData.totalCount : undefined}
-          form={true}
-          onClick={(row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
-            if (multi) {
-              const { key, label } = row as {
-                label: string;
-                key: string;
-              } & Record<any, any>;
-
-              handleFormData({
-                key: formDataKey,
-                value: { key, label } as FormTypeMap[T][typeof formDataKey],
-                field,
-                index: ((formData[formDataKey] as string[]) || []).length,
-                updateMode: UpdateMode.ARRAY_UPDATE,
-              });
-            } else {
-              handleFormData({
-                key: formDataKey,
-                value: row,
-                field,
-                updateMode: UpdateMode.REPLACE,
-              });
-            }
-          }}
-          selectedKey={
-            Array.isArray(formData[formDataKey])
-              ? formData[formDataKey]
-              : ([formData[formDataKey]] as string[])
-          }
-          handlePageChange={
-            optionSource === OptionSource.REMOTE
-              ? (page, filterConditions, sortConditions) =>
-                  handlePageChange(page, filterConditions, sortConditions)
-              : undefined
-          }
-          reloadFun={
-            optionSource === OptionSource.REMOTE
-              ? (
-                  filterConditions: FilterableFieldDefinition[],
-                  sortConditions: SortableFieldDefinition[],
-                ) => handlePageChange(1, filterConditions, sortConditions)
-              : undefined
-          }
-          quickFilterType={
-            optionKey && isQuickFilterType(optionKey) ? optionKey : undefined
-          }
-          quickFilterItems={quickFilterItems}
-          noItemMessage={
-            <p className="text-sm text-gray-400">
-              フィルターから条件を追加してください
-            </p>
-          }
-        />
-      </>
+      <TableFieldRenderer
+        value={formDataValue}
+        label={formDataLabel}
+        formDataKey={formDataKey}
+        field={field}
+        optionKey={optionKey}
+        optionTableData={optionTableData}
+        optionIsLoading={optionIsLoading}
+        optionSource={optionSource}
+        handleFormData={handleFormData}
+        setOptionIsLoading={setOptionIsLoading}
+        setOptionTableData={setOptionTableData}
+      />
     );
 
   if (multi && fieldType === "textarea")
     return (
       <>
         {[
-          ...(formData[formDataKey] &&
-          (formData[formDataKey] as string[]).length > 0
-            ? (formData[formDataKey] as string[])
+          ...(formDataValue && (formDataValue as string[]).length > 0
+            ? (formDataValue as string[])
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => (
           <div key={index} className="flex items-center space-x-2 mb-2">
@@ -389,7 +161,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
               key: formDataKey,
               value: e.target.value as FormTypeMap[T][typeof formDataKey],
               field,
-              index: ((formData[formDataKey] as string[]) || []).length,
+              index: ((formDataValue as string[]) || []).length,
               updateMode: UpdateMode.ARRAY_UPDATE,
             });
           }}
@@ -399,7 +171,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
 
   if (multi && fieldType === "select" && optionSelectData && uniqueInArray) {
     let options = optionSelectData;
-    const selected = ((formData[formDataKey] as string[]) || []).filter(
+    const selected = ((formDataValue as string[]) || []).filter(
       (v) => v !== "",
     );
     if (Array.isArray(selected)) {
@@ -415,7 +187,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
 
     return (
       <>
-        {[...((formData[formDataKey] as string[]) ?? [])].map(
+        {[...((formDataValue as string[]) ?? [])].map(
           (item: string, index: number) => {
             return (
               <div key={index} className="flex items-center space-x-2 mb-2">
@@ -463,7 +235,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
   if (multi && fieldType === "select" && optionSelectData) {
     return (
       <>
-        {[...((formData[formDataKey] as string[]) ?? [])].map(
+        {[...((formDataValue as string[]) ?? [])].map(
           (item: string, index: number) => {
             return (
               <div key={index} className="flex items-center space-x-2 mb-2">
@@ -512,7 +284,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
               key: formDataKey,
               value: value as FormTypeMap[T][typeof formDataKey],
               field,
-              index: ((formData[formDataKey] as string[]) || []).length,
+              index: ((formDataValue as string[]) || []).length,
               updateMode: UpdateMode.ARRAY_UPDATE,
             });
           }}
@@ -528,9 +300,8 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     return (
       <>
         {[
-          ...(formData[formDataKey] &&
-          (formData[formDataKey] as string[]).length > 0
-            ? (formData[formDataKey] as string[])
+          ...(formDataValue && (formDataValue as string[]).length > 0
+            ? (formDataValue as string[])
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => {
           return (
@@ -574,7 +345,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     return (
       <SelectField
         type={valueType}
-        value={value || ""}
+        value={(formDataValue as string | number | Date) || ""}
         onChangeObj={(value: Record<string, any> | undefined) => {
           handleFormData({
             key: formDataKey,
@@ -593,7 +364,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     return (
       <InputField
         type={valueType}
-        value={value}
+        value={formDataValue as string | number | Date}
         onChange={(value: string | number | Date | boolean | undefined) => {
           handleFormData({
             key: formDataKey,
