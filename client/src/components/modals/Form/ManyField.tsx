@@ -10,6 +10,7 @@ import { FilterProvider } from "../../../context/filter-context";
 import { SortProvider } from "../../../context/sort-context";
 import { ListViewProvider } from "../../../context/listView-context";
 import { ColumnType, TableHeader } from "../../../types/table";
+import { HandleFormData } from "../../../types/form/handleFormData";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   fields: FormFieldDefinition<T>[];
@@ -45,7 +46,7 @@ const ManyField = <T extends keyof FormTypeMap>({
           formData={formData}
           formLabel={formLabel}
           handleFormData={(props) =>
-            many?.handleFormData(focus.rowIndex, props.key, props.value)
+            many?.handleFormData({ ...props, dataIndex: focus.rowIndex })
           }
           options={options}
         />
@@ -84,13 +85,19 @@ const ManyField = <T extends keyof FormTypeMap>({
           rowIndex: number,
         ) => {
           const field = fields?.find((f) => f.key === header.key);
-          if (!field) return null;
+          if (!field || !many?.handleFormData) return null;
 
           const targetObj = many?.stateLabel[rowIndex];
           const value =
             targetObj && field.key in targetObj
               ? targetObj[field.key as string]
               : "";
+
+          const handleFormData: HandleFormData<T> = (props) =>
+            many?.handleFormData({
+              ...props,
+              dataIndex: rowIndex,
+            });
 
           if (field.fieldType === "table") {
             return (
@@ -114,9 +121,7 @@ const ManyField = <T extends keyof FormTypeMap>({
                 field={field}
                 formData={formData}
                 formLabel={formLabel || []}
-                handleFormData={(props) =>
-                  many?.handleFormData(rowIndex, props.key, value)
-                }
+                handleFormData={handleFormData}
                 options={options}
               />
             );
@@ -128,7 +133,7 @@ const ManyField = <T extends keyof FormTypeMap>({
         selectedKey={requiredField}
       />
 
-      <div className="flex gap-x-2">
+      <div className="flex gap-x-2 pt-10">
         <div>
           <IconTextButton
             icon="add"

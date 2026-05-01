@@ -32,14 +32,11 @@ type UpdateFormValueParams<T extends object, K extends keyof T> = {
 export function updateFormValue<T extends object, K extends keyof T>(
   params: UpdateFormValueParams<T, K>,
 ): UpdateResult<T> {
-  // console.log("params", params);
   const updateMode = params.updateMode
     ? params.updateMode
     : resolveMode(params.field);
   const { prev, prevLabel, key, value } = params;
   const index = params.index ? params.index : 0;
-
-  // console.log("start", value);
 
   const path = String(key).split(".");
 
@@ -98,8 +95,6 @@ export function updateFormValue<T extends object, K extends keyof T>(
     const nextValArr = [...currentValArr];
     const nextLabelArr = [...currentLabelArr];
 
-    // console.log("currentValArr", currentValArr, normalizedValue);
-
     if (normalizedValue === undefined || normalizedValue === "") {
       // 削除
       nextValArr.splice(index, 1);
@@ -121,8 +116,6 @@ export function updateFormValue<T extends object, K extends keyof T>(
     labelValue = nextLabelArr;
   }
 
-  // console.log("updated value", storedValue, labelValue);
-
   const isEmpty =
     storedValue === undefined ||
     (Array.isArray(storedValue) && storedValue.length === 0);
@@ -134,8 +127,6 @@ export function updateFormValue<T extends object, K extends keyof T>(
   const updatedLabel = isEmpty
     ? deleteDeepValue(prevLabel, path)
     : setDeepValue(prevLabel, path, labelValue);
-
-  console.log("final value", updatedValue, updatedLabel);
 
   return {
     updatedValue,

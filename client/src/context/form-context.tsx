@@ -18,7 +18,7 @@ import { FormFieldDefinition } from "../types/form/field";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
-import { updateFormValue } from "../utils/updateFormValue";
+import { updateFormValue } from "../utils/form/updateFormValue";
 import { getSteps } from "../lib/form-steps/core/getSteps";
 import { objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
@@ -37,6 +37,10 @@ import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
 import { getLabelById } from "../utils/getLabelById";
 import { OptionArray, OptionTable } from "../types/form/option";
+import {
+  ArrayHandleFormData,
+  HandleFormData,
+} from "../types/form/handleFormData";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -82,12 +86,7 @@ type FormContextValue<T extends ModelType> = {
   formMode: FormMode;
 
   single: {
-    handleFormData: <K extends keyof FormTypeMap[T]>(
-      key: K,
-      value: FormTypeMap[T][K] | undefined,
-      dataSource: DataSource | undefined,
-      isArray?: boolean,
-    ) => void;
+    handleFormData: HandleFormData<T>;
     state: Record<string, any>;
     stateLabel: Record<string, any>;
   };
@@ -95,13 +94,7 @@ type FormContextValue<T extends ModelType> = {
   many?: {
     bulkCommonData: FormTypeMap[T];
     bulkCommonLabel: Record<string, any>;
-    handleFormData: <K extends keyof FormTypeMap[T]>(
-      index: number,
-      key: K,
-      value: FormTypeMap[T][K] | undefined,
-      dataSource?: DataSource,
-      isArray?: boolean,
-    ) => void;
+    handleFormData: ArrayHandleFormData<T>;
     addFormDatas: (setPage?: (p: number) => void) => void;
     deleteFormDatas: (index: number) => void;
     renderConfirmMes: (
@@ -187,10 +180,9 @@ export const FormProvider = <T extends ModelType>({
   const [stateLabel, setStateLabel] = useState<Record<string, any>>({});
   const [stateLabels, setStateLabels] = useState<Record<string, any>[]>([]);
 
-  useEffect(() => {
-    console.log("metaData", metaData);
-    console.log("metaDataLabel", metaDataLabel);
-  }, [metaData]);
+  // useEffect(() => {
+  //   console.log("stateLabels", states, stateLabels);
+  // }, [stateLabels]);
 
   const [options, setOptions] = useState<
     Record<string, OptionArray | OptionTable<any>>
@@ -771,42 +763,50 @@ export const FormProvider = <T extends ModelType>({
 
   ////////////////////////// single data edit //////////////////////////
 
-  const singleHandleFormData = <K extends keyof FormTypeMap[T]>(
-    key: K,
-    value: FormTypeMap[T][K] | undefined,
-    dataSource?: DataSource,
-    isArray?: boolean,
-  ) => {
+  const singleHandleFormData: HandleFormData<T> = ({
+    key,
+    value,
+    field,
+    dataSource,
+    updateMode,
+    index,
+  }) => {
     if (dataSource === DataSource.BULK_COMMON) {
-      const { updatedValue, updatedLabel } = updateFormValue(
-        bulkCommonData,
-        bulkCommonLabel,
+      const { updatedValue, updatedLabel } = updateFormValue({
+        prev: bulkCommonData,
+        prevLabel: bulkCommonLabel,
         key,
         value,
-        isArray,
-      );
+        field,
+        updateMode,
+        index,
+      });
 
       setBulkCommonData(updatedValue);
       setBulkCommonLabel(updatedLabel);
     } else if (dataSource === DataSource.META_DATA) {
-      const { updatedValue, updatedLabel } = updateFormValue(
-        metaData,
-        metaDataLabel,
-        key as string,
+      const { updatedValue, updatedLabel } = updateFormValue({
+        prev: metaData,
+        prevLabel: metaDataLabel,
+        key: key as keyof typeof metaData,
         value,
-        isArray,
-      );
+        field,
+        updateMode,
+        index,
+      });
 
       setMetaData(updatedValue);
       setMetaDataLabel(updatedLabel);
     } else {
-      const { updatedValue, updatedLabel } = updateFormValue(
-        formData,
-        formLabel,
+      const { updatedValue, updatedLabel } = updateFormValue({
+        prev: formData,
+        prevLabel: formLabel,
         key,
         value,
-        isArray,
-      );
+        field,
+        updateMode,
+        index,
+      });
 
       setFormData(updatedValue);
       setFormLabel(updatedLabel);
@@ -843,24 +843,28 @@ export const FormProvider = <T extends ModelType>({
     setMetaDataLabels([]);
   };
 
-  const handleFormData = <K extends keyof FormTypeMap[T]>(
-    index: number,
-    key: K,
-    value: FormTypeMap[T][K] | undefined,
-    dataSource?: DataSource,
-    isArray?: boolean,
-  ) => {
+  const handleFormData: ArrayHandleFormData<T> = ({
+    index,
+    key,
+    value,
+    field,
+    dataSource,
+    updateMode,
+    dataIndex,
+  }) => {
     if (dataSource === DataSource.META_DATA) {
       const newDatas = metaDatas.map((data, targetI) => {
-        const label = metaDataLabels[index];
-        if (index === targetI) {
-          const { updatedValue, updatedLabel } = updateFormValue(
-            data,
-            label,
-            String(key),
+        const label = metaDataLabels[dataIndex];
+        if (dataIndex === targetI) {
+          const { updatedValue, updatedLabel } = updateFormValue({
+            prev: data,
+            prevLabel: label,
+            key: key as keyof typeof data,
             value,
-            isArray,
-          );
+            field,
+            updateMode,
+            index,
+          });
 
           return { updatedValue, updatedLabel };
         } else {
@@ -869,21 +873,23 @@ export const FormProvider = <T extends ModelType>({
       });
 
       const newMetaDatas = newDatas.map((d) => d.updatedValue);
-      const newMetaDataLabels = newDatas.map((d) => d.updatedValue);
+      const newMetaDataLabels = newDatas.map((d) => d.updatedLabel);
 
       setMetaDatas(newMetaDatas);
       setMetaDataLabels(newMetaDataLabels);
     } else {
       const newDatas = formDatas.map((data, targetI) => {
-        const label = formLabels[index];
-        if (index === targetI) {
-          const { updatedValue, updatedLabel } = updateFormValue(
-            data,
-            label,
-            key,
+        const label = formLabels[dataIndex];
+        if (dataIndex === targetI) {
+          const { updatedValue, updatedLabel } = updateFormValue({
+            prev: data,
+            prevLabel: label,
+            key: key as keyof typeof data,
             value,
-            isArray,
-          );
+            field,
+            updateMode,
+            index,
+          });
 
           return { updatedValue, updatedLabel };
         } else {
@@ -892,7 +898,7 @@ export const FormProvider = <T extends ModelType>({
       });
 
       const newFormDatas = newDatas.map((d) => d.updatedValue);
-      const newFormLabels = newDatas.map((d) => d.updatedValue);
+      const newFormLabels = newDatas.map((d) => d.updatedLabel);
 
       setFormDatas(newFormDatas);
       setFormLabels(newFormLabels);

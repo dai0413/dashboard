@@ -469,12 +469,10 @@ const Form = <T extends keyof FormTypeMap>() => {
                         : stateLabel
                     }
                     handleFormData={(props) =>
-                      handleFormData(
-                        props.key,
-                        props.value,
-                        formSteps[currentStep].dataSource,
-                        props.isArray,
-                      )
+                      handleFormData({
+                        ...props,
+                        dataSource: formSteps[currentStep].dataSource,
+                      })
                     }
                     supportButton={!formSteps[currentStep].many}
                     options={options}

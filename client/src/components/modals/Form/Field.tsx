@@ -48,23 +48,14 @@ import { useForm } from "../../../context/form-context";
 import { QuickFilterItem } from "../../../types/table";
 import { ModelDataOptionConfigMap } from "../../../utils/createOption/types/optionTable";
 import { OptionProvider } from "../../../context/options-provider";
-
-type HandleFormDataProps<
-  T extends keyof FormTypeMap,
-  K extends keyof FormTypeMap[T],
-> = {
-  key: K;
-  value: FormTypeMap[T][K] | undefined;
-  isArray?: boolean;
-};
+import { HandleFormData } from "../../../types/form/handleFormData";
+import { UpdateMode } from "../../../types/form";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
   formData: FormTypeMap[T];
   formLabel: Record<string, any>;
-  handleFormData: <K extends keyof FormTypeMap[T]>(
-    props: HandleFormDataProps<T, K>,
-  ) => void;
+  handleFormData: HandleFormData<T>;
   supportButton?: boolean;
   options: Record<string, OptionArray | OptionTable<any>>;
 };
@@ -221,33 +212,6 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     }
   }, [key]);
 
-  const multhInputHandleFormData = (
-    index: number,
-    value: string | number | Date | boolean | undefined,
-  ) => {
-    const newValue = [...((formData[formDataKey] ?? []) as string[])];
-    if (value === undefined) {
-      newValue[index] = "";
-    } else {
-      newValue[index] = value.toString();
-    }
-
-    if (
-      index === newValue.length - 1 &&
-      value !== undefined &&
-      value.toString().trim() !== "" &&
-      !newValue.includes("")
-    ) {
-      newValue.push("");
-    }
-
-    handleFormData({
-      key: formDataKey,
-      value: formData[formDataKey] as FormTypeMap[T][typeof formDataKey],
-      isArray: multi,
-    });
-  };
-
   const value = get(formData, formDataKey) as string | number | Date;
 
   const filterField = useMemo(() => {
@@ -277,19 +241,15 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     return quickFilterItemsObj[optionKey] || [];
   }, [optionKey]);
 
-  // console.log(
-  //   "formLabel[formDataKey as string]",
-  //   formLabel[formDataKey as string],
-  // );
-
-  console.log(multi, fieldType);
-
   if (fieldType === "table")
     return (
       <>
         <div className="flex mb-2 text-gray-700">
           <div className="px-5">
-            {/* 選択中: {formLabel[formDataKey as string] || "未選択"} */}
+            選択中:{" "}
+            {Array.isArray(formLabel[formDataKey as string])
+              ? formLabel[formDataKey as string].join(" , ")
+              : formLabel[formDataKey as string] || "未選択"}
           </div>
           <button
             type="button"
@@ -297,7 +257,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
               handleFormData({
                 key: formDataKey,
                 value: undefined,
-                isArray: multi,
+                field,
               })
             }
             className="hover:cursor-pointer flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
@@ -332,16 +292,23 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
               handleFormData({
                 key: formDataKey,
                 value: { key, label } as FormTypeMap[T][typeof formDataKey],
-                isArray: multi,
+                field,
+                index: ((formData[formDataKey] as string[]) || []).length,
+                updateMode: UpdateMode.ARRAY_UPDATE,
               });
             } else {
-              handleFormData({ key: formDataKey, value: row, isArray: multi });
+              handleFormData({
+                key: formDataKey,
+                value: row,
+                field,
+                updateMode: UpdateMode.REPLACE,
+              });
             }
           }}
           selectedKey={
-            typeof formData[formDataKey] === "string"
-              ? [formData[formDataKey]]
-              : []
+            Array.isArray(formData[formDataKey])
+              ? formData[formDataKey]
+              : ([formData[formDataKey]] as string[])
           }
           handlePageChange={
             optionSource === OptionSource.REMOTE
@@ -385,24 +352,13 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
               value={item}
               onChange={(e) => {
                 const value = e.target.value;
-                const newValue = [
-                  ...((formData[formDataKey] ?? []) as string[]),
-                ];
-                newValue[index] = value;
-
-                // 入力されたのが最後の要素かつ空だった場合、新たな空欄を追加
-                if (
-                  index === newValue.length - 1 &&
-                  value.trim() !== "" &&
-                  !newValue.includes("")
-                ) {
-                  newValue.push("");
-                }
 
                 handleFormData({
                   key: formDataKey,
-                  value: newValue as FormTypeMap[T][typeof formDataKey],
-                  isArray: multi,
+                  value: value as FormTypeMap[T][typeof formDataKey],
+                  field,
+                  index,
+                  updateMode: UpdateMode.ARRAY_UPDATE,
                 });
               }}
             />
@@ -410,12 +366,12 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
             <button
               type="button"
               onClick={() => {
-                const newValue = [...(formData[formDataKey] as string[])];
-                newValue.splice(index, 1);
                 handleFormData({
                   key: formDataKey,
-                  value: newValue as FormTypeMap[T][typeof formDataKey],
-                  isArray: multi,
+                  value: undefined,
+                  field,
+                  updateMode: UpdateMode.ARRAY_UPDATE,
+                  index: index,
                 });
               }}
               className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -424,6 +380,20 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
             </button>
           </div>
         ))}
+
+        <textarea
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={""}
+          onChange={(e) => {
+            handleFormData({
+              key: formDataKey,
+              value: e.target.value as FormTypeMap[T][typeof formDataKey],
+              field,
+              index: ((formData[formDataKey] as string[]) || []).length,
+              updateMode: UpdateMode.ARRAY_UPDATE,
+            });
+          }}
+        />
       </>
     );
 
@@ -447,24 +417,20 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
       <>
         {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
-            const inputArrayHandleFormData = (
-              value: string | number | Date | undefined,
-            ) => {
-              const newValue = [...(formData[formDataKey] as string[])];
-              newValue[index] = String(value);
-              handleFormData({
-                key: formDataKey,
-                value: newValue as FormTypeMap[T][typeof formDataKey],
-                isArray: multi,
-              });
-            };
-
             return (
               <div key={index} className="flex items-center space-x-2 mb-2">
                 <SelectField
                   type={valueType}
                   value={item}
-                  onChange={inputArrayHandleFormData}
+                  onChange={(value) => {
+                    handleFormData({
+                      key: formDataKey,
+                      value: value as FormTypeMap[T][typeof formDataKey],
+                      field,
+                      index,
+                      updateMode: UpdateMode.ARRAY_UPDATE,
+                    });
+                  }}
                   options={getUniqueOptions(index)}
                   defaultOption="--- 未選択 ---"
                   displayClearButton={true}
@@ -478,13 +444,13 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
           <SelectField
             type={valueType}
             value={""}
-            onChange={() =>
+            onChange={(value) => {
               handleFormData({
                 key: formDataKey,
                 value: value as FormTypeMap[T][typeof formDataKey],
-                isArray: multi,
-              })
-            }
+                field,
+              });
+            }}
             options={options}
             defaultOption="--- 未選択 ---"
             displayClearButton={true}
@@ -494,29 +460,25 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     );
   }
 
-  if (multi && fieldType === "select" && optionSelectData)
+  if (multi && fieldType === "select" && optionSelectData) {
     return (
       <>
         {[...((formData[formDataKey] as string[]) ?? [])].map(
           (item: string, index: number) => {
-            const inputArrayHandleFormData = (
-              value: string | number | Date | undefined,
-            ) => {
-              const newValue = [...(formData[formDataKey] as string[])];
-              newValue[index] = String(value);
-              handleFormData({
-                key: formDataKey,
-                value: newValue as FormTypeMap[T][typeof formDataKey],
-                isArray: multi,
-              });
-            };
-
             return (
               <div key={index} className="flex items-center space-x-2 mb-2">
                 <SelectField
                   type={valueType}
                   value={item}
-                  onChange={inputArrayHandleFormData}
+                  onChange={(value) => {
+                    handleFormData({
+                      key: formDataKey,
+                      value: value as FormTypeMap[T][typeof formDataKey],
+                      field,
+                      index,
+                      updateMode: UpdateMode.ARRAY_UPDATE,
+                    });
+                  }}
                   options={optionSelectData}
                   defaultOption="--- 未選択 ---"
                   displayClearButton={true}
@@ -525,12 +487,12 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
                 <button
                   type="button"
                   onClick={() => {
-                    const newValue = [...(formData[formDataKey] as string[])];
-                    newValue.splice(index, 1);
                     handleFormData({
                       key: formDataKey,
-                      value: newValue as FormTypeMap[T][typeof formDataKey],
-                      isArray: multi,
+                      value: undefined,
+                      field,
+                      updateMode: UpdateMode.ARRAY_UPDATE,
+                      index: index,
                     });
                   }}
                   className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -545,19 +507,22 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
         <SelectField
           type={valueType}
           value={""}
-          onChange={() =>
+          onChange={(value) => {
             handleFormData({
               key: formDataKey,
               value: value as FormTypeMap[T][typeof formDataKey],
-              isArray: multi,
-            })
-          }
+              field,
+              index: ((formData[formDataKey] as string[]) || []).length,
+              updateMode: UpdateMode.ARRAY_UPDATE,
+            });
+          }}
           options={optionSelectData}
           defaultOption="--- 未選択 ---"
           displayClearButton={true}
         />
       </>
     );
+  }
 
   if (multi && fieldType === "input")
     return (
@@ -568,29 +533,31 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
             ? (formData[formDataKey] as string[])
             : [""]), // 空配列なら1つだけ空の入力欄を出す
         ].map((item: string, index: number) => {
-          const onChange = (
-            value: string | number | Date | boolean | undefined,
-          ) => multhInputHandleFormData(index, value);
-
           return (
             <div key={index} className="flex items-center space-x-2 mb-2">
               <InputField
                 type={valueType}
                 value={item}
-                onChange={onChange}
+                onChange={(value) =>
+                  handleFormData({
+                    key: formDataKey,
+                    value: value as FormTypeMap[T][typeof formDataKey],
+                    field,
+                    index,
+                  })
+                }
                 placeholder=""
               />
 
               <button
                 type="button"
                 onClick={() => {
-                  console.log("formData", formData);
-
-                  const newValue = [...(formData[formDataKey] as string[])];
-                  newValue.splice(index, 1);
                   handleFormData({
                     key: formDataKey,
-                    value: newValue as FormTypeMap[T][typeof formDataKey],
+                    value: undefined,
+                    field,
+                    updateMode: UpdateMode.ARRAY_UPDATE,
+                    index: index,
                   });
                 }}
                 className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
@@ -612,7 +579,8 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
           handleFormData({
             key: formDataKey,
             value: value as any,
-            isArray: multi,
+            field,
+            updateMode: UpdateMode.REPLACE,
           });
         }}
         options={optionSelectData}
@@ -630,7 +598,8 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
           handleFormData({
             key: formDataKey,
             value: value as any,
-            isArray: multi,
+            field,
+            updateMode: UpdateMode.REPLACE,
           });
         }}
         placeholder=""
