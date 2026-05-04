@@ -105,7 +105,7 @@ export const Tile = <T,>({
                   : ""
               }
             `}
-            onClick={form ? () => onClick?.(row) : undefined}
+            onClick={form ? () => onClick?.(index, row) : undefined}
           >
             {/* edit（削除） */}
             {edit && (

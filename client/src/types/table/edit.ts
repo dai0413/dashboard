@@ -4,7 +4,7 @@ import { TableHeader } from "./base";
 export type TableEditProps<T> = {
   /** 単一データ編集モード */
   form?: boolean;
-  onClick?: (row: T) => void;
+  onClick?: (index: number, row: T) => void;
   selectedKey?: string[];
 
   /** 複数データ編集モード */

@@ -222,7 +222,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         pageNum={optionTableData ? optionTableData.page || 1 : 1}
         totalCount={optionTableData ? optionTableData.totalCount : undefined}
         form={true}
-        onClick={(row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
+        onClick={(index, row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
           if (field.multi) {
             const { key, label } = row as {
               label: string;
@@ -233,7 +233,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
               key: formDataKey,
               value: { key, label } as FormTypeMap[T][typeof formDataKey],
               field,
-              index: ((value as string[]) || []).length,
+              index: index,
               updateMode: UpdateMode.ARRAY_UPDATE,
             });
           } else {

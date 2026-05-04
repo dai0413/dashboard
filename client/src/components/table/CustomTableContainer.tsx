@@ -39,7 +39,7 @@ type TablePage = {
 
 type TableForm = {
   form?: boolean;
-  onClick?: (row: any) => void;
+  onClick?: (index: number, row: any) => void;
   selectedKey?: string[];
 };
 

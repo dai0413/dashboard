@@ -36,7 +36,6 @@ export function updateFormValue<T extends object, K extends keyof T>(
     ? params.updateMode
     : resolveMode(params.field);
   const { prev, prevLabel, key, value } = params;
-  const index = params.index ? params.index : 0;
 
   const path = String(key).split(".");
 
@@ -95,25 +94,50 @@ export function updateFormValue<T extends object, K extends keyof T>(
     const nextValArr = [...currentValArr];
     const nextLabelArr = [...currentLabelArr];
 
-    if (normalizedValue === undefined || normalizedValue === "") {
-      // 削除
-      nextValArr.splice(index, 1);
-      nextLabelArr.splice(index, 1);
+    const val = isLabelObj(normalizedValue)
+      ? getKey(normalizedValue)
+      : normalizedValue;
+
+    const label = isLabelObj(normalizedValue)
+      ? getLabel(normalizedValue)
+      : normalizedValue;
+
+    const index = params.index;
+
+    const exists = currentValArr.some((v) => v === val);
+
+    if (exists) {
+      const index = currentValArr.findIndex((v) => v === val);
+
+      storedValue = currentValArr.filter((_, i) => i !== index);
+      labelValue = currentLabelArr.filter((_, i) => i !== index);
+    } else if (index === undefined) {
+      // 全削除のみ許可
+      if (normalizedValue === undefined || normalizedValue === "") {
+        storedValue = [];
+        labelValue = [];
+      } else {
+        console.error("indexなしで値更新はNG");
+        storedValue = currentValArr;
+        labelValue = currentLabelArr;
+      }
     } else {
-      const val = isLabelObj(normalizedValue)
-        ? getKey(normalizedValue)
-        : normalizedValue;
+      if (normalizedValue === undefined || normalizedValue === "") {
+        // 削除
+        nextValArr.splice(index, 1);
+        nextLabelArr.splice(index, 1);
 
-      const label = isLabelObj(normalizedValue)
-        ? getLabel(normalizedValue)
-        : normalizedValue;
+        storedValue = nextValArr;
+        labelValue = nextLabelArr;
+      } else {
+        // 更新 or 追加
+        nextValArr[index] = val;
+        nextLabelArr[index] = label;
 
-      nextValArr[index] = val;
-      nextLabelArr[index] = label;
+        storedValue = nextValArr;
+        labelValue = nextLabelArr;
+      }
     }
-
-    storedValue = nextValArr;
-    labelValue = nextLabelArr;
   }
 
   const isEmpty =

@@ -216,7 +216,7 @@ const Table = <T,>({
                   <button
                     type="button"
                     className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-                    onClick={() => onClick?.(row)}
+                    onClick={() => onClick?.(i, row)}
                   >
                     <div className="flex justify-center items-center">
                       {hasKey(row) && selectedKey.includes(row.key) ? (
