@@ -38,7 +38,7 @@ import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { convertToOption } from "../../../../../utils/createOption/createOption";
 import { api } from "../../../../../context/api-context";
 
-type RenderFieldProps<T extends keyof FormTypeMap> = {
+type TableFieldRendererProps<T extends keyof FormTypeMap> = {
   value: FormTypeMap[T][keyof FormTypeMap[T]];
   label: unknown;
   formDataKey: keyof FormTypeMap[T];
@@ -66,7 +66,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
   handleFormData,
   setOptionIsLoading,
   setOptionTableData,
-}: RenderFieldProps<T>) => {
+}: TableFieldRendererProps<T>) => {
   const { filterConditionsObj, quickFilterItemsObj } = useForm();
 
   const readOptions = async (
