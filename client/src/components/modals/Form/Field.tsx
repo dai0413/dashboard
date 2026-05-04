@@ -103,116 +103,117 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     ? withTrailingEmpty(formDataValue as string[])
     : [];
 
-  if (fieldType === "table") {
-    const formDataLabel = get(formLabel, formDataKey) || "";
-    return (
-      <TableFieldRenderer
-        value={formDataValue}
-        label={formDataLabel}
-        formDataKey={formDataKey}
-        field={field}
-        optionKey={optionKey}
-        optionTableData={optionTableData}
-        optionIsLoading={optionIsLoading}
-        optionSource={optionSource}
-        handleFormData={handleFormData}
-        setOptionIsLoading={setOptionIsLoading}
-        setOptionTableData={setOptionTableData}
-      />
-    );
-  }
+  switch (fieldType) {
+    case "table": {
+      const formDataLabel = get(formLabel, formDataKey) || "";
+      return (
+        <TableFieldRenderer
+          value={formDataValue}
+          label={formDataLabel}
+          formDataKey={formDataKey}
+          field={field}
+          optionKey={optionKey}
+          optionTableData={optionTableData}
+          optionIsLoading={optionIsLoading}
+          optionSource={optionSource}
+          handleFormData={handleFormData}
+          setOptionIsLoading={setOptionIsLoading}
+          setOptionTableData={setOptionTableData}
+        />
+      );
+    }
+    case "textarea": {
+      const onChangeItem = (index: number, value: string | undefined) => {
+        handleFormData({
+          key: formDataKey,
+          value: value as FormTypeMap[T][typeof formDataKey],
+          field,
+          index,
+          updateMode: UpdateMode.ARRAY_UPDATE,
+        });
+      };
 
-  if (fieldType === "textarea") {
-    const onChangeItem = (index: number, value: string | undefined) => {
-      handleFormData({
-        key: formDataKey,
-        value: value as FormTypeMap[T][typeof formDataKey],
-        field,
-        index,
-        updateMode: UpdateMode.ARRAY_UPDATE,
-      });
-    };
+      return (
+        <TextareaRenderer
+          multi={multi}
+          items={formDataArray}
+          onChangeItem={onChangeItem}
+        />
+      );
+    }
+    case "select": {
+      const onChangeItem = (
+        index: number,
+        value: string | number | Date | undefined,
+      ) => {
+        handleFormData({
+          key: formDataKey,
+          value: value as FormTypeMap[T][typeof formDataKey],
+          field,
+          index,
+          updateMode: UpdateMode.ARRAY_UPDATE,
+        });
+      };
 
-    return (
-      <TextareaRenderer
-        multi={multi}
-        items={formDataArray}
-        onChangeItem={onChangeItem}
-      />
-    );
-  }
+      const onChangeObj = (value: Record<string, any> | undefined) => {
+        handleFormData({
+          key: formDataKey,
+          value: value as any,
+          field,
+          updateMode: UpdateMode.REPLACE,
+        });
+      };
 
-  if (fieldType === "select") {
-    const onChangeItem = (
-      index: number,
-      value: string | number | Date | undefined,
-    ) => {
-      handleFormData({
-        key: formDataKey,
-        value: value as FormTypeMap[T][typeof formDataKey],
-        field,
-        index,
-        updateMode: UpdateMode.ARRAY_UPDATE,
-      });
-    };
+      return (
+        <SelectFieldRenderer
+          multi={multi}
+          uniqueInArray={uniqueInArray}
+          lengthInArray={lengthInArray}
+          value={(formDataValue as string | number | Date) ?? ""}
+          values={formDataArray}
+          options={optionSelectData}
+          onChangeItem={onChangeItem}
+          onChangeObj={onChangeObj}
+        />
+      );
+    }
+    case "input": {
+      const onChange = (
+        value: string | number | Date | boolean | undefined,
+      ) => {
+        handleFormData({
+          key: formDataKey,
+          value: value as FormTypeMap[T][typeof formDataKey],
+          field,
+          updateMode: UpdateMode.REPLACE,
+        });
+      };
 
-    const onChangeObj = (value: Record<string, any> | undefined) => {
-      handleFormData({
-        key: formDataKey,
-        value: value as any,
-        field,
-        updateMode: UpdateMode.REPLACE,
-      });
-    };
+      const onChangeItem = (
+        index: number,
+        value: string | number | Date | boolean | undefined,
+      ) => {
+        handleFormData({
+          key: formDataKey,
+          value: value as FormTypeMap[T][typeof formDataKey],
+          field,
+          index,
+          updateMode: UpdateMode.ARRAY_UPDATE,
+        });
+      };
 
-    return (
-      <SelectFieldRenderer
-        multi={multi}
-        uniqueInArray={uniqueInArray}
-        lengthInArray={lengthInArray}
-        value={(formDataValue as string | number | Date) || ""}
-        values={formDataArray}
-        options={optionSelectData}
-        onChangeItem={onChangeItem}
-        onChangeObj={onChangeObj}
-      />
-    );
-  }
-
-  if (fieldType === "input") {
-    const onChange = (value: string | number | Date | boolean | undefined) => {
-      handleFormData({
-        key: formDataKey,
-        value: value as FormTypeMap[T][typeof formDataKey],
-        field,
-        updateMode: UpdateMode.REPLACE,
-      });
-    };
-
-    const onChangeItem = (
-      index: number,
-      value: string | number | Date | boolean | undefined,
-    ) => {
-      handleFormData({
-        key: formDataKey,
-        value: value as FormTypeMap[T][typeof formDataKey],
-        field,
-        index,
-        updateMode: UpdateMode.ARRAY_UPDATE,
-      });
-    };
-
-    return (
-      <InputFieldRenderer
-        multi={multi}
-        supportButton={supportButton}
-        type={valueType}
-        value={formDataValue as string}
-        values={formDataArray}
-        onChange={onChange}
-        onChangeItem={onChangeItem}
-      />
-    );
+      return (
+        <InputFieldRenderer
+          multi={multi}
+          supportButton={supportButton}
+          type={valueType}
+          value={formDataValue as string}
+          values={formDataArray}
+          onChange={onChange}
+          onChangeItem={onChangeItem}
+        />
+      );
+    }
   }
 };
 
