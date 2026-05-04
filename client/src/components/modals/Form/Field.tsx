@@ -1,5 +1,3 @@
-import { InputField, SelectField } from "../../field";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { get } from "lodash";
 import { useEffect, useState } from "react";
 import { resolveOptionSource } from "../../../types/field";
@@ -22,6 +20,9 @@ import { OptionProvider } from "../../../context/options-provider";
 import { HandleFormData } from "../../../types/form/handleFormData";
 import { UpdateMode } from "../../../types/form";
 import { TableFieldRenderer } from "./Field/renderers/TableFieldRenderer";
+import { TextareaRenderer } from "./Field/renderers/TextareaRenderer";
+import { SelectFieldRenderer } from "./Field/renderers/SelectFieldRenderer";
+import { InputFieldRenderer } from "./Field/renderers/InputFieldRenderer";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -54,9 +55,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     OptionSource.PRESET,
   );
 
-  const [optionSelectData, setOptionSelectData] = useState<OptionArray | null>(
-    null,
-  );
+  const [optionSelectData, setOptionSelectData] = useState<OptionArray>([]);
 
   useEffect(() => {
     if (!key) return;
@@ -90,10 +89,22 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     }
   }, [key]);
 
-  const formDataValue = get(formData, formDataKey);
-  const formDataLabel = get(formLabel, formDataKey) || "";
+  const withTrailingEmpty = (arr: string[] = [], lengthInArray?: number) => {
+    if (lengthInArray && arr.length >= lengthInArray) {
+      return arr; // 上限なら追加しない
+    }
 
-  if (fieldType === "table")
+    if (arr.length === 0) return [""];
+
+    return arr[arr.length - 1] === "" ? arr : [...arr, ""];
+  };
+  const formDataValue = get(formData, formDataKey);
+  const formDataArray = multi
+    ? withTrailingEmpty(formDataValue as string[])
+    : [];
+
+  if (fieldType === "table") {
+    const formDataLabel = get(formLabel, formDataKey) || "";
     return (
       <TableFieldRenderer
         value={formDataValue}
@@ -109,274 +120,100 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
         setOptionTableData={setOptionTableData}
       />
     );
+  }
 
-  if (multi && fieldType === "textarea")
-    return (
-      <>
-        {[
-          ...(formDataValue && (formDataValue as string[]).length > 0
-            ? (formDataValue as string[])
-            : [""]), // 空配列なら1つだけ空の入力欄を出す
-        ].map((item: string, index: number) => (
-          <div key={index} className="flex items-center space-x-2 mb-2">
-            <textarea
-              className="w-full border border-gray-300 rounded px-3 py-2"
-              value={item}
-              onChange={(e) => {
-                const value = e.target.value;
-
-                handleFormData({
-                  key: formDataKey,
-                  value: value as FormTypeMap[T][typeof formDataKey],
-                  field,
-                  index,
-                  updateMode: UpdateMode.ARRAY_UPDATE,
-                });
-              }}
-            />
-
-            <button
-              type="button"
-              onClick={() => {
-                handleFormData({
-                  key: formDataKey,
-                  value: undefined,
-                  field,
-                  updateMode: UpdateMode.ARRAY_UPDATE,
-                  index: index,
-                });
-              }}
-              className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              <XMarkIcon className="w-6 h-6" />
-            </button>
-          </div>
-        ))}
-
-        <textarea
-          className="w-full border border-gray-300 rounded px-3 py-2"
-          value={""}
-          onChange={(e) => {
-            handleFormData({
-              key: formDataKey,
-              value: e.target.value as FormTypeMap[T][typeof formDataKey],
-              field,
-              index: ((formDataValue as string[]) || []).length,
-              updateMode: UpdateMode.ARRAY_UPDATE,
-            });
-          }}
-        />
-      </>
-    );
-
-  if (multi && fieldType === "select" && optionSelectData && uniqueInArray) {
-    let options = optionSelectData;
-    const selected = ((formDataValue as string[]) || []).filter(
-      (v) => v !== "",
-    );
-    if (Array.isArray(selected)) {
-      options = optionSelectData.filter((item) => {
-        return !selected.includes(item.key);
+  if (fieldType === "textarea") {
+    const onChangeItem = (index: number, value: string | undefined) => {
+      handleFormData({
+        key: formDataKey,
+        value: value as FormTypeMap[T][typeof formDataKey],
+        field,
+        index,
+        updateMode: UpdateMode.ARRAY_UPDATE,
       });
-    }
-
-    const getUniqueOptions = (index: number) => {
-      const used = new Set(selected.slice(0, index));
-      return optionSelectData.filter((item) => !used.has(item.key));
     };
 
     return (
-      <>
-        {[...((formDataValue as string[]) ?? [])].map(
-          (item: string, index: number) => {
-            return (
-              <div key={index} className="flex items-center space-x-2 mb-2">
-                <SelectField
-                  type={valueType}
-                  value={item}
-                  onChange={(value) => {
-                    handleFormData({
-                      key: formDataKey,
-                      value: value as FormTypeMap[T][typeof formDataKey],
-                      field,
-                      index,
-                      updateMode: UpdateMode.ARRAY_UPDATE,
-                    });
-                  }}
-                  options={getUniqueOptions(index)}
-                  defaultOption="--- 未選択 ---"
-                  displayClearButton={true}
-                />
-              </div>
-            );
-          },
-        )}
-
-        {!!lengthInArray && lengthInArray >= selected.length && (
-          <SelectField
-            type={valueType}
-            value={""}
-            onChange={(value) => {
-              handleFormData({
-                key: formDataKey,
-                value: value as FormTypeMap[T][typeof formDataKey],
-                field,
-              });
-            }}
-            options={options}
-            defaultOption="--- 未選択 ---"
-            displayClearButton={true}
-          />
-        )}
-      </>
+      <TextareaRenderer
+        multi={multi}
+        items={formDataArray}
+        onChangeItem={onChangeItem}
+      />
     );
   }
 
-  if (multi && fieldType === "select" && optionSelectData) {
+  if (fieldType === "select") {
+    const onChangeItem = (
+      index: number,
+      value: string | number | Date | undefined,
+    ) => {
+      handleFormData({
+        key: formDataKey,
+        value: value as FormTypeMap[T][typeof formDataKey],
+        field,
+        index,
+        updateMode: UpdateMode.ARRAY_UPDATE,
+      });
+    };
+
+    const onChangeObj = (value: Record<string, any> | undefined) => {
+      handleFormData({
+        key: formDataKey,
+        value: value as any,
+        field,
+        updateMode: UpdateMode.REPLACE,
+      });
+    };
+
     return (
-      <>
-        {[...((formDataValue as string[]) ?? [])].map(
-          (item: string, index: number) => {
-            return (
-              <div key={index} className="flex items-center space-x-2 mb-2">
-                <SelectField
-                  type={valueType}
-                  value={item}
-                  onChange={(value) => {
-                    handleFormData({
-                      key: formDataKey,
-                      value: value as FormTypeMap[T][typeof formDataKey],
-                      field,
-                      index,
-                      updateMode: UpdateMode.ARRAY_UPDATE,
-                    });
-                  }}
-                  options={optionSelectData}
-                  defaultOption="--- 未選択 ---"
-                  displayClearButton={true}
-                />
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleFormData({
-                      key: formDataKey,
-                      value: undefined,
-                      field,
-                      updateMode: UpdateMode.ARRAY_UPDATE,
-                      index: index,
-                    });
-                  }}
-                  className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-                >
-                  <XMarkIcon className="w-6 h-6" />
-                </button>
-              </div>
-            );
-          },
-        )}
-
-        <SelectField
-          type={valueType}
-          value={""}
-          onChange={(value) => {
-            handleFormData({
-              key: formDataKey,
-              value: value as FormTypeMap[T][typeof formDataKey],
-              field,
-              index: ((formDataValue as string[]) || []).length,
-              updateMode: UpdateMode.ARRAY_UPDATE,
-            });
-          }}
-          options={optionSelectData}
-          defaultOption="--- 未選択 ---"
-          displayClearButton={true}
-        />
-      </>
-    );
-  }
-
-  if (multi && fieldType === "input")
-    return (
-      <>
-        {[
-          ...(formDataValue && (formDataValue as string[]).length > 0
-            ? (formDataValue as string[])
-            : [""]), // 空配列なら1つだけ空の入力欄を出す
-        ].map((item: string, index: number) => {
-          return (
-            <div key={index} className="flex items-center space-x-2 mb-2">
-              <InputField
-                type={valueType}
-                value={item}
-                onChange={(value) =>
-                  handleFormData({
-                    key: formDataKey,
-                    value: value as FormTypeMap[T][typeof formDataKey],
-                    field,
-                    index,
-                  })
-                }
-                placeholder=""
-              />
-
-              <button
-                type="button"
-                onClick={() => {
-                  handleFormData({
-                    key: formDataKey,
-                    value: undefined,
-                    field,
-                    updateMode: UpdateMode.ARRAY_UPDATE,
-                    index: index,
-                  });
-                }}
-                className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-              >
-                <XMarkIcon className="w-6 h-6" />
-              </button>
-            </div>
-          );
-        })}
-      </>
-    );
-
-  if (fieldType === "select" && optionSelectData)
-    return (
-      <SelectField
-        type={valueType}
+      <SelectFieldRenderer
+        multi={multi}
+        uniqueInArray={uniqueInArray}
+        lengthInArray={lengthInArray}
         value={(formDataValue as string | number | Date) || ""}
-        onChangeObj={(value: Record<string, any> | undefined) => {
-          handleFormData({
-            key: formDataKey,
-            value: value as any,
-            field,
-            updateMode: UpdateMode.REPLACE,
-          });
-        }}
+        values={formDataArray}
         options={optionSelectData}
-        defaultOption="--- 未選択 ---"
-        displayClearButton={true}
+        onChangeItem={onChangeItem}
+        onChangeObj={onChangeObj}
       />
     );
+  }
 
-  if (fieldType === "input")
+  if (fieldType === "input") {
+    const onChange = (value: string | number | Date | boolean | undefined) => {
+      handleFormData({
+        key: formDataKey,
+        value: value as FormTypeMap[T][typeof formDataKey],
+        field,
+        updateMode: UpdateMode.REPLACE,
+      });
+    };
+
+    const onChangeItem = (
+      index: number,
+      value: string | number | Date | boolean | undefined,
+    ) => {
+      handleFormData({
+        key: formDataKey,
+        value: value as FormTypeMap[T][typeof formDataKey],
+        field,
+        index,
+        updateMode: UpdateMode.ARRAY_UPDATE,
+      });
+    };
+
     return (
-      <InputField
-        type={valueType}
-        value={formDataValue as string | number | Date}
-        onChange={(value: string | number | Date | boolean | undefined) => {
-          handleFormData({
-            key: formDataKey,
-            value: value as any,
-            field,
-            updateMode: UpdateMode.REPLACE,
-          });
-        }}
-        placeholder=""
+      <InputFieldRenderer
+        multi={multi}
         supportButton={supportButton}
+        type={valueType}
+        value={formDataValue as string}
+        values={formDataArray}
+        onChange={onChange}
+        onChangeItem={onChangeItem}
       />
     );
+  }
 };
 
 export const RenderField = <T extends keyof FormTypeMap>(
