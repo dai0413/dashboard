@@ -1,9 +1,10 @@
 import { API_PATHS, Select } from "@dai0413/myorg-shared";
-import { Form as PositionData } from "@dai0413/myorg-shared/types/sn_m/position";
+import { Form as PositionData } from "@dai0413/myorg-shared/types/get-new-data/site/sn_m/position";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
+import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
 
 import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
@@ -54,7 +55,7 @@ const fetchResolved = async (
   return res.data.match;
 };
 
-const resolve = async (api: AxiosInstance, data: DraftDataValue["match"]) => {
+const resolve = async (api: AxiosInstance, data: MatchScraped) => {
   const input: Input = [data];
   return fetchResolved(api, input);
 };
@@ -192,6 +193,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
         },
       };
 
+      if (!baseData.playerAppearance) return {};
+
       // ポジションマージ処理
       if (positionRes?.data) {
         const positionData: PositionData = positionRes.data;
@@ -221,7 +224,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     getDraftData: async ({ draftData, metaData, api }) => {
       const getDataUrl = metaData.getDataUrl;
       const data = draftData[getDataUrl][ModelType.MATCH];
-      if (!data || !api) return null;
+      if (!data || !api || !draftData[getDataUrl][ModelType.MATCH]) return null;
 
       const resolvedData = await resolve(
         api,

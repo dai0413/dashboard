@@ -3,18 +3,18 @@ import { ModelType } from "../../../../../types/models";
 import { StaffAppearanceForm } from "../../../../../types/models/staff-appearance";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
+import { API_PATHS, Select } from "@dai0413/myorg-shared";
+import { Scraped as StaffAppearanceScraped } from "@dai0413/myorg-shared/types/get-new-data/models/staff-appearance";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
 import { createItemBase } from "../../../../api";
-import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getSeasons } from "../../../utils/getDraftData/getSeasons";
 import { getFields } from "../fields";
 import { validateStaffEitherOne } from "../validations/staff";
@@ -22,7 +22,7 @@ import { validateStaffEitherOne } from "../validations/staff";
 const KEYS = ["match", "staff", "team"] as const;
 
 const buildResolveInput = (
-  draftData: DraftDataValue["staffAppearance"]["home"],
+  draftData: StaffAppearanceScraped[],
   match: Label,
   season: string[],
   team?: Label,
@@ -57,7 +57,7 @@ const fetchResolved = async (
 
 const resolve = async (
   api: AxiosInstance,
-  data: DraftDataValue["staffAppearance"]["home"],
+  data: StaffAppearanceScraped[],
   match: Label,
   season: string[],
   team?: Label,
@@ -81,7 +81,8 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
       const season = metaData.season;
-      if (!getDataUrl || !api) return { value: [], label: [] };
+      if (!getDataUrl || !api || !draftData[getDataUrl].staffAppearance)
+        return { value: [], label: [] };
 
       const {
         _id: matchId,

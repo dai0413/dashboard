@@ -1,3 +1,9 @@
+import { API_PATHS, Select } from "@dai0413/myorg-shared";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-match-event-log";
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { PlayerMatchEventLogForm } from "../../../../../types/models/player-match-event-log";
@@ -6,16 +12,10 @@ import { Label } from "../../../../../types/types";
 import { MatchFormatGet } from "../../../../../types/models/match-format";
 import { createItemBase } from "../../../../api";
 import {
-  ResolveInput,
-  ResolveOutput,
-} from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
-import { API_PATHS, Select } from "@dai0413/myorg-shared";
-import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { DraftDataValue } from "../../../../../types/form/draftData";
 import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
 import { getFields } from "../fields";
 import { combineValidations } from "../../../utils/validate/combine";
@@ -26,7 +26,7 @@ import { calcPeriodLabel } from "../../../utils/onChange/calcPeriodLabel";
 const KEYS = ["match", "player", "team", "match_event_type"] as const;
 
 const buildResolveInput = (
-  draftData: DraftDataValue["playerMatchEventLog"]["home"],
+  draftData: Scraped[],
   candidatePlayers: PlayerAppearanceGet[],
   match: Label,
   team?: Label,
@@ -77,7 +77,7 @@ const fetchResolved = async (
 
 const resolve = async (
   api: AxiosInstance,
-  data: DraftDataValue["playerMatchEventLog"]["home"],
+  data: Scraped[],
   candidatePlayers: PlayerAppearanceGet[],
   match: Label,
   team?: Label,
@@ -103,7 +103,8 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
       getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
         const getDataUrl = metaData.getDataUrl;
 
-        if (!getDataUrl) return { value: [], label: [] };
+        if (!getDataUrl || !draftData[getDataUrl].playerMatchEventLog)
+          return { value: [], label: [] };
 
         const {
           _id: matchId,

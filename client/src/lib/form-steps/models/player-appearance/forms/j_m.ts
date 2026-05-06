@@ -1,9 +1,10 @@
+import { AxiosInstance } from "axios";
+import { API_PATHS, Select } from "@dai0413/myorg-shared";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/playerAppearance";
-import { AxiosInstance } from "axios";
-import { API_PATHS, Select } from "@dai0413/myorg-shared";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-appearance";
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { PlayerAppearanceForm } from "../../../../../types/models/player-appearance";
@@ -14,7 +15,6 @@ import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getSeasons } from "../../../utils/getDraftData/getSeasons";
 import { getFields } from "../fields";
 import { validatePlayerEitherOne } from "../validations/name";
@@ -40,7 +40,7 @@ const calcTime = (d: CalcWithData, play_time?: number): number | undefined => {
 const KEYS = ["match", "player", "team"] as const;
 
 const buildResolveInput = (
-  draftData: DraftDataValue["playerAppearance"]["home"],
+  draftData: Scraped[],
   match: Label,
   season: string[],
   team?: Label,
@@ -76,7 +76,7 @@ const fetchResolved = async (
 
 const resolve = async (
   api: AxiosInstance,
-  data: DraftDataValue["playerAppearance"]["home"],
+  data: Scraped[],
   match: Label,
   season: string[],
   team?: Label,
@@ -101,7 +101,8 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
       const season = metaData.season;
-      if (!getDataUrl || !api) return { value: [], label: [] };
+      if (!getDataUrl || !api || !draftData[getDataUrl].playerAppearance)
+        return { value: [], label: [] };
 
       const {
         _id: matchId,

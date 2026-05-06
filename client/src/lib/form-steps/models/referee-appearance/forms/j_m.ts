@@ -1,28 +1,25 @@
+import { AxiosInstance } from "axios";
+import {
+  ResolveInput,
+  ResolveOutput,
+} from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
+import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/referee-appearance";
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { RefereeAppearanceForm } from "../../../../../types/models/referee-appearance";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { createItemBase } from "../../../../api";
 import {
-  ResolveInput,
-  ResolveOutput,
-} from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
-import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
-import { AxiosInstance } from "axios";
-import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
-import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { validateRefereeEitherOne } from "../validations/referee";
 
 const KEYS = ["match", "referee"] as const;
 
-const buildResolveInput = (
-  draftData: DraftDataValue["refereeAppearance"],
-  match: Label,
-) => {
+const buildResolveInput = (draftData: Scraped[], match: Label) => {
   const data = draftData.map((d) => {
     return {
       ...d,
@@ -48,11 +45,7 @@ const fetchResolved = async (
   return res.data.refereeAppearance;
 };
 
-const resolve = async (
-  api: AxiosInstance,
-  data: DraftDataValue["staffAppearance"]["home"],
-  match: Label,
-) => {
+const resolve = async (api: AxiosInstance, data: Scraped[], match: Label) => {
   const input = buildResolveInput(data, match);
   return fetchResolved(api, input);
 };
@@ -71,7 +64,8 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
-      if (!getDataUrl || !api) return { value: [], label: [] };
+      if (!getDataUrl || !api || !draftData[getDataUrl].refereeAppearance)
+        return { value: [], label: [] };
 
       const { _id: matchId } = postedDraftData[getDataUrl].match;
 
