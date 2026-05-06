@@ -1,20 +1,20 @@
-import { Form as MatchForm, Scraped as MatchScraped } from "./match";
+import { Form as MatchForm, Scraped as MatchScraped } from "../../models/match";
 import {
   Form as PlayerAppearanceForm,
   Scraped as PlayerAppearanceScraped,
-} from "./player-appearance";
+} from "../../models/player-appearance";
 import {
   Form as PlayerMatchEventLogForm,
   Scraped as PlayerMatchEventLogScraped,
-} from "./player-match-event-log";
+} from "../../models/player-match-event-log";
 import {
   Form as RefereeAppearanceForm,
   Scraped as RefereeAppearanceScraped,
-} from "./referee-appearance";
+} from "../../models/referee-appearance";
 import {
   Form as StaffAppearanceForm,
   Scraped as StaffAppearanceScraped,
-} from "./staff-appearance";
+} from "../../models/staff-appearance";
 
 export type Form = {
   match: MatchForm;

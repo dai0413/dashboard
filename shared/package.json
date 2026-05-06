@@ -35,55 +35,65 @@
       "require": "./dist/generateField/index.js",
       "types": "./dist/generateField/index.d.ts"
     },
-    "./types/d_pc/player": {
-      "import": "./dist/types/d_pc/player.js",
-      "require": "./dist/types/d_pc/player.js",
-      "types": "./dist/types/d_pc/player.d.ts"
+    "./types/get-new-data/models/match": {
+      "import": "./dist/types/get-new-data/models/match.js",
+      "require": "./dist/types/get-new-data/models/match.js",
+      "types": "./dist/types/get-new-data/models/match.d.ts"
     },
-    "./types/d_pc/player-registration-history": {
-      "import": "./dist/types/d_pc/player-registration-history.js",
-      "require": "./dist/types/d_pc/player-registration-history.js",
-      "types": "./dist/types/d_pc/player-registration-history.d.ts"
+    "./types/get-new-data/models/player-appearance": {
+      "import": "./dist/types/get-new-data/models/player-appearance.js",
+      "require": "./dist/types/get-new-data/models/player-appearance.js",
+      "types": "./dist/types/get-new-data/models/player-appearance.d.ts"
     },
-    "./types/d_sc/staff": {
-      "import": "./dist/types/d_sc/staff.js",
-      "require": "./dist/types/d_sc/staff.js",
-      "types": "./dist/types/d_sc/staff.d.ts"
+    "./types/get-new-data/models/player-match-event-log": {
+      "import": "./dist/types/get-new-data/models/player-match-event-log.js",
+      "require": "./dist/types/get-new-data/models/player-match-event-log.js",
+      "types": "./dist/types/get-new-data/models/player-match-event-log.d.ts"
     },
-    "./types/d_sc/staff-registration-history": {
-      "import": "./dist/types/d_sc/staff-registration-history.js",
-      "require": "./dist/types/d_sc/staff-registration-history.js",
-      "types": "./dist/types/d_sc/staff-registration-history.d.ts"
+    "./types/get-new-data/models/player-registration-history": {
+      "import": "./dist/types/get-new-data/models/player-registration-history.js",
+      "require": "./dist/types/get-new-data/models/player-registration-history.js",
+      "types": "./dist/types/get-new-data/models/player-registration-history.d.ts"
     },
-    "./types/j_m/match": {
-      "import": "./dist/types/j_m/match.js",
-      "require": "./dist/types/j_m/match.js",
-      "types": "./dist/types/j_m/match.d.ts"
+    "./types/get-new-data/models/player": {
+      "import": "./dist/types/get-new-data/models/player.js",
+      "require": "./dist/types/get-new-data/models/player.js",
+      "types": "./dist/types/get-new-data/models/player.d.ts"
     },
-    "./types/j_m/player-appearance": {
-      "import": "./dist/types/j_m/player-appearance.js",
-      "require": "./dist/types/j_m/player-appearance.js",
-      "types": "./dist/types/j_m/player-appearance.d.ts"
+    "./types/get-new-data/models/referee-appearance": {
+      "import": "./dist/types/get-new-data/models/referee-appearance.js",
+      "require": "./dist/types/get-new-data/models/referee-appearance.js",
+      "types": "./dist/types/get-new-data/models/referee-appearance.d.ts"
     },
-    "./types/j_m/player-match-event-log": {
-      "import": "./dist/types/j_m/player-match-event-log.js",
-      "require": "./dist/types/j_m/player-match-event-log.js",
-      "types": "./dist/types/j_m/player-match-event-log.d.ts"
+    "./types/get-new-data/models/staff-appearance": {
+      "import": "./dist/types/get-new-data/models/staff-appearance.js",
+      "require": "./dist/types/get-new-data/models/staff-appearance.js",
+      "types": "./dist/types/get-new-data/models/staff-appearance.d.ts"
     },
-    "./types/j_m/referee-appearance": {
-      "import": "./dist/types/j_m/referee-appearance.js",
-      "require": "./dist/types/j_m/referee-appearance.js",
-      "types": "./dist/types/j_m/referee-appearance.d.ts"
+    "./types/get-new-data/models/staff-registration-history": {
+      "import": "./dist/types/get-new-data/models/staff-registration-history.js",
+      "require": "./dist/types/get-new-data/models/staff-registration-history.js",
+      "types": "./dist/types/get-new-data/models/staff-registration-history.d.ts"
     },
-    "./types/j_m/staff-appearance": {
-      "import": "./dist/types/j_m/staff-appearance.js",
-      "require": "./dist/types/j_m/staff-appearance.js",
-      "types": "./dist/types/j_m/staff-appearance.d.ts"
+    "./types/get-new-data/models/staff": {
+      "import": "./dist/types/get-new-data/models/staff.js",
+      "require": "./dist/types/get-new-data/models/staff.js",
+      "types": "./dist/types/get-new-data/models/staff.d.ts"
     },
-    "./types/j_m/values": {
-      "import": "./dist/types/j_m/values.js",
-      "require": "./dist/types/j_m/values.js",
-      "types": "./dist/types/j_m/values.d.ts"
+    "./types/get-new-data/site/j_m/values": {
+      "import": "./dist/types/get-new-data/site/j_m/values.js",
+      "require": "./dist/types/get-new-data/site/j_m/values.js",
+      "types": "./dist/types/get-new-data/site/j_m/values.d.ts"
+    },
+    "./types/get-new-data/site/sn_m/position": {
+      "import": "./dist/types/get-new-data/site/sn_m/position.js",
+      "require": "./dist/types/get-new-data/site/sn_m/position.js",
+      "types": "./dist/types/get-new-data/site/sn_m/position.d.ts"
+    },
+    "./types/get-new-data/site/draftData": {
+      "import": "./dist/types/get-new-data/site/draftData.js",
+      "require": "./dist/types/get-new-data/site/draftData.js",
+      "types": "./dist/types/get-new-data/site/draftData.d.ts"
     },
     "./types/resolver/match": {
       "import": "./dist/types/resolver/match.js",
@@ -109,11 +119,6 @@
       "import": "./dist/types/resolver/staffAppearance.js",
       "require": "./dist/types/resolver/staffAppearance.js",
       "types": "./dist/types/resolver/staffAppearance.d.ts"
-    },
-    "./types/sn_m/position": {
-      "import": "./dist/types/sn_m/position.js",
-      "require": "./dist/types/sn_m/position.js",
-      "types": "./dist/types/sn_m/position.d.ts"
     }
   },
   "scripts": {
