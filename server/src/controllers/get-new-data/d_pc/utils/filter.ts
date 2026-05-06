@@ -1,5 +1,8 @@
 import { generateNormalizedEnName } from "@dai0413/myorg-shared";
-import { Form, Scraped } from "@dai0413/myorg-shared/types/d_pc/player";
+import {
+  Form,
+  Scraped,
+} from "@dai0413/myorg-shared/types/get-new-data/models/player";
 import { PlayerModel } from "../../../../models/player.js";
 
 export const filter = async (

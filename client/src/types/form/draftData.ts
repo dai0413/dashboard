@@ -1,8 +1,6 @@
 import { AxiosInstance } from "axios";
-import { Label } from "@dai0413/myorg-shared";
-import { Scraped } from "@dai0413/myorg-shared/types/j_m/values";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/draftData";
 import { FormTypeMap } from "../models";
-import { TeamMatchFormationForm } from "../models/team-match-formation";
 import { PostedDraftData } from "./postedDraftData";
 
 export type AddDraftData<K extends keyof FormTypeMap> = (args: {
@@ -26,15 +24,6 @@ export type GetDraftData<
   ? Promise<{ value: FormTypeMap[K][]; label: Record<string, any>[] } | null>
   : Promise<{ value: FormTypeMap[K]; label: Record<string, any> } | null>;
 
-type TeamMatchFormation = Omit<TeamMatchFormationForm, "formation"> & {
-  formation?: Label;
-};
-
-export type DraftDataValue = Scraped & {
-  teamMatchFormation?: {
-    home: TeamMatchFormation;
-    away: TeamMatchFormation;
-  };
-};
+export type DraftDataValue = Scraped[any];
 
 export type DraftData = Record<string, DraftDataValue>;

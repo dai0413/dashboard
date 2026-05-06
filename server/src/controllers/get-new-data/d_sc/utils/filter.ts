@@ -1,5 +1,8 @@
 import { generateNormalizedEnName } from "@dai0413/myorg-shared";
-import { Form, Scraped } from "@dai0413/myorg-shared/types/d_sc/staff";
+import {
+  Form,
+  Scraped,
+} from "@dai0413/myorg-shared/types/get-new-data/models/staff";
 import { StaffModel } from "../../../../models/staff.js";
 
 export const filter = async (

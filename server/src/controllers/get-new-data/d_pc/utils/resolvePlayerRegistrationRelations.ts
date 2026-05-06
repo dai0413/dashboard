@@ -2,7 +2,7 @@ import { generateNormalizedEnName } from "@dai0413/myorg-shared";
 import {
   Form,
   Scraped,
-} from "@dai0413/myorg-shared/types/d_pc/player-registration-history";
+} from "@dai0413/myorg-shared/types/get-new-data/models/player-registration-history";
 import { PlayerModel } from "../../../../models/player.js";
 import { TeamModel } from "../../../../models/team.js";
 import { SeasonModel } from "../../../../models/season.js";
