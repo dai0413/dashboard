@@ -5,13 +5,15 @@ import { ModelType } from "../../../types/models";
 import { PlayerAppearance } from "../../../types/models/player-appearance";
 import { createConfirmationStep } from "../confirmationStep";
 import { Match } from "../../../types/models/match";
-import { AddPostedDraftData } from "../../../types/form/postedDraftData";
+import {
+  AddPostedDraftData,
+  PostedDraftData,
+} from "../../../types/form/postedDraftData";
 import { match } from "../models/match/forms/d_ml";
-// import { playerAppearance } from "../models/player-appearance/forms/j_m";
-// import { playerMatchEventLog } from "../models/player-match-event-log/forms/j_m";
-// import { staffAppearance } from "../models/staff-appearance/forms/j_m";
-// import { refereeAppearance } from "../models/referee-appearance/forms/j_m";
-// import { teamMatchFormation } from "../models/team-match-formation/forms/j_m";
+import { playerAppearance } from "../models/player-appearance/forms/d_ml";
+import { playerMatchEventLog } from "../models/player-match-event-log/forms/d_ml";
+import { staffAppearance } from "../models/staff-appearance/forms/d_ml";
+import { refereeAppearance } from "../models/referee-appearance/forms/d_ml";
 
 const steps: Partial<Record<ModelType, FormStep<any>[]>> = {
   [ModelType.MATCH]: [
@@ -25,24 +27,31 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   res,
   metaData,
 }) => {
-  let result = postedDraftData;
-  const getDataUrl = metaData.getDataUrl;
+  const card_ids: string[] = metaData.card_ids;
 
-  const matchOriginal: Match = res.data;
+  const matchOriginal: Match[] = res.data;
 
-  const match = convert(ModelType.MATCH, matchOriginal);
-  const label = createLabel(ModelType.MATCH, matchOriginal);
-  const periods = matchOriginal.match_format?.period;
-  result = {
-    [getDataUrl]: {
-      ...result[getDataUrl],
-      matchLabel: label,
-      match: { ...match },
-      periods,
-    },
-  };
+  const posted: PostedDraftData = Object.fromEntries(
+    matchOriginal.map((match, i) => {
+      const matchData = convert(ModelType.MATCH, match);
+      const label = createLabel(ModelType.MATCH, match);
 
-  return result;
+      const periods = match.match_format?.period;
+      const card_id = card_ids[i];
+
+      return [
+        card_id,
+        {
+          ...postedDraftData[card_id],
+          matchLabel: label,
+          match: { ...matchData },
+          periods,
+        },
+      ];
+    }),
+  );
+
+  return posted;
 };
 
 const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
@@ -50,30 +59,42 @@ const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   res,
   metaData,
 }) => {
-  let result = postedDraftData;
-  const getDataUrl = metaData.getDataUrl;
-
-  const { home_team, away_team } = postedDraftData[getDataUrl].match;
+  const card_ids: string[] = metaData.card_ids;
 
   const playerAppearance: PlayerAppearance[] = res.data;
 
-  const home = convert(
-    ModelType.PLAYER_APPEARANCE,
-    playerAppearance.filter((d) => d.team._id === home_team.id),
-  );
-  const away = convert(
-    ModelType.PLAYER_APPEARANCE,
-    playerAppearance.filter((d) => d.team._id === away_team.id),
+  const posted: PostedDraftData = Object.fromEntries(
+    card_ids.map((card_id) => {
+      const {
+        _id: matchId,
+        home_team,
+        away_team,
+      } = postedDraftData[card_id].match;
+
+      const home = convert(
+        ModelType.PLAYER_APPEARANCE,
+        playerAppearance.filter(
+          (d) => d.match._id === matchId && d.team._id === home_team.id,
+        ),
+      );
+      const away = convert(
+        ModelType.PLAYER_APPEARANCE,
+        playerAppearance.filter(
+          (d) => d.match._id === matchId && d.team._id === away_team.id,
+        ),
+      );
+
+      return [
+        card_id,
+        {
+          ...postedDraftData[card_id],
+          playerAppearance: { home, away },
+        },
+      ];
+    }),
   );
 
-  result = {
-    [getDataUrl]: {
-      ...result[getDataUrl],
-      playerAppearance: { home, away },
-    },
-  };
-
-  return result;
+  return posted;
 };
 
 const allStep: FormStep<any>[] = [
@@ -82,29 +103,25 @@ const allStep: FormStep<any>[] = [
     ...createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
     addPostedDraftData: afterMatchaddPostedDraftData,
   },
-  // ...playerAppearance,
-  // {
-  //   ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
-  //     ModelType.PLAYER_APPEARANCE,
-  //   ),
-  //   addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
-  // },
-  // ...playerMatchEventLog,
-  // createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(
-  //   ModelType.PLAYER_MATCH_EVENT_LOG,
-  // ),
-  // ...staffAppearance,
-  // createConfirmationStep<ModelType.STAFF_APPEARANCE>(
-  //   ModelType.STAFF_APPEARANCE,
-  // ),
-  // ...refereeAppearance,
-  // createConfirmationStep<ModelType.REFEREE_APPEARANCE>(
-  //   ModelType.REFEREE_APPEARANCE,
-  // ),
-  // ...teamMatchFormation,
-  // createConfirmationStep<ModelType.TEAM_MATCH_FORMATION>(
-  //   ModelType.TEAM_MATCH_FORMATION,
-  // ),
+  ...playerAppearance,
+  {
+    ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
+      ModelType.PLAYER_APPEARANCE,
+    ),
+    addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
+  },
+  ...playerMatchEventLog,
+  createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(
+    ModelType.PLAYER_MATCH_EVENT_LOG,
+  ),
+  ...staffAppearance,
+  createConfirmationStep<ModelType.STAFF_APPEARANCE>(
+    ModelType.STAFF_APPEARANCE,
+  ),
+  ...refereeAppearance,
+  createConfirmationStep<ModelType.REFEREE_APPEARANCE>(
+    ModelType.REFEREE_APPEARANCE,
+  ),
 ];
 
 export const getD_MLsteps = <T extends ModelType>(
