@@ -4,6 +4,7 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
 import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
+import { Scraped as CardIdScraped } from "@dai0413/myorg-shared/types/get-new-data/site/d_ml/cardId";
 
 import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../../types/models";
@@ -16,13 +17,14 @@ import {
 import { DraftData, DraftDataValue } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
-import { OptionTable } from "../../../../../types/form/option";
-import { ColumnType } from "../../../../../types/table";
 import { createFilterFromParent } from "../../../utils/createFilterConditions/createFilterFromParent";
 import { CompetitionStage } from "../../../../../types/models/competition-stage";
 import { convert } from "../../../../convert/CreateLabel";
 import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
 import { Season } from "../../../../../types/models/season";
+import { CardIdOption } from "../../../../../utils/createOption/custom/cardId";
+import { optionFieldDefinition } from "../../../../model-fields";
+import { CustomOptionType } from "../../../../../utils/createOption/types/base";
 
 const KEYS = [
   "home_team",
@@ -158,66 +160,19 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       if (!res?.data) return {};
 
-      const optionsData: Array<any> = res.data;
+      const optionsData: CardIdScraped[] = res.data;
 
-      const data: OptionTable<any>["data"] = optionsData.map((s, i) => {
-        return {
-          ...s,
-          label: `${s.season}-${s.competition}-${i}`,
-          key: s.match_card_id,
-        };
-      });
+      const data: CardIdOption[] = optionsData
+        .map((s, i) => {
+          return {
+            ...s,
+            label: `${s.season}-${s.competition}-${i}`,
+            key: s.match_card_id,
+          };
+        })
+        .filter((o): o is CardIdOption => o.key !== undefined);
 
-      const fields: OptionTable<any>["fields"] = [
-        {
-          key: "season",
-          label: "シーズン",
-          type: "string",
-          displayOnTable: true,
-          getValueType: ColumnType.FIELD,
-          field: "season",
-        },
-        {
-          key: "competition",
-          label: "大会",
-          type: "string",
-          displayOnTable: true,
-          getValueType: ColumnType.FIELD,
-          field: "competition",
-        },
-        {
-          key: "match_week",
-          label: "節",
-          type: "string",
-          displayOnTable: true,
-          getValueType: ColumnType.FIELD,
-          field: "match_week",
-        },
-        {
-          key: "date",
-          label: "日付",
-          type: "datetime-local",
-          displayOnTable: true,
-          getValueType: ColumnType.FIELD,
-          field: "date",
-        },
-        {
-          key: "home_team",
-          label: "ホーム",
-          type: "string",
-          displayOnTable: true,
-          getValueType: ColumnType.FIELD,
-          field: "home_team",
-        },
-        {
-          key: "away_team",
-          label: "アウェイ",
-          type: "string",
-          displayOnTable: true,
-          getValueType: ColumnType.FIELD,
-          field: "away_team",
-        },
-      ];
+      const fields = optionFieldDefinition[CustomOptionType.CARD_IDS];
 
       const options = {
         card_ids: { data, fields },

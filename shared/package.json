@@ -80,6 +80,11 @@
       "require": "./dist/types/get-new-data/models/staff.js",
       "types": "./dist/types/get-new-data/models/staff.d.ts"
     },
+    "./types/get-new-data/site/d_ml/cardId": {
+      "import": "./dist/types/get-new-data/site/d_ml/cardId.js",
+      "require": "./dist/types/get-new-data/site/d_ml/cardId.js",
+      "types": "./dist/types/get-new-data/site/d_ml/cardId.d.ts"
+    },
     "./types/get-new-data/site/j_m/values": {
       "import": "./dist/types/get-new-data/site/j_m/values.js",
       "require": "./dist/types/get-new-data/site/j_m/values.js",

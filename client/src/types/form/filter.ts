@@ -1,10 +1,10 @@
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { OptionType } from "../../utils/createOption/types/base";
-import { FormTypeMap, ModelType } from "../models";
+import { OptionsMap } from "../../utils/createOption/types/base";
+import { FormTypeMap } from "../models";
 import { AxiosInstance } from "axios";
 
 export type FilterConditionsByKey = Partial<
-  Record<ModelType | OptionType, FilterableFieldDefinition[]>
+  Record<keyof OptionsMap, FilterableFieldDefinition[]>
 >;
 
 export type CreateFilterConditions<K extends keyof FormTypeMap> = (args: {

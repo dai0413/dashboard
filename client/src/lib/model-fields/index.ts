@@ -36,6 +36,9 @@ import {
   UIFieldDefinition,
 } from "../../types/field";
 import { FilterField, SortField } from "@dai0413/myorg-shared";
+import { CustomOptionType } from "../../utils/createOption/types/base";
+import { cardId } from "../options/fields/cardId";
+import { CustomOptionMap } from "../../utils/createOption/custom";
 
 export const fieldDefinition: {
   [K in ModelType]?: UIFieldDefinition<GettedModelDataMap[K]>[];
@@ -71,19 +74,38 @@ export const fieldDefinition: {
   [ModelType.TRANSFER]: transfer,
 };
 
-export function getSortableFields<K extends ModelType>(
-  modelType: K,
-): (UIFieldDefinition<GettedModelDataMap[K]> & SortField)[] {
-  const defs = fieldDefinition[modelType];
+export const optionFieldDefinition: {
+  [K in CustomOptionType]?: UIFieldDefinition<CustomOptionMap[K]>[];
+} = {
+  [CustomOptionType.CARD_IDS]: cardId,
+};
+
+type CombinedKey = ModelType | CustomOptionType;
+
+type FieldValueMap = { [K in ModelType]: GettedModelDataMap[K] } & {
+  [K in CustomOptionType]: CustomOptionMap[K];
+};
+
+const combinedFieldDefinition: {
+  [K in keyof FieldValueMap]?: UIFieldDefinition<FieldValueMap[K]>[];
+} = {
+  ...fieldDefinition,
+  ...optionFieldDefinition,
+};
+
+export function getSortableFields<K extends CombinedKey>(
+  key: K,
+): (UIFieldDefinition<FieldValueMap[K]> & SortField)[] {
+  const defs = combinedFieldDefinition[key];
   if (!defs) return [];
 
   return defs.filter(isSortable);
 }
 
-export function getFilterableFields<K extends ModelType>(
-  modelType: K,
-): (UIFieldDefinition<GettedModelDataMap[K]> & FilterField)[] {
-  const defs = fieldDefinition[modelType];
+export function getFilterableFields<K extends CombinedKey>(
+  key: K,
+): (UIFieldDefinition<FieldValueMap[K]> & FilterField)[] {
+  const defs = combinedFieldDefinition[key];
   if (!defs) return [];
 
   return defs.filter(isFilterable);

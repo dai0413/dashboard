@@ -83,7 +83,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
         setOptionTableData({
           option: optionData,
           page: 1,
-          totalCount: 1,
+          totalCount: optionData.data.length,
         });
       }
     }
