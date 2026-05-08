@@ -22,7 +22,7 @@ export const cardId: UIFieldDefinition<CardIdOption>[] = [
   {
     key: "match_week",
     label: "節",
-    type: "string",
+    type: "number",
     displayOnTable: true,
     getValueType: ColumnType.FIELD,
     field: "match_week",
@@ -32,7 +32,7 @@ export const cardId: UIFieldDefinition<CardIdOption>[] = [
   {
     key: "date",
     label: "日付",
-    type: "datetime-local",
+    type: "Date",
     displayOnTable: true,
     getValueType: ColumnType.FIELD,
     field: "date",
