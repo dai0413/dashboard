@@ -17,8 +17,9 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  isCustomOptionType,
   isModelType,
   isOptionType,
   isQuickFilterType,
@@ -31,12 +32,14 @@ import { useForm } from "../../../../../context/form-context";
 import { AxiosInstance } from "axios";
 import { optionRouteMap } from "../../../../../lib/options";
 import { ModelDataOptionConfigMap } from "../../../../../utils/createOption/types/optionTable";
-import { normalizeFiltersForApi } from "../../../../../utils/normalizeFiltersForApi";
+import { normalizeFiltersForApi } from "../../../../../utils/filter/normalizeFiltersForApi";
 import { readItemsBase } from "../../../../../lib/api";
 import { DataResoonse } from "../../../../../types/api";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { convertToOption } from "../../../../../utils/createOption/createOption";
 import { api } from "../../../../../context/api-context";
+import { applyFilterClient } from "../../../../../utils/filter/applyFilterClient";
+import { applySortClient } from "../../../../../utils/sort/applySortClient";
 
 type TableFieldRendererProps<T extends keyof FormTypeMap> = {
   value: FormTypeMap[T][keyof FormTypeMap[T]];
@@ -68,6 +71,9 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
   setOptionTableData,
 }: TableFieldRendererProps<T>) => {
   const { filterConditionsObj, quickFilterItemsObj } = useForm();
+
+  const [viewOptionData, setViewOptionData] =
+    useState<ModelDataOptions<any> | null>(null);
 
   const readOptions = async (
     api: AxiosInstance,
@@ -146,39 +152,63 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
     setOptionIsLoading(true);
 
     if (!optionKey) return setOptionIsLoading(false);
-    if (!isModelType(optionKey)) return setOptionIsLoading(false);
-    const optionTableData = await readOptions(
-      api,
-      optionKey,
-      filterConditions,
-      sortConditions,
-      page,
-    );
 
-    if (!optionTableData) return setOptionIsLoading(false);
+    if (isModelType(optionKey)) {
+      const optionTableData = await readOptions(
+        api,
+        optionKey,
+        filterConditions,
+        sortConditions,
+        page,
+      );
+      if (!optionTableData) return setOptionIsLoading(false);
+      setOptionTableData(optionTableData);
+    } else if (isCustomOptionType(optionKey)) {
+      if (!optionTableData) return setOptionIsLoading(false);
 
-    setOptionTableData(optionTableData);
+      let processed = [...optionTableData.option.data];
+
+      processed = applyFilterClient(processed, filterConditions);
+      processed = applySortClient(processed, sortConditions);
+
+      const nextViewOptionData = {
+        ...optionTableData,
+        page,
+        option: {
+          ...optionTableData.option,
+          data: processed,
+        },
+        totalCount: processed.length,
+      };
+      setViewOptionData(nextViewOptionData);
+    }
+
     setOptionIsLoading(false);
   };
 
   const filterField = useMemo(() => {
+    if (!optionKey) return;
+
     const valid = isModelType(optionKey) || isOptionType(optionKey);
 
     if (filterConditionsObj && valid) {
       return filterConditionsObj[optionKey];
     }
 
-    if (!optionKey || !isModelType(optionKey)) return;
-    const filterableField = getFilterableFields(optionKey);
+    if (isModelType(optionKey) || isCustomOptionType(optionKey)) {
+      const filterableField = getFilterableFields(optionKey);
 
-    return filterableField;
+      return filterableField;
+    }
   }, [optionKey, filterConditionsObj]);
 
   const sortField = useMemo(() => {
-    if (!optionKey || !isModelType(optionKey)) return;
-    const sortableField = getSortableFields(optionKey);
+    if (!optionKey) return;
 
-    return sortableField;
+    if (isModelType(optionKey) || isCustomOptionType(optionKey)) {
+      const sortableField = getSortableFields(optionKey);
+      return sortableField;
+    }
   }, [optionKey]);
 
   const quickFilterItems: QuickFilterItem[] = useMemo(() => {
@@ -187,6 +217,10 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
     if (!quickFilterItemsObj || !valid) return [];
     return quickFilterItemsObj[optionKey] || [];
   }, [optionKey, quickFilterItemsObj]);
+
+  useEffect(() => {
+    setViewOptionData(optionTableData);
+  }, [optionKey, optionTableData]);
 
   return (
     <>
@@ -214,13 +248,13 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
       <CustomTableContainer
         pageNation="client"
         modelType={optionKey && isModelType(optionKey) ? optionKey : undefined}
-        fieldDefinitions={optionTableData ? optionTableData.option.fields : []}
-        items={optionTableData ? optionTableData.option.data : undefined}
+        fieldDefinitions={viewOptionData ? viewOptionData.option.fields : []}
+        items={viewOptionData ? viewOptionData.option.data : undefined}
         filterField={filterField}
         sortField={sortField}
         itemsLoading={optionIsLoading}
-        pageNum={optionTableData ? optionTableData.page || 1 : 1}
-        totalCount={optionTableData ? optionTableData.totalCount : undefined}
+        pageNum={viewOptionData ? viewOptionData.page || 1 : 1}
+        totalCount={viewOptionData ? viewOptionData.totalCount : undefined}
         form={true}
         onClick={(index, row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
           if (field.multi) {
@@ -247,7 +281,8 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         }}
         selectedKey={Array.isArray(value) ? value : ([value] as string[])}
         handlePageChange={
-          optionSource === OptionSource.REMOTE
+          optionSource === OptionSource.REMOTE ||
+          optionSource === OptionSource.CUSTOM
             ? (page, filterConditions, sortConditions) =>
                 handlePageChange(page, filterConditions, sortConditions)
             : undefined
