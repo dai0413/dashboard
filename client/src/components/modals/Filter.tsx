@@ -96,6 +96,16 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
             (f) => f.key === cond.operator,
           )?.label;
 
+          const conditionText: string = `${cond.label} が ${
+            cond.type === "Date"
+              ? cond.valueLabel?.map((label) => {
+                  return typeof label !== "boolean"
+                    ? toDateKey(label)
+                    : cond.valueLabel;
+                })
+              : cond.valueLabel
+          } ${operation}`;
+
           return isEditing ? (
             <FieldRow
               key={`${cond.key}-${index}`}
@@ -122,16 +132,7 @@ const Filter = ({ filterableField, onApply }: FilterProps) => {
               key={`${cond.key}-${index}`}
               className="flex justify-between items-center bg-green-100 px-3 py-2 rounded-md"
             >
-              {/* cond.valueLabel instanceof Date ? toDateKey(cond.valueLabel) : cond.valueLabel */}
-              <span>{`${cond.label} が ${
-                cond.type === "Date"
-                  ? cond.valueLabel?.map((label) => {
-                      typeof label !== "boolean"
-                        ? toDateKey(label)
-                        : cond.valueLabel;
-                    })
-                  : cond.valueLabel
-              } ${operation}`}</span>
+              <span>{conditionText}</span>
               <div className="space-x-2 flex">
                 <IconButton
                   icon="edit"

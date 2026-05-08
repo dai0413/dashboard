@@ -81,6 +81,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
       operator,
       valueLabel,
       logic: "AND",
+      filterable: true,
     };
 
     // 編集モード（index 指定あり）
