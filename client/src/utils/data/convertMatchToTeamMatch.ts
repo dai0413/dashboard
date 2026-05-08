@@ -1,9 +1,9 @@
-import { MatchGet } from "../types/models/match";
-import { TeamMatch } from "../types/types";
+import { MatchGet } from "../../types/models/match";
+import { TeamMatch } from "../../types/types";
 
 export const convertMatchToTeamMatch = (
   matchs: MatchGet[],
-  teamId: string
+  teamId: string,
 ): TeamMatch[] => {
   let teamMatchs = [];
   for (const match of matchs) {

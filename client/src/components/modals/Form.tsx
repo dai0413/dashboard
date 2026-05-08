@@ -21,7 +21,7 @@ import {
 } from "../../types/form";
 import { get } from "lodash";
 import { useModal } from "../../context/modal-context";
-import { isEmptyObject } from "../../utils";
+import { isEmptyObject } from "../../utils/data";
 import { ColumnType, TableHeader } from "../../types/table";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(

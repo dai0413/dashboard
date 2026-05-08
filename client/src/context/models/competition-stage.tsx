@@ -1,7 +1,7 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { ModelType } from "../../types/models";
 
-import { createModelContext } from "../../utils/createModelContext";
+import { createModelContext } from "../../utils/model/createModelContext";
 
 const ContextModelString = ModelType.COMPETITION_STAGE;
 const backendRoute = API_PATHS.COMPETITION_STAGE;

@@ -25,7 +25,7 @@ import { readItemBase, readItemsBase } from "../../lib/api";
 import { fieldDefinition } from "../../lib/model-fields";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../lib/appRoutes";
-import { convertMatchToTeamMatch } from "../../utils/convertMatchToTeamMatch";
+import { convertMatchToTeamMatch } from "../../utils/data";
 import PointLine from "./Team/PointLine";
 import { ColumnType } from "../../types/table";
 

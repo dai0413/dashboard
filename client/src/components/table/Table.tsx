@@ -6,7 +6,7 @@ import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { ColumnType, TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
-import { toDisplayValue } from "../../utils/toDisplayValue";
+import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 
 const Table = <T,>({
   modelType,

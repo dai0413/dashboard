@@ -20,7 +20,6 @@ import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/form/updateFormValue";
 import { getSteps } from "../lib/form-steps/core/getSteps";
-import { objectIsEqual } from "../utils";
 import { fieldDefinition } from "../lib/model-fields";
 import {
   DetailFieldDefinition,
@@ -35,12 +34,13 @@ import { FormMode, From, InputMode, StartFormArgs } from "../types/types";
 import { DataResoonse } from "../types/api";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
-import { getLabelById } from "../utils/getLabelById";
+import { getLabelById } from "../utils/model/getLabelById";
 import { OptionArray, OptionTable } from "../types/form/option";
 import {
   ArrayHandleFormData,
   HandleFormData,
 } from "../types/form/handleFormData";
+import { isComparableEqual } from "../utils/comparison";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -262,7 +262,7 @@ export const FormProvider = <T extends ModelType>({
       const typedKey = key as keyof typeof formData;
       const selectedValue = convertGettedToForm(modelType, selected)[typedKey];
 
-      !objectIsEqual(formValue, selectedValue) && diff.push(key);
+      !isComparableEqual(formValue, selectedValue) && diff.push(key);
     }
 
     return diff;

@@ -1,5 +1,5 @@
 import { TransferForm } from "../../../../../types/models/transfer";
-import { getSeasonDates } from "../../../../../utils/getSeasonDates";
+import { getSeasonDates } from "../../../../../utils/date/getSeasonDates";
 import { OnChange } from "../../../../../types/form/onChange";
 
 export const setFromDate: OnChange<TransferForm> = async (formData) => {

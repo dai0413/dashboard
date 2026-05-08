@@ -1,6 +1,6 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { ColumnType, TableHeader } from "../types/table";
-import { isLabelObject } from "./isLabelObject";
+import { ColumnType, TableHeader } from "../../types/table";
+import { isLabelObject } from "../data/isLabelObject";
 
 export const toDisplayValue = <T>(header: TableHeader<T>, row: T): string => {
   const value =

@@ -12,7 +12,7 @@ import { ModelContext } from "../../types/context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
 import { TableBase } from "../../types/table";
-import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
+import { normalizeFiltersForApi } from "../../utils/filter/normalizeFiltersForApi";
 import { ListViewProvider, useListView } from "../../context/listView-context";
 import { useAlert } from "../../context/alert-context";
 import { Loader2 } from "lucide-react";

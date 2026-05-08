@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CalendarDays, CalendarClock, CalendarRange, X } from "lucide-react";
-import { getSeasonDates } from "../../utils/getSeasonDates";
+import { getSeasonDates } from "../../utils/date/getSeasonDates";
 
 type InputFieldProps = {
   type: "text" | "number" | "date" | "datetime-local" | "boolean" | "option";

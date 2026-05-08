@@ -5,7 +5,7 @@ import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
-import { toDisplayValue } from "../../utils/toDisplayValue";
+import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 
 export const Tile = <T,>({
   modelType,

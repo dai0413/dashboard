@@ -1,7 +1,7 @@
-import { FormTypeMap } from "../types/models";
+import { FormTypeMap } from "../../types/models";
 
 export const cleanData = <T extends keyof FormTypeMap>(
-  data: FormTypeMap[T] | FormTypeMap[T][]
+  data: FormTypeMap[T] | FormTypeMap[T][],
 ) => {
   const cleaner = (data: FormTypeMap[T]): Partial<FormTypeMap[T]> => {
     const cleanedData: Partial<FormTypeMap[T]> = {};

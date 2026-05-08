@@ -16,7 +16,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { Data } from "../../types/types";
-import { normalizeFiltersForApi } from "../../utils/normalizeFiltersForApi";
+import { normalizeFiltersForApi } from "../../utils/filter/normalizeFiltersForApi";
 import { TableFetch } from "../../types/table";
 
 type TableWithFetchProps<K extends keyof GettedModelDataMap> = Omit<

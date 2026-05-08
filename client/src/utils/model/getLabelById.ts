@@ -1,9 +1,9 @@
-import { readItemBase } from "../lib/api";
-import { getOptionKey, optionRouteMap } from "../lib/options";
-import { isModelType } from "../types/field";
-import { ModelDataMap, ModelType } from "../types/models";
+import { readItemBase } from "../../lib/api";
+import { getOptionKey, optionRouteMap } from "../../lib/options";
+import { isModelType } from "../../types/field";
+import { ModelDataMap, ModelType } from "../../types/models";
 
-import { convert as createLabel } from "../lib/convert/CreateLabel";
+import { convert as createLabel } from "../../lib/convert/CreateLabel";
 import { AxiosInstance } from "axios";
 
 export async function getLabelById<T extends ModelType>(

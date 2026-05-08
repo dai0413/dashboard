@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import { DetailFieldDefinition } from "../../types/field";
-import { isLabelObject } from "../../utils";
+import { isLabelObject } from "../../utils/data";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { FieldListData } from "../../types/types";
 

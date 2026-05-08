@@ -1,15 +1,15 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { useAlert } from "../context/alert-context";
+import { useAlert } from "../../context/alert-context";
 import {
   FormTypeMap,
   GettedModelDataMap,
   ModelDataMap,
   ModelType,
-} from "../types/models";
-import { BaseCrudRoutes } from "../types/baseCrudRoutes";
-import { convert } from "../lib/convert/DBtoGetted";
-import { MetaCrudContext } from "../types/context";
-import { api } from "../context/api-context";
+} from "../../types/models";
+import { BaseCrudRoutes } from "../../types/baseCrudRoutes";
+import { convert } from "../../lib/convert/DBtoGetted";
+import { MetaCrudContext } from "../../types/context";
+import { api } from "../../context/api-context";
 import {
   createItemBase,
   deleteItemBase,
@@ -17,8 +17,8 @@ import {
   readItemsBase,
   updateItemBase,
   uploadFileBase,
-} from "../lib/api";
-import { cleanData } from ".";
+} from "../../lib/api";
+import { cleanData } from "../data";
 import { QueryParams, ResBody, UploadJobType } from "@dai0413/myorg-shared";
 
 export function createModelContext<T extends ModelType>(
