@@ -170,7 +170,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
             key: s.match_card_id,
           };
         })
-        .filter((o): o is CardIdOption => o.key !== undefined);
+        .filter((o): o is CardIdOption => o.match_card_id !== undefined);
 
       const fields = optionFieldDefinition[CustomOptionType.CARD_IDS];
 
