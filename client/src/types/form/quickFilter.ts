@@ -1,10 +1,10 @@
 import { AxiosInstance } from "axios";
-import { OptionType } from "../../utils/createOption/types/base";
-import { FormTypeMap, ModelType } from "../models";
+import { OptionsMap } from "../../utils/createOption/types/base";
+import { FormTypeMap } from "../models";
 import { QuickFilterItem } from "../table";
 
 export type QuickFilterItemsByKey = Partial<
-  Record<ModelType | OptionType, QuickFilterItem[]>
+  Record<keyof OptionsMap, QuickFilterItem[]>
 >;
 
 export type CreateQuickFilterItems<K extends keyof FormTypeMap> = (args: {
