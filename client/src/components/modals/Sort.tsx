@@ -70,7 +70,7 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
 
   useEffect(() => {
     resetSort(sortableField);
-  }, []);
+  }, [sortableField]);
 
   const selectingSortConditions = useMemo(
     () => sortConditions.filter((cond) => cond.asc !== null),
