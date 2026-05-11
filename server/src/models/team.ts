@@ -3,9 +3,12 @@ import {
   ageGroup,
   division,
   genre,
-  TeamType,
+  TeamZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type TeamType = z.infer<typeof TeamZodSchema>;
 
 export interface ITeam extends Omit<TeamType, "_id" | "country">, Document {
   _id: Types.ObjectId;

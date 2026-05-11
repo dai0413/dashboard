@@ -1,14 +1,18 @@
 import {
   getKey,
   leftReason,
-  NationalCallUpType,
+  NationalCallUpZodSchema,
   positionGroup,
   status,
 } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model, Error } from "mongoose";
+import z from "zod";
+
+type NationalCallUpType = z.infer<typeof NationalCallUpZodSchema>;
 
 export interface INationalCallUp
-  extends Omit<NationalCallUpType, "_id" | "series" | "player" | "team">,
+  extends
+    Omit<NationalCallUpType, "_id" | "series" | "player" | "team">,
     Document {
   _id: Types.ObjectId;
   series: Types.ObjectId;
@@ -49,7 +53,7 @@ const NationalCallUpSchema: Schema<INationalCallUp> = new Schema<
     status: { type: String, enum: getKey(status()), default: "joined" },
     left_reason: { type: String, enum: getKey(leftReason()) },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 NationalCallUpSchema.index({ series: 1, player: 1 }, { unique: true });
@@ -75,7 +79,7 @@ async function applySeriesDates(doc: Partial<INationalCallUp>) {
 
   const SeriesModel = mongoose.model("NationalMatchSeries");
   const seriesDoc = await SeriesModel.findById(doc.series).select(
-    "joined_at left_at"
+    "joined_at left_at",
   );
 
   if (!seriesDoc) {
@@ -117,7 +121,7 @@ NationalCallUpSchema.pre(
     } catch (err) {
       next(err as Error);
     }
-  }
+  },
 );
 
 export const NationalCallUpModel: Model<INationalCallUp> =

@@ -1,15 +1,20 @@
-import { numberFields, statsL } from "@dai0413/myorg-shared";
+import { numberFields } from "@dai0413/myorg-shared";
+import { statsL } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchModel } from "../../../../models/match.js";
 import { TeamModel } from "../../../../models/team.js";
 import { StatsLModel } from "../../../../models/stats-l.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = statsL(StatsLModel);
+const {
+  SCHEMA: { DATA },
+} = statsL(StatsLModel);
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   "_id" | "match" | "team" | "createdAt" | "updatedAt"
 > & {
   match?: string;

@@ -1,13 +1,9 @@
-import { matchEventType } from "@dai0413/myorg-shared";
+import { matchEventType as createConfig } from "@dai0413/myorg-shared/models-config";
+import { MatchEventTypeModel as Model } from "../../models/match-event-type.js";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { MatchEventTypeModel } from "../../models/match-event-type.js";
 
-const getAllItems = crudFactory(
-  matchEventType(MatchEventTypeModel)
-).getAllItems;
-const createItem = crudFactory(matchEventType(MatchEventTypeModel)).createItem;
-const getItem = crudFactory(matchEventType(MatchEventTypeModel)).getItem;
-const updateItem = crudFactory(matchEventType(MatchEventTypeModel)).updateItem;
-const deleteItem = crudFactory(matchEventType(MatchEventTypeModel)).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem };

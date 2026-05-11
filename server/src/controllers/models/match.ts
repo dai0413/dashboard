@@ -6,152 +6,29 @@ import { crudFactory } from "../../utils/crudFactory.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 import csv from "csv-parser";
-import { match } from "@dai0413/myorg-shared";
-import { MatchModel } from "../../models/match.js";
+import { match as createConfig } from "@dai0413/myorg-shared/models-config";
+import { MatchModel as Model } from "../../models/match.js";
 import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
 import { match as customMatch } from "../../utils/customMatchStage/match.js";
 import { DecodedRequest } from "../../types.js";
+import z from "zod";
 
-const getAllItems = crudFactory(match(MatchModel, customMatch)).getAllItems;
-const createItem = crudFactory(match(MatchModel, customMatch)).createItem;
-const getItem = crudFactory(match(MatchModel, customMatch)).getItem;
-const updateItem = crudFactory(match(MatchModel, customMatch)).updateItem;
-const deleteItem = crudFactory(match(MatchModel, customMatch)).deleteItem;
+const config = createConfig(Model, customMatch);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 const {
   MONGO_MODEL,
-  SCHEMA: { POPULATED },
-  TYPE,
+  SCHEMA: { DATA, POPULATED },
   POPULATE_PATHS,
-} = match(MatchModel, customMatch);
-
-// const getAllItems = async (req: Request, res: Response) => {
-//   const matchStage: Record<string, any> = {};
-
-//   if (req.query.competition) {
-//     try {
-//       matchStage.competition = new mongoose.Types.ObjectId(
-//         req.query.competition as string
-//       );
-//     } catch {
-//       return res.status(400).json({ erro: "Invalid competition ID" });
-//     }
-//   }
-
-//   if (req.query.season) {
-//     try {
-//       matchStage.season = new mongoose.Types.ObjectId(
-//         req.query.season as string
-//       );
-//     } catch {
-//       return res.status(400).json({ erro: "Invalid season ID" });
-//     }
-//   }
-
-//   if (req.query.team) {
-//     try {
-//       const teamId = new mongoose.Types.ObjectId(req.query.team as string);
-
-//       // すでに $or がある場合も考慮してマージ
-//       if (!matchStage.$or) {
-//         matchStage.$or = [];
-//       }
-//       matchStage.$or.push({ home_team: teamId }, { away_team: teamId });
-//     } catch {
-//       return res.status(400).json({ error: "Invalid team ID" });
-//     }
-//   }
-//   const data = await MONGO_MODEL.aggregate([
-//     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-//     ...getNest(false, POPULATE_PATHS),
-//     { $sort: { competition_stage: 1, date: 1, _id: 1 } },
-//   ]);
-
-//   res.status(StatusCodes.OK).json({ data: data.map(formatMatch) });
-// };
-
-// const createItem = async (req: Request, res: Response) => {
-//   const createData = {
-//     ...req.body,
-//   };
-
-//   const created = await MONGO_MODEL.create(createData);
-//   const populated = await MONGO_MODEL.findById(created._id).populate(
-//     getNest(true, POPULATE_PATHS)
-//   );
-
-//   const parsed = POPULATED.parse(populated);
-//   const data = formatMatch ? formatMatch(parsed) : parsed;
-//   res.status(StatusCodes.CREATED).json({ message: "追加しました", data });
-// };
-
-// const getItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id },
-//   } = req;
-//   const populated = await MONGO_MODEL.findById(id).populate(
-//     getNest(true, POPULATE_PATHS)
-//   );
-//   if (!populated) {
-//     throw new NotFoundError();
-//   }
-
-//   const parsed = POPULATED.parse(populated);
-//   const data = formatMatch ? formatMatch(parsed) : parsed;
-//   res.status(StatusCodes.OK).json({ data });
-// };
-
-// const updateItem = async (req: Request, res: Response) => {
-//   const {
-//     params: { id },
-//     body,
-//   } = req;
-
-//   const updatedData = { ...body };
-
-//   const updated = await MONGO_MODEL.findByIdAndUpdate(
-//     { _id: id },
-//     updatedData,
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-//   if (!updated) {
-//     throw new NotFoundError();
-//   }
-
-//   // update
-//   const populated = await MONGO_MODEL.findById(updated._id).populate(
-//     getNest(true, POPULATE_PATHS)
-//   );
-//   const parsed = POPULATED.parse(populated);
-//   const data = formatMatch ? formatMatch(parsed) : parsed;
-//   res.status(StatusCodes.OK).json({ message: "編集しました", data });
-// };
-
-// const deleteItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id },
-//   } = req;
-
-//   const team = await MONGO_MODEL.findOneAndDelete({ _id: id });
-//   if (!team) {
-//     throw new NotFoundError();
-//   }
-
-//   res.status(StatusCodes.OK).json({ message: "削除しました" });
-// };
+  convertFun,
+} = config;
 
 const uploadItem = async (req: DecodedRequest, res: Response) => {
-  const rows: (typeof TYPE)[] = [];
+  type TYPE = z.infer<typeof DATA>;
+
+  const rows: TYPE[] = [];
 
   req.decodedStream
     .pipe(
@@ -202,7 +79,6 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
           const plain = convertObjectIdToString(item);
           const parsed = POPULATED.parse(plain);
 
-          const convertFun = match().convertFun;
           if (!convertFun) console.error("error convert fun");
           const formattedTransfers = convertFun ? convertFun(parsed) : [];
 

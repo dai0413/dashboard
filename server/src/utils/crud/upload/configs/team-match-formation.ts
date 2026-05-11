@@ -1,4 +1,4 @@
-import { teamMatchFormation } from "@dai0413/myorg-shared";
+import { teamMatchFormation } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchModel } from "../../../../models/match.js";
 import { TeamModel } from "../../../../models/team.js";
@@ -6,11 +6,15 @@ import { TeamMatchFormationModel } from "../../../../models/team-match-formation
 import { FormationModel } from "../../../../models/formation.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = teamMatchFormation(TeamMatchFormationModel);
+const {
+  SCHEMA: { DATA },
+} = teamMatchFormation(TeamMatchFormationModel);
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   "_id" | "match" | "team" | "formation" | "createdAt" | "updatedAt"
 > & {
   match?: string;

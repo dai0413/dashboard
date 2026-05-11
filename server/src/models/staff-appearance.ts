@@ -1,5 +1,8 @@
-import { StaffAppearanceType } from "@dai0413/myorg-shared";
+import { StaffAppearanceZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type StaffAppearanceType = z.infer<typeof StaffAppearanceZodSchema>;
 
 export interface IStaffAppearance
   extends

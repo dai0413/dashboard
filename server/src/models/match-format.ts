@@ -1,5 +1,12 @@
-import { MatchFormatType, getKey, periodLabel } from "@dai0413/myorg-shared";
+import {
+  MatchFormatZodSchema,
+  getKey,
+  periodLabel,
+} from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type MatchFormatType = z.infer<typeof MatchFormatZodSchema>;
 
 export interface IMatchFormat extends Omit<MatchFormatType, "_id">, Document {
   _id: Types.ObjectId;
@@ -38,7 +45,7 @@ const PeriodSchema = new mongoose.Schema(
     },
     order: { type: Number, default: 0 },
   },
-  { _id: false } // period単位で_idいらない
+  { _id: false }, // period単位で_idいらない
 );
 
 const MatchFormatSchema: Schema<IMatchFormat> = new Schema<
@@ -50,7 +57,7 @@ const MatchFormatSchema: Schema<IMatchFormat> = new Schema<
     name: { type: String, required: true, unique: true },
     period: [PeriodSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const MatchFormatModel: Model<IMatchFormat> =

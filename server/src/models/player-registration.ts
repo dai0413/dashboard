@@ -1,11 +1,14 @@
 import {
   getKey,
-  PlayerRegistrationType,
   registrationStatus,
   positionGroup,
   registrationType,
+  PlayerRegistrationZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type PlayerRegistrationType = z.infer<typeof PlayerRegistrationZodSchema>;
 
 export interface IPlayerRegistration
   extends

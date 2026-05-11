@@ -1,14 +1,18 @@
-import { referee } from "@dai0413/myorg-shared";
+import { referee } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { RefereeModel } from "../../../../models/referee.js";
 import { CountryModel } from "../../../../models/country.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = referee(RefereeModel);
+const {
+  SCHEMA: { DATA },
+} = referee(RefereeModel);
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   "_id" | "match" | "createdAt" | "updatedAt"
 > & {
   citizenship_old_id?: string;

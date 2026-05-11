@@ -1,5 +1,11 @@
-import { generateNormalizedEnName, RefereeType } from "@dai0413/myorg-shared";
+import {
+  generateNormalizedEnName,
+  RefereeZodSchema,
+} from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type RefereeType = z.infer<typeof RefereeZodSchema>;
 
 export interface IReferee
   extends Omit<RefereeType, "_id" | "citizenship" | "player">, Document {

@@ -1,25 +1,15 @@
-import { playerAppearance } from "@dai0413/myorg-shared";
+import { playerAppearance as createConfig } from "@dai0413/myorg-shared/models-config";
 import { Response } from "express";
 import { DecodedRequest } from "../../types.js";
-import { PlayerAppearanceModel } from "../../models/player-appearance.js";
+import { PlayerAppearanceModel as Model } from "../../models/player-appearance.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
-const getAllItems = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
-).getAllItems;
-const createItem = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
-).createItem;
-const getItem = crudFactory(playerAppearance(PlayerAppearanceModel)).getItem;
-const updateItem = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
-).updateItem;
-const deleteItem = crudFactory(
-  playerAppearance(PlayerAppearanceModel),
-).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(playerAppearance(PlayerAppearanceModel), req, res);
+  uploadItemHandler(config, req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

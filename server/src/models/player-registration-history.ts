@@ -1,12 +1,17 @@
 import {
   getKey,
-  PlayerRegistrationHistoryType,
+  PlayerRegistrationHistoryZodSchema,
   positionGroup,
   registrationType,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { PlayerRegistrationModel } from "./player-registration.js";
 import { asyncRegistration } from "../utils/async/playerApplyHistoryRecord.js";
+import z from "zod";
+
+type PlayerRegistrationHistoryType = z.infer<
+  typeof PlayerRegistrationHistoryZodSchema
+>;
 
 export interface IPlayerRegistrationHistory
   extends

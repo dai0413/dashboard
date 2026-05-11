@@ -1,17 +1,15 @@
-import { statsL } from "@dai0413/myorg-shared";
+import { statsL as createConfig } from "@dai0413/myorg-shared/models-config";
 import { Response } from "express";
 import { DecodedRequest } from "../../types.js";
-import { StatsLModel } from "../../models/stats-l.js";
+import { StatsLModel as Model } from "../../models/stats-l.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
-const getAllItems = crudFactory(statsL(StatsLModel)).getAllItems;
-const createItem = crudFactory(statsL(StatsLModel)).createItem;
-const getItem = crudFactory(statsL(StatsLModel)).getItem;
-const updateItem = crudFactory(statsL(StatsLModel)).updateItem;
-const deleteItem = crudFactory(statsL(StatsLModel)).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(statsL(StatsLModel), req, res);
+  uploadItemHandler(config, req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

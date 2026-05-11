@@ -1,11 +1,12 @@
-import { TeamCompetitionSeasonType } from "@dai0413/myorg-shared";
+import { TeamCompetitionSeasonZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type TeamCompetitionSeasonType = z.infer<typeof TeamCompetitionSeasonZodSchema>;
 
 export interface ITeamCompetitionSeason
-  extends Omit<
-      TeamCompetitionSeasonType,
-      "_id" | "team" | "season" | "competition"
-    >,
+  extends
+    Omit<TeamCompetitionSeasonType, "_id" | "team" | "season" | "competition">,
     Document {
   _id: Types.ObjectId;
   team: Types.ObjectId;
@@ -36,12 +37,12 @@ const TeamCompetitionSeasonSchema: Schema<ITeamCompetitionSeason> = new Schema<
     },
     note: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 TeamCompetitionSeasonSchema.index(
   { team: 1, season: 1, competition: 1 },
-  { unique: true }
+  { unique: true },
 );
 
 TeamCompetitionSeasonSchema.pre("validate", async function (next) {
@@ -76,11 +77,11 @@ TeamCompetitionSeasonSchema.pre(
       }
     }
     next();
-  }
+  },
 );
 
 export const TeamCompetitionSeasonModel: Model<ITeamCompetitionSeason> =
   mongoose.model<ITeamCompetitionSeason>(
     "TeamCompetitionSeason",
-    TeamCompetitionSeasonSchema
+    TeamCompetitionSeasonSchema,
   );

@@ -1,20 +1,19 @@
 import { ControllerConfig } from "@dai0413/myorg-shared";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
+import z from "zod";
 
 import { UploadJob } from "../../../models/upload-job.js";
 import { processUpload } from "./services/processUpload.js";
 import { DecodedRequest } from "../../../types.js";
 
 export const uploadItemHandler = async <
-  TInput,
-  TDoc,
-  TData,
-  TForm,
-  TRes,
-  TPopulated,
+  TData extends z.ZodObject<any>,
+  TForm extends z.ZodObject<any>,
+  TResponse extends z.ZodObject<any>,
+  TPopulated extends z.ZodObject<any>,
 >(
-  config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>,
+  config: ControllerConfig<TData, TForm, TResponse, TPopulated>,
   req: DecodedRequest,
   res: Response,
 ) => {

@@ -1,5 +1,8 @@
-import { TeamMatchFormationType } from "@dai0413/myorg-shared";
+import { TeamMatchFormationZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type TeamMatchFormationType = z.infer<typeof TeamMatchFormationZodSchema>;
 
 export interface ITeamMatchFormation
   extends

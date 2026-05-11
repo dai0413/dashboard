@@ -1,10 +1,10 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import {
-  getKey,
-  FormationType,
-  position_formation,
-} from "@dai0413/myorg-shared";
+import { getKey, position_formation } from "@dai0413/myorg-shared";
 import { key } from "@dai0413/myorg-shared/generateField";
+import { FormationZodSchema } from "@dai0413/myorg-shared";
+import z from "zod";
+
+type FormationType = z.infer<typeof FormationZodSchema>;
 
 export interface IFormation extends Omit<FormationType, "_id">, Document {
   _id: Types.ObjectId;

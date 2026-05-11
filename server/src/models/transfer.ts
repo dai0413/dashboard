@@ -1,5 +1,13 @@
-import { getKey, form, position, TransferType } from "@dai0413/myorg-shared";
+import {
+  getKey,
+  form,
+  position,
+  TransferZodSchema,
+} from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type TransferType = z.infer<typeof TransferZodSchema>;
 
 export interface ITransfer
   extends

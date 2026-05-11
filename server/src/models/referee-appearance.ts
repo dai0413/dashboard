@@ -1,5 +1,8 @@
-import { RefereeAppearanceType } from "@dai0413/myorg-shared";
+import { RefereeAppearanceZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type RefereeAppearanceType = z.infer<typeof RefereeAppearanceZodSchema>;
 
 export interface IRefereeAppearance
   extends Omit<RefereeAppearanceType, "_id" | "match" | "referee">, Document {

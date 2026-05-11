@@ -1,5 +1,11 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { generateNormalizedEnName, PlayerType } from "@dai0413/myorg-shared";
+import {
+  generateNormalizedEnName,
+  PlayerZodSchema,
+} from "@dai0413/myorg-shared";
+import z from "zod";
+
+type PlayerType = z.infer<typeof PlayerZodSchema>;
 
 export interface IPlayer extends Omit<PlayerType, "_id">, Document {
   _id: Types.ObjectId;

@@ -1,10 +1,13 @@
 import {
   getKey,
-  PlayerMatchEventLogType,
   special_time,
   periodLabel,
+  PlayerMatchEventLogZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type PlayerMatchEventLogType = z.infer<typeof PlayerMatchEventLogZodSchema>;
 
 export interface IPlayerMatchEventLog
   extends

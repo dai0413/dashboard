@@ -1,10 +1,13 @@
 import {
   getKey,
-  StaffRegistrationType,
   registrationStatus,
   registrationType,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import { StaffRegistrationZodSchema } from "@dai0413/myorg-shared";
+import z from "zod";
+
+type StaffRegistrationType = z.infer<typeof StaffRegistrationZodSchema>;
 
 export interface IStaffRegistration
   extends

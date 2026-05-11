@@ -1,27 +1,15 @@
-import { staffMatchEventLog } from "@dai0413/myorg-shared";
+import { staffMatchEventLog as createConfig } from "@dai0413/myorg-shared/models-config";
 import { Response } from "express";
 import { DecodedRequest } from "../../types.js";
-import { StaffMatchEventLogModel } from "../../models/staff-match-event-log.js";
+import { StaffMatchEventLogModel as Model } from "../../models/staff-match-event-log.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
-const getAllItems = crudFactory(
-  staffMatchEventLog(StaffMatchEventLogModel),
-).getAllItems;
-const createItem = crudFactory(
-  staffMatchEventLog(StaffMatchEventLogModel),
-).createItem;
-const getItem = crudFactory(
-  staffMatchEventLog(StaffMatchEventLogModel),
-).getItem;
-const updateItem = crudFactory(
-  staffMatchEventLog(StaffMatchEventLogModel),
-).updateItem;
-const deleteItem = crudFactory(
-  staffMatchEventLog(StaffMatchEventLogModel),
-).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(staffMatchEventLog(StaffMatchEventLogModel), req, res);
+  uploadItemHandler(config, req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

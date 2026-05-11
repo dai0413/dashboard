@@ -1,9 +1,11 @@
-import { StadiumType } from "@dai0413/myorg-shared";
+import { StadiumZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type StadiumType = z.infer<typeof StadiumZodSchema>;
 
 export interface IStadium
-  extends Omit<StadiumType, "_id" | "country">,
-    Document {
+  extends Omit<StadiumType, "_id" | "country">, Document {
   _id: Types.ObjectId;
   country: Types.ObjectId;
 }
@@ -20,7 +22,7 @@ const StadiumSchema: Schema<IStadium> = new Schema<IStadium, any, IStadium>(
     transferurl: { type: String },
     sofaurl: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 StadiumSchema.index({ name: 1, country: 1 }, { unique: true });
@@ -33,7 +35,7 @@ StadiumSchema.index(
     partialFilterExpression: {
       transferurl: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 // sofaurl が存在する場合のみユニーク
@@ -44,10 +46,10 @@ StadiumSchema.index(
     partialFilterExpression: {
       sofaurl: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 export const StadiumModel: Model<IStadium> = mongoose.model<IStadium>(
   "Stadium",
-  StadiumSchema
+  StadiumSchema,
 );

@@ -1,5 +1,8 @@
-import { StatsLType } from "@dai0413/myorg-shared";
+import { StatsLZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type StatsLType = z.infer<typeof StatsLZodSchema>;
 
 export interface IStatsL
   extends Omit<StatsLType, "_id" | "match" | "team">, Document {

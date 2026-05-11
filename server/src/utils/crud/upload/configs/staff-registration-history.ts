@@ -1,15 +1,19 @@
-import { staffRegistrationHistory } from "@dai0413/myorg-shared";
+import { staffRegistrationHistory } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { StaffModel } from "../../../../models/staff.js";
 import { TeamModel } from "../../../../models/team.js";
 import { StaffRegistrationHistoryModel } from "../../../../models/staff-registration-history.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = staffRegistrationHistory(StaffRegistrationHistoryModel);
+const {
+  SCHEMA: { DATA },
+} = staffRegistrationHistory(StaffRegistrationHistoryModel);
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   | "_id"
   | "competition"
   | "staff"

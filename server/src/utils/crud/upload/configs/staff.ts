@@ -1,14 +1,18 @@
-import { staff } from "@dai0413/myorg-shared";
+import { staff } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { StaffModel } from "../../../../models/staff.js";
 import { PlayerModel } from "../../../..//models/player.js";
 import { CountryModel } from "../../../..//models/country.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = staff(StaffModel);
+const {
+  SCHEMA: { DATA },
+} = staff(StaffModel);
+type TYPE = z.infer<typeof DATA>;
 
-type INPUT_CSV_TYPE = Omit<typeof TYPE, "_id" | "createdAt" | "updatedAt"> & {
+type INPUT_CSV_TYPE = Omit<TYPE, "_id" | "createdAt" | "updatedAt"> & {
   citizenship_name?: string;
   player_old_id?: string;
 };

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { transfer } from "@dai0413/myorg-shared";
+import { transfer } from "@dai0413/myorg-shared/models-config";
 import { getCurrentPlayersByTeamService } from "../../services/index.js";
 
 interface CurrentPlayersQuery {

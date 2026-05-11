@@ -1,21 +1,9 @@
-import { playerRegistration } from "@dai0413/myorg-shared";
+import { playerRegistration as createConfig } from "@dai0413/myorg-shared/models-config";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { PlayerRegistrationModel } from "../../models/player-registration.js";
+import { PlayerRegistrationModel as Model } from "../../models/player-registration.js";
 
-const getAllItems = crudFactory(
-  playerRegistration(PlayerRegistrationModel)
-).getAllItems;
-const createItem = crudFactory(
-  playerRegistration(PlayerRegistrationModel)
-).createItem;
-const getItem = crudFactory(
-  playerRegistration(PlayerRegistrationModel)
-).getItem;
-const updateItem = crudFactory(
-  playerRegistration(PlayerRegistrationModel)
-).updateItem;
-const deleteItem = crudFactory(
-  playerRegistration(PlayerRegistrationModel)
-).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem };

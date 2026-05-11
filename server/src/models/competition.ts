@@ -5,13 +5,15 @@ import {
   ageGroup,
   category,
   competitionType,
-  CompetitionType,
   level,
 } from "@dai0413/myorg-shared";
+import { CompetitionZodSchema } from "@dai0413/myorg-shared";
+import z from "zod";
+
+type CompetitionType = z.infer<typeof CompetitionZodSchema>;
 
 export interface ICompetition
-  extends Omit<CompetitionType, "_id" | "country">,
-    Document {
+  extends Omit<CompetitionType, "_id" | "country">, Document {
   _id: Types.ObjectId;
   country: Types.ObjectId;
 }
@@ -36,7 +38,7 @@ const CompetitionSchema: Schema<ICompetition> = new Schema<
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 CompetitionSchema.index(
@@ -44,7 +46,7 @@ CompetitionSchema.index(
     name: 1,
     country: 1,
   },
-  { unique: true }
+  { unique: true },
 );
 
 // transferurl が存在する場合のみユニーク
@@ -55,7 +57,7 @@ CompetitionSchema.index(
     partialFilterExpression: {
       transferurl: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 // sofaurl が存在する場合のみユニーク
@@ -66,7 +68,7 @@ CompetitionSchema.index(
     partialFilterExpression: {
       sofaurl: { $exists: true, $ne: null, $type: "string" },
     },
-  }
+  },
 );
 
 export const CompetitionModel: Model<ICompetition> =

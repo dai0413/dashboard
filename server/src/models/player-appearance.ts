@@ -1,10 +1,13 @@
 import {
   getKey,
-  PlayerAppearanceType,
   play_status,
   position,
+  PlayerAppearanceZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type PlayerAppearanceType = z.infer<typeof PlayerAppearanceZodSchema>;
 
 export interface IPlayerAppearance
   extends

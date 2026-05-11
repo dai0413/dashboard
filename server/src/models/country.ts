@@ -3,10 +3,13 @@ import {
   getKey,
   area,
   confederation,
-  CountryType,
   district,
   subConfederation,
 } from "@dai0413/myorg-shared";
+import { CountryZodSchema } from "@dai0413/myorg-shared";
+import z from "zod";
+
+type CountryType = z.infer<typeof CountryZodSchema>;
 
 export interface ICountry extends Omit<CountryType, "_id">, Document {
   _id: Types.ObjectId;

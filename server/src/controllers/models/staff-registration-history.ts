@@ -1,31 +1,15 @@
 import { Response } from "express";
 import { DecodedRequest } from "../../types.js";
-import { staffRegistrationHistory } from "@dai0413/myorg-shared";
+import { staffRegistrationHistory as createConfig } from "@dai0413/myorg-shared/models-config";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { StaffRegistrationHistoryModel } from "../../models/staff-registration-history.js";
+import { StaffRegistrationHistoryModel as Model } from "../../models/staff-registration-history.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
-const getAllItems = crudFactory(
-  staffRegistrationHistory(StaffRegistrationHistoryModel),
-).getAllItems;
-const createItem = crudFactory(
-  staffRegistrationHistory(StaffRegistrationHistoryModel),
-).createItem;
-const getItem = crudFactory(
-  staffRegistrationHistory(StaffRegistrationHistoryModel),
-).getItem;
-const updateItem = crudFactory(
-  staffRegistrationHistory(StaffRegistrationHistoryModel),
-).updateItem;
-const deleteItem = crudFactory(
-  staffRegistrationHistory(StaffRegistrationHistoryModel),
-).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(
-    staffRegistrationHistory(StaffRegistrationHistoryModel),
-    req,
-    res,
-  );
+  uploadItemHandler(config, req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

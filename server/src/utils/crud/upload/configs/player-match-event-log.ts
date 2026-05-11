@@ -1,4 +1,4 @@
-import { playerMatchEventLog } from "@dai0413/myorg-shared";
+import { playerMatchEventLog } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchModel } from "../../../../models/match.js";
 import { PlayerModel } from "../../../../models/player.js";
@@ -7,11 +7,15 @@ import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
 import { MatchEventTypeModel } from "../../../../models/match-event-type.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = playerMatchEventLog(PlayerAppearanceModel);
+const {
+  SCHEMA: { DATA },
+} = playerMatchEventLog(PlayerAppearanceModel);
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   "_id" | "match" | "team" | "createdAt" | "updatedAt"
 > & {
   match?: string;

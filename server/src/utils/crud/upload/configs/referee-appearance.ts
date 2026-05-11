@@ -1,15 +1,20 @@
-import { refereeAppearance } from "@dai0413/myorg-shared";
+import { refereeAppearance } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchModel } from "../../../../models/match.js";
 import { RefereeModel } from "../../../../models/referee.js";
 import { RefereeAppearanceModel } from "../../../../models/referee-appearance.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = refereeAppearance(RefereeAppearanceModel);
+const {
+  SCHEMA: { DATA },
+} = refereeAppearance(RefereeAppearanceModel);
+
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   "_id" | "match" | "createdAt" | "updatedAt"
 > & {
   match?: string;

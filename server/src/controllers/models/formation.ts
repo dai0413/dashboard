@@ -1,11 +1,9 @@
-import { formation } from "@dai0413/myorg-shared";
+import { formation as createConfig } from "@dai0413/myorg-shared/models-config";
+import { FormationModel as Model } from "../../models/formation.js";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { FormationModel } from "../../models/formation.js";
 
-const getAllItems = crudFactory(formation(FormationModel)).getAllItems;
-const createItem = crudFactory(formation(FormationModel)).createItem;
-const getItem = crudFactory(formation(FormationModel)).getItem;
-const updateItem = crudFactory(formation(FormationModel)).updateItem;
-const deleteItem = crudFactory(formation(FormationModel)).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem };

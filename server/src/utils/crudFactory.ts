@@ -1,7 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import mongoose, { Types } from "mongoose";
-import { NotFoundError, BadRequestError } from "../errors/index.js";
+import {
+  NotFoundError,
+  BadRequestError,
+  InternalServerError,
+} from "../errors/index.js";
 import { getNest } from "./getNest.js";
 import { convertObjectIdToString } from "./convertObjectIdToString.js";
 import z from "zod";
@@ -15,18 +19,25 @@ import { buildMongoFilter, parseSort, buildJsonSort } from "./crud/index.js";
 import { addPositionGroup } from "../order/position.js";
 import { addPositionGroupOrder } from "../order/position_group.js";
 
-const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
-  config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>,
+const crudFactory = <
+  TData extends z.ZodObject<any>,
+  TForm extends z.ZodObject<any>,
+  TResponse extends z.ZodObject<any>,
+  TPopulated extends z.ZodObject<any>,
+>(
+  config: ControllerConfig<TData, TForm, TResponse, TPopulated>,
 ) => {
   const {
     name,
-    SCHEMA: { POPULATED, FORM },
+    SCHEMA: { DATA, POPULATED, FORM },
     MONGO_MODEL,
     POPULATE_PATHS,
     getAllConfig: getAllConfig,
     bulk,
     convertFun,
   } = config;
+
+  type DATA = z.infer<TData>;
 
   // --- GET all ---
   const getAllItems = async (req: Request, res: Response) => {
@@ -151,7 +162,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
       const parsed = req.body.map((item) => FORM.parse(item));
       const docs = (await MONGO_MODEL.insertMany(
         parsed,
-      )) as unknown as (TDoc & {
+      )) as unknown as (DATA & {
         _id: Types.ObjectId;
       })[];
       const ids = docs.map((doc) => doc._id);
@@ -231,7 +242,7 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
     }
     const data = nullToUndefined(req.body);
 
-    const parsed = (FORM as z.ZodObject<any>).partial().parse(data);
+    const parsed = FORM.partial().parse(data);
 
     // parsed を $set / $unset に分離する
     const setFields: Record<string, any> = {};
@@ -278,6 +289,57 @@ const crudFactory = <TDoc, TData, TForm, TRes, TPopulated>(
     res
       .status(StatusCodes.OK)
       .json({ message: "編集しました", data: response });
+  };
+
+  const updateItems = async (req: Request, res: Response) => {
+    if (!bulk) {
+      throw new InternalServerError("サーバーサイド設定ミス");
+    }
+
+    if (!Array.isArray(req.body)) {
+      throw new BadRequestError("配列で送信してください");
+    }
+
+    const UPDATE_FORM = FORM.partial().extend({ _id: z.string() });
+
+    const ops = req.body.map((item) => {
+      const { _id, ...rest } = item;
+
+      if (!mongoose.Types.ObjectId.isValid(_id)) {
+        throw new BadRequestError(`不正なID: ${_id}`);
+      }
+
+      const parsed = (FORM as z.ZodObject<any>).partial().parse(rest);
+
+      const setFields: Record<string, any> = {};
+      const unsetFields: Record<string, "" | 1> = {};
+
+      Object.entries(parsed).forEach(([key, val]) => {
+        if (val === undefined) {
+          unsetFields[key] = "";
+        } else {
+          setFields[key] = val;
+        }
+      });
+
+      const updateObj: any = {};
+      if (Object.keys(setFields).length > 0) updateObj.$set = setFields;
+      if (Object.keys(unsetFields).length > 0) updateObj.$unset = unsetFields;
+
+      return {
+        updateOne: {
+          filter: { _id },
+          update: updateObj,
+        },
+      };
+    });
+
+    const result = await MONGO_MODEL.bulkWrite(ops);
+
+    res.status(StatusCodes.OK).json({
+      message: "一括更新しました",
+      result,
+    });
   };
 
   // --- DELETE ---

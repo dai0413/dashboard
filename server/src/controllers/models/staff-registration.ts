@@ -1,19 +1,9 @@
-import { staffRegistration } from "@dai0413/myorg-shared";
+import { staffRegistration as createConfig } from "@dai0413/myorg-shared/models-config";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { StaffRegistrationModel } from "../../models/staff-registration.js";
+import { StaffRegistrationModel as Model } from "../../models/staff-registration.js";
 
-const getAllItems = crudFactory(
-  staffRegistration(StaffRegistrationModel),
-).getAllItems;
-const createItem = crudFactory(
-  staffRegistration(StaffRegistrationModel),
-).createItem;
-const getItem = crudFactory(staffRegistration(StaffRegistrationModel)).getItem;
-const updateItem = crudFactory(
-  staffRegistration(StaffRegistrationModel),
-).updateItem;
-const deleteItem = crudFactory(
-  staffRegistration(StaffRegistrationModel),
-).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem };

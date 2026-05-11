@@ -1,7 +1,10 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
-import { UserType } from "@dai0413/myorg-shared";
+import z from "zod";
+import { UserZodSchema } from "@dai0413/myorg-shared";
+
+type UserType = z.infer<typeof UserZodSchema>;
 
 export interface IUser extends Omit<UserType, "_id">, Document {
   _id: Types.ObjectId;
@@ -45,7 +48,7 @@ const UserSchema = new Schema<IUser, UserModelType, IUserMethods>(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 UserSchema.pre("save", async function () {
@@ -69,7 +72,7 @@ UserSchema.methods.createJWT = function () {
       admin: this.admin,
     },
     secret,
-    { expiresIn }
+    { expiresIn },
   );
 };
 
@@ -87,12 +90,12 @@ UserSchema.methods.createRefreshToken = function () {
       admin: this.admin,
     },
     secret,
-    { expiresIn }
+    { expiresIn },
   );
 };
 
 UserSchema.methods.comparePassword = async function (
-  candidatePassword: string
+  candidatePassword: string,
 ) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
@@ -100,5 +103,5 @@ UserSchema.methods.comparePassword = async function (
 
 export const UserModel: Model<IUser> = mongoose.model<IUser>(
   "User",
-  UserSchema
+  UserSchema,
 );

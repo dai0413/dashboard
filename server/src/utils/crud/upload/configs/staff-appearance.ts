@@ -1,4 +1,4 @@
-import { staffAppearance } from "@dai0413/myorg-shared";
+import { staffAppearance } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import { MatchModel } from "../../../../models/match.js";
 import { StaffModel } from "../../../../models/staff.js";
@@ -6,11 +6,15 @@ import { TeamModel } from "../../../../models/team.js";
 import { StaffAppearanceModel } from "../../../../models/staff-appearance.js";
 import { UploadConfig } from "../types.js";
 import { resolveOldIds } from "../services/resolveOldIds.js";
+import z from "zod";
 
-const { TYPE } = staffAppearance(StaffAppearanceModel);
+const {
+  SCHEMA: { DATA },
+} = staffAppearance(StaffAppearanceModel);
+type TYPE = z.infer<typeof DATA>;
 
 type INPUT_CSV_TYPE = Omit<
-  typeof TYPE,
+  TYPE,
   "_id" | "match" | "team" | "createdAt" | "updatedAt"
 > & {
   match?: string;

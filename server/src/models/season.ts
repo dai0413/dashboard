@@ -1,9 +1,11 @@
-import { SeasonType } from "@dai0413/myorg-shared";
+import { SeasonZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type SeasonType = z.infer<typeof SeasonZodSchema>;
 
 export interface ISeason
-  extends Omit<SeasonType, "_id" | "competition">,
-    Document {
+  extends Omit<SeasonType, "_id" | "competition">, Document {
   _id: Types.ObjectId;
   competition: Types.ObjectId;
 }
@@ -21,7 +23,7 @@ const SeasonSchema: Schema<ISeason> = new Schema<ISeason, any, ISeason>(
     current: { type: Boolean },
     note: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 SeasonSchema.index(
@@ -31,12 +33,12 @@ SeasonSchema.index(
     partialFilterExpression: {
       start_date: { $type: "date" },
     },
-  }
+  },
 );
 
 SeasonSchema.index({ competition: 1, name: 1 }, { unique: true });
 
 export const SeasonModel: Model<ISeason> = mongoose.model<ISeason>(
   "Season",
-  SeasonSchema
+  SeasonSchema,
 );

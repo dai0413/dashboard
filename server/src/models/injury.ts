@@ -1,9 +1,11 @@
-import { InjuryType } from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import { InjuryBaseZodSchema } from "@dai0413/myorg-shared";
+import z from "zod";
+
+type InjuryType = z.infer<typeof InjuryBaseZodSchema>;
 
 export interface IInjury
-  extends Omit<InjuryType, "_id" | "team" | "player" | "now_team">,
-    Document {
+  extends Omit<InjuryType, "_id" | "team" | "player" | "now_team">, Document {
   _id: Types.ObjectId;
   team: Types.ObjectId;
   player: Types.ObjectId;
@@ -31,7 +33,7 @@ const InjurySchema: Schema<IInjury> = new Schema<IInjury, any, IInjury>(
         validator: function (values: string[]) {
           if (!Array.isArray(values)) return false;
           return values.every((value) =>
-            /^(\d+)([dwmy])$|^(\d+)([dwmy])-(\d+)([dwmy])$/i.test(value)
+            /^(\d+)([dwmy])$|^(\d+)([dwmy])-(\d+)([dwmy])$/i.test(value),
           );
         },
         message:
@@ -58,7 +60,7 @@ const InjurySchema: Schema<IInjury> = new Schema<IInjury, any, IInjury>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 InjurySchema.pre("save", function (next) {
@@ -127,10 +129,10 @@ InjurySchema.index(
     team_name: 1,
     player: 1,
   },
-  { unique: true }
+  { unique: true },
 );
 
 export const InjuryModel: Model<IInjury> = mongoose.model<IInjury>(
   "Injury",
-  InjurySchema
+  InjurySchema,
 );

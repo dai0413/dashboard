@@ -1,6 +1,7 @@
 import { ControllerConfig } from "@dai0413/myorg-shared";
 import { stringify } from "csv-stringify";
 import csv from "csv-parser";
+import z from "zod";
 
 import { uploadConfig, UploadConfigMap } from "../configs/index.js";
 import { cleanObject } from "../services/cleanObject.js";
@@ -9,15 +10,13 @@ import { formatZodError } from "./formatZodError.js";
 import { DecodedRequest } from "../../../../types.js";
 
 export async function processUpload<
-  TInput,
-  TDoc,
-  TData,
-  TForm,
-  TRes,
-  TPopulated,
+  TData extends z.ZodObject<any>,
+  TForm extends z.ZodObject<any>,
+  TResponse extends z.ZodObject<any>,
+  TPopulated extends z.ZodObject<any>,
 >(
   jobId: string,
-  config: ControllerConfig<TDoc, TData, TForm, TRes, TPopulated>,
+  config: ControllerConfig<TData, TForm, TResponse, TPopulated>,
   req: DecodedRequest,
 ) {
   try {

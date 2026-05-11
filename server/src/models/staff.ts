@@ -1,5 +1,11 @@
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
-import { generateNormalizedEnName, StaffType } from "@dai0413/myorg-shared";
+import {
+  generateNormalizedEnName,
+  StaffZodSchema,
+} from "@dai0413/myorg-shared";
+import z from "zod";
+
+type StaffType = z.infer<typeof StaffZodSchema>;
 
 export interface IStaff extends Omit<StaffType, "_id" | "player">, Document {
   _id: Types.ObjectId;

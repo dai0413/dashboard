@@ -80,5 +80,6 @@ export interface ControllerConfig<
     updatedData:
       | Partial<z.infer<TFormSchema>>
       | ((deps: DependencyRefs) => Partial<z.infer<TFormSchema>>);
+    testDataPath?: string;
   };
 }

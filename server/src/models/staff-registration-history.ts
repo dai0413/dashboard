@@ -1,11 +1,16 @@
 import {
   getKey,
-  StaffRegistrationHistoryType,
   registrationType,
+  StaffRegistrationHistoryZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { StaffRegistrationModel } from "./staff-registration.js";
 import { asyncRegistration } from "../utils/async/staffApplyHistoryRecord.js";
+import z from "zod";
+
+type StaffRegistrationHistoryType = z.infer<
+  typeof StaffRegistrationHistoryZodSchema
+>;
 
 export interface IStaffRegistrationHistory
   extends

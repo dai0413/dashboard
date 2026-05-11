@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { getCurrentLoanPlayersByTeamService } from "../../services/index.js";
-import { transfer } from "@dai0413/myorg-shared";
+import { transfer } from "@dai0413/myorg-shared/models-config";
 import { StatusCodes } from "http-status-codes";
 
 export const getCurrentLoanPlayersByTeam = async (

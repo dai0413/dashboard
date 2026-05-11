@@ -1,5 +1,12 @@
-import { MatchEventTypeType, getKey, event_type } from "@dai0413/myorg-shared";
+import {
+  getKey,
+  event_type,
+  MatchEventTypeZodSchema,
+} from "@dai0413/myorg-shared";
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
+import z from "zod";
+
+type MatchEventTypeType = z.infer<typeof MatchEventTypeZodSchema>;
 
 export interface IMatchEventType
   extends Omit<MatchEventTypeType, "_id">, Document {

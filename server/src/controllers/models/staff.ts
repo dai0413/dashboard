@@ -2,22 +2,20 @@ import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import moment from "moment";
 
-import { staff } from "@dai0413/myorg-shared";
+import { staff as createConfig } from "@dai0413/myorg-shared/models-config";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
-import { StaffModel } from "../../models/staff.js";
+import { StaffModel as Model } from "../../models/staff.js";
 import { DecodedRequest } from "../../types.js";
 
-const { MONGO_MODEL } = staff(StaffModel);
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
-const getAllItems = crudFactory(staff(StaffModel)).getAllItems;
-const createItem = crudFactory(staff(StaffModel)).createItem;
-const getItem = crudFactory(staff(StaffModel)).getItem;
-const updateItem = crudFactory(staff(StaffModel)).updateItem;
-const deleteItem = crudFactory(staff(StaffModel)).deleteItem;
+const { MONGO_MODEL } = config;
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(staff(StaffModel), req, res);
+  uploadItemHandler(config, req, res);
 
 const downloadItems = async (req: Request, res: Response) => {
   try {

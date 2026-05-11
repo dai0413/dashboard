@@ -1,130 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 
-import { nationalMatchSeries } from "@dai0413/myorg-shared";
+import { nationalMatchSeries as createConfig } from "@dai0413/myorg-shared/models-config";
+import { NationalMatchSeriesModel as Model } from "../../models/national-match-series.js";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { NationalMatchSeriesModel } from "../../models/national-match-series.js";
-const { MONGO_MODEL } = nationalMatchSeries(NationalMatchSeriesModel);
 
-const getAllItems = crudFactory(
-  nationalMatchSeries(NationalMatchSeriesModel)
-).getAllItems;
-const createItem = crudFactory(
-  nationalMatchSeries(NationalMatchSeriesModel)
-).createItem;
-const getItem = crudFactory(
-  nationalMatchSeries(NationalMatchSeriesModel)
-).getItem;
-const updateItem = crudFactory(
-  nationalMatchSeries(NationalMatchSeriesModel)
-).updateItem;
-const deleteItem = crudFactory(
-  nationalMatchSeries(NationalMatchSeriesModel)
-).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
-// const getAllItems = async (req: Request, res: Response) => {
-//   const matchStage: Record<string, any> = {};
-
-//   if (req.query.country) {
-//     try {
-//       matchStage.country = new mongoose.Types.ObjectId(
-//         req.query.country as string
-//       );
-//     } catch {
-//       return res.status(400).json({ error: "Invalid country ID" });
-//     }
-//   }
-
-//   const dat = await MONGO_MODEL.aggregate([
-//     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-//     ...getNest(false, POPULATE_PATHS),
-//     { $sort: { joined_at: -1, _id: -1 } },
-//   ]);
-
-//   res.status(StatusCodes.OK).json({ data: dat });
-// };
-
-// const createItem = async (req: Request, res: Response) => {
-//   const nationalMatchSeriesData = {
-//     ...req.body,
-//   };
-
-//   const nationalMatchSeries = await MONGO_MODEL.create(nationalMatchSeriesData);
-
-//   const pupulatedData = await MONGO_MODEL.findById(
-//     nationalMatchSeries._id
-//   ).populate(getNest(true, POPULATE_PATHS));
-
-//   res
-//     .status(StatusCodes.CREATED)
-//     .json({ message: "追加しました", data: pupulatedData });
-// };
-
-// const getItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id: nationalMatchSeriesId },
-//   } = req;
-//   const nationalMatchSeries = await MONGO_MODEL.findById(
-//     nationalMatchSeriesId
-//   ).populate(getNest(true, POPULATE_PATHS));
-//   if (!nationalMatchSeries) {
-//     throw new NotFoundError();
-//   }
-
-//   res.status(StatusCodes.OK).json({
-//     data: {
-//       ...nationalMatchSeries.toObject(),
-//     },
-//   });
-// };
-
-// const updateItem = async (req: Request, res: Response) => {
-//   const {
-//     params: { id: nationalMatchSeriesId },
-//     body,
-//   } = req;
-
-//   const updatedData = { ...body };
-
-//   const updated = await MONGO_MODEL.findByIdAndUpdate(
-//     { _id: nationalMatchSeriesId },
-//     updatedData,
-//     {
-//       new: true,
-//       runValidators: true,
-//     }
-//   );
-//   if (!updated) {
-//     throw new NotFoundError();
-//   }
-
-//   // update
-//   const populated = await MONGO_MODEL.findById(updated._id).populate(
-//     getNest(true, POPULATE_PATHS)
-//   );
-//   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
-// };
-
-// const deleteItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id: nationalMatchSeriesId },
-//   } = req;
-
-//   const nationalMatchSeries = await MONGO_MODEL.findOneAndDelete({
-//     _id: nationalMatchSeriesId,
-//   });
-//   if (!nationalMatchSeries) {
-//     throw new NotFoundError();
-//   }
-
-//   res.status(StatusCodes.OK).json({ message: "削除しました" });
-// };
+const { MONGO_MODEL } = config;
 
 const downloadItems = async (req: Request, res: Response) => {
   try {

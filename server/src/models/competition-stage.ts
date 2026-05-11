@@ -1,8 +1,13 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
-import { getKey, CompetitionStageType, stageType } from "@dai0413/myorg-shared";
+import { getKey, stageType } from "@dai0413/myorg-shared";
+import { CompetitionStageZodSchema } from "@dai0413/myorg-shared";
+import z from "zod";
+
+type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;
 
 export interface ICompetitionStage
-  extends Omit<
+  extends
+    Omit<
       CompetitionStageType,
       "_id" | "competition" | "season" | "parent_stage"
     >,
@@ -45,7 +50,7 @@ const CompetitionStageSchema: Schema<ICompetitionStage> = new Schema<
     },
     notes: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 CompetitionStageSchema.index(
@@ -62,7 +67,7 @@ CompetitionStageSchema.index(
       round_number: { $exists: true },
       leg: { $exists: true },
     },
-  }
+  },
 );
 
 CompetitionStageSchema.index(
@@ -72,7 +77,7 @@ CompetitionStageSchema.index(
     parent_stage: 1,
     order: 1,
   },
-  { unique: true }
+  { unique: true },
 );
 
 CompetitionStageSchema.index({ competition: 1, season: 1 });
@@ -92,7 +97,9 @@ CompetitionStageSchema.pre("save", async function (next) {
       !parent.season.equals(this.season)
     ) {
       return next(
-        new Error("Parent stage must belong to the same competition and season")
+        new Error(
+          "Parent stage must belong to the same competition and season",
+        ),
       );
     }
   }
@@ -150,7 +157,7 @@ CompetitionStageSchema.pre(
     }
 
     next();
-  }
+  },
 );
 
 export const CompetitionStageModel: Model<ICompetitionStage> =

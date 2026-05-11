@@ -4,104 +4,22 @@ import { Request, Response } from "express";
 import moment from "moment";
 import { BadRequestError } from "../../errors/index.js";
 
-import { player } from "@dai0413/myorg-shared";
+import { player as createConfig } from "@dai0413/myorg-shared/models-config";
 import { DecodedRequest } from "../../types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
-import { PlayerModel } from "../../models/player.js";
+import { PlayerModel as Model } from "../../models/player.js";
 import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
+import z from "zod";
 
-const { TYPE } = player(PlayerModel);
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
-const getAllItems = crudFactory(player(PlayerModel)).getAllItems;
-const createItem = crudFactory(player(PlayerModel)).createItem;
-const getItem = crudFactory(player(PlayerModel)).getItem;
-const updateItem = crudFactory(player(PlayerModel)).updateItem;
-const deleteItem = crudFactory(player(PlayerModel)).deleteItem;
+const {
+  SCHEMA: { DATA },
+} = config;
 
-// const getAllItems = async (req: Request, res: Response) => {
-//   const matchStage = {};
-
-//   const data = await MONGO_MODEL.aggregate([
-//     ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
-//     ...getNest(false, POPULATE_PATHS),
-//     { $sort: { _id: 1, order: 1 } },
-//   ]);
-
-//   res.status(StatusCodes.OK).json({ data });
-// };
-
-// const createItem = async (req: Request, res: Response) => {
-//   let populatedData;
-//   if (bulk && Array.isArray(req.body)) {
-//     const docs = await MONGO_MODEL.insertMany(req.body);
-
-//     const ids = docs.map((doc) => doc._id);
-//     populatedData = await MONGO_MODEL.find({
-//       _id: { $in: ids },
-//     }).populate(getNest(true, POPULATE_PATHS));
-//   } else {
-//     const data = await MONGO_MODEL.create(req.body);
-//     populatedData = await MONGO_MODEL.findById(data._id).populate(
-//       getNest(true, POPULATE_PATHS)
-//     );
-//   }
-//   res
-//     .status(StatusCodes.CREATED)
-//     .json({ message: "追加しました", data: populatedData });
-// };
-
-// const getItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id },
-//   } = req;
-//   const data = await MONGO_MODEL.findById(id).populate(
-//     getNest(true, POPULATE_PATHS)
-//   );
-//   if (!data) {
-//     throw new NotFoundError();
-//   }
-//   res.status(StatusCodes.OK).json({ data });
-// };
-
-// const updateItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id },
-//   } = req;
-
-//   const updated = await MONGO_MODEL.findByIdAndUpdate(id, req.body, {
-//     new: true,
-//     runValidators: true,
-//   });
-//   if (!updated) {
-//     throw new NotFoundError();
-//   }
-
-//   const populated = await MONGO_MODEL.findById(updated._id).populate(
-//     getNest(true, POPULATE_PATHS)
-//   );
-//   res.status(StatusCodes.OK).json({ message: "編集しました", data: populated });
-// };
-
-// const deleteItem = async (req: Request, res: Response) => {
-//   if (!req.params.id) {
-//     throw new BadRequestError();
-//   }
-//   const {
-//     params: { id },
-//   } = req;
-
-//   const data = await MONGO_MODEL.findOneAndDelete({ _id: id });
-//   if (!data) {
-//     throw new NotFoundError();
-//   }
-//   res.status(StatusCodes.OK).json({ message: "削除しました" });
-// };
+type TYPE = z.infer<typeof DATA>;
 
 const checkItem = async (req: Request, res: Response) => {
   if (!req.body.name || !req.body.en_name || !req.body.dob || !req.body.pob) {
@@ -109,7 +27,7 @@ const checkItem = async (req: Request, res: Response) => {
   }
   const { name, en_name, dob } = req.body;
   // 類似選手検索
-  const similar = await PlayerModel.find({
+  const similar = await Model.find({
     $or: [{ name: name }, { en_name: en_name }, { dob: dob }],
   });
 
@@ -131,12 +49,12 @@ const checkItem = async (req: Request, res: Response) => {
 };
 
 const uploadItem = async (req: DecodedRequest, res: Response) => {
-  const existingCount = await PlayerModel.countDocuments();
-  const rows: (typeof TYPE)[] = [];
+  const existingCount = await Model.countDocuments();
+  const rows: TYPE[] = [];
 
   req.decodedStream
     .pipe(csv())
-    .on("data", (row: typeof TYPE) => {
+    .on("data", (row: TYPE) => {
       rows.push(row);
     })
     .on("end", async () => {
@@ -156,7 +74,7 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
       }));
 
       try {
-        const addedPlayers = await PlayerModel.insertMany(playersToAdd);
+        const addedPlayers = await Model.insertMany(playersToAdd);
         res.status(StatusCodes.OK).json({
           message: `${addedPlayers.length}件の選手を追加しました`,
           data: addedPlayers,
@@ -177,7 +95,7 @@ const safe = (value: any) => {
 
 const downloadItem = async (req: Request, res: Response) => {
   try {
-    const data = await PlayerModel.aggregate([
+    const data = await Model.aggregate([
       {
         $addFields: {
           // old_id があるかどうか（true / false）

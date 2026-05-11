@@ -1,9 +1,12 @@
 import {
   getKey,
   ageGroup,
-  NationalMatchSeriesType,
+  NationalMatchSeriesZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type NationalMatchSeriesType = z.infer<typeof NationalMatchSeriesZodSchema>;
 
 export interface INationalMatchSeries
   extends

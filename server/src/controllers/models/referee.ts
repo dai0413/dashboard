@@ -1,17 +1,15 @@
-import { referee } from "@dai0413/myorg-shared";
+import { referee as createConfig } from "@dai0413/myorg-shared/models-config";
 import { Response } from "express";
 import { DecodedRequest } from "../../types.js";
 import { crudFactory } from "../../utils/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
-import { RefereeModel } from "../../models/referee.js";
+import { RefereeModel as Model } from "../../models/referee.js";
 
-const getAllItems = crudFactory(referee(RefereeModel)).getAllItems;
-const createItem = crudFactory(referee(RefereeModel)).createItem;
-const getItem = crudFactory(referee(RefereeModel)).getItem;
-const updateItem = crudFactory(referee(RefereeModel)).updateItem;
-const deleteItem = crudFactory(referee(RefereeModel)).deleteItem;
+const config = createConfig(Model);
+const { getAllItems, createItem, getItem, updateItem, deleteItem } =
+  crudFactory(config);
 
 const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(referee(RefereeModel), req, res);
+  uploadItemHandler(config, req, res);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };

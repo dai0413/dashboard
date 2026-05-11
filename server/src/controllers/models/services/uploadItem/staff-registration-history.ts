@@ -1,4 +1,4 @@
-import { staffRegistrationHistory } from "@dai0413/myorg-shared";
+import { staffRegistrationHistory } from "@dai0413/myorg-shared/models-config";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
 import { stringify } from "csv-stringify/sync";
@@ -10,15 +10,16 @@ import { getNest } from "../../../../utils/getNest.js";
 import { convertObjectIdToString } from "../../../../utils/convertObjectIdToString.js";
 import { formatDateYMD } from "../utils/formatDateYMD.js";
 import { DecodedRequest } from "../../../../types.js";
+import z from "zod";
 
 const {
   MONGO_MODEL,
-  SCHEMA: { POPULATED },
-  TYPE,
+  SCHEMA: { DATA, POPULATED },
   POPULATE_PATHS,
 } = staffRegistrationHistory(StaffRegistrationHistoryModel);
 
-type FlattenedTYPE = Omit<typeof TYPE, "changes"> & (typeof TYPE)["changes"];
+type TYPE = z.infer<typeof DATA>;
+type FlattenedTYPE = Omit<TYPE, "changes"> & TYPE["changes"];
 
 export const uploadItem = async (req: DecodedRequest, res: Response) => {
   const rows: FlattenedTYPE[] = [];

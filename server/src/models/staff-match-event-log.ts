@@ -1,10 +1,13 @@
 import {
   getKey,
-  StaffMatchEventLogType,
   special_time,
   periodLabel,
+  StaffMatchEventLogZodSchema,
 } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import z from "zod";
+
+type StaffMatchEventLogType = z.infer<typeof StaffMatchEventLogZodSchema>;
 
 export interface IStaffMatchEventLog
   extends
