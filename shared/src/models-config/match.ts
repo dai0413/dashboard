@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   MatchZodSchema,
-  MatchType,
   MatchFormSchema,
   MatchResponseSchema,
   MatchPopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { match as convertFun } from "../utils/format/match.js";
 import { ParsedQs } from "qs";
 
-export function match<TDoc = any, TModel = any>(
+export function match<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  MatchType,
-  z.infer<typeof MatchFormSchema>,
-  z.infer<typeof MatchResponseSchema>,
-  z.infer<typeof MatchPopulatedSchema>
+  typeof MatchZodSchema,
+  typeof MatchFormSchema,
+  typeof MatchResponseSchema,
+  typeof MatchPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match",
@@ -29,7 +26,6 @@ export function match<TDoc = any, TModel = any>(
       RESPONSE: MatchResponseSchema,
       POPULATED: MatchPopulatedSchema,
     },
-    TYPE: {} as MatchType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "competition", collection: "competitions" },

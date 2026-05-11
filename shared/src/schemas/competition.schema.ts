@@ -28,8 +28,6 @@ export const CompetitionZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type CompetitionType = z.infer<typeof CompetitionZodSchema>;
-
 export const CompetitionFormSchema = CompetitionZodSchema.omit({
   _id: true,
   createdAt: true,

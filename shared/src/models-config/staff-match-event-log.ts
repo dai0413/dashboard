@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   StaffMatchEventLogZodSchema,
-  StaffMatchEventLogType,
   StaffMatchEventLogFormSchema,
   StaffMatchEventLogResponseSchema,
   StaffMatchEventLogPopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { staffMatchEventLog as convertFun } from "../utils/format/staff-match-event-log.js";
 import { ParsedQs } from "qs";
 
-export function staffMatchEventLog<TDoc = any, TModel = any>(
+export function staffMatchEventLog<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  StaffMatchEventLogType,
-  z.infer<typeof StaffMatchEventLogFormSchema>,
-  z.infer<typeof StaffMatchEventLogResponseSchema>,
-  z.infer<typeof StaffMatchEventLogPopulatedSchema>
+  typeof StaffMatchEventLogZodSchema,
+  typeof StaffMatchEventLogFormSchema,
+  typeof StaffMatchEventLogResponseSchema,
+  typeof StaffMatchEventLogPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "staff-match-event-log",
@@ -29,7 +26,6 @@ export function staffMatchEventLog<TDoc = any, TModel = any>(
       RESPONSE: StaffMatchEventLogResponseSchema,
       POPULATED: StaffMatchEventLogPopulatedSchema,
     },
-    TYPE: {} as StaffMatchEventLogType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },

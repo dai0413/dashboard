@@ -75,8 +75,6 @@ export const StatsLZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type StatsLType = z.infer<typeof StatsLZodSchema>;
-
 export const StatsLFormSchema = StatsLZodSchema.omit({
   _id: true,
   createdAt: true,

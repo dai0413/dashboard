@@ -46,10 +46,6 @@ export const PlayerRegistrationZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type PlayerRegistrationType = z.infer<
-  typeof PlayerRegistrationZodSchema
->;
-
 export const PlayerRegistrationFormSchema = PlayerRegistrationZodSchema.omit({
   _id: true,
   competition: true,

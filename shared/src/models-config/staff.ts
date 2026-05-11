@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   StaffZodSchema,
-  StaffType,
   StaffFormSchema,
   StaffResponseSchema,
   StaffPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function staff<TDoc = any, TModel = any>(
+export function staff<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  StaffType,
-  z.infer<typeof StaffFormSchema>,
-  z.infer<typeof StaffResponseSchema>,
-  z.infer<typeof StaffPopulatedSchema>
+  typeof StaffZodSchema,
+  typeof StaffFormSchema,
+  typeof StaffResponseSchema,
+  typeof StaffPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "staff",
@@ -28,7 +25,6 @@ export function staff<TDoc = any, TModel = any>(
       RESPONSE: StaffResponseSchema,
       POPULATED: StaffPopulatedSchema,
     },
-    TYPE: {} as StaffType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "player", collection: "players" },

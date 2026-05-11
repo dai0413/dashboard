@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   RefereeAppearanceZodSchema,
-  RefereeAppearanceType,
   RefereeAppearanceFormSchema,
   RefereeAppearanceResponseSchema,
   RefereeAppearancePopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { refereeAppearance as convertFun } from "../utils/format/referee-appearance.js";
 import { ParsedQs } from "qs";
 
-export function refereeAppearance<TDoc = any, TModel = any>(
+export function refereeAppearance<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  RefereeAppearanceType,
-  z.infer<typeof RefereeAppearanceFormSchema>,
-  z.infer<typeof RefereeAppearanceResponseSchema>,
-  z.infer<typeof RefereeAppearancePopulatedSchema>
+  typeof RefereeAppearanceZodSchema,
+  typeof RefereeAppearanceFormSchema,
+  typeof RefereeAppearanceResponseSchema,
+  typeof RefereeAppearancePopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "referee-appearance",
@@ -29,7 +26,6 @@ export function refereeAppearance<TDoc = any, TModel = any>(
       RESPONSE: RefereeAppearanceResponseSchema,
       POPULATED: RefereeAppearancePopulatedSchema,
     },
-    TYPE: {} as RefereeAppearanceType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },

@@ -72,8 +72,6 @@ export const MatchZodSchema = MatchBaseZodSchema.refine(
   },
 );
 
-export type MatchType = z.infer<typeof MatchZodSchema>;
-
 export const MatchFormSchema = MatchBaseZodSchema.omit({
   _id: true,
   competition: true,

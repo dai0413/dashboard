@@ -18,8 +18,6 @@ export const StadiumZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type StadiumType = z.infer<typeof StadiumZodSchema>;
-
 export const StadiumFormSchema = StadiumZodSchema.omit({
   _id: true,
   createdAt: true,

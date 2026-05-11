@@ -21,8 +21,6 @@ export const StaffZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type StaffType = z.infer<typeof StaffZodSchema>;
-
 export const StaffFormSchema = StaffZodSchema.omit({
   _id: true,
   normalized_en_name: true,

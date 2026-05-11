@@ -48,8 +48,6 @@ export const CompetitionStageZodSchema = CompetitionStageBaseZodSchema.refine(
   },
 );
 
-export type CompetitionStageType = z.infer<typeof CompetitionStageZodSchema>;
-
 export const CompetitionStageFormSchema = CompetitionStageBaseZodSchema.omit({
   _id: true,
   competition: true,

@@ -1,24 +1,20 @@
-import z from "zod";
 import {
   PlayerZodSchema,
-  PlayerType,
   PlayerFormSchema,
   PlayerResponseSchema,
   PlayerPopulatedSchema,
 } from "../schemas/player.schema.js";
 import { ControllerConfig } from "../types/models-config.js";
-// import { createPath } from "../utils/createPath";
 import { ParsedQs } from "qs";
 
-export function player<TDoc = any, TModel = any>(
+export function player<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  PlayerType,
-  z.infer<typeof PlayerFormSchema>,
-  z.infer<typeof PlayerResponseSchema>,
-  z.infer<typeof PlayerPopulatedSchema>
+  typeof PlayerZodSchema,
+  typeof PlayerFormSchema,
+  typeof PlayerResponseSchema,
+  typeof PlayerPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player",
@@ -29,7 +25,6 @@ export function player<TDoc = any, TModel = any>(
       RESPONSE: PlayerResponseSchema,
       POPULATED: PlayerPopulatedSchema,
     },
-    TYPE: {} as PlayerType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {

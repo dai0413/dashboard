@@ -21,10 +21,6 @@ export const TeamCompetitionSeasonZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type TeamCompetitionSeasonType = z.infer<
-  typeof TeamCompetitionSeasonZodSchema
->;
-
 export const TeamCompetitionSeasonFormSchema =
   TeamCompetitionSeasonZodSchema.omit({
     _id: true,

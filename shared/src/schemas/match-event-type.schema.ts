@@ -26,8 +26,6 @@ export const MatchEventTypeZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type MatchEventTypeType = z.infer<typeof MatchEventTypeZodSchema>;
-
 export const MatchEventTypeFormSchema = MatchEventTypeZodSchema.omit({
   _id: true,
   createdAt: true,

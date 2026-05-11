@@ -37,8 +37,6 @@ export const CountryZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type CountryType = z.infer<typeof CountryZodSchema>;
-
 export const CountryFormSchema = CountryZodSchema.omit({
   _id: true,
   createdAt: true,

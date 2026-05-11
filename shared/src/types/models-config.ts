@@ -45,32 +45,40 @@ export interface DependencyRefs {
 }
 
 export interface ControllerConfig<
-  _TDoc,
-  TData,
-  TForm = TData,
-  TResponse = TData,
-  TPopulated = TData,
+  TDataSchema extends z.ZodTypeAny,
+  TFormSchema extends z.ZodTypeAny = TDataSchema,
+  TResponseSchema extends z.ZodTypeAny = TDataSchema,
+  TPopulatedSchema extends z.ZodTypeAny = TDataSchema,
 > {
   name: string;
   collection_name: string;
+
   SCHEMA: {
-    DATA: z.ZodType<TData>;
-    FORM: z.ZodType<TForm>;
-    POPULATED: z.ZodType<TPopulated>;
-    RESPONSE: z.ZodType<TResponse>;
+    DATA: TDataSchema;
+    FORM: TFormSchema;
+    POPULATED: TPopulatedSchema;
+    RESPONSE: TResponseSchema;
   };
-  TYPE: TData;
+
   MONGO_MODEL: any | null;
   POPULATE_PATHS: PopulatePath[];
-  getAllConfig?: GetAllQuery & { sort?: Record<string, 1 | -1> } & {
+
+  convertFun?: (data: z.infer<TPopulatedSchema>) => z.infer<TResponseSchema>;
+
+  getAllConfig?: GetAllQuery & {
+    sort?: Record<string, 1 | -1>;
+  } & {
     project?: Record<string, 0 | 1>;
   };
   bulk?: boolean;
   download?: boolean;
+
   TEST: {
-    sampleData: TForm[] | ((deps: DependencyRefs) => TForm[]);
-    updatedData: Partial<TForm> | ((deps: DependencyRefs) => Partial<TForm>);
-    testDataPath?: string;
+    sampleData:
+      | z.infer<TFormSchema>[]
+      | ((deps: DependencyRefs) => z.infer<TFormSchema>[]);
+    updatedData:
+      | Partial<z.infer<TFormSchema>>
+      | ((deps: DependencyRefs) => Partial<z.infer<TFormSchema>>);
   };
-  convertFun?: (data: TPopulated) => TResponse;
 }

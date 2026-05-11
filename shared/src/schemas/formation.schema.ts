@@ -27,8 +27,6 @@ export const FormationZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type FormationType = z.infer<typeof FormationZodSchema>;
-
 export const FormationFormSchema = FormationZodSchema.omit({
   _id: true,
   key: true,

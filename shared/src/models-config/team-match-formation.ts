@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   TeamMatchFormationZodSchema,
-  TeamMatchFormationType,
   TeamMatchFormationFormSchema,
   TeamMatchFormationResponseSchema,
   TeamMatchFormationPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function teamMatchFormation<TDoc = any, TModel = any>(
+export function teamMatchFormation<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  TeamMatchFormationType,
-  z.infer<typeof TeamMatchFormationFormSchema>,
-  z.infer<typeof TeamMatchFormationResponseSchema>,
-  z.infer<typeof TeamMatchFormationPopulatedSchema>
+  typeof TeamMatchFormationZodSchema,
+  typeof TeamMatchFormationFormSchema,
+  typeof TeamMatchFormationResponseSchema,
+  typeof TeamMatchFormationPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "team-match-formation",
@@ -28,7 +25,6 @@ export function teamMatchFormation<TDoc = any, TModel = any>(
       RESPONSE: TeamMatchFormationResponseSchema,
       POPULATED: TeamMatchFormationPopulatedSchema,
     },
-    TYPE: {} as TeamMatchFormationType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },

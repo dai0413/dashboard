@@ -39,8 +39,6 @@ export const StaffRegistrationZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type StaffRegistrationType = z.infer<typeof StaffRegistrationZodSchema>;
-
 export const StaffRegistrationFormSchema = StaffRegistrationZodSchema.omit({
   _id: true,
   competition: true,

@@ -28,8 +28,6 @@ export const StaffAppearanceZodSchema = StaffAppearanceBaseZodSchema.refine(
   message: "staff と staff_name は同時に指定できません",
 });
 
-export type StaffAppearanceType = z.infer<typeof StaffAppearanceZodSchema>;
-
 export const StaffAppearanceFormSchema = StaffAppearanceBaseZodSchema.omit({
   _id: true,
   createdAt: true,

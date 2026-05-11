@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   SeasonZodSchema,
-  SeasonType,
   SeasonFormSchema,
   SeasonResponseSchema,
   SeasonPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function season<TDoc = any, TModel = any>(
+export function season<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  SeasonType,
-  z.infer<typeof SeasonFormSchema>,
-  z.infer<typeof SeasonResponseSchema>,
-  z.infer<typeof SeasonPopulatedSchema>
+  typeof SeasonZodSchema,
+  typeof SeasonFormSchema,
+  typeof SeasonResponseSchema,
+  typeof SeasonPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "season",
@@ -28,7 +25,6 @@ export function season<TDoc = any, TModel = any>(
       RESPONSE: SeasonResponseSchema,
       POPULATED: SeasonPopulatedSchema,
     },
-    TYPE: {} as SeasonType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [{ path: "competition", collection: "competitions" }],
     getAllConfig: {

@@ -35,8 +35,6 @@ export const MatchFormatZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type MatchFormatType = z.infer<typeof MatchFormatZodSchema>;
-
 export const MatchFormatFormSchema = MatchFormatZodSchema.omit({
   _id: true,
   createdAt: true,

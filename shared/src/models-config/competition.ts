@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   CompetitionZodSchema,
-  CompetitionType,
   CompetitionFormSchema,
   CompetitionResponseSchema,
   CompetitionPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function competition<TDoc = any, TModel = any>(
+export function competition<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  CompetitionType,
-  z.infer<typeof CompetitionFormSchema>,
-  z.infer<typeof CompetitionResponseSchema>,
-  z.infer<typeof CompetitionPopulatedSchema>
+  typeof CompetitionZodSchema,
+  typeof CompetitionFormSchema,
+  typeof CompetitionResponseSchema,
+  typeof CompetitionPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "competition",
@@ -28,7 +25,6 @@ export function competition<TDoc = any, TModel = any>(
       RESPONSE: CompetitionResponseSchema,
       POPULATED: CompetitionPopulatedSchema,
     },
-    TYPE: {} as CompetitionType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {

@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -34,6 +34,11 @@
       "import": "./dist/generateField/index.js",
       "require": "./dist/generateField/index.js",
       "types": "./dist/generateField/index.d.ts"
+    },
+    "./models-config": {
+      "import": "./dist/models-config/index.js",
+      "require": "./dist/models-config/index.js",
+      "types": "./dist/models-config/index.d.ts"
     },
     "./types/get-new-data/models/match": {
       "import": "./dist/types/get-new-data/models/match.js",

@@ -24,8 +24,6 @@ export const RefereeAppearanceZodSchema = RefereeAppearanceBaseZodSchema.refine(
   message: "referee と referee_name は同時に指定できません",
 });
 
-export type RefereeAppearanceType = z.infer<typeof RefereeAppearanceZodSchema>;
-
 export const RefereeAppearanceFormSchema = RefereeAppearanceBaseZodSchema.omit({
   _id: true,
   createdAt: true,

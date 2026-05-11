@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   MatchEventTypeZodSchema,
-  MatchEventTypeType,
   MatchEventTypeFormSchema,
   MatchEventTypeResponseSchema,
   MatchEventTypePopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function matchEventType<TDoc = any, TModel = any>(
+export function matchEventType<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  MatchEventTypeType,
-  z.infer<typeof MatchEventTypeFormSchema>,
-  z.infer<typeof MatchEventTypeResponseSchema>,
-  z.infer<typeof MatchEventTypePopulatedSchema>
+  typeof MatchEventTypeZodSchema,
+  typeof MatchEventTypeFormSchema,
+  typeof MatchEventTypeResponseSchema,
+  typeof MatchEventTypePopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match-event-type",
@@ -28,7 +25,6 @@ export function matchEventType<TDoc = any, TModel = any>(
       RESPONSE: MatchEventTypeResponseSchema,
       POPULATED: MatchEventTypePopulatedSchema,
     },
-    TYPE: {} as MatchEventTypeType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {

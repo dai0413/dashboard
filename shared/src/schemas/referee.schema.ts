@@ -23,8 +23,6 @@ export const RefereeZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type RefereeType = z.infer<typeof RefereeZodSchema>;
-
 export const RefereeFormSchema = RefereeZodSchema.omit({
   _id: true,
   normalized_en_name: true,

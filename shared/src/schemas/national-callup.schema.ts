@@ -52,8 +52,6 @@ export const NationalCallUpZodSchema = NationalCallUpBaseZodSchema.refine(
   },
 );
 
-export type NationalCallUpType = z.infer<typeof NationalCallUpZodSchema>;
-
 export const NationalCallUpFormSchema = NationalCallUpBaseZodSchema.omit({
   _id: true,
   createdAt: true,

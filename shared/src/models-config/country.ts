@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   CountryZodSchema,
-  CountryType,
   CountryFormSchema,
   CountryResponseSchema,
   CountryPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function country<TDoc = any, TModel = any>(
+export function country<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  CountryType,
-  z.infer<typeof CountryFormSchema>,
-  z.infer<typeof CountryResponseSchema>,
-  z.infer<typeof CountryPopulatedSchema>
+  typeof CountryZodSchema,
+  typeof CountryFormSchema,
+  typeof CountryResponseSchema,
+  typeof CountryPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "country",
@@ -28,7 +25,6 @@ export function country<TDoc = any, TModel = any>(
       RESPONSE: CountryResponseSchema,
       POPULATED: CountryPopulatedSchema,
     },
-    TYPE: {} as CountryType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {

@@ -38,10 +38,6 @@ export const StaffRegistrationHistoryZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type StaffRegistrationHistoryType = z.infer<
-  typeof StaffRegistrationHistoryZodSchema
->;
-
 export const StaffRegistrationHistoryFormSchema =
   StaffRegistrationHistoryZodSchema.omit({
     _id: true,

@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   RefereeZodSchema,
-  RefereeType,
   RefereeFormSchema,
   RefereeResponseSchema,
   RefereePopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function referee<TDoc = any, TModel = any>(
+export function referee<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  RefereeType,
-  z.infer<typeof RefereeFormSchema>,
-  z.infer<typeof RefereeResponseSchema>,
-  z.infer<typeof RefereePopulatedSchema>
+  typeof RefereeZodSchema,
+  typeof RefereeFormSchema,
+  typeof RefereeResponseSchema,
+  typeof RefereePopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "referee",
@@ -28,7 +25,6 @@ export function referee<TDoc = any, TModel = any>(
       RESPONSE: RefereeResponseSchema,
       POPULATED: RefereePopulatedSchema,
     },
-    TYPE: {} as RefereeType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "citizenship", collection: "countries", isArray: true },

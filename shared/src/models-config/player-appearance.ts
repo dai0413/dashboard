@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   PlayerAppearanceZodSchema,
-  PlayerAppearanceType,
   PlayerAppearanceFormSchema,
   PlayerAppearanceResponseSchema,
   PlayerAppearancePopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { playerAppearance as convertFun } from "../utils/format/player-appearance.js";
 import { ParsedQs } from "qs";
 
-export function playerAppearance<TDoc = any, TModel = any>(
+export function playerAppearance<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  PlayerAppearanceType,
-  z.infer<typeof PlayerAppearanceFormSchema>,
-  z.infer<typeof PlayerAppearanceResponseSchema>,
-  z.infer<typeof PlayerAppearancePopulatedSchema>
+  typeof PlayerAppearanceZodSchema,
+  typeof PlayerAppearanceFormSchema,
+  typeof PlayerAppearanceResponseSchema,
+  typeof PlayerAppearancePopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player-appearance",
@@ -29,7 +26,6 @@ export function playerAppearance<TDoc = any, TModel = any>(
       RESPONSE: PlayerAppearanceResponseSchema,
       POPULATED: PlayerAppearancePopulatedSchema,
     },
-    TYPE: {} as PlayerAppearanceType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },

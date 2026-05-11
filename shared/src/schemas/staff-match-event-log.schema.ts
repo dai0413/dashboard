@@ -57,10 +57,6 @@ export const StaffMatchEventLogZodSchema =
       message: "staffまたはstaff_nameのどちらかを入力してください",
     });
 
-export type StaffMatchEventLogType = z.infer<
-  typeof StaffMatchEventLogZodSchema
->;
-
 export const StaffMatchEventLogFormSchema =
   StaffMatchEventLogBaseZodSchema.omit({
     _id: true,

@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   NationalCallUpZodSchema,
-  NationalCallUpType,
   NationalCallUpFormSchema,
   NationalCallUpResponseSchema,
   NationalCallUpPopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { nationalCallup as convertFun } from "../utils/format/national-callup.js";
 import { ParsedQs } from "qs";
 
-export function nationalCallUp<TDoc = any, TModel = any>(
+export function nationalCallUp<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  NationalCallUpType,
-  z.infer<typeof NationalCallUpFormSchema>,
-  z.infer<typeof NationalCallUpResponseSchema>,
-  z.infer<typeof NationalCallUpPopulatedSchema>
+  typeof NationalCallUpZodSchema,
+  typeof NationalCallUpFormSchema,
+  typeof NationalCallUpResponseSchema,
+  typeof NationalCallUpPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "national-callup",
@@ -29,7 +26,6 @@ export function nationalCallUp<TDoc = any, TModel = any>(
       RESPONSE: NationalCallUpResponseSchema,
       POPULATED: NationalCallUpPopulatedSchema,
     },
-    TYPE: {} as NationalCallUpType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       {

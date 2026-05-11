@@ -20,8 +20,6 @@ export const SeasonZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type SeasonType = z.infer<typeof SeasonZodSchema>;
-
 export const SeasonFormSchema = SeasonZodSchema.omit({
   _id: true,
   createdAt: true,

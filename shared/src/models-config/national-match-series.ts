@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   NationalMatchSeriesZodSchema,
-  NationalMatchSeriesType,
   NationalMatchSeriesFormSchema,
   NationalMatchSeriesResponseSchema,
   NationalMatchSeriesPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function nationalMatchSeries<TDoc = any, TModel = any>(
+export function nationalMatchSeries<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  NationalMatchSeriesType,
-  z.infer<typeof NationalMatchSeriesFormSchema>,
-  z.infer<typeof NationalMatchSeriesResponseSchema>,
-  z.infer<typeof NationalMatchSeriesPopulatedSchema>
+  typeof NationalMatchSeriesZodSchema,
+  typeof NationalMatchSeriesFormSchema,
+  typeof NationalMatchSeriesResponseSchema,
+  typeof NationalMatchSeriesPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "national-match-series",
@@ -28,7 +25,6 @@ export function nationalMatchSeries<TDoc = any, TModel = any>(
       RESPONSE: NationalMatchSeriesResponseSchema,
       POPULATED: NationalMatchSeriesPopulatedSchema,
     },
-    TYPE: {} as NationalMatchSeriesType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {

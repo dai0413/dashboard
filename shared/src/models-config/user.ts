@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   UserZodSchema,
-  UserType,
   UserFormSchema,
   UserResponseSchema,
   UserPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function user<TDoc = any, TModel = any>(
+export function user<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  UserType,
-  z.infer<typeof UserFormSchema>,
-  z.infer<typeof UserResponseSchema>,
-  z.infer<typeof UserPopulatedSchema>
+  typeof UserZodSchema,
+  typeof UserFormSchema,
+  typeof UserResponseSchema,
+  typeof UserPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "user",
@@ -28,7 +25,6 @@ export function user<TDoc = any, TModel = any>(
       RESPONSE: UserResponseSchema,
       POPULATED: UserPopulatedSchema,
     },
-    TYPE: {} as UserType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {

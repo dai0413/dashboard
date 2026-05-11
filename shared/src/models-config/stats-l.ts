@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   StatsLZodSchema,
-  StatsLType,
   StatsLFormSchema,
   StatsLResponseSchema,
   StatsLPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function statsL<TDoc = any, TModel = any>(
+export function statsL<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  StatsLType,
-  z.infer<typeof StatsLFormSchema>,
-  z.infer<typeof StatsLResponseSchema>,
-  z.infer<typeof StatsLPopulatedSchema>
+  typeof StatsLZodSchema,
+  typeof StatsLFormSchema,
+  typeof StatsLResponseSchema,
+  typeof StatsLPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "stats-l",
@@ -28,7 +25,6 @@ export function statsL<TDoc = any, TModel = any>(
       RESPONSE: StatsLResponseSchema,
       POPULATED: StatsLPopulatedSchema,
     },
-    TYPE: {} as StatsLType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },

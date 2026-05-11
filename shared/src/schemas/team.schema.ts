@@ -29,8 +29,6 @@ export const TeamZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type TeamType = z.infer<typeof TeamZodSchema>;
-
 export const TeamFormSchema = TeamZodSchema.omit({
   _id: true,
   normalized_name: true,

@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   MatchFormatZodSchema,
-  MatchFormatType,
   MatchFormatFormSchema,
   MatchFormatResponseSchema,
   MatchFormatPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function matchFormat<TDoc = any, TModel = any>(
+export function matchFormat<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  MatchFormatType,
-  z.infer<typeof MatchFormatFormSchema>,
-  z.infer<typeof MatchFormatResponseSchema>,
-  z.infer<typeof MatchFormatPopulatedSchema>
+  typeof MatchFormatZodSchema,
+  typeof MatchFormatFormSchema,
+  typeof MatchFormatResponseSchema,
+  typeof MatchFormatPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "match-format",
@@ -28,7 +25,6 @@ export function matchFormat<TDoc = any, TModel = any>(
       RESPONSE: MatchFormatResponseSchema,
       POPULATED: MatchFormatPopulatedSchema,
     },
-    TYPE: {} as MatchFormatType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {

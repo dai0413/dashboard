@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   TeamZodSchema,
-  TeamType,
   TeamFormSchema,
   TeamResponseSchema,
   TeamPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function team<TDoc = any, TModel = any>(
+export function team<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  TeamType,
-  z.infer<typeof TeamFormSchema>,
-  z.infer<typeof TeamResponseSchema>,
-  z.infer<typeof TeamPopulatedSchema>
+  typeof TeamZodSchema,
+  typeof TeamFormSchema,
+  typeof TeamResponseSchema,
+  typeof TeamPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "team",
@@ -28,7 +25,6 @@ export function team<TDoc = any, TModel = any>(
       POPULATED: TeamPopulatedSchema,
       RESPONSE: TeamResponseSchema,
     },
-    TYPE: {} as TeamType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {

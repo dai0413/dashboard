@@ -45,10 +45,6 @@ export const PlayerRegistrationHistoryZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type PlayerRegistrationHistoryType = z.infer<
-  typeof PlayerRegistrationHistoryZodSchema
->;
-
 export const PlayerRegistrationHistoryFormSchema =
   PlayerRegistrationHistoryZodSchema.omit({
     _id: true,

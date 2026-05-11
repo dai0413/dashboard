@@ -42,8 +42,6 @@ export const TransferZodSchema = TransferBaseZodSchema.refine(
     { message: "to_dateはfrom_dateよりも後である必要があります" },
   );
 
-export type TransferType = z.infer<typeof TransferZodSchema>;
-
 export const TransferFormSchema = TransferBaseZodSchema.omit({
   _id: true,
   createdAt: true,

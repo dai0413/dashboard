@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   FormationZodSchema,
-  FormationType,
   FormationFormSchema,
   FormationResponseSchema,
   FormationPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function formation<TDoc = any, TModel = any>(
+export function formation<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  FormationType,
-  z.infer<typeof FormationFormSchema>,
-  z.infer<typeof FormationResponseSchema>,
-  z.infer<typeof FormationPopulatedSchema>
+  typeof FormationZodSchema,
+  typeof FormationFormSchema,
+  typeof FormationResponseSchema,
+  typeof FormationPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "formation",
@@ -28,7 +25,6 @@ export function formation<TDoc = any, TModel = any>(
       RESPONSE: FormationResponseSchema,
       POPULATED: FormationPopulatedSchema,
     },
-    TYPE: {} as FormationType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [],
     getAllConfig: {

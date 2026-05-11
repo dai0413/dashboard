@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   TeamCompetitionSeasonZodSchema,
-  TeamCompetitionSeasonType,
   TeamCompetitionSeasonFormSchema,
   TeamCompetitionSeasonResponseSchema,
   TeamCompetitionSeasonPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function teamCompetitionSeason<TDoc = any, TModel = any>(
+export function teamCompetitionSeason<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  TeamCompetitionSeasonType,
-  z.infer<typeof TeamCompetitionSeasonFormSchema>,
-  z.infer<typeof TeamCompetitionSeasonResponseSchema>,
-  z.infer<typeof TeamCompetitionSeasonPopulatedSchema>
+  typeof TeamCompetitionSeasonZodSchema,
+  typeof TeamCompetitionSeasonFormSchema,
+  typeof TeamCompetitionSeasonResponseSchema,
+  typeof TeamCompetitionSeasonPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "team-competition-season",
@@ -28,7 +25,6 @@ export function teamCompetitionSeason<TDoc = any, TModel = any>(
       RESPONSE: TeamCompetitionSeasonResponseSchema,
       POPULATED: TeamCompetitionSeasonPopulatedSchema,
     },
-    TYPE: {} as TeamCompetitionSeasonType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "team", collection: "teams" },

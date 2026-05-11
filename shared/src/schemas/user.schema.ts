@@ -17,8 +17,6 @@ export const UserZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type UserType = z.infer<typeof UserZodSchema>;
-
 export const UserFormSchema = UserZodSchema.omit({
   _id: true,
   createdAt: true,

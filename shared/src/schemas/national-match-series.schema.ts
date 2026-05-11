@@ -23,10 +23,6 @@ export const NationalMatchSeriesZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type NationalMatchSeriesType = z.infer<
-  typeof NationalMatchSeriesZodSchema
->;
-
 export const NationalMatchSeriesFormSchema = NationalMatchSeriesZodSchema.omit({
   _id: true,
   createdAt: true,

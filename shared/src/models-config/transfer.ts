@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   TransferZodSchema,
-  TransferType,
   TransferFormSchema,
   TransferResponseSchema,
   TransferPopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { transfer as convertFun } from "../utils/format/transfer.js";
 import { ParsedQs } from "qs";
 
-export function transfer<TDoc = any, TModel = any>(
+export function transfer<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  TransferType,
-  z.infer<typeof TransferFormSchema>,
-  z.infer<typeof TransferResponseSchema>,
-  z.infer<typeof TransferPopulatedSchema>
+  typeof TransferZodSchema,
+  typeof TransferFormSchema,
+  typeof TransferResponseSchema,
+  typeof TransferPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "transfer",
@@ -29,7 +26,6 @@ export function transfer<TDoc = any, TModel = any>(
       RESPONSE: TransferResponseSchema,
       POPULATED: TransferPopulatedSchema,
     },
-    TYPE: {} as TransferType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "from_team", collection: "teams" },

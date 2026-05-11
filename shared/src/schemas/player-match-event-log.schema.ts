@@ -65,10 +65,6 @@ export const PlayerMatchEventLogZodSchema =
       message: "playerまたはplayer_nameのどちらかを入力してください",
     });
 
-export type PlayerMatchEventLogType = z.infer<
-  typeof PlayerMatchEventLogZodSchema
->;
-
 export const PlayerMatchEventLogFormSchema =
   PlayerMatchEventLogBaseZodSchema.omit({
     _id: true,

@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   PlayerRegistrationHistoryZodSchema,
-  PlayerRegistrationHistoryType,
   PlayerRegistrationHistoryFormSchema,
   PlayerRegistrationHistoryResponseSchema,
   PlayerRegistrationHistoryPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function playerRegistrationHistory<TDoc = any, TModel = any>(
+export function playerRegistrationHistory<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  PlayerRegistrationHistoryType,
-  z.infer<typeof PlayerRegistrationHistoryFormSchema>,
-  z.infer<typeof PlayerRegistrationHistoryResponseSchema>,
-  z.infer<typeof PlayerRegistrationHistoryPopulatedSchema>
+  typeof PlayerRegistrationHistoryZodSchema,
+  typeof PlayerRegistrationHistoryFormSchema,
+  typeof PlayerRegistrationHistoryResponseSchema,
+  typeof PlayerRegistrationHistoryPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player-registration-history",
@@ -28,7 +25,6 @@ export function playerRegistrationHistory<TDoc = any, TModel = any>(
       RESPONSE: PlayerRegistrationHistoryResponseSchema,
       POPULATED: PlayerRegistrationHistoryPopulatedSchema,
     },
-    TYPE: {} as PlayerRegistrationHistoryType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "season", collection: "seasons" },

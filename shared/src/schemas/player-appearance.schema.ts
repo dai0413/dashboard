@@ -41,8 +41,6 @@ export const PlayerAppearanceZodSchema = PlayerAppearanceBaseZodSchema.refine(
     message: "bench の場合 position は指定できません",
   });
 
-export type PlayerAppearanceType = z.infer<typeof PlayerAppearanceZodSchema>;
-
 export const PlayerAppearanceFormSchema = PlayerAppearanceBaseZodSchema.omit({
   _id: true,
   createdAt: true,

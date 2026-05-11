@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   StaffRegistrationHistoryZodSchema,
-  StaffRegistrationHistoryType,
   StaffRegistrationHistoryFormSchema,
   StaffRegistrationHistoryResponseSchema,
   StaffRegistrationHistoryPopulatedSchema,
@@ -9,15 +7,14 @@ import {
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function staffRegistrationHistory<TDoc = any, TModel = any>(
+export function staffRegistrationHistory<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  StaffRegistrationHistoryType,
-  z.infer<typeof StaffRegistrationHistoryFormSchema>,
-  z.infer<typeof StaffRegistrationHistoryResponseSchema>,
-  z.infer<typeof StaffRegistrationHistoryPopulatedSchema>
+  typeof StaffRegistrationHistoryZodSchema,
+  typeof StaffRegistrationHistoryFormSchema,
+  typeof StaffRegistrationHistoryResponseSchema,
+  typeof StaffRegistrationHistoryPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "staff-registration-history",
@@ -28,7 +25,6 @@ export function staffRegistrationHistory<TDoc = any, TModel = any>(
       RESPONSE: StaffRegistrationHistoryResponseSchema,
       POPULATED: StaffRegistrationHistoryPopulatedSchema,
     },
-    TYPE: {} as StaffRegistrationHistoryType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "season", collection: "seasons" },

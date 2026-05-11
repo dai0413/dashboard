@@ -17,8 +17,6 @@ export const PlayerZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type PlayerType = z.infer<typeof PlayerZodSchema>;
-
 export const PlayerFormSchema = PlayerZodSchema.omit({
   _id: true,
   normalized_en_name: true,

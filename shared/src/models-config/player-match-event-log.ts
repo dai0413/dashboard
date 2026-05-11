@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   PlayerMatchEventLogZodSchema,
-  PlayerMatchEventLogType,
   PlayerMatchEventLogFormSchema,
   PlayerMatchEventLogResponseSchema,
   PlayerMatchEventLogPopulatedSchema,
@@ -10,15 +8,14 @@ import { ControllerConfig } from "../types/models-config.js";
 import { playerMatchEventLog as convertFun } from "../utils/format/player-match-event-log.js";
 import { ParsedQs } from "qs";
 
-export function playerMatchEventLog<TDoc = any, TModel = any>(
+export function playerMatchEventLog<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  PlayerMatchEventLogType,
-  z.infer<typeof PlayerMatchEventLogFormSchema>,
-  z.infer<typeof PlayerMatchEventLogResponseSchema>,
-  z.infer<typeof PlayerMatchEventLogPopulatedSchema>
+  typeof PlayerMatchEventLogZodSchema,
+  typeof PlayerMatchEventLogFormSchema,
+  typeof PlayerMatchEventLogResponseSchema,
+  typeof PlayerMatchEventLogPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "player-match-event-log",
@@ -29,7 +26,6 @@ export function playerMatchEventLog<TDoc = any, TModel = any>(
       RESPONSE: PlayerMatchEventLogResponseSchema,
       POPULATED: PlayerMatchEventLogPopulatedSchema,
     },
-    TYPE: {} as PlayerMatchEventLogType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "match", collection: "matches" },

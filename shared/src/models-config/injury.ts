@@ -1,7 +1,5 @@
-import z from "zod";
 import {
   InjuryZodSchema,
-  InjuryType,
   InjuryFormSchema,
   InjuryResponseSchema,
   InjuryPopulatedSchema,
@@ -11,15 +9,14 @@ import { injury as convertFun } from "../utils/format/injury.js";
 import { ControllerConfig } from "../types/models-config.js";
 import { ParsedQs } from "qs";
 
-export function injury<TDoc = any, TModel = any>(
+export function injury<TModel = any>(
   mongoModel?: TModel,
-  customMatchFn?: (query: ParsedQs) => Record<string, any>
+  customMatchFn?: (query: ParsedQs) => Record<string, any>,
 ): ControllerConfig<
-  TDoc,
-  InjuryType,
-  z.infer<typeof InjuryFormSchema>,
-  z.infer<typeof InjuryResponseSchema>,
-  z.infer<typeof InjuryPopulatedSchema>
+  typeof InjuryZodSchema,
+  typeof InjuryFormSchema,
+  typeof InjuryResponseSchema,
+  typeof InjuryPopulatedSchema
 > & { MONGO_MODEL: TModel | null } {
   return {
     name: "injury",
@@ -30,7 +27,6 @@ export function injury<TDoc = any, TModel = any>(
       RESPONSE: InjuryResponseSchema,
       POPULATED: InjuryPopulatedSchema,
     },
-    TYPE: {} as InjuryType,
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
       { path: "player", collection: "players" },

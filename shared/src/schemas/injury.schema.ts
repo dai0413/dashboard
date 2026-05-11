@@ -46,7 +46,6 @@ export const InjuryZodSchema = InjuryBaseZodSchema.refine(
     (data.dos && data.erd > data.dos),
   { message: "erd は doi または dos より後である必要があります" },
 );
-export type InjuryType = z.infer<typeof InjuryZodSchema>;
 
 export const InjuryFormSchema = InjuryBaseZodSchema.omit({
   _id: true,

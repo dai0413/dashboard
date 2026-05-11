@@ -14,10 +14,6 @@ export const TeamMatchFormationZodSchema = z.object({
   updatedAt: dateField,
 });
 
-export type TeamMatchFormationType = z.infer<
-  typeof TeamMatchFormationZodSchema
->;
-
 export const TeamMatchFormationFormSchema = TeamMatchFormationZodSchema.omit({
   _id: true,
   createdAt: true,
