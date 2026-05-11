@@ -3,7 +3,7 @@ const isDate = (v: unknown): v is Date => v instanceof Date;
 export const validateParsedData = <T extends Record<string, any>>(
   parsedData: T | T[],
   expectedData: Partial<T> | Partial<T>[],
-  populateKeys: string[]
+  populateKeys: string[],
 ) => {
   const checkValue = (value: any, expected: any, key: string) => {
     try {
@@ -26,7 +26,7 @@ export const validateParsedData = <T extends Record<string, any>>(
       }
     } catch (err) {
       throw new Error(
-        `Validation failed for key "${key}": ${(err as Error).message}`
+        `Validation failed for key "${key}": ${(err as Error).message}`,
       );
     }
   };

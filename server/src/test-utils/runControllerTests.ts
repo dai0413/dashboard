@@ -5,9 +5,8 @@ import { validateParsedData } from "./validateParsedData.js";
 import z from "zod";
 
 import mongoose from "mongoose";
+import { ControllerConfig, DependencyRefs } from "@dai0413/myorg-shared";
 import {
-  ControllerConfig,
-  DependencyRefs,
   team as teamConfig,
   player as playerConfig,
   country as countryConfig,
@@ -20,7 +19,7 @@ import {
   matchEventType as matchEventTypeConfig,
   formation as formationConfig,
   referee as refereeConfig,
-} from "@dai0413/myorg-shared";
+} from "@dai0413/myorg-shared/models-config";
 import { TeamModel } from "../models/team.js";
 import { CountryModel } from "../models/country.js";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";
@@ -41,13 +40,12 @@ export async function setupDependencies(): Promise<DependencyRefs> {
   let deps: Record<string, any> = {};
 
   const postAndGetData = async <
-    TDoc extends object,
-    TType extends object,
-    TForm extends object,
-    TRes extends { _id: string },
-    TPop extends object,
+    TData extends z.ZodObject<any>,
+    TForm extends z.ZodObject<any>,
+    TResponse extends z.ZodObject<any>,
+    TPopulated extends z.ZodObject<any>,
   >(
-    config: ControllerConfig<TDoc, TType, TForm, TRes, TPop>,
+    config: ControllerConfig<TData, TForm, TResponse, TPopulated>,
   ) => {
     const sample =
       typeof config.TEST.sampleData === "function"
@@ -104,12 +102,11 @@ export async function setupDependencies(): Promise<DependencyRefs> {
 }
 
 export function runControllerTests<
-  TDoc extends object,
-  TType extends object,
-  TForm extends object,
-  TRes extends { _id: string },
-  TPop extends object,
->(config: ControllerConfig<TDoc, TType, TForm, TRes, TPop>) {
+  TData extends z.ZodObject<any>,
+  TForm extends z.ZodObject<any>,
+  TResponse extends z.ZodObject<any>,
+  TPopulated extends z.ZodObject<any>,
+>(config: ControllerConfig<TData, TForm, TResponse, TPopulated>) {
   let deps: DependencyRefs;
 
   const {
@@ -121,11 +118,18 @@ export function runControllerTests<
     TEST: { sampleData, updatedData, testDataPath },
   } = config;
 
+  const RESPONSE_WITH_ID = RESPONSE.extend({
+    _id: z.string(),
+  });
+
+  type TYPE_FORM = z.infer<TForm>;
+  type TYPE_RESPONSE = z.infer<typeof RESPONSE_WITH_ID>;
+
   const route: string = `${ROUTE_BASE}${name}`;
   const populateKeys = POPULATE_PATHS.map((path) => path.path);
-  let created: TRes;
-  let sample: TForm[];
-  let updated: Partial<TForm>;
+  let created: TYPE_RESPONSE;
+  let sample: TYPE_FORM[];
+  let updated: Partial<TYPE_FORM>;
 
   describe(`${name.toUpperCase()} API`, () => {
     beforeAll(async () => {
@@ -146,7 +150,7 @@ export function runControllerTests<
 
         sample = sampleData(deps);
       } else {
-        sample = sampleData as TForm[];
+        sample = sampleData as TYPE_FORM[];
       }
 
       if (typeof updatedData === "function") {
@@ -193,8 +197,11 @@ export function runControllerTests<
       expect(res.body).toHaveProperty("data");
 
       const parsedDataArray = z.array(RESPONSE).parse(res.body.data);
+      const expected: Partial<TYPE_RESPONSE>[] = sample.map((s) => ({
+        ...s,
+      }));
 
-      validateParsedData(parsedDataArray, sample, populateKeys);
+      validateParsedData(parsedDataArray, expected, populateKeys);
     });
     it(`GET ${route}/:id should get a ${name}`, async () => {
       const id = created._id;
@@ -215,7 +222,7 @@ export function runControllerTests<
       expect(res.body).toHaveProperty("data");
       expect(res.body.message).toBe("編集しました");
 
-      const expected = { ...sample[0], ...updated } as TForm;
+      const expected = { ...sample[0], ...updated } as TYPE_FORM;
 
       const parsedData = RESPONSE.parse(res.body.data);
       validateParsedData(parsedData, expected, populateKeys);
@@ -263,7 +270,11 @@ export function runControllerTests<
         expect(res.body.message).toBe("追加しました");
 
         const parsedDataArray = z.array(RESPONSE).parse(res.body.data);
-        validateParsedData(parsedDataArray, sample, populateKeys);
+
+        const expected: Partial<TYPE_RESPONSE>[] = sample.map((s) => ({
+          ...s,
+        }));
+        validateParsedData(parsedDataArray, expected, populateKeys);
       });
   });
 }
