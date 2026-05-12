@@ -1,12 +1,12 @@
 import { teamMatchFormation } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
-import { MatchModel } from "../../../../models/match.js";
-import { TeamModel } from "../../../../models/team.js";
-import { TeamMatchFormationModel } from "../../../../models/team-match-formation.js";
-import { FormationModel } from "../../../../models/formation.js";
-import { UploadConfig } from "../types.js";
-import { resolveOldIds } from "../services/resolveOldIds.js";
 import z from "zod";
+import { UploadConfig } from "../../../types/upload.js";
+import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
+import { TeamMatchFormationModel } from "../../../models/team-match-formation.js";
+import { MatchModel } from "../../../models/match.js";
+import { TeamModel } from "../../../models/team.js";
+import { FormationModel } from "../../../models/formation.js";
 
 const {
   SCHEMA: { DATA },

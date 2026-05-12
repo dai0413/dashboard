@@ -1,13 +1,13 @@
 import { staffMatchEventLog } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
-import { MatchModel } from "../../../../models/match.js";
-import { StaffModel } from "../../../../models/staff.js";
-import { TeamModel } from "../../../../models/team.js";
-import { StaffMatchEventLogModel } from "../../../../models/staff-match-event-log.js";
-import { MatchEventTypeModel } from "../../../../models/match-event-type.js";
-import { UploadConfig } from "../types.js";
-import { resolveOldIds } from "../services/resolveOldIds.js";
 import z from "zod";
+import { StaffMatchEventLogModel } from "../../../models/staff-match-event-log.js";
+import { MatchModel } from "../../../models/match.js";
+import { StaffModel } from "../../../models/staff.js";
+import { TeamModel } from "../../../models/team.js";
+import { MatchEventTypeModel } from "../../../models/match-event-type.js";
+import { UploadConfig } from "../../../types/upload.js";
+import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
 
 const {
   SCHEMA: { DATA },

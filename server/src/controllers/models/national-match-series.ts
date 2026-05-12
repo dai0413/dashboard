@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 import { nationalMatchSeries as createConfig } from "@dai0413/myorg-shared/models-config";
 import { NationalMatchSeriesModel as Model } from "../../models/national-match-series.js";
-import { crudFactory } from "../../utils/crudFactory.js";
+import { crudFactory } from "../factories/crudFactory.js";
 
 const config = createConfig(Model);
 const { getAllItems, createItem, getItem, updateItem, deleteItem } =

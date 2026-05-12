@@ -1,10 +1,10 @@
 import { referee } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
-import { RefereeModel } from "../../../../models/referee.js";
-import { CountryModel } from "../../../../models/country.js";
-import { UploadConfig } from "../types.js";
-import { resolveOldIds } from "../services/resolveOldIds.js";
 import z from "zod";
+import { RefereeModel } from "../../../models/referee.js";
+import { CountryModel } from "../../../models/country.js";
+import { UploadConfig } from "../../../types/upload.js";
+import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
 
 const {
   SCHEMA: { DATA },

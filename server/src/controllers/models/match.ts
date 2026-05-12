@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
 
-import { crudFactory } from "../../utils/crudFactory.js";
+import { crudFactory } from "../factories/crudFactory.js";
 
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
@@ -11,7 +11,7 @@ import { MatchModel as Model } from "../../models/match.js";
 import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
 import { match as customMatch } from "../../utils/customMatchStage/match.js";
-import { DecodedRequest } from "../../types.js";
+import { DecodedRequest } from "../../types/types.js";
 import z from "zod";
 
 const config = createConfig(Model, customMatch);

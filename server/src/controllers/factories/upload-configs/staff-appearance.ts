@@ -1,12 +1,12 @@
 import { staffAppearance } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
-import { MatchModel } from "../../../../models/match.js";
-import { StaffModel } from "../../../../models/staff.js";
-import { TeamModel } from "../../../../models/team.js";
-import { StaffAppearanceModel } from "../../../../models/staff-appearance.js";
-import { UploadConfig } from "../types.js";
-import { resolveOldIds } from "../services/resolveOldIds.js";
 import z from "zod";
+import { StaffAppearanceModel } from "../../../models/staff-appearance.js";
+import { MatchModel } from "../../../models/match.js";
+import { StaffModel } from "../../../models/staff.js";
+import { TeamModel } from "../../../models/team.js";
+import { UploadConfig } from "../../../types/upload.js";
+import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
 
 const {
   SCHEMA: { DATA },

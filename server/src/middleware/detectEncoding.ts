@@ -3,12 +3,12 @@ import jschardet from "jschardet";
 import { Readable } from "stream";
 import { BadRequestError } from "../errors/index.js";
 import { NextFunction, Response } from "express";
-import { DecodedRequest } from "../types.js";
+import { DecodedRequest } from "../types/types.js";
 
 export default function detectEncoding(
   req: DecodedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   if (!req.file || !req.file.buffer) {
     throw new BadRequestError("ファイルが存在しません");
@@ -27,7 +27,7 @@ export default function detectEncoding(
     decodedText = iconv.decode(buffer, "Shift_JIS");
   } else {
     throw new BadRequestError(
-      `未対応のエンコーディング: ${encoding || "不明"}`
+      `未対応のエンコーディング: ${encoding || "不明"}`,
     );
   }
 

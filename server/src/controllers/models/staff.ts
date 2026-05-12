@@ -3,10 +3,10 @@ import { Request, Response } from "express";
 import moment from "moment";
 
 import { staff as createConfig } from "@dai0413/myorg-shared/models-config";
-import { crudFactory } from "../../utils/crudFactory.js";
+import { crudFactory } from "../factories/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 import { StaffModel as Model } from "../../models/staff.js";
-import { DecodedRequest } from "../../types.js";
+import { DecodedRequest } from "../../types/types.js";
 
 const config = createConfig(Model);
 const { getAllItems, createItem, getItem, updateItem, deleteItem } =

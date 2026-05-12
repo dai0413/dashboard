@@ -3,11 +3,11 @@ import { stringify } from "csv-stringify";
 import csv from "csv-parser";
 import z from "zod";
 
-import { uploadConfig, UploadConfigMap } from "../configs/index.js";
-import { cleanObject } from "../services/cleanObject.js";
 import { UploadJob } from "../../../../models/upload-job.js";
 import { formatZodError } from "./formatZodError.js";
-import { DecodedRequest } from "../../../../types.js";
+import { DecodedRequest } from "../../../../types/types.js";
+import { cleanObject } from "./cleanObject.js";
+import { uploadConfig, UploadConfigMap } from "../../upload-configs/index.js";
 
 export async function processUpload<
   TData extends z.ZodObject<any>,

@@ -8,10 +8,15 @@ import {
   updateItem,
   deleteItem,
   downloadItem,
+  updateItems,
 } from "../../controllers/models/team.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-router.route(API_PATHS.TEAM.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.TEAM.ROOT)
+  .get(getAllItems)
+  .post(createItem)
+  .patch(updateItems);
 router.route(API_PATHS.TEAM.DOWNLOAD).get(downloadItem);
 router
   .route(API_PATHS.TEAM.DETAIL())

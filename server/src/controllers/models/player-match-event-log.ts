@@ -1,8 +1,8 @@
 import { playerMatchEventLog as createConfig } from "@dai0413/myorg-shared/models-config";
 import { PlayerMatchEventLogModel as Model } from "../../models/player-match-event-log.js";
 import { Response } from "express";
-import { DecodedRequest } from "../../types.js";
-import { crudFactory } from "../../utils/crudFactory.js";
+import { DecodedRequest } from "../../types/types.js";
+import { crudFactory } from "../factories/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
 const config = createConfig(Model);

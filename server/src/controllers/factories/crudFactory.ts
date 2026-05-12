@@ -1,0 +1,360 @@
+import { StatusCodes } from "http-status-codes";
+import { Request, Response } from "express";
+import mongoose from "mongoose";
+import {
+  NotFoundError,
+  BadRequestError,
+  InternalServerError,
+} from "../../errors/index.js";
+import { getNest } from "../../utils/getNest.js";
+import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
+import z from "zod";
+import { buildMatchStage } from "../../utils/buildMatchStage.js";
+import {
+  ControllerConfig,
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
+import {
+  buildMongoFilter,
+  parseSort,
+  buildJsonSort,
+} from "../../utils/crud/index.js";
+import { addPositionGroup } from "../../order/position.js";
+import { addPositionGroupOrder } from "../../order/position_group.js";
+import {
+  buildUpdateObject,
+  buildBulkUpdateMessage,
+  nullToUndefined,
+} from "./helpers/crud/index.js";
+
+const crudFactory = <
+  TData extends z.ZodObject<any>,
+  TForm extends z.ZodObject<any>,
+  TResponse extends z.ZodObject<any>,
+  TPopulated extends z.ZodObject<any>,
+>(
+  config: ControllerConfig<TData, TForm, TResponse, TPopulated>,
+) => {
+  const {
+    name,
+    SCHEMA: { RESPONSE, POPULATED, FORM },
+    MONGO_MODEL,
+    POPULATE_PATHS,
+    getAllConfig: getAllConfig,
+    bulk,
+    convertFun,
+  } = config;
+
+  type RESPONSE_TYPE = z.infer<typeof RESPONSE>;
+  type POPULATED_TYPE = z.infer<typeof POPULATED>;
+  const UPDATE_ITEM_SCHEMA = FORM.partial().extend({
+    _id: z.string(),
+  });
+  type UPDATE_TYPE = z.infer<typeof UPDATE_ITEM_SCHEMA>;
+
+  const getResponseData = (populated: unknown): RESPONSE_TYPE => {
+    const plain = convertObjectIdToString(populated);
+    if (convertFun) {
+      const parsed = POPULATED.parse(plain);
+      const convertedData = convertFun(parsed);
+      const responseData = RESPONSE.parse(convertedData);
+
+      return responseData;
+    } else {
+      const responseData = RESPONSE.parse(plain);
+
+      return responseData;
+    }
+  };
+
+  // --- GET all ---
+  const getAllItems = async (
+    req: Request,
+    res: Response<ReadItemsResponse<RESPONSE_TYPE[]>>,
+  ) => {
+    try {
+      const getAll = req.query.getAll === "true";
+      const page = Number(req.query.page) || 1;
+      const limit = getAll ? 0 : Number(req.query.limit) || 10;
+      const skip = getAll ? 0 : (page - 1) * limit;
+
+      // ===== 🔹 Filters =====
+      let filters: Record<string, any> = {};
+      if (req.query.filters) {
+        filters = buildMongoFilter(
+          JSON.parse(
+            req.query.filters as string,
+          ) as FilterableFieldDefinition[],
+        );
+      }
+
+      // ===== 🔹 Sort =====
+      let mongoSort: Record<string, 1 | -1> = { _id: 1 };
+
+      let jsonSort: Record<string, 1 | -1> = {};
+      if (req.query.sorts) {
+        jsonSort = buildJsonSort(
+          JSON.parse(req.query.sorts as string) as SortableFieldDefinition[],
+        );
+      }
+
+      let stringSort: Record<string, 1 | -1> = {};
+      if (req.query.sort) {
+        stringSort = parseSort(req.query.sort as string);
+      }
+
+      mongoSort =
+        Object.keys(jsonSort).length > 0
+          ? jsonSort
+          : Object.keys(stringSort).length > 0
+            ? stringSort
+            : getAllConfig?.sort && Object.keys(getAllConfig.sort).length > 0
+              ? getAllConfig.sort
+              : { _id: 1 };
+
+      // 最終フォールバック
+      if (!mongoSort || Object.keys(mongoSort).length === 0) {
+        mongoSort = { _id: 1 };
+      }
+
+      // ===== 🔹 Match Stages =====
+      const beforeMatch = buildMatchStage(
+        req.query,
+        getAllConfig?.query?.filter((q) => !q.populateAfter),
+        getAllConfig?.buildCustomMatch,
+      );
+
+      const afterMatch = buildMatchStage(
+        req.query,
+        getAllConfig?.query?.filter((q) => q.populateAfter),
+      );
+
+      const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
+      const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
+
+      const needsPositionSort =
+        mongoSort && mongoSort.hasOwnProperty("position_group_order");
+
+      const results = await MONGO_MODEL.aggregate([
+        ...getNest(false, beforePaths),
+        ...(Object.keys(beforeMatch).length > 0
+          ? [{ $match: beforeMatch }]
+          : []),
+        ...getNest(false, afterPaths),
+        ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
+        ...(filters && Object.keys(filters).length > 0
+          ? [{ $match: filters }]
+          : []),
+        ...(getAllConfig?.project &&
+        Object.keys(getAllConfig.project).length > 0
+          ? [{ $project: getAllConfig.project }]
+          : []),
+        {
+          $facet: {
+            metadata: [{ $count: "totalCount" }],
+            data: [
+              ...(needsPositionSort ? [addPositionGroup] : []),
+              ...(needsPositionSort ? [addPositionGroupOrder] : []),
+              { $sort: mongoSort },
+              ...(needsPositionSort
+                ? [{ $project: { position_group_order: 0 } }]
+                : []),
+              ...(getAll ? [] : [{ $skip: skip }, { $limit: limit }]),
+            ],
+          },
+        },
+      ]).allowDiskUse(true);
+
+      const data: POPULATED_TYPE[] = results[0]?.data || [];
+      const totalCount = results[0]?.metadata?.[0]?.totalCount || data.length;
+
+      const processed: RESPONSE_TYPE[] = data.map((item) =>
+        getResponseData(item),
+      );
+
+      const resObj: ReadItemsResponse<RESPONSE_TYPE[]> = {
+        data: processed,
+        totalCount: totalCount,
+        page: page,
+        pageSize: limit,
+      };
+
+      res.status(StatusCodes.OK).json(resObj);
+    } catch (err) {
+      console.error(`[${name}] getAll error:`, err);
+      throw new BadRequestError();
+    }
+  };
+
+  // --- CREATE ---
+  const createItem = async (
+    req: Request,
+    res: Response<CreateItemResponse>,
+  ) => {
+    if (Array.isArray(req.body)) {
+      if (!bulk) {
+        throw new InternalServerError("サーバーサイド設定ミス");
+      }
+
+      const parsed = req.body.map((item) => FORM.parse(item));
+      await MONGO_MODEL.insertMany(parsed, { ordered: false });
+    } else {
+      const parsed = FORM.parse(req.body);
+      await MONGO_MODEL.create(parsed);
+    }
+
+    res.status(StatusCodes.CREATED).json({
+      message: "追加しました",
+    });
+  };
+
+  // --- GET by id ---
+  const getItem = async (
+    req: Request,
+    res: Response<ReadItemResponse<RESPONSE_TYPE>>,
+  ) => {
+    const { id } = req.params;
+    if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError("正しいIDを入力してください");
+    }
+    const populated = await MONGO_MODEL.findById(id)
+      .populate(POPULATE_PATHS)
+      .lean();
+
+    if (!populated) {
+      throw new NotFoundError(`${name} が見つかりません`);
+    }
+
+    const data = getResponseData(populated);
+    res.status(StatusCodes.OK).json({ data });
+  };
+
+  // --- UPDATE ---
+  const updateItem = async (
+    req: Request,
+    res: Response<UpdateItemResponse>,
+  ) => {
+    const { id } = req.params;
+    if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError("正しいIDを入力してください");
+    }
+    const data = nullToUndefined(req.body);
+
+    const parsed = FORM.parse(data);
+
+    const updateObj = buildUpdateObject(parsed);
+
+    const updated = await MONGO_MODEL.findByIdAndUpdate(id, updateObj, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updated) {
+      throw new NotFoundError(`${name} データが見つかりません`);
+    }
+
+    const message = `${name}を更新しました`;
+
+    res.status(StatusCodes.OK).json({ message });
+  };
+
+  const updateItems = async (
+    req: Request,
+    res: Response<UpdateItemsResponse<UPDATE_TYPE[]>>,
+  ) => {
+    if (!bulk) {
+      throw new InternalServerError("サーバーサイド設定ミス");
+    }
+
+    if (!Array.isArray(req.body)) {
+      throw new BadRequestError("配列で送信してください");
+    }
+
+    const failedItems: UpdateItemsResponse<UPDATE_TYPE[]>["failedItems"] = [];
+    const ops: any[] = [];
+
+    for (const item of req.body) {
+      try {
+        const data = nullToUndefined(item);
+
+        const parsed = UPDATE_ITEM_SCHEMA.parse(data);
+        const { _id, ...rest } = parsed;
+
+        if (!mongoose.Types.ObjectId.isValid(_id)) {
+          throw new Error(`不正なID: ${_id}`);
+        }
+
+        const updateObj = buildUpdateObject(rest);
+
+        ops.push({
+          updateOne: {
+            filter: { _id },
+            update: updateObj,
+            upsert: false,
+          },
+        });
+      } catch (err: any) {
+        failedItems.push({
+          _id: item?._id,
+          data: item,
+          error: err.message,
+        });
+      }
+    }
+
+    let result = {
+      matchedCount: 0,
+      modifiedCount: 0,
+    };
+
+    if (ops.length > 0) {
+      result = await MONGO_MODEL.bulkWrite(ops, { ordered: false });
+    }
+
+    const totalCount = req.body.length;
+    const successCount = result.matchedCount;
+    const failedCount = totalCount - successCount;
+
+    const message = buildBulkUpdateMessage(
+      totalCount,
+      successCount,
+      failedCount,
+    );
+
+    res.status(StatusCodes.OK).json({
+      message: message,
+      totalCount,
+      successCount,
+      failedCount,
+      modifiedCount: result.modifiedCount,
+      failedItems,
+    });
+  };
+
+  // --- DELETE ---
+  const deleteItem = async (
+    req: Request,
+    res: Response<DeleteItemResponse>,
+  ) => {
+    const { id } = req.params;
+    if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError("正しいIDを入力してください");
+    }
+    const deleted = await MONGO_MODEL.findByIdAndDelete(id);
+    if (!deleted) throw new NotFoundError(`${name} データが見つかりません`);
+    const message = `${name}を削除しました`;
+    res.status(StatusCodes.OK).json({ message });
+  };
+
+  return {
+    getItem,
+    getAllItems,
+    createItem,
+    updateItem,
+    updateItems,
+    deleteItem,
+  };
+};
+
+export { crudFactory };

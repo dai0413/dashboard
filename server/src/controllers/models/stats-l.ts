@@ -1,8 +1,8 @@
 import { statsL as createConfig } from "@dai0413/myorg-shared/models-config";
 import { Response } from "express";
-import { DecodedRequest } from "../../types.js";
+import { DecodedRequest } from "../../types/types.js";
 import { StatsLModel as Model } from "../../models/stats-l.js";
-import { crudFactory } from "../../utils/crudFactory.js";
+import { crudFactory } from "../factories/crudFactory.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 
 const config = createConfig(Model);

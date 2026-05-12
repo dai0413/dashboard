@@ -1,7 +1,7 @@
 import { refereeAppearance as createConfig } from "@dai0413/myorg-shared/models-config";
 import { Response } from "express";
-import { DecodedRequest } from "../../types.js";
-import { crudFactory } from "../../utils/crudFactory.js";
+import { DecodedRequest } from "../../types/types.js";
+import { crudFactory } from "../factories/crudFactory.js";
 import { RefereeAppearanceModel as Model } from "../../models/referee-appearance.js";
 import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
 

@@ -2,10 +2,47 @@ type ResDataBase<DATA> = {
   data: DATA;
 };
 
-export type ResBody<DATA> = ResDataBase<DATA> & {
-  totalCount?: number;
-  page?: number;
-  pageSize?: number;
+type FailedItem<DATA> = {
+  _id?: string;
+  data: DATA;
+  error: string;
+};
+
+type BulkResult<DATA> = {
+  totalCount: number;
+  successCount: number;
+  failedCount: number;
+  modifiedCount: number;
+  failedItems: FailedItem<DATA>;
+};
+
+// read
+export type ReadItemResponse<DATA> = ResDataBase<DATA>;
+export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
+  totalCount: number;
+  page: number;
+  pageSize: number;
+};
+
+// create
+export type CreateItemResponse = {
+  message: string;
+};
+export type CreateItemsResponse<DATA> = {
+  message: string;
+} & BulkResult<DATA>;
+
+// update
+export type UpdateItemResponse = {
+  message: string;
+};
+export type UpdateItemsResponse<DATA> = {
+  message: string;
+} & BulkResult<DATA>;
+
+// delete
+export type DeleteItemResponse = {
+  message: string;
 };
 
 export type APIError = {
@@ -14,16 +51,4 @@ export type APIError = {
     message?: string;
     errors?: any;
   };
-};
-
-export type CreateResBody<DATA> = ResDataBase<DATA> & {
-  message: "追加しました";
-};
-
-export type EditResBody<DATA> = ResDataBase<DATA> & {
-  message: "編集しました";
-};
-
-export type DeleteResBody = {
-  message: "削除しました";
 };

@@ -12,7 +12,7 @@ import csv from "csv-parser";
 import { getNest } from "../../../../utils/getNest.js";
 import { convertObjectIdToString } from "../../../../utils/convertObjectIdToString.js";
 import { formatDateYMD } from "../utils/formatDateYMD.js";
-import { DecodedRequest } from "../../../../types.js";
+import { DecodedRequest } from "../../../../types/types.js";
 import z from "zod";
 
 const {
