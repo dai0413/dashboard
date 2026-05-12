@@ -13,13 +13,9 @@ export const createController = <
 ) => {
   const crud = crudFactory(config);
 
-  if (config.name in config) {
-    const upload = uploadFactory(config);
-    return {
-      ...crud,
-      ...upload,
-    };
-  }
-
-  return crud;
+  const upload = uploadFactory(config);
+  return {
+    ...crud,
+    ...upload,
+  };
 };

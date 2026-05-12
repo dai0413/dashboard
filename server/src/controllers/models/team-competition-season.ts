@@ -2,7 +2,7 @@ import csv from "csv-parser";
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
 import { teamCompetitionSeason as createConfig } from "@dai0413/myorg-shared/models-config";
-import { crudFactory } from "../factories/crudFactory.js";
+import { createController } from "../factories/createController.js";
 import { TeamCompetitionSeasonModel as Model } from "../../models/team-competition-season.js";
 import { DecodedRequest } from "../../types/types.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
@@ -12,7 +12,7 @@ import z from "zod";
 
 const config = createConfig(Model);
 const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  crudFactory(config);
+  createController(config);
 
 const {
   MONGO_MODEL,

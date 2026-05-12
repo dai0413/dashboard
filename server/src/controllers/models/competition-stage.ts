@@ -1,9 +1,9 @@
 import { competitionStage as createConfig } from "@dai0413/myorg-shared/models-config";
 import { CompetitionStageModel as Model } from "../../models/competition-stage.js";
-import { crudFactory } from "../factories/crudFactory.js";
+import { createController } from "../factories/createController.js";
 
 const config = createConfig(Model);
 const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  crudFactory(config);
+  createController(config);
 
 export { getAllItems, createItem, getItem, updateItem, deleteItem };

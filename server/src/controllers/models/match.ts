@@ -12,11 +12,12 @@ import { getNest } from "../../utils/getNest.js";
 import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
 import { match as customMatch } from "../../utils/customMatchStage/match.js";
 import { DecodedRequest } from "../../types/types.js";
+import { createController } from "../factories/createController.js";
 import z from "zod";
 
 const config = createConfig(Model, customMatch);
 const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  crudFactory(config);
+  createController(config);
 
 const {
   MONGO_MODEL,

@@ -3,19 +3,14 @@ import { Request, Response } from "express";
 import moment from "moment";
 
 import { staff as createConfig } from "@dai0413/myorg-shared/models-config";
-import { crudFactory } from "../factories/crudFactory.js";
-import { uploadItemHandler } from "../../utils/crud/upload/handler.js";
+import { createController } from "../factories/createController.js";
 import { StaffModel as Model } from "../../models/staff.js";
-import { DecodedRequest } from "../../types/types.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  crudFactory(config);
+const { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem } =
+  createController(config);
 
 const { MONGO_MODEL } = config;
-
-const uploadItem = async (req: DecodedRequest, res: Response) =>
-  uploadItemHandler(config, req, res);
 
 const downloadItems = async (req: Request, res: Response) => {
   try {
