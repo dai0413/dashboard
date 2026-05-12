@@ -26,13 +26,13 @@ export async function getLabelById<T extends ModelType>(
 
   let fetchedItem: string | null = null;
 
-  await readItemBase({
+  const data = await readItemBase<ModelDataMap[typeof key]>({
     apiInstance: api,
     backendRoute: route,
-    onSuccess: (data: ModelDataMap[T]) => {
-      fetchedItem = createLabel(key, data as ModelDataMap[typeof key]);
-    },
+    returnResponse: true,
   });
+
+  if (data) fetchedItem = createLabel(key, data as ModelDataMap[typeof key]);
 
   return fetchedItem ?? undefined;
 }

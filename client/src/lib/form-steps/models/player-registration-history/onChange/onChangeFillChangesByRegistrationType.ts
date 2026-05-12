@@ -5,6 +5,7 @@ import { convert } from "../../../../convert/DBtoGetted";
 import { PlayerRegistrationHistoryForm } from "../../../../../types/models/player-registration-history";
 import { OnChange } from "../../../../../types/form/onChange";
 import { set } from "lodash";
+import { Player } from "../../../../../types/models/player";
 
 export const onChangeFillChangesByRegistrationType: OnChange<
   PlayerRegistrationHistoryForm
@@ -16,13 +17,15 @@ export const onChangeFillChangesByRegistrationType: OnChange<
 
   if (formData.registration_type === "register") {
     // name, en_name の設定
-    const res = await readItemBase({
+    const item = await readItemBase<Player>({
       apiInstance: api,
       backendRoute: API_PATHS.PLAYER.DETAIL(formData.player),
       returnResponse: true,
     });
 
-    const { name, en_name } = convert(ModelType.PLAYER, res.data);
+    if (!item) return { formData, formLabel };
+
+    const { name, en_name } = convert(ModelType.PLAYER, item);
 
     if (name) {
       returnValue = set(returnValue, "changes.name", name);

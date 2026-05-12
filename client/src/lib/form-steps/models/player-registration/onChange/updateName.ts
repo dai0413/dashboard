@@ -4,6 +4,7 @@ import { ModelType } from "../../../../../types/models";
 import { readItemBase } from "../../../../api";
 import { convert } from "../../../../convert/DBtoGetted";
 import { PlayerRegistrationForm } from "../../../../../types/models/player-registration";
+import { Player } from "../../../../../types/models/player";
 
 export const updateName: OnChange<PlayerRegistrationForm> = async (
   formData,
@@ -14,15 +15,15 @@ export const updateName: OnChange<PlayerRegistrationForm> = async (
 
   if (!playerId || !api) return { formData, formLabel };
 
-  const res = await readItemBase({
+  const item = await readItemBase<Player>({
     apiInstance: api,
     backendRoute: API_PATHS.PLAYER.DETAIL(playerId),
     returnResponse: true,
   });
 
-  if (!res?.data) return { formData, formLabel };
+  if (!item) return { formData, formLabel };
 
-  const { name, en_name } = convert(ModelType.PLAYER, res.data);
+  const { name, en_name } = convert(ModelType.PLAYER, item);
 
   let returnValue: Partial<PlayerRegistrationForm> = {};
   let returnFormLabel: Record<string, any> = {};

@@ -1,7 +1,10 @@
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 import { readItemBase } from "../../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
+import {
+  NationalMatchSeries,
+  NationalMatchSeriesGet,
+} from "../../../../../types/models/national-match-series";
 import { convert } from "../../../../convert/DBtoGetted";
 import { ModelType } from "../../../../../types/models";
 import { OnChange } from "../../../../../types/form/onChange";
@@ -13,17 +16,17 @@ export const updateDatesFromSeries: OnChange<NationalCallupForm> = async (
 ) => {
   if (!formData.series || !api) return { formData, formLabel };
 
-  const res = await readItemBase({
+  const item = await readItemBase<NationalMatchSeries>({
     apiInstance: api,
     backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.DETAIL(formData.series),
     returnResponse: true,
   });
 
-  if (!res) return { formData, formLabel };
+  if (!item) return { formData, formLabel };
 
   const data: NationalMatchSeriesGet = convert(
     ModelType.NATIONAL_MATCH_SERIES,
-    res.data,
+    item,
   );
 
   if (!data) return { formData, formLabel };

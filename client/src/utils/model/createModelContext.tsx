@@ -95,16 +95,19 @@ export function createModelContext<T extends ModelType>(
       });
     };
 
-    const readItem = async (id: string) =>
-      readItemBase({
+    const readItem = async (id: string) => {
+      const item = await readItemBase<Model>({
         apiInstance: api,
         backendRoute: backendRoute.DETAIL(id),
-        onSuccess: (item: Model) => {
-          setSelectedItem(convert(ContextModelString, item));
-        },
+        returnResponse: true,
         handleLoading,
         handleSetAlert,
       });
+
+      console.log("item", item);
+
+      if (item) setSelectedItem(convert(ContextModelString, item));
+    };
 
     const deleteItem = async (id: string) => {
       const result = deleteItemBase({
