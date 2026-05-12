@@ -1,10 +1,10 @@
 import { refereeAppearance } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import z from "zod";
-import { RefereeAppearanceModel } from "../../../models/referee-appearance.js";
-import { MatchModel } from "../../../models/match.js";
-import { RefereeModel } from "../../../models/referee.js";
-import { UploadConfig } from "../../../types/upload.js";
+import { RefereeAppearanceModel } from "../../models/referee-appearance.js";
+import { MatchModel } from "../../models/match.js";
+import { RefereeModel } from "../../models/referee.js";
+import { UploadConfig } from "../../types/upload.js";
 import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
 
 const {

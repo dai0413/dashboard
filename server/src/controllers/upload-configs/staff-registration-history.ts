@@ -1,10 +1,10 @@
 import { staffRegistrationHistory } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import z from "zod";
-import { StaffRegistrationHistoryModel } from "../../../models/staff-registration-history.js";
-import { StaffModel } from "../../../models/staff.js";
-import { TeamModel } from "../../../models/team.js";
-import { UploadConfig } from "../../../types/upload.js";
+import { StaffRegistrationHistoryModel } from "../../models/staff-registration-history.js";
+import { StaffModel } from "../../models/staff.js";
+import { TeamModel } from "../../models/team.js";
+import { UploadConfig } from "../../types/upload.js";
 import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
 
 const {

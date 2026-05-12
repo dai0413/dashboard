@@ -1,12 +1,13 @@
 import { playerAppearance } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import z from "zod";
-import { PlayerAppearanceModel } from "../../../models/player-appearance.js";
-import { MatchModel } from "../../../models/match.js";
-import { PlayerModel } from "../../../models/player.js";
-import { TeamModel } from "../../../models/team.js";
-import { UploadConfig } from "../../../types/upload.js";
+
 import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
+import { PlayerAppearanceModel } from "../../models/player-appearance.js";
+import { MatchModel } from "../../models/match.js";
+import { PlayerModel } from "../../models/player.js";
+import { TeamModel } from "../../models/team.js";
+import { UploadConfig } from "../../types/upload.js";
 
 const {
   SCHEMA: { DATA },

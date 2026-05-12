@@ -6,8 +6,8 @@ import { createController } from "../factories/createController.js";
 import { TeamCompetitionSeasonModel as Model } from "../../models/team-competition-season.js";
 import { DecodedRequest } from "../../types/types.js";
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
-import { getNest } from "../../utils/getNest.js";
-import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
+import { getNest } from "../helpers/getNest.js";
+import { convertObjectIdToString } from "../helpers/crud/convertObjectIdToString.js";
 import z from "zod";
 
 const config = createConfig(Model);

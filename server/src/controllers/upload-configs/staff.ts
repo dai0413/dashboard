@@ -1,11 +1,11 @@
 import { staff } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import z from "zod";
-import { StaffModel } from "../../../models/staff.js";
-import { CountryModel } from "../../../models/country.js";
-import { PlayerModel } from "../../../models/player.js";
+import { StaffModel } from "../../models/staff.js";
+import { CountryModel } from "../../models/country.js";
+import { PlayerModel } from "../../models/player.js";
 import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
-import { UploadConfig } from "../../../types/upload.js";
+import { UploadConfig } from "../../types/upload.js";
 
 const {
   SCHEMA: { DATA },

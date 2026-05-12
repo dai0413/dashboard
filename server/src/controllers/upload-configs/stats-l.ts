@@ -2,10 +2,10 @@ import { numberFields } from "@dai0413/myorg-shared";
 import { statsL } from "@dai0413/myorg-shared/models-config";
 import { normalizeRows, ParserKey } from "@dai0413/myorg-shared/normalizer";
 import z from "zod";
-import { StatsLModel } from "../../../models/stats-l.js";
-import { MatchModel } from "../../../models/match.js";
-import { TeamModel } from "../../../models/team.js";
-import { UploadConfig } from "../../../types/upload.js";
+import { StatsLModel } from "../../models/stats-l.js";
+import { MatchModel } from "../../models/match.js";
+import { TeamModel } from "../../models/team.js";
+import { UploadConfig } from "../../types/upload.js";
 import { resolveOldIds } from "../helpers/upload/resolveOldIds.js";
 
 const {

@@ -3,8 +3,8 @@ import z from "zod";
 import { DecodedRequest } from "../../types/types.js";
 import { UploadJob } from "../../models/upload-job.js";
 import { StatusCodes } from "http-status-codes";
-import { processUpload } from "./helpers/upload/processUpload.js";
 import { Response } from "express";
+import { processUpload } from "../helpers/upload/processUpload.js";
 
 const uploadFactory = <
   TData extends z.ZodObject<any>,

@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { convertObjectIdToString } from "../utils/convertObjectIdToString.js";
-import { buildMatchStage } from "../utils/buildMatchStage.js";
+import { convertObjectIdToString } from "./helpers/crud/convertObjectIdToString.js";
+import { buildMatchStage } from "./helpers/crud/query/buildMatchStage.js";
 import {
   transfer as transferConfig,
   injury as injuryConfig,
 } from "@dai0413/myorg-shared/models-config";
-import { getNest } from "../utils/getNest.js";
+import { getNest } from "./helpers/getNest.js";
 import { ParsedQs } from "qs";
 import { ControllerConfig } from "@dai0413/myorg-shared";
 import { TransferModel } from "../models/transfer.js";
 import { InjuryModel } from "../models/injury.js";
-import { transfer as customTransfer } from "../utils/customMatchStage/transfer.js";
 import z from "zod";
+import { transfer } from "./helpers/crud/query/customMatchStage/transfer.js";
 
 const createData = async <
   TData extends z.ZodObject<any>,
@@ -70,7 +70,7 @@ const createData = async <
 
 const getTopPageData = async (req: Request, res: Response) => {
   const transferData = await createData(
-    transferConfig(TransferModel, customTransfer),
+    transferConfig(TransferModel, transfer),
     req.query,
   );
   const injuryData = await createData(injuryConfig(InjuryModel), req.query);

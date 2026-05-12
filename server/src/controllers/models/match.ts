@@ -8,14 +8,14 @@ import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 import csv from "csv-parser";
 import { match as createConfig } from "@dai0413/myorg-shared/models-config";
 import { MatchModel as Model } from "../../models/match.js";
-import { getNest } from "../../utils/getNest.js";
-import { convertObjectIdToString } from "../../utils/convertObjectIdToString.js";
-import { match as customMatch } from "../../utils/customMatchStage/match.js";
+import { getNest } from "../helpers/getNest.js";
+import { convertObjectIdToString } from "../helpers/crud/convertObjectIdToString.js";
 import { DecodedRequest } from "../../types/types.js";
 import { createController } from "../factories/createController.js";
 import z from "zod";
+import { match } from "../helpers/crud/query/customMatchStage/match.js";
 
-const config = createConfig(Model, customMatch);
+const config = createConfig(Model, match);
 const { getAllItems, createItem, getItem, updateItem, deleteItem } =
   createController(config);
 

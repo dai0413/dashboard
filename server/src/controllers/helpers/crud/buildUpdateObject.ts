@@ -1,4 +1,4 @@
-import BadRequestError from "../../../../errors/bad-request.js";
+import BadRequestError from "../../../errors/bad-request.js";
 
 export const buildUpdateObject = (parsed: Record<string, any>) => {
   // parsed を $set / $unset に分離する
