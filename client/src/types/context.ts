@@ -22,7 +22,9 @@ export type MetaCrudContext<K extends ModelType> = {
   createItem: (
     formData: FormTypeMap[K],
   ) => Promise<CreateItemResponse<FormTypeMap[K]>>;
-  createItems: (formDatas: FormTypeMap[K][]) => Promise<boolean>;
+  createItems: (
+    formDatas: FormTypeMap[K][],
+  ) => Promise<CreateItemResponse<FormTypeMap[K][]>>;
 
   updateItem: (data: FormTypeMap[K]) => Promise<boolean>;
   deleteItem: (id: string) => Promise<boolean>;

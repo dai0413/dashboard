@@ -49,7 +49,7 @@ export function createModelContext<T extends ModelType>(
     const resetItems = () => setItems([]);
 
     const createItems = async (formDatas: Form[]) => {
-      const success = await createItemBase({
+      const success = await createItemBase<Form[]>({
         apiInstance: api,
         backendRoute: backendRoute.ROOT,
         data: cleanData(formDatas),
@@ -120,7 +120,7 @@ export function createModelContext<T extends ModelType>(
     };
 
     const updateItem = async (updated: Form) => {
-      if (!selected) return { success: false };
+      if (!selected) return false;
       const id = selected._id;
 
       const result = await updateItemBase({
