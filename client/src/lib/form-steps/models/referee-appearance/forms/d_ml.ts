@@ -32,7 +32,7 @@ const fetchResolved = async (
   api: AxiosInstance,
   input: ResolveInput<{ referee: Select.MODEL }>[],
 ): Promise<ResolveOutput[]> => {
-  const res = await createItemBase({
+  const res = await createItemBase<{ refereeAppearance: ResolveOutput[] }>({
     apiInstance: api,
     backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { refereeAppearance: input },

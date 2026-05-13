@@ -49,33 +49,27 @@ export function createModelContext<T extends ModelType>(
     const resetItems = () => setItems([]);
 
     const createItems = async (formDatas: Form[]) => {
-      const result = createItemBase({
+      const success = await createItemBase({
         apiInstance: api,
         backendRoute: backendRoute.ROOT,
         data: cleanData(formDatas),
-        onAfterCreate: (item: Model[]) => {
-          const createItems = convert(ContextModelString, item);
-          setItems((prev) => [...prev, ...createItems]);
-        },
         handleLoading,
         handleSetAlert,
         returnResponse: true,
       });
-      return result;
+
+      return success;
     };
 
     const createItem = async (formData: Form) => {
-      const result = createItemBase({
+      const result = await createItemBase<Form>({
         apiInstance: api,
         backendRoute: backendRoute.ROOT,
         data: cleanData(formData),
-        onAfterCreate: (item: Model) => {
-          setItems((prev) => [...prev, convert(ContextModelString, item)]);
-        },
         handleLoading,
         handleSetAlert,
-        returnResponse: true,
       });
+
       return result;
     };
 
@@ -129,18 +123,10 @@ export function createModelContext<T extends ModelType>(
       if (!selected) return { success: false };
       const id = selected._id;
 
-      const result = updateItemBase({
+      const result = await updateItemBase({
         apiInstance: api,
         backendRoute: backendRoute.DETAIL(id),
         data: updated,
-        onAfterUpdate: (updatedItem: Model) => {
-          setItems((prev) =>
-            prev.map((t) =>
-              t._id === id ? convert(ContextModelString, updatedItem) : t,
-            ),
-          );
-          setSelectedItem(convert(ContextModelString, updatedItem));
-        },
         handleLoading,
         handleSetAlert,
       });

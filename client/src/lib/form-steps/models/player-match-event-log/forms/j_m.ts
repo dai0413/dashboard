@@ -63,7 +63,7 @@ const fetchResolved = async (
     match_event_type: Select.MODEL;
   }>[],
 ): Promise<ResolveOutput[]> => {
-  const res = await createItemBase({
+  const res = await createItemBase<{ playerMatchEventLog: ResolveOutput[] }>({
     apiInstance: api,
     backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { playerMatchEventLog: input },

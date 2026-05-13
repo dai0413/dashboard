@@ -1,13 +1,12 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError } from "@dai0413/myorg-shared";
-import { DataResoonse } from "../../types/api";
+import { CreateItemResponse } from "../../types";
 
 type CreateParamsBase = {
   apiInstance: AxiosInstance;
   backendRoute: string;
   data: object;
-  onAfterCreate?: (item: any) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: AlertStatus) => void;
 };
@@ -20,31 +19,32 @@ type CreateParamsNoReturn = CreateParamsBase & {
   returnResponse?: false;
 };
 
-export function createItemBase(
+export function createItemBase<DATA>(
   params: CreateParamsReturn,
-): Promise<DataResoonse>;
+): Promise<CreateItemResponse<DATA>>;
 
-export function createItemBase(params: CreateParamsNoReturn): Promise<boolean>;
+export function createItemBase<DATA>(
+  params: CreateParamsNoReturn,
+): Promise<CreateItemResponse<DATA>>;
 
-export async function createItemBase({
+export async function createItemBase<DATA>({
   apiInstance,
   data,
   backendRoute,
-  onAfterCreate,
   handleLoading,
   handleSetAlert,
-  returnResponse,
-}: CreateParamsReturn | CreateParamsNoReturn): Promise<boolean | DataResoonse> {
+  // returnResponse,
+}: CreateParamsReturn | CreateParamsNoReturn): Promise<
+  CreateItemResponse<DATA>
+> {
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
-  let result: boolean;
   try {
     const res = await apiInstance.post(backendRoute, data);
-    onAfterCreate?.(res.data.data);
-    alert = { success: true, message: res.data?.message };
-    result = true;
+    const responseData: CreateItemResponse<DATA> = res.data;
+    alert = { success: true, message: responseData.message };
 
-    if (returnResponse) return { ...res.data, success: true } as DataResoonse;
+    return responseData;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -53,20 +53,10 @@ export async function createItemBase({
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
-    result = false;
+
+    return { success: false, message: "データの追加に失敗しました" };
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
   }
-
-  if (returnResponse)
-    return {
-      data: [],
-      totalCount: 0,
-      page: 0,
-      pageSize: 0,
-      success: false,
-    };
-
-  return result;
 }

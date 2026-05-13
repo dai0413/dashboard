@@ -31,7 +31,6 @@ import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
 import { getOptionKey } from "../lib/options";
 import { FormMode, From, InputMode, StartFormArgs } from "../types/types";
-import { DataResoonse } from "../types/api";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
 import { getLabelById } from "../utils/model/getLabelById";
@@ -41,6 +40,7 @@ import {
   HandleFormData,
 } from "../types/form/handleFormData";
 import { isComparableEqual } from "../utils/comparison";
+import { CreateItemResponse } from "../types";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,
@@ -424,7 +424,7 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const sendData = async (modelType: ModelType): Promise<boolean> => {
-    let res: DataResoonse | null = null;
+    let res: CreateItemResponse<FormTypeMap[T]> | null = null;
     if (!modelContext || !modelType) return false;
 
     if (inputMode === InputMode.SINGLE) {

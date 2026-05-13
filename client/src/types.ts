@@ -25,22 +25,27 @@ export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
 };
 
 // create
-export type CreateItemResponse = {
+export type CreateItemResponse<DATA> = Partial<ResDataBase<DATA>> & {
+  success: boolean;
   message: string;
 };
-export type CreateItemsResponse<DATA> = {
+export type CreateItemsResponse<DATA> = Partial<ResDataBase<DATA>> & {
+  success: boolean;
   message: string;
 } & BulkResult<DATA>;
 
 // update
 export type UpdateItemResponse = {
+  success: boolean;
   message: string;
 };
 export type UpdateItemsResponse<DATA> = {
+  success: boolean;
   message: string;
 } & BulkResult<DATA>;
 
 // delete
 export type DeleteItemResponse = {
+  success: boolean;
   message: string;
 };

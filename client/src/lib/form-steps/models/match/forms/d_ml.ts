@@ -46,7 +46,7 @@ const fetchResolved = async (
   api: AxiosInstance,
   input: Input,
 ): Promise<ResolveOutput[]> => {
-  const res = await createItemBase({
+  const res = await createItemBase<{ match: ResolveOutput[] }>({
     apiInstance: api,
     backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { match: input },
@@ -151,7 +151,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
       const { url } = metaData;
       if (!url) return {};
 
-      const res = await createItemBase({
+      const res = await createItemBase<CardIdScraped[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS,
         data: { url },
@@ -160,9 +160,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       if (!res?.data) return {};
 
-      const optionsData: CardIdScraped[] = res.data;
-
-      const data: CardIdOption[] = optionsData
+      const data: CardIdOption[] = res.data
         .map((s, i) => {
           return {
             ...s,
@@ -207,7 +205,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       if (!api || !id) return {};
 
-      const res = await createItemBase({
+      const res = await createItemBase<DraftData>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS,
         data: { id },
@@ -216,7 +214,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       if (!res?.data) return {};
 
-      const draftDataValue: DraftData = res.data;
+      const draftDataValue = res.data;
 
       const applyCompetitionStage = (item: DraftDataValue) => {
         return {

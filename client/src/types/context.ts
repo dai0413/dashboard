@@ -1,7 +1,7 @@
 import { QueryParams, UploadJobType } from "@dai0413/myorg-shared";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 import { AxiosResponse } from "axios";
-import { DataResoonse } from "./api";
+import { CreateItemResponse } from "../types";
 
 export type ModelContext<K extends ModelType> = {
   metacrud: MetaCrudContext<K>;
@@ -19,10 +19,12 @@ export type MetaCrudContext<K extends ModelType> = {
   readItem: (id: string) => Promise<void>;
   readItems: (params: QueryParams) => Promise<void>;
 
-  createItem: (formData: FormTypeMap[K]) => Promise<DataResoonse>;
-  createItems: (formDatas: FormTypeMap[K][]) => Promise<DataResoonse>;
+  createItem: (
+    formData: FormTypeMap[K],
+  ) => Promise<CreateItemResponse<FormTypeMap[K]>>;
+  createItems: (formDatas: FormTypeMap[K][]) => Promise<boolean>;
 
-  updateItem: (data: FormTypeMap[K]) => Promise<DataResoonse>;
+  updateItem: (data: FormTypeMap[K]) => Promise<boolean>;
   deleteItem: (id: string) => Promise<boolean>;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;

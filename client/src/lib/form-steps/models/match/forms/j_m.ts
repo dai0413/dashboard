@@ -43,7 +43,7 @@ const fetchResolved = async (
   api: AxiosInstance,
   input: Input,
 ): Promise<ResolveOutput[]> => {
-  const res = await createItemBase({
+  const res = await createItemBase<{ match: ResolveOutput[] }>({
     apiInstance: api,
     backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
     data: { match: input },
@@ -164,14 +164,14 @@ export const match: FormStep<ModelType.MATCH>[] = [
 
       // 並列実行にする
       const [res, positionRes] = await Promise.all([
-        createItemBase({
+        createItemBase<DraftDataValue>({
           apiInstance: api,
           backendRoute: API_PATHS.GET_NEW_DATA.J_M.MATCH,
           data: { url: getDataUrl, season },
           returnResponse: true,
         }),
         getPositionUrl
-          ? createItemBase({
+          ? createItemBase<PositionData>({
               apiInstance: api,
               backendRoute: API_PATHS.GET_NEW_DATA.SN_M.POSITION,
               data: { url: getPositionUrl },
