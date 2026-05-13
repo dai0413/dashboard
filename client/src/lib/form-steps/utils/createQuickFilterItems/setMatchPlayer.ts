@@ -9,6 +9,7 @@ import { PlayerRegistration } from "../../../../types/models/player-registration
 import { convert } from "../../../convert/CreateLabel";
 import { Competition } from "../../../../types/models/competition";
 import { Season } from "../../../../types/models/season";
+import { Transfer } from "../../../../types/models/transfer";
 
 const getRegistration = async (
   api: AxiosInstance,
@@ -16,7 +17,7 @@ const getRegistration = async (
   competition: Competition,
   season: Season,
 ): Promise<FilterableFieldDefinition | undefined> => {
-  const resBody = await readItemsBase({
+  const obj = await readItemsBase<PlayerRegistration[]>({
     apiInstance: api,
     backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
     params: {
@@ -28,8 +29,8 @@ const getRegistration = async (
     },
     returnResponse: true,
   });
-  if (!resBody || !resBody.data) return undefined;
-  const playerRegistrations: PlayerRegistration[] = resBody.data;
+  if (!obj || !obj.data) return undefined;
+  const playerRegistrations: PlayerRegistration[] = obj.data;
   const players = Array.from(
     new Map(
       playerRegistrations
@@ -77,7 +78,7 @@ const getTransfer = async (
     ].filter(Boolean) as string[],
   };
 
-  const resBody = await readItemsBase({
+  const obj = await readItemsBase<Transfer[]>({
     apiInstance: api,
     backendRoute: API_PATHS.TRANSFER.ROOT,
     params: {
@@ -97,11 +98,11 @@ const getTransfer = async (
     returnResponse: true,
   });
 
-  if (!resBody || !resBody.data) return undefined;
-  const playerRegistrations: PlayerRegistration[] = resBody.data;
+  if (!obj || !obj.data) return undefined;
+  const transfers = obj.data;
   const players = Array.from(
     new Map(
-      playerRegistrations
+      transfers
         .map((pr) => pr.player)
         .filter((p) => p._id)
         .map((p) => [p._id, p]),

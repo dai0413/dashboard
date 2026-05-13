@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { API_PATHS, ResBody } from "@dai0413/myorg-shared";
+import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TableWithFetch } from "../../components/table";
 import { ModelType } from "../../types/models";
@@ -46,23 +46,25 @@ const Competition = () => {
     isLoading: false,
   });
 
-  const readSeason = (competitionId: string) =>
-    readItemsBase({
+  const readSeason = async (competitionId: string) => {
+    const obj = await readItemsBase<Season[]>({
       apiInstance: api,
       backendRoute: API_PATHS.SEASON.ROOT,
       params: { competition: competitionId, getAll: true },
-      onSuccess: (resBody: ResBody<Season[]>) => {
-        setSeason({
-          data: convert(ModelType.SEASON, resBody.data),
-          page: resBody.page ? resBody.page : 1,
-          totalCount: resBody.totalCount ? resBody.totalCount : 1,
-          isLoading: true,
-        });
-      },
       handleLoading: (time) => {
         setSeason((prev) => ({ ...prev, isLoading: time === "start" }));
       },
     });
+
+    if (!obj) return;
+
+    setSeason({
+      data: convert(ModelType.SEASON, obj.data),
+      page: obj.page,
+      totalCount: obj.totalCount,
+      isLoading: true,
+    });
+  };
 
   useEffect(() => {
     if (!id) return;

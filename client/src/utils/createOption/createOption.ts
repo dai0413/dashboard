@@ -1,4 +1,4 @@
-import { OptionArray } from "../../types/form/option";
+import { OptionArray, OptionTable } from "../../types/form/option";
 import { ModelType } from "../../types/models";
 import {
   competition,
@@ -41,7 +41,7 @@ import {
   special_time,
   play_status,
 } from "@dai0413/myorg-shared";
-import { ModelDataOptionConfigMap } from "./types/optionTable";
+import { ModelDataOption, ModelDataOptionConfigMap } from "./types/optionTable";
 import { CustomOptionType, DefaultOptionMap, OptionType } from "./types/base";
 
 type Converter<T extends keyof ModelDataOptionConfigMap> = (
@@ -114,8 +114,19 @@ const defaultOptions: Partial<{ [K in keyof DefaultOptionMap]: OptionArray }> =
 export function convertToOption<T extends keyof ModelDataOptionConfigMap>(
   type: T,
   data: ModelDataOptionConfigMap[T]["input"],
+  table: true,
+): OptionTable<ModelDataOption[T]>;
+
+export function convertToOption<T extends keyof ModelDataOptionConfigMap>(
+  type: T,
+  data: ModelDataOptionConfigMap[T]["input"],
+  table?: false,
+): OptionArray;
+export function convertToOption<T extends keyof ModelDataOptionConfigMap>(
+  type: T,
+  data: ModelDataOptionConfigMap[T]["input"],
   table?: boolean,
-): OptionArray | ModelDataOptionConfigMap[T]["option"] {
+): OptionArray | OptionTable<ModelDataOption[T]> {
   const converter = convertMap[type];
   if (!converter) {
     console.error(`No converter found for ${String(type)}`);

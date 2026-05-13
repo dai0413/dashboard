@@ -4,7 +4,7 @@ import { Transfer, TransferGet } from "../types/models/transfer";
 import { Injury, InjuryGet } from "../types/models/injury";
 import { convert } from "../lib/convert/DBtoGetted";
 import { useAlert } from "./alert-context";
-import { API_PATHS, ResBody } from "@dai0413/myorg-shared";
+import { API_PATHS } from "@dai0413/myorg-shared";
 import { readItemsBase } from "../lib/api";
 import { api } from "./api-context";
 
@@ -37,22 +37,24 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const readItems = async (limit?: number) => {
-    readItemsBase({
+    const obj = await readItemsBase<{
+      transferData: Transfer[];
+      injuryData: Injury[];
+    }>({
       apiInstance: api,
       backendRoute: API_PATHS.TOP_PAGE.GET,
       params: limit ? { limit } : {},
-      onSuccess: (
-        data: ResBody<{ transferData: Transfer[]; injuryData: Injury[] }>,
-      ) => {
-        const transfers = data.data.transferData as Transfer[];
-        const injuries = data.data.injuryData as Injury[];
-
-        setTransfers(convert(ModelType.TRANSFER, transfers));
-        setInjuries(convert(ModelType.INJURY, injuries));
-      },
       handleLoading: handleLoading,
       handleSetAlert: handleSetAlert,
     });
+
+    if (!obj) return;
+
+    const transfers = obj.data.transferData;
+    const injuries = obj.data.injuryData;
+
+    setTransfers(convert(ModelType.TRANSFER, transfers));
+    setInjuries(convert(ModelType.INJURY, injuries));
   };
 
   const value = { isLoading, transfers, injuries, readItems };

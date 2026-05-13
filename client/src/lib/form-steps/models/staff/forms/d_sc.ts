@@ -5,6 +5,7 @@ import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { readItemsBase } from "../../../../api";
 import { getFields } from "../fields";
+import { StaffForm } from "../../../../../types/models/staff";
 
 type BaseModel = ModelType.STAFF;
 const baseModel = ModelType.STAFF;
@@ -16,15 +17,15 @@ export const d_sc: FormStep<ModelType.STAFF>[] = [
     modelType: baseModel,
     fetchValue: async (_data, api?: AxiosInstance) => {
       if (!api) return [];
-      const res = await readItemsBase({
+      const obj = await readItemsBase<StaffForm[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_SC.STAFF,
         returnResponse: true,
       });
 
-      if (!res) return [];
+      if (!obj) return [];
 
-      return res.data;
+      return obj.data;
     },
     many: true,
   },

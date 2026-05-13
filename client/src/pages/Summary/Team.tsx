@@ -13,7 +13,7 @@ import {
   TeamCompetitionSeasonGet,
 } from "../../types/models/team-competition-season";
 import { Match, MatchGet } from "../../types/models/match";
-import { SeasonGet } from "../../types/models/season";
+import { Season, SeasonGet } from "../../types/models/season";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { Data, TeamMatch } from "../../types/types";
 import { TableWithFetch } from "../../components/table";
@@ -150,21 +150,21 @@ const Team = () => {
   });
 
   const readSeason = async (seasonId: string) => {
-    const resBody = await readItemBase({
+    const item = await readItemBase<Season>({
       apiInstance: api,
       backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
       returnResponse: true,
     });
 
-    const nextSeasonDates = getSeasonDates(
-      convert(ModelType.SEASON, resBody.data),
-    );
+    if (!item) return;
+
+    const nextSeasonDates = getSeasonDates(convert(ModelType.SEASON, item));
 
     setSeasonDates(nextSeasonDates);
   };
 
   const readTeamCompetitionSeason = async (params: QueryParams) => {
-    const resBody = await readItemsBase({
+    const obj = await readItemsBase<TeamCompetitionSeason[]>({
       apiInstance: api,
       backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       params,
@@ -176,8 +176,8 @@ const Team = () => {
       returnResponse: true,
     });
 
-    if (resBody?.data && resBody.data.length > 0) {
-      const seasons: TeamCompetitionSeason[] = resBody?.data;
+    if (obj?.data && obj.data.length > 0) {
+      const seasons: TeamCompetitionSeason[] = obj?.data;
 
       const nextTeamCompetitionSeason = convert(
         ModelType.TEAM_COMPETITION_SEASON,
@@ -222,8 +222,8 @@ const Team = () => {
 
         setTeamCompetitionSeason({
           data: nextTeamCompetitionSeason,
-          page: resBody.page ? resBody.page : 1,
-          totalCount: resBody.totalCount ? resBody.totalCount : 1,
+          page: obj.page ? obj.page : 1,
+          totalCount: obj.totalCount ? obj.totalCount : 1,
           isLoading: false,
         });
 
@@ -313,17 +313,16 @@ const Team = () => {
   }>({ label: [], value: [] });
 
   async function readMatchs(id: string, seasonId: string): Promise<MatchGet[]> {
-    const res = await readItemsBase({
+    const obj = await readItemsBase<Match[]>({
       apiInstance: api,
       backendRoute: API_PATHS.MATCH.ROOT,
       params: { team: id, season: seasonId, getAll: true, sort: "date" },
       returnResponse: true,
     });
 
-    if (!res) return [];
+    if (!obj) return [];
 
-    const data: Match[] = res.data;
-    const matchs = convert(ModelType.MATCH, data);
+    const matchs = convert(ModelType.MATCH, obj.data);
 
     return matchs;
   }

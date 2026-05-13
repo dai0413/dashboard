@@ -19,15 +19,15 @@ export const useFormation = (): {
   const [loading, setLoading] = useState(true);
 
   const read = async (): Promise<FilterableFieldDefinition | undefined> => {
-    const resBody = await readItemsBase({
+    const obj = await readItemsBase<Formation[]>({
       apiInstance: api,
       params: { getAll: true },
       backendRoute: API_PATHS.FORMATION.ROOT,
       returnResponse: true,
     });
 
-    if (!resBody) return;
-    const data: Formation[] = resBody.data;
+    if (!obj) return;
+    const data: Formation[] = obj.data;
     const formations = convert(ModelType.FORMATION, data);
 
     const filterCondition: FilterableFieldDefinition = {

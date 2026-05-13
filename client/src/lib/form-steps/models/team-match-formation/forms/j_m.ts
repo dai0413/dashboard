@@ -40,16 +40,16 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
         id: string;
         label: string;
       } | null> => {
-        const resBody = await readItemsBase({
+        const obj = await readItemsBase<Formation[]>({
           apiInstance: api,
           params: { key },
           backendRoute: API_PATHS.FORMATION.ROOT,
           returnResponse: true,
         });
 
-        if (!resBody || !resBody.data) return null;
+        if (!obj || !obj.data) return null;
 
-        const formations: Formation[] = resBody.data;
+        const formations: Formation[] = obj.data;
 
         if (formations.length !== 1) return null;
 
@@ -109,16 +109,16 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
         id: string;
         label: string;
       } | null> => {
-        const resBody = await readItemsBase({
+        const obj = await readItemsBase<Formation[]>({
           apiInstance: api,
           params: { key },
           backendRoute: API_PATHS.FORMATION.ROOT,
           returnResponse: true,
         });
 
-        if (!resBody || !resBody.data) return null;
+        if (!obj || !obj.data) return null;
 
-        const formations: Formation[] = resBody.data;
+        const formations: Formation[] = obj.data;
 
         if (formations.length !== 1) return null;
 

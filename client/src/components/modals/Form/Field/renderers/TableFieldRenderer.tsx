@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import {
   FormTypeMap,
+  GettedModelDataMap,
   ModelDataMap,
   ModelType,
 } from "../../../../../types/models";
@@ -11,6 +12,7 @@ import { OptionsMap } from "../../../../../utils/createOption/types/base";
 import {
   ModelDataOptions,
   OptionSource,
+  OptionTable,
 } from "../../../../../types/form/option";
 import { HandleFormData } from "../../../../../types/form/handleFormData";
 import {
@@ -31,10 +33,12 @@ import {
 import { useForm } from "../../../../../context/form-context";
 import { AxiosInstance } from "axios";
 import { optionRouteMap } from "../../../../../lib/options";
-import { ModelDataOptionConfigMap } from "../../../../../utils/createOption/types/optionTable";
+import {
+  ModelDataOption,
+  ModelDataOptionConfigMap,
+} from "../../../../../utils/createOption/types/optionTable";
 import { normalizeFiltersForApi } from "../../../../../utils/filter/normalizeFiltersForApi";
 import { readItemsBase } from "../../../../../lib/api";
-import { DataResoonse } from "../../../../../types/api";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { convertToOption } from "../../../../../utils/createOption/createOption";
 import { api } from "../../../../../context/api-context";
@@ -75,19 +79,21 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
   const [viewOptionData, setViewOptionData] =
     useState<ModelDataOptions<any> | null>(null);
 
-  const readOptions = async (
+  const readOptions = async <T extends keyof ModelDataOptionConfigMap>(
     api: AxiosInstance,
-    nextOptionKey: ModelType,
+    nextOptionKey: T,
     filterConditions?: FilterableFieldDefinition[],
     sortConditions?: SortableFieldDefinition[],
     page?: number,
-  ): Promise<ModelDataOptions<OptionsMap[typeof optionKey]> | undefined> => {
-    const crudRoutes = optionRouteMap[nextOptionKey];
-
-    if (!crudRoutes) {
+  ): Promise<ModelDataOptions<OptionsMap[T]> | undefined> => {
+    function isOptionKey(key: ModelType): key is keyof ModelDataOption {
+      return key in optionRouteMap;
+    }
+    if (!isOptionKey(nextOptionKey)) {
       console.error("optionRouteMapにキーが存在しません:", nextOptionKey);
       return;
     }
+    const crudRoutes = optionRouteMap[nextOptionKey];
 
     const { ROOT: route } = crudRoutes;
 
@@ -95,9 +101,6 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
       console.error("ROOT が未定義です:", nextOptionKey);
       return;
     }
-
-    const optionKey: keyof ModelDataOptionConfigMap =
-      nextOptionKey as keyof ModelDataOptionConfigMap;
 
     const params: Record<string, any> = {
       getAll: true,
@@ -115,7 +118,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
       setOptionIsLoading(time === "start");
     };
 
-    const response: DataResoonse | undefined = await readItemsBase({
+    const response = await readItemsBase<ModelDataMap[T][]>({
       apiInstance: api,
       backendRoute: route,
       params,
@@ -125,17 +128,17 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
 
     if (!response) return undefined;
 
-    const getted = convert(
-      optionKey,
-      response.data as ModelDataMap[typeof optionKey],
-    ) as unknown as ModelDataOptionConfigMap[typeof optionKey]["input"];
+    const getted: GettedModelDataMap[T][] = convert(
+      nextOptionKey,
+      response.data,
+    );
+    const option: OptionTable<OptionsMap[T]> = convertToOption(
+      nextOptionKey,
+      getted,
+      true,
+    );
 
-    const option: ModelDataOptions<OptionsMap[typeof optionKey]>["option"] =
-      convertToOption(optionKey, getted, true) as unknown as ModelDataOptions<
-        OptionsMap[typeof optionKey]
-      >["option"];
-
-    const optionTableData: ModelDataOptions<OptionsMap[typeof optionKey]> = {
+    const optionTableData: ModelDataOptions<OptionsMap[T]> = {
       option,
       page: page ? page : response.page || 1,
       totalCount: response.totalCount || 1,

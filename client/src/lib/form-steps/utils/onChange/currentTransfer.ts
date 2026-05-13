@@ -44,16 +44,16 @@ export const currentTransfer = async <T extends ModelType>({
     ...(form !== undefined && { form }),
   };
 
-  const currentTransferData = await readItemsBase({
+  const obj = await readItemsBase<Transfer[]>({
     apiInstance: api,
     backendRoute: API_PATHS.TRANSFER.ROOT,
     params,
     returnResponse: true,
   });
 
-  if (!currentTransferData) return {};
+  if (!obj) return {};
 
-  const currentTransfer: Transfer[] = currentTransferData.data;
+  const currentTransfer: Transfer[] = obj.data;
 
   if (currentTransfer.length > 0) {
     const latest = convert(ModelType.TRANSFER, currentTransfer[0]);

@@ -13,7 +13,7 @@ export const getSeasons = async (
 
   const iso = toDateKey(date, true);
 
-  const res = await readItemsBase({
+  const obj = await readItemsBase<TeamCompetitionSeason[]>({
     apiInstance: api,
     backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
     params: {
@@ -25,11 +25,9 @@ export const getSeasons = async (
     returnResponse: true,
   });
 
-  if (!res) return [];
+  if (!obj) return [];
 
-  const TeamCompetitionSeason: TeamCompetitionSeason[] = res.data;
-
-  const seasonIds = TeamCompetitionSeason.map((t) => t.season._id);
+  const seasonIds = obj.data.map((t) => t.season._id);
 
   return seasonIds;
 };

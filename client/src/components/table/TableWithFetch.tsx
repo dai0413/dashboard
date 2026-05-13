@@ -12,7 +12,6 @@ import { TableOperationFields } from "../../types/table";
 import {
   FilterableFieldDefinition,
   QueryParams,
-  ResBody,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { Data } from "../../types/types";
@@ -46,7 +45,7 @@ const TableWithFetch = <K extends keyof GettedModelDataMap>({
     isLoading: false,
   });
 
-  const fetchData = (
+  const fetchData = async (
     filterConditions?: FilterableFieldDefinition[],
     sortConditions?: SortableFieldDefinition[],
     params?: QueryParams,
@@ -65,21 +64,23 @@ const TableWithFetch = <K extends keyof GettedModelDataMap>({
       readParams.sorts = JSON.stringify(sortConditions);
     }
 
-    readItemsBase({
+    const obj = await readItemsBase<ModelDataMap[K][]>({
       apiInstance: api,
       backendRoute: apiRoute,
       params: readParams,
-      onSuccess: (resBody: ResBody<ModelDataMap[K][]>) =>
-        setData({
-          data: convert(modelType, resBody.data),
-          totalCount: resBody.totalCount ? resBody.totalCount : 1,
-          page: resBody.page ? resBody.page : 1,
-          isLoading: false,
-        }),
       handleLoading: (time) => {
         setData((prev) => ({ ...prev, isLoading: time === "start" }));
       },
     });
+
+    if (obj) {
+      setData({
+        data: convert(modelType, obj.data),
+        totalCount: obj.totalCount ? obj.totalCount : 1,
+        page: obj.page ? obj.page : 1,
+        isLoading: false,
+      });
+    }
   };
 
   const handlePageChange = async (

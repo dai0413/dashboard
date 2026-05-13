@@ -7,6 +7,7 @@ import { readItemsBase } from "../../../../api";
 import { onChangeFillChangesByRegistrationType } from "../onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../../utils/validate/validateByRegistrationType";
 import { getFields } from "../fields";
+import { StaffRegistrationHistoryForm } from "../../../../../types/models/staff-registration-history";
 
 type BaseModel = ModelType.STAFF_REGISTRATION_HISTORY;
 const baseModel = ModelType.STAFF_REGISTRATION_HISTORY;
@@ -18,15 +19,15 @@ export const d_sc: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
     modelType: baseModel,
     fetchValue: async (_data, api?: AxiosInstance) => {
       if (!api) return [];
-      const res = await readItemsBase({
+      const obj = await readItemsBase<StaffRegistrationHistoryForm[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_SC.STAFF_REGISTRATION_HISTORY,
         returnResponse: true,
       });
 
-      if (!res) return [];
+      if (!obj) return [];
 
-      return res.data;
+      return obj.data;
     },
     many: true,
     onChange: onChangeFillChangesByRegistrationType,

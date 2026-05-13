@@ -19,16 +19,15 @@ export const useMatchFormat = (): {
   const [loading, setLoading] = useState(true);
 
   const read = async (): Promise<FilterableFieldDefinition | undefined> => {
-    const resBody = await readItemsBase({
+    const obj = await readItemsBase<MatchFormat[]>({
       apiInstance: api,
       params: { getAll: true },
       backendRoute: API_PATHS.MATCH_FORMAT.ROOT,
       returnResponse: true,
     });
 
-    if (!resBody) return;
-    const data: MatchFormat[] = resBody.data;
-    const matchFormats = convert(ModelType.MATCH_FORMAT, data);
+    if (!obj) return;
+    const matchFormats = convert(ModelType.MATCH_FORMAT, obj.data);
 
     const filterCondition: FilterableFieldDefinition = {
       key: "_id",

@@ -2,7 +2,10 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { ModelType } from "../../../../../types/models";
 import { readItemBase, readItemsBase } from "../../../../api";
 import { convert } from "../../../../convert/DBtoGetted";
-import { PlayerRegistrationHistoryForm } from "../../../../../types/models/player-registration-history";
+import {
+  PlayerRegistrationHistory,
+  PlayerRegistrationHistoryForm,
+} from "../../../../../types/models/player-registration-history";
 import { OnChange } from "../../../../../types/form/onChange";
 import { set } from "lodash";
 import { Player } from "../../../../../types/models/player";
@@ -40,7 +43,7 @@ export const onChangeFillChangesByRegistrationType: OnChange<
 
   if (formData.registration_type === "deregister") {
     if (!formData.season || !formData.team) return { formData, formLabel };
-    const res = await readItemsBase({
+    const obj = await readItemsBase<PlayerRegistrationHistory[]>({
       apiInstance: api,
       backendRoute: API_PATHS.PLAYER_REGISTRATION_HISTORY.ROOT,
       params: {
@@ -54,12 +57,11 @@ export const onChangeFillChangesByRegistrationType: OnChange<
       returnResponse: true,
     });
 
-    if (!res) return { formData, formLabel };
-    if (res.data.length === 0) return { formData, formLabel };
+    if (!obj) return { formData, formLabel };
 
     const { changes } = convert(
       ModelType.PLAYER_REGISTRATION_HISTORY,
-      res.data[0],
+      obj.data[0],
     );
 
     function flattenChanges(changes: Record<string, any>) {

@@ -13,6 +13,7 @@ import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
 import { useListView } from "../../../context/listView-context";
 import { QuickFilterItem } from "../../../types/table";
+import { Season } from "../../../types/models/season";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -43,26 +44,28 @@ export const useTeam = (): {
       console.error("competition setting error ");
       return undefined;
     }
-    const season = await readItemsBase({
+    const seasonObj = await readItemsBase<Season[]>({
       apiInstance: api,
       params: { competition: competitionId, current: true },
       backendRoute: API_PATHS.SEASON.ROOT,
       returnResponse: true,
     });
-    if (!season) return undefined;
+    if (!seasonObj) return undefined;
 
-    const resBody = await readItemsBase({
+    const teamCompetitionSeasonObj = await readItemsBase<
+      TeamCompetitionSeason[]
+    >({
       apiInstance: api,
-      params: { getAll: true, season: season.data[0]._id },
+      params: { getAll: true, season: seasonObj.data[0]._id },
       backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
       returnResponse: true,
     });
 
-    if (!resBody) return undefined;
+    if (!teamCompetitionSeasonObj) return undefined;
 
     const teamCompetitionSeason = convert(
       ModelType.TEAM_COMPETITION_SEASON,
-      resBody.data as TeamCompetitionSeason[],
+      teamCompetitionSeasonObj.data,
     );
 
     const teams = teamCompetitionSeason.map((t) => t.team);

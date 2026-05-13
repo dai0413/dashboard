@@ -14,7 +14,7 @@ import { Stadium } from "./stadium";
 import { Staff } from "./staff";
 import { Team } from "./team";
 
-type ModelDataOption = {
+export type ModelDataOption = {
   [ModelType.COMPETITION_STAGE]: CompetitionStage;
   [ModelType.COMPETITION]: Competition;
   [ModelType.COUNTRY]: Country;

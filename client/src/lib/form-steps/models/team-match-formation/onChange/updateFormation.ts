@@ -5,20 +5,21 @@ import { PlayerAppearance } from "../../../../../types/models/player-appearance"
 import { readItemsBase } from "../../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { TeamMatchFormationForm } from "../../../../../types/models/team-match-formation";
+import { Formation } from "../../../../../types/models/formation";
 
 const fetchPlayerAppearances = async (
   api: AxiosInstance,
   match: string,
   team: string,
 ): Promise<PlayerAppearance[] | null> => {
-  const resBody = await readItemsBase({
+  const obj = await readItemsBase<PlayerAppearance[]>({
     apiInstance: api,
     params: { team, match, getAll: true, play_status: "start" },
     backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
     returnResponse: true,
   });
 
-  return resBody?.data ?? null;
+  return obj?.data ?? null;
 };
 
 const extractPositions = (playerAppearance: PlayerAppearance[]): string[] =>
@@ -31,16 +32,16 @@ const fetchFormationByKey = async (
   api: AxiosInstance,
   key: string,
 ): Promise<{ id: string; label: string } | null> => {
-  const resBody = await readItemsBase({
+  const obj = await readItemsBase<Formation[]>({
     apiInstance: api,
     params: { key },
     backendRoute: API_PATHS.FORMATION.ROOT,
     returnResponse: true,
   });
 
-  if (!resBody?.data || resBody.data.length !== 1) return null;
+  if (!obj?.data || obj.data.length !== 1) return null;
 
-  const f = resBody.data[0];
+  const f = obj.data[0];
   return { id: f._id, label: f.name };
 };
 

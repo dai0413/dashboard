@@ -1,22 +1,20 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError, ResBody, QueryParams } from "@dai0413/myorg-shared";
-import { DataResoonse } from "../../types/api";
+import { APIError, QueryParams } from "@dai0413/myorg-shared";
+import { ReadItemsResponse } from "../../types";
 
 type ReadItemsParams = {
   apiInstance: AxiosInstance;
   backendRoute: string;
   params?: QueryParams;
-  onSuccess?: (data: ResBody<any>) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: AlertStatus) => void;
 };
 
-export const readItemsBase = async ({
+export const readItemsBase = async <Data>({
   apiInstance,
   params,
   backendRoute,
-  onSuccess,
   handleLoading,
   handleSetAlert,
   returnResponse = false,
@@ -27,10 +25,11 @@ export const readItemsBase = async ({
     const res = await apiInstance.get(backendRoute, {
       params,
     });
-    onSuccess && onSuccess(res.data);
+    const responseData: ReadItemsResponse<Data> = res.data;
+
     alert = { success: true, message: res.data?.message };
 
-    if (returnResponse) return res.data as DataResoonse;
+    if (returnResponse) return responseData;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 

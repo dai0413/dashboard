@@ -19,7 +19,7 @@ import {
   uploadFileBase,
 } from "../../lib/api";
 import { cleanData } from "../data";
-import { QueryParams, ResBody, UploadJobType } from "@dai0413/myorg-shared";
+import { QueryParams, UploadJobType } from "@dai0413/myorg-shared";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
@@ -80,19 +80,21 @@ export function createModelContext<T extends ModelType>(
     };
 
     const readItems = async (params: QueryParams) => {
-      readItemsBase({
+      const obj = await readItemsBase<Model[]>({
         apiInstance: api,
         backendRoute: backendRoute.ROOT,
         params,
-        onSuccess: (resBody: ResBody<Model[]>) => {
-          setItems(convert(ContextModelString, resBody.data));
-          setTotalCount(resBody.totalCount ? resBody.totalCount : 1);
-          setPage(resBody.page ? resBody.page : 1);
-          setPageSize(resBody.pageSize ? resBody.pageSize : 1);
-        },
         handleLoading,
         handleSetAlert,
+        returnResponse: true,
       });
+
+      if (obj) {
+        setItems(convert(ContextModelString, obj.data));
+        setTotalCount(obj.totalCount);
+        setPage(obj.page);
+        setPageSize(obj.pageSize);
+      }
     };
 
     const readItem = async (id: string) => {
@@ -103,8 +105,6 @@ export function createModelContext<T extends ModelType>(
         handleLoading,
         handleSetAlert,
       });
-
-      console.log("item", item);
 
       if (item) setSelectedItem(convert(ContextModelString, item));
     };

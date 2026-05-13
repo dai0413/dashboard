@@ -71,16 +71,15 @@ const readMatchEventType = async (
   const read = async (
     api: AxiosInstance,
   ): Promise<FilterableFieldDefinition | undefined> => {
-    const resBody = await readItemsBase({
+    const obj = await readItemsBase<MatchEventType[]>({
       apiInstance: api,
       params: { getAll: true, event_type: "card" },
       backendRoute: API_PATHS.MATCH_EVENT_TYPE.ROOT,
       returnResponse: true,
     });
 
-    if (!resBody) return;
-    const data: MatchEventType[] = resBody.data;
-    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, data);
+    if (!obj) return;
+    const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, obj.data);
 
     const filterCondition: FilterableFieldDefinition = {
       key: "_id",

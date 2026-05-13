@@ -5,6 +5,7 @@ import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
+import { PlayerForm } from "../../../../../types/models/player";
 
 type BaseModel = ModelType.PLAYER;
 const baseModel = ModelType.PLAYER;
@@ -16,15 +17,15 @@ export const d_pc: FormStep<ModelType.PLAYER>[] = [
     modelType: baseModel,
     fetchValue: async (_data, api?: AxiosInstance) => {
       if (!api) return [];
-      const res = await readItemsBase({
+      const obj = await readItemsBase<PlayerForm[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_PC.PLAYER,
         returnResponse: true,
       });
 
-      if (!res) return [];
+      if (!obj) return [];
 
-      return res.data;
+      return obj.data;
     },
     many: true,
   },

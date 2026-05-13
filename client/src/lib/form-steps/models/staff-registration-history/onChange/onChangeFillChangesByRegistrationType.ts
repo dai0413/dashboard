@@ -3,7 +3,10 @@ import { ModelType } from "../../../../../types/models";
 import { readItemBase, readItemsBase } from "../../../../api";
 import { convert } from "../../../../convert/DBtoGetted";
 import { OnChange } from "../../../../../types/form/onChange";
-import { StaffRegistrationHistoryForm } from "../../../../../types/models/staff-registration-history";
+import {
+  StaffRegistrationHistory,
+  StaffRegistrationHistoryForm,
+} from "../../../../../types/models/staff-registration-history";
 import { set } from "lodash";
 import { Staff } from "../../../../../types/models/staff";
 
@@ -39,7 +42,7 @@ export const onChangeFillChangesByRegistrationType: OnChange<
 
   if (formData.registration_type === "deregister") {
     if (!formData.season || !formData.team) return { formData, formLabel };
-    const res = await readItemsBase({
+    const obj = await readItemsBase<StaffRegistrationHistory[]>({
       apiInstance: api,
       backendRoute: API_PATHS.STAFF_REGISTRATION_HISTORY.ROOT,
       params: {
@@ -53,12 +56,12 @@ export const onChangeFillChangesByRegistrationType: OnChange<
       returnResponse: true,
     });
 
-    if (!res) return { formData, formLabel };
-    if (res.data.length === 0) return { formData, formLabel };
+    if (!obj) return { formData, formLabel };
+    if (obj.data.length === 0) return { formData, formLabel };
 
     const { changes } = convert(
       ModelType.STAFF_REGISTRATION_HISTORY,
-      res.data[0],
+      obj.data[0],
     );
 
     function flattenChanges(changes: Record<string, any>) {
