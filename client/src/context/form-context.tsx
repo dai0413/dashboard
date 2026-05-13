@@ -424,68 +424,72 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const sendData = async (modelType: ModelType): Promise<boolean> => {
-    let res: CreateItemResponse<FormTypeMap[T]> | null = null;
     if (!modelContext || !modelType) return false;
+    let success: boolean = false;
 
-    if (inputMode === InputMode.SINGLE) {
-      let item: FormTypeMap[T];
-      if (modelType === ModelType.MATCH_FORMAT) {
-        item = { ...formData, period: formDatas };
-      } else {
-        item = formData;
-      }
+    if (formMode === FormMode.CREATE) {
+      let res: CreateItemResponse<FormTypeMap[T] | FormTypeMap[T][]> | null =
+        null;
 
-      if (formMode === FormMode.CREATE) {
-        res = await modelContext.createItem(item);
-      } else {
-        const difKeys = getDiffKeys && getDiffKeys();
-        if (!difKeys || difKeys?.length === 0) {
-          handleSetAlert({
-            success: false,
-            message: "変更点がありません",
-          });
-          return false;
+      if (inputMode === InputMode.SINGLE) {
+        let item: FormTypeMap[T];
+        if (modelType === ModelType.MATCH_FORMAT) {
+          item = { ...formData, period: formDatas };
+        } else {
+          item = formData;
         }
 
-        const updated: FormTypeMap[T] = Object.fromEntries(
-          Object.entries(formData).filter(([key]) => difKeys.includes(key)),
-        );
+        res = await modelContext.createItem(item);
+      }
 
-        res = await modelContext.updateItem({
-          ...getDefault(modelType),
-          ...updated,
+      if (inputMode === InputMode.MANY) {
+        res = await modelContext.createItems(formDatas);
+      }
+      success = res?.success || false;
+
+      if (success) {
+        const current = formSteps[currentStep];
+
+        if (!current) return false;
+        const addPostedDraftData = current.addPostedDraftData;
+        if (addPostedDraftData && res) {
+          const newPostedDraftData = addPostedDraftData({
+            draftData,
+            postedDraftData,
+            metaData,
+            res,
+            formLabel,
+          });
+          setPostedDraftData(newPostedDraftData);
+        }
+
+        if (formSteps.length - 1 === currentStep) {
+          setIsEditing(false);
+        }
+
+        resetFormDatas();
+      }
+    } else {
+      const difKeys = getDiffKeys && getDiffKeys();
+      if (!difKeys || difKeys?.length === 0) {
+        handleSetAlert({
+          success: false,
+          message: "変更点がありません",
         });
-      }
-    }
-
-    if (inputMode === InputMode.MANY) {
-      res = await modelContext.createItems(formDatas);
-    }
-
-    if (res?.success) {
-      const current = formSteps[currentStep];
-
-      if (!current) return false;
-      const addPostedDraftData = current.addPostedDraftData;
-      if (addPostedDraftData && res) {
-        const newPostedDraftData = addPostedDraftData({
-          draftData,
-          postedDraftData,
-          metaData,
-          res,
-          formLabel,
-        });
-        setPostedDraftData(newPostedDraftData);
+        return false;
       }
 
-      if (formSteps.length - 1 === currentStep) {
-        setIsEditing(false);
-      }
+      const updated: FormTypeMap[T] = Object.fromEntries(
+        Object.entries(formData).filter(([key]) => difKeys.includes(key)),
+      );
 
-      resetFormDatas();
+      success = await modelContext.updateItem({
+        ...getDefault(modelType),
+        ...updated,
+      });
     }
 
-    return res?.success ? true : false;
+    return success;
   };
 
   const stepSkip = (next: number) => {

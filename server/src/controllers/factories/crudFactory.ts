@@ -100,6 +100,7 @@ const crudFactory = <
     _id: z.string(),
   });
   type UPDATE_TYPE = z.infer<typeof UPDATE_ITEM_SCHEMA>;
+  const UPDATE = FORM.partial();
 
   const getResponseData = (populated: unknown): RESPONSE_TYPE => {
     const plain = convertObjectIdToString(populated);
@@ -289,7 +290,7 @@ const crudFactory = <
     }
     const data = nullToUndefined(req.body);
 
-    const parsed = FORM.parse(data);
+    const parsed = UPDATE.parse(data);
 
     const updateObj = buildUpdateObject(parsed);
 
