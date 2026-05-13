@@ -1,15 +1,16 @@
 import { Request } from "express";
 import mongoose from "mongoose";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";
-import { NationalCallUpResponseSchema, ResBody } from "@dai0413/myorg-shared";
+import { NationalCallUpResponseSchema } from "@dai0413/myorg-shared";
 import z from "zod";
 import { nationalCallUp } from "@dai0413/myorg-shared/models-config";
+import { ReadItemsResponse } from "../controllers/factories/crudFactory.js";
 
 type ResponseData = z.infer<typeof NationalCallUpResponseSchema>;
 
 export const getNoCallUpService = async (
   req: Request,
-): Promise<ResBody<ResponseData[]>> => {
+): Promise<ReadItemsResponse<ResponseData[]>> => {
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;

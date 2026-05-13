@@ -5,6 +5,7 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { Team } from "../../../../types/models/team";
 import { FilterConditionsByKey } from "../../../../types/form";
 import { convert } from "../../../convert/CreateLabel";
+import { Match } from "../../../../types/models/match";
 
 export const setMatchTeam = async (
   data?: FormTypeMap[ModelType.PLAYER_APPEARANCE],
@@ -12,15 +13,15 @@ export const setMatchTeam = async (
 ): Promise<FilterConditionsByKey | null> => {
   if (!data || !data.match || !api) return null;
 
-  const resBody = await readItemBase({
+  const match = await readItemBase<Match>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.DETAIL(data.match),
     returnResponse: true,
   });
 
-  if (!resBody.data) return null;
-  const home_team: Team = resBody.data.home_team;
-  const away_team: Team = resBody.data.away_team;
+  if (!match) return null;
+  const home_team: Team = match.home_team;
+  const away_team: Team = match.away_team;
   if (!home_team || !away_team) return null;
 
   let returnObj: FilterConditionsByKey | null = {

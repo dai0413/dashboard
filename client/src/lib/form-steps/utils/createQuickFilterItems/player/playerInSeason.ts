@@ -13,13 +13,13 @@ export const playerInSeason = async (
   const { team } = data;
   const { season: seasonId } = data;
 
-  const seasonResBody = await readItemBase({
+  const season = await readItemBase<Season>({
     apiInstance: api,
     backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
     returnResponse: true,
   });
 
-  const season: Season = seasonResBody.data;
+  if (!season) return null;
 
   const transferFromDate = season.start_date || undefined;
   const transferToDate = season.end_date || undefined;

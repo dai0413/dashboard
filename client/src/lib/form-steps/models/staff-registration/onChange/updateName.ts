@@ -4,6 +4,7 @@ import { ModelType } from "../../../../../types/models";
 import { readItemBase } from "../../../../api";
 import { convert } from "../../../../convert/DBtoGetted";
 import { StaffRegistrationForm } from "../../../../../types/models/staff-registration";
+import { Staff } from "../../../../../types/models/staff";
 
 export const updateName: OnChange<StaffRegistrationForm> = async (
   formData,
@@ -14,15 +15,15 @@ export const updateName: OnChange<StaffRegistrationForm> = async (
 
   if (!staffId || !api) return { formData, formLabel };
 
-  const res = await readItemBase({
+  const staff = await readItemBase<Staff>({
     apiInstance: api,
     backendRoute: API_PATHS.STAFF.DETAIL(staffId),
     returnResponse: true,
   });
 
-  if (!res?.data) return { formData, formLabel };
+  if (!staff) return { formData, formLabel };
 
-  const { name, en_name } = convert(ModelType.STAFF, res.data);
+  const { name, en_name } = convert(ModelType.STAFF, staff);
 
   let returnValue: Partial<StaffRegistrationForm> = {};
   let returnFormLabel: Record<string, any> = {};

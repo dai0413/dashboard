@@ -14,13 +14,13 @@ export const playerInMatch = async (
   if (!data || !api || !data.team || !data.match) return null;
   const { team, match: matchId } = data;
 
-  const matchResBody = await readItemBase({
+  const match = await readItemBase<Match>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.DETAIL(matchId),
     returnResponse: true,
   });
 
-  const match: Match = matchResBody.data;
+  if (!match) return null;
 
   const transferFromDate = match.season.start_date || undefined;
   const transferToDate = match.date || undefined;
