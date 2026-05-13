@@ -1,12 +1,11 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError } from "@dai0413/myorg-shared";
+import { DeleteItemResponse } from "../../types";
 
 type DeleteParams = {
   apiInstance: AxiosInstance;
   backendRoute: string;
-  onAfterDelete: () => void;
-
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: AlertStatus) => void;
 };
@@ -14,7 +13,6 @@ type DeleteParams = {
 export const deleteItemBase = async ({
   apiInstance,
   backendRoute,
-  onAfterDelete,
   handleLoading,
   handleSetAlert,
 }: DeleteParams) => {
@@ -23,8 +21,8 @@ export const deleteItemBase = async ({
   let alert: AlertStatus = { success: false };
   try {
     const res = await apiInstance.delete(backendRoute);
-    onAfterDelete();
-    alert = { success: true, message: res.data?.message };
+    const responseData: DeleteItemResponse = res.data;
+    alert = { success: true, message: responseData?.message };
     result = true;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;

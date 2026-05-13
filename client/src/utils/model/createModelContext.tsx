@@ -110,18 +110,19 @@ export function createModelContext<T extends ModelType>(
     };
 
     const deleteItem = async (id: string) => {
-      const result = deleteItemBase({
+      const success = await deleteItemBase({
         apiInstance: api,
         backendRoute: backendRoute.DETAIL(id),
-        onAfterDelete: () => {
-          setItems((prev) => prev.filter((t) => t._id !== id));
-          setSelected();
-        },
         handleLoading,
         handleSetAlert,
       });
 
-      return result;
+      if (success) {
+        setItems((prev) => prev.filter((t) => t._id !== id));
+        setSelected();
+      }
+
+      return success;
     };
 
     const updateItem = async (updated: Form) => {
