@@ -1,13 +1,12 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError } from "@dai0413/myorg-shared";
-import { DataResoonse } from "../../types/api";
+import { UpdateItemResponse } from "../../types";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;
   backendRoute: string;
   data: object;
-  onAfterUpdate: (item: any) => void;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: AlertStatus) => void;
 };
@@ -16,19 +15,18 @@ export const updateItemBase = async ({
   apiInstance,
   data,
   backendRoute,
-  onAfterUpdate,
   handleLoading,
   handleSetAlert,
-}: UpdateParams): Promise<DataResoonse> => {
+}: UpdateParams): Promise<boolean> => {
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
   let result = false;
   try {
     const res = await apiInstance.patch(backendRoute, data);
-    onAfterUpdate(res.data.data);
-    alert = { success: true, message: res.data?.message };
+    const responseData: UpdateItemResponse = res.data;
+    alert = { success: true, message: responseData.message };
 
-    result = true;
+    return true;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -39,10 +37,9 @@ export const updateItemBase = async ({
     };
 
     result = false;
+    return false;
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
-
-    return { success: result };
   }
 };
