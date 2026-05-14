@@ -54,7 +54,7 @@ const FieldRow = ({
     if (!isOptionType(filterCondition.key)) return;
 
     const options = getDefaultOptions(filterCondition.key);
-    setOptionSelectData(options);
+    setOptionSelectData(options.data);
   }, [filterCondition.key]);
 
   const valueArray = !Array.isArray(filterCondition.value)

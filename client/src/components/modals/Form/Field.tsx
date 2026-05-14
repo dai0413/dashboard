@@ -1,19 +1,17 @@
 import { get } from "lodash";
 import { useEffect, useState } from "react";
-import { resolveOptionSource } from "../../../types/field";
+import {
+  isCustomOptionType,
+  isModelType,
+  resolveOptionSource,
+} from "../../../types/field";
 import { FormTypeMap } from "../../../types/models";
-import { getDefaultOptions } from "../../../utils/createOption/createOption";
 import {
-  DefaultOptionMap,
-  OptionsMap,
-  OptionType,
-} from "../../../utils/createOption/types/base";
-import {
-  ModelDataOptions,
-  OptionArray,
-  OptionSource,
-  OptionTable,
-} from "../../../types/form/option";
+  getOptions,
+  readOptions,
+} from "../../../utils/createOption/createOption";
+import { OptionsMap, OptionType } from "../../../utils/createOption/types/base";
+import { OptionObj, OptionSource } from "../../../types/form/option";
 import { FormFieldDefinition } from "../../../types/form/field";
 import { getOptionKey } from "../../../lib/options";
 import { OptionProvider } from "../../../context/options-provider";
@@ -23,6 +21,14 @@ import { TableFieldRenderer } from "./Field/renderers/TableFieldRenderer";
 import { TextareaRenderer } from "./Field/renderers/TextareaRenderer";
 import { SelectFieldRenderer } from "./Field/renderers/SelectFieldRenderer";
 import { InputFieldRenderer } from "./Field/renderers/InputFieldRenderer";
+import { api } from "../../../context/api-context";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
+import { applyFilterClient } from "../../../utils/filter/applyFilterClient";
+import { applySortClient } from "../../../utils/sort/applySortClient";
+import { ModelOptionKey } from "../../../utils/createOption/types/optionTable";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -30,7 +36,7 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   formLabel: Record<string, any>;
   handleFormData: HandleFormData<T>;
   supportButton?: boolean;
-  options: Record<string, OptionArray | OptionTable<any>>;
+  options: Record<string, OptionObj<any>>;
 };
 
 export const RenderFieldBase = <T extends keyof FormTypeMap>({
@@ -48,14 +54,57 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
   const [optionKey, setOptionKey] = useState<keyof OptionsMap>(
     OptionType.OPERATOR,
   );
-  const [optionTableData, setOptionTableData] =
-    useState<ModelDataOptions<any> | null>(null);
+  const [optionData, setOptionData] = useState<OptionObj<any>>({ data: [] });
   const [optionIsLoading, setOptionIsLoading] = useState<boolean>(false);
   const [optionSource, setOptionSource] = useState<OptionSource>(
     OptionSource.PRESET,
   );
 
-  const [optionSelectData, setOptionSelectData] = useState<OptionArray>([]);
+  const [viewOptionData, setViewOptionData] = useState<OptionObj<any>>({
+    data: [],
+  });
+
+  const handlePageChange = async (
+    page: number,
+    filterConditions?: FilterableFieldDefinition[],
+    sortConditions?: SortableFieldDefinition[],
+  ): Promise<void> => {
+    setOptionIsLoading(true);
+
+    if (!optionKey) return setOptionIsLoading(false);
+
+    if (isModelType(optionKey)) {
+      const optionTableData = await readOptions({
+        api,
+        key: optionKey,
+        filterConditions,
+        sortConditions,
+        page,
+      });
+      if (!optionTableData) return setOptionIsLoading(false);
+      setOptionData(optionTableData);
+    } else if (isCustomOptionType(optionKey)) {
+      if (!optionData) return setOptionIsLoading(false);
+
+      let processed = [...optionData.data];
+
+      processed = applyFilterClient(processed, filterConditions);
+      processed = applySortClient(processed, sortConditions);
+
+      const nextViewOptionData = {
+        ...optionData,
+        page,
+        option: {
+          ...optionData,
+          data: processed,
+        },
+        totalCount: processed.length,
+      };
+      setViewOptionData(nextViewOptionData);
+    }
+
+    setOptionIsLoading(false);
+  };
 
   useEffect(() => {
     if (!key) return;
@@ -68,26 +117,36 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
     setOptionSource(source);
 
     if (source === OptionSource.PRESET) {
-      const options = getDefaultOptions(
-        nextOptionKey as keyof DefaultOptionMap,
+      getOptions({ source, key: nextOptionKey as OptionType }).then(
+        setOptionData,
       );
-      setOptionSelectData(options);
     }
 
-    if (source === OptionSource.CUSTOM && nextOptionKey in options) {
-      const optionData = options[nextOptionKey];
-
-      if (Array.isArray(optionData)) {
-        setOptionSelectData(optionData);
-      } else {
-        setOptionTableData({
-          option: optionData,
+    if (source === OptionSource.REMOTE) {
+      getOptions({
+        source,
+        key: nextOptionKey as ModelOptionKey,
+        readOptionsParam: {
+          api,
+          filterConditions: [],
+          sortConditions: [],
           page: 1,
-          totalCount: optionData.data.length,
-        });
-      }
+        },
+      }).then(setOptionData);
+    }
+
+    if (source === OptionSource.CUSTOM) {
+      getOptions({
+        source,
+        key: nextOptionKey,
+        options,
+      }).then(setOptionData);
     }
   }, [key]);
+
+  useEffect(() => {
+    setViewOptionData(optionData);
+  }, [optionKey, optionData]);
 
   const withTrailingEmpty = (arr: string[] = [], lengthInArray?: number) => {
     if (lengthInArray && arr.length >= lengthInArray) {
@@ -113,12 +172,11 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
           formDataKey={formDataKey}
           field={field}
           optionKey={optionKey}
-          optionTableData={optionTableData}
+          viewOptionData={viewOptionData}
           optionIsLoading={optionIsLoading}
           optionSource={optionSource}
           handleFormData={handleFormData}
-          setOptionIsLoading={setOptionIsLoading}
-          setOptionTableData={setOptionTableData}
+          handlePageChange={handlePageChange}
         />
       );
     }
@@ -171,7 +229,7 @@ export const RenderFieldBase = <T extends keyof FormTypeMap>({
           lengthInArray={lengthInArray}
           value={(formDataValue as string | number | Date) ?? ""}
           values={formDataArray}
-          options={optionSelectData}
+          options={optionData.data}
           onChangeItem={onChangeItem}
           onChangeObj={onChangeObj}
         />

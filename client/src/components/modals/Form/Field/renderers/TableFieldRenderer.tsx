@@ -1,25 +1,16 @@
 import { X } from "lucide-react";
-import {
-  FormTypeMap,
-  GettedModelDataMap,
-  ModelDataMap,
-  ModelType,
-} from "../../../../../types/models";
+import { FormTypeMap } from "../../../../../types/models";
 import { CustomTableContainer } from "../../../../table";
 import { QuickFilterItem } from "../../../../../types/table";
 import { FormFieldDefinition, UpdateMode } from "../../../../../types/form";
 import { OptionsMap } from "../../../../../utils/createOption/types/base";
-import {
-  ModelDataOptions,
-  OptionSource,
-  OptionTable,
-} from "../../../../../types/form/option";
+import { OptionObj, OptionSource } from "../../../../../types/form/option";
 import { HandleFormData } from "../../../../../types/form/handleFormData";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import {
   isCustomOptionType,
   isModelType,
@@ -31,19 +22,6 @@ import {
   getSortableFields,
 } from "../../../../../lib/model-fields";
 import { useForm } from "../../../../../context/form-context";
-import { AxiosInstance } from "axios";
-import { optionRouteMap } from "../../../../../lib/options";
-import {
-  ModelDataOption,
-  ModelDataOptionConfigMap,
-} from "../../../../../utils/createOption/types/optionTable";
-import { normalizeFiltersForApi } from "../../../../../utils/filter/normalizeFiltersForApi";
-import { readItemsBase } from "../../../../../lib/api";
-import { convert } from "../../../../../lib/convert/DBtoGetted";
-import { convertToOption } from "../../../../../utils/createOption/createOption";
-import { api } from "../../../../../context/api-context";
-import { applyFilterClient } from "../../../../../utils/filter/applyFilterClient";
-import { applySortClient } from "../../../../../utils/sort/applySortClient";
 
 type TableFieldRendererProps<T extends keyof FormTypeMap> = {
   value: FormTypeMap[T][keyof FormTypeMap[T]];
@@ -52,12 +30,15 @@ type TableFieldRendererProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
 
   optionKey: keyof OptionsMap;
-  optionTableData: ModelDataOptions<any> | null;
+  viewOptionData: OptionObj<any>;
   optionIsLoading: boolean;
   optionSource: OptionSource;
   handleFormData: HandleFormData<T>;
-  setOptionIsLoading: (time: boolean) => void;
-  setOptionTableData: (data: ModelDataOptions<any> | null) => void;
+  handlePageChange: (
+    page: number,
+    filterConditions?: FilterableFieldDefinition[] | undefined,
+    sortConditions?: SortableFieldDefinition[],
+  ) => Promise<void>;
 };
 
 export const TableFieldRenderer = <T extends keyof FormTypeMap>({
@@ -67,127 +48,13 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
   field,
 
   optionKey,
-  optionTableData,
+  viewOptionData,
   optionIsLoading,
   optionSource,
   handleFormData,
-  setOptionIsLoading,
-  setOptionTableData,
+  handlePageChange,
 }: TableFieldRendererProps<T>) => {
   const { filterConditionsObj, quickFilterItemsObj } = useForm();
-
-  const [viewOptionData, setViewOptionData] =
-    useState<ModelDataOptions<any> | null>(null);
-
-  const readOptions = async <T extends keyof ModelDataOptionConfigMap>(
-    api: AxiosInstance,
-    nextOptionKey: T,
-    filterConditions?: FilterableFieldDefinition[],
-    sortConditions?: SortableFieldDefinition[],
-    page?: number,
-  ): Promise<ModelDataOptions<OptionsMap[T]> | undefined> => {
-    function isOptionKey(key: ModelType): key is keyof ModelDataOption {
-      return key in optionRouteMap;
-    }
-    if (!isOptionKey(nextOptionKey)) {
-      console.error("optionRouteMapにキーが存在しません:", nextOptionKey);
-      return;
-    }
-    const crudRoutes = optionRouteMap[nextOptionKey];
-
-    const { ROOT: route } = crudRoutes;
-
-    if (!route) {
-      console.error("ROOT が未定義です:", nextOptionKey);
-      return;
-    }
-
-    const params: Record<string, any> = {
-      getAll: true,
-    };
-
-    if (filterConditions && filterConditions.length > 0) {
-      params.filters = JSON.stringify(normalizeFiltersForApi(filterConditions));
-    }
-
-    if (sortConditions && sortConditions.length > 0) {
-      params.sorts = JSON.stringify(sortConditions);
-    }
-
-    const handleLoading = (time: "start" | "end") => {
-      setOptionIsLoading(time === "start");
-    };
-
-    const response = await readItemsBase<ModelDataMap[T][]>({
-      apiInstance: api,
-      backendRoute: route,
-      params,
-      handleLoading: handleLoading,
-      returnResponse: true,
-    });
-
-    if (!response) return undefined;
-
-    const getted: GettedModelDataMap[T][] = convert(
-      nextOptionKey,
-      response.data,
-    );
-    const option: OptionTable<OptionsMap[T]> = convertToOption(
-      nextOptionKey,
-      getted,
-      true,
-    );
-
-    const optionTableData: ModelDataOptions<OptionsMap[T]> = {
-      option,
-      page: page ? page : response.page || 1,
-      totalCount: response.totalCount || 1,
-    };
-
-    return optionTableData;
-  };
-
-  const handlePageChange = async (
-    page: number,
-    filterConditions?: FilterableFieldDefinition[],
-    sortConditions?: SortableFieldDefinition[],
-  ): Promise<void> => {
-    setOptionIsLoading(true);
-
-    if (!optionKey) return setOptionIsLoading(false);
-
-    if (isModelType(optionKey)) {
-      const optionTableData = await readOptions(
-        api,
-        optionKey,
-        filterConditions,
-        sortConditions,
-        page,
-      );
-      if (!optionTableData) return setOptionIsLoading(false);
-      setOptionTableData(optionTableData);
-    } else if (isCustomOptionType(optionKey)) {
-      if (!optionTableData) return setOptionIsLoading(false);
-
-      let processed = [...optionTableData.option.data];
-
-      processed = applyFilterClient(processed, filterConditions);
-      processed = applySortClient(processed, sortConditions);
-
-      const nextViewOptionData = {
-        ...optionTableData,
-        page,
-        option: {
-          ...optionTableData.option,
-          data: processed,
-        },
-        totalCount: processed.length,
-      };
-      setViewOptionData(nextViewOptionData);
-    }
-
-    setOptionIsLoading(false);
-  };
 
   const filterField = useMemo(() => {
     if (!optionKey) return;
@@ -221,10 +88,6 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
     return quickFilterItemsObj[optionKey] || [];
   }, [optionKey, quickFilterItemsObj]);
 
-  useEffect(() => {
-    setViewOptionData(optionTableData);
-  }, [optionKey, optionTableData]);
-
   return (
     <>
       <div className="flex mb-2 text-gray-700">
@@ -251,20 +114,17 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
       <CustomTableContainer
         pageNation="client"
         modelType={optionKey && isModelType(optionKey) ? optionKey : undefined}
-        fieldDefinitions={viewOptionData ? viewOptionData.option.fields : []}
-        items={viewOptionData ? viewOptionData.option.data : undefined}
+        fieldDefinitions={viewOptionData?.fields ? viewOptionData.fields : []}
+        items={viewOptionData ? viewOptionData.data : undefined}
         filterField={filterField}
         sortField={sortField}
         itemsLoading={optionIsLoading}
         pageNum={viewOptionData ? viewOptionData.page || 1 : 1}
         totalCount={viewOptionData ? viewOptionData.totalCount : undefined}
         form={true}
-        onClick={(index, row: FormTypeMap[T][keyof FormTypeMap[T]]) => {
+        onClick={(index, row: OptionObj<any>["data"][number]) => {
           if (field.multi) {
-            const { key, label } = row as {
-              label: string;
-              key: string;
-            } & Record<any, any>;
+            const { key, label } = row;
 
             handleFormData({
               key: formDataKey,
@@ -276,7 +136,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
           } else {
             handleFormData({
               key: formDataKey,
-              value: row,
+              value: row as FormTypeMap[T][keyof FormTypeMap[T]],
               field,
               updateMode: UpdateMode.REPLACE,
             });
