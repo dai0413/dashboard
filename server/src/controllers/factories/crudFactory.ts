@@ -29,6 +29,16 @@ import {
   buildJsonSort,
 } from "../helpers/crud/query/index.js";
 
+type SuccessReturn<DATA> = {
+  success: true;
+  data: DATA;
+};
+type FailedReturn = {
+  success: false;
+};
+
+type Result<DATA> = SuccessReturn<DATA> | FailedReturn;
+
 type ResDataBase<DATA> = {
   data: DATA;
 };
@@ -56,22 +66,18 @@ export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
 };
 
 // create
-export type CreateItemResponse<DATA> = ResDataBase<DATA> & {
-  success: boolean;
+export type CreateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type CreateItemsResponse<DATA> = ResDataBase<DATA> & {
-  success: boolean;
+export type CreateItemsResponse<DATA> = Result<DATA> & {
   message: string;
 } & BulkResult<DATA>;
 
 // update
-export type UpdateItemResponse<DATA> = ResDataBase<DATA> & {
-  success: boolean;
+export type UpdateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type UpdateItemsResponse<DATA> = ResDataBase<DATA> & {
-  success: boolean;
+export type UpdateItemsResponse<DATA> = Result<DATA> & {
   message: string;
 } & BulkResult<DATA>;
 

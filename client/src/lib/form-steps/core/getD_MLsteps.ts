@@ -29,6 +29,8 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
 }) => {
   const card_ids: string[] = metaData.card_ids;
 
+  if (!res.success) return {};
+
   const matchOriginal: Match[] = res.data;
 
   const posted: PostedDraftData = Object.fromEntries(
@@ -60,6 +62,8 @@ const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   metaData,
 }) => {
   const card_ids: string[] = metaData.card_ids;
+
+  if (!res.success) return {};
 
   const playerAppearance: PlayerAppearance[] = res.data;
 

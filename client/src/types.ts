@@ -1,3 +1,13 @@
+type SuccessReturn<DATA> = {
+  success: true;
+  data: DATA;
+};
+type FailedReturn = {
+  success: false;
+};
+
+type Result<DATA> = SuccessReturn<DATA> | FailedReturn;
+
 type ResDataBase<DATA> = {
   data: DATA;
 };
@@ -25,22 +35,18 @@ export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
 };
 
 // create
-export type CreateItemResponse<DATA> = Partial<ResDataBase<DATA>> & {
-  success: boolean;
+export type CreateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type CreateItemsResponse<DATA> = Partial<ResDataBase<DATA>> & {
-  success: boolean;
+export type CreateItemsResponse<DATA> = Result<DATA> & {
   message: string;
 } & BulkResult<DATA>;
 
 // update
-export type UpdateItemResponse = {
-  success: boolean;
+export type UpdateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type UpdateItemsResponse<DATA> = {
-  success: boolean;
+export type UpdateItemsResponse<DATA> = Result<DATA> & {
   message: string;
 } & BulkResult<DATA>;
 

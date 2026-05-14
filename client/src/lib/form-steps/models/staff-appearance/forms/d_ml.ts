@@ -49,7 +49,7 @@ const fetchResolved = async (
     returnResponse: true,
   });
 
-  if (!res?.data || !Array.isArray(res.data.staffAppearance)) return [];
+  if (!res.success) return [];
 
   return res.data.staffAppearance;
 };

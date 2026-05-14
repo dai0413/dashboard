@@ -11,7 +11,7 @@ type UpdateParams = {
   handleSetAlert?: (value: AlertStatus) => void;
 };
 
-export const updateItemBase = async ({
+export const updateItemBase = async <DATA>({
   apiInstance,
   data,
   backendRoute,
@@ -22,7 +22,7 @@ export const updateItemBase = async ({
   let alert: AlertStatus = { success: false };
   try {
     const res = await apiInstance.patch(backendRoute, data);
-    const responseData: UpdateItemResponse = res.data;
+    const responseData: UpdateItemResponse<DATA> = res.data;
     alert = { success: true, message: responseData.message };
 
     return true;

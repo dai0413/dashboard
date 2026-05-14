@@ -55,7 +55,7 @@ const fetchResolved = async (
     returnResponse: true,
   });
 
-  if (!res?.data || !Array.isArray(res.data.match)) return [];
+  if (!res.success) return [];
 
   return res.data.match;
 };
@@ -160,7 +160,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
         returnResponse: true,
       });
 
-      if (!res?.data) return {};
+      if (!res.success) return {};
 
       const data: CardIdOption[] = res.data
         .map((s, i) => {
@@ -214,7 +214,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
         returnResponse: true,
       });
 
-      if (!res?.data) return {};
+      if (!res.success) return {};
 
       const draftDataValue = res.data;
 

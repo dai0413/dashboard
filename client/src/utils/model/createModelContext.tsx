@@ -123,7 +123,7 @@ export function createModelContext<T extends ModelType>(
       if (!selected) return false;
       const id = selected._id;
 
-      const result = await updateItemBase({
+      const result = await updateItemBase<Form>({
         apiInstance: api,
         backendRoute: backendRoute.DETAIL(id),
         data: updated,

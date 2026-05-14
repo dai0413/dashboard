@@ -50,7 +50,7 @@ const fetchResolved = async (
     returnResponse: true,
   });
 
-  if (!res?.data || !Array.isArray(res.data.match)) return [];
+  if (!res.success) return [];
 
   return res.data.match;
 };
@@ -180,7 +180,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
           : Promise.resolve(null),
       ]);
 
-      if (!res?.data) return {};
+      if (!res.success) return {};
 
       const baseData: DraftDataValue = {
         ...res.data,
@@ -196,7 +196,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
       if (!baseData.playerAppearance) return {};
 
       // ポジションマージ処理
-      if (positionRes?.data) {
+      if (positionRes?.success) {
         const positionData: PositionData = positionRes.data;
         const { home, away } = positionData;
 

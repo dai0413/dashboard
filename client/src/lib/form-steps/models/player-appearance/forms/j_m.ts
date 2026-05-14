@@ -69,7 +69,7 @@ const fetchResolved = async (
     returnResponse: true,
   });
 
-  if (!res?.data || !Array.isArray(res.data.playerAppearance)) return [];
+  if (!res.success) return [];
 
   return res.data.playerAppearance;
 };

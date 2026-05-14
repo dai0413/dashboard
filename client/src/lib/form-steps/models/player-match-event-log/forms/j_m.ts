@@ -70,7 +70,7 @@ const fetchResolved = async (
     returnResponse: true,
   });
 
-  if (!res?.data || !Array.isArray(res.data.playerMatchEventLog)) return [];
+  if (!res.success) return [];
 
   return res.data.playerMatchEventLog;
 };

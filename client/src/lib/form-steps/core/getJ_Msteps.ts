@@ -28,6 +28,8 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   let result = postedDraftData;
   const getDataUrl = metaData.getDataUrl;
 
+  if (!res.success) return {};
+
   const matchOriginal: Match = res.data;
 
   const match = convert(ModelType.MATCH, matchOriginal);
@@ -54,6 +56,8 @@ const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   const getDataUrl = metaData.getDataUrl;
 
   const { home_team, away_team } = postedDraftData[getDataUrl].match;
+
+  if (!res.success) return {};
 
   const playerAppearance: PlayerAppearance[] = res.data;
 
