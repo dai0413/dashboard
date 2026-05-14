@@ -1,5 +1,6 @@
-import { OptionArray, OptionTable } from "../../../types/form/option";
-import { ModelDataOptionConfigMap } from "./optionTable";
+import { Base } from "../../../types/form/option";
+import { ModelDataOption } from "./optionTable";
+import { CardIdOption } from "../custom/cardId";
 
 export enum OptionType {
   OPERATOR = "operator",
@@ -35,33 +36,41 @@ export enum CustomOptionType {
 }
 
 export type DefaultOptionMap = {
-  [OptionType.OPERATOR]: OptionArray;
-  [OptionType.GENRE]: OptionArray;
-  [OptionType.FORM]: OptionArray;
-  [OptionType.POSITION]: OptionArray;
-  [OptionType.AREA]: OptionArray;
-  [OptionType.DISTRICT]: OptionArray;
-  [OptionType.CONFEDERATION]: OptionArray;
-  [OptionType.SUB_CONFEDERATION]: OptionArray;
-  [OptionType.AGE_GROUP]: OptionArray;
-  [OptionType.LEFT_REASON]: OptionArray;
-  [OptionType.POSITION_GROUP]: OptionArray;
-  [OptionType.STATUS]: OptionArray;
-  [OptionType.COMPETITION_TYPE]: OptionArray;
-  [OptionType.CATEGORY]: OptionArray;
-  [OptionType.LEVEL]: OptionArray;
-  [OptionType.CURRENT]: OptionArray;
-  [OptionType.IS_INJURED]: OptionArray;
-  [OptionType.STAGE_TYPE]: OptionArray;
-  [OptionType.DIVISION]: OptionArray;
-  [OptionType.PERIOD_LABEL]: OptionArray;
-  [OptionType.RESULT]: OptionArray;
-  [OptionType.REGISTRATION_TYPE]: OptionArray;
-  [OptionType.EVENT_TYPE]: OptionArray;
-  [OptionType.POSITION_FORMATION]: OptionArray;
-  [OptionType.SPECIAL_TIME]: OptionArray;
-  [OptionType.PLAY_STATUS]: OptionArray;
-  [CustomOptionType.CARD_IDS]: OptionTable<any>;
+  [OptionType.OPERATOR]: Base;
+  [OptionType.GENRE]: Base;
+  [OptionType.FORM]: Base;
+  [OptionType.POSITION]: Base;
+  [OptionType.AREA]: Base;
+  [OptionType.DISTRICT]: Base;
+  [OptionType.CONFEDERATION]: Base;
+  [OptionType.SUB_CONFEDERATION]: Base;
+  [OptionType.AGE_GROUP]: Base;
+  [OptionType.LEFT_REASON]: Base;
+  [OptionType.POSITION_GROUP]: Base;
+  [OptionType.STATUS]: Base;
+  [OptionType.COMPETITION_TYPE]: Base;
+  [OptionType.CATEGORY]: Base;
+  [OptionType.LEVEL]: Base;
+  [OptionType.CURRENT]: Base;
+  [OptionType.IS_INJURED]: Base;
+  [OptionType.STAGE_TYPE]: Base;
+  [OptionType.DIVISION]: Base;
+  [OptionType.PERIOD_LABEL]: Base;
+  [OptionType.RESULT]: Base;
+  [OptionType.REGISTRATION_TYPE]: Base;
+  [OptionType.EVENT_TYPE]: Base;
+  [OptionType.POSITION_FORMATION]: Base;
+  [OptionType.SPECIAL_TIME]: Base;
+  [OptionType.PLAY_STATUS]: Base;
+  [CustomOptionType.CARD_IDS]: CardIdOption;
 };
 
-export type OptionsMap = DefaultOptionMap & ModelDataOptionConfigMap;
+export type OptionsMap = {
+  // preset
+  [K in keyof DefaultOptionMap]: DefaultOptionMap[K];
+} & {
+  // model
+  // [K in ModelType]: Base;
+} & {
+  [K in keyof ModelDataOption]: ModelDataOption[K];
+};

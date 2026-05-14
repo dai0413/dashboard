@@ -1,5 +1,4 @@
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
-import { OptionArray, OptionTable } from "../../../../types/form/option";
 import { Competition } from "./competition";
 import { CompetitionStage } from "./competition-stage";
 import { Country } from "./country";
@@ -13,6 +12,8 @@ import { Season } from "./season";
 import { Stadium } from "./stadium";
 import { Staff } from "./staff";
 import { Team } from "./team";
+
+export type ModelOptionKey = keyof ModelDataOption;
 
 export type ModelDataOption = {
   [ModelType.COMPETITION_STAGE]: CompetitionStage;
@@ -30,13 +31,6 @@ export type ModelDataOption = {
   [ModelType.TEAM]: Team;
 };
 
-type OptionTableMap = {
-  [K in keyof ModelDataOption]: OptionArray | OptionTable<ModelDataOption[K]>;
-};
-
-export type ModelDataOptionConfigMap = {
-  [K in keyof ModelDataOption]: {
-    input: GettedModelDataMap[K][];
-    option: OptionTableMap[K];
-  };
+export type OptionInputMap = {
+  [K in ModelType]: GettedModelDataMap[K][];
 };
