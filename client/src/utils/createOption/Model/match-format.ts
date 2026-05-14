@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { MatchFormatGet } from "../../../types/models/match-format";
 import { ColumnType } from "../../../types/table";
-import { MatchFormat } from "../types/optionTable/match-format";
+import { MatchFormat } from "../types/model/match-format";
 
 export const matchFormat = (data: MatchFormatGet[]): OptionObj<MatchFormat> => {
   const options: MatchFormat[] = data.map((d) => ({

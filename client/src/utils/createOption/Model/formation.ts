@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { FormationGet } from "../../../types/models/formation";
 import { ColumnType } from "../../../types/table";
-import { Formation } from "../types/optionTable/formation";
+import { Formation } from "../types/model/formation";
 
 export const formation = (data: FormationGet[]): OptionObj<Formation> => {
   const options: Formation[] = data.map((d) => ({

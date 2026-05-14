@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { MatchEventTypeGet } from "../../../types/models/match-event-type";
 import { ColumnType } from "../../../types/table";
-import { MatchEventType } from "../types/optionTable/match-event-type";
+import { MatchEventType } from "../types/model/match-event-type";
 
 export const matchEventType = (
   data: MatchEventTypeGet[],

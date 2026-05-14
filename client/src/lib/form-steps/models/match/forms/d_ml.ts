@@ -22,9 +22,11 @@ import { CompetitionStage } from "../../../../../types/models/competition-stage"
 import { convert } from "../../../../convert/CreateLabel";
 import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
 import { Season } from "../../../../../types/models/season";
-import { CardIdOption } from "../../../../../utils/createOption/custom/cardId";
 import { optionFieldDefinition } from "../../../../model-fields";
-import { CustomOptionType } from "../../../../../utils/createOption/types/base";
+import {
+  CardIdOption,
+  CustomOptionType,
+} from "../../../../../utils/createOption/types/custom";
 
 const KEYS = [
   "home_team",

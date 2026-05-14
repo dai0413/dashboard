@@ -9,3 +9,11 @@ export type CardIdOption = {
   away_team: string;
   match_card_id?: string;
 };
+
+export enum CustomOptionType {
+  CARD_IDS = "card_ids",
+}
+
+export type CustomOptionMap = {
+  [CustomOptionType.CARD_IDS]: CardIdOption;
+};

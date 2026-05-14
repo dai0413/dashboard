@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { PlayerGet } from "../../../types/models/player";
 import { ColumnType } from "../../../types/table";
-import { Player } from "../types/optionTable/player";
+import { Player } from "../types/model/player";
 
 export const player = (data: PlayerGet[]): OptionObj<Player> => {
   const options: Player[] = data.map((d) => ({

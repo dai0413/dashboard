@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { SeasonGet } from "../../../types/models/season";
 import { ColumnType } from "../../../types/table";
-import { Season } from "../types/optionTable/season";
+import { Season } from "../types/model/season";
 
 export const season = (data: SeasonGet[]): OptionObj<Season> => {
   const options: Season[] = data.map((d) => ({

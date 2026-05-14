@@ -1,6 +1,6 @@
 import { UIFieldDefinition } from "../../../types/field";
 import { ColumnType } from "../../../types/table";
-import { CardIdOption } from "../../../utils/createOption/custom/cardId";
+import { CardIdOption } from "../../../utils/createOption/types/custom";
 
 export const cardId: UIFieldDefinition<CardIdOption>[] = [
   {

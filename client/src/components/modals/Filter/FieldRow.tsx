@@ -4,8 +4,8 @@ import FilterFields from "../../field/FilterFields";
 import { OptionArray } from "../../../types/form/option";
 import { FilterableFieldDefinition, operator } from "@dai0413/myorg-shared";
 import React, { useEffect, useState } from "react";
-import { getDefaultOptions } from "../../../utils/createOption/createOption";
 import { isOptionType } from "../../../types/field";
+import { getDefaultOptions } from "../../../utils/createOption";
 
 type OnchangeProps = {
   handleFieldValue: (

@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { StaffGet } from "../../../types/models/staff";
 import { ColumnType } from "../../../types/table";
-import { Staff } from "../types/optionTable/staff";
+import { Staff } from "../types/model/staff";
 
 export const staff = (data: StaffGet[]): OptionObj<Staff> => {
   const options: Staff[] = data.map((d) => ({

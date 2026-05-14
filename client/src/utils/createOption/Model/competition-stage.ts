@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { CompetitionStageGet } from "../../../types/models/competition-stage";
 import { ColumnType } from "../../../types/table";
-import { CompetitionStage } from "../types/optionTable/competition-stage";
+import { CompetitionStage } from "../types/model/competition-stage";
 
 export const competitionStage = (
   data: CompetitionStageGet[],

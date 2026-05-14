@@ -3,13 +3,13 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../api";
 import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { OptionType } from "../../../../utils/createOption/types/base";
 import { QuickFilterItem } from "../../../../types/table";
 import { PlayerRegistration } from "../../../../types/models/player-registration";
 import { convert } from "../../../convert/CreateLabel";
 import { Competition } from "../../../../types/models/competition";
 import { Season } from "../../../../types/models/season";
 import { Transfer } from "../../../../types/models/transfer";
+import { OptionType } from "../../../../utils/createOption/types/preset";
 
 const getRegistration = async (
   api: AxiosInstance,

@@ -36,9 +36,11 @@ import {
   UIFieldDefinition,
 } from "../../types/field";
 import { FilterField, SortField } from "@dai0413/myorg-shared";
-import { CustomOptionType } from "../../utils/createOption/types/base";
 import { cardId } from "../options/fields/cardId";
-import { CustomOptionMap } from "../../utils/createOption/custom";
+import {
+  CustomOptionMap,
+  CustomOptionType,
+} from "../../utils/createOption/types/custom";
 
 export const fieldDefinition: {
   [K in ModelType]?: UIFieldDefinition<GettedModelDataMap[K]>[];

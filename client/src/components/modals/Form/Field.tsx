@@ -6,11 +6,7 @@ import {
   resolveOptionSource,
 } from "../../../types/field";
 import { FormTypeMap } from "../../../types/models";
-import {
-  getOptions,
-  readOptions,
-} from "../../../utils/createOption/createOption";
-import { OptionsMap, OptionType } from "../../../utils/createOption/types/base";
+import { OptionsMap } from "../../../utils/createOption/types/base";
 import { OptionObj, OptionSource } from "../../../types/form/option";
 import { FormFieldDefinition } from "../../../types/form/field";
 import { getOptionKey } from "../../../lib/options";
@@ -28,7 +24,9 @@ import {
 } from "@dai0413/myorg-shared";
 import { applyFilterClient } from "../../../utils/filter/applyFilterClient";
 import { applySortClient } from "../../../utils/sort/applySortClient";
-import { ModelOptionKey } from "../../../utils/createOption/types/optionTable";
+import { ModelOptionKey } from "../../../utils/createOption/types/model";
+import { getOptions, readOptions } from "../../../utils/createOption";
+import { OptionType } from "../../../utils/createOption/types/preset";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;

@@ -1,8 +1,9 @@
 import { BaseField, FilterField, SortField } from "@dai0413/myorg-shared";
-import { CustomOptionType, OptionType } from "../utils/createOption/types/base";
 import { ModelType } from "./models";
 import { QuickFilterType, TableHeader } from "./table";
 import { OptionSource } from "./form/option";
+import { OptionType } from "../utils/createOption/types/preset";
+import { CustomOptionType } from "../utils/createOption/types/custom";
 
 // 詳細画面用
 export type DetailField = {

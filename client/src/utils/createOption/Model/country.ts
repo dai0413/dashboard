@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { CountryGet } from "../../../types/models/country";
 import { ColumnType } from "../../../types/table";
-import { Country } from "../types/optionTable/country";
+import { Country } from "../types/model/country";
 
 export const country = (data: CountryGet[]): OptionObj<Country> => {
   const options: Country[] = data.map((d) => ({

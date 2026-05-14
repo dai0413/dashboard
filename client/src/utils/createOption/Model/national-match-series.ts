@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { NationalMatchSeriesGet } from "../../../types/models/national-match-series";
 import { ColumnType } from "../../../types/table";
-import { NationalMatchSeries } from "../types/optionTable/national-match-series";
+import { NationalMatchSeries } from "../types/model/national-match-series";
 
 export const nationalMatchSeries = (
   data: NationalMatchSeriesGet[],

@@ -1,7 +1,7 @@
 import { OptionObj } from "../../../types/form/option";
 import { CompetitionGet } from "../../../types/models/competition";
 import { ColumnType } from "../../../types/table";
-import { Competition } from "../types/optionTable/competition";
+import { Competition } from "../types/model/competition";
 
 export const competition = (data: CompetitionGet[]): OptionObj<Competition> => {
   const options: Competition[] = data.map((d) => ({
