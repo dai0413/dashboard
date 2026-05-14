@@ -34,7 +34,7 @@ import { FormMode, From, InputMode, StartFormArgs } from "../types/types";
 import { DraftData } from "../types/form/draftData";
 import { PostedDraftData } from "../types/form/postedDraftData";
 import { getLabelById } from "../utils/model/getLabelById";
-import { OptionArray, OptionTable } from "../types/form/option";
+import { OptionObj } from "../types/form/option";
 import {
   ArrayHandleFormData,
   HandleFormData,
@@ -113,7 +113,7 @@ type FormContextValue<T extends ModelType> = {
     processStep: () => Promise<void>;
   };
 
-  options: Record<string, OptionArray | OptionTable<any>>;
+  options: Record<string, OptionObj<any>>;
 
   displayableField: DetailFieldDefinition[];
   getDiffKeys: (() => string[]) | undefined;
@@ -184,9 +184,7 @@ export const FormProvider = <T extends ModelType>({
   //   console.log("stateLabels", states, stateLabels);
   // }, [stateLabels]);
 
-  const [options, setOptions] = useState<
-    Record<string, OptionArray | OptionTable<any>>
-  >({});
+  const [options, setOptions] = useState<Record<string, OptionObj<any>>>({});
 
   const resetOptions = () => {
     setOptions({});

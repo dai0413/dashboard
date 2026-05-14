@@ -2,18 +2,15 @@ import { AxiosInstance } from "axios";
 import { UIFieldDefinition } from "../field";
 import { FormTypeMap } from "../models";
 
-export type OptionArray = Array<
-  { key: string; label: string } & Record<string, any>
->;
-export type OptionTable<T> = {
-  fields: UIFieldDefinition<T>[];
-  data: T[];
-};
+export type Base = { key: string; label: string } & Record<string, any>;
 
-export type ModelDataOptions<T> = {
-  option: OptionTable<T>;
-  page: number;
-  totalCount: number;
+export type OptionArray = Base[];
+
+export type OptionObj<T> = {
+  data: T[];
+  fields?: UIFieldDefinition<T>[];
+  page?: number;
+  totalCount?: number;
 };
 
 export enum OptionSource {
@@ -27,4 +24,4 @@ export type AddOptions<K extends keyof FormTypeMap> = (args: {
   metaData: Record<string, any>;
   api: AxiosInstance;
   formLabel: Record<string, any>;
-}) => Promise<Record<string, OptionArray | OptionTable<any>>>;
+}) => Promise<Record<string, OptionObj<Base>>>;

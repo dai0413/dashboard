@@ -20,7 +20,6 @@ export const updateItemBase = async ({
 }: UpdateParams): Promise<boolean> => {
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
-  let result = false;
   try {
     const res = await apiInstance.patch(backendRoute, data);
     const responseData: UpdateItemResponse = res.data;
@@ -36,7 +35,6 @@ export const updateItemBase = async ({
       message: apiError.error?.message,
     };
 
-    result = false;
     return false;
   } finally {
     handleSetAlert && handleSetAlert(alert);
