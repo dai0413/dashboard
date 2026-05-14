@@ -56,23 +56,28 @@ export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
 };
 
 // create
-export type CreateItemResponse = {
+export type CreateItemResponse<DATA> = ResDataBase<DATA> & {
+  success: boolean;
   message: string;
 };
-export type CreateItemsResponse<DATA> = {
+export type CreateItemsResponse<DATA> = ResDataBase<DATA> & {
+  success: boolean;
   message: string;
 } & BulkResult<DATA>;
 
 // update
-export type UpdateItemResponse = {
+export type UpdateItemResponse<DATA> = ResDataBase<DATA> & {
+  success: boolean;
   message: string;
 };
-export type UpdateItemsResponse<DATA> = {
+export type UpdateItemsResponse<DATA> = ResDataBase<DATA> & {
+  success: boolean;
   message: string;
 } & BulkResult<DATA>;
 
 // delete
 export type DeleteItemResponse = {
+  success: boolean;
   message: string;
 };
 
@@ -86,7 +91,7 @@ const crudFactory = <
 ) => {
   const {
     name,
-    SCHEMA: { RESPONSE, POPULATED, FORM },
+    SCHEMA: { DATA, RESPONSE, POPULATED, FORM },
     MONGO_MODEL,
     POPULATE_PATHS,
     getAllConfig: getAllConfig,
@@ -94,6 +99,7 @@ const crudFactory = <
     convertFun,
   } = config;
 
+  type DATA_TYPE = z.infer<typeof DATA>;
   type RESPONSE_TYPE = z.infer<typeof RESPONSE>;
   type POPULATED_TYPE = z.infer<typeof POPULATED>;
   const UPDATE_ITEM_SCHEMA = FORM.partial().extend({
@@ -239,7 +245,7 @@ const crudFactory = <
   // --- CREATE ---
   const createItem = async (
     req: Request,
-    res: Response<CreateItemResponse>,
+    res: Response<CreateItemResponse<RESPONSE_TYPE | RESPONSE_TYPE[]>>,
   ) => {
     if (Array.isArray(req.body)) {
       if (!bulk) {
@@ -247,15 +253,37 @@ const crudFactory = <
       }
 
       const parsed = req.body.map((item) => FORM.parse(item));
-      await MONGO_MODEL.insertMany(parsed, { ordered: false });
+      const docs = (await MONGO_MODEL.insertMany(
+        parsed,
+      )) as unknown as UPDATE_TYPE[];
+      const ids = docs.map((doc) => doc._id);
+      const populatedData: POPULATED_TYPE[] = await MONGO_MODEL.find({
+        _id: { $in: ids },
+      }).populate(POPULATE_PATHS);
+
+      // 配列の場合
+      const processed = populatedData.map((item) => getResponseData(item));
+
+      res.status(StatusCodes.CREATED).json({
+        data: processed,
+        success: true,
+        message: "追加しました",
+      });
     } else {
       const parsed = FORM.parse(req.body);
-      await MONGO_MODEL.create(parsed);
-    }
+      const data: DATA_TYPE = await MONGO_MODEL.create(parsed);
+      const populated: POPULATED_TYPE = await MONGO_MODEL.findById(data._id)
+        .populate(POPULATE_PATHS)
+        .lean();
 
-    res.status(StatusCodes.CREATED).json({
-      message: "追加しました",
-    });
+      const responseData = getResponseData(populated);
+
+      res.status(StatusCodes.CREATED).json({
+        data: responseData,
+        success: true,
+        message: "追加しました",
+      });
+    }
   };
 
   // --- GET by id ---
@@ -282,7 +310,7 @@ const crudFactory = <
   // --- UPDATE ---
   const updateItem = async (
     req: Request,
-    res: Response<UpdateItemResponse>,
+    res: Response<UpdateItemResponse<RESPONSE_TYPE>>,
   ) => {
     const { id } = req.params;
     if (!id || typeof id !== "string" || !mongoose.Types.ObjectId.isValid(id)) {
@@ -294,18 +322,28 @@ const crudFactory = <
 
     const updateObj = buildUpdateObject(parsed);
 
-    const updated = await MONGO_MODEL.findByIdAndUpdate(id, updateObj, {
-      new: true,
-      runValidators: true,
-    });
+    const updated: POPULATED_TYPE = await MONGO_MODEL.findByIdAndUpdate(
+      id,
+      updateObj,
+      {
+        new: true,
+        runValidators: true,
+      },
+    )
+      .populate(POPULATE_PATHS)
+      .lean();
 
     if (!updated) {
       throw new NotFoundError(`${name} データが見つかりません`);
     }
 
+    const responseData = getResponseData(updated);
+
     const message = `${name}を更新しました`;
 
-    res.status(StatusCodes.OK).json({ message });
+    res
+      .status(StatusCodes.OK)
+      .json({ data: responseData, message, success: true });
   };
 
   const updateItems = async (
@@ -362,17 +400,27 @@ const crudFactory = <
     }
 
     const totalCount = req.body.length;
-    const successCount = result.matchedCount;
+    const successCount = ops.length;
     const failedCount = totalCount - successCount;
 
-    const message = buildBulkUpdateMessage(
-      totalCount,
-      successCount,
-      failedCount,
-    );
+    const successIds = ops
+      .map((op) => op.updateOne.filter._id)
+      .filter(
+        (id) => !failedItems.some((f) => f._id?.toString() === id.toString()),
+      );
+
+    const updatedDocs = await MONGO_MODEL.find({
+      _id: { $in: successIds },
+    })
+      .populate(POPULATE_PATHS)
+      .lean();
+
+    const responseData = updatedDocs.map(getResponseData);
 
     res.status(StatusCodes.OK).json({
-      message: message,
+      data: responseData,
+      success: true,
+      message: `${name}を更新しました`,
       totalCount,
       successCount,
       failedCount,
@@ -393,7 +441,7 @@ const crudFactory = <
     const deleted = await MONGO_MODEL.findByIdAndDelete(id);
     if (!deleted) throw new NotFoundError(`${name} データが見つかりません`);
     const message = `${name}を削除しました`;
-    res.status(StatusCodes.OK).json({ message });
+    res.status(StatusCodes.OK).json({ message, success: true });
   };
 
   return {
