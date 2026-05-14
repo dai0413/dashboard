@@ -426,7 +426,7 @@ const crudFactory = <
     res.status(StatusCodes.OK).json({
       data: responseData,
       success: true,
-      message: `${name}を更新しました`,
+      message: buildBulkUpdateMessage(totalCount, successCount, failedCount),
       totalCount,
       successCount,
       failedCount,
