@@ -137,6 +137,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
         initialData={props.initialData}
         quickFilterItems={[]}
         headers={headers}
+        items={items}
       />
       {tableIsLoading ? (
         <div className="flex items-center justify-center py-16">

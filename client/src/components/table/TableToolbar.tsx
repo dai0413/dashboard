@@ -12,12 +12,13 @@ import {
   FolderPlusIcon,
   TableCellsIcon,
   Squares2X2Icon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 import { useForm } from "../../context/form-context";
-import { ModelType } from "../../types/models";
+import { GettedModelDataMap, ModelType } from "../../types/models";
 import { useEffect, useRef, useState } from "react";
 import { useAlert } from "../../context/alert-context";
 import { useAuth } from "../../context/auth-context";
@@ -34,7 +35,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
-import { FormMode } from "../../types/types";
+import { FormMode, InputMode } from "../../types/types";
 import CheckMenuItem from "../ui/CheckMenuItem";
 
 type MenuItem = { label: string; onClick: () => void };
@@ -111,6 +112,7 @@ type TableToolbarProps<Data, Form> = {
   ) => Promise<void>;
   quickFilterItems: QuickFilterItem[];
   headers?: TableHeader<Data>[];
+  items?: Data[];
 };
 
 const TableToolbar = <Data, Form>({
@@ -121,6 +123,7 @@ const TableToolbar = <Data, Form>({
   reloadFun,
   quickFilterItems,
   headers,
+  items,
 }: TableToolbarProps<Data, Form>) => {
   const { openFilter, filterConditions } = useFilter();
   const { openSort, sortConditions } = useSort();
@@ -335,6 +338,19 @@ const TableToolbar = <Data, Form>({
 
   const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
 
+  const startUpdates = () => {
+    if (modelType && items) {
+      startForm({
+        modelType,
+        formMode: FormMode.UPDATE,
+        inputMode: InputMode.MANY,
+        ids: [],
+        editItem: items as GettedModelDataMap[typeof modelType][],
+      });
+      openForm();
+    }
+  };
+
   return (
     <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
       {/* 左側：フィルター・行間・ソート */}
@@ -464,6 +480,21 @@ const TableToolbar = <Data, Form>({
 
         {modelType && (staffState.admin || isDev) && (
           <>
+            {items && items.length > 0 && (
+              <div
+                ref={folderDropdownRef}
+                className="relative inline-block text-left"
+              >
+                <button
+                  onClick={startUpdates}
+                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                  type="button"
+                >
+                  <PencilSquareIcon className="w-8 h-8" />
+                  <span className="hidden lg:inline">データ修正</span>
+                </button>
+              </div>
+            )}
             {/* 右側：新規追加ボタン */}
             {hasFormSteps && (
               <AddButton

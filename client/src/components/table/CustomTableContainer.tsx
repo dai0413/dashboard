@@ -207,6 +207,7 @@ const TableContainer = <K, F>({
           reloadFun={reloadFun}
           quickFilterItems={quickFilterItemsParam}
           headers={fieldDefinitions}
+          items={items}
         />
       )}
       {itemsLoading || quickFilterLoading ? (
