@@ -93,25 +93,27 @@ const ListView = <T,>({
         />
       ) : (
         viewMode === "tile" && (
-          <Tile
-            modelType={modelType}
-            data={data}
-            totalCount={totalCount}
-            headers={headers}
-            pageNation={pageNation}
-            linkField={linkField}
-            detailLink={detailLink}
-            itemsPerPage={itemsPerPage || 10}
-            isLoading={isLoading}
-            currentPage={pageNum}
-            onPageChange={onPageChange}
-            form={form}
-            onClick={onClick}
-            selectedKey={selectedKey}
-            edit={edit}
-            renderFieldCell={renderFieldCell}
-            deleteOnClick={deleteOnClick}
-          />
+          <div className="mx-5">
+            <Tile
+              modelType={modelType}
+              data={data}
+              totalCount={totalCount}
+              headers={headers}
+              pageNation={pageNation}
+              linkField={linkField}
+              detailLink={detailLink}
+              itemsPerPage={itemsPerPage || 10}
+              isLoading={isLoading}
+              currentPage={pageNum}
+              onPageChange={onPageChange}
+              form={form}
+              onClick={onClick}
+              selectedKey={selectedKey}
+              edit={edit}
+              renderFieldCell={renderFieldCell}
+              deleteOnClick={deleteOnClick}
+            />
+          </div>
         )
       )}
       {pages.length > 1 ? (

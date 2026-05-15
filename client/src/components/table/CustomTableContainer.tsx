@@ -192,7 +192,7 @@ const TableContainer = <K, F>({
       : "";
 
   return (
-    <div className="bg-white shadow-lg rounded-lg max-w-7xl w-full mx-auto">
+    <div className="bg-white shadow-lg rounded-lg  w-full mx-auto">
       {title && (
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
       )}
