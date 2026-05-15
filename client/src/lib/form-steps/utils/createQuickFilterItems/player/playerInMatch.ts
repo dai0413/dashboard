@@ -17,7 +17,6 @@ export const playerInMatch = async (
   const match = await readItemBase<Match>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-    returnResponse: true,
   });
 
   if (!match) return null;

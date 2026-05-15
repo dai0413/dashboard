@@ -48,7 +48,6 @@ export const useTeam = (): {
       apiInstance: api,
       params: { competition: competitionId, current: true },
       backendRoute: API_PATHS.SEASON.ROOT,
-      returnResponse: true,
     });
     if (!seasonObj) return undefined;
 
@@ -58,7 +57,6 @@ export const useTeam = (): {
       apiInstance: api,
       params: { getAll: true, season: seasonObj.data[0]._id },
       backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
-      returnResponse: true,
     });
 
     if (!teamCompetitionSeasonObj) return undefined;

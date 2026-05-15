@@ -16,7 +16,6 @@ export const setMatchTeam = async (
   const match = await readItemBase<Match>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.DETAIL(data.match),
-    returnResponse: true,
   });
 
   if (!match) return null;

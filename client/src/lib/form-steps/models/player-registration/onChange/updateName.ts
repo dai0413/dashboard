@@ -18,7 +18,6 @@ export const updateName: OnChange<PlayerRegistrationForm> = async (
   const item = await readItemBase<Player>({
     apiInstance: api,
     backendRoute: API_PATHS.PLAYER.DETAIL(playerId),
-    returnResponse: true,
   });
 
   if (!item) return { formData, formLabel };

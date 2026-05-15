@@ -23,7 +23,6 @@ export const onChangeFillChangesByRegistrationType: OnChange<
     const item = await readItemBase<Staff>({
       apiInstance: api,
       backendRoute: API_PATHS.STAFF.DETAIL(formData.staff),
-      returnResponse: true,
     });
 
     if (!item) return { formData, formLabel };
@@ -53,7 +52,6 @@ export const onChangeFillChangesByRegistrationType: OnChange<
         staff: formData.staff,
         registration_type: "register",
       },
-      returnResponse: true,
     });
 
     if (!obj) return { formData, formLabel };

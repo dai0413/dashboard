@@ -8,7 +8,6 @@ type ReadItemParams = {
   backendRoute: string;
   handleLoading?: (time: "start" | "end") => void;
   handleSetAlert?: (value: AlertStatus) => void;
-  returnResponse?: boolean;
 };
 
 export const readItemBase = async <Data>({
@@ -16,7 +15,6 @@ export const readItemBase = async <Data>({
   backendRoute,
   handleLoading,
   handleSetAlert,
-  returnResponse,
 }: ReadItemParams) => {
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
@@ -25,7 +23,7 @@ export const readItemBase = async <Data>({
     const responseData: ReadItemResponse<Data> = res.data;
     alert = { success: true };
 
-    if (returnResponse) return responseData.data;
+    return responseData.data;
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -34,8 +32,6 @@ export const readItemBase = async <Data>({
       errors: apiError.error?.errors,
       message: apiError.error?.message,
     };
-
-    if (returnResponse) throw apiError;
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");

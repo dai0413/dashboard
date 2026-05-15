@@ -16,7 +16,6 @@ export const updatePeriodLabelFromMatch: OnChange<
   const resData = await readItemBase<Match>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.DETAIL(formData.match),
-    returnResponse: true,
   });
 
   if (!resData?.match_format) return { formData, formLabel };

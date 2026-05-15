@@ -40,7 +40,6 @@ export const readOptions = async <K extends ModelOptionKey>({
     apiInstance: api,
     backendRoute: route,
     params,
-    returnResponse: true,
   });
 
   if (!response) return { data: [] };

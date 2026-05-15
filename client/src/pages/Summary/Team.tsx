@@ -153,7 +153,6 @@ const Team = () => {
     const item = await readItemBase<Season>({
       apiInstance: api,
       backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
-      returnResponse: true,
     });
 
     if (!item) return;
@@ -173,7 +172,6 @@ const Team = () => {
           ...prev,
           isLoading: time === "start",
         })),
-      returnResponse: true,
     });
 
     if (obj?.data && obj.data.length > 0) {
@@ -317,7 +315,6 @@ const Team = () => {
       apiInstance: api,
       backendRoute: API_PATHS.MATCH.ROOT,
       params: { team: id, season: seasonId, getAll: true, sort: "date" },
-      returnResponse: true,
     });
 
     if (!obj) return [];

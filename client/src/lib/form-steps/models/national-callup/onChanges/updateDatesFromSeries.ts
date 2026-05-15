@@ -19,7 +19,6 @@ export const updateDatesFromSeries: OnChange<NationalCallupForm> = async (
   const item = await readItemBase<NationalMatchSeries>({
     apiInstance: api,
     backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.DETAIL(formData.series),
-    returnResponse: true,
   });
 
   if (!item) return { formData, formLabel };

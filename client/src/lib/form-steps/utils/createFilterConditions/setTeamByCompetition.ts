@@ -20,7 +20,6 @@ export const setTeamByCompetition: CreateFilterConditions<
     const item = await readItemBase<CompetitionStage>({
       apiInstance: api,
       backendRoute: API_PATHS.COMPETITION_STAGE.DETAIL(data.competition_stage),
-      returnResponse: true,
     });
 
     if (!item) return null;
@@ -49,7 +48,6 @@ export const setTeamByCompetition: CreateFilterConditions<
       season: competitionStage.season.id,
       competition: competitionStage.competition.id,
     },
-    returnResponse: true,
   });
 
   if (!obj || !obj.data) return null;

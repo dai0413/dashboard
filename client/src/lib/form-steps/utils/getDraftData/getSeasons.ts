@@ -22,7 +22,6 @@ export const getSeasons = async (
       "season.start_date": `<=${iso}`,
       "season.end_date": `>=${iso}`,
     },
-    returnResponse: true,
   });
 
   if (!obj) return [];

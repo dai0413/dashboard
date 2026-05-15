@@ -18,7 +18,6 @@ export const updateName: OnChange<StaffRegistrationForm> = async (
   const staff = await readItemBase<Staff>({
     apiInstance: api,
     backendRoute: API_PATHS.STAFF.DETAIL(staffId),
-    returnResponse: true,
   });
 
   if (!staff) return { formData, formLabel };

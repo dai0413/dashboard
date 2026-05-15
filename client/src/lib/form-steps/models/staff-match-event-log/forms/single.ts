@@ -75,7 +75,6 @@ const readMatchEventType = async (
       apiInstance: api,
       params: { getAll: true, event_type: "card" },
       backendRoute: API_PATHS.MATCH_EVENT_TYPE.ROOT,
-      returnResponse: true,
     });
 
     if (!obj) return;

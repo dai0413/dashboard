@@ -23,7 +23,6 @@ export const useMatchFormat = (): {
       apiInstance: api,
       params: { getAll: true },
       backendRoute: API_PATHS.MATCH_FORMAT.ROOT,
-      returnResponse: true,
     });
 
     if (!obj) return;

@@ -22,7 +22,6 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       const obj = await readItemsBase<PlayerRegistrationForm[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_PC.PLAYER_REGISTRATION_HISTORY,
-        returnResponse: true,
       });
 
       if (!obj) return [];

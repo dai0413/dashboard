@@ -22,7 +22,6 @@ export const createFilterFromParent = async <T extends { _id: string }>({
 }): Promise<FilterConditionsByKey | null> => {
   const obj = await readItemsBase<T[]>({
     ...readItemParams,
-    returnResponse: true,
   });
 
   if (!obj?.data) return null;

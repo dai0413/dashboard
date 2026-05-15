@@ -48,7 +48,6 @@ export const currentTransfer = async <T extends ModelType>({
     apiInstance: api,
     backendRoute: API_PATHS.TRANSFER.ROOT,
     params,
-    returnResponse: true,
   });
 
   if (!obj) return {};

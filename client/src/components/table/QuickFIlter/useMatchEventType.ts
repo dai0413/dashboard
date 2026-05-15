@@ -23,7 +23,6 @@ export const useMatchEventType = (): {
       apiInstance: api,
       params: { getAll: true },
       backendRoute: API_PATHS.MATCH_EVENT_TYPE.ROOT,
-      returnResponse: true,
     });
 
     if (!obj) return;

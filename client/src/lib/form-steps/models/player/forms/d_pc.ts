@@ -20,7 +20,6 @@ export const d_pc: FormStep<ModelType.PLAYER>[] = [
       const obj = await readItemsBase<PlayerForm[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_PC.PLAYER,
-        returnResponse: true,
       });
 
       if (!obj) return [];

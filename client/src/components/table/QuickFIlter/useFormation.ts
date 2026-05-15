@@ -23,7 +23,6 @@ export const useFormation = (): {
       apiInstance: api,
       params: { getAll: true },
       backendRoute: API_PATHS.FORMATION.ROOT,
-      returnResponse: true,
     });
 
     if (!obj) return;

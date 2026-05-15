@@ -82,7 +82,6 @@ export function createModelContext<T extends ModelType>(
         params,
         handleLoading,
         handleSetAlert,
-        returnResponse: true,
       });
 
       if (obj) {
@@ -97,7 +96,6 @@ export function createModelContext<T extends ModelType>(
       const item = await readItemBase<Model>({
         apiInstance: api,
         backendRoute: backendRoute.DETAIL(id),
-        returnResponse: true,
         handleLoading,
         handleSetAlert,
       });

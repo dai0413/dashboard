@@ -23,7 +23,6 @@ export const onChangeFillChangesByRegistrationType: OnChange<
     const item = await readItemBase<Player>({
       apiInstance: api,
       backendRoute: API_PATHS.PLAYER.DETAIL(formData.player),
-      returnResponse: true,
     });
 
     if (!item) return { formData, formLabel };
@@ -54,7 +53,6 @@ export const onChangeFillChangesByRegistrationType: OnChange<
         player: formData.player,
         registration_type: "register",
       },
-      returnResponse: true,
     });
 
     if (!obj) return { formData, formLabel };

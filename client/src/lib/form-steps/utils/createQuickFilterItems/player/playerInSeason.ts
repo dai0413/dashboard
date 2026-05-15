@@ -16,7 +16,6 @@ export const playerInSeason = async (
   const season = await readItemBase<Season>({
     apiInstance: api,
     backendRoute: API_PATHS.SEASON.DETAIL(seasonId),
-    returnResponse: true,
   });
 
   if (!season) return null;

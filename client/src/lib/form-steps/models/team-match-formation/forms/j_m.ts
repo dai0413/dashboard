@@ -44,7 +44,6 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
           apiInstance: api,
           params: { key },
           backendRoute: API_PATHS.FORMATION.ROOT,
-          returnResponse: true,
         });
 
         if (!obj || !obj.data) return null;
@@ -113,7 +112,6 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
           apiInstance: api,
           params: { key },
           backendRoute: API_PATHS.FORMATION.ROOT,
-          returnResponse: true,
         });
 
         if (!obj || !obj.data) return null;

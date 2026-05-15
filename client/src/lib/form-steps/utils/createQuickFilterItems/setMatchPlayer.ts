@@ -27,7 +27,6 @@ const getRegistration = async (
       season: season._id,
       registration_type: "register",
     },
-    returnResponse: true,
   });
   if (!obj || !obj.data) return undefined;
   const playerRegistrations: PlayerRegistration[] = obj.data;
@@ -95,7 +94,6 @@ const getTransfer = async (
       ],
       from_date: fromDateRange.value,
     },
-    returnResponse: true,
   });
 
   if (!obj || !obj.data) return undefined;

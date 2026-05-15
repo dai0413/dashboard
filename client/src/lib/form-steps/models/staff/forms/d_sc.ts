@@ -20,7 +20,6 @@ export const d_sc: FormStep<ModelType.STAFF>[] = [
       const obj = await readItemsBase<StaffForm[]>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_SC.STAFF,
-        returnResponse: true,
       });
 
       if (!obj) return [];

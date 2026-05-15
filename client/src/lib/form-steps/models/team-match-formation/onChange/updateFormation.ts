@@ -16,7 +16,6 @@ const fetchPlayerAppearances = async (
     apiInstance: api,
     params: { team, match, getAll: true, play_status: "start" },
     backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
-    returnResponse: true,
   });
 
   return obj?.data ?? null;
@@ -36,7 +35,6 @@ const fetchFormationByKey = async (
     apiInstance: api,
     params: { key },
     backendRoute: API_PATHS.FORMATION.ROOT,
-    returnResponse: true,
   });
 
   if (!obj?.data || obj.data.length !== 1) return null;
