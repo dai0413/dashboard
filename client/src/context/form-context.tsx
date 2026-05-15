@@ -90,6 +90,7 @@ type FormContextValue<T extends ModelType> = {
     handleFormData: HandleFormData<T>;
     state: Record<string, any>;
     stateLabel: Record<string, any>;
+    originalData: UpdateData<T> | null;
   };
 
   many?: {
@@ -103,6 +104,8 @@ type FormContextValue<T extends ModelType> = {
     ) => JSX.Element;
     state: Record<string, any>[];
     stateLabel: Record<string, any>[];
+
+    originalDatas: UpdateData<T>[] | null;
   };
 
   steps: {
@@ -340,38 +343,57 @@ export const FormProvider = <T extends ModelType>({
 
       if (args.inputMode === InputMode.SINGLE) {
         const newFormData = {
+          _id: args.id,
           ...getDefault(args.modelType),
           ...convertGettedToForm(args.modelType, args.editItem),
         };
-        setOriginalData({ ...newFormData, _id: args.id });
+        setOriginalData(newFormData);
         setFormData(newFormData);
 
         const resolvedLabels = await resolveForeignKeyLabels(newFormData);
 
         setFormLabel(resolvedLabels);
-      }
 
-      if (modelType === ModelType.MATCH_FORMAT) {
-        const matchFormatEditItem =
-          args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
-        const dat = args.editItem && {
-          ...getDefault(ModelType.MATCH_FORMAT),
-          ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
-        };
-        const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
-        dat
-          ? setFormDatas(periodArray as FormTypeMap[ModelType.MATCH_FORMAT][])
-          : setFormDatas([]);
+        if (modelType === ModelType.MATCH_FORMAT) {
+          const matchFormatEditItem =
+            args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
+          const dat = args.editItem && {
+            ...getDefault(ModelType.MATCH_FORMAT),
+            ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
+          };
+          const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
+          dat
+            ? setFormDatas(periodArray as FormTypeMap[ModelType.MATCH_FORMAT][])
+            : setFormDatas([]);
 
-        const { period, ...data } = matchFormatEditItem;
+          const { period, ...data } = matchFormatEditItem;
 
-        matchFormatEditItem &&
-          setFormData(
-            convertGettedToForm(ModelType.MATCH_FORMAT, {
-              ...data,
-              period: [],
-            }),
-          );
+          matchFormatEditItem &&
+            setFormData(
+              convertGettedToForm(ModelType.MATCH_FORMAT, {
+                ...data,
+                period: [],
+              }),
+            );
+        }
+      } else if (args.inputMode === InputMode.MANY) {
+        const newDatas: UpdateData<T>[] = args.editItem.flatMap((item, i) => {
+          const newData = {
+            _id: args.ids[i],
+            ...getDefault(args.modelType),
+            ...convertGettedToForm(args.modelType, item),
+          };
+
+          return newData;
+        });
+
+        const resolvedLabels = await Promise.all(
+          newDatas.map((data) => resolveForeignKeyLabels(data)),
+        );
+
+        setOriginalDatas(newDatas);
+        setFormDatas(newDatas);
+        setFormLabels(resolvedLabels);
       }
     }
 
@@ -457,13 +479,13 @@ export const FormProvider = <T extends ModelType>({
         if (!originalData?._id) {
           handleSetAlert({
             success: false,
-            message: "変更点がありません",
+            message: "id設定ミス",
           });
           return false;
         }
 
         const difKeys = getDiffKeys(originalData, formData);
-        if (!difKeys || difKeys?.length === 0) {
+        if (difKeys?.length === 0) {
           handleSetAlert({
             success: false,
             message: "変更点がありません",
@@ -482,6 +504,28 @@ export const FormProvider = <T extends ModelType>({
       }
 
       if (inputMode === InputMode.MANY) {
+        const updateDatas: UpdateData<T>[] = originalDatas.flatMap(
+          (originalData, i) => {
+            const formData = formDatas[i];
+            const difKeys = getDiffKeys(originalData, i);
+
+            if (difKeys.length === 0) return [];
+
+            const updateData: FormTypeMap[T] = Object.fromEntries(
+              Object.entries(formData).filter(([key]) => difKeys.includes(key)),
+            );
+
+            return [
+              {
+                _id: originalData._id,
+                ...updateData,
+                ...getDefault(modelType),
+              },
+            ];
+          },
+        );
+
+        success = await modelContext.updateItems(updateDatas);
       }
     }
 
@@ -1010,6 +1054,7 @@ export const FormProvider = <T extends ModelType>({
       handleFormData: singleHandleFormData,
       state,
       stateLabel,
+      originalData,
     },
 
     many: {
@@ -1021,6 +1066,7 @@ export const FormProvider = <T extends ModelType>({
       renderConfirmMes: renderer,
       state: states,
       stateLabel: stateLabels,
+      originalDatas,
     },
 
     steps: {

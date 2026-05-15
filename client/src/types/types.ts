@@ -86,10 +86,23 @@ type NewDataStartFormArgs<T extends ModelType> = {
 type UpdateDataStartFormArgs<T extends ModelType> = {
   modelType: T;
   formMode: FormMode.UPDATE;
-  inputMode: InputMode;
+  inputMode: InputMode.SINGLE;
+  id: string;
   editItem: GettedModelDataMap[T];
 };
 
+type UpdateDatasStartFormArgs<T extends ModelType> = {
+  modelType: T;
+  formMode: FormMode.UPDATE;
+  inputMode: InputMode.MANY;
+  ids: string[];
+  editItem: GettedModelDataMap[T][];
+};
+
+type UpdateStartFormArgs<T extends ModelType> =
+  | UpdateDataStartFormArgs<T>
+  | UpdateDatasStartFormArgs<T>;
+
 export type StartFormArgs<T extends ModelType> =
   | NewDataStartFormArgs<T>
-  | UpdateDataStartFormArgs<T>;
+  | UpdateStartFormArgs<T>;

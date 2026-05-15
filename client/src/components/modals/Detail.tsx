@@ -62,15 +62,16 @@ const DetailModal = () => {
   const displayableField = modelType ? getOnDetailFields(modelType) : [];
 
   const editOnClick = () => {
-    open(modelType);
-    selected
-      ? startForm({
-          modelType,
-          formMode: FormMode.UPDATE,
-          inputMode: InputMode.SINGLE,
-          editItem: selected,
-        })
-      : undefined;
+    if (id) {
+      open(modelType);
+      startForm({
+        id,
+        modelType,
+        formMode: FormMode.UPDATE,
+        inputMode: InputMode.SINGLE,
+        editItem: selected,
+      });
+    }
   };
 
   const deleteOnClick = () => {

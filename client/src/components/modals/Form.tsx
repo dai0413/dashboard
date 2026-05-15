@@ -23,6 +23,7 @@ import { get } from "lodash";
 import { useModal } from "../../context/modal-context";
 import { isEmptyObject } from "../../utils/data";
 import { ColumnType, TableHeader } from "../../types/table";
+import { getDiffKeys } from "../../utils/comparison";
 
 const convertDisplayField = <T extends keyof FormTypeMap>(
   displayableField: DetailFieldDefinition[],
@@ -119,7 +120,7 @@ const Form = <T extends keyof FormTypeMap>() => {
     formMode,
 
     single,
-    single: { stateLabel },
+    single: { state, originalData, stateLabel },
 
     many,
 
@@ -133,7 +134,6 @@ const Form = <T extends keyof FormTypeMap>() => {
     },
 
     options,
-    getDiffKeys,
     displayableField,
   } = useForm<T>();
 
@@ -143,7 +143,7 @@ const Form = <T extends keyof FormTypeMap>() => {
 
   const { page, setPage } = useQuery();
 
-  const diffKeys = getDiffKeys ? getDiffKeys() : [];
+  const diffKeys = originalData ? getDiffKeys(originalData, state) : [];
 
   const handleFormData = single.handleFormData;
 
