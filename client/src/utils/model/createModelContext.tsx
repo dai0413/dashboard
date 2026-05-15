@@ -20,12 +20,14 @@ import {
 } from "../../lib/api";
 import { cleanData } from "../data";
 import { QueryParams, UploadJobType } from "@dai0413/myorg-shared";
+import { updateItemsBase } from "../../lib/api/updateItems";
 
 export function createModelContext<T extends ModelType>(
   ContextModelString: T,
   backendRoute: BaseCrudRoutes,
 ) {
   type Form = FormTypeMap[T];
+  type Update = FormTypeMap[T] & { _id: string };
   type Get = GettedModelDataMap[T];
   type Model = ModelDataMap[T];
 
@@ -119,13 +121,22 @@ export function createModelContext<T extends ModelType>(
       return success;
     };
 
-    const updateItem = async (updated: Form) => {
-      if (!selected) return false;
-      const id = selected._id;
-
+    const updateItem = async (id: string, updated: Form) => {
       const result = await updateItemBase<Form>({
         apiInstance: api,
         backendRoute: backendRoute.DETAIL(id),
+        data: updated,
+        handleLoading,
+        handleSetAlert,
+      });
+
+      return result;
+    };
+
+    const updateItems = async (updated: Update[]) => {
+      const result = await updateItemsBase<Update[]>({
+        apiInstance: api,
+        backendRoute: backendRoute.ROOT,
         data: updated,
         handleLoading,
         handleSetAlert,
@@ -199,6 +210,7 @@ export function createModelContext<T extends ModelType>(
       createItem,
       createItems,
       updateItem,
+      updateItems,
       deleteItem,
       uploadFile,
       downloadFile,
