@@ -3,3 +3,4 @@ export * from "./compareValue";
 export * from "./getComparisonValue";
 export * from "./isCompareableEqual";
 export * from "./normalizeFilterValue";
+export * from "./getDiffKeys";

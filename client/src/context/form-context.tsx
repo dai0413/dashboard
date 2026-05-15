@@ -13,6 +13,7 @@ import {
   FormStep,
   QuickFilterItemsByKey,
   StepType,
+  UpdateData,
 } from "../types/form";
 import { FormFieldDefinition } from "../types/form/field";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
@@ -39,7 +40,7 @@ import {
   ArrayHandleFormData,
   HandleFormData,
 } from "../types/form/handleFormData";
-import { isComparableEqual } from "../utils/comparison";
+import { getDiffKeys } from "../utils/comparison";
 import { CreateItemResponse } from "../types";
 
 const checkRequiredFields = <T extends ModelType>(
@@ -116,7 +117,6 @@ type FormContextValue<T extends ModelType> = {
   options: Record<string, OptionObj<any>>;
 
   displayableField: DetailFieldDefinition[];
-  getDiffKeys: (() => string[]) | undefined;
   autoFill: () => Promise<void>;
   filterConditionsObj: FilterConditionsByKey | null;
   removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
@@ -180,9 +180,8 @@ export const FormProvider = <T extends ModelType>({
   const [stateLabel, setStateLabel] = useState<Record<string, any>>({});
   const [stateLabels, setStateLabels] = useState<Record<string, any>[]>([]);
 
-  // useEffect(() => {
-  //   console.log("stateLabels", states, stateLabels);
-  // }, [stateLabels]);
+  const [originalData, setOriginalData] = useState<UpdateData<T> | null>(null);
+  const [originalDatas, setOriginalDatas] = useState<UpdateData<T>[]>([]);
 
   const [options, setOptions] = useState<Record<string, OptionObj<any>>>({});
 
@@ -249,21 +248,6 @@ export const FormProvider = <T extends ModelType>({
       const { [key]: _, ...rest } = prev;
       return rest;
     });
-  };
-
-  const getDiffKeys = () => {
-    if (!modelType || !modelContext || !modelContext.selected) return [];
-    const selected = modelContext.selected;
-
-    const diff: string[] = [];
-    for (const [key, formValue] of Object.entries(formData)) {
-      const typedKey = key as keyof typeof formData;
-      const selectedValue = convertGettedToForm(modelType, selected)[typedKey];
-
-      !isComparableEqual(formValue, selectedValue) && diff.push(key);
-    }
-
-    return diff;
   };
 
   async function resolveForeignKeyLabels(
@@ -354,11 +338,12 @@ export const FormProvider = <T extends ModelType>({
     } else {
       setFormMode(FormMode.UPDATE);
 
-      if (args.editItem) {
+      if (args.inputMode === InputMode.SINGLE) {
         const newFormData = {
           ...getDefault(args.modelType),
           ...convertGettedToForm(args.modelType, args.editItem),
         };
+        setOriginalData({ ...newFormData, _id: args.id });
         setFormData(newFormData);
 
         const resolvedLabels = await resolveForeignKeyLabels(newFormData);
@@ -468,23 +453,36 @@ export const FormProvider = <T extends ModelType>({
         resetFormDatas();
       }
     } else {
-      const difKeys = getDiffKeys && getDiffKeys();
-      if (!difKeys || difKeys?.length === 0) {
-        handleSetAlert({
-          success: false,
-          message: "変更点がありません",
+      if (inputMode === InputMode.SINGLE) {
+        if (!originalData?._id) {
+          handleSetAlert({
+            success: false,
+            message: "変更点がありません",
+          });
+          return false;
+        }
+
+        const difKeys = getDiffKeys(originalData, formData);
+        if (!difKeys || difKeys?.length === 0) {
+          handleSetAlert({
+            success: false,
+            message: "変更点がありません",
+          });
+          return false;
+        }
+
+        const updated: FormTypeMap[T] = Object.fromEntries(
+          Object.entries(formData).filter(([key]) => difKeys.includes(key)),
+        );
+
+        success = await modelContext.updateItem(originalData._id, {
+          ...getDefault(modelType),
+          ...updated,
         });
-        return false;
       }
 
-      const updated: FormTypeMap[T] = Object.fromEntries(
-        Object.entries(formData).filter(([key]) => difKeys.includes(key)),
-      );
-
-      success = await modelContext.updateItem({
-        ...getDefault(modelType),
-        ...updated,
-      });
+      if (inputMode === InputMode.MANY) {
+      }
     }
 
     return success;
@@ -1037,7 +1035,6 @@ export const FormProvider = <T extends ModelType>({
     options,
 
     displayableField,
-    getDiffKeys,
     autoFill,
     filterConditionsObj,
     removeFilterConditionsObj,
