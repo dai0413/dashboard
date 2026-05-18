@@ -69,6 +69,8 @@ const Sort = ({ sortableField, onApply }: SortProps) => {
   } = useSort();
 
   useEffect(() => {
+    if (!sortableField || sortableField.length === 0) return;
+
     resetSort(sortableField);
   }, [sortableField]);
 

@@ -397,7 +397,7 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
-    setModelType(modelType);
+    setModelType(args.modelType);
     setIsEditing(true);
     setFilterConditionsObj(null);
     setQuickFilterIteemsObj(null);
