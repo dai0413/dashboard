@@ -427,6 +427,11 @@ const Form = <T extends keyof FormTypeMap>() => {
                     handlePageChange={async (p: number) =>
                       setPage("formPage", p)
                     }
+                    selectedKeys={{
+                      1: ["player", "from_team"],
+                      2: ["to_team"],
+                      3: ["doa"],
+                    }}
                   />
                 </>
               )}

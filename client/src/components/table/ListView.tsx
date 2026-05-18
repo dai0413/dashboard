@@ -41,6 +41,7 @@ const ListView = <T,>({
   form = false,
   onClick = () => {},
   selectedKey = [],
+  selectedKeys,
   itemsPerPage,
   isLoading,
   currentPage,
@@ -90,6 +91,7 @@ const ListView = <T,>({
           edit={edit}
           renderFieldCell={renderFieldCell}
           deleteOnClick={deleteOnClick}
+          selectedKeys={selectedKeys}
         />
       ) : (
         viewMode === "tile" && (

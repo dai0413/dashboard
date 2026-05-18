@@ -15,4 +15,5 @@ export type TableEditProps<T> = {
     rowIndex: number,
   ) => React.ReactNode;
   deleteOnClick?: (index: number) => void;
+  selectedKeys?: Record<number, string[]>;
 };

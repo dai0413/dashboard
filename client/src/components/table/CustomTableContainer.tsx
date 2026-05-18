@@ -37,16 +37,10 @@ type TablePage = {
   ) => Promise<void>;
 };
 
-type TableForm = {
-  form?: boolean;
-  onClick?: (index: number, row: any) => void;
-  selectedKey?: string[];
-};
-
 type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
   TableOperationFields &
   TablePage &
-  TableForm & {
+  TableEditProps<T> & {
     fieldDefinitions?: UIFieldDefinition<T>[];
     items?: T[];
     itemsLoading?: boolean;
@@ -92,6 +86,7 @@ const TableContainer = <K, F>({
   renderFieldCell,
   edit,
   noToolBar,
+  selectedKeys,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -197,8 +192,8 @@ const TableContainer = <K, F>({
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
       )}
 
-      <Filter filterableField={filterField || []} onApply={handleApplyFilter} />
-      <Sort sortableField={sortField || []} onApply={handleApplyFilter} />
+      <Filter filterableField={filterField ?? []} onApply={handleApplyFilter} />
+      <Sort sortableField={sortField ?? []} onApply={handleApplyFilter} />
       {noToolBar !== false && (
         <TableToolbar<K, F>
           modelType={modelType}
@@ -234,6 +229,7 @@ const TableContainer = <K, F>({
           selectedKey={selectedKey}
           renderFieldCell={renderFieldCell}
           edit={edit}
+          selectedKeys={selectedKeys}
         />
       ) : (
         <div className="flex items-center justify-center py-16">

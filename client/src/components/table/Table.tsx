@@ -18,6 +18,7 @@ const Table = <T,>({
   form = false,
   onClick = () => {},
   selectedKey = [],
+  selectedKeys,
   itemsPerPage,
   isLoading,
   currentPage,
@@ -154,12 +155,17 @@ const Table = <T,>({
                 const isObject = typeof row === "object" && row !== null;
                 const displayValue = toDisplayValue(header, row);
 
+                const textIsRed =
+                  selectedKeys && selectedKeys[i]?.includes(header.key);
+                const bgIsBlue = hasKey(row) && selectedKey.includes(row.key);
+
                 return (
                   <td
                     key={`${header.key}-${header.label}`}
                     className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
-                      ${hasKey(row) && selectedKey.includes(row.key) ? "bg-blue-100" : ""}
+                      ${bgIsBlue ? "bg-blue-100" : ""}
+                      ${textIsRed ? "text-red-500 font-semibold" : ""}
                       ${
                         edit &&
                         header.getValueType === ColumnType.FIELD &&
