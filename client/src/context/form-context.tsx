@@ -507,7 +507,7 @@ export const FormProvider = <T extends ModelType>({
         const updateDatas: UpdateData<T>[] = originalDatas.flatMap(
           (originalData, i) => {
             const formData = formDatas[i];
-            const difKeys = getDiffKeys(originalData, i);
+            const difKeys = getDiffKeys(originalData, formData);
 
             if (difKeys.length === 0) return [];
 
