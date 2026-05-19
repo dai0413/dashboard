@@ -7,8 +7,15 @@ import { createController } from "../factories/createController.js";
 import { StaffModel as Model } from "../../models/staff.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+} = createController(config);
 
 const { MONGO_MODEL } = config;
 
@@ -56,4 +63,5 @@ export {
   deleteItem,
   downloadItems,
   uploadItem,
+  updateItems,
 };

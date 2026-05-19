@@ -8,13 +8,18 @@ import {
   updateItem,
   deleteItem,
   uploadItem,
+  updateItems,
 } from "../../controllers/models/stats-l.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import upload from "../../middleware/upload.js";
 import detectEncoding from "../../middleware/detectEncoding.js";
 import checkFileExists from "../../middleware/checkFileExists.js";
 
-router.route(API_PATHS.STATS_L.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.STATS_L.ROOT)
+  .get(getAllItems)
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.STATS_L.UPLOAD)
   .post(

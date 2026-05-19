@@ -8,13 +8,18 @@ import {
   updateItem,
   deleteItem,
   uploadItem,
+  updateItems,
 } from "../../controllers/models/staff-appearance.js";
 import upload from "../../middleware/upload.js";
 import detectEncoding from "../../middleware/detectEncoding.js";
 import checkFileExists from "../../middleware/checkFileExists.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-router.route(API_PATHS.STAFF_APPEARANCE.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.STAFF_APPEARANCE.ROOT)
+  .get(getAllItems)
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.STAFF_APPEARANCE.DETAIL())
   .patch(updateItem)

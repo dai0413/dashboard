@@ -3,7 +3,20 @@ import { createController } from "../factories/createController.js";
 import { StadiumModel as Model } from "../../models/stadium.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  updateItems,
+} = createController(config);
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem };
+export {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  updateItems,
+};

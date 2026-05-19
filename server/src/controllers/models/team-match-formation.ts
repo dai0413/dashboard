@@ -3,7 +3,22 @@ import { TeamMatchFormationModel as Model } from "../../models/team-match-format
 import { createController } from "../factories/createController.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+} = createController(config);
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };
+export {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+};

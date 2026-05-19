@@ -6,8 +6,14 @@ import { NationalMatchSeriesModel as Model } from "../../models/national-match-s
 import { createController } from "../factories/createController.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  updateItems,
+} = createController(config);
 
 const { MONGO_MODEL } = config;
 
@@ -44,4 +50,5 @@ export {
   updateItem,
   deleteItem,
   downloadItems,
+  updateItems,
 };

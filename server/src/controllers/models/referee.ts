@@ -3,7 +3,22 @@ import { createController } from "../factories/createController.js";
 import { RefereeModel as Model } from "../../models/referee.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+} = createController(config);
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };
+export {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+};

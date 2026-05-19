@@ -4,7 +4,21 @@ import { PlayerRegistrationHistoryModel as Model } from "../../models/player-reg
 import { uploadItem } from "./services/uploadItem/player-registration-history.js";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  updateItems,
+} = createController(config);
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };
+export {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+};

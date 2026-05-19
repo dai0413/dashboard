@@ -8,6 +8,7 @@ import {
   updateItem,
   deleteItem,
   uploadItem,
+  updateItems,
 } from "../../controllers/models/team-competition-season.js";
 import upload from "../../middleware/upload.js";
 import detectEncoding from "../../middleware/detectEncoding.js";
@@ -17,7 +18,8 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 router
   .route(API_PATHS.TEAM_COMPETITION_SEASON.ROOT)
   .get(getAllItems)
-  .post(createItem);
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.TEAM_COMPETITION_SEASON.DETAIL())
   .patch(updateItem)

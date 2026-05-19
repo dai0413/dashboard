@@ -8,6 +8,7 @@ import {
   updateItem,
   deleteItem,
   uploadItem,
+  updateItems,
 } from "../../controllers/models/staff-match-event-log.js";
 import upload from "../../middleware/upload.js";
 import detectEncoding from "../../middleware/detectEncoding.js";
@@ -17,7 +18,8 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 router
   .route(API_PATHS.STAFF_MATCH_EVENT_LOG.ROOT)
   .get(getAllItems)
-  .post(createItem);
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.STAFF_MATCH_EVENT_LOG.DETAIL())
   .patch(updateItem)

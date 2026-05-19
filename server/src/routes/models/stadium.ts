@@ -7,10 +7,15 @@ import {
   getItem,
   updateItem,
   deleteItem,
+  updateItems,
 } from "../../controllers/models/stadium.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
-router.route(API_PATHS.STADIUM.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.STADIUM.ROOT)
+  .get(getAllItems)
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.STADIUM.DETAIL())
   .patch(updateItem)

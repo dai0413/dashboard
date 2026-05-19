@@ -9,13 +9,18 @@ import {
   deleteItem,
   downloadItems,
   uploadItem,
+  updateItems,
 } from "../../controllers/models/staff.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import upload from "../../middleware/upload.js";
 import detectEncoding from "../../middleware/detectEncoding.js";
 import checkFileExists from "../../middleware/checkFileExists.js";
 
-router.route(API_PATHS.STAFF.ROOT).get(getAllItems).post(createItem);
+router
+  .route(API_PATHS.STAFF.ROOT)
+  .get(getAllItems)
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.STAFF.UPLOAD)
   .post(

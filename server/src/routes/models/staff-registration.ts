@@ -7,13 +7,15 @@ import {
   getItem,
   updateItem,
   deleteItem,
+  updateItems,
 } from "../../controllers/models/staff-registration.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
 router
   .route(API_PATHS.STAFF_REGISTRATION.ROOT)
   .get(getAllItems)
-  .post(createItem);
+  .post(createItem)
+  .patch(updateItems);
 router
   .route(API_PATHS.STAFF_REGISTRATION.DETAIL())
   .patch(updateItem)

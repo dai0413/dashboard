@@ -12,8 +12,14 @@ import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 import z from "zod";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  updateItems,
+} = createController(config);
 
 const {
   SCHEMA: { DATA },
@@ -162,4 +168,5 @@ export {
   deleteItem,
   uploadItem,
   downloadItem,
+  updateItems,
 };

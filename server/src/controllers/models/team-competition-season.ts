@@ -11,8 +11,14 @@ import { convertObjectIdToString } from "../helpers/crud/convertObjectIdToString
 import z from "zod";
 
 const config = createConfig(Model);
-const { getAllItems, createItem, getItem, updateItem, deleteItem } =
-  createController(config);
+const {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  updateItems,
+} = createController(config);
 
 const {
   MONGO_MODEL,
@@ -83,4 +89,12 @@ const uploadItem = async (req: DecodedRequest, res: Response) => {
     });
 };
 
-export { getAllItems, createItem, getItem, updateItem, deleteItem, uploadItem };
+export {
+  getAllItems,
+  createItem,
+  getItem,
+  updateItem,
+  deleteItem,
+  uploadItem,
+  updateItems,
+};
