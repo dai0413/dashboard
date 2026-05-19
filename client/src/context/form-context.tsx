@@ -548,8 +548,7 @@ export const FormProvider = <T extends ModelType>({
     const current = formSteps[currentStep];
 
     if (!current) return;
-    const newInputMode = current.many ? InputMode.MANY : InputMode.SINGLE;
-    setInputMode(newInputMode);
+
     const onChange = current.onChange;
     const isArray = current.many;
     const checkData =
@@ -731,10 +730,8 @@ export const FormProvider = <T extends ModelType>({
     );
 
     // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    if (newInputMode === InputMode.SINGLE) {
-      while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
-        nextStepIndex++;
-      }
+    while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
+      nextStepIndex++;
     }
 
     if (current.createFilterConditions) {
@@ -769,6 +766,12 @@ export const FormProvider = <T extends ModelType>({
           }));
         }
       }
+    }
+
+    const nextStep = formSteps[nextStepIndex];
+    if (nextStep.type === StepType.FORM) {
+      const newInputMode = nextStep.many ? InputMode.MANY : InputMode.SINGLE;
+      setInputMode(newInputMode);
     }
 
     setCurrentStep(nextStepIndex);
@@ -922,23 +925,22 @@ export const FormProvider = <T extends ModelType>({
       setMetaDatas(newMetaDatas);
       setMetaDataLabels(newMetaDataLabels);
     } else {
-      const newDatas = formDatas.map((data, targetI) => {
-        const label = formLabels[dataIndex];
-        if (dataIndex === targetI) {
-          const { updatedValue, updatedLabel } = updateFormValue({
-            prev: data,
-            prevLabel: label,
-            key: key as keyof typeof data,
-            value,
-            field,
-            updateMode,
-            index,
-          });
+      const newDatas = formDatas.map((data, i) => {
+        const label = formLabels[i];
 
-          return { updatedValue, updatedLabel };
-        } else {
+        if (i !== dataIndex) {
           return { updatedValue: data, updatedLabel: label };
         }
+
+        return updateFormValue({
+          prev: data,
+          prevLabel: label,
+          key: key as keyof typeof data,
+          value,
+          field,
+          updateMode,
+          index,
+        });
       });
 
       const newFormDatas = newDatas.map((d) => d.updatedValue);

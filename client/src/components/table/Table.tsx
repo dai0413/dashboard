@@ -155,8 +155,11 @@ const Table = <T,>({
                 const isObject = typeof row === "object" && row !== null;
                 const displayValue = toDisplayValue(header, row);
 
+                const dataIndex = itemsPerPage
+                  ? (pageNum - 1) * itemsPerPage + i
+                  : i;
                 const textIsRed =
-                  selectedKeys && selectedKeys[i]?.includes(header.key);
+                  selectedKeys && selectedKeys[dataIndex]?.includes(header.key);
                 const bgIsBlue = hasKey(row) && selectedKey.includes(row.key);
 
                 return (
@@ -182,11 +185,7 @@ const Table = <T,>({
                   >
                     {edit
                       ? renderFieldCell &&
-                        renderFieldCell(
-                          header,
-                          row,
-                          itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
-                        )
+                        renderFieldCell(header, row, dataIndex)
                       : isObject &&
                         RenderCell(displayValue, header, row, form, linkField)}
                   </td>

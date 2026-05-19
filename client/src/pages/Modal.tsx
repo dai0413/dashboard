@@ -1,9 +1,10 @@
-import { Form, Detail } from "../components/modals";
+import { Detail } from "../components/modals";
+import { FormContainer } from "../components/modals/Form/FormContainer";
 
 const Modal = () => {
   return (
     <>
-      <Form />
+      <FormContainer />
       <Detail />
     </>
   );

@@ -1,35 +1,37 @@
-import { FormFieldDefinition } from "../../../types/form/field";
-import { FormTypeMap } from "../../../types/models";
-import { CustomTableContainer } from "../../table";
-import { RenderField } from "./Field";
+import { FormFieldDefinition } from "../../../../types/form/field";
+import { FormTypeMap } from "../../../../types/models";
+import { CustomTableContainer } from "../../../table";
+import { RenderField } from "../Field/Field";
 import { useState } from "react";
-import { IconButton, IconTextButton } from "../../buttons";
-import { useQuery } from "../../../context/query-context";
-import { useForm } from "../../../context/form-context";
-import { FilterProvider } from "../../../context/filter-context";
-import { SortProvider } from "../../../context/sort-context";
-import { ListViewProvider } from "../../../context/listView-context";
-import { ColumnType, TableHeader } from "../../../types/table";
-import { HandleFormData } from "../../../types/form/handleFormData";
+import { IconButton, IconTextButton } from "../../../buttons";
+import { useQuery } from "../../../../context/query-context";
+import { useForm } from "../../../../context/form-context";
+import { ColumnType, TableHeader } from "../../../../types/table";
+import { HandleFormData } from "../../../../types/form/handleFormData";
 
-type RenderFieldProps<T extends keyof FormTypeMap> = {
-  fields: FormFieldDefinition<T>[];
+type RenderFieldProps = {
   isTableOpen: boolean;
   toggleTableOpen: () => void;
 };
 
-const ManyField = <T extends keyof FormTypeMap>({
-  fields,
+const BulkEditForm = <T extends keyof FormTypeMap>({
   isTableOpen,
   toggleTableOpen,
-}: RenderFieldProps<T>) => {
-  const { many, autoFill, options } = useForm<T>();
+}: RenderFieldProps) => {
+  const {
+    many,
+    autoFill,
+    options,
+    steps: { formSteps, currentStep },
+  } = useForm<T>();
 
   const { page, setPage } = useQuery();
+
   type Focus = {
     field: FormFieldDefinition<T>;
     rowIndex: number;
   };
+
   const [focus, setFocus] = useState<Focus | null>(null);
 
   const formData: FormTypeMap[T] | undefined | null =
@@ -53,8 +55,9 @@ const ManyField = <T extends keyof FormTypeMap>({
       );
   }
 
-  const headers: TableHeader<Record<string, any>>[] = fields
-    ? fields?.map((field) => ({
+  const headers: TableHeader<Record<string, any>>[] = formSteps[currentStep]
+    .fields
+    ? formSteps[currentStep].fields?.map((field) => ({
         key: field.key as string,
         label: field.label,
         field: field.key as keyof Record<string, any>,
@@ -66,12 +69,10 @@ const ManyField = <T extends keyof FormTypeMap>({
       }))
     : [];
 
-  const requiredField = [
-    fields
-      .filter((f) => f.required)
-      .map((f) => f.key)
-      .toString(),
-  ];
+  const requiredField =
+    formSteps[currentStep].fields
+      ?.filter((f) => f.required)
+      .map((f) => String(f.key)) ?? [];
 
   return (
     <>
@@ -84,7 +85,9 @@ const ManyField = <T extends keyof FormTypeMap>({
           formData: Record<string, any>,
           rowIndex: number,
         ) => {
-          const field = fields?.find((f) => f.key === header.key);
+          const field = formSteps[currentStep].fields?.find(
+            (f) => f.key === header.key,
+          );
           if (!field || !many?.handleFormData) return null;
 
           const targetObj = many?.stateLabel[rowIndex];
@@ -158,18 +161,4 @@ const ManyField = <T extends keyof FormTypeMap>({
   );
 };
 
-const RenderManyField = <K extends keyof FormTypeMap>(
-  props: RenderFieldProps<K>,
-) => {
-  return (
-    <FilterProvider>
-      <SortProvider>
-        <ListViewProvider>
-          <ManyField {...props} />
-        </ListViewProvider>
-      </SortProvider>
-    </FilterProvider>
-  );
-};
-
-export default RenderManyField;
+export default BulkEditForm;
