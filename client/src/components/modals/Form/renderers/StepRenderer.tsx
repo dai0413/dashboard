@@ -23,14 +23,19 @@ export const StepRenderer = <T extends keyof FormTypeMap>({
 }: StepRenderer<T>) => {
   const current = formSteps[currentStep];
 
+  if (current.fields?.length === 0) {
+    return <></>;
+  }
+
   if (current.type === StepType.FORM) {
     if (inputMode === InputMode.SINGLE) {
       return <SingleEditForm />;
     }
 
     if (
-      current.dataSource === DataSource.BULK_COMMON ||
-      current.dataSource === DataSource.META_DATA
+      !current.many &&
+      (current.dataSource === DataSource.BULK_COMMON ||
+        current.dataSource === DataSource.META_DATA)
     ) {
       return <SingleEditForm />;
     }

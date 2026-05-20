@@ -484,7 +484,11 @@ export const FormProvider = <T extends ModelType>({
           return false;
         }
 
-        const difKeys = getDiffKeys(originalData, formData);
+        const difKeys = [
+          ...getDiffKeys(originalData, formData),
+          ...getDiffKeys(formData, originalData),
+        ];
+
         if (difKeys?.length === 0) {
           handleSetAlert({
             success: false,
@@ -493,39 +497,62 @@ export const FormProvider = <T extends ModelType>({
           return false;
         }
 
-        const updated: FormTypeMap[T] = Object.fromEntries(
-          Object.entries(formData).filter(([key]) => difKeys.includes(key)),
-        );
+        const updated: Record<string, any> = {};
+
+        difKeys.forEach((key) => {
+          if (key in formData) {
+            updated[key] = formData[key as keyof typeof formData];
+          } else {
+            updated[key] = null;
+          }
+        });
 
         success = await modelContext.updateItem(originalData._id, {
           ...getDefault(modelType),
           ...updated,
         });
-      }
-
-      if (inputMode === InputMode.MANY) {
+      } else if (inputMode === InputMode.MANY) {
         const updateDatas: UpdateData<T>[] = originalDatas.flatMap(
           (originalData, i) => {
             const formData = formDatas[i];
-            const difKeys = getDiffKeys(originalData, formData);
+            const difKeys = [
+              ...getDiffKeys(originalData, formData),
+              ...getDiffKeys(formData, originalData),
+            ];
 
             if (difKeys.length === 0) return [];
 
-            const updateData: FormTypeMap[T] = Object.fromEntries(
-              Object.entries(formData).filter(([key]) => difKeys.includes(key)),
-            );
+            const updated: Record<string, any> & { _id: string } = {
+              _id: originalData._id,
+            };
+            difKeys.forEach((key) => {
+              if (key in formData) {
+                updated[key] = formData[key as keyof typeof formData];
+              } else {
+                updated[key] = null;
+              }
+            });
+
+            const updatedData: UpdateData<T> = updated;
 
             return [
               {
-                _id: originalData._id,
-                ...updateData,
+                ...updatedData,
                 ...getDefault(modelType),
               },
             ];
           },
         );
 
-        success = await modelContext.updateItems(updateDatas);
+        if (updateDatas.length === 0) {
+          handleSetAlert({
+            success: false,
+            message: "変更点がありません",
+          });
+          return false;
+        } else {
+          success = await modelContext.updateItems(updateDatas);
+        }
       }
     }
 
@@ -535,7 +562,7 @@ export const FormProvider = <T extends ModelType>({
   const stepSkip = (next: number) => {
     const current = formSteps[next];
 
-    if (current?.skip) {
+    if (!current.many && current?.skip) {
       const skip = current.skip(formData, metaData);
 
       return skip;

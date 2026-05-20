@@ -15,7 +15,6 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
-  skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
   createFilterConditions?: CreateFilterConditions<K>;
   createQuickFilterItems?: CreateQuickFilterItems<K>;
@@ -37,6 +36,7 @@ type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
 type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   many?: false;
   dataSource?: DataSource;
+  skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
   getDraftData?: GetDraftData<K, false>;
   onChange?: OnChange<K, false>;
 };
