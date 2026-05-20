@@ -536,7 +536,7 @@ export const FormProvider = <T extends ModelType>({
     const current = formSteps[next];
 
     if (current?.skip) {
-      const skip = current.skip(formData);
+      const skip = current.skip(formData, metaData);
 
       return skip;
     }
@@ -549,10 +549,9 @@ export const FormProvider = <T extends ModelType>({
 
     if (!current) return;
 
-    const onChange = current.onChange;
     const isArray = current.many;
     const checkData =
-      current.dataSource === DataSource.BULK_COMMON
+      !current.many && current.dataSource === DataSource.BULK_COMMON
         ? bulkCommonData
         : isArray === true
           ? states
@@ -584,68 +583,66 @@ export const FormProvider = <T extends ModelType>({
     }
 
     // --- onChange 関数による値変更 ---
-    if (onChange) {
-      if (Array.isArray(checkData)) {
-        const results = await Promise.all(
-          formDatas.map(async (value, index) => {
-            const { formData: changedData, formLabel: changedLabel } =
-              await onChange(
-                { ...bulkCommonData, ...value },
-                formLabels[index],
-                api,
-              );
-
-            return {
-              formData: {
-                ...value,
-                ...(changedData ?? {}),
-              },
-              formLabel: {
-                ...formLabels[index],
-                ...(changedLabel ?? {}),
-              },
-            };
-          }),
-        );
-
-        const newFormDatas = results.map((r) => r.formData);
-        const newFormLabels = results.map((r) => r.formLabel);
-
-        setFormDatas(newFormDatas);
-        setFormLabels(newFormLabels);
-      } else {
-        const { formData: onChangedFormData, formLabel: onChangedFormLabel } =
-          await onChange(formData, formLabel, api);
-        newFormData = { ...newFormData, ...onChangedFormData };
-        newFormLabel = { ...newFormLabel, ...onChangedFormLabel };
-
-        setFormData(newFormData);
-        setFormLabel(newFormLabel);
+    if (Array.isArray(checkData)) {
+      if (current.many) {
+        const onChange = current.onChange;
+        if (onChange) {
+          const {
+            formDatas: onChangedFormDatas,
+            formLabels: onChangedFormLabels,
+          } = await onChange({
+            formDatas,
+            formLabels,
+            metaData,
+            api,
+          });
+          setFormDatas(onChangedFormDatas);
+          setFormLabels(onChangedFormLabels);
+        }
       }
+    } else {
+      if (!current.many) {
+        const onChange = current.onChange;
+        if (onChange) {
+          // formData更新
+          const { formData: onChangedFormData, formLabel: onChangedFormLabel } =
+            await onChange({ formData, formLabel, metaData, api });
+          newFormData = { ...newFormData, ...onChangedFormData };
+          newFormLabel = { ...newFormLabel, ...onChangedFormLabel };
 
-      // 多数データ入力の共通要素適用
-      if (current.dataSource === DataSource.BULK_COMMON) {
-        const {
-          formData: onChangedBulkCommonData,
-          formLabel: onChangedBulkCommonLabel,
-        } = await onChange(bulkCommonData, bulkCommonLabel, api);
-        newBulkCommonData = {
-          ...newBulkCommonData,
-          ...onChangedBulkCommonData,
-        };
-        newBulkCommonLabel = {
-          ...newBulkCommonLabel,
-          ...onChangedBulkCommonLabel,
-        };
+          setFormData(newFormData);
+          setFormLabel(newFormLabel);
 
-        setBulkCommonData(newBulkCommonData);
-        setBulkCommonLabel(newBulkCommonLabel);
-        setFormDatas([newBulkCommonData]);
-        setFormLabels([newBulkCommonLabel]);
+          // bulkCommonData更新
+          if (current.dataSource === DataSource.BULK_COMMON) {
+            const {
+              formData: onChangedBulkCommonData,
+              formLabel: onChangedBulkCommonLabel,
+            } = await onChange({
+              formData: bulkCommonData,
+              formLabel: bulkCommonLabel,
+              metaData,
+              api,
+            });
+            newBulkCommonData = {
+              ...newBulkCommonData,
+              ...onChangedBulkCommonData,
+            };
+            newBulkCommonLabel = {
+              ...newBulkCommonLabel,
+              ...onChangedBulkCommonLabel,
+            };
+
+            setBulkCommonData(newBulkCommonData);
+            setBulkCommonLabel(newBulkCommonLabel);
+            setFormDatas([newBulkCommonData]);
+            setFormLabels([newBulkCommonLabel]);
+          }
+        }
       }
     }
 
-    if (current.dataSource === DataSource.BULK_COMMON) {
+    if (!current.many && current.dataSource === DataSource.BULK_COMMON) {
       setFormDatas([newBulkCommonData]);
       setFormLabels([newBulkCommonLabel]);
     }
@@ -1001,31 +998,22 @@ export const FormProvider = <T extends ModelType>({
   // ////////////////////////////////////////////////////// //
   const autoFill = async (): Promise<void> => {
     const current = formSteps[currentStep];
-    const onChange = current?.onChange;
 
-    if (onChange) {
-      const results = await Promise.all(
-        formDatas.map(async (value, index) => {
-          const { formData: changedData, formLabel: changedLabel } =
-            await onChange(value, formLabels[index], api);
-
-          return {
-            formData: {
-              ...value,
-              ...(changedData ?? {}),
-            },
-            formLabel: {
-              ...formLabels[index],
-              ...(changedLabel ?? {}),
-            },
-          };
-        }),
-      );
-
-      const newDatas = results.map((r) => r.formData);
-      const newLabels = results.map((r) => r.formLabel);
-      setFormDatas(newDatas);
-      setFormLabels(newLabels);
+    if (current.many) {
+      const onChange = current.onChange;
+      if (onChange) {
+        const {
+          formDatas: onChangedFormDatas,
+          formLabels: onChangedFormLabels,
+        } = await onChange({
+          formDatas,
+          formLabels,
+          metaData,
+          api,
+        });
+        setFormDatas(onChangedFormDatas);
+        setFormLabels(onChangedFormLabels);
+      }
     }
   };
 

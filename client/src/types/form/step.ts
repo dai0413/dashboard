@@ -15,10 +15,8 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
-  dataSource?: DataSource;
-  skip?: (data: FormTypeMap[K]) => boolean;
+  skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
   validate?: (data: FormTypeMap[K]) => AlertStatus;
-  onChange?: OnChange<FormTypeMap[K]>;
   createFilterConditions?: CreateFilterConditions<K>;
   createQuickFilterItems?: CreateQuickFilterItems<K>;
   addDraftData?: AddDraftData<K>;
@@ -33,11 +31,14 @@ type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
     api?: AxiosInstance,
   ) => Promise<FormTypeMap[K][]>;
   getDraftData?: GetDraftData<K, true>;
+  onChange?: OnChange<K, true>;
 };
 
 type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   many?: false;
+  dataSource?: DataSource;
   getDraftData?: GetDraftData<K, false>;
+  onChange?: OnChange<K, false>;
 };
 
 export type FormStep<K extends keyof FormTypeMap> =
