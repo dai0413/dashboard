@@ -19,6 +19,12 @@ import { getValues as getValuesD_M } from "../controllers/get-new-data/d_m/value
 
 import { getCardIds } from "../controllers/get-new-data/d_ml/card_ids.js";
 
+import {
+  getPositions as getPositionsL_M,
+  getStats,
+  getFormation,
+} from "../controllers/get-new-data/l_m/index.js";
+
 // D_PC
 router.route(API_PATHS.GET_NEW_DATA.D_PC.PLAYER).get(getPlayers);
 router
@@ -41,6 +47,11 @@ router.route("/get-new-data/d-ml/card-ids").post(getCardIds);
 
 // J_M
 router.route(API_PATHS.GET_NEW_DATA.J_M.MATCH).post(getValuesJ_M);
+
+// l_m
+router.route(API_PATHS.GET_NEW_DATA.L_M.POSITION).post(getPositionsL_M);
+router.route(API_PATHS.GET_NEW_DATA.L_M.STATS).post(getStats);
+router.route(API_PATHS.GET_NEW_DATA.L_M.FORMATION).post(getFormation);
 
 //SN_M
 router.route(API_PATHS.GET_NEW_DATA.SN_M.POSITION).post(getPositions);
