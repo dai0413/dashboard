@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -85,6 +85,16 @@
       "require": "./dist/types/get-new-data/models/staff.js",
       "types": "./dist/types/get-new-data/models/staff.d.ts"
     },
+    "./types/get-new-data/models/stats-l": {
+      "import": "./dist/types/get-new-data/models/stats-l.js",
+      "require": "./dist/types/get-new-data/models/stats-l.js",
+      "types": "./dist/types/get-new-data/models/stats-l.d.ts"
+    },
+    "./types/get-new-data/models/team-match-formation": {
+      "import": "./dist/types/get-new-data/models/team-match-formation.js",
+      "require": "./dist/types/get-new-data/models/team-match-formation.js",
+      "types": "./dist/types/get-new-data/models/team-match-formation.d.ts"
+    },
     "./types/get-new-data/site/d_ml/cardId": {
       "import": "./dist/types/get-new-data/site/d_ml/cardId.js",
       "require": "./dist/types/get-new-data/site/d_ml/cardId.js",
@@ -95,10 +105,30 @@
       "require": "./dist/types/get-new-data/site/j_m/values.js",
       "types": "./dist/types/get-new-data/site/j_m/values.d.ts"
     },
+    "./types/get-new-data/site/l_m/position": {
+      "import": "./dist/types/get-new-data/site/l_m/position.js",
+      "require": "./dist/types/get-new-data/site/l_m/position.js",
+      "types": "./dist/types/get-new-data/site/l_m/position.d.ts"
+    },
+    "./types/get-new-data/site/l_m/stats-l": {
+      "import": "./dist/types/get-new-data/site/l_m/stats-l.js",
+      "require": "./dist/types/get-new-data/site/l_m/stats-l.js",
+      "types": "./dist/types/get-new-data/site/l_m/stats-l.d.ts"
+    },
+    "./types/get-new-data/site/l_m/team-match-formation": {
+      "import": "./dist/types/get-new-data/site/l_m/team-match-formation.js",
+      "require": "./dist/types/get-new-data/site/l_m/team-match-formation.js",
+      "types": "./dist/types/get-new-data/site/l_m/team-match-formation.d.ts"
+    },
     "./types/get-new-data/site/sn_m/position": {
       "import": "./dist/types/get-new-data/site/sn_m/position.js",
       "require": "./dist/types/get-new-data/site/sn_m/position.js",
       "types": "./dist/types/get-new-data/site/sn_m/position.d.ts"
+    },
+    "./types/get-new-data/site/position": {
+      "import": "./dist/types/get-new-data/site/position.js",
+      "require": "./dist/types/get-new-data/site/position.js",
+      "types": "./dist/types/get-new-data/site/position.d.ts"
     },
     "./types/get-new-data/site/draftData": {
       "import": "./dist/types/get-new-data/site/draftData.js",

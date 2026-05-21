@@ -1,3 +1,14 @@
+type SuccessReturn<DATA> = {
+  success: true;
+  data: DATA;
+};
+type FailedReturn = {
+  success: false;
+  error: string;
+};
+
+type Result<DATA> = SuccessReturn<DATA> | FailedReturn;
+
 type ResDataBase<DATA> = {
   data: DATA;
 };
@@ -13,7 +24,7 @@ type BulkResult<DATA> = {
   successCount: number;
   failedCount: number;
   modifiedCount: number;
-  failedItems: FailedItem<DATA>;
+  failedItems: FailedItem<DATA>[];
 };
 
 // read
@@ -25,30 +36,23 @@ export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
 };
 
 // create
-export type CreateItemResponse = {
+export type CreateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type CreateItemsResponse<DATA> = {
+export type CreateItemsResponse<DATA> = Result<DATA> & {
   message: string;
 } & BulkResult<DATA>;
 
 // update
-export type UpdateItemResponse = {
+export type UpdateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type UpdateItemsResponse<DATA> = {
+export type UpdateItemsResponse<DATA> = Result<DATA> & {
   message: string;
 } & BulkResult<DATA>;
 
 // delete
 export type DeleteItemResponse = {
+  success: boolean;
   message: string;
-};
-
-export type APIError = {
-  error?: {
-    code?: number;
-    message?: string;
-    errors?: any;
-  };
 };

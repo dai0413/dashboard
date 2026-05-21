@@ -230,6 +230,11 @@ export const API_PATHS = {
     SN_M: {
       POSITION: "/get-new-data/sn-m/position",
     },
+    L_M: {
+      STATS: "/get-new-data/l-m/stats",
+      POSITION: "/get-new-data/l-m/position",
+      FORMATION: "/get-new-data/l-m/formation",
+    },
   },
 
   RESOLVE: {
