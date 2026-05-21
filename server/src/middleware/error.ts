@@ -7,7 +7,7 @@ export default function errorHandlerMiddleware(
   err: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   console.error("Error in middleware:", err);
 

@@ -5,16 +5,24 @@ import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/l_m/team-
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 import { result } from "./sample_data/formation.js";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 
-const getFormation = async (req: Request, res: Response) => {
+const getFormation = async (
+  req: Request,
+  res: Response<CreateItemResponse<Scraped>>,
+) => {
   try {
-    const { url } = req.body;
-    if (!url) throw new BadRequestError("urlを送信してください");
+    const { date, alph } = req.body;
+    if (!date || !alph)
+      throw new BadRequestError("date , alphを送信してください");
 
-    // const result = await get(url);
+    // const result = await get({date , alph});
     if (result.ok) {
-      const positionDatas: Scraped = result.data;
-      res.status(StatusCodes.OK).json({ data: positionDatas });
+      const data: Scraped = result.data;
+
+      res
+        .status(StatusCodes.OK)
+        .json({ success: true, message: "成功", data: data });
     } else {
       throw new InternalServerError(result.error);
     }
