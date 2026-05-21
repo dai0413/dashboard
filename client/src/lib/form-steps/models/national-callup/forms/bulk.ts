@@ -2,6 +2,7 @@ import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { combineOnChanges } from "../../../utils/onChange/combine";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 import { getFields } from "../fields";
 import { updateDatesFromSeries } from "../onChanges/updateDatesFromSeries";
 import { updateDatesFromStatus } from "../onChanges/updateDatesFromStatus";
@@ -42,7 +43,9 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData, "team", "team_name"),
-    onChange: combineOnChanges(updateTeamFromTransfer, updateDatesFromStatus),
+    onChange: toManyOnChange(
+      combineOnChanges(updateTeamFromTransfer, updateDatesFromStatus),
+    ),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

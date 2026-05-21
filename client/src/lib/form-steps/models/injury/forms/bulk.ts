@@ -1,6 +1,7 @@
 import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 import { updateTeam } from "../onChanges/updateTeam";
 
 type BaseModel = ModelType.INJURY;
@@ -75,7 +76,7 @@ export const bulk: FormStep<ModelType.INJURY>[] = [
       },
     ],
     many: true,
-    onChange: updateTeam,
+    onChange: toManyOnChange(updateTeam),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

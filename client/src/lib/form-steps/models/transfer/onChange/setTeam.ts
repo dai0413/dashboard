@@ -2,11 +2,11 @@ import { currentTransfer } from "../../../utils/onChange/currentTransfer";
 import { TransferForm } from "../../../../../types/models/transfer";
 import { OnChange } from "../../../../../types/form/onChange";
 
-export const setTeam: OnChange<TransferForm> = async (
+export const setTeam: OnChange<TransferForm, false> = async ({
   formData,
   formLabel,
   api,
-) => {
+}) => {
   if (!api) return { formData, formLabel };
   const { from_team, from_team_name, to_team, to_team_name, position } =
     await currentTransfer({

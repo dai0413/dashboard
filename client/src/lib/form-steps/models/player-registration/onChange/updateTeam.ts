@@ -2,11 +2,11 @@ import { OnChange } from "../../../../../types/form/onChange";
 import { PlayerRegistrationForm } from "../../../../../types/models/player-registration";
 import { currentTransfer } from "../../../utils/onChange/currentTransfer";
 
-export const updateTeam: OnChange<PlayerRegistrationForm> = async (
+export const updateTeam: OnChange<PlayerRegistrationForm, false> = async ({
   formData,
   formLabel,
-  api?,
-) => {
+  api,
+}) => {
   if (!formData.player || !api) return { formData, formLabel };
 
   const { to_team } = await currentTransfer({ formData: formData, api });

@@ -2,11 +2,10 @@ import { currentTransfer } from "../../../utils/onChange/currentTransfer";
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 import { OnChange } from "../../../../../types/form/onChange";
 
-export const updateTeamFromTransfer: OnChange<NationalCallupForm> = async (
-  formData,
-  formLabel,
-  api,
-) => {
+export const updateTeamFromTransfer: OnChange<
+  NationalCallupForm,
+  false
+> = async ({ formData, formLabel, api }) => {
   if (!api) return { formData, formLabel };
   const { to_team, to_team_name } = await currentTransfer({
     formData,

@@ -1,25 +1,20 @@
-import { OnChange } from "../../../../types/form/onChange";
+import { OnChange, OnChangeReturn } from "../../../../types/form/onChange";
 
-export const combineOnChanges =
-  <T>(...handlers: OnChange<T>[]): OnChange<T> =>
-  async (formData, formLabel, api) => {
-    let currentData = { ...formData };
-    let currentLabel = { ...formLabel };
+export const combineOnChanges = <FORM extends object, T extends boolean>(
+  ...handlers: OnChange<FORM, T>[]
+): OnChange<FORM, T> => {
+  return async (args) => {
+    let currentArgs = { ...args };
 
-    for (const h of handlers) {
-      const res = await h(currentData, currentLabel, api);
+    for (const handler of handlers) {
+      const result = await handler(currentArgs);
 
-      if (res.formData) {
-        currentData = { ...currentData, ...res.formData };
-      }
-
-      if (res.formLabel) {
-        currentLabel = { ...currentLabel, ...res.formLabel };
-      }
+      currentArgs = {
+        ...currentArgs,
+        ...result,
+      };
     }
 
-    return {
-      formData: currentData,
-      formLabel: currentLabel,
-    };
+    return currentArgs as OnChangeReturn<FORM, T>;
   };
+};

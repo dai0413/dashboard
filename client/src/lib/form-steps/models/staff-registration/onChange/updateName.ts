@@ -6,11 +6,11 @@ import { convert } from "../../../../convert/DBtoGetted";
 import { StaffRegistrationForm } from "../../../../../types/models/staff-registration";
 import { Staff } from "../../../../../types/models/staff";
 
-export const updateName: OnChange<StaffRegistrationForm> = async (
+export const updateName: OnChange<StaffRegistrationForm, false> = async ({
   formData,
   formLabel,
-  api?,
-) => {
+  api,
+}) => {
   const staffId = formData.staff;
 
   if (!staffId || !api) return { formData, formLabel };

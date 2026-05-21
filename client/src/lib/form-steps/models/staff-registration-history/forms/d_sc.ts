@@ -8,6 +8,7 @@ import { onChangeFillChangesByRegistrationType } from "../onChange/onChangeFillC
 import { validateByRegistrationType } from "../../../utils/validate/validateByRegistrationType";
 import { getFields } from "../fields";
 import { StaffRegistrationHistoryForm } from "../../../../../types/models/staff-registration-history";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 
 type BaseModel = ModelType.STAFF_REGISTRATION_HISTORY;
 const baseModel = ModelType.STAFF_REGISTRATION_HISTORY;
@@ -29,7 +30,7 @@ export const d_sc: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       return obj.data;
     },
     many: true,
-    onChange: onChangeFillChangesByRegistrationType,
+    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
   },
   {
     stepLabel: "取得したデータを編集してください",
@@ -46,7 +47,7 @@ export const d_sc: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       "changes.en_name",
       "changes.note",
     ]),
-    onChange: onChangeFillChangesByRegistrationType,
+    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

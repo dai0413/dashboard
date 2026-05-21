@@ -1,6 +1,7 @@
 import { FormStep, DataSource, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 import { getFields } from "../fields";
 import { setTeam } from "../onChange/setTeam";
 import { teamCheck } from "../validate/teamCheck";
@@ -36,7 +37,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData),
-    onChange: setTeam,
+    onChange: toManyOnChange(setTeam),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

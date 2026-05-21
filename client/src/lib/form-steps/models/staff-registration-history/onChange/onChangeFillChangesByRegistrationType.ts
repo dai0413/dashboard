@@ -11,8 +11,9 @@ import { set } from "lodash";
 import { Staff } from "../../../../../types/models/staff";
 
 export const onChangeFillChangesByRegistrationType: OnChange<
-  StaffRegistrationHistoryForm
-> = async (formData, formLabel, api) => {
+  StaffRegistrationHistoryForm,
+  false
+> = async ({ formData, formLabel, api }) => {
   if (!formData.staff || !api) return { formData, formLabel };
 
   let returnValue: Partial<StaffRegistrationHistoryForm> = {};

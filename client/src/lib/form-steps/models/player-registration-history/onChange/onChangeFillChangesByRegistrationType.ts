@@ -11,8 +11,9 @@ import { set } from "lodash";
 import { Player } from "../../../../../types/models/player";
 
 export const onChangeFillChangesByRegistrationType: OnChange<
-  PlayerRegistrationHistoryForm
-> = async (formData, formLabel, api?) => {
+  PlayerRegistrationHistoryForm,
+  false
+> = async ({ formData, formLabel, api }) => {
   if (!formData.player || !api) return { formData, formLabel };
 
   let returnValue: Partial<PlayerRegistrationHistoryForm> = {};

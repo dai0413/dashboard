@@ -44,8 +44,9 @@ const fetchFormationByKey = async (
 };
 
 export const updateFormationFromLineup: OnChange<
-  TeamMatchFormationForm
-> = async (formData, formLabel, api) => {
+  TeamMatchFormationForm,
+  false
+> = async ({ formData, formLabel, api }) => {
   const matchId = formData.match;
   const teamId = formData.team;
 

@@ -9,11 +9,10 @@ import { convert } from "../../../../convert/DBtoGetted";
 import { ModelType } from "../../../../../types/models";
 import { OnChange } from "../../../../../types/form/onChange";
 
-export const updateDatesFromSeries: OnChange<NationalCallupForm> = async (
-  formData,
-  formLabel,
-  api,
-) => {
+export const updateDatesFromSeries: OnChange<
+  NationalCallupForm,
+  false
+> = async ({ formData, formLabel, api }) => {
   if (!formData.series || !api) return { formData, formLabel };
 
   const item = await readItemBase<NationalMatchSeries>({

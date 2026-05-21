@@ -4,6 +4,7 @@ import { createConfirmationStep } from "../../../confirmationStep";
 import { onChangeFillChangesByRegistrationType } from "../onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../../utils/validate/validateByRegistrationType";
 import { getFields } from "../fields";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 
 type BaseModel = ModelType.STAFF_REGISTRATION_HISTORY;
 const baseModel = ModelType.STAFF_REGISTRATION_HISTORY;
@@ -45,7 +46,7 @@ export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       "changes.en_name",
       "changes.note",
     ]),
-    onChange: onChangeFillChangesByRegistrationType,
+    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

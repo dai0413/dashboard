@@ -4,10 +4,12 @@ import { calcPeriodLabel } from "./calcPeriodLabel";
 import { OnChange } from "../../../../types/form/onChange";
 import { PlayerMatchEventLogForm } from "../../../../types/models/player-match-event-log";
 import { Match } from "../../../../types/models/match";
+import { StaffMatchEventLogForm } from "../../../../types/models/staff-match-event-log";
 
 export const updatePeriodLabelFromMatch: OnChange<
-  PlayerMatchEventLogForm
-> = async (formData, formLabel, api?) => {
+  StaffMatchEventLogForm | PlayerMatchEventLogForm,
+  false
+> = async ({ formData, formLabel, api }) => {
   if (formData.time == null || formData.match == null || !api)
     return { formData, formLabel };
   const time = formData.time;
@@ -23,7 +25,8 @@ export const updatePeriodLabelFromMatch: OnChange<
   const periods = resData.match_format.period;
   const period_label = calcPeriodLabel(formData, periods);
 
-  let returnValue: Partial<PlayerMatchEventLogForm> = {};
+  let returnValue: Partial<StaffMatchEventLogForm | PlayerMatchEventLogForm> =
+    {};
   let returnFormLabel: Record<string, any> = {};
 
   if (period_label) {

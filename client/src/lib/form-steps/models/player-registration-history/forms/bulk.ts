@@ -4,6 +4,7 @@ import { createConfirmationStep } from "../../../confirmationStep";
 import { onChangeFillChangesByRegistrationType } from "../onChange/onChangeFillChangesByRegistrationType";
 import { validateByRegistrationType } from "../../../utils/validate/validateByRegistrationType";
 import { getFields } from "../fields";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 
 type BaseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
 const baseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
@@ -51,7 +52,7 @@ export const bulk: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       "changes.homegrown",
       "changes.note",
     ]),
-    onChange: onChangeFillChangesByRegistrationType,
+    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

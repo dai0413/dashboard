@@ -1,13 +1,15 @@
 import { OnChange } from "../../../../types/form/onChange";
 import { PlayerMatchEventLogForm } from "../../../../types/models/player-match-event-log";
+import { StaffMatchEventLogForm } from "../../../../types/models/staff-match-event-log";
 
-export const updateTimeName: OnChange<PlayerMatchEventLogForm> = async (
-  formData,
-  formLabel,
-) => {
+export const updateTimeName: OnChange<
+  StaffMatchEventLogForm | PlayerMatchEventLogForm,
+  false
+> = async ({ formData, formLabel }) => {
   if (formData.time == null) return { formData, formLabel };
 
-  let returnValue: Partial<PlayerMatchEventLogForm> = {};
+  let returnValue: Partial<StaffMatchEventLogForm | PlayerMatchEventLogForm> =
+    {};
   let returnFormLabel: Record<string, any> = {};
 
   const time_name = formData.add_time

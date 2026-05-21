@@ -8,6 +8,7 @@ import { onChangeFillChangesByRegistrationType } from "../onChange/onChangeFillC
 import { validateByRegistrationType } from "../../../utils/validate/validateByRegistrationType";
 import { getFields } from "../fields";
 import { PlayerRegistrationForm } from "../../../../../types/models/player-registration";
+import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 
 type BaseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
 const baseModel = ModelType.PLAYER_REGISTRATION_HISTORY;
@@ -29,7 +30,7 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       return obj.data;
     },
     many: true,
-    onChange: onChangeFillChangesByRegistrationType,
+    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
   },
   {
     stepLabel: "取得したデータを編集してください",
@@ -52,7 +53,7 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       "changes.homegrown",
       "changes.note",
     ]),
-    onChange: onChangeFillChangesByRegistrationType,
+    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

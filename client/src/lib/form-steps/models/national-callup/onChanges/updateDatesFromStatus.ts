@@ -1,9 +1,10 @@
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
 import { OnChange } from "../../../../../types/form/onChange";
 
-export const updateDatesFromStatus: OnChange<NationalCallupForm> = async (
-  formData,
-) => {
+export const updateDatesFromStatus: OnChange<
+  NationalCallupForm,
+  false
+> = async ({ formData }) => {
   let newFormData: Partial<NationalCallupForm> = {};
   let newFormLabel: Partial<Record<string, any>> = {};
 
