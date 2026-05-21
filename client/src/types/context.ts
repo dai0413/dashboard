@@ -1,7 +1,7 @@
 import { QueryParams, UploadJobType } from "@dai0413/myorg-shared";
 import { GettedModelDataMap, FormTypeMap, ModelType } from "../types/models";
 import { AxiosResponse } from "axios";
-import { CreateItemResponse } from "../types";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 import { UpdateData } from "./form";
 
 export type ModelContext<K extends ModelType> = {

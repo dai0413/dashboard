@@ -1,7 +1,6 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError } from "@dai0413/myorg-shared";
-import { DeleteItemResponse } from "../../types";
+import { APIError, DeleteItemResponse } from "@dai0413/myorg-shared";
 
 type DeleteParams = {
   apiInstance: AxiosInstance;

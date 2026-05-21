@@ -5,7 +5,7 @@ import { PlayerMatchEventLogGet } from "../models/player-match-event-log";
 import { StaffAppearanceGet } from "../models/staff-appearance";
 import { RefereeAppearanceGet } from "../models/referee-appearance";
 import { DraftData } from "./draftData";
-import { CreateItemResponse } from "../../types";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 
 export type AddPostedDraftData = (args: {
   draftData: DraftData;

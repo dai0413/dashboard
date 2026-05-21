@@ -1,7 +1,6 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError } from "@dai0413/myorg-shared";
-import { UpdateItemResponse } from "../../types";
+import { APIError, UpdateItemsResponse } from "@dai0413/myorg-shared";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;
@@ -22,7 +21,7 @@ export const updateItemsBase = async <DATA>({
   let alert: AlertStatus = { success: false };
   try {
     const res = await apiInstance.patch(backendRoute, data);
-    const responseData: UpdateItemResponse<DATA[]> = res.data;
+    const responseData: UpdateItemsResponse<DATA[]> = res.data;
     alert = { success: true, message: responseData.message };
 
     return true;

@@ -41,7 +41,7 @@ import {
   HandleFormData,
 } from "../types/form/handleFormData";
 import { getDiffKeys } from "../utils/comparison";
-import { CreateItemResponse } from "../types";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 
 const checkRequiredFields = <T extends ModelType>(
   fields: FormFieldDefinition<T>[] | undefined,

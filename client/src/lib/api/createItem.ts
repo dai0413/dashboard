@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
 import { APIError } from "@dai0413/myorg-shared";
-import { CreateItemResponse } from "../../types";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 
 type CreateParamsBase = {
   apiInstance: AxiosInstance;
@@ -54,7 +54,11 @@ export async function createItemBase<DATA>({
       message: apiError.error?.message,
     };
 
-    return { success: false, message: "データの追加に失敗しました" };
+    return {
+      success: false,
+      message: "データの追加に失敗しました",
+      error: apiError.error.message,
+    };
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");

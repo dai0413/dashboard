@@ -1,7 +1,10 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError, QueryParams } from "@dai0413/myorg-shared";
-import { ReadItemsResponse } from "../../types";
+import {
+  APIError,
+  QueryParams,
+  ReadItemsResponse,
+} from "@dai0413/myorg-shared";
 
 type ReadItemsParams = {
   apiInstance: AxiosInstance;
