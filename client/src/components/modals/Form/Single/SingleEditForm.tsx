@@ -11,12 +11,20 @@ const SingleEditForm = <T extends keyof FormTypeMap>() => {
     steps: { formSteps, currentStep },
   } = useForm<T>();
 
-  if (!formSteps[currentStep].fields) return <></>;
+  const current = formSteps[currentStep];
+
+  if (!current.fields || current.fields?.length === 0) {
+    return <></>;
+  }
+
+  if (current.many) {
+    return <></>;
+  }
 
   return (
     <>
-      {formSteps[currentStep].fields.map((field, fieldIndex) => {
-        const stepTotal = formSteps[currentStep]?.fields?.length ?? 0;
+      {current.fields.map((field, fieldIndex) => {
+        const stepTotal = current?.fields?.length ?? 0;
         const stepIndex = fieldIndex + 1;
 
         return (
@@ -31,22 +39,22 @@ const SingleEditForm = <T extends keyof FormTypeMap>() => {
               key={field.key as string}
               field={field}
               formData={
-                formSteps[currentStep].dataSource === DataSource.BULK_COMMON
+                current.dataSource === DataSource.BULK_COMMON
                   ? many?.bulkCommonData || {}
                   : single.state
               }
               formLabel={
-                formSteps[currentStep].dataSource === DataSource.BULK_COMMON
+                current.dataSource === DataSource.BULK_COMMON
                   ? many?.bulkCommonLabel || {}
                   : single.stateLabel
               }
               handleFormData={(props) =>
                 single.handleFormData({
                   ...props,
-                  dataSource: formSteps[currentStep].dataSource,
+                  dataSource: current.dataSource,
                 })
               }
-              supportButton={!formSteps[currentStep].many}
+              supportButton={!current.many}
               options={options}
             />
           </div>
