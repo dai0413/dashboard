@@ -18,7 +18,7 @@ export const match: FormStepsConfig<ModelType.MATCH> = {
       steps: getJ_Msteps(ModelType.MATCH, true),
     },
     [From.D_ML]: {
-      label: "",
+      label: "D_ML",
       steps: getD_MLsteps(ModelType.MATCH, true),
     },
   },
