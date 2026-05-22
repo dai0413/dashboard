@@ -159,6 +159,21 @@
       "import": "./dist/types/resolver/staffAppearance.js",
       "require": "./dist/types/resolver/staffAppearance.js",
       "types": "./dist/types/resolver/staffAppearance.d.ts"
+    },
+    "./types/resolver/staffMatchEventLog": {
+      "import": "./dist/types/resolver/staffMatchEventLog.js",
+      "require": "./dist/types/resolver/staffMatchEventLog.js",
+      "types": "./dist/types/resolver/staffMatchEventLog.d.ts"
+    },
+    "./types/resolver/statsL": {
+      "import": "./dist/types/resolver/statsL.js",
+      "require": "./dist/types/resolver/statsL.js",
+      "types": "./dist/types/resolver/statsL.d.ts"
+    },
+    "./types/resolver/teamMatchFormation": {
+      "import": "./dist/types/resolver/teamMatchFormation.js",
+      "require": "./dist/types/resolver/teamMatchFormation.js",
+      "types": "./dist/types/resolver/teamMatchFormation.d.ts"
     }
   },
   "scripts": {
