@@ -4,6 +4,7 @@ import { objectId } from "./utils/objectId.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { SeasonZodSchema } from "./season.schema.js";
 import { CompetitionZodSchema } from "./competition.schema.js";
+import { label } from "./utils/label.js";
 
 export const TeamCompetitionSeasonZodSchema = z.object({
   _id: objectId,
@@ -41,4 +42,11 @@ export const TeamCompetitionSeasonPopulatedSchema =
     team: TeamZodSchema,
     season: SeasonZodSchema,
     competition: CompetitionZodSchema,
+  });
+
+export const TeamCompetitionSeasonPopulateLabelSchema =
+  TeamCompetitionSeasonZodSchema.extend({
+    team: label,
+    season: label,
+    competition: label,
   });

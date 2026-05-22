@@ -2,6 +2,7 @@ import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { CountryZodSchema } from "./country.schema.js";
+import { label } from "./utils/label.js";
 
 export const StadiumZodSchema = z.object({
   _id: objectId,
@@ -30,4 +31,8 @@ export const StadiumResponseSchema = StadiumZodSchema.extend({
 
 export const StadiumPopulatedSchema = StadiumZodSchema.extend({
   country: CountryZodSchema.optional(),
+});
+
+export const StadiumPopulateLabelSchema = StadiumZodSchema.extend({
+  country: label.optional(),
 });

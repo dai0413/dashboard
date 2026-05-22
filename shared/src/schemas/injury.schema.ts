@@ -3,6 +3,7 @@ import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { PlayerZodSchema } from "./player.schema.js";
+import { label } from "./utils/label.js";
 
 const ttpPattern = /^(\d+)([dwmy])$|^(\d+)-(\d+)([dwmy])$/i;
 
@@ -73,4 +74,14 @@ export const InjuryPopulatedSchema = InjuryBaseZodSchema.omit({
   team: TeamZodSchema,
   now_team: TeamZodSchema.optional(),
   player: PlayerZodSchema,
+});
+
+export const InjuryPopulateLabelSchema = InjuryBaseZodSchema.omit({
+  team: true,
+  now_team: true,
+  player: true,
+}).safeExtend({
+  team: label,
+  now_team: label.optional(),
+  player: label,
 });

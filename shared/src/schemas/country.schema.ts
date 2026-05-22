@@ -46,3 +46,5 @@ export const CountryFormSchema = CountryZodSchema.omit({
 export const CountryResponseSchema = CountryZodSchema;
 
 export const CountryPopulatedSchema = CountryZodSchema;
+
+export const CountryPopulateLabelSchema = CountryZodSchema;

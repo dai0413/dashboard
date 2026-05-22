@@ -6,6 +6,7 @@ import { form } from "../enum/form.js";
 import { PlayerZodSchema } from "./player.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { getKey } from "../utils/getKey.js";
+import { label } from "./utils/label.js";
 
 export const TransferBaseZodSchema = z.object({
   _id: objectId,
@@ -71,4 +72,14 @@ export const TransferPopulatedSchema = TransferBaseZodSchema.omit({
   player: PlayerZodSchema,
   from_team: TeamZodSchema.optional(),
   to_team: TeamZodSchema.optional(),
+});
+
+export const TransferPopulateLabelSchema = TransferBaseZodSchema.omit({
+  player: true,
+  from_team: true,
+  to_team: true,
+}).safeExtend({
+  player: label,
+  from_team: label.optional(),
+  to_team: label.optional(),
 });

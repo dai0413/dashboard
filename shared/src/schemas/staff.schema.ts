@@ -3,6 +3,7 @@ import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { CountryZodSchema } from "./country.schema.js";
 import { PlayerZodSchema } from "./player.schema.js";
+import { label } from "./utils/label.js";
 
 export const StaffZodSchema = z.object({
   _id: objectId,
@@ -36,4 +37,9 @@ export const StaffResponseSchema = StaffZodSchema.extend({
 export const StaffPopulatedSchema = StaffZodSchema.extend({
   citizenship: z.array(CountryZodSchema).default([]).optional(),
   player: PlayerZodSchema.optional(),
+});
+
+export const StaffPopulateLabelSchema = StaffZodSchema.extend({
+  citizenship: z.array(label).default([]).optional(),
+  player: label.optional(),
 });

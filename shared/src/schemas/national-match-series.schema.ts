@@ -5,6 +5,7 @@ import { ageGroup } from "../enum/ageGroup.js";
 import { CountryZodSchema } from "./country.schema.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
 import { getKey } from "../utils/getKey.js";
+import { label } from "./utils/label.js";
 
 export const NationalMatchSeriesZodSchema = z.object({
   _id: objectId,
@@ -45,4 +46,13 @@ export const NationalMatchSeriesPopulatedSchema =
   }).safeExtend({
     country: CountryZodSchema,
     matches: z.array(MatchBaseZodSchema).optional(),
+  });
+
+export const NationalMatchSeriesPopulateLabelSchema =
+  NationalMatchSeriesZodSchema.omit({
+    country: true,
+    matches: true,
+  }).safeExtend({
+    country: label,
+    matches: z.array(label).optional(),
   });

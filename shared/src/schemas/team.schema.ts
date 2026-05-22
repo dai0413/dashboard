@@ -6,6 +6,7 @@ import { ageGroup } from "../enum/ageGroup.js";
 import { division } from "../enum/division.js";
 import { CountryZodSchema } from "./country.schema.js";
 import { getKey } from "../utils/getKey.js";
+import { label } from "./utils/label.js";
 
 export const TeamZodSchema = z.object({
   _id: objectId,
@@ -42,4 +43,8 @@ export const TeamResponseSchema = TeamZodSchema.extend({
 
 export const TeamPopulatedSchema = TeamZodSchema.extend({
   country: CountryZodSchema.optional(),
+});
+
+export const TeamPopulateLabelSchema = TeamZodSchema.extend({
+  country: label.optional(),
 });

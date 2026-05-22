@@ -5,6 +5,7 @@ import { objectId } from "./utils/objectId.js";
 import { dateField } from "./utils/dateField.js";
 import { CompetitionZodSchema } from "./competition.schema.js";
 import { SeasonZodSchema } from "./season.schema.js";
+import { label } from "./utils/label.js";
 
 export const CompetitionStageBaseZodSchema = z.object({
   _id: objectId,
@@ -75,4 +76,15 @@ export const CompetitionStagePopulatedSchema =
     competition: CompetitionZodSchema,
     season: SeasonZodSchema,
     parent_stage: z.array(CompetitionStageZodSchema).optional(),
+  });
+
+export const CompetitionStagePopulateLabelSchema =
+  CompetitionStageBaseZodSchema.omit({
+    competition: true,
+    season: true,
+    parent_stage: true,
+  }).safeExtend({
+    competition: label.optional(),
+    season: label.optional(),
+    parent_stage: z.array(label).optional(),
   });

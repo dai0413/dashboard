@@ -231,9 +231,11 @@ export const API_PATHS = {
       POSITION: "/get-new-data/sn-m/position",
     },
     L_M: {
+      VALUES: "/get-new-data/l-m/values",
       STATS: "/get-new-data/l-m/stats",
-      POSITION: "/get-new-data/l-m/position",
       FORMATION: "/get-new-data/l-m/formation",
+
+      POSITION: "/get-new-data/l-m/position",
     },
   },
 

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { CompetitionZodSchema } from "./competition.schema.js";
+import { label } from "./utils/label.js";
 
 export const SeasonZodSchema = z.object({
   _id: objectId,
@@ -32,4 +33,8 @@ export const SeasonResponseSchema = SeasonZodSchema.extend({
 
 export const SeasonPopulatedSchema = SeasonZodSchema.extend({
   competition: CompetitionZodSchema,
+});
+
+export const SeasonPopulateLabelSchema = SeasonZodSchema.extend({
+  competition: label,
 });

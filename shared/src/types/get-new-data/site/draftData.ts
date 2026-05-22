@@ -19,6 +19,10 @@ import {
   Form as TeamMatchFormationForm,
   Scraped as TeamMatchFormationScraped,
 } from "../models/team-match-formation";
+import {
+  Form as StatsLForm,
+  Scraped as StatsLScraped,
+} from "../models/stats-l";
 
 export type Form = Record<
   string,
@@ -40,6 +44,10 @@ export type Form = Record<
     teamMatchFormation?: {
       home: TeamMatchFormationForm;
       away: TeamMatchFormationForm;
+    };
+    satsL?: {
+      home: StatsLForm;
+      away: StatsLForm;
     };
   }
 >;
@@ -64,6 +72,10 @@ export type Scraped = Record<
     teamMatchFormation?: {
       home: TeamMatchFormationScraped;
       away: TeamMatchFormationScraped;
+    };
+    statsL?: {
+      home: StatsLScraped;
+      away: StatsLScraped;
     };
   }
 >;

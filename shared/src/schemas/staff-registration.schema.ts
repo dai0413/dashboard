@@ -8,6 +8,7 @@ import { registrationType } from "../enum/registration_type.js";
 import { StaffZodSchema } from "./staff.schema.js";
 import { registrationStatus } from "../enum/registration_status.js";
 import { getKey } from "../utils/getKey.js";
+import { label } from "./utils/label.js";
 
 export const StaffRegistrationZodSchema = z.object({
   _id: objectId,
@@ -60,4 +61,12 @@ export const StaffRegistrationPopulatedSchema =
     competition: CompetitionZodSchema,
     staff: StaffZodSchema,
     team: TeamZodSchema,
+  });
+
+export const StaffRegistrationPopulateLabelSchema =
+  StaffRegistrationZodSchema.extend({
+    season: label,
+    competition: label,
+    staff: label,
+    team: label,
   });

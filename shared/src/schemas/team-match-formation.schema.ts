@@ -4,6 +4,7 @@ import { objectId } from "./utils/objectId.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { FormationZodSchema } from "./formation.schema.js";
+import { label } from "./utils/label.js";
 
 export const TeamMatchFormationZodSchema = z.object({
   _id: objectId,
@@ -39,4 +40,15 @@ export const TeamMatchFormationPopulatedSchema =
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
     formation: FormationZodSchema,
+  });
+
+export const TeamMatchFormationPopulateLabelSchema =
+  TeamMatchFormationZodSchema.omit({
+    match: true,
+    team: true,
+    formation: true,
+  }).safeExtend({
+    match: label,
+    team: label,
+    formation: label,
   });

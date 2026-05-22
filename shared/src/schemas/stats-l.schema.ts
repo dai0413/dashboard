@@ -3,6 +3,7 @@ import { dateField } from "./utils/dateField.js";
 import { objectId } from "./utils/objectId.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
+import { label } from "./utils/label.js";
 
 export const StatsLZodSchema = z.object({
   _id: objectId,
@@ -94,4 +95,12 @@ export const StatsLPopulatedSchema = StatsLZodSchema.omit({
 }).safeExtend({
   match: MatchBaseZodSchema,
   team: TeamZodSchema,
+});
+
+export const StatsLPopulateLabelSchema = StatsLZodSchema.omit({
+  match: true,
+  team: true,
+}).safeExtend({
+  match: label,
+  team: label,
 });

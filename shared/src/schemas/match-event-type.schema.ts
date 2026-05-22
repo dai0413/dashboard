@@ -35,3 +35,5 @@ export const MatchEventTypeFormSchema = MatchEventTypeZodSchema.omit({
 export const MatchEventTypeResponseSchema = MatchEventTypeZodSchema;
 
 export const MatchEventTypePopulatedSchema = MatchEventTypeZodSchema;
+
+export const MatchEventTypePopulateLabelSchema = MatchEventTypeZodSchema;

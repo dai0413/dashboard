@@ -44,3 +44,5 @@ export const MatchFormatFormSchema = MatchFormatZodSchema.omit({
 export const MatchFormatResponseSchema = MatchFormatZodSchema;
 
 export const MatchFormatPopulatedSchema = MatchFormatZodSchema;
+
+export const MatchFormatPopulateLabelSchema = MatchFormatZodSchema;

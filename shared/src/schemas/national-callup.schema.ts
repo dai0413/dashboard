@@ -8,6 +8,7 @@ import { PlayerZodSchema } from "./player.schema.js";
 import { NationalMatchSeriesZodSchema } from "./national-match-series.schema.js";
 import { TeamZodSchema } from "./team.schema.js";
 import { getKey } from "../utils/getKey.js";
+import { label } from "./utils/label.js";
 
 export const NationalCallUpBaseZodSchema = z.object({
   _id: objectId,
@@ -81,3 +82,14 @@ export const NationalCallUpPopulatedSchema = NationalCallUpBaseZodSchema.omit({
   player: PlayerZodSchema,
   team: TeamZodSchema.optional(),
 });
+
+export const NationalCallUpPopulateLabelSchema =
+  NationalCallUpBaseZodSchema.omit({
+    series: true,
+    player: true,
+    team: true,
+  }).safeExtend({
+    series: label,
+    player: label,
+    team: label.optional(),
+  });

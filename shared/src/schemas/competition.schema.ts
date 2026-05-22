@@ -7,6 +7,7 @@ import { level } from "../enum/level.js";
 import { ageGroup } from "../enum/ageGroup.js";
 import { dateField } from "./utils/dateField.js";
 import { CountryZodSchema } from "./country.schema.js";
+import { label } from "./utils/label.js";
 
 export const CompetitionZodSchema = z.object({
   _id: objectId,
@@ -40,4 +41,8 @@ export const CompetitionResponseSchema = CompetitionZodSchema.extend({
 
 export const CompetitionPopulatedSchema = CompetitionZodSchema.extend({
   country: CountryZodSchema.optional(),
+});
+
+export const CompetitionPopulateLabelSchema = CompetitionZodSchema.extend({
+  country: label.optional(),
 });

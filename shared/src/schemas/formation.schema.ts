@@ -37,3 +37,5 @@ export const FormationFormSchema = FormationZodSchema.omit({
 export const FormationResponseSchema = FormationZodSchema;
 
 export const FormationPopulatedSchema = FormationZodSchema;
+
+export const FormationPopulateLabelSchema = FormationZodSchema;
