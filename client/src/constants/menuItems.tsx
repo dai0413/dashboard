@@ -165,27 +165,37 @@ export const CompetitionTabItems: IconButtonProps[] = [
 export const MatchTabItems: IconButtonProps[] = [
   {
     icon: "team",
-    key : "home",
+    key: "home",
     text: "ホーム",
   },
   {
     icon: "away",
-    key : "away",
+    key: "away",
     text: "アウェイ",
   },
   {
     icon: "player",
-    key : "player_event_log",
+    key: "player_event_log",
     text: "選手イベント",
   },
   {
     icon: "staff",
-    key : "staff_event_log",
+    key: "staff_event_log",
     text: "監督イベント",
   },
   {
     icon: "setting",
-    key : "formation",
+    key: "formation",
     text: "フォーメーション",
+  },
+  {
+    icon: "setting",
+    key: "home-stats-l",
+    text: "ホームスタッツ",
+  },
+  {
+    icon: "setting",
+    key: "away-stats-l",
+    text: "アウェイスタッツ",
   },
 ];

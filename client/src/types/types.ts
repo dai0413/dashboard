@@ -50,7 +50,7 @@ export enum From {
   D_SC = "d_sc",
   D_M = "d_m",
   D_ML = "d_ml",
-  FL = "fl",
+  L_M = "l_m",
   J_M = "j_m",
 
   NORMAL = "normal",

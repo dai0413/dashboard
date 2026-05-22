@@ -502,6 +502,110 @@ const Match = () => {
             }}
           />
         )}
+
+      {selectedTab === "home-stats-l" &&
+        id &&
+        selected?.home_team.id &&
+        selected?.away_team.id && (
+          <TableWithFetch
+            modelType={ModelType.STATS_L}
+            fieldDefinitions={[
+              {
+                label: "チーム",
+                field: "team",
+                getValueType: ColumnType.FIELD,
+                key: "team",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "シュート",
+                field: "shootFor",
+                getValueType: ColumnType.FIELD,
+                key: "shootFor",
+                displayOnTable: true,
+                type: "string",
+              },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.STATS_L.ROOT,
+              params: {
+                getAll: true,
+                match: id,
+                team: [selected.home_team.id],
+              },
+            }}
+            filterField={fieldDefinition[ModelType.STATS_L]
+              ?.filter(isFilterable)
+              .filter((file) => file.key !== "match" && file.key !== "team")}
+            sortField={fieldDefinition[ModelType.STATS_L]
+              ?.filter(isSortable)
+              .filter((file) => file.key !== "match" && file.key !== "team")}
+            linkField={[
+              {
+                field: "team",
+                to: APP_ROUTES.TEAM_SUMMARY,
+              },
+            ]}
+            initialData={{
+              formData: {
+                match: id,
+              },
+            }}
+          />
+        )}
+
+      {selectedTab === "away-stats-l" &&
+        id &&
+        selected?.away_team.id &&
+        selected?.away_team.id && (
+          <TableWithFetch
+            modelType={ModelType.STATS_L}
+            fieldDefinitions={[
+              {
+                label: "チーム",
+                field: "team",
+                getValueType: ColumnType.FIELD,
+                key: "team",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "シュート",
+                field: "shootFor",
+                getValueType: ColumnType.FIELD,
+                key: "shootFor",
+                displayOnTable: true,
+                type: "string",
+              },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.STATS_L.ROOT,
+              params: {
+                getAll: true,
+                match: id,
+                team: [selected.away_team.id],
+              },
+            }}
+            filterField={fieldDefinition[ModelType.STATS_L]
+              ?.filter(isFilterable)
+              .filter((file) => file.key !== "match" && file.key !== "team")}
+            sortField={fieldDefinition[ModelType.STATS_L]
+              ?.filter(isSortable)
+              .filter((file) => file.key !== "match" && file.key !== "team")}
+            linkField={[
+              {
+                field: "team",
+                to: APP_ROUTES.TEAM_SUMMARY,
+              },
+            ]}
+            initialData={{
+              formData: {
+                match: id,
+              },
+            }}
+          />
+        )}
     </div>
   );
 };
