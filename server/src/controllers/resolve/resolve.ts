@@ -6,8 +6,11 @@ import {
   resolvePlayerMatchEventLog,
   resolveRefereeAppearance,
   resolveStaffAppearance,
+  resolveStaffMatchEventLog,
+  resolveTeamMatchFormation,
 } from "./models/index.js";
 import BadRequestError from "../../errors/bad-request.js";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 
 const resolverMap = {
   match: resolveMatch,
@@ -15,9 +18,14 @@ const resolverMap = {
   playerMatchEventLog: resolvePlayerMatchEventLog,
   refereeAppearance: resolveRefereeAppearance,
   staffAppearance: resolveStaffAppearance,
+  staffMatchEventLog: resolveStaffMatchEventLog,
+  teamMatchFormation: resolveTeamMatchFormation,
 };
 
-const resolveModelData = async (req: Request, res: Response) => {
+const resolveModelData = async (
+  req: Request,
+  res: Response<CreateItemResponse<any>>,
+) => {
   if (!req.body) {
     throw new BadRequestError("正しくデータを送信してください");
   }
@@ -37,7 +45,9 @@ const resolveModelData = async (req: Request, res: Response) => {
 
   const data = Object.fromEntries(resolvedEntries);
 
-  res.status(StatusCodes.OK).json({ data });
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, data, message: "成功しました" });
 };
 
 export { resolveModelData };
