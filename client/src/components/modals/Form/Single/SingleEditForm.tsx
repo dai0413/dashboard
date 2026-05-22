@@ -9,6 +9,7 @@ const SingleEditForm = <T extends keyof FormTypeMap>() => {
     single,
     options,
     steps: { formSteps, currentStep },
+    filterConditionsObj,
   } = useForm<T>();
 
   const current = formSteps[currentStep];
@@ -56,6 +57,7 @@ const SingleEditForm = <T extends keyof FormTypeMap>() => {
               }
               supportButton={!current.many}
               options={options}
+              filterConditionsObj={filterConditionsObj}
             />
           </div>
         );

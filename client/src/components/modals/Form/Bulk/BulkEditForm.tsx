@@ -23,6 +23,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
     autoFill,
     options,
     steps: { formSteps, currentStep },
+    filterConditionsObj,
   } = useForm<T>();
 
   const { page, setPage } = useQuery();
@@ -51,6 +52,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
             many?.handleFormData({ ...props, dataIndex: focus.rowIndex })
           }
           options={options}
+          filterConditionsObj={filterConditionsObj}
         />
       );
   }
@@ -126,6 +128,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
                 formLabel={formLabel || []}
                 handleFormData={handleFormData}
                 options={options}
+                filterConditionsObj={filterConditionsObj}
               />
             );
         }}

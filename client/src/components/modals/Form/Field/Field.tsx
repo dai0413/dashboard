@@ -12,7 +12,7 @@ import { FormFieldDefinition } from "../../../../types/form/field";
 import { getOptionKey } from "../../../../lib/options";
 import { OptionProvider } from "../../../../context/options-provider";
 import { HandleFormData } from "../../../../types/form/handleFormData";
-import { UpdateMode } from "../../../../types/form";
+import { FilterConditionsByKey, UpdateMode } from "../../../../types/form";
 import { TableFieldRenderer } from "./renderers/TableFieldRenderer";
 import { TextareaRenderer } from "./renderers/TextareaRenderer";
 import { SelectFieldRenderer } from "./renderers/SelectFieldRenderer";
@@ -27,6 +27,7 @@ import { applySortClient } from "../../../../utils/sort/applySortClient";
 import { ModelOptionKey } from "../../../../utils/createOption/types/model";
 import { getOptions, readOptions } from "../../../../utils/createOption";
 import { OptionType } from "../../../../utils/createOption/types/preset";
+import { CustomOptionType } from "../../../../utils/createOption/types/custom";
 
 type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
@@ -35,6 +36,7 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   handleFormData: HandleFormData<T>;
   supportButton?: boolean;
   options: Record<string, OptionObj<any>>;
+  filterConditionsObj: FilterConditionsByKey | null;
 };
 
 const RenderFieldBase = <T extends keyof FormTypeMap>({
@@ -44,6 +46,7 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
   handleFormData,
   supportButton,
   options,
+  filterConditionsObj,
 }: RenderFieldProps<T>) => {
   const { multi, key, fieldType, valueType, uniqueInArray, lengthInArray } =
     field;
@@ -107,44 +110,59 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
   useEffect(() => {
     if (!key) return;
 
-    const nextOptionKey = getOptionKey(key);
-    const source = resolveOptionSource(nextOptionKey);
+    const fetchOptions = async () => {
+      const nextOptionKey = getOptionKey(key);
+      const source = resolveOptionSource(nextOptionKey);
 
-    if (!source) return;
-    setOptionKey(nextOptionKey);
-    setOptionSource(source);
+      if (!source) return;
 
-    if (source === OptionSource.PRESET) {
-      getOptions({ source, key: nextOptionKey as OptionType }).then(
-        setOptionData,
-      );
-    }
+      setOptionKey(nextOptionKey);
+      setOptionSource(source);
 
-    if (source === OptionSource.REMOTE) {
-      getOptions({
-        source,
-        key: nextOptionKey as ModelOptionKey,
-        readOptionsParam: {
-          api,
-          filterConditions: [],
-          sortConditions: [],
-          page: 1,
-        },
-      }).then(setOptionData);
-    }
+      let params;
 
-    if (source === OptionSource.CUSTOM) {
-      getOptions({
-        source,
-        key: nextOptionKey,
-        options,
-      }).then(setOptionData);
-    }
+      switch (source) {
+        case OptionSource.PRESET:
+          params = {
+            source,
+            key: nextOptionKey as OptionType,
+          };
+          break;
+
+        case OptionSource.REMOTE:
+          params = {
+            source,
+            key: nextOptionKey as ModelOptionKey,
+            readOptionsParam: {
+              api,
+              filterConditions: filterConditionsObj
+                ? filterConditionsObj[nextOptionKey] || []
+                : [],
+              sortConditions: [],
+              page: 1,
+            },
+          };
+          break;
+
+        case OptionSource.CUSTOM:
+          params = {
+            source,
+            key: nextOptionKey as CustomOptionType,
+            options,
+          };
+          break;
+      }
+
+      if (!params) return;
+
+      const newOptions = await getOptions(params);
+
+      setOptionData(newOptions);
+      setViewOptionData(newOptions);
+    };
+
+    fetchOptions();
   }, [key]);
-
-  useEffect(() => {
-    setViewOptionData(optionData);
-  }, [optionKey, optionData]);
 
   const withTrailingEmpty = (arr: string[] = [], lengthInArray?: number) => {
     if (lengthInArray && arr.length >= lengthInArray) {

@@ -46,10 +46,11 @@ export async function getOptions<T extends GetOptionsContext>(
   }
 
   if (ctx.source === OptionSource.REMOTE) {
-    return readOptions({
+    const data = readOptions({
       ...ctx.readOptionsParam,
       key: ctx.key,
     }) as any;
+    return data;
   }
 
   if (ctx.source === OptionSource.CUSTOM) {
