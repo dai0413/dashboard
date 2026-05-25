@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/draftData";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 import { result } from "./sample_data/values.js";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/draftData";
 
-const getValues = async (req: Request, res: Response) => {
+const getValues = async (
+  req: Request,
+  res: Response<CreateItemResponse<Scraped>>,
+) => {
   try {
     const { getParams } = req.body;
     if (!getParams) throw new BadRequestError("date , alphを送信してください");

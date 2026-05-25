@@ -1,20 +1,25 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { getPosition as get } from "@dai0413/scraping-logic/SN";
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/position";
-
+import { getPosition as get } from "@dai0413/scraping-logic/SN";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 
-const getPositions = async (req: Request, res: Response) => {
+const getPositions = async (
+  req: Request,
+  res: Response<CreateItemResponse<Scraped[]>>,
+) => {
   try {
     const { url } = req.body;
     if (!url) throw new BadRequestError("urlを送信してください");
 
     const result = await get(url);
     if (result.ok) {
-      const positionDatas: Scraped = result.data;
-      res.status(StatusCodes.OK).json({ data: positionDatas });
+      const positionDatas: Scraped[] = result.data;
+      res
+        .status(StatusCodes.OK)
+        .json({ success: true, message: "成功", data: positionDatas });
     } else {
       throw new InternalServerError(result.error);
     }
