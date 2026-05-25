@@ -10,7 +10,7 @@ import { getOnDetailFields } from "../../lib/model-fields";
 import { useAuth } from "../../context/auth-context";
 import { isDev } from "../../utils/env";
 import { FieldList } from "./index";
-import { FieldListData, FormMode, InputMode } from "../../types/types";
+import { FieldListData, FormMode, From, InputMode } from "../../types/types";
 import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
 
@@ -70,6 +70,7 @@ const DetailModal = () => {
         formMode: FormMode.UPDATE,
         inputMode: InputMode.SINGLE,
         editItem: selected,
+        from: From.NORMAL,
       });
     }
   };

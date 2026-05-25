@@ -35,7 +35,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
-import { FormMode, InputMode } from "../../types/types";
+import { FormMode, From, InputMode } from "../../types/types";
 import CheckMenuItem from "../ui/CheckMenuItem";
 
 type MenuItem = { label: string; onClick: () => void };
@@ -346,6 +346,7 @@ const TableToolbar = <Data, Form>({
         inputMode: InputMode.MANY,
         ids: [],
         editItem: items as GettedModelDataMap[typeof modelType][],
+        from: From.NORMAL,
       });
       openForm();
     }

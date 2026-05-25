@@ -69,32 +69,34 @@ export enum FormMode {
 export type GetStepsArgs<T extends keyof FormTypeMap> = {
   modelType: T;
   inputMode: InputMode;
-  from?: From;
+  from: From;
+  relatedAll?: boolean;
 };
 
-type NewDataStartFormArgs<T extends ModelType> = {
-  modelType: T;
+type NewDataStartFormArgs<T extends ModelType> = GetStepsArgs<T> & {
   formMode: FormMode.CREATE;
-  inputMode: InputMode;
-  from: From;
   initialData?: {
     formData?: FormTypeMap[T];
     metaData?: Record<string, any>;
   };
 };
 
-type UpdateDataStartFormArgs<T extends ModelType> = {
-  modelType: T;
-  formMode: FormMode.UPDATE;
+type UpdateDataStartFormArgs<T extends ModelType> = Omit<
+  GetStepsArgs<T>,
+  "inputMode"
+> & {
   inputMode: InputMode.SINGLE;
+  formMode: FormMode.UPDATE;
   id: string;
   editItem: GettedModelDataMap[T];
 };
 
-type UpdateDatasStartFormArgs<T extends ModelType> = {
-  modelType: T;
-  formMode: FormMode.UPDATE;
+type UpdateDatasStartFormArgs<T extends ModelType> = Omit<
+  GetStepsArgs<T>,
+  "inputMode"
+> & {
   inputMode: InputMode.MANY;
+  formMode: FormMode.UPDATE;
   ids: string[];
   editItem: GettedModelDataMap[T][];
 };

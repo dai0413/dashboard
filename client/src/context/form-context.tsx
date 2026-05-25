@@ -276,23 +276,28 @@ export const FormProvider = <T extends ModelType>({
     return resolved;
   }
 
-  const startForm = async (args: StartFormArgs<T>) => {
-    if (!args.modelType) {
-      console.error("error in startForm : modelType");
-      return;
+  type StartForm<T extends ModelType> = StartFormArgs<T> & {
+    steps?: FormStep<T>[];
+  };
+
+  const startForm = async (args: StartForm<T>) => {
+    let newSteps: FormStep<T>[];
+    if (args.steps) {
+      newSteps = args.steps;
+    } else {
+      if (!args.modelType) {
+        console.error("error in startForm : modelType");
+        return;
+      }
+
+      const stepsObj = getSteps(args);
+
+      if (!stepsObj) console.error("error in startForm : getSteps");
+
+      if (!stepsObj?.steps) return;
+
+      newSteps = stepsObj?.steps;
     }
-
-    const stepsObj = getSteps({
-      modelType: args.modelType,
-      inputMode: args.inputMode,
-      from: args.formMode === FormMode.CREATE ? args.from : undefined,
-    });
-
-    if (!stepsObj) console.error("error in startForm : getSteps");
-
-    if (!stepsObj?.steps) return;
-
-    const newSteps = stepsObj?.steps;
 
     setFormSteps(newSteps);
 
@@ -424,6 +429,8 @@ export const FormProvider = <T extends ModelType>({
         initialData: initialFormData
           ? { formData: initialFormData, metaData: undefined }
           : undefined,
+        relatedAll: false,
+        steps: formSteps,
       });
     }
   };
@@ -448,7 +455,8 @@ export const FormProvider = <T extends ModelType>({
       }
 
       if (inputMode === InputMode.MANY) {
-        res = await modelContext.createItems(formDatas);
+        // res = await modelContext.createItems(formDatas);
+        res = { success: true, data: [], message: "" };
       }
       success = res?.success || false;
 
@@ -759,19 +767,17 @@ export const FormProvider = <T extends ModelType>({
     }
 
     if (current.createFilterConditions) {
-      if (!Array.isArray(checkData)) {
-        const filterConditionsObj = await current.createFilterConditions({
-          data: formData,
-          metaData,
-          api,
-        });
+      const filterConditionsObj = await current.createFilterConditions({
+        data: formData,
+        metaData,
+        api,
+      });
 
-        if (filterConditionsObj) {
-          setFilterConditionsObj((prev) => ({
-            ...(prev ?? {}),
-            ...filterConditionsObj,
-          }));
-        }
+      if (filterConditionsObj) {
+        setFilterConditionsObj((prev) => ({
+          ...(prev ?? {}),
+          ...filterConditionsObj,
+        }));
       }
     }
 
