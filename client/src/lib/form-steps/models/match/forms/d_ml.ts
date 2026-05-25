@@ -6,7 +6,13 @@ import {
 import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
 import { Scraped as CardIdScraped } from "@dai0413/myorg-shared/types/get-new-data/site/d_ml/cardId";
 
-import { DataSource, FormStep, StepType } from "../../../../../types/form";
+import {
+  AddPostedDraftData,
+  DataSource,
+  FormStep,
+  PostedDraftData,
+  StepType,
+} from "../../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../../types/models";
 import { createItemBase } from "../../../../api";
 import { AxiosInstance } from "axios";
@@ -19,7 +25,7 @@ import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
 import { createFilterFromParent } from "../../../utils/createFilterConditions/createFilterFromParent";
 import { CompetitionStage } from "../../../../../types/models/competition-stage";
-import { convert } from "../../../../convert/CreateLabel";
+import { convert } from "../../../../convert/DBtoGetted";
 import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
 import { Season } from "../../../../../types/models/season";
 import { optionFieldDefinition } from "../../../../model-fields";
@@ -27,6 +33,9 @@ import {
   CardIdOption,
   CustomOptionType,
 } from "../../../../../utils/createOption/types/custom";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { Match } from "../../../../../types/models/match";
+import { convert as createLabel } from "../../../../convert/CreateLabel";
 
 const KEYS = [
   "home_team",
@@ -70,6 +79,40 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
   label: resolveToLabel(data, KEYS),
 });
 
+const afterMatchaddPostedDraftData: AddPostedDraftData = ({
+  postedDraftData,
+  res,
+  metaData,
+}) => {
+  const card_ids: string[] = metaData.card_ids;
+
+  if (!res.success) return {};
+
+  const matchOriginal: Match[] = res.data;
+
+  const posted: PostedDraftData = Object.fromEntries(
+    matchOriginal.map((match, i) => {
+      const matchData = convert(ModelType.MATCH, match);
+      const label = createLabel(ModelType.MATCH, match);
+
+      const periods = match.match_format?.period;
+      const card_id = card_ids[i];
+
+      return [
+        card_id,
+        {
+          ...postedDraftData[card_id],
+          matchLabel: label,
+          match: { ...matchData },
+          periods,
+        },
+      ];
+    }),
+  );
+
+  return posted;
+};
+
 export const match: FormStep<ModelType.MATCH>[] = [
   {
     modelType: ModelType.MATCH,
@@ -93,7 +136,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
           params: { competition: metaData.competition as string },
           backendRoute: API_PATHS.SEASON.ROOT,
         },
-        convertValueLabel: (data: Season) => convert(ModelType.SEASON, data),
+        convertValueLabel: (data: Season) =>
+          createLabel(ModelType.SEASON, data),
         filterKey: "season",
         label: "シーズン",
       });
@@ -122,7 +166,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
           backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
         },
         convertValueLabel: (data: CompetitionStage) =>
-          convert(ModelType.COMPETITION_STAGE, data),
+          createLabel(ModelType.COMPETITION_STAGE, data),
         filterKey: "competition-stage",
         label: "大会ステージ",
       });
@@ -286,5 +330,9 @@ export const match: FormStep<ModelType.MATCH>[] = [
       "urls",
     ]),
     validate: validateStadiumEitherOne,
+  },
+  {
+    ...createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
+    addPostedDraftData: afterMatchaddPostedDraftData,
   },
 ];

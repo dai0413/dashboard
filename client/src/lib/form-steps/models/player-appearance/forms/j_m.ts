@@ -5,9 +5,16 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/playerAppearance";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-appearance";
-import { FormStep, StepType } from "../../../../../types/form";
+import {
+  AddPostedDraftData,
+  FormStep,
+  StepType,
+} from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
-import { PlayerAppearanceForm } from "../../../../../types/models/player-appearance";
+import {
+  PlayerAppearance,
+  PlayerAppearanceForm,
+} from "../../../../../types/models/player-appearance";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
 import { createItemBase } from "../../../../api";
@@ -18,6 +25,8 @@ import {
 import { getSeasons } from "../../../utils/getDraftData/getSeasons";
 import { getFields } from "../fields";
 import { validatePlayerEitherOne } from "../validations/name";
+import { createConfirmationStep } from "../../../confirmationStep";
+import { convert } from "../../../../convert/DBtoGetted";
 
 type CalcWithData = Record<string, any> & {
   start_time?: number;
@@ -90,6 +99,39 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
   value: resolveToValue(data, KEYS),
   label: resolveToLabel(data, KEYS),
 });
+
+const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
+  postedDraftData,
+  res,
+  metaData,
+}) => {
+  let result = postedDraftData;
+  const getDataUrl = metaData.getDataUrl;
+
+  const { home_team, away_team } = postedDraftData[getDataUrl].match;
+
+  if (!res.success) return {};
+
+  const playerAppearance: PlayerAppearance[] = res.data;
+
+  const home = convert(
+    ModelType.PLAYER_APPEARANCE,
+    playerAppearance.filter((d) => d.team._id === home_team.id),
+  );
+  const away = convert(
+    ModelType.PLAYER_APPEARANCE,
+    playerAppearance.filter((d) => d.team._id === away_team.id),
+  );
+
+  result = {
+    [getDataUrl]: {
+      ...result[getDataUrl],
+      playerAppearance: { home, away },
+    },
+  };
+
+  return result;
+};
 
 export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
@@ -169,5 +211,11 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     ]),
     validate: validatePlayerEitherOne,
     many: true,
+  },
+  {
+    ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
+      ModelType.PLAYER_APPEARANCE,
+    ),
+    addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
   },
 ];

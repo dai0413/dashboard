@@ -4,7 +4,8 @@ import { Item } from "../types";
 
 export const matchRelatedItems: Item[] = [
   {
-    model: "Match",
+    model:
+      "Match, PlayerAppearance, PlayerMatchEventLog, StaffAppearance, RefereeAppearance, TeamMatchFormation",
     desc: "J_M",
     icon: "match",
     startFormArgs: {
@@ -12,10 +13,12 @@ export const matchRelatedItems: Item[] = [
       inputMode: InputMode.MANY,
       formMode: FormMode.CREATE,
       from: From.J_M,
+      relatedAll: true,
     },
   },
   {
-    model: "Match",
+    model:
+      "Match, PlayerAppearance, PlayerMatchEventLog, StaffAppearance, RefereeAppearance",
     desc: "D_ML",
     icon: "match",
     startFormArgs: {
@@ -23,10 +26,11 @@ export const matchRelatedItems: Item[] = [
       inputMode: InputMode.MANY,
       formMode: FormMode.CREATE,
       from: From.D_ML,
+      relatedAll: true,
     },
   },
   {
-    model: "Match",
+    model: "StatsL, TeamMatchFormation",
     desc: "L_M",
     icon: "match",
     startFormArgs: {
@@ -34,6 +38,7 @@ export const matchRelatedItems: Item[] = [
       inputMode: InputMode.MANY,
       formMode: FormMode.CREATE,
       from: From.L_M,
+      relatedAll: true,
     },
   },
 ];

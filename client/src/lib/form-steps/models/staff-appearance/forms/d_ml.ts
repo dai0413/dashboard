@@ -17,6 +17,7 @@ import {
 import { getSeasons } from "../../../utils/getDraftData/getSeasons";
 import { getFields } from "../fields";
 import { validateStaffEitherOne } from "../validations/staff";
+import { createConfirmationStep } from "../../../confirmationStep";
 
 const KEYS = ["match", "staff", "team"] as const;
 
@@ -136,4 +137,7 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
     validate: validateStaffEitherOne,
     many: true,
   },
+  createConfirmationStep<ModelType.STAFF_APPEARANCE>(
+    ModelType.STAFF_APPEARANCE,
+  ),
 ];

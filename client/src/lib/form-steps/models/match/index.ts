@@ -1,9 +1,9 @@
 import { ModelType } from "../../../../types/models";
 import { From, InputMode } from "../../../../types/types";
-import { getD_MLsteps } from "../../core/getD_MLsteps";
-import { getJ_Msteps } from "../../core/getJ_Msteps";
 import { FormStepsConfig } from "../../types";
 import { single } from "./forms/single";
+import { match as j_m } from "./forms/j_m";
+import { match as d_ml } from "./forms/d_ml";
 
 export const match: FormStepsConfig<ModelType.MATCH> = {
   [InputMode.SINGLE]: {
@@ -15,11 +15,11 @@ export const match: FormStepsConfig<ModelType.MATCH> = {
   [InputMode.MANY]: {
     [From.J_M]: {
       label: "J_Mデータ",
-      steps: getJ_Msteps(ModelType.MATCH, true),
+      steps: j_m,
     },
     [From.D_ML]: {
       label: "D_ML",
-      steps: getD_MLsteps(ModelType.MATCH, true),
+      steps: d_ml,
     },
   },
 };

@@ -8,6 +8,7 @@ import { key } from "@dai0413/myorg-shared/generateField";
 import { DraftData } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { TeamMatchFormationForm } from "../../../../../types/models/team-match-formation";
+import { createConfirmationStep } from "../../../confirmationStep";
 
 export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
@@ -165,4 +166,7 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     fields: getFields(["match", "team", "formation"]),
     many: true,
   },
+  createConfirmationStep<ModelType.TEAM_MATCH_FORMATION>(
+    ModelType.TEAM_MATCH_FORMATION,
+  ),
 ];

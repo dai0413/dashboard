@@ -6,11 +6,15 @@ import {
 } from "@dai0413/myorg-shared/types/resolver/match";
 import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
 
-import { DataSource, FormStep, StepType } from "../../../../../types/form";
+import {
+  AddPostedDraftData,
+  DataSource,
+  FormStep,
+  StepType,
+} from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createItemBase } from "../../../../api";
 import { Season } from "../../../../../types/models/season";
-import { convert } from "../../../../convert/CreateLabel";
 import { CompetitionStage } from "../../../../../types/models/competition-stage";
 import { AxiosInstance } from "axios";
 import {
@@ -22,6 +26,10 @@ import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
 import { setTeamByCompetition } from "../../../utils/createFilterConditions/setTeamByCompetition";
 import { createFilterFromParent } from "../../../utils/createFilterConditions/createFilterFromParent";
+import { Match } from "../../../../../types/models/match";
+import { convert as createLabel } from "../../../../convert/CreateLabel";
+import { convert } from "../../../../convert/DBtoGetted";
+import { createConfirmationStep } from "../../../confirmationStep";
 
 const KEYS = [
   "home_team",
@@ -65,6 +73,33 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
   label: resolveToLabel(data, KEYS),
 });
 
+const afterMatchaddPostedDraftData: AddPostedDraftData = ({
+  postedDraftData,
+  res,
+  metaData,
+}) => {
+  let result = postedDraftData;
+  const getDataUrl = metaData.getDataUrl;
+
+  if (!res.success) return {};
+
+  const matchOriginal: Match = res.data;
+
+  const match = convert(ModelType.MATCH, matchOriginal);
+  const label = createLabel(ModelType.MATCH, matchOriginal);
+  const periods = matchOriginal.match_format?.period;
+  result = {
+    [getDataUrl]: {
+      ...result[getDataUrl],
+      matchLabel: label,
+      match: { ...match },
+      periods,
+    },
+  };
+
+  return result;
+};
+
 export const match: FormStep<ModelType.MATCH>[] = [
   {
     modelType: ModelType.MATCH,
@@ -88,7 +123,8 @@ export const match: FormStep<ModelType.MATCH>[] = [
           params: { competition: metaData.competition as string },
           backendRoute: API_PATHS.SEASON.ROOT,
         },
-        convertValueLabel: (data: Season) => convert(ModelType.SEASON, data),
+        convertValueLabel: (data: Season) =>
+          createLabel(ModelType.SEASON, data),
         filterKey: "season",
         label: "シーズン",
       });
@@ -117,7 +153,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
           backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
         },
         convertValueLabel: (data: CompetitionStage) =>
-          convert(ModelType.COMPETITION_STAGE, data),
+          createLabel(ModelType.COMPETITION_STAGE, data),
         filterKey: "competition-stage",
         label: "大会ステージ",
       });
@@ -269,5 +305,9 @@ export const match: FormStep<ModelType.MATCH>[] = [
       "urls",
     ]),
     validate: validateStadiumEitherOne,
+  },
+  {
+    ...createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
+    addPostedDraftData: afterMatchaddPostedDraftData,
   },
 ];

@@ -22,6 +22,7 @@ import { combineValidations } from "../../../utils/validate/combine";
 import { validatePlayerRequiredForEvent } from "../validations/player";
 import { validateExclusiveSpecialTime } from "../../../utils/validate/special_time";
 import { calcPeriodLabel } from "../../../utils/onChange/calcPeriodLabel";
+import { createConfirmationStep } from "../../../confirmationStep";
 
 const KEYS = ["match", "player", "team", "match_event_type"] as const;
 
@@ -176,4 +177,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
       ),
       many: true,
     },
+    createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(
+      ModelType.PLAYER_MATCH_EVENT_LOG,
+    ),
   ];
