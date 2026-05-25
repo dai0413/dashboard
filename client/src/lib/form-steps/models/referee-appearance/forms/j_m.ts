@@ -16,6 +16,7 @@ import {
 } from "../../../utils/resolver/resolveToValue";
 import { getFields } from "../fields";
 import { validateRefereeEitherOne } from "../validations/referee";
+import { createConfirmationStep } from "../../../confirmationStep";
 
 const KEYS = ["match", "referee"] as const;
 
@@ -97,4 +98,7 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
     validate: validateRefereeEitherOne,
     many: true,
   },
+  createConfirmationStep<ModelType.REFEREE_APPEARANCE>(
+    ModelType.REFEREE_APPEARANCE,
+  ),
 ];

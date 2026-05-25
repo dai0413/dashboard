@@ -2,9 +2,9 @@ import { FormStep } from "../../../types/form";
 import { FormTypeMap } from "../../../types/models";
 import { From, GetStepsArgs } from "../../../types/types";
 import { formStepsMap } from "./formStepsMap";
-import { d_mlStep } from "./getD_MLsteps";
-import { j_mStep } from "./getJ_Msteps";
-import { l_mStep } from "./getL_Msteps";
+import { d_mlStep } from "../d_ml/d_mlStep";
+import { j_mStep } from "../j_m/j_mStep";
+import { l_mStep } from "../l_m/l_mStep";
 
 type GetStepsReturnVal<T extends keyof FormTypeMap> = {
   label: string;

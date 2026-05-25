@@ -2,7 +2,7 @@ import { FormStep } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { teamMatchFormation } from "../models/team-match-formation/forms/l_m";
 import { statsL } from "../models/stats-l/forms/l_m";
-import { pre } from "../l_m/pre";
+import { preStep } from "./preStep";
 
 type Steps = {
   [ModelType.STATS_L]: FormStep<ModelType.STATS_L>[];
@@ -20,7 +20,7 @@ export const l_mStep: {
 } = {
   label: "l_mStep",
   steps: [
-    ...pre,
+    ...preStep,
     ...steps[ModelType.STATS_L],
     ...steps[ModelType.TEAM_MATCH_FORMATION],
   ],
