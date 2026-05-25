@@ -23,6 +23,7 @@ import {
   getPositions as getPositionsL_M,
   getStats,
   getFormation,
+  getValues as getValuesL_M,
 } from "../controllers/get-new-data/l_m/index.js";
 
 // D_PC
@@ -38,17 +39,17 @@ router
   .get(getStaffRegistrationHistories);
 
 // D_M
-// router.route(API_PATHS.GET_NEW_DATA.D_M.VALUES).get(getValuesD_M);
-router.route("/get-new-data/d-m/values").post(getValuesD_M);
+router.route(API_PATHS.GET_NEW_DATA.D_M.VALUES).get(getValuesD_M);
 
 // D_ML
-// router.route(API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS).get(getValuesD_M);
-router.route("/get-new-data/d-ml/card-ids").post(getCardIds);
+router.route(API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS).post(getCardIds);
 
 // J_M
 router.route(API_PATHS.GET_NEW_DATA.J_M.MATCH).post(getValuesJ_M);
 
 // l_m
+router.route("/get-new-data/l-m/values").post(getValuesL_M);
+// router.route(API_PATHS.GET_NEW_DATA.L_M.VALUES).post(getValuesL_M);
 router.route(API_PATHS.GET_NEW_DATA.L_M.POSITION).post(getPositionsL_M);
 router.route(API_PATHS.GET_NEW_DATA.L_M.STATS).post(getStats);
 router.route(API_PATHS.GET_NEW_DATA.L_M.FORMATION).post(getFormation);

@@ -13,7 +13,9 @@ const getCardIds = async (req: Request, res: Response) => {
     // const result = await get(url);
 
     if (result.ok) {
-      res.status(StatusCodes.OK).json({ data: result.data });
+      res
+        .status(StatusCodes.OK)
+        .json({ success: true, message: "成功", data: result.data });
     } else {
       throw new InternalServerError(result.error);
     }
