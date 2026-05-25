@@ -1,5 +1,6 @@
 import { FormFieldDefinition } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
+import { createFieldHelpers } from "../../core/createFieldHelpers";
 
 type BaseModel = ModelType.MATCH;
 type Key = FormFieldDefinition<BaseModel>["key"];
@@ -125,5 +126,4 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
   },
 };
 
-export const getFields = (keys: (keyof typeof fieldMap)[]) =>
-  keys.map((key) => fieldMap[key]);
+export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);

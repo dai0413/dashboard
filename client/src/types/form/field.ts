@@ -69,6 +69,11 @@ type MultiSelectField<T extends keyof FormTypeMap> = MultiValueField<T> & {
   fieldType: "select";
   valueType: "option";
 };
+// <table>
+type MultiTableField<T extends keyof FormTypeMap> = MultiValueField<T> & {
+  fieldType: "table";
+  valueType: "option";
+};
 
 export type FormFieldDefinition<T extends keyof FormTypeMap> =
   | InputField<T>
@@ -80,4 +85,5 @@ export type FormFieldDefinition<T extends keyof FormTypeMap> =
   | MultiInputField<T>
   | MultiTextareaField<T>
   | MultiSelectField<T>
-  | TableField<T>;
+  | TableField<T>
+  | MultiTableField<T>;
