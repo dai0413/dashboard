@@ -1,5 +1,5 @@
 import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
-import { FormStep, StepType } from "../../../../../types/form";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createItemBase, readItemBase } from "../../../../api";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
@@ -19,6 +19,8 @@ import {
 } from "@dai0413/myorg-shared/types/resolver/teamMatchFormation";
 import { AxiosInstance } from "axios";
 import { Scraped as TeamMatchFormationScraped } from "@dai0413/myorg-shared/types/get-new-data/models/team-match-formation";
+import { getPreMatchSelect } from "../../../core/preMatchSelectStep";
+import { createConfirmationStep } from "../../../confirmationStep";
 
 type BaseModel = ModelType.TEAM_MATCH_FORMATION;
 const baseModel = ModelType.TEAM_MATCH_FORMATION;
@@ -72,52 +74,63 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
 });
 
 export const teamMatchFormation: FormStep<BaseModel>[] = [
+  ...getPreMatchSelect<BaseModel>(baseModel),
   {
-    modelType: baseModel,
-    stepLabel: "フォーメーションを入力開始",
+    stepLabel: "試合を選択",
     type: StepType.FORM,
-    fields: [],
-    many: true,
+    modelType: baseModel,
+    dataSource: DataSource.META_DATA,
+    fields: getFields(["match"]),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     addDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return {};
 
-      // const matchId: string = metaData.match;
-      const matchId = "694356b435e6b4bcfd8e385e";
+      // const matchId: string[] = metaData.match;
+      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
 
-      const matchObj = await readItemBase<Match>({
-        apiInstance: api,
-        backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-      });
+      let newData: DraftData = { ...draftData };
 
-      if (!matchObj) return {};
+      const missingMatchIds = matchIds.filter(
+        (matchId) => !newData[matchId]?.teamMatchFormation,
+      );
 
-      const stats = await createItemBase<Scraped>({
-        apiInstance: api,
-        backendRoute: API_PATHS.GET_NEW_DATA.L_M.FORMATION,
-        data: { date: matchObj.date, alph: matchObj.home_team.labalph },
-      });
+      for (const matchId of missingMatchIds) {
+        const teamMatchFormation = newData[matchId]?.teamMatchFormation;
 
-      if (!stats.success) return {};
+        // 既存データあり
+        if (teamMatchFormation) continue;
 
-      const { home, away } = stats.data;
+        // 既存データなし
+        const matchObj = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
 
-      const newTeamMatchFormation: DraftData[any]["teamMatchFormation"] = {
-        home,
-        away,
-      };
+        if (!matchObj) continue;
 
-      const newDraftData: DraftData = {
-        ...draftData,
-        [matchId]: {
-          ...draftData[matchId],
-          teamMatchFormation: newTeamMatchFormation,
-        },
-      };
+        const res = await createItemBase<Scraped>({
+          apiInstance: api,
+          // backendRoute: API_PATHS.GET_NEW_DATA.L_M.FORMATION,
+          backendRoute: "/get-new-data/l-m/formation",
+          data: {
+            date: matchObj.date,
+            alph: matchObj.home_team.labalph,
+            key: matchId,
+          },
+        });
 
-      console.log("newDraftData", newDraftData);
+        if (!res.success) continue;
 
-      return newDraftData;
+        newData = {
+          ...newData,
+          [matchId]: {
+            ...draftData[matchId],
+            teamMatchFormation: res.data,
+          },
+        };
+      }
+
+      return newData;
     },
   },
   {
@@ -126,68 +139,68 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
     modelType: baseModel,
     many: true,
     getDraftData: async ({ api, draftData, metaData }) => {
-      // const matchId: string = metaData.match;
-      const matchId = "694356b435e6b4bcfd8e385e";
+      if (!metaData || !api) return { value: [], label: [] };
 
-      console.log("in getDraft", draftData[matchId].teamMatchFormation);
+      // const matchId: string[] = metaData.match;
+      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
 
-      if (!draftData[matchId].teamMatchFormation)
-        return { value: [], label: [] };
+      let newDataValue: TeamMatchFormationForm[] = [];
+      let newDataLabel: Record<string, any>[] = [];
 
-      const matchObj = await readItemBase<Match>({
-        apiInstance: api,
-        backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-      });
-
-      console.log("in getDraft matchObj", matchObj);
-
-      if (!matchObj) return { value: [], label: [] };
-
-      const match = {
-        id: matchId,
-        label: convert(ModelType.MATCH, matchObj) || "",
-      };
-
-      const home = {
-        id: matchObj.home_team._id,
-        label: convert(ModelType.TEAM, matchObj.home_team),
-      };
-
-      const away = {
-        id: matchObj.away_team._id,
-        label: convert(ModelType.TEAM, matchObj.away_team),
-      };
-
-      const homeData = await resolve(
-        api,
-        [draftData[matchId].teamMatchFormation.home],
-        match,
-        home,
-      );
-      console.log("in homeData", homeData);
-
-      const awayData = await resolve(
-        api,
-        [draftData[matchId].teamMatchFormation.away],
-        match,
-        away,
+      const havingMatchIds = matchIds.filter(
+        (matchId) => draftData[matchId]?.teamMatchFormation,
       );
 
-      const homeResult = buildValueLabel(homeData);
-      const awayResult = buildValueLabel(awayData);
+      for (const matchId of havingMatchIds) {
+        const teamMatchFormation = draftData[matchId]?.teamMatchFormation;
 
-      const value: TeamMatchFormationForm[] = [
-        ...homeResult.value,
-        ...awayResult.value,
-      ];
-      const label: Record<string, any>[] = [
-        ...homeResult.label,
-        ...awayResult.label,
-      ];
+        if (!teamMatchFormation) continue;
 
-      console.log("in last label", label);
+        const matchObj = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
 
-      return { value, label };
+        if (!matchObj) continue;
+
+        const match = {
+          id: matchId,
+          label: convert(ModelType.MATCH, matchObj) || "",
+        };
+
+        const home = {
+          id: matchObj.home_team._id,
+          label: convert(ModelType.TEAM, matchObj.home_team),
+        };
+
+        const away = {
+          id: matchObj.away_team._id,
+          label: convert(ModelType.TEAM, matchObj.away_team),
+        };
+
+        const homeData = await resolve(
+          api,
+          [teamMatchFormation.home],
+          match,
+          home,
+        );
+        console.log("in homeData", homeData);
+
+        const awayData = await resolve(
+          api,
+          [teamMatchFormation.away],
+          match,
+          away,
+        );
+
+        const homeResult = buildValueLabel(homeData);
+        const awayResult = buildValueLabel(awayData);
+
+        newDataValue.push(...homeResult.value, ...awayResult.value);
+        newDataLabel.push(...homeResult.label, ...awayResult.label);
+      }
+
+      return { value: newDataValue, label: newDataLabel };
     },
   },
   {
@@ -197,4 +210,5 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
     fields: getFields(["match", "team", "formation"]),
     many: true,
   },
+  createConfirmationStep<BaseModel>(baseModel),
 ];

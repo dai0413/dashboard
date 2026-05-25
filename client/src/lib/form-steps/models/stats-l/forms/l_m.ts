@@ -20,6 +20,7 @@ import {
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { ResolveOutput } from "@dai0413/myorg-shared/types/resolver/statsL";
+import { getPreMatchSelect } from "../../../core/preMatchSelectStep";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
@@ -31,55 +32,68 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
   label: resolveToLabel(data, KEYS),
 });
 
+const preSteps = getPreMatchSelect<BaseModel>(baseModel);
+
 export const statsL: FormStep<BaseModel>[] = [
+  ...preSteps,
   {
     stepLabel: "試合を選択",
     type: StepType.FORM,
     modelType: baseModel,
     dataSource: DataSource.META_DATA,
-    fields: getFields(["match"]),
+    fields: getFields(["match"], { match: { multi: true } }),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     addDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return {};
 
-      // const matchId: string = metaData.match;
-      const matchId = "694356b435e6b4bcfd8e385e";
+      // const matchId: string[] = metaData.match;
+      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
 
-      const matchObj = await readItemBase<Match>({
-        apiInstance: api,
-        backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-      });
+      let newData: DraftData = { ...draftData };
 
-      console.log("matchObj", matchObj);
+      const missingMatchIds = matchIds.filter(
+        (matchId) => !newData[matchId]?.statsL,
+      );
 
-      if (!matchObj) return {};
+      for (const matchId of missingMatchIds) {
+        const statsL = newData[matchId]?.statsL;
 
-      const stats = await createItemBase<Scraped>({
-        apiInstance: api,
-        backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
-        data: { date: matchObj.date, alph: matchObj.home_team.labalph },
-      });
+        // 既存データあり
+        if (statsL) continue;
 
-      if (!stats.success) return {};
+        // 既存データなし
+        const matchObj = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
 
-      const { home, away } = stats.data;
+        if (!matchObj) continue;
 
-      const newStatsL: DraftData[any]["statsL"] = {
-        home,
-        away,
-      };
+        const res = await createItemBase<Scraped>({
+          apiInstance: api,
+          // backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
+          backendRoute: "/get-new-data/l-m/stats",
+          data: {
+            date: matchObj.date,
+            alph: matchObj.home_team.labalph,
+            key: matchId,
+          },
+        });
 
-      const newDraftData: DraftData = {
-        ...draftData,
-        [matchId]: {
-          ...draftData[matchId],
-          statsL: newStatsL,
-        },
-      };
+        if (!res.success) continue;
 
-      console.log("newDraftData", newDraftData);
+        newData = {
+          ...newData,
+          [matchId]: {
+            ...draftData[matchId],
+            statsL: res.data,
+          },
+        };
+      }
 
-      return newDraftData;
+      console.log("newData", newData);
+
+      return newData;
     },
   },
   {
@@ -88,46 +102,64 @@ export const statsL: FormStep<BaseModel>[] = [
     modelType: baseModel,
     many: true,
     getDraftData: async ({ api, draftData, metaData }) => {
-      // const matchId: string = metaData.match;
-      const matchId = "694356b435e6b4bcfd8e385e";
+      if (!metaData || !api) return { value: [], label: [] };
 
-      if (!draftData[matchId].statsL) return { value: [], label: [] };
+      // const matchId: string[] = metaData.match;
+      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
 
-      const matchObj = await readItemBase<Match>({
-        apiInstance: api,
-        backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-      });
+      let newDataValue: StatsLForm[] = [];
+      let newDataLabel: Record<string, any>[] = [];
 
-      if (!matchObj) return { value: [], label: [] };
+      const havingMatchIds = matchIds.filter(
+        (matchId) => draftData[matchId]?.statsL,
+      );
 
-      const match = {
-        id: matchId,
-        label: convertToLabel(ModelType.MATCH, matchObj) || "",
-      };
+      for (const matchId of havingMatchIds) {
+        const statsL = draftData[matchId]?.statsL;
 
-      const home = {
-        id: matchObj.home_team._id,
-        label: convertToLabel(ModelType.TEAM, matchObj.home_team),
-      };
+        if (!statsL) continue;
 
-      const away = {
-        id: matchObj.away_team._id,
-        label: convertToLabel(ModelType.TEAM, matchObj.away_team),
-      };
+        const matchObj = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
 
-      const homeData = { ...draftData[matchId].statsL.home, match, team: home };
-      const awayData = { ...draftData[matchId].statsL.away, match, team: away };
+        if (!matchObj) continue;
 
-      const homeResult = buildValueLabel([homeData]);
-      const awayResult = buildValueLabel([awayData]);
+        const match = {
+          id: matchId,
+          label: convertToLabel(ModelType.MATCH, matchObj) || "",
+        };
 
-      const value: StatsLForm[] = [...homeResult.value, ...awayResult.value];
-      const label: Record<string, any>[] = [
-        ...homeResult.label,
-        ...awayResult.label,
-      ];
+        const home = {
+          id: matchObj.home_team._id,
+          label: convertToLabel(ModelType.TEAM, matchObj.home_team),
+        };
 
-      return { value, label };
+        const away = {
+          id: matchObj.away_team._id,
+          label: convertToLabel(ModelType.TEAM, matchObj.away_team),
+        };
+
+        const homeData = {
+          ...statsL.home,
+          match,
+          team: home,
+        };
+        const awayData = {
+          ...statsL.away,
+          match,
+          team: away,
+        };
+
+        const homeResult = buildValueLabel([homeData]);
+        const awayResult = buildValueLabel([awayData]);
+
+        newDataValue.push(...homeResult.value, ...awayResult.value);
+        newDataLabel.push(...homeResult.label, ...awayResult.label);
+      }
+
+      return { value: newDataValue, label: newDataLabel };
     },
   },
   {

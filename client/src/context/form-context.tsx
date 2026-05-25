@@ -455,6 +455,7 @@ export const FormProvider = <T extends ModelType>({
       }
 
       if (inputMode === InputMode.MANY) {
+        console.log("in sendData", formDatas);
         // res = await modelContext.createItems(formDatas);
         res = { success: true, data: [], message: "" };
       }
