@@ -24,7 +24,7 @@ export const playerInMatch = async (
   const transferFromDate = match.season.start_date || undefined;
   const transferToDate = match.date || undefined;
 
-  const quickFilterItems = setPlayerQuickFilter(
+  const quickFilterItems = await setPlayerQuickFilter(
     api,
     team,
     match.competition,

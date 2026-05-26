@@ -24,7 +24,6 @@ import {
 } from "@dai0413/myorg-shared";
 import { applyFilterClient } from "../../../../utils/filter/applyFilterClient";
 import { applySortClient } from "../../../../utils/sort/applySortClient";
-import { ModelOptionKey } from "../../../../utils/createOption/types/model";
 import { getOptions, readOptions } from "../../../../utils/createOption";
 import { OptionType } from "../../../../utils/createOption/types/preset";
 import { CustomOptionType } from "../../../../utils/createOption/types/custom";
@@ -46,7 +45,6 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
   handleFormData,
   supportButton,
   options,
-  filterConditionsObj,
 }: RenderFieldProps<T>) => {
   const { multi, key, fieldType, valueType, uniqueInArray, lengthInArray } =
     field;
@@ -84,6 +82,7 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
       });
       if (!optionTableData) return setOptionIsLoading(false);
       setOptionData(optionTableData);
+      setViewOptionData(optionTableData);
     } else if (isCustomOptionType(optionKey)) {
       if (!optionData) return setOptionIsLoading(false);
 
@@ -109,6 +108,7 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
 
   useEffect(() => {
     if (!key) return;
+    setOptionIsLoading(true);
 
     const fetchOptions = async () => {
       const nextOptionKey = getOptionKey(key);
@@ -126,21 +126,6 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
           params = {
             source,
             key: nextOptionKey as OptionType,
-          };
-          break;
-
-        case OptionSource.REMOTE:
-          params = {
-            source,
-            key: nextOptionKey as ModelOptionKey,
-            readOptionsParam: {
-              api,
-              filterConditions: filterConditionsObj
-                ? filterConditionsObj[nextOptionKey] || []
-                : [],
-              sortConditions: [],
-              page: 1,
-            },
           };
           break;
 
@@ -162,7 +147,8 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
     };
 
     fetchOptions();
-  }, [key]);
+    setOptionIsLoading(false);
+  }, []);
 
   const withTrailingEmpty = (arr: string[] = [], lengthInArray?: number) => {
     if (lengthInArray && arr.length >= lengthInArray) {
