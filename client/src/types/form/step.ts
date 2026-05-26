@@ -30,7 +30,7 @@ type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
     api?: AxiosInstance,
   ) => Promise<FormTypeMap[K][]>;
   getDraftData?: GetDraftData<K, true>;
-  onChange?: OnChange<FormTypeMap[K], true>;
+  autoFill?: OnChange<FormTypeMap[K], true>;
 };
 
 type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {

@@ -37,7 +37,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData),
-    onChange: toManyOnChange(setTeam),
+    autoFill: toManyOnChange(setTeam),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -46,7 +46,7 @@ export const bulk: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       "changes.en_name",
       "changes.note",
     ]),
-    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
+    autoFill: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

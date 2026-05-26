@@ -30,7 +30,7 @@ export const d_sc: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       return obj.data;
     },
     many: true,
-    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
+    autoFill: toManyOnChange(onChangeFillChangesByRegistrationType),
   },
   {
     stepLabel: "取得したデータを編集してください",
@@ -47,7 +47,7 @@ export const d_sc: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
       "changes.en_name",
       "changes.note",
     ]),
-    onChange: toManyOnChange(onChangeFillChangesByRegistrationType),
+    autoFill: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

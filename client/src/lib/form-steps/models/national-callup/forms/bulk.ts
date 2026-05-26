@@ -43,7 +43,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData, "team", "team_name"),
-    onChange: toManyOnChange(
+    autoFill: toManyOnChange(
       combineOnChanges(updateTeamFromTransfer, updateDatesFromStatus),
     ),
   },
