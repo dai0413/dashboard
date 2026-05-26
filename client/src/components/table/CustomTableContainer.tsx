@@ -87,6 +87,7 @@ const TableContainer = <K, F>({
   edit,
   noToolBar,
   selectedKeys,
+  deleteOnClick,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -230,6 +231,7 @@ const TableContainer = <K, F>({
           renderFieldCell={renderFieldCell}
           edit={edit}
           selectedKeys={selectedKeys}
+          deleteOnClick={deleteOnClick}
         />
       ) : (
         <div className="flex items-center justify-center py-16">
