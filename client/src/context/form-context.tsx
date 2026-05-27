@@ -276,6 +276,40 @@ export const FormProvider = <T extends ModelType>({
     return resolved;
   }
 
+  const getNextStepIndex = (
+    curInd: number,
+    formSteps: FormStep<T>[],
+    direction: "next" | "prev",
+    formData: FormTypeMap[T],
+    metaData: Record<string, any>,
+  ): number => {
+    const shouldSkip = (index: number) => {
+      const step = formSteps[index];
+
+      if (!step || step.many || !step.skip) return false;
+
+      return step.skip(formData, metaData);
+    };
+
+    if (direction === "next") {
+      let nextIndex = Math.min(curInd + 1, formSteps.length - 1);
+
+      while (nextIndex < formSteps.length - 1 && shouldSkip(nextIndex)) {
+        nextIndex++;
+      }
+
+      return nextIndex;
+    }
+
+    let nextIndex = Math.max(curInd - 1, 0);
+
+    while (nextIndex > 0 && shouldSkip(nextIndex)) {
+      nextIndex--;
+    }
+
+    return 0;
+  };
+
   type StartForm<T extends ModelType> = StartFormArgs<T> & {
     steps?: FormStep<T>[];
   };
@@ -299,52 +333,64 @@ export const FormProvider = <T extends ModelType>({
       newSteps = stepsObj?.steps;
     }
 
-    setFormSteps(newSteps);
-
-    if (args.formMode === FormMode.UPDATE) {
-      setCurrentStep(newSteps.length - 1);
-    } else {
-      setCurrentStep(0);
-    }
-
     if (args.inputMode === InputMode.MANY) {
       setInputMode(InputMode.MANY);
     } else {
       setInputMode(InputMode.SINGLE);
     }
 
+    let newFormData: FormTypeMap[T] | null =
+      args.formMode === FormMode.CREATE &&
+      args.initialData &&
+      args.initialData.formData
+        ? {
+            ...getDefault(args.modelType),
+            ...args.initialData?.formData,
+          }
+        : null;
+    let newMetaData: Record<string, any> | null =
+      args.formMode === FormMode.CREATE &&
+      args.initialData &&
+      args.initialData.metaData
+        ? args.initialData.metaData
+        : null;
+
+    const nextStepIndex =
+      newFormData && newMetaData
+        ? getNextStepIndex(0, newSteps, "next", newFormData, newMetaData)
+        : 0;
+    setCurrentStep(nextStepIndex);
+
     if (args.formMode === FormMode.CREATE) {
       setFormMode(FormMode.CREATE);
 
       if (args.initialData) {
-        if (args.initialData.formData) {
-          setInitialFormData(args.initialData.formData);
-          const data = {
-            ...getDefault(args.modelType),
-            ...args.initialData.formData,
-          };
-
-          setFormData(data);
-          setFormDatas([data]);
-          setBulkCommonData(data);
-          const resolvedLabels = await resolveForeignKeyLabels(data);
+        if (newFormData) {
+          setInitialFormData(newFormData);
+          setFormData(newFormData);
+          setFormDatas([newFormData]);
+          setBulkCommonData(newFormData);
+          const resolvedLabels = await resolveForeignKeyLabels(newFormData);
           setFormLabel(resolvedLabels);
           setFormLabels([resolvedLabels]);
           setBulkCommonLabel(resolvedLabels);
+          if (newMetaData) {
+            setMetaData(newMetaData);
+            const resolvedLabels = await resolveForeignKeyLabels(newMetaData);
+            setMetaDataLabel(resolvedLabels);
+          }
+        } else {
+          resetFormData();
+          resetFormDatas();
         }
-        if (args.initialData.metaData) {
-          setMetaData(args.initialData.metaData);
-          const resolvedLabels = await resolveForeignKeyLabels(
-            args.initialData.metaData,
-          );
-          setMetaDataLabel(resolvedLabels);
-        }
-      } else {
-        resetFormData();
-        resetFormDatas();
       }
     } else {
+      newSteps = newSteps.filter((step) => {
+        if (step.many) return step;
+        if (!step.dataSource) return step;
+      });
       setFormMode(FormMode.UPDATE);
+      setCurrentStep(newSteps.length - 1);
 
       if (args.inputMode === InputMode.SINGLE) {
         const newFormData = {
@@ -402,6 +448,7 @@ export const FormProvider = <T extends ModelType>({
       }
     }
 
+    setFormSteps(newSteps);
     setModelType(args.modelType);
     setIsEditing(true);
     setFilterConditionsObj(null);
@@ -568,18 +615,6 @@ export const FormProvider = <T extends ModelType>({
     return success;
   };
 
-  const stepSkip = (next: number) => {
-    const current = formSteps[next];
-
-    if (!current.many && current?.skip) {
-      const skip = current.skip(formData, metaData);
-
-      return skip;
-    }
-
-    return false;
-  };
-
   const nextStep = async (): Promise<void> => {
     const current = formSteps[currentStep];
 
@@ -620,23 +655,6 @@ export const FormProvider = <T extends ModelType>({
 
     // --- onChange 関数による値変更 ---
     if (Array.isArray(checkData)) {
-      if (current.many) {
-        const onChange = current.onChange;
-        if (onChange) {
-          const {
-            formDatas: onChangedFormDatas,
-            formLabels: onChangedFormLabels,
-          } = await onChange({
-            formDatas,
-            formLabels,
-            metaData,
-            api,
-          });
-          setFormDatas(onChangedFormDatas);
-          setFormLabels(onChangedFormLabels);
-        }
-      }
-    } else {
       if (!current.many) {
         const onChange = current.onChange;
         if (onChange) {
@@ -753,19 +771,16 @@ export const FormProvider = <T extends ModelType>({
         api,
         formLabel,
       });
-      console.log("newOptions", newOptions);
       setOptions({ ...options, ...newOptions });
     }
 
-    let nextStepIndex = Math.min(
-      currentStep + 1,
-      formSteps ? formSteps.length - 1 : 0,
+    const nextStepIndex = getNextStepIndex(
+      currentStep,
+      formSteps,
+      "next",
+      newFormData,
+      metaData,
     );
-
-    // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
-      nextStepIndex++;
-    }
 
     if (current.createFilterConditions) {
       const filterConditionsObj = await current.createFilterConditions({
@@ -825,13 +840,13 @@ export const FormProvider = <T extends ModelType>({
 
   const prevStep = () => {
     if (!formSteps) return;
-    let nextStepIndex = Math.max(currentStep - 1, 0);
-
-    // スキップ可能なステップが続く場合は while で次の有効なステップまで進める
-    while (stepSkip(nextStepIndex) && nextStepIndex < formSteps.length - 1) {
-      nextStepIndex--;
-    }
-
+    const nextStepIndex = getNextStepIndex(
+      currentStep,
+      formSteps,
+      "prev",
+      formData,
+      metaData,
+    );
     setCurrentStep(nextStepIndex);
   };
 
@@ -1034,19 +1049,20 @@ export const FormProvider = <T extends ModelType>({
     const current = formSteps[currentStep];
 
     if (current.many) {
-      const onChange = current.onChange;
-      if (onChange) {
+      const autoFill = current.autoFill;
+      if (autoFill) {
         const {
-          formDatas: onChangedFormDatas,
-          formLabels: onChangedFormLabels,
-        } = await onChange({
+          formDatas: autoFilldFormDatas,
+          formLabels: autoFilldFormLabels,
+        } = await autoFill({
           formDatas,
           formLabels,
           metaData,
           api,
         });
-        setFormDatas(onChangedFormDatas);
-        setFormLabels(onChangedFormLabels);
+
+        setFormDatas(autoFilldFormDatas);
+        setFormLabels(autoFilldFormLabels);
       }
     }
   };
