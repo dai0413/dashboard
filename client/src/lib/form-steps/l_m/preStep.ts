@@ -4,11 +4,42 @@ import { ModelType } from "../../../types/models";
 import { Match } from "../../../types/models/match";
 import { createItemBase, readItemBase } from "../../api";
 import { getPreMatchSelect } from "../core/preMatchSelectStep";
+import { createFilterFromParent } from "../utils/createFilterConditions/createFilterFromParent";
+import { Competition } from "../../../types/models/competition";
+import { convert } from "../../convert/CreateLabel";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
 
+const value = [
+  "Ｊ１百年構想リーグ",
+  "Ｊ２・Ｊ３百年構想リーグ",
+  "Ｊ１リーグ",
+  "Ｊ２リーグ",
+  "Ｊ３リーグ",
+].join("|");
+
 export const preStep: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "試合入力準備",
+    type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
+    createFilterConditions: async ({ api }) => {
+      if (!api) return null;
+      return createFilterFromParent({
+        readItemParams: {
+          apiInstance: api,
+          params: { name: value },
+          backendRoute: API_PATHS.COMPETITION.ROOT,
+        },
+        convertValueLabel: (data: Competition) =>
+          convert(ModelType.COMPETITION, data),
+        filterKey: "competition",
+        label: "大会",
+      });
+    },
+  },
   ...getPreMatchSelect<BaseModel>(baseModel),
   {
     stepLabel: "試合を選択",
@@ -28,10 +59,7 @@ export const preStep: FormStep<BaseModel>[] = [
     addDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return {};
 
-      console.log("metaData", metaData);
-
-      // const matchId: string[] = metaData.match;
-      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
+      const matchIds: string[] = metaData.match;
 
       type MatchRef = {
         matchId: string;
@@ -66,8 +94,6 @@ export const preStep: FormStep<BaseModel>[] = [
         .map((result) => result.value)
         .filter((v): v is MatchRef => v !== null);
 
-      console.log("matchObj", matchObjs);
-
       if (matchObjs.length === 0) return {};
 
       const res = await createItemBase<DraftData>({
@@ -87,8 +113,6 @@ export const preStep: FormStep<BaseModel>[] = [
         ...draftData,
         ...draftDataValue,
       };
-
-      console.log("newDraftData", newDraftData);
 
       return newDraftData;
     },

@@ -46,8 +46,7 @@ export const statsL: FormStep<BaseModel>[] = [
     addDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return {};
 
-      // const matchId: string[] = metaData.match;
-      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
+      const matchIds: string[] = metaData.match;
 
       let newData: DraftData = { ...draftData };
 
@@ -91,8 +90,6 @@ export const statsL: FormStep<BaseModel>[] = [
         };
       }
 
-      console.log("newData", newData);
-
       return newData;
     },
   },
@@ -104,8 +101,7 @@ export const statsL: FormStep<BaseModel>[] = [
     getDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return { value: [], label: [] };
 
-      // const matchId: string[] = metaData.match;
-      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
+      const matchIds: string[] = metaData.match;
 
       let newDataValue: StatsLForm[] = [];
       let newDataLabel: Record<string, any>[] = [];

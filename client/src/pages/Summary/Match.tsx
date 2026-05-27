@@ -499,6 +499,9 @@ const Match = () => {
               formData: {
                 match: id,
               },
+              metaData: {
+                match: [id],
+              },
             }}
           />
         )}
@@ -551,6 +554,9 @@ const Match = () => {
               formData: {
                 match: id,
               },
+              metaData: {
+                match: [id],
+              },
             }}
           />
         )}
@@ -602,6 +608,9 @@ const Match = () => {
             initialData={{
               formData: {
                 match: id,
+              },
+              metaData: {
+                match: [id],
               },
             }}
           />

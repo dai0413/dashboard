@@ -37,6 +37,11 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
         label: "シーズン",
       });
     },
+    skip: (data, metaData) => {
+      if ("match" in data || "match" in metaData) return true;
+
+      return false;
+    },
   },
   {
     modelType: modelType,
@@ -66,6 +71,11 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
         label: "大会ステージ",
       });
     },
+    skip: (data, metaData) => {
+      if ("match" in data || "match" in metaData) return true;
+
+      return false;
+    },
   },
   {
     stepLabel: "大会ステージを選択",
@@ -93,6 +103,11 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
         filterKey: "match",
         label: "試合",
       });
+    },
+    skip: (data, metaData) => {
+      if ("match" in data || "match" in metaData) return true;
+
+      return false;
     },
   },
 ];

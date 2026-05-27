@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-// import { getPositions as get } from "@dai0413/scraping-logic/L";
+import { getPositions as get } from "@dai0413/scraping-logic/L";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/l_m/position";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
-import { result } from "./sample_data/position.js";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
 
 const getPositions = async (
@@ -16,7 +15,7 @@ const getPositions = async (
     if (!date || !alph)
       throw new BadRequestError("date , alphを送信してください");
 
-    // const result = await get({date , alph});
+    const result = await get({ date, alph });
     if (result.ok) {
       const data: Scraped = result.data;
 

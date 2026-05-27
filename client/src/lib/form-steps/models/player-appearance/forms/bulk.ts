@@ -34,14 +34,7 @@ export const bulk: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
       "time",
     ]),
     many: true,
-  },
-  {
-    stepLabel: "ポジション取得",
-    type: StepType.FORM,
-    modelType: baseModel,
-    fields: [],
-    many: true,
-    onChange: async ({ formDatas, formLabels, api }) => {
+    autoFill: async ({ formDatas, formLabels, api }) => {
       if (!api) return { formDatas, formLabels };
 
       const matchCache = new Map<string, Match>();

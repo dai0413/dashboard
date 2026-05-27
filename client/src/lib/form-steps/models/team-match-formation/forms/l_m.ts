@@ -80,13 +80,12 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     dataSource: DataSource.META_DATA,
-    fields: getFields(["match"]),
+    fields: getFields(["match"], { match: { multi: true } }),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     addDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return {};
 
-      // const matchId: string[] = metaData.match;
-      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
+      const matchIds: string[] = metaData.match;
 
       let newData: DraftData = { ...draftData };
 
@@ -141,8 +140,7 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
     getDraftData: async ({ api, draftData, metaData }) => {
       if (!metaData || !api) return { value: [], label: [] };
 
-      // const matchId: string[] = metaData.match;
-      const matchIds = ["694356b435e6b4bcfd8e385e", "694356b435e6b4bcfd8e385f"];
+      const matchIds: string[] = metaData.match;
 
       let newDataValue: TeamMatchFormationForm[] = [];
       let newDataLabel: Record<string, any>[] = [];
@@ -184,7 +182,6 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
           match,
           home,
         );
-        console.log("in homeData", homeData);
 
         const awayData = await resolve(
           api,
