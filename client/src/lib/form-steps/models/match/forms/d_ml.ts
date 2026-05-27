@@ -36,6 +36,8 @@ import {
 import { createConfirmationStep } from "../../../confirmationStep";
 import { Match } from "../../../../../types/models/match";
 import { convert as createLabel } from "../../../../convert/CreateLabel";
+import { setCompetition } from "../createQuickFilterItems/setCompetition";
+import { ReadCompetitionItems } from "../types";
 
 const KEYS = [
   "home_team",
@@ -113,9 +115,83 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   return posted;
 };
 
-export const match: FormStep<ModelType.MATCH>[] = [
+type BaseModel = ModelType.MATCH;
+const baseModel = ModelType.MATCH;
+
+const readCompetitionItems: ReadCompetitionItems[] = [
   {
-    modelType: ModelType.MATCH,
+    key: "main",
+    label: "J1・J2・J3",
+    params: {
+      name: [
+        "Ｊ１百年構想リーグ",
+        "Ｊ２・Ｊ３百年構想リーグ",
+        "Ｊ１リーグ",
+        "Ｊ２リーグ",
+        "Ｊ３リーグ",
+      ].join("|"),
+    },
+    defaultSelect: true,
+  },
+  {
+    key: "po",
+    label: "PO・入替",
+    params: {
+      name: [
+        "Ｊ１・Ｊ２入れ替え戦",
+        "Ｊ１参入決定戦",
+        "Ｊ１参入プレーオフ",
+        "Ｊ１昇格プレーオフ",
+        "Ｊ２・Ｊ３入れ替え戦",
+        "Ｊ２・ＪＦＬ入れ替え戦",
+        "Ｊ２昇格プレーオフ",
+        "Ｊ３・ＪＦＬ入れ替え戦",
+      ].join("|"),
+    },
+  },
+  {
+    key: "youth",
+    label: "ユース",
+    params: {
+      name: [
+        "Ｊエリートリーグ",
+        "Ｊユースリーグ",
+        "Ｊリーグ育成マッチデー",
+        "Ｊサテライトリーグ",
+      ].join("|"),
+    },
+  },
+  {
+    key: "cup",
+    label: "カップ",
+    params: {
+      name: [
+        "ＦＵＪＩＦＩＬＭ　ＳＵＰＥＲ　ＣＵＰ",
+        "ＪリーグYBCルヴァンカップ",
+        "オールスター",
+        "明治安田生命チャンピオンシップ",
+        "Ｊリーグスペシャルマッチ",
+        "ＪＯＭＯ　ＣＵＰ",
+        "オールスター",
+        "ドリームマッチ",
+        "サントリーカップ",
+        "明治安田ワールドチャレンジ",
+      ].join("|"),
+    },
+  },
+];
+
+export const match: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "試合入力準備",
+    type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
+    createQuickFilterItems: (params) =>
+      setCompetition({ ...params, items: readCompetitionItems }),
+  },
+  {
+    modelType: baseModel,
     stepLabel: "更新する試合の大会を入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -144,7 +220,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合のシーズンを入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -173,14 +249,14 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合の大会ステージを入力",
     type: StepType.FORM,
     fields: getFields(["competition_stage"]),
     createFilterConditions: setTeamByCompetition,
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合一覧URLを入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -226,7 +302,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合を選択",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -242,7 +318,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     ],
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "J_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
     many: true,
@@ -305,7 +381,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "取得したデータを編集してください",
     type: StepType.FORM,
     many: true,
@@ -332,7 +408,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     validate: validateStadiumEitherOne,
   },
   {
-    ...createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
+    ...createConfirmationStep<BaseModel>(baseModel),
     addPostedDraftData: afterMatchaddPostedDraftData,
   },
 ];

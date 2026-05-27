@@ -14,4 +14,5 @@ export enum QuickFilterType {
   MATCH_EVENT_TYPE = "match-event-type",
   FORMATION = "formation",
   MATCH_FORMAT = "match-format",
+  COMPETITION = "competition",
 }

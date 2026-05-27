@@ -30,6 +30,8 @@ import { Match } from "../../../../../types/models/match";
 import { convert as createLabel } from "../../../../convert/CreateLabel";
 import { convert } from "../../../../convert/DBtoGetted";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { setCompetition } from "../createQuickFilterItems/setCompetition";
+import { ReadCompetitionItems } from "../types";
 
 const KEYS = [
   "home_team",
@@ -100,9 +102,50 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   return result;
 };
 
-export const match: FormStep<ModelType.MATCH>[] = [
+type BaseModel = ModelType.MATCH;
+const baseModel = ModelType.MATCH;
+
+const readCompetitionItems: ReadCompetitionItems[] = [
   {
-    modelType: ModelType.MATCH,
+    key: "emperor",
+    label: "天皇杯",
+    params: { name: "天皇杯" },
+    defaultSelect: true,
+  },
+  {
+    key: "acl",
+    label: "ACL",
+    params: { name: "ACL|ACL2" },
+  },
+  {
+    key: "full-national",
+    label: "フル代表",
+    params: {
+      age_group: "full",
+      competition_type: "national",
+    },
+  },
+  {
+    key: "national",
+    label: "U代表",
+    params: {
+      age_group: "!full",
+      competition_type: "national",
+    },
+  },
+];
+
+export const match: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "試合入力準備",
+    type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
+    createQuickFilterItems: (params) =>
+      setCompetition({ ...params, items: readCompetitionItems }),
+  },
+  {
+    modelType: baseModel,
     stepLabel: "更新する試合の大会を入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -131,7 +174,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合のシーズンを入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -160,14 +203,14 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合の大会ステージを入力",
     type: StepType.FORM,
     fields: getFields(["competition_stage"]),
     createFilterConditions: setTeamByCompetition,
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "更新する試合のJ_M:URLを入力",
     type: StepType.FORM,
     dataSource: DataSource.META_DATA,
@@ -188,7 +231,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     ],
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "J_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
     addDraftData: async ({ data, metaData, api, formLabel }) => {
@@ -281,7 +324,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     },
   },
   {
-    modelType: ModelType.MATCH,
+    modelType: baseModel,
     stepLabel: "取得したデータを編集してください",
     type: StepType.FORM,
     fields: getFields([
@@ -307,7 +350,7 @@ export const match: FormStep<ModelType.MATCH>[] = [
     validate: validateStadiumEitherOne,
   },
   {
-    ...createConfirmationStep<ModelType.MATCH>(ModelType.MATCH),
+    ...createConfirmationStep<BaseModel>(baseModel),
     addPostedDraftData: afterMatchaddPostedDraftData,
   },
 ];
