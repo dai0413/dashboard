@@ -19,7 +19,7 @@ import {
 } from "@dai0413/myorg-shared/types/resolver/teamMatchFormation";
 import { AxiosInstance } from "axios";
 import { Scraped as TeamMatchFormationScraped } from "@dai0413/myorg-shared/types/get-new-data/models/team-match-formation";
-import { getPreMatchSelect } from "../../../core/preMatchSelectStep";
+import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
 import { createConfirmationStep } from "../../../confirmationStep";
 
 type BaseModel = ModelType.TEAM_MATCH_FORMATION;

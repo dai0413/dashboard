@@ -20,7 +20,7 @@ import {
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { ResolveOutput } from "@dai0413/myorg-shared/types/resolver/statsL";
-import { getPreMatchSelect } from "../../../core/preMatchSelectStep";
+import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;

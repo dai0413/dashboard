@@ -3,7 +3,7 @@ import { DataSource, DraftData, FormStep, StepType } from "../../../types/form";
 import { ModelType } from "../../../types/models";
 import { Match } from "../../../types/models/match";
 import { createItemBase, readItemBase } from "../../api";
-import { getPreMatchSelect } from "../core/preMatchSelectStep";
+import { getPreMatchSelect } from "./preMatchSelectStep";
 import { createFilterFromParent } from "../utils/createFilterConditions/createFilterFromParent";
 import { Competition } from "../../../types/models/competition";
 import { convert } from "../../convert/CreateLabel";
