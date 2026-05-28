@@ -39,12 +39,18 @@ const convertDisplayField = <T extends keyof FormTypeMap>(
       if (Array.isArray(value) && value.length === 0) da.value = "未入力";
 
       if (steps) {
-        const inputField = steps
+        const fields = steps
           .flatMap((step) => step.fields || [])
-          .find((f) => f.key === display.key);
+          .filter(Boolean);
+        const inputField = fields.find(
+          (f) => typeof f === "object" && "key" in f && f.key === display.key,
+        );
 
         const stepIndex = steps.findIndex((step) =>
-          (step.fields || []).some((f) => f.key === display.key),
+          (step.fields || []).some(
+            (f) =>
+              f && typeof f === "object" && "key" in f && f.key === display.key,
+          ),
         );
 
         da.onEdit = () => onEdit(stepIndex);

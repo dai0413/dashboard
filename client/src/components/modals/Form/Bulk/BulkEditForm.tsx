@@ -59,7 +59,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
 
   const headers: TableHeader<Record<string, any>>[] = formSteps[currentStep]
     .fields
-    ? formSteps[currentStep].fields?.map((field) => ({
+    ? formSteps[currentStep].fields?.filter(Boolean).map((field) => ({
         key: field.key as string,
         label: field.label,
         field: field.key as keyof Record<string, any>,
@@ -73,7 +73,8 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
 
   const requiredField =
     formSteps[currentStep].fields
-      ?.filter((f) => f.required)
+      ?.filter(Boolean)
+      .filter((f) => f.required)
       .map((f) => String(f.key)) ?? [];
 
   return (
