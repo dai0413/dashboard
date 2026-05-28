@@ -39,7 +39,7 @@ router
   .get(getStaffRegistrationHistories);
 
 // D_M
-router.route(API_PATHS.GET_NEW_DATA.D_M.VALUES).get(getValuesD_M);
+router.route(API_PATHS.GET_NEW_DATA.D_M.VALUES).post(getValuesD_M);
 
 // D_ML
 router.route(API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS).post(getCardIds);

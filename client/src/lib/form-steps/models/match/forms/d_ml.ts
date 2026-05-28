@@ -319,7 +319,7 @@ export const match: FormStep<BaseModel>[] = [
   },
   {
     modelType: baseModel,
-    stepLabel: "J_M, MATCHモデルデータを取得します",
+    stepLabel: "D_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
     many: true,
     addDraftData: async ({ data, metaData, api, formLabel }) => {
@@ -329,7 +329,7 @@ export const match: FormStep<BaseModel>[] = [
 
       const res = await createItemBase<DraftData>({
         apiInstance: api,
-        backendRoute: API_PATHS.GET_NEW_DATA.D_ML.CARD_IDS,
+        backendRoute: API_PATHS.GET_NEW_DATA.D_M.VALUES,
         data: { id },
         returnResponse: true,
       });
