@@ -18,7 +18,7 @@ export const matchRelatedItems: Item[] = [
   },
   {
     model:
-      "Match, PlayerAppearance, PlayerMatchEventLog, StaffAppearance, RefereeAppearance",
+      "Match, PlayerAppearance, PlayerMatchEventLog, StaffAppearance, StaffMatchEventLog, RefereeAppearance",
     desc: "D_ML",
     icon: "match",
     startFormArgs: {
