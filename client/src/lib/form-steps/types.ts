@@ -10,3 +10,10 @@ export type FormStepsConfig<T extends keyof FormTypeMap> = {
     };
   };
 };
+
+export type ReadCompetitionItems = {
+  key: string;
+  label: string;
+  params: Record<string, string>;
+  defaultSelect?: boolean;
+};
