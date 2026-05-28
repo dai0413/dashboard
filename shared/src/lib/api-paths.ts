@@ -223,9 +223,12 @@ export const API_PATHS = {
         "/get-new-data/d-sc/staff-registration-history",
     },
     J_M: {
+      VALUES: "/get-new-data/j-m/values",
       MATCH: "/get-new-data/j-m/match",
       PLAYER_APPEARANCE: "/get-new-data/j-m/player-appearance",
       PLAYER_MATCH_EVENT_LOG: "/get-new-data/j-m/player-match-event-log",
+      STAFF_APPEARANCE: "/get-new-data/j-m/staff-appearance",
+      REFEREE_APPEARANCE: "/get-new-data/j-m/referee-appearance",
     },
     SN_M: {
       POSITION: "/get-new-data/sn-m/position",
