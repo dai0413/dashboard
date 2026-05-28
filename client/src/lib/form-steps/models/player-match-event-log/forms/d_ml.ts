@@ -97,7 +97,7 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
   [
     {
       modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
-      stepLabel: "選手の出場歴を入力開始",
+      stepLabel: "選手のイベントログを入力開始",
       type: StepType.FORM,
       fields: [],
       createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
