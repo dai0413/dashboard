@@ -1,5 +1,5 @@
 import { API_PATHS, Select } from "@dai0413/myorg-shared";
-import { Form as PositionData } from "@dai0413/myorg-shared/types/get-new-data/site/sn_m/position";
+import { Scraped as PositionData } from "@dai0413/myorg-shared/types/get-new-data/data/position";
 import {
   ResolveInput,
   ResolveOutput,

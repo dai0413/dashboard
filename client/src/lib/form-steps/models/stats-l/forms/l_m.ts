@@ -13,7 +13,7 @@ import { createItemBase, readItemBase } from "../../../../api";
 import { StatsLForm } from "../../../../../types/models/stats-l";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { Match } from "../../../../../types/models/match";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/l_m/stats-l";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/stats-l";
 import { convert as convertToLabel } from "../../../../convert/CreateLabel";
 import {
   resolveToLabel,

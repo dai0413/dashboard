@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/position";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/position";
 import { getPosition as get } from "@dai0413/scraping-logic/SN";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 
 const getPositions = async (
   req: Request,
-  res: Response<CreateItemResponse<Scraped[]>>,
+  res: Response<CreateItemResponse<Scraped>>,
 ) => {
   try {
     const { url } = req.body;
@@ -16,7 +16,7 @@ const getPositions = async (
 
     const result = await get(url);
     if (result.ok) {
-      const positionDatas: Scraped[] = result.data;
+      const positionDatas: Scraped = result.data;
       res
         .status(StatusCodes.OK)
         .json({ success: true, message: "成功", data: positionDatas });

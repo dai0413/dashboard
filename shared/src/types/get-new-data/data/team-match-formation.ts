@@ -1,4 +1,7 @@
-import { Scraped as ScrapedBase, Form as FormBase } from "../../models/stats-l";
+import {
+  Scraped as ScrapedBase,
+  Form as FormBase,
+} from "../models/team-match-formation";
 
 export type Scraped = {
   home: ScrapedBase;

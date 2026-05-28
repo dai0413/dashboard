@@ -100,45 +100,30 @@
       "require": "./dist/types/get-new-data/models/team-match-formation.js",
       "types": "./dist/types/get-new-data/models/team-match-formation.d.ts"
     },
-    "./types/get-new-data/site/d_ml/cardId": {
-      "import": "./dist/types/get-new-data/site/d_ml/cardId.js",
-      "require": "./dist/types/get-new-data/site/d_ml/cardId.js",
-      "types": "./dist/types/get-new-data/site/d_ml/cardId.d.ts"
+    "./types/get-new-data/data/cardId": {
+      "import": "./dist/types/get-new-data/data/cardId.js",
+      "require": "./dist/types/get-new-data/data/cardId.js",
+      "types": "./dist/types/get-new-data/data/cardId.d.ts"
     },
-    "./types/get-new-data/site/j_m/values": {
-      "import": "./dist/types/get-new-data/site/j_m/values.js",
-      "require": "./dist/types/get-new-data/site/j_m/values.js",
-      "types": "./dist/types/get-new-data/site/j_m/values.d.ts"
+    "./types/get-new-data/data/draftData": {
+      "import": "./dist/types/get-new-data/data/draftData.js",
+      "require": "./dist/types/get-new-data/data/draftData.js",
+      "types": "./dist/types/get-new-data/data/draftData.d.ts"
     },
-    "./types/get-new-data/site/l_m/position": {
-      "import": "./dist/types/get-new-data/site/l_m/position.js",
-      "require": "./dist/types/get-new-data/site/l_m/position.js",
-      "types": "./dist/types/get-new-data/site/l_m/position.d.ts"
+    "./types/get-new-data/data/position": {
+      "import": "./dist/types/get-new-data/data/position.js",
+      "require": "./dist/types/get-new-data/data/position.js",
+      "types": "./dist/types/get-new-data/data/position.d.ts"
     },
-    "./types/get-new-data/site/l_m/stats-l": {
-      "import": "./dist/types/get-new-data/site/l_m/stats-l.js",
-      "require": "./dist/types/get-new-data/site/l_m/stats-l.js",
-      "types": "./dist/types/get-new-data/site/l_m/stats-l.d.ts"
+    "./types/get-new-data/data/stats-l": {
+      "import": "./dist/types/get-new-data/data/stats-l.js",
+      "require": "./dist/types/get-new-data/data/stats-l.js",
+      "types": "./dist/types/get-new-data/data/stats-l.d.ts"
     },
-    "./types/get-new-data/site/l_m/team-match-formation": {
-      "import": "./dist/types/get-new-data/site/l_m/team-match-formation.js",
-      "require": "./dist/types/get-new-data/site/l_m/team-match-formation.js",
-      "types": "./dist/types/get-new-data/site/l_m/team-match-formation.d.ts"
-    },
-    "./types/get-new-data/site/sn_m/position": {
-      "import": "./dist/types/get-new-data/site/sn_m/position.js",
-      "require": "./dist/types/get-new-data/site/sn_m/position.js",
-      "types": "./dist/types/get-new-data/site/sn_m/position.d.ts"
-    },
-    "./types/get-new-data/site/position": {
-      "import": "./dist/types/get-new-data/site/position.js",
-      "require": "./dist/types/get-new-data/site/position.js",
-      "types": "./dist/types/get-new-data/site/position.d.ts"
-    },
-    "./types/get-new-data/site/draftData": {
-      "import": "./dist/types/get-new-data/site/draftData.js",
-      "require": "./dist/types/get-new-data/site/draftData.js",
-      "types": "./dist/types/get-new-data/site/draftData.d.ts"
+    "./types/get-new-data/data/team-match-formation": {
+      "import": "./dist/types/get-new-data/data/team-match-formation.js",
+      "require": "./dist/types/get-new-data/data/team-match-formation.js",
+      "types": "./dist/types/get-new-data/data/team-match-formation.d.ts"
     },
     "./types/resolver/match": {
       "import": "./dist/types/resolver/match.js",

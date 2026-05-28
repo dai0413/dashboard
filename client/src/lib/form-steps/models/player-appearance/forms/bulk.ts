@@ -4,7 +4,7 @@ import { ModelType } from "../../../../../types/models";
 import { createItemBase, readItemBase } from "../../../../api";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/l_m/position";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/position";
 import { Match } from "../../../../../types/models/match";
 import { PlayerAppearanceForm } from "../../../../../types/models/player-appearance";
 

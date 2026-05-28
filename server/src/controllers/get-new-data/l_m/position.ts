@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { getPositions as get } from "@dai0413/scraping-logic/L";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/l_m/position";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/position";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 import { CreateItemResponse } from "@dai0413/myorg-shared";

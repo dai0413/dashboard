@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/d_ml/cardId";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/cardId";
 import { getCardIds as get } from "@dai0413/scraping-logic/D";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";

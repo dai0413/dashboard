@@ -7,7 +7,7 @@ import { DraftData } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { TeamMatchFormationForm } from "../../../../../types/models/team-match-formation";
 import { Match } from "../../../../../types/models/match";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/l_m/team-match-formation";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/team-match-formation";
 import { convert } from "../../../../convert/CreateLabel";
 import {
   resolveToLabel,

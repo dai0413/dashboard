@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/draftData";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/draftData";
 import { FormTypeMap } from "../models";
 import { PostedDraftData } from "./postedDraftData";
 

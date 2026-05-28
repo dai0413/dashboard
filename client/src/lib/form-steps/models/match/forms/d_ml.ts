@@ -4,7 +4,7 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
 import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
-import { Scraped as CardIdScraped } from "@dai0413/myorg-shared/types/get-new-data/site/d_ml/cardId";
+import { Scraped as CardIdScraped } from "@dai0413/myorg-shared/types/get-new-data/data/cardId";
 
 import {
   AddPostedDraftData,

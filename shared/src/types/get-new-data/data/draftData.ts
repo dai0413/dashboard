@@ -1,3 +1,5 @@
+import { TeamFormSchema } from "@dai0413/myorg-shared";
+import { z } from "zod";
 import { Form as MatchForm, Scraped as MatchScraped } from "../models/match";
 import {
   Form as PlayerAppearanceForm,
@@ -60,6 +62,11 @@ export type Form = Record<
   }
 >;
 
+type Team = Partial<z.infer<typeof TeamFormSchema>>;
+type UnknownStaffMatchEventLog = Omit<StaffMatchEventLogScraped, "team"> & {
+  team?: Team;
+};
+
 export type Scraped = Record<
   string,
   {
@@ -78,7 +85,7 @@ export type Scraped = Record<
       away: StaffAppearanceScraped[];
     };
     staffMatchEventLog?: {
-      unknown: StaffMatchEventLogScraped[];
+      unknown: UnknownStaffMatchEventLog[];
       home: StaffMatchEventLogScraped[];
       away: StaffMatchEventLogScraped[];
     };

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/site/draftData";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/draftData";
 import { getValues as get } from "@dai0413/scraping-logic/J";
 import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
