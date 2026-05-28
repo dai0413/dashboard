@@ -28,7 +28,11 @@ export function team<TModel = any>(
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {
-      query: [{ field: "country", type: "ObjectId" }],
+      query: [
+        { field: "country", type: "ObjectId" },
+        { field: "team", type: "String" },
+        { field: "abbr", type: "String" },
+      ],
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
     },

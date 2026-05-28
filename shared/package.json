@@ -75,6 +75,11 @@
       "require": "./dist/types/get-new-data/models/staff-appearance.js",
       "types": "./dist/types/get-new-data/models/staff-appearance.d.ts"
     },
+    "./types/get-new-data/models/staff-match-event-log": {
+      "import": "./dist/types/get-new-data/models/staff-match-event-log.js",
+      "require": "./dist/types/get-new-data/models/staff-match-event-log.js",
+      "types": "./dist/types/get-new-data/models/staff-match-event-log.d.ts"
+    },
     "./types/get-new-data/models/staff-registration-history": {
       "import": "./dist/types/get-new-data/models/staff-registration-history.js",
       "require": "./dist/types/get-new-data/models/staff-registration-history.js",

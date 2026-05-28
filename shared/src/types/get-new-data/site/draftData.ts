@@ -16,6 +16,10 @@ import {
   Scraped as StaffAppearanceScraped,
 } from "../models/staff-appearance";
 import {
+  Form as StaffMatchEventLogForm,
+  Scraped as StaffMatchEventLogScraped,
+} from "../models/staff-match-event-log";
+import {
   Form as TeamMatchFormationForm,
   Scraped as TeamMatchFormationScraped,
 } from "../models/team-match-formation";
@@ -40,6 +44,10 @@ export type Form = Record<
     staffAppearance?: {
       home: StaffAppearanceForm[];
       away: StaffAppearanceForm[];
+    };
+    staffMatchEventLog?: {
+      home: StaffMatchEventLogForm[];
+      away: StaffMatchEventLogForm[];
     };
     teamMatchFormation?: {
       home: TeamMatchFormationForm;
@@ -68,6 +76,11 @@ export type Scraped = Record<
     staffAppearance?: {
       home: StaffAppearanceScraped[];
       away: StaffAppearanceScraped[];
+    };
+    staffMatchEventLog?: {
+      unknown: StaffMatchEventLogScraped[];
+      home: StaffMatchEventLogScraped[];
+      away: StaffMatchEventLogScraped[];
     };
     teamMatchFormation?: {
       home: TeamMatchFormationScraped;

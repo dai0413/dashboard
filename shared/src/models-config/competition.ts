@@ -29,7 +29,13 @@ export function competition<TModel = any>(
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {
       sort: { _id: 1 },
-      query: [{ field: "country", type: "ObjectId" }],
+      query: [
+        { field: "_id", type: "ObjectId" },
+        { field: "country", type: "ObjectId" },
+        { field: "name", type: "String" },
+        { field: "age_group", type: "String" },
+        { field: "competition_type", type: "String" },
+      ],
       buildCustomMatch: customMatchFn,
     },
     bulk: true,
