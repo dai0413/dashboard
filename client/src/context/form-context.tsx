@@ -279,7 +279,6 @@ export const FormProvider = <T extends ModelType>({
   const getNextStepIndex = (
     curInd: number,
     formSteps: FormStep<T>[],
-    direction: "next" | "prev",
     formData: FormTypeMap[T],
     metaData: Record<string, any>,
   ): number => {
@@ -291,23 +290,13 @@ export const FormProvider = <T extends ModelType>({
       return step.skip(formData, metaData);
     };
 
-    if (direction === "next") {
-      let nextIndex = Math.min(curInd + 1, formSteps.length - 1);
+    let nextIndex = Math.min(curInd + 1, formSteps.length - 1);
 
-      while (nextIndex < formSteps.length - 1 && shouldSkip(nextIndex)) {
-        nextIndex++;
-      }
-
-      return nextIndex;
+    while (nextIndex < formSteps.length - 1 && shouldSkip(nextIndex)) {
+      nextIndex++;
     }
 
-    let nextIndex = Math.max(curInd - 1, 0);
-
-    while (nextIndex > 0 && shouldSkip(nextIndex)) {
-      nextIndex--;
-    }
-
-    return 0;
+    return nextIndex;
   };
 
   type StartForm<T extends ModelType> = StartFormArgs<T> & {
@@ -357,7 +346,7 @@ export const FormProvider = <T extends ModelType>({
 
     const nextStepIndex =
       newFormData && newMetaData
-        ? getNextStepIndex(0, newSteps, "next", newFormData, newMetaData)
+        ? getNextStepIndex(0, newSteps, newFormData, newMetaData)
         : 0;
     setCurrentStep(nextStepIndex);
 
@@ -777,7 +766,6 @@ export const FormProvider = <T extends ModelType>({
     const nextStepIndex = getNextStepIndex(
       currentStep,
       formSteps,
-      "next",
       newFormData,
       metaData,
     );
@@ -840,13 +828,7 @@ export const FormProvider = <T extends ModelType>({
 
   const prevStep = () => {
     if (!formSteps) return;
-    const nextStepIndex = getNextStepIndex(
-      currentStep,
-      formSteps,
-      "prev",
-      formData,
-      metaData,
-    );
+    let nextStepIndex = Math.max(currentStep - 1, 0);
     setCurrentStep(nextStepIndex);
   };
 
