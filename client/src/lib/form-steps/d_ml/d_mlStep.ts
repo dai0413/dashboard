@@ -1,11 +1,12 @@
 import { FormStep } from "../../../types/form";
 import { ModelType } from "../../../types/models";
-import { match } from "../models/match/forms/d_ml";
+import { multiModel as match } from "../models/match/forms/d_ml";
 import { playerAppearance } from "../models/player-appearance/forms/d_ml";
 import { playerMatchEventLog } from "../models/player-match-event-log/forms/d_ml";
 import { staffAppearance } from "../models/staff-appearance/forms/d_ml";
 import { refereeAppearance } from "../models/referee-appearance/forms/d_ml";
 import { staffMatchEventLog } from "../models/staff-match-event-log/forms/d_ml";
+import { preStep } from "./preStep";
 
 type Steps = {
   [ModelType.MATCH]: FormStep<ModelType.MATCH>[];
@@ -31,6 +32,7 @@ export const d_mlStep: {
 } = {
   label: "d_mlStep",
   steps: [
+    ...preStep,
     ...steps[ModelType.MATCH],
     ...steps[ModelType.PLAYER_APPEARANCE],
     ...steps[ModelType.PLAYER_MATCH_EVENT_LOG],

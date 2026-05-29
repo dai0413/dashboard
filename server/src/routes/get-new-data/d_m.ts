@@ -4,6 +4,7 @@ const router = express.Router();
 import { API_PATHS } from "@dai0413/myorg-shared";
 import {
   getValues,
+  getMatch,
   getPlayerAppearance,
   getPlayerMatchEventLog,
   getRefereeAppearance,
@@ -12,6 +13,7 @@ import {
 } from "../../controllers/get-new-data/d_m/index.js";
 
 router.route(API_PATHS.GET_NEW_DATA.D_M.VALUES).post(getValues);
+router.route(API_PATHS.GET_NEW_DATA.D_M.MATCH).post(getMatch);
 router
   .route(API_PATHS.GET_NEW_DATA.D_M.PLAYER_APPEARANCE)
   .post(getPlayerAppearance);

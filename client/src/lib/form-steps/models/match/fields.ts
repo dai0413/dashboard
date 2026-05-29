@@ -1,8 +1,14 @@
-import { FormFieldDefinition } from "../../../../types/form";
+import {
+  FormFieldDefinition,
+  FormStep,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createFieldHelpers } from "../../core/createFieldHelpers";
+import { validateStadiumEitherOne } from "./validations/stadium";
 
 type BaseModel = ModelType.MATCH;
+const baseModel = ModelType.MATCH;
 type Key = FormFieldDefinition<BaseModel>["key"];
 
 export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
@@ -127,3 +133,31 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
+
+export const bulkBase: FormStep<BaseModel> = {
+  modelType: baseModel,
+  stepLabel: "取得したデータを編集してください",
+  type: StepType.FORM,
+  many: true,
+  fields: getFields([
+    "home_team",
+    "away_team",
+    "stadium",
+    "stadium_name",
+    "match_format",
+    "match_week",
+    "date",
+    "audience",
+    "home_goal",
+    "away_goal",
+    "home_pk_goal",
+    "away_pk_goal",
+    "weather",
+    "temperature",
+    "humidity",
+    "transferurl",
+    "sofaurl",
+    "urls",
+  ]),
+  validate: validateStadiumEitherOne,
+};
