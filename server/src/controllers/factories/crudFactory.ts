@@ -265,7 +265,9 @@ const crudFactory = <
       const ids = docs.map((doc) => doc._id);
       const populatedData: POPULATED_TYPE[] = await MONGO_MODEL.find({
         _id: { $in: ids },
-      }).populate(POPULATE_PATHS);
+      })
+        .populate(POPULATE_PATHS)
+        .lean();
 
       // 配列の場合
       const processed = populatedData.map((item) => getResponseData(item));

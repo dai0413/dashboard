@@ -187,6 +187,10 @@ const Match = () => {
               match: id,
               team: selected?.home_team.id,
             },
+            metaData: {
+              match: [id],
+              competition_stage: selected.competition_stage.id,
+            },
           }}
         />
       )}
@@ -260,6 +264,10 @@ const Match = () => {
             formData: {
               match: id,
               team: selected?.away_team.id,
+            },
+            metaData: {
+              match: [id],
+              competition_stage: selected.competition_stage.id,
             },
           }}
         />
@@ -355,6 +363,10 @@ const Match = () => {
               formData: {
                 match: id,
               },
+              metaData: {
+                match: [id],
+                competition_stage: selected.competition_stage.id,
+              },
             }}
           />
         )}
@@ -447,6 +459,10 @@ const Match = () => {
               formData: {
                 match: id,
               },
+              metaData: {
+                match: [id],
+                competition_stage: selected.competition_stage.id,
+              },
             }}
           />
         )}
@@ -501,6 +517,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                competition_stage: selected.competition_stage.id,
               },
             }}
           />
@@ -556,6 +573,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                competition_stage: selected.competition_stage.id,
               },
             }}
           />
@@ -611,6 +629,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                competition_stage: selected.competition_stage.id,
               },
             }}
           />

@@ -86,92 +86,10 @@ const readCompetitionItems: ReadCompetitionItems[] = [
   },
 ];
 
-export const getPreMatchSelect = <K extends keyof FormTypeMap>(
+const getCardIdSelectStep = <K extends keyof FormTypeMap>(
   modelType: keyof FormTypeMap,
 ): FormStep<K>[] => {
-  const createFilterConditions =
-    modelType === ModelType.MATCH
-      ? (setTeamByCompetition as CreateFilterConditions<K>)
-      : undefined;
-
   return [
-    {
-      modelType: modelType,
-      stepLabel: "試合入力準備",
-      type: StepType.FORM,
-      dataSource: DataSource.META_DATA,
-      createQuickFilterItems: (params) =>
-        setCompetition({ ...params, items: readCompetitionItems }),
-      skip: (_data, metaData) => metaData.competition,
-    },
-    {
-      modelType: modelType,
-      stepLabel: "更新する試合の大会を入力",
-      type: StepType.FORM,
-      dataSource: DataSource.META_DATA,
-      fields: [
-        {
-          key: "competition",
-          label: "大会",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-      ],
-      createFilterConditions: async ({ metaData, api }) => {
-        if (!metaData || !metaData.competition || !api) return null;
-        return createFilterFromParent({
-          readItemParams: {
-            apiInstance: api,
-            params: { competition: metaData.competition as string },
-            backendRoute: API_PATHS.SEASON.ROOT,
-          },
-          convertValueLabel: (data: Season) =>
-            createLabel(ModelType.SEASON, data),
-          filterKey: "season",
-          label: "シーズン",
-        });
-      },
-      skip: (_data, mataData) => mataData.competition,
-    },
-    {
-      modelType: modelType,
-      stepLabel: "更新する試合のシーズンを入力",
-      type: StepType.FORM,
-      dataSource: DataSource.META_DATA,
-      fields: [
-        {
-          key: "season",
-          label: "シーズン",
-          fieldType: "table",
-          valueType: "option",
-          required: true,
-        },
-      ],
-      createFilterConditions: async ({ metaData, api }) => {
-        if (!metaData || !metaData.season || !api) return null;
-        return createFilterFromParent({
-          readItemParams: {
-            apiInstance: api,
-            params: { season: metaData.season as string },
-            backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
-          },
-          convertValueLabel: (data: CompetitionStage) =>
-            createLabel(ModelType.COMPETITION_STAGE, data),
-          filterKey: "competition-stage",
-          label: "大会ステージ",
-        });
-      },
-      skip: (_data, mataData) => mataData.season,
-    },
-    {
-      modelType: modelType,
-      stepLabel: "更新する試合の大会ステージを入力",
-      type: StepType.FORM,
-      fields: getFields(["competition_stage"]),
-      createFilterConditions: createFilterConditions,
-      skip: (_data, mataData) => mataData.competition_stage,
-    },
     {
       modelType: modelType,
       stepLabel: "更新する試合一覧URLを入力",
@@ -237,4 +155,124 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
       skip: (_data, mataData) => mataData.card_ids,
     },
   ];
+};
+
+const getMatchSelectStep = <K extends keyof FormTypeMap>(
+  modelType: keyof FormTypeMap,
+): FormStep<K>[] => {
+  return [
+    {
+      stepLabel: "試合を選択",
+      type: StepType.FORM,
+      modelType: modelType,
+      dataSource: DataSource.META_DATA,
+      fields: [
+        {
+          key: "match",
+          label: "試合",
+          fieldType: "table",
+          valueType: "option",
+          required: true,
+          multi: true,
+        },
+      ],
+    },
+  ];
+};
+
+export const getPreMatchSelect = <K extends keyof FormTypeMap>(
+  modelType: keyof FormTypeMap,
+  matchSelect: "cardId" | "id",
+): FormStep<K>[] => {
+  const createFilterConditions =
+    modelType === ModelType.MATCH
+      ? (setTeamByCompetition as CreateFilterConditions<K>)
+      : undefined;
+
+  const base: FormStep<K>[] = [
+    {
+      modelType: modelType,
+      stepLabel: "試合入力準備",
+      type: StepType.FORM,
+      dataSource: DataSource.META_DATA,
+      createQuickFilterItems: (params) =>
+        setCompetition({ ...params, items: readCompetitionItems }),
+      skip: (_data, metaData) => metaData.competition || metaData.match,
+    },
+    {
+      modelType: modelType,
+      stepLabel: "更新する試合の大会を入力",
+      type: StepType.FORM,
+      dataSource: DataSource.META_DATA,
+      fields: [
+        {
+          key: "competition",
+          label: "大会",
+          fieldType: "table",
+          valueType: "option",
+          required: true,
+        },
+      ],
+      createFilterConditions: async ({ metaData, api }) => {
+        if (!metaData || !metaData.competition || !api) return null;
+        return createFilterFromParent({
+          readItemParams: {
+            apiInstance: api,
+            params: { competition: metaData.competition as string },
+            backendRoute: API_PATHS.SEASON.ROOT,
+          },
+          convertValueLabel: (data: Season) =>
+            createLabel(ModelType.SEASON, data),
+          filterKey: "season",
+          label: "シーズン",
+        });
+      },
+      skip: (_data, metaData) => metaData.competition || metaData.match,
+    },
+    {
+      modelType: modelType,
+      stepLabel: "更新する試合のシーズンを入力",
+      type: StepType.FORM,
+      dataSource: DataSource.META_DATA,
+      fields: [
+        {
+          key: "season",
+          label: "シーズン",
+          fieldType: "table",
+          valueType: "option",
+          required: true,
+        },
+      ],
+      createFilterConditions: async ({ metaData, api }) => {
+        if (!metaData || !metaData.season || !api) return null;
+        return createFilterFromParent({
+          readItemParams: {
+            apiInstance: api,
+            params: { season: metaData.season as string },
+            backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
+          },
+          convertValueLabel: (data: CompetitionStage) =>
+            createLabel(ModelType.COMPETITION_STAGE, data),
+          filterKey: "competition-stage",
+          label: "大会ステージ",
+        });
+      },
+      skip: (_data, metaData) => metaData.season || metaData.match,
+    },
+    {
+      modelType: modelType,
+      stepLabel: "更新する試合の大会ステージを入力",
+      type: StepType.FORM,
+      fields: getFields(["competition_stage"]),
+      createFilterConditions: createFilterConditions,
+      skip: (_data, mataData) => mataData.competition_stage,
+    },
+  ];
+
+  const option: FormStep<K>[] =
+    matchSelect === "cardId"
+      ? getCardIdSelectStep(modelType)
+      : getMatchSelectStep(modelType);
+
+  return [...base, ...option];
 };

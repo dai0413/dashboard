@@ -18,23 +18,20 @@ export type AddPostedDraftData = (args: {
 type PostedDraftDataValues = {
   matchLabel?: string;
   periods?: MatchFormatGet["period"];
-  match: MatchGet;
-  playerAppearance: {
+  match?: MatchGet;
+  playerAppearance?: {
     home: PlayerAppearanceGet[];
     away: PlayerAppearanceGet[];
   };
-  playerMatchEventLog: {
+  playerMatchEventLog?: {
     home: PlayerMatchEventLogGet[];
     away: PlayerMatchEventLogGet[];
   };
-  staffAppearance: {
+  staffAppearance?: {
     home: StaffAppearanceGet[];
     away: StaffAppearanceGet[];
   };
-  refereeAppearance: {
-    home: RefereeAppearanceGet[];
-    away: RefereeAppearanceGet[];
-  };
+  refereeAppearance?: RefereeAppearanceGet[];
 };
 
 export type PostedDraftData = Record<string, PostedDraftDataValues>;

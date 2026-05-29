@@ -105,12 +105,10 @@ const afterMatchaddPostedDraftData: AddPostedDraftData = ({
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
 
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "cardId");
 
 export const multiModel: FormStep<BaseModel>[] = [
-  {
-    ...bulkBase,
-  },
+  bulkBase,
   {
     ...createConfirmationStep<BaseModel>(baseModel),
     addPostedDraftData: afterMatchaddPostedDraftData,
@@ -151,7 +149,7 @@ export const match: FormStep<BaseModel>[] = [
             match: {
               ...draftDataValue,
               competition_stage: {
-                id: data.match?.competition_stage,
+                id: data.competition_stage,
                 label: formLabel.competition_stage,
               },
             },

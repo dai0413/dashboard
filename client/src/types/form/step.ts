@@ -23,7 +23,7 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   addOptions?: AddOptions<K>;
 };
 
-type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
+export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   many: true;
   fetchValue?: (
     data?: FormTypeMap[K],

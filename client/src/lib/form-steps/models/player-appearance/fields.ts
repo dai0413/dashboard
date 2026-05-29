@@ -1,8 +1,14 @@
-import { FormFieldDefinition } from "../../../../types/form";
+import {
+  ArrayDataFormStep,
+  FormFieldDefinition,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createFieldHelpers } from "../../core/createFieldHelpers";
+import { validatePlayerEitherOne } from "./validations/name";
 
 type BaseModel = ModelType.PLAYER_APPEARANCE;
+const baseModel = ModelType.PLAYER_APPEARANCE;
 type Key = FormFieldDefinition<BaseModel>["key"];
 
 export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
@@ -59,3 +65,21 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
+
+export const bulkBase: ArrayDataFormStep<BaseModel> = {
+  modelType: baseModel,
+  stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
+  type: StepType.FORM,
+  fields: getFields([
+    "match",
+    "team",
+    "player",
+    "player_name",
+    "number",
+    "play_status",
+    "position",
+    "time",
+  ]),
+  many: true,
+  validate: validatePlayerEitherOne,
+};

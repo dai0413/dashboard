@@ -3,6 +3,7 @@ import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
 import { bulk } from "./forms/bulk";
 import { single } from "./forms/single";
+import { playerAppearance as d_ml } from "./forms/d_ml";
 
 export const playerAppearance: FormStepsConfig<ModelType.PLAYER_APPEARANCE> = {
   [InputMode.SINGLE]: {
@@ -15,6 +16,10 @@ export const playerAppearance: FormStepsConfig<ModelType.PLAYER_APPEARANCE> = {
     [From.NORMAL]: {
       label: "複数データ",
       steps: bulk,
+    },
+    [From.D_ML]: {
+      label: "D_ML",
+      steps: d_ml,
     },
   },
 };

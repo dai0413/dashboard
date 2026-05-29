@@ -7,6 +7,7 @@ import {
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-appearance";
 import {
   AddPostedDraftData,
+  DraftData,
   FormStep,
   PostedDraftData,
   StepType,
@@ -14,17 +15,19 @@ import {
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
-import { createItemBase } from "../../../../api";
+import { createItemBase, readItemBase } from "../../../../api";
 import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { getSeasons } from "../../../utils/getDraftData/getSeasons";
-import { getFields } from "../fields";
-import { validatePlayerEitherOne } from "../validations/name";
+import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { PlayerAppearance } from "../../../../../types/models/player-appearance";
 import { convert } from "../../../../convert/DBtoGetted";
+import { convert as createLabel } from "../../../../convert/CreateLabel";
+import { Match } from "../../../../../types/models/match";
+import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 
 type CalcWithData = Record<string, any> & {
   start_time?: number;
@@ -111,6 +114,8 @@ const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
 
   const posted: PostedDraftData = Object.fromEntries(
     card_ids.map((card_id) => {
+      if (!postedDraftData[card_id].match) return [];
+
       const {
         _id: matchId,
         home_team,
@@ -143,22 +148,105 @@ const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   return posted;
 };
 
+type BaseModel = ModelType.PLAYER_APPEARANCE;
+const baseModel = ModelType.PLAYER_APPEARANCE;
+const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "id");
+
+export const multiModel: FormStep<BaseModel>[] = [
+  bulkBase,
+  {
+    ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
+      ModelType.PLAYER_APPEARANCE,
+    ),
+    addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
+  },
+];
+
 export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
+  ...matchSelectSteps,
   {
     modelType: ModelType.PLAYER_APPEARANCE,
-    stepLabel: "選手の出場歴を入力開始",
+    stepLabel: "D_M, PLAYER_APPEARANCEモデルデータを取得します",
     type: StepType.FORM,
-    fields: [],
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const season = metaData.season;
       if (!api) return { value: [], label: [] };
 
+      const ids: string[] = metaData?.match;
+
+      const readDraftData = async (
+        matchId: string,
+      ): Promise<DraftData[any]> => {
+        const readMatch = async () =>
+          createItemBase<DraftData[any]["match"]>({
+            apiInstance: api,
+            backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
+            data: { id: matchId },
+          });
+
+        const readPlayerAppearance = async () =>
+          createItemBase<DraftData[any]["playerAppearance"]>({
+            apiInstance: api,
+            backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_APPEARANCE,
+            data: { id: matchId },
+          });
+
+        const [resMatch, resPlayerAppearance] = await Promise.all([
+          readMatch(),
+          readPlayerAppearance(),
+        ]);
+
+        if (!resMatch.success || !resPlayerAppearance.success) return {};
+
+        const results: DraftData[any] = {
+          match: resMatch.data,
+          playerAppearance: resPlayerAppearance.data,
+        };
+
+        return results;
+      };
+
+      const readPostedDraftData = async (
+        matchId: string,
+      ): Promise<PostedDraftData[any]> => {
+        const res = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
+
+        if (!res) return {};
+
+        const match = convert(ModelType.MATCH, res);
+
+        if (!match) return {};
+
+        const results: PostedDraftData[any] = {
+          match: convert(ModelType.MATCH, res),
+          matchLabel: createLabel(ModelType.MATCH, res),
+        };
+
+        return results;
+      };
+
       const results = await Promise.all(
-        Object.entries(postedDraftData).map(async ([url, posted]) => {
-          const draft = draftData[url];
-          if (!draft || !draft.playerAppearance)
-            return { value: [], label: [] };
+        ids.map(async (id) => {
+          const newDraftData =
+            id in draftData && draftData[id].playerAppearance
+              ? draftData[id]
+              : await readDraftData(id);
+
+          if (!newDraftData.playerAppearance) return { value: [], label: [] };
+
+          const { home: homePlayerAppearance, away: awayPlayerAppearance } =
+            newDraftData.playerAppearance;
+
+          const posted =
+            id in postedDraftData && postedDraftData[id].match
+              ? postedDraftData[id]
+              : await readPostedDraftData(id);
+
+          if (!posted.match) return { value: [], label: [] };
 
           const {
             _id: matchId,
@@ -178,7 +266,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
 
           const home = await resolve(
             api,
-            draft.playerAppearance.home,
+            homePlayerAppearance,
             match,
             [...new Set([season, ...homeSeasons])],
             home_team,
@@ -187,7 +275,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
 
           const away = await resolve(
             api,
-            draft.playerAppearance.away,
+            awayPlayerAppearance,
             match,
             [...new Set([season, ...awaySeasons])],
             away_team,
@@ -211,23 +299,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     },
     many: true,
   },
-  {
-    modelType: ModelType.PLAYER_APPEARANCE,
-    stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
-    type: StepType.FORM,
-    fields: getFields([
-      "match",
-      "team",
-      "player",
-      "player_name",
-      "number",
-      "play_status",
-      "position",
-      "time",
-    ]),
-    validate: validatePlayerEitherOne,
-    many: true,
-  },
+  bulkBase,
   {
     ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
       ModelType.PLAYER_APPEARANCE,

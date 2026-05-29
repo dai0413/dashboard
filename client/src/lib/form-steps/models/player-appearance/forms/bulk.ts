@@ -3,7 +3,7 @@ import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createItemBase, readItemBase } from "../../../../api";
 import { createConfirmationStep } from "../../../confirmationStep";
-import { getFields } from "../fields";
+import { bulkBase, getFields } from "../fields";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/position";
 import { Match } from "../../../../../types/models/match";
 import { PlayerAppearanceForm } from "../../../../../types/models/player-appearance";
@@ -20,19 +20,7 @@ export const bulk: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     fields: getFields(["match", "team"]),
   },
   {
-    stepLabel: "出場状況を入力",
-    type: StepType.FORM,
-    modelType: baseModel,
-    fields: getFields([
-      "match",
-      "team",
-      "player",
-      "player_name",
-      "number",
-      "play_status",
-      "position",
-      "time",
-    ]),
+    ...bulkBase,
     many: true,
     autoFill: async ({ formDatas, formLabels, api }) => {
       if (!api) return { formDatas, formLabels };

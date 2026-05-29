@@ -60,7 +60,7 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
 
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "cardId");
 
 export const preStep: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -93,7 +93,7 @@ export const preStep: FormStep<BaseModel>[] = [
           match: {
             ...item.match,
             competition_stage: {
-              id: data.match?.competition_stage,
+              id: data.competition_stage,
               label: formLabel.competition_stage,
             },
           },
