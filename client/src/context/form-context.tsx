@@ -492,7 +492,7 @@ export const FormProvider = <T extends ModelType>({
 
       if (inputMode === InputMode.MANY) {
         console.log("in sendData", formDatas);
-        // res = await modelContext.createItems(formDatas);
+        res = await modelContext.createItems(formDatas);
         res = { success: true, data: [], message: "" };
       }
       success = res?.success || false;
@@ -632,12 +632,15 @@ export const FormProvider = <T extends ModelType>({
     // --- validate 関数によるバリデーション ---
     if (checkData && current.validate) {
       if (Array.isArray(checkData)) {
-        for (const d of formDatas ?? []) {
-          const valid = current.validate(d);
-          if (!valid.success) return handleSetAlert(valid);
+        for (const [i, d] of (formDatas ?? []).entries()) {
+          const valid = current.validate(d, formLabels[i]);
+
+          if (!valid.success) {
+            return handleSetAlert(valid);
+          }
         }
       } else {
-        const valid = current.validate(checkData);
+        const valid = current.validate(checkData, formLabel);
         if (!valid.success) return handleSetAlert(valid);
       }
     }

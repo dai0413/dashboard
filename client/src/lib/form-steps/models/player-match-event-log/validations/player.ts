@@ -2,9 +2,10 @@ import { FormTypeMap, ModelType } from "../../../../../types/models";
 
 export const validatePlayerRequiredForEvent = (
   data: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG],
+  formLabel?: Record<string, any>,
 ) => {
   if (
-    data.match_event_type !== "オウンゴール" &&
+    formLabel?.match_event_type !== "オウンゴール" &&
     !data.player &&
     !data.player_name
   ) {

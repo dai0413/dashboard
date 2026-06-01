@@ -15,7 +15,10 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   stepLabel: string;
   type: StepType;
   fields?: FormFieldDefinition<K>[];
-  validate?: (data: FormTypeMap[K]) => AlertStatus;
+  validate?: (
+    data: FormTypeMap[K],
+    formLabel?: Record<string, any>,
+  ) => AlertStatus;
   createFilterConditions?: CreateFilterConditions<K>;
   createQuickFilterItems?: CreateQuickFilterItems<K>;
   addDraftData?: AddDraftData<K>;
