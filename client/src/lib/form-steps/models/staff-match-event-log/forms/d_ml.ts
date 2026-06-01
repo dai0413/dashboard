@@ -5,20 +5,29 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffMatchEventLog";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/staff-match-event-log";
-import { FormStep, StepType } from "../../../../../types/form";
+import {
+  DraftData,
+  FormStep,
+  PostedDraftData,
+  StepType,
+} from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
-import { createItemBase, readItemsBase } from "../../../../api";
+import { createItemBase, readItemBase, readItemsBase } from "../../../../api";
 import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
-import { getFields } from "../fields";
+import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { Team } from "../../../../../types/models/team";
 import { MatchFormatGet } from "../../../../../types/models/match-format";
 import { calcPeriodLabel } from "../../../utils/onChange/calcPeriodLabel";
+import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
+import { Match } from "../../../../../types/models/match";
+import { convert } from "../../../../convert/DBtoGetted";
+import { convert as createLabel } from "../../../../convert/CreateLabel";
 
 const KEYS = ["match", "staff", "team", "match_event_type"] as const;
 
@@ -78,22 +87,105 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
   label: resolveToLabel(data, KEYS),
 });
 
-export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
+type BaseModel = ModelType.STAFF_MATCH_EVENT_LOG;
+const baseModel = ModelType.STAFF_MATCH_EVENT_LOG;
+const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "id");
+
+export const multiModel: FormStep<BaseModel>[] = [
+  bulkBase,
+  createConfirmationStep<BaseModel>(baseModel),
+];
+
+export const staffMatchEventLog: FormStep<BaseModel>[] = [
+  ...matchSelectSteps,
   {
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
+    modelType: baseModel,
     stepLabel: "スタッフのイベントログを入力開始",
     type: StepType.FORM,
-    fields: [],
+    many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-    getDraftData: async ({ api, draftData, postedDraftData }) => {
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       if (!api) return { value: [], label: [] };
 
-      const results = await Promise.all(
-        Object.entries(postedDraftData).map(async ([url, posted]) => {
-          const draft = draftData[url];
+      const ids: string[] = metaData?.match;
 
-          if (!draft || !draft.staffMatchEventLog)
-            return { value: [], label: [] };
+      const readDraftData = async (
+        matchId: string,
+      ): Promise<DraftData[any]> => {
+        const readMatch = async () =>
+          createItemBase<DraftData[any]["match"]>({
+            apiInstance: api,
+            backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
+            data: { id: matchId },
+          });
+
+        const readStaffMatchEventLog = async () =>
+          createItemBase<DraftData[any]["staffMatchEventLog"]>({
+            apiInstance: api,
+            backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_MATCH_EVENT_LOG,
+            data: { id: matchId },
+          });
+
+        const [resMatch, resStaffMatchEventLog] = await Promise.all([
+          readMatch(),
+          readStaffMatchEventLog(),
+        ]);
+
+        if (!resMatch.success || !resStaffMatchEventLog.success) return {};
+
+        const results: DraftData[any] = {
+          match: resMatch.data,
+          staffMatchEventLog: resStaffMatchEventLog.data,
+        };
+
+        return results;
+      };
+
+      const readPostedDraftData = async (
+        matchId: string,
+      ): Promise<PostedDraftData[any]> => {
+        const readMatch = async () =>
+          readItemBase<Match>({
+            apiInstance: api,
+            backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+          });
+
+        const resMatch = await readMatch();
+
+        if (!resMatch) return {};
+
+        const match = convert(ModelType.MATCH, resMatch);
+
+        if (!match) return {};
+        let results: PostedDraftData[any] = {
+          match: convert(ModelType.MATCH, resMatch),
+          matchLabel: createLabel(ModelType.MATCH, resMatch),
+        };
+
+        return results;
+      };
+
+      const results = await Promise.all(
+        ids.map(async (id) => {
+          const newDraftData =
+            id in draftData && draftData[id].staffMatchEventLog
+              ? draftData[id]
+              : await readDraftData(id);
+
+          if (!newDraftData.staffMatchEventLog) return { value: [], label: [] };
+
+          const {
+            home: homeStaffMatchEventLogs,
+            away: awayStaffMatchEventLogs,
+            unknown: unknownStaffMatchEventLogs,
+          } = newDraftData.staffMatchEventLog;
+
+          const posted =
+            id in postedDraftData && postedDraftData[id].match
+              ? postedDraftData[id]
+              : await readPostedDraftData(id);
+
+          if (!posted.match) return { value: [], label: [] };
 
           const { _id: matchId, home_team, away_team } = posted.match;
 
@@ -104,11 +196,6 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
 
           const periods = posted.periods;
 
-          const homeStaffMatchEventLogs: Scraped[] =
-            draft.staffMatchEventLog.home;
-          const awayStaffMatchEventLogs: Scraped[] =
-            draft.staffMatchEventLog.away;
-
           const pushBySide = (side: "home" | "away", data: Scraped) => {
             if (side === "home") {
               homeStaffMatchEventLogs.push(data);
@@ -118,7 +205,7 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
           };
           const teamCache: Record<string, "home" | "away"> = {};
 
-          for (const data of draft.staffMatchEventLog.unknown) {
+          for (const data of unknownStaffMatchEventLogs) {
             const key =
               data.team?.abbr ||
               (typeof data.team?.team === "string"
@@ -194,25 +281,7 @@ export const staffMatchEventLog: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
         label: results.flatMap((r) => r.label),
       };
     },
-    many: true,
   },
-  {
-    modelType: ModelType.STAFF_MATCH_EVENT_LOG,
-    stepLabel: "詳細を入力",
-    type: StepType.FORM,
-    fields: getFields([
-      "match",
-      "team",
-      "match_event_type",
-      "staff",
-      "staff_name",
-      "time",
-      "add_time",
-      "special_time",
-    ]),
-    many: true,
-  },
-  createConfirmationStep<ModelType.STAFF_MATCH_EVENT_LOG>(
-    ModelType.STAFF_MATCH_EVENT_LOG,
-  ),
+  bulkBase,
+  createConfirmationStep<BaseModel>(baseModel),
 ];
