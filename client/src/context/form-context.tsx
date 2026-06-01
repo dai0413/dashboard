@@ -647,6 +647,34 @@ export const FormProvider = <T extends ModelType>({
 
     // --- onChange 関数による値変更 ---
     if (Array.isArray(checkData)) {
+      if (current.many) {
+        const onChange = current.onChange;
+        if (onChange) {
+          const {
+            formDatas: onChangedFormDatas,
+            formLabels: onChangedFormLabels,
+          } = await onChange({
+            formDatas,
+            formLabels,
+            metaData,
+            api,
+          });
+
+          const newFormDatas = formDatas.map((formData, index) => ({
+            ...formData,
+            ...onChangedFormDatas[index],
+          }));
+
+          const newFormLabels = formLabels.map((formLabel, index) => ({
+            ...formLabel,
+            ...onChangedFormLabels[index],
+          }));
+
+          setFormDatas(newFormDatas);
+          setFormLabels(newFormLabels);
+        }
+      }
+    } else {
       if (!current.many) {
         const onChange = current.onChange;
         if (onChange) {
