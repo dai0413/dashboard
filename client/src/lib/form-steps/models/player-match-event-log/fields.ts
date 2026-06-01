@@ -1,8 +1,20 @@
-import { FormFieldDefinition } from "../../../../types/form";
+import {
+  ArrayDataFormStep,
+  FormFieldDefinition,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createFieldHelpers } from "../../core/createFieldHelpers";
+import { combineOnChanges } from "../../utils/onChange/combine";
+import { toManyOnChange } from "../../utils/onChange/toManyOnChange";
+import { updatePeriodLabelFromMatch } from "../../utils/onChange/updatePeriodLabelFromMatch";
+import { updateTimeName } from "../../utils/onChange/updateTimeName";
+import { combineValidations } from "../../utils/validate/combine";
+import { validateExclusiveSpecialTime } from "../../utils/validate/special_time";
+import { validatePlayerRequiredForEvent } from "./validations/player";
 
 type BaseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
+const baseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
 type Key = FormFieldDefinition<BaseModel>["key"];
 
 export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
@@ -66,3 +78,28 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
+
+export const bulkBase: ArrayDataFormStep<BaseModel> = {
+  modelType: baseModel,
+  stepLabel: "イベントタイプ・時間・選手を入力",
+  type: StepType.FORM,
+  fields: getFields([
+    "match",
+    "team",
+    "match_event_type",
+    "player",
+    "player_name",
+    "time",
+    "add_time",
+    "special_time",
+    "order",
+  ]),
+  many: true,
+  validate: combineValidations(
+    validatePlayerRequiredForEvent,
+    validateExclusiveSpecialTime,
+  ),
+  onChange: toManyOnChange(
+    combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
+  ),
+};

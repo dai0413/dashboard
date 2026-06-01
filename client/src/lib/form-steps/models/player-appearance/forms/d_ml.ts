@@ -155,19 +155,18 @@ const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "id");
 export const multiModel: FormStep<BaseModel>[] = [
   bulkBase,
   {
-    ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
-      ModelType.PLAYER_APPEARANCE,
-    ),
+    ...createConfirmationStep<BaseModel>(baseModel),
     addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
   },
 ];
 
-export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
+export const playerAppearance: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
   {
-    modelType: ModelType.PLAYER_APPEARANCE,
+    modelType: baseModel,
     stepLabel: "D_M, PLAYER_APPEARANCEモデルデータを取得します",
     type: StepType.FORM,
+    many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const season = metaData.season;
@@ -297,13 +296,10 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         label: results.flatMap((r) => r.label),
       };
     },
-    many: true,
   },
   bulkBase,
   {
-    ...createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
-      ModelType.PLAYER_APPEARANCE,
-    ),
+    ...createConfirmationStep<BaseModel>(baseModel),
     addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
   },
 ];

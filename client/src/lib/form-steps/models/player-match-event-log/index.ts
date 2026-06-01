@@ -2,6 +2,7 @@ import { ModelType } from "../../../../types/models";
 import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
 import { single } from "./forms/single";
+import { playerMatchEventLog as d_ml } from "./forms/d_ml";
 
 export const playerMatchEventLog: FormStepsConfig<ModelType.PLAYER_MATCH_EVENT_LOG> =
   {
@@ -9,6 +10,12 @@ export const playerMatchEventLog: FormStepsConfig<ModelType.PLAYER_MATCH_EVENT_L
       [From.NORMAL]: {
         label: "単一データ",
         steps: single,
+      },
+    },
+    [InputMode.MANY]: {
+      [From.D_ML]: {
+        label: "D_ML",
+        steps: d_ml,
       },
     },
   };

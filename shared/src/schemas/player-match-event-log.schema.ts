@@ -60,10 +60,7 @@ export const PlayerMatchEventLogZodSchema =
         message:
           "special_time を入力する場合は time, add_time, order を指定できません",
       },
-    )
-    .refine((data) => data.player || data.player_name, {
-      message: "playerまたはplayer_nameのどちらかを入力してください",
-    });
+    );
 
 export const PlayerMatchEventLogFormSchema =
   PlayerMatchEventLogBaseZodSchema.omit({
@@ -86,7 +83,7 @@ export const PlayerMatchEventLogResponseSchema =
     player: PlayerZodSchema.extend({
       _id: objectId.optional(),
       normalized_en_name: z.string().optional(),
-    }),
+    }).optional(),
   });
 
 export const PlayerMatchEventLogPopulatedSchema =
