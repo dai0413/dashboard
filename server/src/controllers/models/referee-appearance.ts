@@ -11,6 +11,7 @@ const {
   deleteItem,
   uploadItem,
   updateItems,
+  deleteItems,
 } = createController(config);
 
 export {
@@ -21,4 +22,5 @@ export {
   deleteItem,
   uploadItem,
   updateItems,
+  deleteItems,
 };

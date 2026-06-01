@@ -9,6 +9,7 @@ import {
   deleteItem,
   uploadItem,
   updateItems,
+  deleteItems,
 } from "../../controllers/models/player-appearance.js";
 import upload from "../../middleware/upload.js";
 import detectEncoding from "../../middleware/detectEncoding.js";
@@ -19,7 +20,8 @@ router
   .route(API_PATHS.PLAYER_APPEARANCE.ROOT)
   .get(getAllItems)
   .post(createItem)
-  .patch(updateItems);
+  .patch(updateItems)
+  .delete(deleteItems);
 router
   .route(API_PATHS.PLAYER_APPEARANCE.DETAIL())
   .patch(updateItem)

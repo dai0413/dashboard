@@ -9,6 +9,7 @@ import {
   deleteItem,
   uploadItem,
   updateItems,
+  deleteItems,
 } from "../../controllers/models/match.js";
 
 import upload from "../../middleware/upload.js";
@@ -20,7 +21,8 @@ router
   .route(API_PATHS.MATCH.ROOT)
   .get(getAllItems)
   .post(createItem)
-  .patch(updateItems);
+  .patch(updateItems)
+  .delete(deleteItems);
 router
   .route(API_PATHS.MATCH.DETAIL())
   .patch(updateItem)

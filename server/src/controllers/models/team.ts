@@ -13,6 +13,7 @@ const {
   updateItem,
   deleteItem,
   updateItems,
+  deleteItems,
 } = createController(config);
 
 const { MONGO_MODEL } = config;
@@ -51,4 +52,5 @@ export {
   deleteItem,
   downloadItem,
   updateItems,
+  deleteItems,
 };

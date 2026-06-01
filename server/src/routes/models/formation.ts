@@ -8,6 +8,7 @@ import {
   updateItem,
   deleteItem,
   updateItems,
+  deleteItems,
 } from "../../controllers/models/formation.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
@@ -15,7 +16,8 @@ router
   .route(API_PATHS.FORMATION.ROOT)
   .get(getAllItems)
   .post(createItem)
-  .patch(updateItems);
+  .patch(updateItems)
+  .delete(deleteItems);
 router
   .route(API_PATHS.FORMATION.DETAIL())
   .patch(updateItem)

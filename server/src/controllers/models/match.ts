@@ -1,8 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { Response } from "express";
 
-import { crudFactory } from "../factories/crudFactory.js";
-
 import { parseObjectId } from "../../csvImport/utils/parseObjectId.js";
 import { parseDateJST } from "../../csvImport/utils/parseDateJST.js";
 import csv from "csv-parser";
@@ -23,6 +21,7 @@ const {
   updateItem,
   deleteItem,
   updateItems,
+  deleteItems,
 } = createController(config);
 
 const {
@@ -129,4 +128,5 @@ export {
   deleteItem,
   uploadItem,
   updateItems,
+  deleteItems,
 };

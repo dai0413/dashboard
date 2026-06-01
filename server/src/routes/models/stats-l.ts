@@ -9,6 +9,7 @@ import {
   deleteItem,
   uploadItem,
   updateItems,
+  deleteItems,
 } from "../../controllers/models/stats-l.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import upload from "../../middleware/upload.js";
@@ -19,7 +20,8 @@ router
   .route(API_PATHS.STATS_L.ROOT)
   .get(getAllItems)
   .post(createItem)
-  .patch(updateItems);
+  .patch(updateItems)
+  .delete(deleteItems);
 router
   .route(API_PATHS.STATS_L.UPLOAD)
   .post(

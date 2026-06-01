@@ -10,6 +10,7 @@ import {
   downloadItems,
   uploadItem,
   updateItems,
+  deleteItems,
 } from "../../controllers/models/staff.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import upload from "../../middleware/upload.js";
@@ -20,7 +21,8 @@ router
   .route(API_PATHS.STAFF.ROOT)
   .get(getAllItems)
   .post(createItem)
-  .patch(updateItems);
+  .patch(updateItems)
+  .delete(deleteItems);
 router
   .route(API_PATHS.STAFF.UPLOAD)
   .post(

@@ -9,6 +9,7 @@ import {
   deleteItem,
   downloadItems,
   updateItems,
+  deleteItems,
 } from "../../controllers/models/national-match-series.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
@@ -16,7 +17,8 @@ router
   .route(API_PATHS.NATIONAL_MATCH_SERIES.ROOT)
   .get(getAllItems)
   .post(createItem)
-  .patch(updateItems);
+  .patch(updateItems)
+  .delete(deleteItems);
 router.route(API_PATHS.NATIONAL_MATCH_SERIES.DOWNLOAD).get(downloadItems);
 router
   .route(API_PATHS.NATIONAL_MATCH_SERIES.DETAIL())

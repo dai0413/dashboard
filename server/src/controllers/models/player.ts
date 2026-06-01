@@ -19,6 +19,7 @@ const {
   updateItem,
   deleteItem,
   updateItems,
+  deleteItems,
 } = createController(config);
 
 const {
@@ -169,4 +170,5 @@ export {
   uploadItem,
   downloadItem,
   updateItems,
+  deleteItems,
 };

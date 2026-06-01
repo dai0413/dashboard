@@ -28,6 +28,7 @@ import {
   parseSort,
   buildJsonSort,
 } from "../helpers/crud/query/index.js";
+import { buildBulkDeleteMessage } from "../helpers/crud/buildBulkDeleteMessage.js";
 
 type SuccessReturn<DATA> = {
   success: true;
@@ -35,31 +36,28 @@ type SuccessReturn<DATA> = {
 };
 type FailedReturn = {
   success: false;
+  error: string;
 };
 
 type Result<DATA> = SuccessReturn<DATA> | FailedReturn;
-
-type ResDataBase<DATA> = {
-  data: DATA;
-};
-
-type FailedItem<DATA> = {
-  _id?: string;
-  data: DATA;
-  error: string;
-};
 
 type BulkResult<DATA> = {
   totalCount: number;
   successCount: number;
   failedCount: number;
-  modifiedCount: number;
-  failedItems: FailedItem<DATA>[];
+  failedItems: {
+    _id?: string;
+    data: DATA;
+    error: string;
+  }[];
 };
 
 // read
-export type ReadItemResponse<DATA> = ResDataBase<DATA>;
-export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
+export type ReadItemResponse<DATA> = {
+  data: DATA;
+};
+export type ReadItemsResponse<DATA> = {
+  data: DATA;
   totalCount: number;
   page: number;
   pageSize: number;
@@ -77,15 +75,23 @@ export type CreateItemsResponse<DATA> = Result<DATA> & {
 export type UpdateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type UpdateItemsResponse<DATA> = Result<DATA> & {
+export type UpdateItemsResponse<DATA, FAILED_DATA> = {
+  data: DATA;
+  success: boolean;
   message: string;
-} & BulkResult<DATA>;
+  modifiedCount: number;
+} & BulkResult<FAILED_DATA>;
 
 // delete
 export type DeleteItemResponse = {
   success: boolean;
   message: string;
 };
+export type DeleteItemsResponse<DATA> = {
+  success: boolean;
+  message: string;
+  deletedCount: number;
+} & BulkResult<DATA>;
 
 const crudFactory = <
   TData extends z.ZodObject<any>,
@@ -356,7 +362,7 @@ const crudFactory = <
 
   const updateItems = async (
     req: Request,
-    res: Response<UpdateItemsResponse<UPDATE_TYPE[]>>,
+    res: Response<UpdateItemsResponse<RESPONSE_TYPE[], UPDATE_TYPE[]>>,
   ) => {
     if (!bulk) {
       throw new InternalServerError("サーバーサイド設定ミス");
@@ -366,7 +372,10 @@ const crudFactory = <
       throw new BadRequestError("配列で送信してください");
     }
 
-    const failedItems: UpdateItemsResponse<UPDATE_TYPE[]>["failedItems"] = [];
+    const failedItems: UpdateItemsResponse<
+      RESPONSE_TYPE[],
+      UPDATE_TYPE[]
+    >["failedItems"] = [];
     const ops: any[] = [];
 
     for (const item of req.body) {
@@ -452,6 +461,64 @@ const crudFactory = <
     res.status(StatusCodes.OK).json({ message, success: true });
   };
 
+  const deleteItems = async (
+    req: Request,
+    res: Response<DeleteItemsResponse<POPULATED_TYPE[]>>,
+  ) => {
+    if (!Array.isArray(req.body)) {
+      throw new BadRequestError("配列で送信してください");
+    }
+
+    const failedItems: DeleteItemsResponse<POPULATED_TYPE[]>["failedItems"] =
+      [];
+    const deleteIds: string[] = [];
+
+    for (const item of req.body) {
+      try {
+        const id = item._id ?? item?.id;
+
+        if (
+          !id ||
+          typeof id !== "string" ||
+          !mongoose.Types.ObjectId.isValid(id)
+        ) {
+          throw new Error(`不正なID: ${id}`);
+        }
+
+        deleteIds.push(id);
+      } catch (err: any) {
+        failedItems.push({
+          _id: item?._id,
+          data: item,
+          error: err.message,
+        });
+      }
+    }
+
+    let deletedCount = 0;
+    if (deleteIds.length > 0) {
+      const result = await MONGO_MODEL.deleteMany({
+        _id: { $in: deleteIds },
+      });
+
+      deletedCount = result.deletedCount;
+    }
+
+    const totalCount = req.body.length;
+    const successCount = deleteIds.length;
+    const failedCount = totalCount - successCount;
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: buildBulkDeleteMessage(totalCount, successCount, failedCount),
+      totalCount,
+      successCount,
+      failedCount,
+      deletedCount,
+      failedItems,
+    });
+  };
+
   return {
     getItem,
     getAllItems,
@@ -459,6 +526,7 @@ const crudFactory = <
     updateItem,
     updateItems,
     deleteItem,
+    deleteItems,
   };
 };
 
