@@ -703,6 +703,63 @@ const Match = () => {
             }}
           />
         )}
+
+      {selectedTab === "referee" &&
+        id &&
+        selected?.home_team.id &&
+        selected?.away_team.id && (
+          <TableWithFetch
+            modelType={ModelType.REFEREE_APPEARANCE}
+            fieldDefinitions={[
+              {
+                label: "審判",
+                field: "referee",
+                getValueType: ColumnType.FIELD,
+                key: "referee",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "役割",
+                field: "role",
+                getValueType: ColumnType.FIELD,
+                key: "role",
+                displayOnTable: true,
+                type: "string",
+              },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.REFEREE_APPEARANCE.ROOT,
+              params: {
+                getAll: true,
+                match: id,
+              },
+            }}
+            filterField={fieldDefinition[ModelType.REFEREE_APPEARANCE]
+              ?.filter(isFilterable)
+              .filter((file) => file.key !== "match")}
+            sortField={fieldDefinition[ModelType.REFEREE_APPEARANCE]
+              ?.filter(isSortable)
+              .filter((file) => file.key !== "match")}
+            linkField={
+              [
+                // {
+                //   field: "referee",
+                //   to: APP_ROUTES.REFEREE_SUMMARY,
+                // },
+              ]
+            }
+            initialData={{
+              formData: {
+                match: id,
+              },
+              metaData: {
+                match: [id],
+                competition_stage: selected.competition_stage.id,
+              },
+            }}
+          />
+        )}
     </div>
   );
 };

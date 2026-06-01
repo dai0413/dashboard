@@ -1,8 +1,14 @@
-import { FormFieldDefinition } from "../../../../types/form";
+import {
+  ArrayDataFormStep,
+  FormFieldDefinition,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createFieldHelpers } from "../../core/createFieldHelpers";
+import { validateRefereeEitherOne } from "./validations/referee";
 
 type BaseModel = ModelType.REFEREE_APPEARANCE;
+const baseModel = ModelType.REFEREE_APPEARANCE;
 type Key = FormFieldDefinition<BaseModel>["key"];
 
 export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
@@ -34,3 +40,22 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
+
+export const bulkBase: ArrayDataFormStep<BaseModel> = {
+  modelType: baseModel,
+  stepLabel: "審判・役割を入力",
+  type: StepType.FORM,
+  many: true,
+  fields: getFields([
+    "match",
+    "team",
+    "match_event_type",
+    "player",
+    "player_name",
+    "time",
+    "add_time",
+    "special_time",
+    "order",
+  ]),
+  validate: validateRefereeEitherOne,
+};

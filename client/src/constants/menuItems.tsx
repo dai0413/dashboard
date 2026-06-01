@@ -207,4 +207,9 @@ export const MatchTabItems: IconButtonProps[] = [
     key: "away-stats-l",
     text: "アウェイスタッツ",
   },
+  {
+    icon: "player",
+    key: "referee",
+    text: "審判",
+  },
 ];
