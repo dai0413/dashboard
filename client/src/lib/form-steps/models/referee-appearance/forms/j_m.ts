@@ -65,7 +65,12 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
-      if (!getDataUrl || !api || !draftData[getDataUrl].refereeAppearance)
+      if (
+        !getDataUrl ||
+        !api ||
+        !draftData[getDataUrl].refereeAppearance ||
+        !postedDraftData[getDataUrl].match
+      )
         return { value: [], label: [] };
 
       const { _id: matchId } = postedDraftData[getDataUrl].match;

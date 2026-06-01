@@ -82,7 +82,11 @@ export const teamMatchFormation: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
       if (!metaData || !postedDraftData || !draftData || !api)
         return { value: [], label: [] };
       const getDataUrl = metaData.getDataUrl;
-      if (!getDataUrl || !draftData[getDataUrl].playerAppearance)
+      if (
+        !getDataUrl ||
+        !draftData[getDataUrl].playerAppearance ||
+        !postedDraftData[getDataUrl].match
+      )
         return { value: [], label: [] };
 
       const { home, away } = draftData[getDataUrl].playerAppearance;

@@ -108,6 +108,8 @@ const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   let result = postedDraftData;
   const getDataUrl = metaData.getDataUrl;
 
+  if (!postedDraftData[getDataUrl].match) return {};
+
   const { home_team, away_team } = postedDraftData[getDataUrl].match;
 
   if (!res.success) return {};
@@ -143,7 +145,12 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
       const season = metaData.season;
-      if (!getDataUrl || !api || !draftData[getDataUrl].playerAppearance)
+      if (
+        !getDataUrl ||
+        !api ||
+        !draftData[getDataUrl].playerAppearance ||
+        !postedDraftData[getDataUrl].match
+      )
         return { value: [], label: [] };
 
       const {

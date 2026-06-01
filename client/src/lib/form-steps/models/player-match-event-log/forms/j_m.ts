@@ -104,7 +104,12 @@ export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
       getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
         const getDataUrl = metaData.getDataUrl;
 
-        if (!getDataUrl || !draftData[getDataUrl].playerMatchEventLog)
+        if (
+          !getDataUrl ||
+          !draftData[getDataUrl].playerMatchEventLog ||
+          !postedDraftData[getDataUrl].match ||
+          !postedDraftData[getDataUrl].playerAppearance
+        )
           return { value: [], label: [] };
 
         const {

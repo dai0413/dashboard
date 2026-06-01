@@ -82,7 +82,12 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl = metaData.getDataUrl;
       const season = metaData.season;
-      if (!getDataUrl || !api || !draftData[getDataUrl].staffAppearance)
+      if (
+        !getDataUrl ||
+        !api ||
+        !draftData[getDataUrl].staffAppearance ||
+        !postedDraftData[getDataUrl].match
+      )
         return { value: [], label: [] };
 
       const {
