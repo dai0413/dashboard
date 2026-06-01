@@ -5,19 +5,27 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/staff-appearance";
-import { FormStep, StepType } from "../../../../../types/form";
+import {
+  DraftData,
+  FormStep,
+  PostedDraftData,
+  StepType,
+} from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
-import { createItemBase } from "../../../../api";
+import { createItemBase, readItemBase } from "../../../../api";
 import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { getSeasons } from "../../../utils/getDraftData/getSeasons";
-import { getFields } from "../fields";
-import { validateStaffEitherOne } from "../validations/staff";
+import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
+import { Match } from "../../../../../types/models/match";
+import { convert } from "../../../../convert/DBtoGetted";
+import { convert as createLabel } from "../../../../convert/CreateLabel";
 
 const KEYS = ["match", "staff", "team"] as const;
 
@@ -71,21 +79,101 @@ const buildValueLabel = (data: ResolveOutput[]) => ({
   label: resolveToLabel(data, KEYS),
 });
 
-export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
+type BaseModel = ModelType.STAFF_APPEARANCE;
+const baseModel = ModelType.STAFF_APPEARANCE;
+const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "id");
+
+export const multiModel: FormStep<BaseModel>[] = [
+  bulkBase,
+  createConfirmationStep<BaseModel>(baseModel),
+];
+
+export const staffAppearance: FormStep<BaseModel>[] = [
+  ...matchSelectSteps,
   {
-    modelType: ModelType.STAFF_APPEARANCE,
+    modelType: baseModel,
     stepLabel: "スタッフの出場歴を入力開始",
     type: StepType.FORM,
-    fields: [],
+    many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const season = metaData.season;
       if (!api) return { value: [], label: [] };
 
+      const ids: string[] = metaData?.match;
+
+      const readDraftData = async (
+        matchId: string,
+      ): Promise<DraftData[any]> => {
+        const readMatch = async () =>
+          createItemBase<DraftData[any]["match"]>({
+            apiInstance: api,
+            backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
+            data: { id: matchId },
+          });
+
+        const readStaffAppearance = async () =>
+          createItemBase<DraftData[any]["staffAppearance"]>({
+            apiInstance: api,
+            backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_APPEARANCE,
+            data: { id: matchId },
+          });
+
+        const [resMatch, resStaffAppearance] = await Promise.all([
+          readMatch(),
+          readStaffAppearance(),
+        ]);
+
+        if (!resMatch.success || !resStaffAppearance.success) return {};
+
+        const results: DraftData[any] = {
+          match: resMatch.data,
+          staffAppearance: resStaffAppearance.data,
+        };
+
+        return results;
+      };
+
+      const readPostedDraftData = async (
+        matchId: string,
+      ): Promise<PostedDraftData[any]> => {
+        const res = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
+
+        if (!res) return {};
+
+        const match = convert(ModelType.MATCH, res);
+
+        if (!match) return {};
+
+        const results: PostedDraftData[any] = {
+          match: convert(ModelType.MATCH, res),
+          matchLabel: createLabel(ModelType.MATCH, res),
+        };
+
+        return results;
+      };
+
       const results = await Promise.all(
-        Object.entries(postedDraftData).map(async ([url, posted]) => {
-          const draft = draftData[url];
-          if (!draft || !draft.staffAppearance) return { value: [], label: [] };
+        ids.map(async (id) => {
+          const newDraftData =
+            id in draftData && draftData[id].staffAppearance
+              ? draftData[id]
+              : await readDraftData(id);
+
+          if (!newDraftData.staffAppearance) return { value: [], label: [] };
+
+          const { home: homeStaffAppearance, away: awayStaffAppearance } =
+            newDraftData.staffAppearance;
+
+          const posted =
+            id in postedDraftData && postedDraftData[id].match
+              ? postedDraftData[id]
+              : await readPostedDraftData(id);
+
+          if (!posted.match) return { value: [], label: [] };
 
           const { _id: matchId, home_team, away_team, date } = posted.match;
 
@@ -99,16 +187,22 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
 
           const home = await resolve(
             api,
-            draft.staffAppearance.home,
+            homeStaffAppearance,
             match,
-            [...new Set([season, ...homeSeasons])],
+            [...new Set([season, ...homeSeasons])].filter(
+              (v) => typeof v === "string",
+            ),
             home_team,
           );
           const away = await resolve(
             api,
-            draft.staffAppearance.away,
+            awayStaffAppearance,
             match,
-            [...new Set([season, ...awaySeasons])],
+            [
+              ...new Set(
+                [season, ...awaySeasons].filter((v) => typeof v === "string"),
+              ),
+            ],
             away_team,
           );
 
@@ -127,17 +221,7 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
         label: results.flatMap((r) => r.label),
       };
     },
-    many: true,
   },
-  {
-    modelType: ModelType.STAFF_APPEARANCE,
-    stepLabel: "詳細を入力",
-    type: StepType.FORM,
-    fields: getFields(["match", "team", "staff", "staff_name", "role"]),
-    validate: validateStaffEitherOne,
-    many: true,
-  },
-  createConfirmationStep<ModelType.STAFF_APPEARANCE>(
-    ModelType.STAFF_APPEARANCE,
-  ),
+  bulkBase,
+  createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -1,8 +1,14 @@
-import { FormFieldDefinition } from "../../../../types/form";
+import {
+  ArrayDataFormStep,
+  FormFieldDefinition,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createFieldHelpers } from "../../core/createFieldHelpers";
+import { validateStaffEitherOne } from "./validations/staff";
 
 type BaseModel = ModelType.STAFF_APPEARANCE;
+const baseModel = ModelType.STAFF_APPEARANCE;
 type Key = FormFieldDefinition<BaseModel>["key"];
 
 export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
@@ -41,3 +47,12 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
+
+export const bulkBase: ArrayDataFormStep<BaseModel> = {
+  modelType: baseModel,
+  stepLabel: "スタッフ・役割を入力",
+  type: StepType.FORM,
+  fields: getFields(["match", "team", "staff", "staff_name", "role"]),
+  many: true,
+  validate: validateStaffEitherOne,
+};

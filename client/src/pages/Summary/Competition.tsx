@@ -21,6 +21,7 @@ import { MatchGet } from "../../types/models/match";
 import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { ColumnType } from "../../types/table";
+import { StaffRegistrationGet } from "../../types/models/staff-registration";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -475,6 +476,86 @@ const Competition = () => {
               field: "player",
               to: APP_ROUTES.PLAYER_SUMMARY,
             },
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
+        />
+      )}
+
+      {selectedTab === "staff" && selectedSeason && (
+        <TableWithFetch
+          modelType={ModelType.STAFF_REGISTRATION}
+          fieldDefinitions={[
+            {
+              label: "日付",
+              field: "date",
+              getValueType: ColumnType.FIELD,
+              key: "date",
+              displayOnTable: true,
+              type: "Date",
+            },
+            {
+              label: "チーム",
+              field: "team",
+              width: "100px",
+              getValueType: ColumnType.FIELD,
+              key: "team",
+              displayOnTable: true,
+              type: "string",
+            },
+            {
+              label: "役職",
+              field: "role",
+              width: "100px",
+              getValueType: ColumnType.FIELD,
+              key: "role",
+              displayOnTable: true,
+              type: "string",
+            },
+            {
+              label: "スタッフ",
+              field: "staff",
+              isPrimary: true,
+              getValueType: ColumnType.FIELD,
+              key: "staff",
+              displayOnTable: true,
+              type: "string",
+            },
+            {
+              label: "抹消",
+              key: "registration_status",
+              displayOnTable: true,
+              getData: (data: StaffRegistrationGet) => {
+                if (data.registration_status === "抹消済み") return "済";
+                return "";
+              },
+              width: "80px",
+              getValueType: ColumnType.CUSTOM,
+              type: "select",
+            },
+          ]}
+          fetch={{
+            apiRoute: API_PATHS.STAFF_REGISTRATION.ROOT,
+            params: {
+              getAll: true,
+              season: selectedSeason._id,
+              registration_type: "register",
+              sort: "team",
+            },
+          }}
+          filterField={fieldDefinition[ModelType.STAFF_REGISTRATION]
+            ?.filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.STAFF_REGISTRATION]
+            ?.filter(isSortable)
+            .filter((file) => file.key !== "competition")}
+          linkField={[
+            // {
+            //   field: "staff",
+            //   to: APP_ROUTES.STAFF_SUMMARY,
+            // },
             {
               field: "team",
               to: APP_ROUTES.TEAM_SUMMARY,

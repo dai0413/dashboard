@@ -20,7 +20,7 @@ export const staffAppearance: UIFieldDefinition<StaffAppearanceGet>[] = [
     key: "staff",
     field: "staff",
     filterKey: "staff.name",
-    label: "選手",
+    label: "スタッフ",
     type: "string",
     filterable: true,
     sortable: true,

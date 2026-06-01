@@ -117,7 +117,7 @@ const Match = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "home" && id && selected?.home_team.id && (
+      {selectedTab === "home_player" && id && selected?.home_team.id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
           fieldDefinitions={[
@@ -195,7 +195,7 @@ const Match = () => {
         />
       )}
 
-      {selectedTab === "away" && id && selected?.away_team.id && (
+      {selectedTab === "away_player" && id && selected?.away_team.id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
           fieldDefinitions={[
@@ -272,6 +272,75 @@ const Match = () => {
           }}
         />
       )}
+
+      {selectedTab === "staff" &&
+        id &&
+        selected?.home_team.id &&
+        selected?.away_team.id && (
+          <TableWithFetch
+            modelType={ModelType.STAFF_APPEARANCE}
+            fieldDefinitions={[
+              {
+                label: "チーム",
+                field: "team",
+                width: "100px",
+                getValueType: ColumnType.FIELD,
+                key: "team",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "スタッフ",
+                field: "staff",
+                getValueType: ColumnType.FIELD,
+                key: "player",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "役割",
+                field: "role",
+                width: "100px",
+                getValueType: ColumnType.FIELD,
+                key: "role",
+                displayOnTable: true,
+                type: "string",
+              },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.STAFF_APPEARANCE.ROOT,
+              params: {
+                getAll: true,
+                match: id,
+                team: [selected.home_team.id, selected.away_team.id],
+                sort: "time",
+              },
+            }}
+            filterField={fieldDefinition[ModelType.STAFF_APPEARANCE]
+              ?.filter(isFilterable)
+              .filter((file) => file.key !== "match")}
+            sortField={fieldDefinition[ModelType.STAFF_APPEARANCE]
+              ?.filter(isSortable)
+              .filter((file) => file.key !== "match")}
+            linkField={
+              [
+                // {
+                //   field: "staff",
+                //   to: APP_ROUTES.STAFF_SUMMARY,
+                // },
+              ]
+            }
+            initialData={{
+              formData: {
+                match: id,
+              },
+              metaData: {
+                match: [id],
+                competition_stage: selected.competition_stage.id,
+              },
+            }}
+          />
+        )}
 
       {selectedTab === "player_event_log" &&
         id &&

@@ -3,7 +3,7 @@ import { ModelType } from "../../../types/models";
 import { multiModel as match } from "../models/match/forms/d_ml";
 import { multiModel as playerAppearance } from "../models/player-appearance/forms/d_ml";
 import { multiModel as playerMatchEventLog } from "../models/player-match-event-log/forms/d_ml";
-import { staffAppearance } from "../models/staff-appearance/forms/d_ml";
+import { multiModel as staffAppearance } from "../models/staff-appearance/forms/d_ml";
 import { refereeAppearance } from "../models/referee-appearance/forms/d_ml";
 import { staffMatchEventLog } from "../models/staff-match-event-log/forms/d_ml";
 import { preStep } from "./preStep";
