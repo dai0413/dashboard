@@ -7,24 +7,41 @@ const localDate = (year: number, month: number, day: number) => {
 };
 
 // === シーズン境界計算関数 ===
+const SEASON_START_MONTH: number = import.meta.env.VITE_SEASON_START_MONTH;
+const SEASON_START_DAY: number = import.meta.env.VITE_SEASON_START_DAY;
+
+// === シーズン境界計算関数 ===
 export const getSeasonDates = () => {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
 
-  let seasonStart: Date;
-  let seasonEnd: Date;
-  let nextSeasonStart: Date;
+  const thisSeasonStart = localDate(
+    now.getFullYear(),
+    SEASON_START_MONTH,
+    SEASON_START_DAY,
+  );
 
-  if (month >= 2) {
-    seasonStart = localDate(year, 2, 1);
-    seasonEnd = localDate(year + 1, 1, 31);
-    nextSeasonStart = localDate(year + 1, 2, 1);
-  } else {
-    seasonStart = localDate(year - 1, 2, 1);
-    seasonEnd = localDate(year, 1, 31);
-    nextSeasonStart = localDate(year, 2, 1);
-  }
+  const isCurrentSeason = now >= thisSeasonStart;
 
-  return { seasonStart, seasonEnd, nextSeasonStart };
+  const startYear = isCurrentSeason ? now.getFullYear() : now.getFullYear() - 1;
+
+  const seasonStart = localDate(
+    startYear,
+    SEASON_START_MONTH,
+    SEASON_START_DAY,
+  );
+
+  const nextSeasonStart = localDate(
+    startYear + 1,
+    SEASON_START_MONTH,
+    SEASON_START_DAY,
+  );
+
+  const seasonEnd = new Date(nextSeasonStart);
+  seasonEnd.setDate(seasonEnd.getDate() - 1);
+
+  return {
+    seasonStart,
+    seasonEnd,
+    nextSeasonStart,
+  };
 };
