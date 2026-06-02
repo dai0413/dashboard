@@ -10,10 +10,6 @@ import { Match } from "../../../../../types/models/match";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/team-match-formation";
 import { convert } from "../../../../convert/CreateLabel";
 import {
-  resolveToLabel,
-  resolveToValue,
-} from "../../../utils/resolver/resolveToValue";
-import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/teamMatchFormation";
@@ -21,6 +17,7 @@ import { AxiosInstance } from "axios";
 import { Scraped as TeamMatchFormationScraped } from "@dai0413/myorg-shared/types/get-new-data/models/team-match-formation";
 import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
 
 type BaseModel = ModelType.TEAM_MATCH_FORMATION;
 const baseModel = ModelType.TEAM_MATCH_FORMATION;
@@ -67,11 +64,6 @@ const resolve = async (
   const input = buildResolveInput(data, match, team);
   return fetchResolved(api, input);
 };
-
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
 
 export const teamMatchFormation: FormStep<BaseModel>[] = [
   ...getPreMatchSelect<BaseModel>(baseModel),
@@ -190,8 +182,8 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
           away,
         );
 
-        const homeResult = buildValueLabel(homeData);
-        const awayResult = buildValueLabel(awayData);
+        const homeResult = buildValueLabel(homeData, KEYS);
+        const awayResult = buildValueLabel(awayData, KEYS);
 
         newDataValue.push(...homeResult.value, ...awayResult.value);
         newDataLabel.push(...homeResult.label, ...awayResult.label);

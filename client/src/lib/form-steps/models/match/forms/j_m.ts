@@ -17,10 +17,7 @@ import { createItemBase } from "../../../../api";
 import { Season } from "../../../../../types/models/season";
 import { CompetitionStage } from "../../../../../types/models/competition-stage";
 import { AxiosInstance } from "axios";
-import {
-  resolveToLabel,
-  resolveToValue,
-} from "../../../utils/resolver/resolveToValue";
+import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
 import { DraftDataValue } from "../../../../../types/form/draftData";
 import { getFields } from "../fields";
 import { validateStadiumEitherOne } from "../validations/stadium";
@@ -69,11 +66,6 @@ const resolve = async (api: AxiosInstance, data: MatchScraped) => {
   const input: Input = [data];
   return fetchResolved(api, input);
 };
-
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
 
 const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   postedDraftData,
@@ -309,7 +301,7 @@ export const match: FormStep<BaseModel>[] = [
         api,
         draftData[getDataUrl][ModelType.MATCH],
       );
-      const resolvedOutput = buildValueLabel(resolvedData);
+      const resolvedOutput = buildValueLabel(resolvedData, KEYS);
 
       const value = {
         ...resolvedOutput.value[0],

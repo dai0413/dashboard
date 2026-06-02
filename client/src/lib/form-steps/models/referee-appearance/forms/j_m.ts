@@ -10,10 +10,7 @@ import { ModelType } from "../../../../../types/models";
 import { RefereeAppearanceForm } from "../../../../../types/models/referee-appearance";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { createItemBase } from "../../../../api";
-import {
-  resolveToLabel,
-  resolveToValue,
-} from "../../../utils/resolver/resolveToValue";
+import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
 import { getFields } from "../fields";
 import { validateRefereeEitherOne } from "../validations/referee";
 import { createConfirmationStep } from "../../../confirmationStep";
@@ -51,11 +48,6 @@ const resolve = async (api: AxiosInstance, data: Scraped[], match: Label) => {
   return fetchResolved(api, input);
 };
 
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
-
 export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
   {
     modelType: ModelType.REFEREE_APPEARANCE,
@@ -86,7 +78,7 @@ export const refereeAppearance: FormStep<ModelType.REFEREE_APPEARANCE>[] = [
         match,
       );
 
-      const result = buildValueLabel(resolved);
+      const result = buildValueLabel(resolved, KEYS);
 
       const value: RefereeAppearanceForm[] = result.value;
       const label: Record<string, any>[] = result.label;

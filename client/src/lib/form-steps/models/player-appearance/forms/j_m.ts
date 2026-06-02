@@ -18,10 +18,7 @@ import {
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
 import { createItemBase } from "../../../../api";
-import {
-  resolveToLabel,
-  resolveToValue,
-} from "../../../utils/resolver/resolveToValue";
+import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
 import { getSeasons } from "../../../utils/getSeasons";
 import { getFields } from "../fields";
 import { validatePlayerEitherOne } from "../validations/name";
@@ -94,11 +91,6 @@ const resolve = async (
   const input = buildResolveInput(data, match, season, team, play_time);
   return fetchResolved(api, input);
 };
-
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
 
 const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   postedDraftData,
@@ -186,8 +178,8 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
         play_time,
       );
 
-      const homeResult = buildValueLabel(home);
-      const awayResult = buildValueLabel(away);
+      const homeResult = buildValueLabel(home, KEYS);
+      const awayResult = buildValueLabel(away, KEYS);
 
       const value: PlayerAppearanceForm[] = [
         ...homeResult.value,

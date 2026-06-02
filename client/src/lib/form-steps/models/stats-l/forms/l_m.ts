@@ -15,22 +15,13 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { Match } from "../../../../../types/models/match";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/stats-l";
 import { convert as convertToLabel } from "../../../../convert/CreateLabel";
-import {
-  resolveToLabel,
-  resolveToValue,
-} from "../../../utils/resolver/resolveToValue";
-import { ResolveOutput } from "@dai0413/myorg-shared/types/resolver/statsL";
+import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
 import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
 
 const KEYS = ["match", "team"] as const;
-
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
 
 const preSteps = getPreMatchSelect<BaseModel>(baseModel);
 
@@ -148,8 +139,8 @@ export const statsL: FormStep<BaseModel>[] = [
           team: away,
         };
 
-        const homeResult = buildValueLabel([homeData]);
-        const awayResult = buildValueLabel([awayData]);
+        const homeResult = buildValueLabel([homeData], KEYS);
+        const awayResult = buildValueLabel([awayData], KEYS);
 
         newDataValue.push(...homeResult.value, ...awayResult.value);
         newDataLabel.push(...homeResult.label, ...awayResult.label);

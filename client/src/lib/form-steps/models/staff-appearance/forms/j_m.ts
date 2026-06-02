@@ -10,10 +10,7 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
 import { createItemBase } from "../../../../api";
-import {
-  resolveToLabel,
-  resolveToValue,
-} from "../../../utils/resolver/resolveToValue";
+import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
 import { getSeasons } from "../../../utils/getSeasons";
 import { getFields } from "../fields";
@@ -67,11 +64,6 @@ const resolve = async (
   return fetchResolved(api, input);
 };
 
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
-
 export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
   {
     modelType: ModelType.STAFF_APPEARANCE,
@@ -120,8 +112,8 @@ export const staffAppearance: FormStep<ModelType.STAFF_APPEARANCE>[] = [
         away_team,
       );
 
-      const homeResult = buildValueLabel(home);
-      const awayResult = buildValueLabel(away);
+      const homeResult = buildValueLabel(home, KEYS);
+      const awayResult = buildValueLabel(away, KEYS);
 
       const value: StaffAppearanceForm[] = [
         ...homeResult.value,

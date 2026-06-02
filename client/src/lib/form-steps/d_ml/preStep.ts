@@ -8,10 +8,7 @@ import { FormStep, StepType } from "../../../types/form";
 import { FormTypeMap, ModelType } from "../../../types/models";
 import { createItemBase } from "../../api";
 import { AxiosInstance } from "axios";
-import {
-  resolveToLabel,
-  resolveToValue,
-} from "../utils/resolver/resolveToValue";
+import { buildValueLabel } from "../utils/resolver/resolveToValue";
 import { DraftData, DraftDataValue } from "../../../types/form/draftData";
 import { getPreMatchSelect } from "./preMatchSelectStep";
 
@@ -51,11 +48,6 @@ const resolve = async (api: AxiosInstance, data: MatchScraped[]) => {
   const input: Input = data;
   return fetchResolved(api, input);
 };
-
-const buildValueLabel = (data: ResolveOutput[]) => ({
-  value: resolveToValue(data, KEYS),
-  label: resolveToLabel(data, KEYS),
-});
 
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
@@ -117,7 +109,7 @@ export const preStep: FormStep<BaseModel>[] = [
       if (!matchData || !api) return null;
 
       const resolvedData = await resolve(api, matchData);
-      const resolvedOutput = buildValueLabel(resolvedData);
+      const resolvedOutput = buildValueLabel(resolvedData, KEYS);
 
       const value: FormTypeMap[ModelType.MATCH][] = resolvedOutput.value.map(
         (v) => {
