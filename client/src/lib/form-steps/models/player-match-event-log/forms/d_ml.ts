@@ -4,34 +4,25 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-match-event-log";
-import {
-  DraftData,
-  FormStep,
-  PostedDraftData,
-  StepType,
-} from "../../../../../types/form";
+import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { PlayerMatchEventLogForm } from "../../../../../types/models/player-match-event-log";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
 import { MatchFormatGet } from "../../../../../types/models/match-format";
-import { createItemBase, readItemBase, readItemsBase } from "../../../../api";
+import { createItemBase } from "../../../../api";
 import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import {
-  PlayerAppearance,
-  PlayerAppearanceGet,
-} from "../../../../../types/models/player-appearance";
+import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
 import { bulkBase } from "../fields";
 import { calcPeriodLabel } from "../../../utils/onChange/calcPeriodLabel";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
-import { Match } from "../../../../../types/models/match";
-import { convert } from "../../../../convert/DBtoGetted";
-import { convert as createLabel } from "../../../../convert/CreateLabel";
+import { readDraftData } from "../../../utils/getDraftData/readDraftData";
+import { readPostedDraftData } from "../../../utils/getDraftData/readPostedDraftData";
 
 const KEYS = ["match", "player", "team", "match_event_type"] as const;
 
@@ -124,100 +115,23 @@ export const playerMatchEventLog: FormStep<BaseModel>[] = [
 
       const ids: string[] = metaData?.match;
 
-      const readDraftData = async (
-        matchId: string,
-      ): Promise<DraftData[any]> => {
-        const readMatch = async () =>
-          createItemBase<DraftData[any]["match"]>({
-            apiInstance: api,
-            backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
-            data: { id: matchId },
-          });
+      const updatedDraftData = await readDraftData({
+        api,
+        draftData,
+        matchIds: ids,
+        keys: ["match", "playerMatchEventLog"],
+      });
 
-        const readPlayerMatchEventLog = async () =>
-          createItemBase<DraftData[any]["playerMatchEventLog"]>({
-            apiInstance: api,
-            backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_MATCH_EVENT_LOG,
-            data: { id: matchId },
-          });
-
-        const [resMatch, resPlayerMatchEventLog] = await Promise.all([
-          readMatch(),
-          readPlayerMatchEventLog(),
-        ]);
-
-        if (!resMatch.success || !resPlayerMatchEventLog.success) return {};
-
-        const results: DraftData[any] = {
-          match: resMatch.data,
-          playerMatchEventLog: resPlayerMatchEventLog.data,
-        };
-
-        return results;
-      };
-
-      const readPostedDraftData = async (
-        matchId: string,
-      ): Promise<PostedDraftData[any]> => {
-        const readMatch = async () =>
-          readItemBase<Match>({
-            apiInstance: api,
-            backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-          });
-
-        const readPlayerAppearance = async () =>
-          readItemsBase<PlayerAppearance[]>({
-            apiInstance: api,
-            backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
-            params: { match: matchId, getAll: true },
-          });
-
-        const [resMatch, resPlayerAppearance] = await Promise.all([
-          readMatch(),
-          readPlayerAppearance(),
-        ]);
-
-        if (!resMatch) return {};
-
-        const match = convert(ModelType.MATCH, resMatch);
-
-        if (!match) return {};
-        let results: PostedDraftData[any] = {
-          match: convert(ModelType.MATCH, resMatch),
-          matchLabel: createLabel(ModelType.MATCH, resMatch),
-        };
-
-        const homeId = match.home_team.id;
-        const awayId = match.away_team.id;
-
-        if (resPlayerAppearance?.data) {
-          const players = convert(
-            ModelType.PLAYER_APPEARANCE,
-            resPlayerAppearance.data,
-          );
-
-          const homePlayerAppearance = players.filter(
-            (d) => d.team.id === homeId,
-          );
-          const awayPlayerAppearance = players.filter(
-            (d) => d.team.id === awayId,
-          );
-
-          results.playerAppearance = {
-            home: homePlayerAppearance,
-            away: awayPlayerAppearance,
-          };
-        }
-
-        return results;
-      };
+      const updatedPostedDraftData = await readPostedDraftData({
+        api,
+        postedDraftData,
+        matchIds: ids,
+        keys: ["match", "playerAppearance"],
+      });
 
       const results = await Promise.all(
         ids.map(async (id) => {
-          const newDraftData =
-            id in draftData && draftData[id].playerMatchEventLog
-              ? draftData[id]
-              : await readDraftData(id);
+          const newDraftData = updatedDraftData[id];
 
           if (!newDraftData.playerMatchEventLog)
             return { value: [], label: [] };
@@ -227,10 +141,7 @@ export const playerMatchEventLog: FormStep<BaseModel>[] = [
             away: awayPlayerMatchEventLog,
           } = newDraftData.playerMatchEventLog;
 
-          const posted =
-            id in postedDraftData && postedDraftData[id].match
-              ? postedDraftData[id]
-              : await readPostedDraftData(id);
+          const posted = updatedPostedDraftData[id];
 
           if (!posted.match) return { value: [], label: [] };
 

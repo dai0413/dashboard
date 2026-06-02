@@ -5,16 +5,11 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffAppearance";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/staff-appearance";
-import {
-  DraftData,
-  FormStep,
-  PostedDraftData,
-  StepType,
-} from "../../../../../types/form";
+import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { Label } from "../../../../../types/types";
-import { createItemBase, readItemBase } from "../../../../api";
+import { createItemBase } from "../../../../api";
 import {
   resolveToLabel,
   resolveToValue,
@@ -23,9 +18,8 @@ import { getSeasons } from "../../../utils/getSeasons";
 import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
-import { Match } from "../../../../../types/models/match";
-import { convert } from "../../../../convert/DBtoGetted";
-import { convert as createLabel } from "../../../../convert/CreateLabel";
+import { readDraftData } from "../../../utils/getDraftData/readDraftData";
+import { readPostedDraftData } from "../../../utils/getDraftData/readPostedDraftData";
 
 const KEYS = ["match", "staff", "team"] as const;
 
@@ -102,76 +96,30 @@ export const staffAppearance: FormStep<BaseModel>[] = [
 
       const ids: string[] = metaData?.match;
 
-      const readDraftData = async (
-        matchId: string,
-      ): Promise<DraftData[any]> => {
-        const readMatch = async () =>
-          createItemBase<DraftData[any]["match"]>({
-            apiInstance: api,
-            backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
-            data: { id: matchId },
-          });
+      const updatedDraftData = await readDraftData({
+        api,
+        draftData,
+        matchIds: ids,
+        keys: ["match", "staffAppearance"],
+      });
 
-        const readStaffAppearance = async () =>
-          createItemBase<DraftData[any]["staffAppearance"]>({
-            apiInstance: api,
-            backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_APPEARANCE,
-            data: { id: matchId },
-          });
-
-        const [resMatch, resStaffAppearance] = await Promise.all([
-          readMatch(),
-          readStaffAppearance(),
-        ]);
-
-        if (!resMatch.success || !resStaffAppearance.success) return {};
-
-        const results: DraftData[any] = {
-          match: resMatch.data,
-          staffAppearance: resStaffAppearance.data,
-        };
-
-        return results;
-      };
-
-      const readPostedDraftData = async (
-        matchId: string,
-      ): Promise<PostedDraftData[any]> => {
-        const res = await readItemBase<Match>({
-          apiInstance: api,
-          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-        });
-
-        if (!res) return {};
-
-        const match = convert(ModelType.MATCH, res);
-
-        if (!match) return {};
-
-        const results: PostedDraftData[any] = {
-          match: convert(ModelType.MATCH, res),
-          matchLabel: createLabel(ModelType.MATCH, res),
-        };
-
-        return results;
-      };
+      const updatedPostedDraftData = await readPostedDraftData({
+        api,
+        postedDraftData,
+        matchIds: ids,
+        keys: ["match"],
+      });
 
       const results = await Promise.all(
         ids.map(async (id) => {
-          const newDraftData =
-            id in draftData && draftData[id].staffAppearance
-              ? draftData[id]
-              : await readDraftData(id);
+          const newDraftData = updatedDraftData[id];
 
           if (!newDraftData.staffAppearance) return { value: [], label: [] };
 
           const { home: homeStaffAppearance, away: awayStaffAppearance } =
             newDraftData.staffAppearance;
 
-          const posted =
-            id in postedDraftData && postedDraftData[id].match
-              ? postedDraftData[id]
-              : await readPostedDraftData(id);
+          const posted = updatedPostedDraftData[id];
 
           if (!posted.match) return { value: [], label: [] };
 

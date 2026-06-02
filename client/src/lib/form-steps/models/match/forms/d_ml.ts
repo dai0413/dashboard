@@ -18,13 +18,13 @@ import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
-import { DraftData } from "../../../../../types/form/draftData";
 import { convert } from "../../../../convert/DBtoGetted";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { Match } from "../../../../../types/models/match";
 import { convert as createLabel } from "../../../../convert/CreateLabel";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { bulkBase } from "../fields";
+import { readDraftData } from "../../../utils/getDraftData/readDraftData";
 
 const KEYS = [
   "home_team",
@@ -122,45 +122,19 @@ export const match: FormStep<BaseModel>[] = [
     stepLabel: "D_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
     many: true,
-    addDraftData: async ({ data, metaData, api, formLabel, draftData }) => {
+    getDraftData: async ({ draftData, api, metaData }) => {
       const ids: string[] = metaData?.card_ids;
 
-      if (!api || !ids) return {};
+      if (!api || !ids) return { value: [], label: [] };
 
-      let results: DraftData = {};
+      const updatedDraftData = await readDraftData({
+        api,
+        draftData,
+        matchIds: ids,
+        keys: ["match"],
+      });
 
-      for (const id of ids) {
-        if (id in draftData && draftData[id].match) {
-          return (results = { [id]: { match: draftData[id].match } });
-        }
-
-        const res = await createItemBase<DraftData[any]["match"]>({
-          apiInstance: api,
-          backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
-          data: { id },
-        });
-
-        if (!res.success || !res.data) continue;
-
-        const draftDataValue = res.data;
-
-        results = {
-          [id]: {
-            match: {
-              ...draftDataValue,
-              competition_stage: {
-                id: data.competition_stage,
-                label: formLabel.competition_stage,
-              },
-            },
-          },
-        };
-      }
-
-      return results;
-    },
-    getDraftData: async ({ draftData, api }) => {
-      const matchData: MatchScraped[] = Object.values(draftData)
+      const matchData: MatchScraped[] = Object.values(updatedDraftData)
         .flatMap((v) => v.match)
         .filter((v): v is MatchScraped => v !== undefined);
 

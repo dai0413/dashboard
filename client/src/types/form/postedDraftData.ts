@@ -15,7 +15,7 @@ export type AddPostedDraftData = (args: {
   formLabel: Record<string, any>;
 }) => PostedDraftData;
 
-type PostedDraftDataValues = {
+export type PostedDraftDataValues = {
   matchLabel?: string;
   periods?: MatchFormatGet["period"];
   match?: MatchGet;
