@@ -15,7 +15,7 @@ import {
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
 import { AxiosInstance } from "axios";
-import { getSeasons } from "../../../utils/getDraftData/getSeasons";
+import { getSeasons } from "../../../utils/getSeasons";
 import { getFields } from "../fields";
 import { validateStaffEitherOne } from "../validations/staff";
 import { createConfirmationStep } from "../../../confirmationStep";

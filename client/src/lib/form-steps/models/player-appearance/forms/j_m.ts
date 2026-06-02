@@ -22,7 +22,7 @@ import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
-import { getSeasons } from "../../../utils/getDraftData/getSeasons";
+import { getSeasons } from "../../../utils/getSeasons";
 import { getFields } from "../fields";
 import { validatePlayerEitherOne } from "../validations/name";
 import { createConfirmationStep } from "../../../confirmationStep";

@@ -19,7 +19,7 @@ import {
   resolveToLabel,
   resolveToValue,
 } from "../../../utils/resolver/resolveToValue";
-import { getSeasons } from "../../../utils/getDraftData/getSeasons";
+import { getSeasons } from "../../../utils/getSeasons";
 import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";

@@ -1,8 +1,8 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { AxiosInstance } from "axios";
-import { readItemsBase } from "../../../api";
+import { readItemsBase } from "../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
+import { TeamCompetitionSeason } from "../../../types/models/team-competition-season";
 
 export const getSeasons = async (
   api?: AxiosInstance,
