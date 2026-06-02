@@ -19,7 +19,7 @@ import {
   CustomOptionType,
 } from "../../../utils/createOption/types/custom";
 import { convert as createLabel } from "../../convert/CreateLabel";
-import { setCompetition } from "../createQuickFilterItems/setCompetition";
+import { setCompetition } from "../utils/createQuickFilterItems/setCompetition";
 import { getFields } from "../models/match/fields";
 import { ReadCompetitionItems } from "../types";
 

@@ -30,7 +30,7 @@ import { Match } from "../../../../../types/models/match";
 import { convert as createLabel } from "../../../../convert/CreateLabel";
 import { convert } from "../../../../convert/DBtoGetted";
 import { createConfirmationStep } from "../../../confirmationStep";
-import { setCompetition } from "../../../createQuickFilterItems/setCompetition";
+import { setCompetition } from "../../../utils/createQuickFilterItems/setCompetition";
 import { ReadCompetitionItems } from "../../../types";
 
 const KEYS = [

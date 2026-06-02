@@ -2,15 +2,15 @@ import { AxiosInstance } from "axios";
 import {
   CreateQuickFilterItems,
   QuickFilterItemsByKey,
-} from "../../../types/form";
+} from "../../../../types/form";
 import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { Competition } from "../../../types/models/competition";
-import { readItemsBase } from "../../api";
-import { convert } from "../../convert/DBtoGetted";
-import { convert as createLabel } from "../../convert/CreateLabel";
-import { FormTypeMap, ModelType } from "../../../types/models";
-import { QuickFilterItem } from "../../../types/table";
-import { ReadCompetitionItems } from "../types";
+import { Competition } from "../../../../types/models/competition";
+import { readItemsBase } from "../../../api";
+import { convert } from "../../../convert/DBtoGetted";
+import { convert as createLabel } from "../../../convert/CreateLabel";
+import { FormTypeMap, ModelType } from "../../../../types/models";
+import { QuickFilterItem } from "../../../../types/table";
+import { ReadCompetitionItems } from "../../types";
 
 type SetCompetitionParams<K extends keyof FormTypeMap> = Parameters<
   CreateQuickFilterItems<K>
