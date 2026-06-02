@@ -31,6 +31,8 @@ export type MetaCrudContext<K extends ModelType> = {
   updateItems: (data: UpdateData<K>[]) => Promise<boolean>;
 
   deleteItem: (id: string) => Promise<boolean>;
+  deleteItems: (data: GettedModelDataMap[K][]) => Promise<boolean>;
+
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
 

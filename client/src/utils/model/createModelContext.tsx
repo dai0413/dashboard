@@ -13,6 +13,7 @@ import { api } from "../../context/api-context";
 import {
   createItemBase,
   deleteItemBase,
+  deleteItemsBase,
   readItemBase,
   readItemsBase,
   updateItemBase,
@@ -119,6 +120,18 @@ export function createModelContext<T extends ModelType>(
       return success;
     };
 
+    const deleteItems = async (deleteItem: Get[]) => {
+      const result = await deleteItemsBase<Get>({
+        apiInstance: api,
+        backendRoute: backendRoute.ROOT,
+        data: deleteItem,
+        handleLoading,
+        handleSetAlert: mainHandleSetAlert,
+      });
+
+      return result;
+    };
+
     const updateItem = async (id: string, updated: Form) => {
       const result = await updateItemBase<Form>({
         apiInstance: api,
@@ -210,6 +223,7 @@ export function createModelContext<T extends ModelType>(
       updateItem,
       updateItems,
       deleteItem,
+      deleteItems,
       uploadFile,
       downloadFile,
       resetItems,

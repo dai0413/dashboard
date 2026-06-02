@@ -13,6 +13,7 @@ import {
   TableCellsIcon,
   Squares2X2Icon,
   PencilSquareIcon,
+  TrashIcon,
 } from "@heroicons/react/24/solid";
 
 import { useFilter } from "../../context/filter-context";
@@ -37,6 +38,7 @@ import {
 import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
 import { FormMode, From, InputMode } from "../../types/types";
 import CheckMenuItem from "../ui/CheckMenuItem";
+import { useModelContext } from "../../context/models/model-wrapper";
 
 type MenuItem = { label: string; onClick: () => void };
 
@@ -248,6 +250,22 @@ const TableToolbar = <Data, Form>({
     }
     await downloadFile();
     setIsFolderOpen(false);
+  };
+
+  const modelContext = modelType && useModelContext(modelType);
+
+  const deleteOnClick = async () => {
+    if (!modelContext || !items) return;
+    const { deleteItems } = modelContext;
+
+    const confirmDelete = window.confirm(
+      `${modelType}:${items.length}件のデータを本当に削除しますか？`,
+    );
+    if (confirmDelete) {
+      const result = await deleteItems(items);
+
+      if (result && reloadFun) reloadFun(filterConditions, sortConditions);
+    }
   };
 
   const folderMenu = [
@@ -482,17 +500,26 @@ const TableToolbar = <Data, Form>({
         {modelType && (staffState.admin || isDev) && (
           <>
             {items && items.length > 0 && (
-              <div
-                ref={folderDropdownRef}
-                className="relative inline-block text-left"
-              >
+              <div className="relative inline-block text-left">
                 <button
                   onClick={startUpdates}
                   className="cursor-pointer flex items-center gap-x-2 text-blue-500"
                   type="button"
                 >
                   <PencilSquareIcon className="w-8 h-8" />
-                  <span className="hidden lg:inline">データ修正</span>
+                  <span className="hidden lg:inline">修正</span>
+                </button>
+              </div>
+            )}
+            {items && items.length > 0 && (
+              <div className="relative inline-block text-left">
+                <button
+                  onClick={deleteOnClick}
+                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                  type="button"
+                >
+                  <TrashIcon className="w-8 h-8" />
+                  <span className="hidden lg:inline">削除</span>
                 </button>
               </div>
             )}

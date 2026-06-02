@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError, UpdateItemsResponse } from "@dai0413/myorg-shared";
+import { APIError, DeleteItemsResponse } from "@dai0413/myorg-shared";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;
@@ -10,7 +10,7 @@ type UpdateParams = {
   handleSetAlert?: (value: AlertStatus) => void;
 };
 
-export const updateItemsBase = async <DATA>({
+export const deleteItemsBase = async <DATA>({
   apiInstance,
   data,
   backendRoute,
@@ -20,8 +20,8 @@ export const updateItemsBase = async <DATA>({
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
   try {
-    const res = await apiInstance.patch(backendRoute, data);
-    const responseData: UpdateItemsResponse<DATA[], DATA[]> = res.data;
+    const res = await apiInstance.delete(backendRoute, { data });
+    const responseData: DeleteItemsResponse<DATA> = res.data;
     alert = { success: true, message: responseData.message };
 
     return true;
@@ -36,6 +36,7 @@ export const updateItemsBase = async <DATA>({
 
     return false;
   } finally {
+    console.log("alert", alert);
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
   }
