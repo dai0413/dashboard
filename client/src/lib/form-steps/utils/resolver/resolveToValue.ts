@@ -15,3 +15,14 @@ export const resolveToLabel = <
   data: T[],
   targetKeys: readonly Keys[],
 ) => mapSelectableFields(data, SelectKey.LABEL, targetKeys);
+
+export const buildValueLabel = <
+  T extends Record<string, any>,
+  Keys extends keyof T,
+>(
+  data: T[],
+  keys: readonly Keys[],
+) => ({
+  value: resolveToValue(data, keys),
+  label: resolveToLabel(data, keys),
+});
