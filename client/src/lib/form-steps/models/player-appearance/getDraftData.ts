@@ -1,17 +1,17 @@
 import { AxiosInstance } from "axios";
-import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
+import { Label, Select } from "@dai0413/myorg-shared";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/playerAppearance";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-appearance";
-import { GetDraftData } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
+import { DraftData, PostedDraftData } from "../../../../types/form";
+import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { readPostedDraftData } from "../../utils/getDraftData/readPostedDraftData";
 import { getSeasons } from "../../utils/getSeasons";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
-import { createItemBase } from "../../../api";
+import { fetchResolved } from "../../utils/resolver/fetchResolved";
 
 const KEYS = ["match", "player", "team"] as const;
 
@@ -52,67 +52,66 @@ const buildResolveInput = (
   return data;
 };
 
-const fetchResolved = async (
-  api: AxiosInstance,
-  input: ResolveInput<{ player: Select.MODEL }>[],
-): Promise<ResolveOutput[]> => {
-  const res = await createItemBase<{ playerAppearance: ResolveOutput[] }>({
-    apiInstance: api,
-    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    data: { playerAppearance: input },
-    returnResponse: true,
-  });
-
-  if (!res.success) return [];
-
-  return res.data.playerAppearance;
-};
+type Input = ResolveInput<{ player: Select.MODEL }>;
 
 const resolve = async (
   api: AxiosInstance,
-  data: Scraped[],
+  data: Input[],
   match: Label,
   season: string[],
   team?: Label,
   play_time?: number,
 ) => {
   const input = buildResolveInput(data, match, season, team, play_time);
-  return fetchResolved(api, input);
+  return fetchResolved<"playerAppearance", Input, ResolveOutput>(
+    api,
+    "playerAppearance",
+    input,
+  );
 };
 
-export const getDraftData: GetDraftData<
-  ModelType.PLAYER_APPEARANCE,
-  true
-> = async ({ api, draftData, postedDraftData, metaData }) => {
-  const season = metaData.season;
-  if (!api) return { value: [], label: [] };
+type GetDraftDataParams = {
+  api: AxiosInstance;
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+  cardIds: string[];
+  season: string;
+};
 
-  const ids: string[] = metaData?.match;
-
+export const getDraftData = async ({
+  api,
+  draftData,
+  postedDraftData,
+  cardIds,
+  season,
+}: GetDraftDataParams): Promise<{
+  value: FormTypeMap[ModelType.PLAYER_APPEARANCE][];
+  label: Record<string, any>[];
+} | null> => {
   const updatedDraftData = await readDraftData({
     api,
     draftData,
-    matchIds: ids,
-    keys: ["match", "playerAppearance"],
+    cardIds,
+    readDraftDataKey: ["match", "playerAppearance"],
   });
 
   const updatedPostedDraftData = await readPostedDraftData({
     api,
     postedDraftData,
-    matchIds: ids,
-    keys: ["match"],
+    cardIds,
+    readPostedDraftDataKey: ["match"],
   });
 
   const results = await Promise.all(
-    ids.map(async (id) => {
-      const newDraftData = updatedDraftData[id];
+    cardIds.map(async (cardId) => {
+      const newDraftData = updatedDraftData[cardId];
 
       if (!newDraftData.playerAppearance) return { value: [], label: [] };
 
       const { home: homePlayerAppearance, away: awayPlayerAppearance } =
         newDraftData.playerAppearance;
 
-      const posted = updatedPostedDraftData[id];
+      const posted = updatedPostedDraftData[cardId];
 
       if (!posted.match) return { value: [], label: [] };
 

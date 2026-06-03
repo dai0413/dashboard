@@ -76,21 +76,21 @@ type ReadableDraftDataKey = keyof typeof readMap;
 type ReadDraftDataParams = {
   api: AxiosInstance;
   postedDraftData: PostedDraftData;
-  matchIds: string[];
-  keys: ReadableDraftDataKey[];
+  cardIds: string[];
+  readPostedDraftDataKey: ReadableDraftDataKey[];
 };
 
 export const readPostedDraftData = async ({
   api,
   postedDraftData,
-  matchIds,
-  keys,
+  cardIds,
+  readPostedDraftDataKey,
 }: ReadDraftDataParams): Promise<PostedDraftData> => {
   const entries = await Promise.all(
-    matchIds.map(async (matchId) => {
-      const originalData = postedDraftData[matchId] || {};
+    cardIds.map(async (cardId) => {
+      const originalData = postedDraftData[cardId] || {};
 
-      const missingKeys = keys.filter(
+      const missingKeys = readPostedDraftDataKey.filter(
         (key) => originalData?.[key] === undefined,
       );
 
@@ -99,14 +99,14 @@ export const readPostedDraftData = async ({
       };
 
       for (const key of missingKeys) {
-        const response = await readMap[key](api, matchId, data);
+        const response = await readMap[key](api, cardId, data);
 
         if (response) {
           data = { ...data, ...response };
         }
       }
 
-      return [matchId, data];
+      return [cardId, data];
     }),
   );
 

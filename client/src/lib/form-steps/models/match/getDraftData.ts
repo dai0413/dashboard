@@ -1,4 +1,5 @@
-import { API_PATHS, Select } from "@dai0413/myorg-shared";
+import { AxiosInstance } from "axios";
+import { Select } from "@dai0413/myorg-shared";
 import {
   ResolveInput,
   ResolveOutput,
@@ -8,8 +9,7 @@ import { GetDraftData } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
-import { createItemBase } from "../../../api";
-import { AxiosInstance } from "axios";
+import { fetchResolved } from "../../utils/resolver/fetchResolved";
 
 const KEYS = [
   "home_team",
@@ -25,27 +25,10 @@ type Input = ResolveInput<{
   away_team: Select.MODEL;
   match_format: Select.MODEL;
   stadium: Select.MODEL;
-}>[];
+}>;
 
-const fetchResolved = async (
-  api: AxiosInstance,
-  input: Input,
-): Promise<ResolveOutput[]> => {
-  const res = await createItemBase<{ match: ResolveOutput[] }>({
-    apiInstance: api,
-    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    data: { match: input },
-    returnResponse: true,
-  });
-
-  if (!res.success) return [];
-
-  return res.data.match;
-};
-
-const resolve = async (api: AxiosInstance, data: MatchScraped[]) => {
-  const input: Input = data;
-  return fetchResolved(api, input);
+const resolve = async (api: AxiosInstance, data: Input[]) => {
+  return fetchResolved<"match", Input, ResolveOutput>(api, "match", data);
 };
 
 export const getDraftData: GetDraftData<ModelType.MATCH, true> = async ({
@@ -53,15 +36,15 @@ export const getDraftData: GetDraftData<ModelType.MATCH, true> = async ({
   api,
   metaData,
 }) => {
-  const ids: string[] = metaData?.card_ids;
+  const cardIds: string[] = metaData?.card_ids;
 
-  if (!api || !ids) return { value: [], label: [] };
+  if (!api || !cardIds) return { value: [], label: [] };
 
   const updatedDraftData = await readDraftData({
     api,
     draftData,
-    matchIds: ids,
-    keys: ["match"],
+    cardIds,
+    readDraftDataKey: ["match"],
   });
 
   const matchData: MatchScraped[] = Object.values(updatedDraftData)

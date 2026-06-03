@@ -62,14 +62,14 @@ export const preStep: FormStep<BaseModel>[] = [
     type: StepType.FORM,
     many: true,
     addDraftData: async ({ data, metaData, api, formLabel }) => {
-      const id: string[] = metaData?.card_ids;
+      const cardId: string[] = metaData?.card_ids;
 
-      if (!api || !id) return {};
+      if (!api || !cardId) return {};
 
       const res = await createItemBase<DraftData>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_M.VALUES,
-        data: { id },
+        data: { cardId },
         returnResponse: true,
       });
 

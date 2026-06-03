@@ -5,67 +5,67 @@ import { AxiosInstance } from "axios";
 
 const readMatch: ReadFun<"match"> = async (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) =>
   createItemBase<DraftData[any]["match"]>({
     apiInstance: api,
     backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
-    data: { id: matchId },
+    data: { cardId: cardId },
   });
 
 const readPlayerAppearance: ReadFun<"playerAppearance"> = async (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) =>
   createItemBase<DraftData[any]["playerAppearance"]>({
     apiInstance: api,
     backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_APPEARANCE,
-    data: { id: matchId },
+    data: { cardId: cardId },
   });
 
 const readPlayerMatchEventLog: ReadFun<"playerMatchEventLog"> = async (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) =>
   createItemBase<DraftData[any]["playerMatchEventLog"]>({
     apiInstance: api,
     backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_MATCH_EVENT_LOG,
-    data: { id: matchId },
+    data: { cardId: cardId },
   });
 
 const readStaffAppearance: ReadFun<"staffAppearance"> = async (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) =>
   createItemBase<DraftData[any]["staffAppearance"]>({
     apiInstance: api,
     backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_APPEARANCE,
-    data: { id: matchId },
+    data: { cardId: cardId },
   });
 
 const readStaffMatchEventLog: ReadFun<"staffMatchEventLog"> = async (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) =>
   createItemBase<DraftData[any]["staffMatchEventLog"]>({
     apiInstance: api,
     backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_MATCH_EVENT_LOG,
-    data: { id: matchId },
+    data: { cardId: cardId },
   });
 
 const readRefereeAppearance: ReadFun<"refereeAppearance"> = async (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) =>
   createItemBase<DraftData[any]["refereeAppearance"]>({
     apiInstance: api,
     backendRoute: API_PATHS.GET_NEW_DATA.D_M.REFEREE_APPEARANCE,
-    data: { id: matchId },
+    data: { cardId: cardId },
   });
 
 type ReadFun<K extends keyof DraftDataValue> = (
   api: AxiosInstance,
-  matchId: string,
+  cardId: string,
 ) => Promise<CreateItemResponse<DraftDataValue[K] | undefined>>;
 
 const readMap = {
@@ -82,27 +82,27 @@ type ReadableDraftDataKey = keyof typeof readMap;
 type ReadDraftDataParams = {
   api: AxiosInstance;
   draftData: DraftData;
-  matchIds: string[];
-  keys: ReadableDraftDataKey[];
+  cardIds: string[];
+  readDraftDataKey: ReadableDraftDataKey[];
 };
 
 export const readDraftData = async ({
   api,
   draftData,
-  matchIds,
-  keys,
+  cardIds,
+  readDraftDataKey,
 }: ReadDraftDataParams): Promise<DraftData> => {
   const entries = await Promise.all(
-    matchIds.map(async (matchId) => {
-      const originalData = draftData[matchId];
+    cardIds.map(async (cardId) => {
+      const originalData = draftData[cardId];
 
-      const missingKeys = keys.filter(
+      const missingKeys = readDraftDataKey.filter(
         (key) => originalData?.[key] === undefined,
       );
 
       const responses = await Promise.all(
         missingKeys.map(async (key) => {
-          const response = await readMap[key](api, matchId);
+          const response = await readMap[key](api, cardId);
 
           return {
             key,
@@ -121,7 +121,7 @@ export const readDraftData = async ({
         }
       }
 
-      return [matchId, data] as const;
+      return [cardId, data] as const;
     }),
   );
 

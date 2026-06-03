@@ -5,17 +5,41 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/staffMatchEventLog";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/staff-match-event-log";
-import { GetDraftData } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
+import { DraftData, PostedDraftData } from "../../../../types/form";
+import { FormTypeMap, ModelType } from "../../../../types/models";
 import { Team } from "../../../../types/models/team";
-import { createItemBase, readItemsBase } from "../../../api";
+import { readItemsBase } from "../../../api";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { readPostedDraftData } from "../../utils/getDraftData/readPostedDraftData";
 import { MatchFormatGet } from "../../../../types/models/match-format";
 import { calcPeriodLabel } from "../../utils/onChange/calcPeriodLabel";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
+import { fetchResolved } from "../../utils/resolver/fetchResolved";
 
 const KEYS = ["match", "staff", "team", "match_event_type"] as const;
+
+type Input = ResolveInput<{
+  staff: Select.MODEL;
+  match_event_type: Select.MODEL;
+}>;
+
+const buildResolveInput = (
+  draftData: Scraped[],
+  match: Label,
+  team?: Label,
+  periods?: MatchFormatGet["period"],
+): Input[] => {
+  const data = draftData.map((d) => {
+    return {
+      ...d,
+      match,
+      team,
+      period_label: calcPeriodLabel(d, periods),
+    };
+  });
+
+  return data;
+};
 
 const resolve = async (
   api: AxiosInstance,
@@ -24,74 +48,46 @@ const resolve = async (
   team?: Label,
   periods?: MatchFormatGet["period"],
 ) => {
-  const buildResolveInput = (
-    draftData: Scraped[],
-    match: Label,
-    team?: Label,
-    periods?: MatchFormatGet["period"],
-  ): ResolveInput<{
-    staff: Select.MODEL;
-    match_event_type: Select.MODEL;
-  }>[] => {
-    const data = draftData.map((d) => {
-      return {
-        ...d,
-        match,
-        team,
-        period_label: calcPeriodLabel(d, periods),
-      };
-    });
-
-    return data;
-  };
-
-  const fetchResolved = async (
-    api: AxiosInstance,
-    input: ResolveInput<{
-      staff: Select.MODEL;
-      match_event_type: Select.MODEL;
-    }>[],
-  ): Promise<ResolveOutput[]> => {
-    const res = await createItemBase<{ staffMatchEventLog: ResolveOutput[] }>({
-      apiInstance: api,
-      backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-      data: { staffMatchEventLog: input },
-      returnResponse: true,
-    });
-
-    if (!res.success) return [];
-
-    return res.data.staffMatchEventLog;
-  };
-
   const input = buildResolveInput(data, match, team, periods);
-  return fetchResolved(api, input);
+  return fetchResolved<"staffMatchEventLog", Input, ResolveOutput>(
+    api,
+    "staffMatchEventLog",
+    input,
+  );
 };
 
-export const getDraftData: GetDraftData<
-  ModelType.STAFF_MATCH_EVENT_LOG,
-  true
-> = async ({ api, draftData, postedDraftData, metaData }) => {
-  if (!api) return { value: [], label: [] };
+type GetDraftDataParams = {
+  api: AxiosInstance;
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+  cardIds: string[];
+};
 
-  const ids: string[] = metaData?.match;
-
+export const getDraftData = async ({
+  api,
+  draftData,
+  postedDraftData,
+  cardIds,
+}: GetDraftDataParams): Promise<{
+  value: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG][];
+  label: Record<string, any>[];
+} | null> => {
   const updatedDraftData = await readDraftData({
     api,
     draftData,
-    matchIds: ids,
-    keys: ["match", "staffMatchEventLog"],
+    cardIds,
+    readDraftDataKey: ["match", "staffMatchEventLog"],
   });
 
   const updatedPostedDraftData = await readPostedDraftData({
     api,
     postedDraftData,
-    matchIds: ids,
-    keys: ["match"],
+    cardIds,
+    readPostedDraftDataKey: ["match"],
   });
 
   const results = await Promise.all(
-    ids.map(async (id) => {
+    cardIds.map(async (id) => {
       const newDraftData = updatedDraftData[id];
 
       if (!newDraftData.staffMatchEventLog) return { value: [], label: [] };

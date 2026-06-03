@@ -1,22 +1,26 @@
-import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
+import { Label, Select } from "@dai0413/myorg-shared";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-match-event-log";
-import { GetDraftData } from "../../../../types/form";
-import { ModelType } from "../../../../types/models";
+import { DraftData, PostedDraftData } from "../../../../types/form";
+import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { readPostedDraftData } from "../../utils/getDraftData/readPostedDraftData";
 import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
 import { MatchFormatGet } from "../../../../types/models/match-format";
 import { calcPeriodLabel } from "../../utils/onChange/calcPeriodLabel";
-import { createItemBase } from "../../../api";
 import { AxiosInstance } from "axios";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { PlayerMatchEventLogForm } from "../../../../types/models/player-match-event-log";
+import { fetchResolved } from "../../utils/resolver/fetchResolved";
 
 const KEYS = ["match", "player", "team", "match_event_type"] as const;
+
+type Input = ResolveInput<{
+  match_event_type: Select.MODEL;
+}>;
 
 const buildResolveInput = (
   draftData: Scraped[],
@@ -24,9 +28,7 @@ const buildResolveInput = (
   match: Label,
   team?: Label,
   periods?: MatchFormatGet["period"],
-): ResolveInput<{
-  match_event_type: Select.MODEL;
-}>[] => {
+): Input[] => {
   const data = draftData.map((d) => {
     const targetPlayer = candidatePlayers?.find(
       (pa) =>
@@ -50,24 +52,6 @@ const buildResolveInput = (
   return data;
 };
 
-const fetchResolved = async (
-  api: AxiosInstance,
-  input: ResolveInput<{
-    match_event_type: Select.MODEL;
-  }>[],
-): Promise<ResolveOutput[]> => {
-  const res = await createItemBase<{ playerMatchEventLog: ResolveOutput[] }>({
-    apiInstance: api,
-    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    data: { playerMatchEventLog: input },
-    returnResponse: true,
-  });
-
-  if (!res.success) return [];
-
-  return res.data.playerMatchEventLog;
-};
-
 const resolve = async (
   api: AxiosInstance,
   data: Scraped[],
@@ -77,41 +61,53 @@ const resolve = async (
   periods?: MatchFormatGet["period"],
 ) => {
   const input = buildResolveInput(data, candidatePlayers, match, team, periods);
-  return fetchResolved(api, input);
+  return fetchResolved<"playerMatchEventLog", Input, ResolveOutput>(
+    api,
+    "playerMatchEventLog",
+    input,
+  );
 };
 
-export const getDraftData: GetDraftData<
-  ModelType.PLAYER_MATCH_EVENT_LOG,
-  true
-> = async ({ api, draftData, postedDraftData, metaData }) => {
-  if (!api) return { value: [], label: [] };
+type GetDraftDataParams = {
+  api: AxiosInstance;
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+  cardIds: string[];
+};
 
-  const ids: string[] = metaData?.match;
-
+export const getDraftData = async ({
+  api,
+  draftData,
+  postedDraftData,
+  cardIds,
+}: GetDraftDataParams): Promise<{
+  value: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG][];
+  label: Record<string, any>[];
+} | null> => {
   const updatedDraftData = await readDraftData({
     api,
     draftData,
-    matchIds: ids,
-    keys: ["match", "playerMatchEventLog"],
+    cardIds,
+    readDraftDataKey: ["match", "playerMatchEventLog"],
   });
 
   const updatedPostedDraftData = await readPostedDraftData({
     api,
     postedDraftData,
-    matchIds: ids,
-    keys: ["match", "playerAppearance"],
+    cardIds,
+    readPostedDraftDataKey: ["match", "playerAppearance"],
   });
 
   const results = await Promise.all(
-    ids.map(async (id) => {
-      const newDraftData = updatedDraftData[id];
+    cardIds.map(async (cardId) => {
+      const newDraftData = updatedDraftData[cardId];
 
       if (!newDraftData.playerMatchEventLog) return { value: [], label: [] };
 
       const { home: homePlayerMatchEventLog, away: awayPlayerMatchEventLog } =
         newDraftData.playerMatchEventLog;
 
-      const posted = updatedPostedDraftData[id];
+      const posted = updatedPostedDraftData[cardId];
 
       if (!posted.match) return { value: [], label: [] };
 
