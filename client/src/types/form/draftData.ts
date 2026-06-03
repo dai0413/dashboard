@@ -20,6 +20,7 @@ export type GetDraftData<
   postedDraftData: PostedDraftData;
   metaData: Record<string, any>;
   api: AxiosInstance;
+  formLabel: Record<string, any>;
 }) => T extends true
   ? Promise<{ value: FormTypeMap[K][]; label: Record<string, any>[] } | null>
   : Promise<{ value: FormTypeMap[K]; label: Record<string, any> } | null>;

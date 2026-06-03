@@ -1,11 +1,11 @@
 import { AxiosInstance } from "axios";
-import { Select } from "@dai0413/myorg-shared";
+import { Label, Select } from "@dai0413/myorg-shared";
 import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
 import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
-import { GetDraftData } from "../../../../types/form";
+import { DraftData } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
@@ -31,14 +31,23 @@ const resolve = async (api: AxiosInstance, data: Input[]) => {
   return fetchResolved<"match", Input, ResolveOutput>(api, "match", data);
 };
 
-export const getDraftData: GetDraftData<ModelType.MATCH, true> = async ({
-  draftData,
-  api,
-  metaData,
-}) => {
-  const cardIds: string[] = metaData?.card_ids;
+type GetDraftDataParams = {
+  api: AxiosInstance;
+  draftData: DraftData;
+  cardIds: string[];
+  competition_stage: Label;
+};
 
-  if (!api || !cardIds) return { value: [], label: [] };
+export const getDraftData = async ({
+  api,
+  draftData,
+  cardIds,
+  competition_stage,
+}: GetDraftDataParams): Promise<{
+  value: FormTypeMap[ModelType.MATCH][];
+  label: Record<string, any>[];
+} | null> => {
+  if (!cardIds) return { value: [], label: [] };
 
   const updatedDraftData = await readDraftData({
     api,
@@ -58,10 +67,19 @@ export const getDraftData: GetDraftData<ModelType.MATCH, true> = async ({
 
   const value: FormTypeMap[ModelType.MATCH][] = resolvedOutput.value.map(
     (v) => {
-      return { ...v, date: v.date?.toString() };
+      return {
+        ...v,
+        date: v.date?.toString(),
+        competition_stage: competition_stage.id,
+      };
     },
   );
-  const label: Record<string, any>[] = resolvedOutput.label;
+  const label: Record<string, any>[] = resolvedOutput.label.map((v) => {
+    return {
+      ...v,
+      competition_stage: competition_stage.label,
+    };
+  });
 
   return { value, label };
 };

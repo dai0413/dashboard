@@ -42,9 +42,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds = Object.values(postedDraftData)
-        .map((c) => (c.match?._id ? c.match?._id : undefined))
-        .filter((v) => typeof v === "string");
+      const cardIds: string[] = metaData.card_ids;
 
       return getDraftData({
         api,

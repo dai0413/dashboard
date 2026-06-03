@@ -98,9 +98,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     type: StepType.FORM,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds = Object.values(postedDraftData)
-        .map((c) => (c.match?._id ? c.match?._id : undefined))
-        .filter((v) => typeof v === "string");
+      const cardIds: string[] = metaData.card_ids;
 
       return getDraftData({
         api,

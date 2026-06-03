@@ -493,7 +493,6 @@ export const FormProvider = <T extends ModelType>({
       if (inputMode === InputMode.MANY) {
         console.log("in sendData", formDatas);
         res = await modelContext.createItems(formDatas);
-        res = { success: true, data: [], message: "" };
       }
       success = res?.success || false;
 
@@ -745,6 +744,10 @@ export const FormProvider = <T extends ModelType>({
           },
           postedDraftData,
           metaData,
+          formLabel: {
+            ...stateLabel,
+            ...newFormLabel,
+          },
           api,
         });
         if (gettedDraftData) {
@@ -760,6 +763,7 @@ export const FormProvider = <T extends ModelType>({
           },
           postedDraftData,
           metaData,
+          formLabel: newFormLabel,
           api,
         });
         if (gettedDraftData) {

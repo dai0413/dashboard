@@ -12,6 +12,7 @@ import { convert as createLabel } from "../../../../convert/CreateLabel";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { bulkBase } from "../fields";
 import { getDraftData } from "../getDraftData";
+import { Label } from "@dai0413/myorg-shared";
 
 const afterMatchaddPostedDraftData: AddPostedDraftData = ({
   postedDraftData,
@@ -52,14 +53,6 @@ const baseModel = ModelType.MATCH;
 
 const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "cardId");
 
-export const multiModel: FormStep<BaseModel>[] = [
-  bulkBase,
-  {
-    ...createConfirmationStep<BaseModel>(baseModel),
-    addPostedDraftData: afterMatchaddPostedDraftData,
-  },
-];
-
 export const match: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
   {
@@ -67,7 +60,52 @@ export const match: FormStep<BaseModel>[] = [
     stepLabel: "D_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
     many: true,
-    getDraftData: getDraftData,
+    getDraftData: async ({ api, draftData, metaData, formLabel }) => {
+      const cardIds: string[] = metaData.match;
+      const competition_stage: Label = {
+        id: metaData.competition_stage,
+        label: formLabel.competition_stage,
+      };
+
+      return getDraftData({
+        api,
+        draftData,
+        cardIds,
+        competition_stage,
+      });
+    },
   },
-  ...multiModel,
+  bulkBase,
+  {
+    ...createConfirmationStep<BaseModel>(baseModel),
+    addPostedDraftData: afterMatchaddPostedDraftData,
+  },
+];
+
+export const multiModel: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "D_M, MATCHモデルデータを取得します",
+    type: StepType.FORM,
+    many: true,
+    getDraftData: async ({ api, draftData, metaData, formLabel }) => {
+      const cardIds: string[] = metaData.card_ids;
+      const competition_stage: Label = {
+        id: metaData.competition_stage,
+        label: formLabel.competition_stage,
+      };
+
+      return getDraftData({
+        api,
+        draftData,
+        cardIds,
+        competition_stage,
+      });
+    },
+  },
+  bulkBase,
+  {
+    ...createConfirmationStep<BaseModel>(baseModel),
+    addPostedDraftData: afterMatchaddPostedDraftData,
+  },
 ];

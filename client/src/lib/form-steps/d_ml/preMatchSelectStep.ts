@@ -263,6 +263,7 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
       modelType: modelType,
       stepLabel: "更新する試合の大会ステージを入力",
       type: StepType.FORM,
+      dataSource: DataSource.META_DATA,
       fields: getFields(["competition_stage"]),
       createFilterConditions: createFilterConditions,
       skip: (_data, mataData) => mataData.competition_stage,
