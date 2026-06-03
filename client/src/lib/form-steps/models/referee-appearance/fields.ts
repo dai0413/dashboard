@@ -46,16 +46,6 @@ export const bulkBase: ArrayDataFormStep<BaseModel> = {
   stepLabel: "審判・役割を入力",
   type: StepType.FORM,
   many: true,
-  fields: getFields([
-    "match",
-    "team",
-    "match_event_type",
-    "player",
-    "player_name",
-    "time",
-    "add_time",
-    "special_time",
-    "order",
-  ]),
+  fields: getFields(["match", "referee", "referee_name", "role"]),
   validate: validateRefereeEitherOne,
 };

@@ -72,7 +72,17 @@ export const playerAppearance: FormStep<BaseModel>[] = [
     type: StepType.FORM,
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-    getDraftData: getDraftData,
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
+      const cardIds: string[] = metaData.match;
+
+      return getDraftData({
+        api,
+        draftData,
+        postedDraftData,
+        cardIds,
+        season: metaData.season,
+      });
+    },
   },
   bulkBase,
   {
@@ -82,6 +92,25 @@ export const playerAppearance: FormStep<BaseModel>[] = [
 ];
 
 export const multiModel: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "D_M, PLAYER_APPEARANCEモデルデータを取得します",
+    type: StepType.FORM,
+    many: true,
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
+      const cardIds = Object.values(postedDraftData)
+        .map((c) => (c.match?._id ? c.match?._id : undefined))
+        .filter((v) => typeof v === "string");
+
+      return getDraftData({
+        api,
+        draftData,
+        postedDraftData,
+        cardIds,
+        season: metaData.season,
+      });
+    },
+  },
   bulkBase,
   {
     ...createConfirmationStep<BaseModel>(baseModel),
