@@ -122,9 +122,11 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         pageNum={viewOptionData ? viewOptionData.page || 1 : 1}
         totalCount={viewOptionData ? viewOptionData.totalCount : undefined}
         form={true}
-        onClick={(index, row: OptionObj<any>["data"][number]) => {
+        onClick={(_index, row: OptionObj<any>["data"][number]) => {
           if (field.multi) {
             const { key, label } = row;
+
+            const index = Array.isArray(value) ? value.length : 0;
 
             handleFormData({
               key: formDataKey,
