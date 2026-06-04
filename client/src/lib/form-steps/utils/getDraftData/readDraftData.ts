@@ -1,100 +1,21 @@
-import { API_PATHS, CreateItemResponse } from "@dai0413/myorg-shared";
 import { DraftData, DraftDataValue } from "../../../../types/form";
-import { createItemBase } from "../../../api";
-import { AxiosInstance } from "axios";
+import { From } from "../../../../types/types";
+import { readD_MMap } from "./readD_M";
+import { readJ_MMap } from "./readJ_M";
+import { ReadDraftDataParams } from "./types";
 
-const readMatch: ReadFun<"match"> = async (
-  api: AxiosInstance,
-  cardId: string,
-) =>
-  createItemBase<DraftData[any]["match"]>({
-    apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
-    data: { cardId: cardId },
-  });
+export const readDraftData = async (
+  props: ReadDraftDataParams,
+): Promise<DraftData> => {
+  const { api, draftData, readDraftDataKey, from, identifiers } = props;
 
-const readPlayerAppearance: ReadFun<"playerAppearance"> = async (
-  api: AxiosInstance,
-  cardId: string,
-) =>
-  createItemBase<DraftData[any]["playerAppearance"]>({
-    apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_APPEARANCE,
-    data: { cardId: cardId },
-  });
+  const readMap = from === From.D_M ? readD_MMap : readJ_MMap;
 
-const readPlayerMatchEventLog: ReadFun<"playerMatchEventLog"> = async (
-  api: AxiosInstance,
-  cardId: string,
-) =>
-  createItemBase<DraftData[any]["playerMatchEventLog"]>({
-    apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_MATCH_EVENT_LOG,
-    data: { cardId: cardId },
-  });
+  if (!readMap || identifiers.length === 0) return {};
 
-const readStaffAppearance: ReadFun<"staffAppearance"> = async (
-  api: AxiosInstance,
-  cardId: string,
-) =>
-  createItemBase<DraftData[any]["staffAppearance"]>({
-    apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_APPEARANCE,
-    data: { cardId: cardId },
-  });
-
-const readStaffMatchEventLog: ReadFun<"staffMatchEventLog"> = async (
-  api: AxiosInstance,
-  cardId: string,
-) =>
-  createItemBase<DraftData[any]["staffMatchEventLog"]>({
-    apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_MATCH_EVENT_LOG,
-    data: { cardId: cardId },
-  });
-
-const readRefereeAppearance: ReadFun<"refereeAppearance"> = async (
-  api: AxiosInstance,
-  cardId: string,
-) =>
-  createItemBase<DraftData[any]["refereeAppearance"]>({
-    apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.REFEREE_APPEARANCE,
-    data: { cardId: cardId },
-  });
-
-type ReadFun<K extends keyof DraftDataValue> = (
-  api: AxiosInstance,
-  cardId: string,
-) => Promise<CreateItemResponse<DraftDataValue[K] | undefined>>;
-
-const readMap = {
-  match: readMatch,
-  playerAppearance: readPlayerAppearance,
-  playerMatchEventLog: readPlayerMatchEventLog,
-  staffAppearance: readStaffAppearance,
-  staffMatchEventLog: readStaffMatchEventLog,
-  refereeAppearance: readRefereeAppearance,
-} satisfies Record<string, ReadFun<any>>;
-
-type ReadableDraftDataKey = keyof typeof readMap;
-
-type ReadDraftDataParams = {
-  api: AxiosInstance;
-  draftData: DraftData;
-  cardIds: string[];
-  readDraftDataKey: ReadableDraftDataKey[];
-};
-
-export const readDraftData = async ({
-  api,
-  draftData,
-  cardIds,
-  readDraftDataKey,
-}: ReadDraftDataParams): Promise<DraftData> => {
   const entries = await Promise.all(
-    cardIds.map(async (cardId) => {
-      const originalData = draftData[cardId];
+    identifiers.map(async (url) => {
+      const originalData = draftData[url];
 
       const missingKeys = readDraftDataKey.filter(
         (key) => originalData?.[key] === undefined,
@@ -102,7 +23,19 @@ export const readDraftData = async ({
 
       const responses = await Promise.all(
         missingKeys.map(async (key) => {
-          const response = await readMap[key](api, cardId);
+          const reader = readMap[key];
+
+          if (!reader) {
+            return {
+              key,
+              response: {
+                success: false,
+                error: "ERROR : readDraftData.ts this key is not supported",
+              },
+            };
+          }
+
+          const response = await reader(api, url);
 
           return {
             key,
@@ -116,12 +49,12 @@ export const readDraftData = async ({
       };
 
       for (const { key, response } of responses) {
-        if (response.success) {
+        if (response.success && "data" in response) {
           data[key] = response.data as never;
         }
       }
 
-      return [cardId, data] as const;
+      return [url, data] as const;
     }),
   );
 
