@@ -14,7 +14,7 @@ export const match: FormStepsConfig<ModelType.MATCH> = {
   },
   [InputMode.MANY]: {
     [From.J_M]: {
-      label: "J_Mデータ",
+      label: "J_M",
       steps: j_m,
     },
     [From.D_ML]: {
