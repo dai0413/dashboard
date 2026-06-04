@@ -5,6 +5,7 @@ import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
+import { From } from "../../../../../types/types";
 
 type BaseModel = ModelType.STAFF_APPEARANCE;
 const baseModel = ModelType.STAFF_APPEARANCE;
@@ -25,8 +26,9 @@ export const staffAppearance: FormStep<BaseModel>[] = [
         api,
         draftData,
         postedDraftData,
-        cardIds,
+        identifiers: cardIds,
         season: metaData.season,
+        from: From.D_M,
       });
     },
   },
@@ -48,8 +50,9 @@ export const multiModel: FormStep<BaseModel>[] = [
         api,
         draftData,
         postedDraftData,
-        cardIds,
+        identifiers: cardIds,
         season: metaData.season,
+        from: From.D_M,
       });
     },
   },

@@ -11,6 +11,7 @@ import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { readPostedDraftData } from "../../utils/getDraftData/readPostedDraftData";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { fetchResolved } from "../../utils/resolver/fetchResolved";
+import { From } from "../../../../types/types";
 
 const KEYS = ["match", "referee"] as const;
 
@@ -39,14 +40,16 @@ type GetDraftDataParams = {
   api: AxiosInstance;
   draftData: DraftData;
   postedDraftData: PostedDraftData;
-  cardIds: string[];
+  identifiers: string[];
+  from: From.D_M | From.J_M;
 };
 
 export const getDraftData = async ({
   api,
   draftData,
   postedDraftData,
-  cardIds,
+  identifiers,
+  from,
 }: GetDraftDataParams): Promise<{
   value: FormTypeMap[ModelType.REFEREE_APPEARANCE][];
   label: Record<string, any>[];
@@ -54,24 +57,25 @@ export const getDraftData = async ({
   const updatedDraftData = await readDraftData({
     api,
     draftData,
-    cardIds,
+    identifiers,
     readDraftDataKey: ["match", "refereeAppearance"],
+    from,
   });
 
   const updatedPostedDraftData = await readPostedDraftData({
     api,
     postedDraftData,
-    cardIds,
+    identifiers,
     readPostedDraftDataKey: ["match"],
   });
 
   const results = await Promise.all(
-    cardIds.map(async (id) => {
-      const newDraftData = updatedDraftData[id];
+    identifiers.map(async (identifier) => {
+      const newDraftData = updatedDraftData[identifier];
 
       if (!newDraftData.refereeAppearance) return { value: [], label: [] };
 
-      const posted = updatedPostedDraftData[id];
+      const posted = updatedPostedDraftData[identifier];
 
       if (!posted.match) return { value: [], label: [] };
 

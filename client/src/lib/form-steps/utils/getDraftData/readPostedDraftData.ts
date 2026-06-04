@@ -39,13 +39,9 @@ const readPlayerAppearance = async (
     params: { match: matchId, getAll: true },
   });
 
-  console.log("postedDraftDataValues", postedDraftDataValues);
-
   if (!res?.data) return undefined;
 
   const players = convert(ModelType.PLAYER_APPEARANCE, res.data);
-
-  console.log("players", players);
 
   const homePlayerAppearance = players.filter((d) => d.team.id === homeId);
   const awayPlayerAppearance = players.filter((d) => d.team.id === awayId);
@@ -76,19 +72,19 @@ type ReadableDraftDataKey = keyof typeof readMap;
 type ReadDraftDataParams = {
   api: AxiosInstance;
   postedDraftData: PostedDraftData;
-  cardIds: string[];
+  identifiers: string[];
   readPostedDraftDataKey: ReadableDraftDataKey[];
 };
 
 export const readPostedDraftData = async ({
   api,
   postedDraftData,
-  cardIds,
+  identifiers,
   readPostedDraftDataKey,
 }: ReadDraftDataParams): Promise<PostedDraftData> => {
   const entries = await Promise.all(
-    cardIds.map(async (cardId) => {
-      const originalData = postedDraftData[cardId] || {};
+    identifiers.map(async (identifier) => {
+      const originalData = postedDraftData[identifier] || {};
 
       const missingKeys = readPostedDraftDataKey.filter(
         (key) => originalData?.[key] === undefined,
@@ -99,14 +95,14 @@ export const readPostedDraftData = async ({
       };
 
       for (const key of missingKeys) {
-        const response = await readMap[key](api, cardId, data);
+        const response = await readMap[key](api, identifier, data);
 
         if (response) {
           data = { ...data, ...response };
         }
       }
 
-      return [cardId, data];
+      return [identifier, data];
     }),
   );
 

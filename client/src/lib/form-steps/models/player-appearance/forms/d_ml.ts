@@ -12,6 +12,7 @@ import { PlayerAppearance } from "../../../../../types/models/player-appearance"
 import { convert } from "../../../../convert/DBtoGetted";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
+import { From } from "../../../../../types/types";
 
 const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
   postedDraftData,
@@ -81,6 +82,7 @@ export const playerAppearance: FormStep<BaseModel>[] = [
         postedDraftData,
         cardIds,
         season: metaData.season,
+        from: From.D_M,
       });
     },
   },
@@ -106,6 +108,7 @@ export const multiModel: FormStep<BaseModel>[] = [
         postedDraftData,
         cardIds,
         season: metaData.season,
+        from: From.D_M,
       });
     },
   },

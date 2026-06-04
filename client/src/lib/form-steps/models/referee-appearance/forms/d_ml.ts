@@ -5,6 +5,7 @@ import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
+import { From } from "../../../../../types/types";
 
 type BaseModel = ModelType.REFEREE_APPEARANCE;
 const baseModel = ModelType.REFEREE_APPEARANCE;
@@ -25,7 +26,8 @@ export const refereeAppearance: FormStep<BaseModel>[] = [
         api,
         draftData,
         postedDraftData,
-        cardIds,
+        identifiers: cardIds,
+        from: From.D_M,
       });
     },
   },
@@ -47,7 +49,8 @@ export const multiModel: FormStep<BaseModel>[] = [
         api,
         draftData,
         postedDraftData,
-        cardIds,
+        identifiers: cardIds,
+        from: From.D_M,
       });
     },
   },

@@ -10,6 +10,7 @@ import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { fetchResolved } from "../../utils/resolver/fetchResolved";
+import { From } from "../../../../types/types";
 
 const KEYS = [
   "home_team",
@@ -33,27 +34,30 @@ const resolve = async (api: AxiosInstance, data: Input[]) => {
 
 type GetDraftDataParams = {
   api: AxiosInstance;
+  from: From.J_M | From.D_M;
   draftData: DraftData;
-  cardIds: string[];
+  identifiers: string[];
   competition_stage: Label;
 };
 
 export const getDraftData = async ({
   api,
   draftData,
-  cardIds,
+  identifiers,
   competition_stage,
+  from,
 }: GetDraftDataParams): Promise<{
   value: FormTypeMap[ModelType.MATCH][];
   label: Record<string, any>[];
 } | null> => {
-  if (!cardIds) return { value: [], label: [] };
+  if (!identifiers) return { value: [], label: [] };
 
   const updatedDraftData = await readDraftData({
     api,
     draftData,
-    cardIds,
+    identifiers,
     readDraftDataKey: ["match"],
+    from,
   });
 
   const matchData: MatchScraped[] = Object.values(updatedDraftData)
