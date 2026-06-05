@@ -1,34 +1,43 @@
 import { DraftData, DraftDataValue } from "../../../../types/form";
-import { From } from "../../../../types/types";
-import { readD_MMap } from "./readD_M";
-import { readJ_MMap } from "./readJ_M";
-import { ReadDraftDataParams } from "./types";
+import { readMap } from "./readMap";
+import { ReadDraftDataParams, ReadFun } from "./types";
 
 export const readDraftData = async (
   props: ReadDraftDataParams,
 ): Promise<DraftData> => {
-  const { api, draftData, readDraftDataKey, from, identifiers, readParams } =
-    props;
+  const { api, draftData, requests, identifiers } = props;
 
-  const readMap = from === From.D_M ? readD_MMap : readJ_MMap;
-
-  if (!readMap || identifiers.length === 0) return {};
+  if (identifiers.length === 0) return {};
 
   const entries = await Promise.all(
-    identifiers.map(async (url) => {
-      const originalData = draftData[url];
+    identifiers.map(async (identifier) => {
+      const originalData = draftData[identifier];
 
-      const missingKeys = readDraftDataKey.filter(
-        (key) => originalData?.[key] === undefined,
+      const missingKeys = requests.filter(
+        ({ draftDataKey }) => originalData?.[draftDataKey] === undefined,
       );
 
       const responses = await Promise.all(
-        missingKeys.map(async (key) => {
-          const reader = readMap[key];
+        missingKeys.map(async (missingKey) => {
+          const { draftDataKey, from, params } = missingKey;
+
+          const mapByKey = readMap[missingKey.draftDataKey];
+
+          if (!(missingKey.from in mapByKey)) {
+            return {
+              draftDataKey: missingKey.draftDataKey,
+              response: {
+                success: false,
+                error: "unsupported",
+              },
+            };
+          }
+
+          const reader: ReadFun<any> = mapByKey[from as keyof typeof mapByKey];
 
           if (!reader) {
             return {
-              key,
+              draftDataKey,
               response: {
                 success: false,
                 error: "ERROR : readDraftData.ts this key is not supported",
@@ -36,10 +45,10 @@ export const readDraftData = async (
             };
           }
 
-          const response = await reader(api, readParams);
+          const response = await reader(api, params);
 
           return {
-            key,
+            draftDataKey,
             response,
           };
         }),
@@ -49,13 +58,13 @@ export const readDraftData = async (
         ...(originalData ?? {}),
       };
 
-      for (const { key, response } of responses) {
+      for (const { draftDataKey, response } of responses) {
         if (response.success && "data" in response) {
-          data[key] = response.data as never;
+          data[draftDataKey] = response.data as never;
         }
       }
 
-      return [url, data] as const;
+      return [identifier, data] as const;
     }),
   );
 

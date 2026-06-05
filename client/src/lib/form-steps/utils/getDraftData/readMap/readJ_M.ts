@@ -1,54 +1,56 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { AxiosInstance } from "axios";
-import { ReadFun, ReadMap } from "./types";
-import { DraftData } from "../../../../types/form";
-import { createItemBase } from "../../../api";
+import { ReadFun, ReadMap } from "../types";
+import { DraftData } from "../../../../../types/form";
+import { createItemBase } from "../../../../api";
 
-const readMatch: ReadFun<"match"> = async (api: AxiosInstance, url: string) =>
+const baseRoute = API_PATHS.GET_NEW_DATA.J_M;
+
+const readMatch: ReadFun<"match"> = async (api, readParams) =>
   createItemBase<DraftData[any]["match"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.J_M.MATCH,
-    data: { url: url },
+    backendRoute: baseRoute.MATCH,
+    data: readParams,
   });
 
 const readPlayerAppearance: ReadFun<"playerAppearance"> = async (
-  api: AxiosInstance,
-  url: string,
+  api,
+  readParams,
 ) =>
   createItemBase<DraftData[any]["playerAppearance"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.J_M.PLAYER_APPEARANCE,
-    data: { url: url },
+    // backendRoute: baseRoute.PLAYER_APPEARANCE,
+    backendRoute: "/get-new-data/j-m/player-appearance",
+    data: readParams,
   });
 
 const readPlayerMatchEventLog: ReadFun<"playerMatchEventLog"> = async (
-  api: AxiosInstance,
-  url: string,
+  api,
+  readParams,
 ) =>
   createItemBase<DraftData[any]["playerMatchEventLog"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.J_M.PLAYER_MATCH_EVENT_LOG,
-    data: { url: url },
+    backendRoute: baseRoute.PLAYER_MATCH_EVENT_LOG,
+    data: readParams,
   });
 
 const readStaffAppearance: ReadFun<"staffAppearance"> = async (
-  api: AxiosInstance,
-  url: string,
+  api,
+  readParams,
 ) =>
   createItemBase<DraftData[any]["staffAppearance"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.J_M.STAFF_APPEARANCE,
-    data: { url: url },
+    backendRoute: baseRoute.STAFF_APPEARANCE,
+    data: readParams,
   });
 
 const readRefereeAppearance: ReadFun<"refereeAppearance"> = async (
-  api: AxiosInstance,
-  url: string,
+  api,
+  readParams,
 ) =>
   createItemBase<DraftData[any]["refereeAppearance"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.J_M.REFEREE_APPEARANCE,
-    data: { url: url },
+    backendRoute: baseRoute.REFEREE_APPEARANCE,
+    data: readParams,
   });
 
 export const readJ_MMap: ReadMap = {

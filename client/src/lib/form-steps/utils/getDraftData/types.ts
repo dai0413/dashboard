@@ -1,34 +1,24 @@
-import { DraftData, DraftDataValue } from "../../../../types/form";
 import { AxiosInstance } from "axios";
-import { From } from "../../../../types/types";
-import { readD_MMap } from "./readD_M";
-import { readJ_MMap } from "./readJ_M";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
+import { DraftData, DraftDataValue } from "../../../../types/form";
+import { readMap } from "./readMap";
 
-export type J_MReadableKey = keyof typeof readJ_MMap;
-export type D_MReadableKey = keyof typeof readD_MMap;
+type ReadRequest = {
+  [K in keyof typeof readMap]: {
+    [F in keyof (typeof readMap)[K]]: {
+      draftDataKey: K;
+      from: F;
+      params: ReadParams;
+    };
+  }[keyof (typeof readMap)[K]];
+}[keyof typeof readMap];
 
-type J_MReadDraftDataParams = {
+export type ReadDraftDataParams = {
   api: AxiosInstance;
   draftData: DraftData;
   identifiers: string[];
-  readParams: ReadParams;
-  readDraftDataKey: J_MReadableKey[];
-  from: From.J_M;
+  requests: ReadRequest[];
 };
-
-type D_MReadDraftDataParams = {
-  api: AxiosInstance;
-  draftData: DraftData;
-  identifiers: string[];
-  readParams: ReadParams;
-  readDraftDataKey: D_MReadableKey[];
-  from: From.D_M;
-};
-
-export type ReadDraftDataParams =
-  | J_MReadDraftDataParams
-  | D_MReadDraftDataParams;
 
 type ReadableDraftDataKey = keyof DraftDataValue;
 

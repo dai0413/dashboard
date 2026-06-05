@@ -43,10 +43,7 @@ export const getDraftData = async ({
   value: FormTypeMap[ModelType.MATCH][];
   label: Record<string, any>[];
 } | null> => {
-  const updatedDraftData = await readDraftData({
-    ...readDraftDataParams,
-    readDraftDataKey: ["match"],
-  });
+  const updatedDraftData = await readDraftData(readDraftDataParams);
 
   const matchData: MatchScraped[] = Object.values(updatedDraftData)
     .flatMap((v) => v.match)

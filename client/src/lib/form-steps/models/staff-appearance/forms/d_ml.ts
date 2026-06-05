@@ -28,8 +28,18 @@ export const staffAppearance: FormStep<BaseModel>[] = [
           api,
           draftData,
           identifiers: match,
-          readParams: { url },
-          from: From.D_M,
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.D_M,
+              params: { url },
+            },
+            {
+              draftDataKey: "staffAppearance",
+              from: From.D_M,
+              params: { url },
+            },
+          ],
         },
         postedDraftData,
         season: metaData.season,
@@ -55,8 +65,18 @@ export const multiModel: FormStep<BaseModel>[] = [
           api,
           draftData,
           identifiers: cardIds,
-          readParams: { cardId: cardIds },
-          from: From.D_M,
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.D_M,
+              params: { cardId: cardIds },
+            },
+            {
+              draftDataKey: "staffAppearance",
+              from: From.D_M,
+              params: { cardId: cardIds },
+            },
+          ],
         },
         postedDraftData,
         season: metaData.season,

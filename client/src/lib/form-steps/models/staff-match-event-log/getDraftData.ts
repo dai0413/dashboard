@@ -69,10 +69,7 @@ export const getDraftData = async ({
   value: FormTypeMap[ModelType.PLAYER_MATCH_EVENT_LOG][];
   label: Record<string, any>[];
 } | null> => {
-  const updatedDraftData = await readDraftData({
-    ...readDraftDataParams,
-    readDraftDataKey: ["match", "staffMatchEventLog"],
-  });
+  const updatedDraftData = await readDraftData(readDraftDataParams);
 
   const updatedPostedDraftData = await readPostedDraftData({
     ...readDraftDataParams,

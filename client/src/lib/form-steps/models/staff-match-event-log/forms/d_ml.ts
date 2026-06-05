@@ -28,8 +28,18 @@ export const staffMatchEventLog: FormStep<BaseModel>[] = [
           api,
           draftData,
           identifiers: match,
-          readParams: { url },
-          from: From.D_M,
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.D_M,
+              params: { url },
+            },
+            {
+              draftDataKey: "staffMatchEventLog",
+              from: From.D_M,
+              params: { url },
+            },
+          ],
         },
         postedDraftData,
       });
@@ -54,8 +64,18 @@ export const multiModel: FormStep<BaseModel>[] = [
           api,
           draftData,
           identifiers: cardIds,
-          readParams: { cardId: cardIds },
-          from: From.D_M,
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.D_M,
+              params: { cardId: cardIds },
+            },
+            {
+              draftDataKey: "staffMatchEventLog",
+              from: From.D_M,
+              params: { cardId: cardIds },
+            },
+          ],
         },
         postedDraftData,
       });

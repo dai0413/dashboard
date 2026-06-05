@@ -363,14 +363,15 @@ export const FormProvider = <T extends ModelType>({
           setFormLabel(resolvedLabels);
           setFormLabels([resolvedLabels]);
           setBulkCommonLabel(resolvedLabels);
-          if (newMetaData) {
-            setMetaData(newMetaData);
-            const resolvedLabels = await resolveForeignKeyLabels(newMetaData);
-            setMetaDataLabel(resolvedLabels);
-          }
         } else {
           resetFormData();
           resetFormDatas();
+        }
+
+        if (newMetaData) {
+          setMetaData(newMetaData);
+          const resolvedLabels = await resolveForeignKeyLabels(newMetaData);
+          setMetaDataLabel(resolvedLabels);
         }
       }
     } else {

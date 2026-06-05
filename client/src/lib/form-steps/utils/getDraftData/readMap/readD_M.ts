@@ -1,7 +1,7 @@
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { ReadFun, ReadMap } from "./types";
-import { DraftData } from "../../../../types/form";
-import { createItemBase } from "../../../api";
+import { ReadFun, ReadMap } from "../types";
+import { DraftData } from "../../../../../types/form";
+import { createItemBase } from "../../../../api";
 
 const readMatch: ReadFun<"match"> = async (api, readParams) =>
   createItemBase<DraftData[any]["match"]>({

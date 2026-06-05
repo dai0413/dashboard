@@ -65,10 +65,7 @@ export const getDraftData = async ({
   value: FormTypeMap[ModelType.PLAYER_APPEARANCE][];
   label: Record<string, any>[];
 } | null> => {
-  const updatedDraftData = await readDraftData({
-    ...readDraftDataParams,
-    readDraftDataKey: ["match", "staffAppearance"],
-  });
+  const updatedDraftData = await readDraftData(readDraftDataParams);
 
   const updatedPostedDraftData = await readPostedDraftData({
     ...readDraftDataParams,

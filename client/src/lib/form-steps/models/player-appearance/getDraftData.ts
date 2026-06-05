@@ -72,7 +72,7 @@ const resolve = async (
 };
 
 type GetDraftDataParams = {
-  readDraftDataParams: Omit<ReadDraftDataParams, "readDraftDataKey">;
+  readDraftDataParams: ReadDraftDataParams;
   postedDraftData: PostedDraftData;
   season: string;
 };
@@ -85,10 +85,7 @@ export const getDraftData = async ({
   value: FormTypeMap[ModelType.PLAYER_APPEARANCE][];
   label: Record<string, any>[];
 } | null> => {
-  const updatedDraftData = await readDraftData({
-    ...readDraftDataParams,
-    readDraftDataKey: ["match", "playerAppearance"],
-  });
+  const updatedDraftData = await readDraftData(readDraftDataParams);
 
   const updatedPostedDraftData = await readPostedDraftData({
     ...readDraftDataParams,

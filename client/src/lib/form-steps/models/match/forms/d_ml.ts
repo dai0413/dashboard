@@ -32,8 +32,13 @@ export const match: FormStep<BaseModel>[] = [
           api,
           draftData,
           identifiers: cardIds,
-          readParams: { cardId: cardIds },
-          from: From.D_M,
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.D_M,
+              params: { cardId: cardIds },
+            },
+          ],
         },
         competition_stage,
       });
@@ -69,8 +74,13 @@ export const multiModel: FormStep<BaseModel>[] = [
           api,
           draftData,
           identifiers: cardIds,
-          readParams: { cardId: cardIds },
-          from: From.D_M,
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.D_M,
+              params: { cardId: cardIds },
+            },
+          ],
         },
         competition_stage,
       });
