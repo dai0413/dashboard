@@ -168,6 +168,13 @@ const getMatchSelectStep = <K extends keyof FormTypeMap>(
       dataSource: DataSource.META_DATA,
       fields: [
         {
+          key: "matchUrl",
+          label: "matchUrl",
+          fieldType: "input",
+          valueType: "text",
+          required: true,
+        },
+        {
           key: "match",
           label: "試合",
           fieldType: "table",

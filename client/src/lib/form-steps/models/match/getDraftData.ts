@@ -5,12 +5,11 @@ import {
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/match";
 import { Scraped as MatchScraped } from "@dai0413/myorg-shared/types/get-new-data/models/match";
-import { DraftData } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { fetchResolved } from "../../utils/resolver/fetchResolved";
-import { From } from "../../../../types/types";
+import { ReadDraftDataParams } from "../../utils/getDraftData/types";
 
 const KEYS = [
   "home_team",
@@ -33,38 +32,27 @@ const resolve = async (api: AxiosInstance, data: Input[]) => {
 };
 
 type GetDraftDataParams = {
-  api: AxiosInstance;
-  from: From.J_M | From.D_M;
-  draftData: DraftData;
-  identifiers: string[];
+  readDraftDataParams: Omit<ReadDraftDataParams, "readDraftDataKey">;
   competition_stage: Label;
 };
 
 export const getDraftData = async ({
-  api,
-  draftData,
-  identifiers,
+  readDraftDataParams,
   competition_stage,
-  from,
 }: GetDraftDataParams): Promise<{
   value: FormTypeMap[ModelType.MATCH][];
   label: Record<string, any>[];
 } | null> => {
-  if (!identifiers) return { value: [], label: [] };
-
   const updatedDraftData = await readDraftData({
-    api,
-    draftData,
-    identifiers,
+    ...readDraftDataParams,
     readDraftDataKey: ["match"],
-    from,
   });
 
   const matchData: MatchScraped[] = Object.values(updatedDraftData)
     .flatMap((v) => v.match)
     .filter((v): v is MatchScraped => v !== undefined);
 
-  if (!matchData || !api) return null;
+  const { api } = readDraftDataParams;
 
   const resolvedData = await resolve(api, matchData);
   const resolvedOutput = buildValueLabel(resolvedData, KEYS);

@@ -1,65 +1,12 @@
-import {
-  AddPostedDraftData,
-  FormStep,
-  PostedDraftData,
-  StepType,
-} from "../../../../../types/form";
+import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
-import { PlayerAppearance } from "../../../../../types/models/player-appearance";
-import { convert } from "../../../../convert/DBtoGetted";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
 import { From } from "../../../../../types/types";
-
-const afterPlayerAppearanceaddPostedDraftData: AddPostedDraftData = ({
-  postedDraftData,
-  res,
-  metaData,
-}) => {
-  const card_ids: string[] = metaData.card_ids;
-
-  if (!res.success) return {};
-
-  const playerAppearance: PlayerAppearance[] = res.data;
-
-  const posted: PostedDraftData = Object.fromEntries(
-    card_ids.map((card_id) => {
-      if (!postedDraftData[card_id].match) return [];
-
-      const {
-        _id: matchId,
-        home_team,
-        away_team,
-      } = postedDraftData[card_id].match;
-
-      const home = convert(
-        ModelType.PLAYER_APPEARANCE,
-        playerAppearance.filter(
-          (d) => d.match._id === matchId && d.team._id === home_team.id,
-        ),
-      );
-      const away = convert(
-        ModelType.PLAYER_APPEARANCE,
-        playerAppearance.filter(
-          (d) => d.match._id === matchId && d.team._id === away_team.id,
-        ),
-      );
-
-      return [
-        card_id,
-        {
-          ...postedDraftData[card_id],
-          playerAppearance: { home, away },
-        },
-      ];
-    }),
-  );
-
-  return posted;
-};
+import { addPostedDraftData } from "../addPostedDraftData";
 
 type BaseModel = ModelType.PLAYER_APPEARANCE;
 const baseModel = ModelType.PLAYER_APPEARANCE;
@@ -74,23 +21,24 @@ export const playerAppearance: FormStep<BaseModel>[] = [
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds: string[] = metaData.match;
+      const url: string = metaData.matchUrl;
+      const match: string[] = metaData.match;
 
-      return getDraftData({
-        api,
-        draftData,
+      return await getDraftData({
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: match,
+          readParams: { url },
+          from: From.D_M,
+        },
         postedDraftData,
-        cardIds,
         season: metaData.season,
-        from: From.D_M,
       });
     },
   },
   bulkBase,
-  {
-    ...createConfirmationStep<BaseModel>(baseModel),
-    addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
-  },
+  createConfirmationStep<BaseModel>(baseModel),
 ];
 
 export const multiModel: FormStep<BaseModel>[] = [
@@ -103,18 +51,26 @@ export const multiModel: FormStep<BaseModel>[] = [
       const cardIds: string[] = metaData.card_ids;
 
       return getDraftData({
-        api,
-        draftData,
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: cardIds,
+          readParams: { cardId: cardIds },
+          from: From.D_M,
+        },
         postedDraftData,
-        cardIds,
         season: metaData.season,
-        from: From.D_M,
       });
     },
   },
   bulkBase,
   {
     ...createConfirmationStep<BaseModel>(baseModel),
-    addPostedDraftData: afterPlayerAppearanceaddPostedDraftData,
+    addPostedDraftData: ({ metaData, res, postedDraftData }) =>
+      addPostedDraftData({
+        postedDraftData,
+        res,
+        identifiers: metaData.card_ids,
+      }),
   },
 ];

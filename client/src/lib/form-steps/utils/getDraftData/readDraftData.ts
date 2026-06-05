@@ -7,7 +7,8 @@ import { ReadDraftDataParams } from "./types";
 export const readDraftData = async (
   props: ReadDraftDataParams,
 ): Promise<DraftData> => {
-  const { api, draftData, readDraftDataKey, from, identifiers } = props;
+  const { api, draftData, readDraftDataKey, from, identifiers, readParams } =
+    props;
 
   const readMap = from === From.D_M ? readD_MMap : readJ_MMap;
 
@@ -35,7 +36,7 @@ export const readDraftData = async (
             };
           }
 
-          const response = await reader(api, url);
+          const response = await reader(api, readParams);
 
           return {
             key,

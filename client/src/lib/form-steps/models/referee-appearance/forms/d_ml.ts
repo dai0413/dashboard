@@ -20,14 +20,18 @@ export const refereeAppearance: FormStep<BaseModel>[] = [
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds: string[] = metaData.match;
+      const url: string = metaData.matchUrl;
+      const match: string[] = metaData.match;
 
       return getDraftData({
-        api,
-        draftData,
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: match,
+          readParams: { url },
+          from: From.D_M,
+        },
         postedDraftData,
-        identifiers: cardIds,
-        from: From.D_M,
       });
     },
   },
@@ -46,11 +50,14 @@ export const multiModel: FormStep<BaseModel>[] = [
       const cardIds: string[] = metaData.card_ids;
 
       return getDraftData({
-        api,
-        draftData,
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: cardIds,
+          readParams: { cardId: cardIds },
+          from: From.D_M,
+        },
         postedDraftData,
-        identifiers: cardIds,
-        from: From.D_M,
       });
     },
   },

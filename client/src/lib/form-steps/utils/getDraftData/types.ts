@@ -12,6 +12,7 @@ type J_MReadDraftDataParams = {
   api: AxiosInstance;
   draftData: DraftData;
   identifiers: string[];
+  readParams: ReadParams;
   readDraftDataKey: J_MReadableKey[];
   from: From.J_M;
 };
@@ -20,6 +21,7 @@ type D_MReadDraftDataParams = {
   api: AxiosInstance;
   draftData: DraftData;
   identifiers: string[];
+  readParams: ReadParams;
   readDraftDataKey: D_MReadableKey[];
   from: From.D_M;
 };
@@ -32,7 +34,15 @@ type ReadableDraftDataKey = keyof DraftDataValue;
 
 export type ReadMap = Partial<Record<ReadableDraftDataKey, ReadFun<any>>>;
 
+export type ReadParams =
+  | {
+      cardId: string[];
+    }
+  | {
+      url: string;
+    };
+
 export type ReadFun<K extends ReadableDraftDataKey> = (
   api: AxiosInstance,
-  cardId: string,
+  readParams: ReadParams,
 ) => Promise<CreateItemResponse<DraftDataValue[K] | undefined>>;

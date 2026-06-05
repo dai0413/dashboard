@@ -15,7 +15,10 @@ const getPlayerAppearance = async (
     if (!url && !cardId)
       throw new BadRequestError("urlまたはcardIdを送信してください");
 
-    const result = await get({ url, cardId });
+    const result = await get({
+      ...(url && { url }),
+      ...(cardId && { cardId }),
+    });
 
     if (result.ok) {
       res

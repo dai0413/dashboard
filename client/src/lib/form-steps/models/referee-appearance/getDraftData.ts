@@ -5,13 +5,13 @@ import {
   ResolveInput,
   ResolveOutput,
 } from "@dai0413/myorg-shared/types/resolver/refereeAppearance";
-import { DraftData, PostedDraftData } from "../../../../types/form";
+import { PostedDraftData } from "../../../../types/form";
 import { FormTypeMap, ModelType } from "../../../../types/models";
 import { readDraftData } from "../../utils/getDraftData/readDraftData";
 import { readPostedDraftData } from "../../utils/getDraftData/readPostedDraftData";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { fetchResolved } from "../../utils/resolver/fetchResolved";
-import { From } from "../../../../types/types";
+import { ReadDraftDataParams } from "../../utils/getDraftData/types";
 
 const KEYS = ["match", "referee"] as const;
 
@@ -37,37 +37,29 @@ const resolve = async (api: AxiosInstance, data: Scraped[], match: Label) => {
 };
 
 type GetDraftDataParams = {
-  api: AxiosInstance;
-  draftData: DraftData;
+  readDraftDataParams: Omit<ReadDraftDataParams, "readDraftDataKey">;
   postedDraftData: PostedDraftData;
-  identifiers: string[];
-  from: From.D_M | From.J_M;
 };
 
 export const getDraftData = async ({
-  api,
-  draftData,
+  readDraftDataParams,
   postedDraftData,
-  identifiers,
-  from,
 }: GetDraftDataParams): Promise<{
   value: FormTypeMap[ModelType.REFEREE_APPEARANCE][];
   label: Record<string, any>[];
 } | null> => {
   const updatedDraftData = await readDraftData({
-    api,
-    draftData,
-    identifiers,
+    ...readDraftDataParams,
     readDraftDataKey: ["match", "refereeAppearance"],
-    from,
   });
 
   const updatedPostedDraftData = await readPostedDraftData({
-    api,
+    ...readDraftDataParams,
     postedDraftData,
-    identifiers,
     readPostedDraftDataKey: ["match"],
   });
+
+  const { identifiers, api } = readDraftDataParams;
 
   const results = await Promise.all(
     identifiers.map(async (identifier) => {

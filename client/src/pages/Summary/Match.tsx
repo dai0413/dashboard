@@ -189,6 +189,7 @@ const Match = () => {
             },
             metaData: {
               match: [id],
+              urls: selected.urls,
               competition_stage: selected.competition_stage.id,
             },
           }}
@@ -267,6 +268,7 @@ const Match = () => {
             },
             metaData: {
               match: [id],
+              urls: selected.urls,
               competition_stage: selected.competition_stage.id,
             },
           }}
@@ -336,6 +338,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}
@@ -434,6 +437,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}
@@ -530,6 +534,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}
@@ -586,6 +591,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}
@@ -642,6 +648,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}
@@ -698,6 +705,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}
@@ -755,6 +763,7 @@ const Match = () => {
               },
               metaData: {
                 match: [id],
+                urls: selected.urls,
                 competition_stage: selected.competition_stage.id,
               },
             }}

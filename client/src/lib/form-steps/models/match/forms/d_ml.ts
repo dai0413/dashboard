@@ -21,18 +21,21 @@ export const match: FormStep<BaseModel>[] = [
     type: StepType.FORM,
     many: true,
     getDraftData: async ({ api, draftData, metaData, formLabel }) => {
-      const cardIds: string[] = metaData.match;
+      const cardIds: string[] = metaData.card_ids;
       const competition_stage: Label = {
         id: metaData.competition_stage,
         label: formLabel.competition_stage,
       };
 
       return getDraftData({
-        api,
-        draftData,
-        identifiers: cardIds,
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: cardIds,
+          readParams: { cardId: cardIds },
+          from: From.D_M,
+        },
         competition_stage,
-        from: From.D_M,
       });
     },
   },
@@ -62,11 +65,14 @@ export const multiModel: FormStep<BaseModel>[] = [
       };
 
       return getDraftData({
-        api,
-        draftData,
-        identifiers: cardIds,
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: cardIds,
+          readParams: { cardId: cardIds },
+          from: From.D_M,
+        },
         competition_stage,
-        from: From.D_M,
       });
     },
   },
