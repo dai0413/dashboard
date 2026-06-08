@@ -5,10 +5,19 @@ import { createItemBase } from "../../../../api";
 
 const baseRoute = API_PATHS.GET_NEW_DATA.J_M;
 
+export const readValues: ReadFun<"values"> = async (api, readParams) =>
+  createItemBase<DraftData>({
+    apiInstance: api,
+    // backendRoute: baseRoute.VALUES,
+    backendRoute: "/get-new-data/j-m/values",
+    data: readParams,
+  });
+
 const readMatch: ReadFun<"match"> = async (api, readParams) =>
   createItemBase<DraftData[any]["match"]>({
     apiInstance: api,
-    backendRoute: baseRoute.MATCH,
+    // backendRoute: baseRoute.MATCH,
+    backendRoute: "/get-new-data/j-m/match",
     data: readParams,
   });
 
@@ -29,7 +38,8 @@ const readPlayerMatchEventLog: ReadFun<"playerMatchEventLog"> = async (
 ) =>
   createItemBase<DraftData[any]["playerMatchEventLog"]>({
     apiInstance: api,
-    backendRoute: baseRoute.PLAYER_MATCH_EVENT_LOG,
+    // backendRoute: baseRoute.PLAYER_MATCH_EVENT_LOG,
+    backendRoute: "/get-new-data/j-m/player-match-event-log",
     data: readParams,
   });
 
@@ -39,7 +49,8 @@ const readStaffAppearance: ReadFun<"staffAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["staffAppearance"]>({
     apiInstance: api,
-    backendRoute: baseRoute.STAFF_APPEARANCE,
+    // backendRoute: baseRoute.STAFF_APPEARANCE,
+    backendRoute: "/get-new-data/j-m/staff-appearance",
     data: readParams,
   });
 
@@ -49,11 +60,13 @@ const readRefereeAppearance: ReadFun<"refereeAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["refereeAppearance"]>({
     apiInstance: api,
-    backendRoute: baseRoute.REFEREE_APPEARANCE,
+    // backendRoute: baseRoute.REFEREE_APPEARANCE,
+    backendRoute: "/get-new-data/j-m/referee-appearance",
     data: readParams,
   });
 
 export const readJ_MMap: ReadMap = {
+  values: readValues,
   match: readMatch,
   playerAppearance: readPlayerAppearance,
   playerMatchEventLog: readPlayerMatchEventLog,

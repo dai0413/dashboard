@@ -3,10 +3,19 @@ import { ReadFun, ReadMap } from "../types";
 import { DraftData } from "../../../../../types/form";
 import { createItemBase } from "../../../../api";
 
+const baseRoute = API_PATHS.GET_NEW_DATA.D_M;
+
+export const readValues: ReadFun<"values"> = async (api, readParams) =>
+  createItemBase<DraftData>({
+    apiInstance: api,
+    backendRoute: baseRoute.VALUES,
+    data: readParams,
+  });
+
 const readMatch: ReadFun<"match"> = async (api, readParams) =>
   createItemBase<DraftData[any]["match"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.MATCH,
+    backendRoute: baseRoute.MATCH,
     data: readParams,
   });
 
@@ -16,7 +25,7 @@ const readPlayerAppearance: ReadFun<"playerAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["playerAppearance"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_APPEARANCE,
+    backendRoute: baseRoute.PLAYER_APPEARANCE,
     data: readParams,
   });
 
@@ -26,7 +35,7 @@ const readPlayerMatchEventLog: ReadFun<"playerMatchEventLog"> = async (
 ) =>
   createItemBase<DraftData[any]["playerMatchEventLog"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.PLAYER_MATCH_EVENT_LOG,
+    backendRoute: baseRoute.PLAYER_MATCH_EVENT_LOG,
     data: readParams,
   });
 
@@ -36,7 +45,7 @@ const readStaffAppearance: ReadFun<"staffAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["staffAppearance"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_APPEARANCE,
+    backendRoute: baseRoute.STAFF_APPEARANCE,
     data: readParams,
   });
 
@@ -46,7 +55,7 @@ const readStaffMatchEventLog: ReadFun<"staffMatchEventLog"> = async (
 ) =>
   createItemBase<DraftData[any]["staffMatchEventLog"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.STAFF_MATCH_EVENT_LOG,
+    backendRoute: baseRoute.STAFF_MATCH_EVENT_LOG,
     data: readParams,
   });
 
@@ -56,11 +65,12 @@ const readRefereeAppearance: ReadFun<"refereeAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["refereeAppearance"]>({
     apiInstance: api,
-    backendRoute: API_PATHS.GET_NEW_DATA.D_M.REFEREE_APPEARANCE,
+    backendRoute: baseRoute.REFEREE_APPEARANCE,
     data: readParams,
   });
 
 export const readD_MMap: ReadMap = {
+  values: readValues,
   match: readMatch,
   playerAppearance: readPlayerAppearance,
   playerMatchEventLog: readPlayerMatchEventLog,

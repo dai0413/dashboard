@@ -1,6 +1,9 @@
+import { CreateItemResponse } from "@dai0413/myorg-shared";
 import { DraftData, DraftDataValue } from "../../../../types/form";
+import { mergePositions } from "../../core/mergePositions";
 import { readMap } from "./readMap";
 import { ReadDraftDataParams, ReadFun } from "./types";
+import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/draftData";
 
 export const readDraftData = async (
   props: ReadDraftDataParams,
@@ -9,12 +12,35 @@ export const readDraftData = async (
 
   if (identifiers.length === 0) return {};
 
+  let newDraftData = draftData;
+
+  const hasValuesKey = requests.find(
+    ({ draftDataKey }) => draftDataKey === "values",
+  );
+
+  if (hasValuesKey) {
+    const mapByKey = readMap[hasValuesKey.draftDataKey];
+    const { from, params } = hasValuesKey;
+
+    const reader: ReadFun<"values"> = mapByKey[from as keyof typeof mapByKey];
+    const response: CreateItemResponse<Scraped | undefined> = await reader(
+      api,
+      params,
+    );
+
+    if (response.success && response.data) {
+      newDraftData = response.data;
+    }
+  }
+
   const entries = await Promise.all(
     identifiers.map(async (identifier) => {
-      const originalData = draftData[identifier];
+      const originalData = newDraftData[identifier];
 
       const missingKeys = requests.filter(
-        ({ draftDataKey }) => originalData?.[draftDataKey] === undefined,
+        ({ draftDataKey }) =>
+          draftDataKey !== "values" &&
+          originalData?.[draftDataKey] === undefined,
       );
 
       const responses = await Promise.all(
@@ -59,7 +85,11 @@ export const readDraftData = async (
       };
 
       for (const { draftDataKey, response } of responses) {
-        if (response.success && "data" in response) {
+        if (
+          response.success &&
+          "data" in response &&
+          draftDataKey !== "values"
+        ) {
           data[draftDataKey] = response.data as never;
         }
       }
@@ -68,5 +98,9 @@ export const readDraftData = async (
     }),
   );
 
-  return Object.fromEntries(entries);
+  const updatedDraftData = Object.fromEntries(entries);
+
+  const mergedDraftData = mergePositions(updatedDraftData);
+
+  return mergedDraftData;
 };

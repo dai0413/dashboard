@@ -4,6 +4,11 @@ import { readJ_MMap } from "./readJ_M";
 import { readSN_MMap } from "./readSN_M";
 
 export const readMap = {
+  values: {
+    [From.D_M]: readD_MMap.values,
+    [From.J_M]: readJ_MMap.values,
+  },
+
   match: {
     [From.D_M]: readD_MMap.match,
     [From.J_M]: readJ_MMap.match,

@@ -20,11 +20,11 @@ export type ReadDraftDataParams = {
   requests: ReadRequest[];
 };
 
-type ReadableDraftDataKey = keyof DraftDataValue;
+type ReadableDraftDataKey = keyof DraftDataValue | "values";
 
 export type ReadMap = Partial<Record<ReadableDraftDataKey, ReadFun<any>>>;
 
-export type ReadParams =
+type ReadParams =
   | {
       cardId: string[];
     }
@@ -32,7 +32,13 @@ export type ReadParams =
       url: string;
     };
 
+type ReadResult<K extends ReadableDraftDataKey> = K extends "values"
+  ? DraftData
+  : K extends keyof DraftDataValue
+    ? DraftDataValue[K]
+    : never;
+
 export type ReadFun<K extends ReadableDraftDataKey> = (
   api: AxiosInstance,
   readParams: ReadParams,
-) => Promise<CreateItemResponse<DraftDataValue[K] | undefined>>;
+) => Promise<CreateItemResponse<ReadResult<K> | undefined>>;
