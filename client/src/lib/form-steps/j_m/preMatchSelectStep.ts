@@ -47,6 +47,7 @@ const readCompetitionItems: ReadCompetitionItems[] = [
 
 export const getPreMatchSelect = <K extends keyof FormTypeMap>(
   modelType: keyof FormTypeMap,
+  matchSelect?: boolean,
 ): FormStep<K>[] => {
   const createFilterConditions =
     modelType === ModelType.MATCH
@@ -155,5 +156,24 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
     },
   ];
 
-  return base;
+  const option: FormStep<K> = {
+    stepLabel: "試合を選択",
+    type: StepType.FORM,
+    modelType: modelType,
+    dataSource: DataSource.META_DATA,
+    fields: [
+      {
+        key: "match",
+        label: "試合",
+        fieldType: "table",
+        valueType: "option",
+        required: true,
+        multi: true,
+      },
+    ],
+  };
+
+  const steps = matchSelect ? [...base, option] : base;
+
+  return steps;
 };

@@ -28,24 +28,24 @@ export const match: FormStep<BaseModel>[] = [
       };
 
       return getDraftData({
-        api,
-        draftData,
-        identifiers: [getDataUrl],
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: [getDataUrl],
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.J_M,
+              params: { url: getDataUrl },
+            },
+          ],
+        },
         competition_stage,
-        from: From.J_M,
       });
     },
   },
   bulkBase,
-  {
-    ...createConfirmationStep<BaseModel>(baseModel),
-    addPostedDraftData: ({ metaData, res, postedDraftData }) =>
-      addPostedDraftData({
-        postedDraftData,
-        res,
-        identifiers: [metaData.getDataUrl],
-      }),
-  },
+  createConfirmationStep<BaseModel>(baseModel),
 ];
 
 export const multiModel: FormStep<BaseModel>[] = [
@@ -62,11 +62,19 @@ export const multiModel: FormStep<BaseModel>[] = [
       };
 
       return getDraftData({
-        api,
-        draftData,
-        identifiers: [getDataUrl],
+        readDraftDataParams: {
+          api,
+          draftData,
+          identifiers: [getDataUrl],
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.J_M,
+              params: { url: getDataUrl },
+            },
+          ],
+        },
         competition_stage,
-        from: From.D_M,
       });
     },
   },
