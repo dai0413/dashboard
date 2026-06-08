@@ -1,180 +1,84 @@
-import { API_PATHS, Select } from "@dai0413/myorg-shared";
-import {
-  ResolveInput,
-  ResolveOutput,
-} from "@dai0413/myorg-shared/types/resolver/playerMatchEventLog";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/models/player-match-event-log";
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
-import { PlayerMatchEventLogForm } from "../../../../../types/models/player-match-event-log";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
-import { Label } from "../../../../../types/types";
-import { MatchFormatGet } from "../../../../../types/models/match-format";
-import { createItemBase } from "../../../../api";
-import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
-import { AxiosInstance } from "axios";
-import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
-import { getFields } from "../fields";
-import { combineValidations } from "../../../utils/validate/combine";
-import { validatePlayerRequiredForEvent } from "../validations/player";
-import { validateExclusiveSpecialTime } from "../../../utils/validate/special_time";
-import { calcPeriodLabel } from "../../../utils/onChange/calcPeriodLabel";
+import { From } from "../../../../../types/types";
+import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
+import { getDraftData } from "../getDraftData";
+import { getPreMatchSelect } from "../../../j_m/preMatchSelectStep";
 
-const KEYS = ["match", "player", "team", "match_event_type"] as const;
+type BaseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
+const baseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
+const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, true);
 
-const buildResolveInput = (
-  draftData: Scraped[],
-  candidatePlayers: PlayerAppearanceGet[],
-  match: Label,
-  team?: Label,
-  periods?: MatchFormatGet["period"],
-): ResolveInput<{
-  match_event_type: Select.MODEL;
-}>[] => {
-  const data = draftData.map((d) => {
-    const targetPlayer = candidatePlayers?.find(
-      (pa) =>
-        pa.player?.label === d.player?.name || pa.number === d.player?.number,
-    )?.player;
+export const playerMatchEventLog: FormStep<BaseModel>[] = [
+  ...matchSelectSteps,
+  {
+    modelType: baseModel,
+    stepLabel: "J_M, PLAYER_MATCH_EVENT_LOGモデルデータを取得します",
+    type: StepType.FORM,
+    many: true,
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
+      const url: string = metaData.getDataUrl;
+      const match: string[] = metaData.match;
 
-    const player: Label | undefined = targetPlayer?.id
-      ? targetPlayer
-      : undefined;
+      if (!url || !match) return { value: [], label: [] };
 
-    return {
-      ...d,
-      match,
-      team,
-      player,
-      player_name: player ? undefined : d.player_name,
-      period_label: calcPeriodLabel(d, periods),
-    };
-  });
-
-  return data;
-};
-
-const fetchResolved = async (
-  api: AxiosInstance,
-  input: ResolveInput<{
-    match_event_type: Select.MODEL;
-  }>[],
-): Promise<ResolveOutput[]> => {
-  const res = await createItemBase<{ playerMatchEventLog: ResolveOutput[] }>({
-    apiInstance: api,
-    backendRoute: API_PATHS.RESOLVE.MODEL_DATA,
-    data: { playerMatchEventLog: input },
-    returnResponse: true,
-  });
-
-  if (!res.success) return [];
-
-  return res.data.playerMatchEventLog;
-};
-
-const resolve = async (
-  api: AxiosInstance,
-  data: Scraped[],
-  candidatePlayers: PlayerAppearanceGet[],
-  match: Label,
-  team?: Label,
-  periods?: MatchFormatGet["period"],
-) => {
-  const input = buildResolveInput(data, candidatePlayers, match, team, periods);
-  return fetchResolved(api, input);
-};
-
-export const playerMatchEventLog: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] =
-  [
-    {
-      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
-      stepLabel: "選手のイベントログを入力開始",
-      type: StepType.FORM,
-      fields: [],
-      createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-      getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-        const getDataUrl = metaData.getDataUrl;
-
-        if (
-          !getDataUrl ||
-          !draftData[getDataUrl].playerMatchEventLog ||
-          !postedDraftData[getDataUrl].match ||
-          !postedDraftData[getDataUrl].playerAppearance
-        )
-          return { value: [], label: [] };
-
-        const {
-          _id: matchId,
-          home_team,
-          away_team,
-        } = postedDraftData[getDataUrl].match;
-        const { periods } = postedDraftData[getDataUrl];
-
-        const match = {
-          id: matchId,
-          label: postedDraftData[getDataUrl].matchLabel || "",
-        };
-
-        const { home: homePlayers, away: awayPlayers } =
-          postedDraftData[getDataUrl].playerAppearance;
-
-        const home = await resolve(
+      return getDraftData({
+        readDraftDataParams: {
           api,
-          draftData[getDataUrl].playerMatchEventLog.home,
-          homePlayers,
-          match,
-          home_team,
-          periods,
-        );
+          draftData,
+          identifiers: match,
+          requests: [
+            { draftDataKey: "match", from: From.J_M, params: { url } },
+            {
+              draftDataKey: "playerMatchEventLog",
+              from: From.J_M,
+              params: { url },
+            },
+          ],
+        },
+        postedDraftData,
+      });
+    },
+  },
+  bulkBase,
+  createConfirmationStep<BaseModel>(baseModel),
+];
 
-        const away = await resolve(
+export const multiModel: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "選手のイベントログを入力開始",
+    type: StepType.FORM,
+    many: true,
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
+      const getDataUrl: string = metaData.getDataUrl;
+
+      return getDraftData({
+        readDraftDataParams: {
           api,
-          draftData[getDataUrl].playerMatchEventLog.away,
-          awayPlayers,
-          match,
-          away_team,
-          periods,
-        );
-
-        const homeResult = buildValueLabel(home, KEYS);
-        const awayResult = buildValueLabel(away, KEYS);
-
-        const value: PlayerMatchEventLogForm[] = [
-          ...homeResult.value,
-          ...awayResult.value,
-        ];
-        const label: Record<string, any>[] = [
-          ...homeResult.label,
-          ...awayResult.label,
-        ];
-
-        return { value, label };
-      },
-      many: true,
+          draftData,
+          identifiers: [getDataUrl],
+          requests: [
+            {
+              draftDataKey: "match",
+              from: From.J_M,
+              params: { url: getDataUrl },
+            },
+            {
+              draftDataKey: "playerMatchEventLog",
+              from: From.J_M,
+              params: { url: getDataUrl },
+            },
+          ],
+        },
+        postedDraftData,
+      });
     },
-    {
-      modelType: ModelType.PLAYER_MATCH_EVENT_LOG,
-      stepLabel: "詳細を入力",
-      type: StepType.FORM,
-      fields: getFields([
-        "match",
-        "team",
-        "match_event_type",
-        "player",
-        "player_name",
-        "time",
-        "add_time",
-        "special_time",
-        "order",
-      ]),
-      validate: combineValidations(
-        validatePlayerRequiredForEvent,
-        validateExclusiveSpecialTime,
-      ),
-      many: true,
-    },
-    createConfirmationStep<ModelType.PLAYER_MATCH_EVENT_LOG>(
-      ModelType.PLAYER_MATCH_EVENT_LOG,
-    ),
-  ];
+  },
+  bulkBase,
+  createConfirmationStep<BaseModel>(baseModel),
+];

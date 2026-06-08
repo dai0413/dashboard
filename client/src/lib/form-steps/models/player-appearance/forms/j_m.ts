@@ -13,10 +13,10 @@ type BaseModel = ModelType.PLAYER_APPEARANCE;
 const baseModel = ModelType.PLAYER_APPEARANCE;
 const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, true);
 
-export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
+export const playerAppearance: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
   {
-    modelType: ModelType.PLAYER_APPEARANCE,
+    modelType: baseModel,
     stepLabel: "J_M, PLAYER_APPEARANCEモデルデータを取得します",
     type: StepType.FORM,
     many: true,
@@ -61,9 +61,7 @@ export const playerAppearance: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
     },
   },
   bulkBase,
-  createConfirmationStep<ModelType.PLAYER_APPEARANCE>(
-    ModelType.PLAYER_APPEARANCE,
-  ),
+  createConfirmationStep<BaseModel>(baseModel),
 ];
 
 export const multiModel: FormStep<BaseModel>[] = [
