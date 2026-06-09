@@ -31,7 +31,6 @@ export const playerMatchEventLog: FormStep<BaseModel>[] = [
           draftData,
           identifiers: match,
           requests: [
-            { draftDataKey: "match", from: From.J_M, params: { url } },
             {
               draftDataKey: "playerMatchEventLog",
               from: From.J_M,
@@ -50,7 +49,7 @@ export const playerMatchEventLog: FormStep<BaseModel>[] = [
 export const multiModel: FormStep<BaseModel>[] = [
   {
     modelType: baseModel,
-    stepLabel: "選手のイベントログを入力開始",
+    stepLabel: "J_M, PLAYER_MATCH_EVENT_LOGモデルデータを取得します",
     type: StepType.FORM,
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
@@ -63,11 +62,6 @@ export const multiModel: FormStep<BaseModel>[] = [
           draftData,
           identifiers: [getDataUrl],
           requests: [
-            {
-              draftDataKey: "match",
-              from: From.J_M,
-              params: { url: getDataUrl },
-            },
             {
               draftDataKey: "playerMatchEventLog",
               from: From.J_M,

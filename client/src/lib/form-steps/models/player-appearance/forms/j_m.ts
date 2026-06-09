@@ -29,7 +29,6 @@ export const playerAppearance: FormStep<BaseModel>[] = [
       if (!url || !match) return { value: [], label: [] };
 
       const baseRequest: ReadDraftDataParams["requests"] = [
-        { draftDataKey: "match", from: From.J_M, params: { url } },
         {
           draftDataKey: "playerAppearance",
           from: From.J_M,
@@ -80,11 +79,6 @@ export const multiModel: FormStep<BaseModel>[] = [
           draftData,
           identifiers: [getDataUrl],
           requests: [
-            {
-              draftDataKey: "match",
-              from: From.J_M,
-              params: { url: getDataUrl },
-            },
             {
               draftDataKey: "playerAppearance",
               from: From.J_M,
