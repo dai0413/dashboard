@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import mongoose from "mongoose";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
 import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/draftData";
 import { getValues as get } from "@dai0413/scraping-logic/J";
@@ -12,15 +11,8 @@ const getValues = async (
   res: Response<CreateItemResponse<Scraped>>,
 ) => {
   try {
-    const { url, season } = req.body;
+    const { url } = req.body;
     if (!url) throw new BadRequestError("urlを送信してください");
-    if (
-      !season ||
-      typeof season !== "string" ||
-      !mongoose.Types.ObjectId.isValid(season)
-    ) {
-      throw new BadRequestError("seasonを送信してください");
-    }
 
     const result = await get(url);
 

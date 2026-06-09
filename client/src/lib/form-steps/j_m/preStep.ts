@@ -14,7 +14,7 @@ export const preStep: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
   {
     modelType: baseModel,
-    stepLabel: "D_M, VALUESデータを取得します",
+    stepLabel: "J_M, VALUESデータを取得します",
     type: StepType.FORM,
     many: true,
     addDraftData: async ({ metaData, api }) => {

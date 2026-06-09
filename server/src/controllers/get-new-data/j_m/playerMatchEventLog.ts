@@ -11,15 +11,17 @@ const getPlayerMatchEventLog = async (
   res: Response<CreateItemResponse<Scraped[any]["playerMatchEventLog"]>>,
 ) => {
   try {
-    const { url, id } = req.body;
-    if (!url && !id) throw new BadRequestError("urlまたはidを送信してください");
+    const { url } = req.body;
+    if (!url) throw new BadRequestError("urlを送信してください");
 
-    const result = await get(url, id);
+    const result = await get(url);
 
     if (result.ok) {
-      res
-        .status(StatusCodes.OK)
-        .json({ success: true, message: "成功", data: result.data });
+      res.status(StatusCodes.OK).json({
+        success: true,
+        message: "成功",
+        data: result.data,
+      });
     } else {
       throw new InternalServerError(result.error);
     }

@@ -16,10 +16,9 @@ const getPositions = async (
 
     const result = await get(url);
     if (result.ok) {
-      const positionDatas: Scraped = result.data;
       res
         .status(StatusCodes.OK)
-        .json({ success: true, message: "成功", data: positionDatas });
+        .json({ success: true, message: "成功", data: result.data });
     } else {
       throw new InternalServerError(result.error);
     }
