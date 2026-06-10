@@ -6,6 +6,7 @@ type FieldOverrides<K extends string> = Partial<
     K,
     {
       multi?: true;
+      required?: boolean;
     }
   >
 >;
@@ -28,6 +29,18 @@ export const createFieldHelpers = <
         return {
           ...base,
           multi: true as const,
+        } as FormFieldDefinition<M>;
+      }
+
+      if (override?.required === true) {
+        return {
+          ...base,
+          required: true as const,
+        } as FormFieldDefinition<M>;
+      } else if (override?.required === false) {
+        return {
+          ...base,
+          required: false as const,
         } as FormFieldDefinition<M>;
       }
 
