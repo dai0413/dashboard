@@ -208,11 +208,11 @@ const crudFactory = <
         ...(Object.keys(beforeMatch).length > 0
           ? [{ $match: beforeMatch }]
           : []),
-        ...getNest(false, afterPaths),
-        ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
         ...(filters && Object.keys(filters).length > 0
           ? [{ $match: filters }]
           : []),
+        ...getNest(false, afterPaths),
+        ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
         ...(getAllConfig?.project &&
         Object.keys(getAllConfig.project).length > 0
           ? [{ $project: getAllConfig.project }]

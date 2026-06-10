@@ -6,6 +6,7 @@ import { Formation } from "./model/formation";
 import { Match } from "./model/match";
 import { MatchEventType } from "./model/match-event-type";
 import { MatchFormat } from "./model/match-format";
+import { NationalCallup } from "./model/national-callup";
 import { NationalMatchSeries } from "./model/national-match-series";
 import { Player } from "./model/player";
 import { Season } from "./model/season";
@@ -24,6 +25,7 @@ export type ModelDataOption = {
   [ModelType.MATCH_FORMAT]: MatchFormat;
   [ModelType.MATCH]: Match;
   [ModelType.NATIONAL_MATCH_SERIES]: NationalMatchSeries;
+  [ModelType.NATIONAL_CALLUP]: NationalCallup;
   [ModelType.PLAYER]: Player;
   [ModelType.SEASON]: Season;
   [ModelType.STADIUM]: Stadium;

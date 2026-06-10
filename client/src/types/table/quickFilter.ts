@@ -11,6 +11,7 @@ export type QuickFilterItem = {
 export enum QuickFilterType {
   TEAM = "team",
   PLAYER_FOR_MATCH = "player-for-match",
+  NATIONAL_CALLUP = "national-callup",
   MATCH_EVENT_TYPE = "match-event-type",
   FORMATION = "formation",
   MATCH_FORMAT = "match-format",

@@ -15,6 +15,7 @@ import {
   staff,
   matchEventType,
   formation,
+  nationalCallup,
 } from "../model";
 
 type Converter<T extends ModelOptionKey> = (
@@ -29,6 +30,7 @@ const convertMap: Partial<{
   [ModelType.MATCH_FORMAT]: (data) => matchFormat(data),
   [ModelType.MATCH_EVENT_TYPE]: (data) => matchEventType(data),
   [ModelType.NATIONAL_MATCH_SERIES]: (data) => nationalMatchSeries(data),
+  [ModelType.NATIONAL_CALLUP]: (data) => nationalCallup(data),
   [ModelType.PLAYER]: (data) => player(data),
   [ModelType.SEASON]: (data) => season(data),
   [ModelType.STADIUM]: (data) => stadium(data),
