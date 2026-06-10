@@ -61,10 +61,9 @@ const DetailModal = () => {
 
   const displayableField = modelType ? getOnDetailFields(modelType) : [];
 
-  const editOnClick = () => {
+  const editOnClick = async () => {
     if (id) {
-      open(modelType);
-      startForm({
+      const success = await startForm({
         id,
         modelType,
         formMode: FormMode.UPDATE,
@@ -72,6 +71,8 @@ const DetailModal = () => {
         editItem: selected,
         from: From.NORMAL,
       });
+
+      if (success) open(modelType);
     }
   };
 

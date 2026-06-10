@@ -80,7 +80,7 @@ type FormContextValue<T extends ModelType> = {
   inputMode: InputMode;
 
   formOperator: {
-    startForm: ({}: StartFormArgs<T>) => void;
+    startForm: ({}: StartFormArgs<T>) => Promise<boolean>;
   };
 
   isEditing: boolean;
@@ -303,21 +303,21 @@ export const FormProvider = <T extends ModelType>({
     steps?: FormStep<T>[];
   };
 
-  const startForm = async (args: StartForm<T>) => {
+  const startForm = async (args: StartForm<T>): Promise<boolean> => {
     let newSteps: FormStep<T>[];
     if (args.steps) {
       newSteps = args.steps;
     } else {
       if (!args.modelType) {
         console.error("error in startForm : modelType");
-        return;
+        return false;
       }
 
       const stepsObj = getSteps(args);
 
       if (!stepsObj) console.error("error in startForm : getSteps");
 
-      if (!stepsObj?.steps) return;
+      if (!stepsObj?.steps) return false;
 
       newSteps = stepsObj?.steps;
     }
@@ -443,6 +443,8 @@ export const FormProvider = <T extends ModelType>({
     setIsEditing(true);
     setFilterConditionsObj(null);
     setQuickFilterIteemsObj(null);
+
+    return true;
   };
 
   const nextData = () => {

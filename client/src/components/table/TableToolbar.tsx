@@ -288,7 +288,7 @@ const TableToolbar = <Data, Form>({
           const { label, ...rest } = item;
           return {
             label: item.label,
-            onClick: () =>
+            onClick: async () =>
               startForm({
                 ...rest,
                 formMode: FormMode.CREATE,
@@ -356,9 +356,9 @@ const TableToolbar = <Data, Form>({
 
   const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
 
-  const startUpdates = () => {
+  const startUpdates = async () => {
     if (modelType && items) {
-      startForm({
+      const success = await startForm({
         modelType,
         formMode: FormMode.UPDATE,
         inputMode: InputMode.MANY,
@@ -366,7 +366,7 @@ const TableToolbar = <Data, Form>({
         editItem: items as GettedModelDataMap[typeof modelType][],
         from: From.NORMAL,
       });
-      openForm();
+      if (success) openForm();
     }
   };
 
