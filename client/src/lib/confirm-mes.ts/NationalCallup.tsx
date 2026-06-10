@@ -1,31 +1,19 @@
-import { JSX } from "react";
+import { ModelType } from "../../types/models";
 import { NationalCallupForm } from "../../types/models/national-callup";
 import { Confirm } from "./Confirm";
+import { RenderLine } from "./utils/RenderLine";
 
 export const nationalCallup = (formDatas: NationalCallupForm[]) => {
-  const getNames = (filterFn: (d: NationalCallupForm) => boolean) =>
-    formDatas
-      .filter(filterFn)
-      .map((d) => d.player)
-      .join(",");
+  const getNames = (d: NationalCallupForm[]) =>
+    d.map((d) => d.player).join(" , ");
 
-  // 件数と名前をまとめるユーティリティ
   const renderLine = (
     label: string,
-    filterFn: (d: NationalCallupForm) => boolean
-  ): JSX.Element | null => {
-    const filtered = formDatas.filter(filterFn);
-    if (filtered.length === 0) return null;
-
-    return (
-      <div>
-        <span className="text-gray-400 ml-2">{`・${label} `}</span>
-        <span className="font-bold">{`${filtered.length}件 ${getNames(
-          filterFn
-        )}`}</span>
-      </div>
-    );
-  };
+    filterFn: (d: NationalCallupForm) => boolean,
+  ) =>
+    RenderLine<ModelType.NATIONAL_CALLUP>(formDatas, label, filterFn, {
+      getString: getNames,
+    });
 
   return (
     <Confirm count={formDatas.length}>
@@ -34,7 +22,7 @@ export const nationalCallup = (formDatas: NationalCallupForm[]) => {
       {renderLine("途中離脱", (d) => d.status === "途中離脱")}
       {renderLine(
         "トレーニングパートナー",
-        (d) => d.is_training_partner ?? false
+        (d) => d.is_training_partner ?? false,
       )}
       {renderLine("バックアップ", (d) => d.is_backup ?? false)}
       {renderLine("OA", (d) => d.is_overage ?? false)}
