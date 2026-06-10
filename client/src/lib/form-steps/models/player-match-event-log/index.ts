@@ -2,6 +2,7 @@ import { ModelType } from "../../../../types/models";
 import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
 import { single } from "./forms/single";
+import { bulk } from "./forms/bulk";
 import { playerMatchEventLog as d_ml } from "./forms/d_ml";
 import { playerMatchEventLog as j_m } from "./forms/j_m";
 
@@ -14,6 +15,10 @@ export const playerMatchEventLog: FormStepsConfig<ModelType.PLAYER_MATCH_EVENT_L
       },
     },
     [InputMode.MANY]: {
+      [From.NORMAL]: {
+        label: "多数データ",
+        steps: bulk,
+      },
       [From.J_M]: {
         label: "J_M",
         steps: j_m,
