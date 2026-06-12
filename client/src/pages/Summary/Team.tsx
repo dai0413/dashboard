@@ -29,21 +29,25 @@ import { convertMatchToTeamMatch } from "../../utils/data";
 import PointLine from "./Team/PointLine";
 import { ColumnType } from "../../types/table";
 
-const addMonths = (date: Date, months: number) => {
-  const d = new Date(date);
-  d.setMonth(d.getMonth() + months);
-  return d;
-};
+type DateUnit = "day" | "month" | "year";
 
-const addDays = (date: Date, days: number) => {
+export const addDate = (date: Date, amount: number, unit: DateUnit): Date => {
   const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d;
-};
 
-const addYears = (date: Date, years: number) => {
-  const d = new Date(date);
-  d.setFullYear(d.getFullYear() + years);
+  switch (unit) {
+    case "day":
+      d.setDate(d.getDate() + amount);
+      break;
+
+    case "month":
+      d.setMonth(d.getMonth() + amount);
+      break;
+
+    case "year":
+      d.setFullYear(d.getFullYear() + amount);
+      break;
+  }
+
   return d;
 };
 
@@ -84,11 +88,8 @@ const getSeasonDates = (
     ].filter(Boolean) as string[],
   };
 
-  /** transferWindow（start -1ヶ月） */
-  const transferWindowStart = seasonStart
-    ? addMonths(seasonStart, -1)
-    : undefined;
-
+  /** transferWindow */
+  const transferWindowStart = seasonStart;
   const transferWindow: SeasonDates = {
     startDate: toDateKey(transferWindowStart),
     endDate: toDateKey(seasonEnd),
@@ -99,8 +100,8 @@ const getSeasonDates = (
   };
 
   /** future（end +1日） */
-  const futureStart = seasonEnd ? addDays(seasonEnd, 1) : undefined;
-  const futureEnd = seasonEnd ? addYears(seasonEnd, 1) : undefined;
+  const futureStart = seasonEnd ? addDate(seasonEnd, 1, "day") : undefined;
+  const futureEnd = seasonEnd ? addDate(seasonEnd, 1, "year") : undefined;
 
   const future: SeasonDates = {
     startDate: toDateKey(futureStart),
@@ -461,6 +462,24 @@ const Team = () => {
                 displayOnTable: true,
                 type: "string",
               },
+              {
+                label: "加入日",
+                field: "from_date",
+                isPrimary: true,
+                getValueType: ColumnType.FIELD,
+                key: "from_date",
+                displayOnTable: true,
+                type: "Date",
+              },
+              {
+                label: "移籍形態",
+                field: "form",
+                isPrimary: true,
+                getValueType: ColumnType.FIELD,
+                key: "form",
+                displayOnTable: true,
+                type: "string",
+              },
             ]}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
@@ -484,7 +503,10 @@ const Team = () => {
                 to: APP_ROUTES.PLAYER_SUMMARY,
               },
             ]}
-            initialData={{ formData: { to_team: id } }}
+            initialData={{
+              formData: { to_team: id },
+              metaData: { team: id },
+            }}
           />
         </>
       )}

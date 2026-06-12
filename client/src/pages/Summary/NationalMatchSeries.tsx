@@ -205,6 +205,9 @@ const National = () => {
                 ? toDateKey(selected?.left_at)
                 : undefined,
             },
+            metaData: {
+              series: id,
+            },
           }}
         />
       )}

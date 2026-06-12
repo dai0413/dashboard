@@ -10,6 +10,7 @@ import { Competition } from "../../../../types/models/competition";
 import { Season } from "../../../../types/models/season";
 import { Transfer } from "../../../../types/models/transfer";
 import { OptionType } from "../../../../utils/createOption/types/preset";
+import { JOIN_TRANSFER_TYPES } from "../../../../constants/transfer";
 
 const getRegistration = async (
   api: AxiosInstance,
@@ -83,15 +84,7 @@ const getTransfer = async (
     params: {
       getAll: true,
       to_team: teamId,
-      form: [
-        "更新",
-        "完全",
-        "期限付き",
-        "育成型期限付き",
-        "期限付き延長",
-        "育成型期限付き延長",
-        "復帰",
-      ],
+      form: JOIN_TRANSFER_TYPES,
       from_date: fromDateRange.value,
     },
   });
