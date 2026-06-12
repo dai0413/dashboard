@@ -31,7 +31,7 @@ export const transfer = (t: Transfer): TransferGet => {
       typeof t.from_date === "string" ? new Date(t.from_date) : t.from_date,
     to_date: typeof t.to_date === "string" ? new Date(t.to_date) : t.to_date,
     player: {
-      label: player(t.player),
+      label: t.player ? player(t.player) : "",
       id: t.player?._id,
     },
     from_team: newFrom_team,
