@@ -75,6 +75,17 @@ const checkRequiredFields = <T extends ModelType>(
   return { success: true };
 };
 
+type AddFormDatasParams<T extends ModelType> = {
+  setPage?: (p: number) => void;
+  formData?: FormTypeMap[T];
+  formLabel?: Record<string, any>;
+
+  duplicateCheck?: (
+    existing: FormTypeMap[T],
+    incoming: FormTypeMap[T],
+  ) => boolean;
+};
+
 type FormContextValue<T extends ModelType> = {
   modelType: T | null;
   inputMode: InputMode;
@@ -97,7 +108,7 @@ type FormContextValue<T extends ModelType> = {
     bulkCommonData: FormTypeMap[T];
     bulkCommonLabel: Record<string, any>;
     handleFormData: ArrayHandleFormData<T>;
-    addFormDatas: (setPage?: (p: number) => void) => void;
+    addFormDatas: (params: AddFormDatasParams<T>) => void;
     deleteFormDatas: (index: number) => void;
     renderConfirmMes: (
       confirmData: Record<string, string | number | undefined>[],
@@ -120,7 +131,7 @@ type FormContextValue<T extends ModelType> = {
   options: Record<string, OptionObj<any>>;
 
   displayableField: DetailFieldDefinition[];
-  autoFill: () => Promise<void>;
+  autoFill: (() => Promise<void>) | undefined;
   filterConditionsObj: FilterConditionsByKey | null;
   removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
   quickFilterItemsObj: QuickFilterItemsByKey | null;
@@ -1017,12 +1028,28 @@ export const FormProvider = <T extends ModelType>({
     }
   };
 
-  const addFormDatas = (
-    setPage?: (p: number) => void,
-    formData?: FormTypeMap[T],
-  ) => {
+  const addFormDatas = ({
+    setPage,
+    formData,
+    formLabel,
+    duplicateCheck,
+  }: AddFormDatasParams<T>) => {
     const baseData = bulkCommonData ? { ...bulkCommonData } : {};
     const baseLabel = bulkCommonLabel ? { ...bulkCommonLabel } : {};
+
+    if (formData && duplicateCheck) {
+      const duplicateIndex = formDatas.findIndex((d) =>
+        duplicateCheck(d, formData),
+      );
+
+      if (duplicateIndex >= 0) {
+        setFormDatas(formDatas.filter((_, i) => i !== duplicateIndex));
+
+        setFormLabels(formLabels.filter((_, i) => i !== duplicateIndex));
+
+        return;
+      }
+    }
 
     const newFormDatas = [
       ...formDatas,
@@ -1035,7 +1062,7 @@ export const FormProvider = <T extends ModelType>({
       ...formLabels,
       {
         ...baseLabel,
-        ...(formData || {}),
+        ...(formLabel || formData || {}),
       },
     ];
 
@@ -1065,7 +1092,7 @@ export const FormProvider = <T extends ModelType>({
   };
 
   // ////////////////////////////////////////////////////// //
-  const autoFill = async (): Promise<void> => {
+  const autoFillFun = async (): Promise<void> => {
     const current = formSteps[currentStep];
 
     if (current.many) {
@@ -1086,6 +1113,13 @@ export const FormProvider = <T extends ModelType>({
       }
     }
   };
+
+  const autoFill =
+    formSteps[currentStep] &&
+    formSteps[currentStep].many &&
+    formSteps[currentStep].autoFill
+      ? autoFillFun
+      : undefined;
 
   const renderer: (
     confirmData: Record<string, string | number | undefined>[],
