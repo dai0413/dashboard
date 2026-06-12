@@ -5,6 +5,7 @@ import { BaseCrudRoutes } from "../../types/baseCrudRoutes";
 export const optionRouteMap: Record<string, BaseCrudRoutes> = {
   [ModelType.PLAYER]: API_PATHS.PLAYER,
   [ModelType.TEAM]: API_PATHS.TEAM,
+  [ModelType.TRANSFER]: API_PATHS.TRANSFER,
   [ModelType.COUNTRY]: API_PATHS.COUNTRY,
   [ModelType.MATCH]: API_PATHS.MATCH,
   [ModelType.MATCH_EVENT_TYPE]: API_PATHS.MATCH_EVENT_TYPE,

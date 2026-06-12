@@ -16,6 +16,7 @@ import {
   matchEventType,
   formation,
   nationalCallup,
+  transfer,
 } from "../model";
 
 type Converter<T extends ModelOptionKey> = (
@@ -39,6 +40,7 @@ const convertMap: Partial<{
   [ModelType.COMPETITION_STAGE]: (data) => competitionStage(data),
   [ModelType.COMPETITION]: (data) => competition(data),
   [ModelType.FORMATION]: (data) => formation(data),
+  [ModelType.TRANSFER]: (data) => transfer(data),
 };
 
 export function convertToOption<T extends ModelOptionKey>(

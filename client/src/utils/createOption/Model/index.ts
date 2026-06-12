@@ -12,3 +12,4 @@ export { match } from "./match";
 export { staff } from "./staff";
 export { matchEventType } from "./match-event-type";
 export { formation } from "./formation";
+export { transfer } from "./transfer";

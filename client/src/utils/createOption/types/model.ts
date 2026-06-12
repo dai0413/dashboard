@@ -13,6 +13,7 @@ import { Season } from "./model/season";
 import { Stadium } from "./model/stadium";
 import { Staff } from "./model/staff";
 import { Team } from "./model/team";
+import { Transfer } from "./model/transfer";
 
 export type ModelOptionKey = keyof ModelDataOption;
 
@@ -31,4 +32,5 @@ export type ModelDataOption = {
   [ModelType.STADIUM]: Stadium;
   [ModelType.STAFF]: Staff;
   [ModelType.TEAM]: Team;
+  [ModelType.TRANSFER]: Transfer;
 };
