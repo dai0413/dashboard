@@ -16,8 +16,14 @@ export const toManyOnChange = <K extends object>(
     );
 
     return {
-      formDatas: applied.map((d) => d.formData),
-      formLabels: applied.map((d) => d.formLabel),
+      formDatas: formDatas.map((formData, i) => ({
+        ...formData,
+        ...applied[i].formData,
+      })),
+      formLabels: formLabels.map((formLabel, i) => ({
+        ...formLabel,
+        ...applied[i].formLabel,
+      })),
     };
   };
 };
