@@ -29,7 +29,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
   const { page, setPage } = useQuery();
 
   type Focus = {
-    field: FormFieldDefinition<T>;
+    field?: FormFieldDefinition<T>;
     rowIndex: number;
   };
 
@@ -41,7 +41,12 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
 
   const handleSetPage = (p: number) => setPage("formPage", p);
 
-  if (focus?.field.fieldType === "table" && formData && formLabel) {
+  const fieldCopy =
+    formSteps[currentStep].many && formSteps[currentStep].fieldCopy
+      ? formSteps[currentStep].fieldCopy
+      : undefined;
+
+  if (focus?.field?.fieldType === "table" && formData && formLabel) {
     if (isTableOpen && focus)
       return (
         <RenderField
@@ -55,6 +60,40 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
           filterConditionsObj={filterConditionsObj}
         />
       );
+  }
+
+  if (isTableOpen && fieldCopy) {
+    const formData = many?.state ? fieldCopy.getDisplayData(many?.state) : {};
+    const formLabel = many?.stateLabel
+      ? fieldCopy.getDisplayData(many?.stateLabel)
+      : {};
+
+    return (
+      <RenderField
+        field={{
+          fieldType: "table",
+          valueType: "option",
+          key: fieldCopy.optionKey,
+          label: "option-label",
+          multi: true,
+        }}
+        formData={formData || {}}
+        formLabel={formLabel || {}}
+        onRowSelect={async (row) => {
+          if (fieldCopy && many) {
+            const { formData, formLabel } = await fieldCopy.onSelect(row);
+
+            many.addFormDatas({
+              formData,
+              formLabel,
+              duplicateCheck: fieldCopy.duplicateCheck,
+            });
+          }
+        }}
+        options={options}
+        filterConditionsObj={filterConditionsObj}
+      />
+    );
   }
 
   const headers: TableHeader<Record<string, any>>[] = formSteps[currentStep]
@@ -146,7 +185,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
             icon="add"
             color="blue"
             onClick={() => {
-              many?.addFormDatas(handleSetPage);
+              many?.addFormDatas({ setPage: handleSetPage });
             }}
           >
             データ追加
@@ -160,6 +199,19 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
             </IconTextButton>
           )}
         </div>
+
+        {fieldCopy && (
+          <IconTextButton
+            icon="edit"
+            color="gray"
+            onClick={() => {
+              toggleTableOpen();
+              setFocus(null);
+            }}
+          >
+            {fieldCopy?.label}
+          </IconTextButton>
+        )}
       </div>
     </>
   );

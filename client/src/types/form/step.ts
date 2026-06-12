@@ -9,6 +9,7 @@ import { CreateQuickFilterItems } from "./quickFilter";
 import { OnChange } from "./onChange";
 import { DataSource, StepType } from "./common";
 import { AddOptions } from "./option";
+import { FieldCopy } from "./fieldCopy";
 
 type BaseFormStep<K extends keyof FormTypeMap> = {
   modelType: ModelType;
@@ -33,8 +34,10 @@ export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
     api?: AxiosInstance,
   ) => Promise<FormTypeMap[K][]>;
   getDraftData?: GetDraftData<K, true>;
-  onChange?: OnChange<FormTypeMap[K], true>;
-  autoFill?: OnChange<FormTypeMap[K], true>;
+  onChange?: OnChange<FormTypeMap[K], true>; //自動実行　更新フィールドのみ返す
+  autoFill?: OnChange<FormTypeMap[K], true>; //ボタンクリック　すべてのフィールド返す
+
+  fieldCopy?: FieldCopy<K>;
 };
 
 type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {

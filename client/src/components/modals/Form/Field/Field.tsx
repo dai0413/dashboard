@@ -32,10 +32,11 @@ type RenderFieldProps<T extends keyof FormTypeMap> = {
   field: FormFieldDefinition<T>;
   formData: FormTypeMap[T];
   formLabel: Record<string, any>;
-  handleFormData: HandleFormData<T>;
+  handleFormData?: HandleFormData<T>;
   supportButton?: boolean;
   options: Record<string, OptionObj<any>>;
   filterConditionsObj: FilterConditionsByKey | null;
+  onRowSelect?: (row: OptionObj<any>["data"][number]) => void;
 };
 
 const RenderFieldBase = <T extends keyof FormTypeMap>({
@@ -45,6 +46,7 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
   handleFormData,
   supportButton,
   options,
+  onRowSelect,
 }: RenderFieldProps<T>) => {
   const { multi, key, fieldType, valueType, uniqueInArray, lengthInArray } =
     field;
@@ -167,6 +169,7 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
   switch (fieldType) {
     case "table": {
       const formDataLabel = get(formLabel, formDataKey) || "";
+
       return (
         <TableFieldRenderer
           value={formDataValue}
@@ -179,18 +182,20 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
           optionSource={optionSource}
           handleFormData={handleFormData}
           handlePageChange={handlePageChange}
+          onRowSelect={onRowSelect}
         />
       );
     }
     case "textarea": {
       const onChangeItem = (index: number, value: string | undefined) => {
-        handleFormData({
-          key: formDataKey,
-          value: value as FormTypeMap[T][typeof formDataKey],
-          field,
-          index,
-          updateMode: UpdateMode.ARRAY_UPDATE,
-        });
+        handleFormData &&
+          handleFormData({
+            key: formDataKey,
+            value: value as FormTypeMap[T][typeof formDataKey],
+            field,
+            index,
+            updateMode: UpdateMode.ARRAY_UPDATE,
+          });
       };
 
       return (
@@ -206,22 +211,24 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
         index: number,
         value: string | number | Date | undefined,
       ) => {
-        handleFormData({
-          key: formDataKey,
-          value: value as FormTypeMap[T][typeof formDataKey],
-          field,
-          index,
-          updateMode: UpdateMode.ARRAY_UPDATE,
-        });
+        handleFormData &&
+          handleFormData({
+            key: formDataKey,
+            value: value as FormTypeMap[T][typeof formDataKey],
+            field,
+            index,
+            updateMode: UpdateMode.ARRAY_UPDATE,
+          });
       };
 
       const onChangeObj = (value: Record<string, any> | undefined) => {
-        handleFormData({
-          key: formDataKey,
-          value: value as any,
-          field,
-          updateMode: UpdateMode.REPLACE,
-        });
+        handleFormData &&
+          handleFormData({
+            key: formDataKey,
+            value: value as any,
+            field,
+            updateMode: UpdateMode.REPLACE,
+          });
       };
 
       return (
@@ -241,25 +248,27 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
       const onChange = (
         value: string | number | Date | boolean | undefined,
       ) => {
-        handleFormData({
-          key: formDataKey,
-          value: value as FormTypeMap[T][typeof formDataKey],
-          field,
-          updateMode: UpdateMode.REPLACE,
-        });
+        handleFormData &&
+          handleFormData({
+            key: formDataKey,
+            value: value as FormTypeMap[T][typeof formDataKey],
+            field,
+            updateMode: UpdateMode.REPLACE,
+          });
       };
 
       const onChangeItem = (
         index: number,
         value: string | number | Date | boolean | undefined,
       ) => {
-        handleFormData({
-          key: formDataKey,
-          value: value as FormTypeMap[T][typeof formDataKey],
-          field,
-          index,
-          updateMode: UpdateMode.ARRAY_UPDATE,
-        });
+        handleFormData &&
+          handleFormData({
+            key: formDataKey,
+            value: value as FormTypeMap[T][typeof formDataKey],
+            field,
+            index,
+            updateMode: UpdateMode.ARRAY_UPDATE,
+          });
       };
 
       return (

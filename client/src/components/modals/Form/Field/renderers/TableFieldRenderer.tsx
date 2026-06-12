@@ -33,12 +33,14 @@ type TableFieldRendererProps<T extends keyof FormTypeMap> = {
   viewOptionData: OptionObj<any>;
   optionIsLoading: boolean;
   optionSource: OptionSource;
-  handleFormData: HandleFormData<T>;
+  handleFormData?: HandleFormData<T>;
   handlePageChange: (
     page: number,
     filterConditions?: FilterableFieldDefinition[] | undefined,
     sortConditions?: SortableFieldDefinition[],
   ) => Promise<void>;
+
+  onRowSelect?: (row: OptionObj<any>["data"][number]) => void;
 };
 
 export const TableFieldRenderer = <T extends keyof FormTypeMap>({
@@ -53,6 +55,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
   optionSource,
   handleFormData,
   handlePageChange,
+  onRowSelect,
 }: TableFieldRendererProps<T>) => {
   const { filterConditionsObj, quickFilterItemsObj } = useForm();
 
@@ -98,6 +101,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         <button
           type="button"
           onClick={() =>
+            handleFormData &&
             handleFormData({
               key: formDataKey,
               value: undefined,
@@ -123,25 +127,32 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         totalCount={viewOptionData ? viewOptionData.totalCount : undefined}
         form={true}
         onClick={(_index, row: OptionObj<any>["data"][number]) => {
+          if (onRowSelect) {
+            onRowSelect(row);
+            return;
+          }
+
           if (field.multi) {
             const { key, label } = row;
 
             const index = Array.isArray(value) ? value.length : 0;
 
-            handleFormData({
-              key: formDataKey,
-              value: { key, label } as FormTypeMap[T][typeof formDataKey],
-              field,
-              index: index,
-              updateMode: UpdateMode.ARRAY_UPDATE,
-            });
+            handleFormData &&
+              handleFormData({
+                key: formDataKey,
+                value: { key, label } as FormTypeMap[T][typeof formDataKey],
+                field,
+                index: index,
+                updateMode: UpdateMode.ARRAY_UPDATE,
+              });
           } else {
-            handleFormData({
-              key: formDataKey,
-              value: row as FormTypeMap[T][keyof FormTypeMap[T]],
-              field,
-              updateMode: UpdateMode.REPLACE,
-            });
+            handleFormData &&
+              handleFormData({
+                key: formDataKey,
+                value: row as FormTypeMap[T][keyof FormTypeMap[T]],
+                field,
+                updateMode: UpdateMode.REPLACE,
+              });
           }
         }}
         selectedKey={Array.isArray(value) ? value : ([value] as string[])}
