@@ -29,6 +29,7 @@ import {
   Form as StatsLForm,
   Scraped as StatsLScraped,
 } from "../models/stats-l";
+import { Scraped as PositionScraped } from "./position";
 
 export type Form = Record<
   string,
@@ -97,5 +98,6 @@ export type Scraped = Record<
       home: StatsLScraped;
       away: StatsLScraped;
     };
+    positions?: PositionScraped;
   }
 >;

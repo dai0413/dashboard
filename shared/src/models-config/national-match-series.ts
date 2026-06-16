@@ -28,7 +28,11 @@ export function nationalMatchSeries<TModel = any>(
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [{ path: "country", collection: "countries" }],
     getAllConfig: {
-      query: [{ field: "country", type: "ObjectId" }],
+      query: [
+        { field: "country", type: "ObjectId" },
+        { field: "joined_at", type: "Date" },
+        { field: "age_group", type: "String" },
+      ],
       sort: { joined_at: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
     },

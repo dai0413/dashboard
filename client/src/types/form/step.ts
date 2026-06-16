@@ -40,13 +40,14 @@ export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   fieldCopy?: FieldCopy<K>;
 };
 
-type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
-  many?: false;
-  dataSource?: DataSource;
-  skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
-  getDraftData?: GetDraftData<K, false>;
-  onChange?: OnChange<FormTypeMap[K], false>;
-};
+export type RecordDataFormStep<K extends keyof FormTypeMap> =
+  BaseFormStep<K> & {
+    many?: false;
+    dataSource?: DataSource;
+    skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
+    getDraftData?: GetDraftData<K, false>;
+    onChange?: OnChange<FormTypeMap[K], false>;
+  };
 
 export type FormStep<K extends keyof FormTypeMap> =
   | ArrayDataFormStep<K>

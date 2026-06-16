@@ -8,14 +8,15 @@ import {
 } from "react";
 import { useAlert } from "./alert-context";
 import {
+  ArrayDataFormStep,
   DataSource,
   FilterConditionsByKey,
   FormStep,
   QuickFilterItemsByKey,
+  RecordDataFormStep,
   StepType,
   UpdateData,
 } from "../types/form";
-import { FormFieldDefinition } from "../types/form/field";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "../types/models";
 import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
@@ -42,37 +43,28 @@ import {
 } from "../types/form/handleFormData";
 import { getDiffKeys } from "../utils/comparison";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
+import { checkRequiredFields } from "../utils/form/checkRequiredFields";
 
-const checkRequiredFields = <T extends ModelType>(
-  fields: FormFieldDefinition<T>[] | undefined,
-  data: FormTypeMap[T] | FormTypeMap[T][],
-): { success: boolean; message?: string } => {
-  if (!fields) return { success: true };
+type FormState<T extends keyof FormTypeMap> = {
+  formData: FormTypeMap[T];
+  formLabel: Record<string, any>;
+  bulkCommonData: FormTypeMap[T];
+  bulkCommonLabel: Record<string, any>;
+  formDatas: FormTypeMap[T][];
+  formLabels: Record<string, any>[];
+  metaData: Record<string, any>;
+  metaDataLabel: Record<string, any>;
+  metaDatas: Record<string, any>[];
+  metaDataLabels: Record<string, any>[];
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+};
 
-  // 複数モードか単一モードかを統一して扱う
-  const dataArray = Array.isArray(data) ? data : [data];
-
-  for (const f of fields) {
-    if (!f.required) continue;
-
-    for (const d of dataArray) {
-      const value = d[f.key as keyof FormTypeMap[T]];
-
-      if (Array.isArray(value)) {
-        if ((value as string[]).every((v) => v.trim() === "")) {
-          return { success: false, message: `${f.label}は必須項目です。` };
-        }
-      } else if (typeof value === "string") {
-        if (value.trim() === "") {
-          return { success: false, message: `${f.label}は必須項目です。` };
-        }
-      } else if (!value) {
-        return { success: false, message: `${f.label}は必須項目です。` };
-      }
-    }
-  }
-
-  return { success: true };
+type ApplyStateValue<T extends keyof FormTypeMap> = {
+  values: FormState<T>;
+  options: Record<string, OptionObj<any>>;
+  filterConditionsObj: FilterConditionsByKey | null;
+  quickFilterItemsObj: QuickFilterItemsByKey | null;
 };
 
 type AddFormDatasParams<T extends ModelType> = {
@@ -204,7 +196,11 @@ export const FormProvider = <T extends ModelType>({
   };
 
   useEffect(() => {
-    const newState: Record<string, any> = { ...formData, ...metaData };
+    const newState: Record<string, any> = {
+      ...formData,
+      ...metaData,
+      ...bulkCommonData,
+    };
     setState(newState);
   }, [formData, metaData]);
 
@@ -222,6 +218,7 @@ export const FormProvider = <T extends ModelType>({
     const newStateLabel: Record<string, any> = {
       ...formLabel,
       ...metaDataLabel,
+      ...bulkCommonLabel,
     };
     setStateLabel(newStateLabel);
   }, [formLabel, metaDataLabel]);
@@ -287,12 +284,61 @@ export const FormProvider = <T extends ModelType>({
     return resolved;
   }
 
-  const getNextStepIndex = (
+  const runStepEffects = async (
+    step: FormStep<T>,
+    values: FormState<T>,
+  ): Promise<ApplyStateValue<T>> => {
+    values = await onChangeFun(step, values);
+    values = await fetchValueFun(step, values);
+    values = await draftDataFun(step, values);
+
+    const newOptions = await addOptionsFun(step, values, options);
+    const newFilterConditionsObj = await createFilterConditionsFun(
+      step,
+      values,
+      filterConditionsObj,
+    );
+
+    const newQuickFilterItemsObj = await createQuickFilterItemsFun(
+      step,
+      values,
+      quickFilterItemsObj,
+    );
+
+    return {
+      values,
+      options: newOptions,
+      filterConditionsObj: newFilterConditionsObj,
+      quickFilterItemsObj: newQuickFilterItemsObj,
+    };
+  };
+
+  const applyState = (result: ApplyStateValue<T>) => {
+    const { values, options, filterConditionsObj, quickFilterItemsObj } =
+      result;
+    setFormData(values.formData);
+    setFormLabel(values.formLabel);
+    setBulkCommonData(values.bulkCommonData);
+    setBulkCommonLabel(values.bulkCommonLabel);
+    setFormDatas(values.formDatas);
+    setFormLabels(values.formLabels);
+    setMetaData(values.metaData);
+    setMetaDataLabel(values.metaDataLabel);
+    setMetaDatas(values.metaDatas);
+    setMetaDataLabels(values.metaDataLabels);
+    setDraftData(values.draftData);
+    setPostedDraftData(values.postedDraftData);
+
+    setOptions(options);
+    setFilterConditionsObj(filterConditionsObj);
+    setQuickFilterIteemsObj(quickFilterItemsObj);
+  };
+
+  const advanceStep = async (
     curInd: number,
     formSteps: FormStep<T>[],
-    formData: FormTypeMap[T],
-    metaData: Record<string, any>,
-  ): number => {
+    values: FormState<T>,
+  ): Promise<number> => {
     const shouldSkip = (index: number) => {
       const step = formSteps[index];
 
@@ -303,9 +349,15 @@ export const FormProvider = <T extends ModelType>({
 
     let nextIndex = Math.min(curInd + 1, formSteps.length - 1);
 
+    let result = await runStepEffects(formSteps[curInd], values);
+
     while (nextIndex < formSteps.length - 1 && shouldSkip(nextIndex)) {
+      result = await runStepEffects(formSteps[nextIndex], result.values);
+
       nextIndex++;
     }
+
+    applyState(result);
 
     return nextIndex;
   };
@@ -333,127 +385,127 @@ export const FormProvider = <T extends ModelType>({
       newSteps = stepsObj?.steps;
     }
 
-    if (args.inputMode === InputMode.MANY) {
-      setInputMode(InputMode.MANY);
-    } else {
-      setInputMode(InputMode.SINGLE);
-    }
-
-    let newFormData: FormTypeMap[T] | null =
-      args.formMode === FormMode.CREATE &&
-      args.initialData &&
-      args.initialData.formData
-        ? {
-            ...getDefault(args.modelType),
-            ...args.initialData?.formData,
-          }
-        : null;
-    let newMetaData: Record<string, any> | null =
+    let newFormData: FormTypeMap[T] = {};
+    let newFormDatas = [newFormData];
+    let newMetaData: Record<string, any> =
       args.formMode === FormMode.CREATE &&
       args.initialData &&
       args.initialData.metaData
         ? args.initialData.metaData
-        : null;
+        : {};
 
-    const nextStepIndex =
-      newFormData && newMetaData
-        ? getNextStepIndex(0, newSteps, newFormData, newMetaData)
-        : 0;
-    setCurrentStep(nextStepIndex);
+    if (
+      args.formMode === FormMode.CREATE &&
+      args.initialData &&
+      args.initialData.formData
+    ) {
+      newFormData = {
+        ...getDefault(args.modelType),
+        ...args.initialData?.formData,
+      };
 
-    if (args.formMode === FormMode.CREATE) {
-      setFormMode(FormMode.CREATE);
-
-      if (args.initialData) {
-        if (newFormData) {
-          setInitialFormData(newFormData);
-          setFormData(newFormData);
-          setFormDatas([newFormData]);
-          setBulkCommonData(newFormData);
-          const resolvedLabels = await resolveForeignKeyLabels(newFormData);
-          setFormLabel(resolvedLabels);
-          setFormLabels([resolvedLabels]);
-          setBulkCommonLabel(resolvedLabels);
-        } else {
-          resetFormData();
-          resetFormDatas();
-        }
-
-        if (newMetaData) {
-          setMetaData(newMetaData);
-          const resolvedLabels = await resolveForeignKeyLabels(newMetaData);
-          setMetaDataLabel(resolvedLabels);
-        }
-      }
-    } else {
-      newSteps = newSteps.filter((step) => {
-        if (step.many) return step;
-        if (!step.dataSource) return step;
-      });
-      setFormMode(FormMode.UPDATE);
-      setCurrentStep(newSteps.length - 1);
-
-      if (args.inputMode === InputMode.SINGLE) {
-        const newFormData = {
-          _id: args.id,
-          ...getDefault(args.modelType),
-          ...convertGettedToForm(args.modelType, args.editItem),
+      setInitialFormData(newFormData);
+    } else if (
+      args.formMode === FormMode.UPDATE &&
+      args.inputMode === InputMode.SINGLE
+    ) {
+      if (modelType === ModelType.MATCH_FORMAT) {
+        const matchFormatEditItem =
+          args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
+        const dat = args.editItem && {
+          ...getDefault(ModelType.MATCH_FORMAT),
+          ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
         };
-        setOriginalData(newFormData);
-        setFormData(newFormData);
+        const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
 
-        const resolvedLabels = await resolveForeignKeyLabels(newFormData);
+        newFormDatas = periodArray as FormTypeMap[ModelType.MATCH_FORMAT][];
 
-        setFormLabel(resolvedLabels);
+        const { period, ...data } = matchFormatEditItem;
+        newFormData = convertGettedToForm(ModelType.MATCH_FORMAT, {
+          ...data,
+          period: [],
+        });
+      }
 
-        if (modelType === ModelType.MATCH_FORMAT) {
-          const matchFormatEditItem =
-            args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
-          const dat = args.editItem && {
-            ...getDefault(ModelType.MATCH_FORMAT),
-            ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
-          };
-          const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
-          dat
-            ? setFormDatas(periodArray as FormTypeMap[ModelType.MATCH_FORMAT][])
-            : setFormDatas([]);
+      const originalData = {
+        _id: args.id,
+        ...getDefault(args.modelType),
+        ...convertGettedToForm(args.modelType, args.editItem),
+      };
 
-          const { period, ...data } = matchFormatEditItem;
-
-          matchFormatEditItem &&
-            setFormData(
-              convertGettedToForm(ModelType.MATCH_FORMAT, {
-                ...data,
-                period: [],
-              }),
-            );
-        }
-      } else if (args.inputMode === InputMode.MANY) {
-        const newDatas: UpdateData<T>[] = args.editItem.flatMap((item, i) => {
+      newFormData = originalData;
+      setOriginalData(originalData);
+    } else if (
+      args.formMode === FormMode.UPDATE &&
+      args.inputMode === InputMode.MANY
+    ) {
+      const newOriginalDatas: UpdateData<T>[] = args.editItem.flatMap(
+        (item, i) => {
           const newData = {
             _id: args.ids[i],
             ...getDefault(args.modelType),
             ...convertGettedToForm(args.modelType, item),
           };
-
           return newData;
-        });
+        },
+      );
 
-        const resolvedLabels = await Promise.all(
-          newDatas.map((data) => resolveForeignKeyLabels(data)),
-        );
-
-        setOriginalDatas(newDatas);
-        setFormDatas(newDatas);
-        setFormLabels(resolvedLabels);
-      }
+      newFormDatas = newOriginalDatas;
+      setOriginalDatas(newOriginalDatas);
     }
 
+    let newFormLabel = await resolveForeignKeyLabels(newFormData);
+    let newFormLabels = await Promise.all(
+      newFormDatas.map((data) => resolveForeignKeyLabels(data)),
+    );
+    let newMetaDataLabel = await resolveForeignKeyLabels(newMetaData);
+
+    let updatingValues: FormState<T> = {
+      formData: newFormData,
+      formLabel: newFormLabel,
+      bulkCommonData: newFormData,
+      bulkCommonLabel: newFormLabel,
+      formDatas: newFormDatas,
+      formLabels: newFormLabels,
+      metaData: newMetaData,
+      metaDataLabel: newMetaDataLabel,
+      metaDatas: [],
+      metaDataLabels: [],
+      draftData: {},
+      postedDraftData: {},
+    };
+
+    let newNextStepIndex = 0;
+    if (args.formMode === FormMode.CREATE && args.initialData) {
+      newNextStepIndex = await advanceStep(0, newSteps, updatingValues);
+    } else if (args.formMode === FormMode.CREATE) {
+      applyState({
+        values: updatingValues,
+        filterConditionsObj: {},
+        quickFilterItemsObj: {},
+        options: {},
+      });
+    } else if (args.formMode === FormMode.UPDATE) {
+      newSteps = newSteps.filter((step) => {
+        if (step.many) return step;
+        if (!step.dataSource) return step;
+      });
+      newNextStepIndex = newSteps.length - 1;
+      applyState({
+        values: updatingValues,
+        filterConditionsObj: {},
+        quickFilterItemsObj: {},
+        options: {},
+      });
+    }
+
+    setCurrentStep(newNextStepIndex);
+
+    setInputMode(args.inputMode);
+    setFormMode(args.formMode);
     setFormSteps(newSteps);
     setModelType(args.modelType);
     setIsEditing(true);
-    setFilterConditionsObj(null);
-    setQuickFilterIteemsObj(null);
 
     return true;
   };
@@ -617,128 +669,113 @@ export const FormProvider = <T extends ModelType>({
     return success;
   };
 
-  const nextStep = async (): Promise<void> => {
-    const current = formSteps[currentStep];
+  const fetchValueFun = async (
+    currentStep: FormStep<T>,
+    state: FormState<T>,
+  ): Promise<FormState<T>> => {
+    let { formData, formDatas, formLabels } = state;
 
-    if (!current) return;
+    if (
+      currentStep.many &&
+      formMode === FormMode.CREATE &&
+      currentStep.fetchValue
+    ) {
+      const fetchValue = currentStep.fetchValue;
 
-    const isArray = current.many;
-    const checkData =
-      !current.many && current.dataSource === DataSource.BULK_COMMON
-        ? bulkCommonData
-        : isArray === true
-          ? states
-          : state;
+      formDatas = await fetchValue(formData, api);
+      formLabels = await Promise.all(
+        formDatas.map((v) => resolveForeignKeyLabels(v)),
+      );
 
-    let newFormData = { ...formData };
-    let newFormLabel = { ...formLabel };
-
-    let newBulkCommonData = bulkCommonData;
-    let newBulkCommonLabel = bulkCommonLabel;
-
-    // --- 必須チェック ---
-    const requiredCheck = checkRequiredFields(current.fields, checkData ?? []);
-    if (!requiredCheck.success) {
-      return handleSetAlert(requiredCheck);
+      setFormDatas(formDatas);
+      setFormLabels(formLabels);
     }
 
-    // --- validate 関数によるバリデーション ---
-    if (checkData && current.validate) {
-      if (Array.isArray(checkData)) {
-        for (const [i, d] of (formDatas ?? []).entries()) {
-          const valid = current.validate(d, formLabels[i]);
+    return { ...state, formDatas, formLabels };
+  };
 
-          if (!valid.success) {
-            return handleSetAlert(valid);
-          }
-        }
-      } else {
-        const valid = current.validate(checkData, formLabel);
-        if (!valid.success) return handleSetAlert(valid);
-      }
+  const addOptionsFun = async (
+    currentStep: FormStep<T>,
+    values: FormState<T>,
+    options: Record<string, OptionObj<any>>,
+  ): Promise<Record<string, OptionObj<any>>> => {
+    let newOptions = options;
+
+    if (currentStep.addOptions) {
+      const addedOptions = await currentStep.addOptions({
+        data: values.formData,
+        metaData: values.metaData,
+        api,
+        formLabel: values.formLabel,
+      });
+      newOptions = { ...options, ...addedOptions };
     }
 
-    // --- onChange 関数による値変更 ---
-    if (Array.isArray(checkData)) {
-      if (current.many) {
-        const onChange = current.onChange;
-        if (onChange) {
-          const {
-            formDatas: onChangedFormDatas,
-            formLabels: onChangedFormLabels,
-          } = await onChange({
-            formDatas,
-            formLabels,
-            metaData,
-            api,
-          });
+    return newOptions;
+  };
 
-          const newFormDatas = formDatas.map((formData, index) => ({
-            ...formData,
-            ...onChangedFormDatas[index],
-          }));
+  const createFilterConditionsFun = async (
+    currentStep: FormStep<T>,
+    values: FormState<T>,
+    filterConditionsObj: FilterConditionsByKey | null,
+  ): Promise<FilterConditionsByKey | null> => {
+    let newFilterConditionsObj = filterConditionsObj;
+    if (currentStep.createFilterConditions) {
+      const filterConditions = await currentStep.createFilterConditions({
+        data: values.formData,
+        metaData: values.metaData,
+        api,
+      });
 
-          const newFormLabels = formLabels.map((formLabel, index) => ({
-            ...formLabel,
-            ...onChangedFormLabels[index],
-          }));
-
-          setFormDatas(newFormDatas);
-          setFormLabels(newFormLabels);
-        }
-      }
-    } else {
-      if (!current.many) {
-        const onChange = current.onChange;
-        if (onChange) {
-          // formData更新
-          const { formData: onChangedFormData, formLabel: onChangedFormLabel } =
-            await onChange({ formData, formLabel, metaData, api });
-          newFormData = { ...newFormData, ...onChangedFormData };
-          newFormLabel = { ...newFormLabel, ...onChangedFormLabel };
-
-          setFormData(newFormData);
-          setFormLabel(newFormLabel);
-
-          // bulkCommonData更新
-          if (current.dataSource === DataSource.BULK_COMMON) {
-            const {
-              formData: onChangedBulkCommonData,
-              formLabel: onChangedBulkCommonLabel,
-            } = await onChange({
-              formData: bulkCommonData,
-              formLabel: bulkCommonLabel,
-              metaData,
-              api,
-            });
-            newBulkCommonData = {
-              ...newBulkCommonData,
-              ...onChangedBulkCommonData,
-            };
-            newBulkCommonLabel = {
-              ...newBulkCommonLabel,
-              ...onChangedBulkCommonLabel,
-            };
-
-            setBulkCommonData(newBulkCommonData);
-            setBulkCommonLabel(newBulkCommonLabel);
-            setFormDatas([newBulkCommonData]);
-            setFormLabels([newBulkCommonLabel]);
-          }
-        }
-      }
+      newFilterConditionsObj = {
+        ...newFilterConditionsObj,
+        ...filterConditions,
+      };
     }
 
-    if (!current.many && current.dataSource === DataSource.BULK_COMMON) {
-      setFormDatas([newBulkCommonData]);
-      setFormLabels([newBulkCommonLabel]);
+    return newFilterConditionsObj;
+  };
+
+  const createQuickFilterItemsFun = async (
+    currentStep: FormStep<T>,
+    values: FormState<T>,
+    quickFilterItemsObj: QuickFilterItemsByKey | null,
+  ): Promise<QuickFilterItemsByKey | null> => {
+    let newQuickConditionsObj = quickFilterItemsObj;
+
+    if (currentStep.createQuickFilterItems) {
+      const quickFilterItemsObj = await currentStep.createQuickFilterItems({
+        data: values.formData,
+        metaData: values.metaData,
+        api,
+      });
+
+      newQuickConditionsObj = {
+        ...newQuickConditionsObj,
+        ...quickFilterItemsObj,
+      };
     }
 
-    // draftData関連
-    let newDraftData: DraftData = {};
+    return newQuickConditionsObj;
+  };
 
-    if (current.addDraftData) {
-      newDraftData = await current.addDraftData({
+  const draftDataFun = async (
+    currentStep: FormStep<T>,
+    values: FormState<T>,
+  ): Promise<FormState<T>> => {
+    let {
+      draftData,
+      formData,
+      formLabel,
+      metaData,
+      metaDataLabel,
+      postedDraftData,
+      formDatas,
+      formLabels,
+    } = values;
+
+    if (currentStep.addDraftData) {
+      draftData = await currentStep.addDraftData({
         data: formData,
         metaData,
         api,
@@ -746,110 +783,262 @@ export const FormProvider = <T extends ModelType>({
         draftData,
         formLabel,
       });
-      setDraftData({ ...draftData, ...newDraftData });
+      setDraftData(draftData);
     }
 
-    if (current.getDraftData) {
-      if (current.many) {
-        const gettedDraftData = await current.getDraftData({
-          draftData: {
-            ...draftData,
-            ...newDraftData,
-          },
+    if (currentStep.getDraftData) {
+      if (currentStep.many) {
+        const gettedDraftData = await currentStep.getDraftData({
+          draftData,
           postedDraftData,
           metaData,
           formLabel: {
-            ...stateLabel,
-            ...newFormLabel,
+            ...metaDataLabel,
+            ...formLabel,
           },
           api,
         });
         if (gettedDraftData) {
-          const { value, label } = gettedDraftData;
-          setFormDatas(value);
-          setFormLabels(label);
+          formDatas = gettedDraftData.value;
+          formLabels = gettedDraftData.label;
+          setFormDatas(formDatas);
+          setFormLabels(formLabels);
         }
       } else {
-        const gettedDraftData = await current.getDraftData({
-          draftData: {
-            ...draftData,
-            ...newDraftData,
-          },
+        const gettedDraftData = await currentStep.getDraftData({
+          draftData,
           postedDraftData,
           metaData,
-          formLabel: newFormLabel,
+          formLabel: {
+            ...values.metaDataLabel,
+            ...state.formLabel,
+          },
           api,
         });
         if (gettedDraftData) {
-          const { value, label } = gettedDraftData;
-          setFormData(value);
-          setFormLabel(label);
+          formData = gettedDraftData.value;
+          formLabel = gettedDraftData.label;
+          setFormData(formData);
+          setFormLabel(formLabel);
         }
       }
     }
 
-    // fetchValues 関連
-    if (current.many && formMode === FormMode.CREATE) {
-      const fetchValue = current.fetchValue;
-      if (fetchValue) {
-        const fetchedValues = await fetchValue(formData, api);
-        setFormDatas(fetchedValues);
-        const resolvedLabels = await Promise.all(
-          fetchedValues.map((v) => resolveForeignKeyLabels(v)),
-        );
-        setFormLabels(resolvedLabels);
-      }
-    }
-
-    // options関連
-    if (current.addOptions) {
-      const newOptions = await current.addOptions({
-        data: formData,
-        metaData,
-        api,
-        formLabel,
-      });
-      setOptions({ ...options, ...newOptions });
-    }
-
-    const nextStepIndex = getNextStepIndex(
-      currentStep,
-      formSteps,
-      newFormData,
+    return {
+      ...values,
+      draftData,
+      formData,
+      formLabel,
       metaData,
-    );
+      metaDataLabel,
+      postedDraftData,
+      formDatas,
+      formLabels,
+    };
+  };
 
-    if (current.createFilterConditions) {
-      const filterConditionsObj = await current.createFilterConditions({
-        data: formData,
-        metaData,
-        api,
-      });
+  const onChangeFun = async (
+    currentStep: FormStep<T>,
+    values: FormState<T>,
+  ): Promise<FormState<T>> => {
+    let {
+      formData,
+      formLabel,
+      bulkCommonData,
+      bulkCommonLabel,
+      formDatas,
+      formLabels,
+    } = values;
 
-      if (filterConditionsObj) {
-        setFilterConditionsObj((prev) => ({
-          ...(prev ?? {}),
-          ...filterConditionsObj,
-        }));
+    if (currentStep.many) {
+      const result = await onChangeBulkFun(currentStep, formDatas, formLabels);
+
+      formDatas = result.formDatas;
+      formLabels = result.formLabels;
+    } else {
+      const result = await onChangeSingleFun(
+        currentStep,
+        formData,
+        formLabel,
+        bulkCommonData,
+        bulkCommonLabel,
+      );
+
+      formData = result.formData;
+      formLabel = result.formLabel;
+      bulkCommonData = result.bulkCommonData;
+      bulkCommonLabel = result.bulkCommonLabel;
+    }
+
+    return {
+      ...values,
+      formData,
+      formLabel,
+      bulkCommonData,
+      bulkCommonLabel,
+      formDatas,
+      formLabels,
+    };
+  };
+
+  const onChangeSingleFun = async (
+    currentStep: RecordDataFormStep<T>,
+    formData: FormTypeMap[T],
+    formLabel: Record<string, any>,
+    bulkCommonData: FormTypeMap[T],
+    bulkCommonLabel: Record<string, any>,
+  ) => {
+    let newFormData = formData;
+    let newFormLabel = formLabel;
+
+    let newBulkCommonData = bulkCommonData;
+    let newBulkCommonLabel = bulkCommonLabel;
+
+    if (currentStep.onChange) {
+      const onChange = currentStep.onChange;
+
+      if (currentStep.dataSource === DataSource.BULK_COMMON) {
+        const {
+          formData: onChangedBulkCommonData,
+          formLabel: onChangedBulkCommonLabel,
+        } = await onChange({
+          formData: bulkCommonData,
+          formLabel: bulkCommonLabel,
+          metaData,
+          api,
+        });
+        newBulkCommonData = {
+          ...newBulkCommonData,
+          ...onChangedBulkCommonData,
+        };
+        newBulkCommonLabel = {
+          ...newBulkCommonLabel,
+          ...onChangedBulkCommonLabel,
+        };
+
+        setBulkCommonData(newBulkCommonData);
+        setBulkCommonLabel(newBulkCommonLabel);
+        setFormDatas([newBulkCommonData]);
+        setFormLabels([newBulkCommonLabel]);
+      } else {
+        // formData更新
+        const { formData: onChangedFormData, formLabel: onChangedFormLabel } =
+          await onChange({ formData, formLabel, metaData, api });
+        newFormData = { ...newFormData, ...onChangedFormData };
+        newFormLabel = { ...newFormLabel, ...onChangedFormLabel };
+
+        setFormData(newFormData);
+        setFormLabel(newFormLabel);
       }
     }
 
-    if (current.createQuickFilterItems) {
-      if (!Array.isArray(checkData)) {
-        const quickFilterItemsObj = await current.createQuickFilterItems({
-          data: formData,
+    return {
+      formData: newFormData,
+      formLabel: newFormLabel,
+      bulkCommonData: newBulkCommonData,
+      bulkCommonLabel: newBulkCommonLabel,
+    };
+  };
+
+  const onChangeBulkFun = async (
+    currentStep: ArrayDataFormStep<T>,
+    formDatas: FormTypeMap[T][],
+    formLabels: Record<string, any>[],
+  ) => {
+    let newFormDatas = formDatas;
+    let newFormLabels = formLabels;
+
+    if (currentStep.onChange) {
+      const onChange = currentStep.onChange;
+      const { formDatas: onChangedFormDatas, formLabels: onChangedFormLabels } =
+        await onChange({
+          formDatas,
+          formLabels,
           metaData,
           api,
         });
 
-        if (quickFilterItemsObj) {
-          setQuickFilterIteemsObj((prev) => ({
-            ...(prev ?? {}),
-            ...quickFilterItemsObj,
-          }));
+      newFormDatas = formDatas.map((formData, index) => ({
+        ...formData,
+        ...onChangedFormDatas[index],
+      }));
+
+      newFormLabels = formLabels.map((formLabel, index) => ({
+        ...formLabel,
+        ...onChangedFormLabels[index],
+      }));
+
+      setFormDatas(newFormDatas);
+      setFormLabels(newFormLabels);
+    }
+
+    return {
+      formDatas: newFormDatas,
+      formLabels: newFormLabels,
+    };
+  };
+
+  const validateFun = (currentStep: FormStep<T>, values: FormState<T>) => {
+    if (currentStep.many && currentStep.validate) {
+      const { formDatas, formLabels, metaDatas, metaDataLabels } = values;
+
+      for (const [i, d] of (formDatas ?? []).entries()) {
+        const valid = currentStep.validate(
+          { ...d, ...metaDatas[i] },
+          { ...formLabels[i], ...metaDataLabels[i] },
+        );
+
+        if (!valid.success) {
+          return handleSetAlert(valid);
         }
       }
+    } else if (!currentStep.many && currentStep.validate) {
+      const { formData, formLabel, metaData, metaDataLabel } = values;
+
+      const valid = currentStep.validate(
+        { ...formData, ...metaData },
+        { ...formLabel, ...metaDataLabel },
+      );
+      if (!valid.success) return handleSetAlert(valid);
     }
+  };
+
+  const nextStep = async (): Promise<void> => {
+    const current = formSteps[currentStep];
+
+    if (!current) return;
+
+    let updatingValues: FormState<T> = {
+      formData,
+      formLabel,
+      bulkCommonData,
+      bulkCommonLabel,
+      formDatas,
+      formLabels,
+      metaData,
+      metaDataLabel,
+      metaDatas,
+      metaDataLabels,
+      draftData,
+      postedDraftData,
+    };
+
+    // --- 必須チェック ---
+    const requiredCheck = checkRequiredFields(
+      current.fields,
+      current.many ? states : state,
+    );
+    if (!requiredCheck.success) {
+      return handleSetAlert(requiredCheck);
+    }
+
+    validateFun(current, updatingValues);
+
+    const nextStepIndex = await advanceStep(
+      currentStep,
+      formSteps,
+      updatingValues,
+    );
 
     const nextStep = formSteps[nextStepIndex];
     if (nextStep.type === StepType.FORM) {
