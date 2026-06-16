@@ -269,7 +269,7 @@ const TableToolbar = <Data, Form>({
   };
 
   const folderMenu = [
-    <label>
+    <label className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer">
       Upload
       <input
         type="file"
@@ -278,7 +278,12 @@ const TableToolbar = <Data, Form>({
         onChange={handleUpload}
       />
     </label>,
-    <button onClick={handleDownload}>Download</button>,
+    <button
+      onClick={handleDownload}
+      className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+    >
+      Download
+    </button>,
   ];
 
   const menuItems: MenuItem[] = modelType
