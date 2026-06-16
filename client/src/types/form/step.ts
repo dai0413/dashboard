@@ -2,13 +2,13 @@ import { AxiosInstance } from "axios";
 import { AlertStatus } from "../alert";
 import { FormTypeMap, ModelType } from "../models";
 import { FormFieldDefinition } from "./field";
-import { AddDraftData, GetDraftData } from "./draftData";
-import { AddPostedDraftData } from "./postedDraftData";
-import { CreateFilterConditions } from "./filter";
-import { CreateQuickFilterItems } from "./quickFilter";
+import { AddDraftData, DraftData, GetDraftData } from "./draftData";
+import { AddPostedDraftData, PostedDraftData } from "./postedDraftData";
+import { CreateFilterConditions, FilterConditionsByKey } from "./filter";
+import { CreateQuickFilterItems, QuickFilterItemsByKey } from "./quickFilter";
 import { OnChange } from "./onChange";
 import { DataSource, StepType } from "./common";
-import { AddOptions } from "./option";
+import { AddOptions, OptionObj } from "./option";
 import { FieldCopy } from "./fieldCopy";
 
 type BaseFormStep<K extends keyof FormTypeMap> = {
@@ -52,3 +52,25 @@ export type RecordDataFormStep<K extends keyof FormTypeMap> =
 export type FormStep<K extends keyof FormTypeMap> =
   | ArrayDataFormStep<K>
   | RecordDataFormStep<K>;
+
+export type FormState<T extends keyof FormTypeMap> = {
+  formData: FormTypeMap[T];
+  formLabel: Record<string, any>;
+  bulkCommonData: FormTypeMap[T];
+  bulkCommonLabel: Record<string, any>;
+  formDatas: FormTypeMap[T][];
+  formLabels: Record<string, any>[];
+  metaData: Record<string, any>;
+  metaDataLabel: Record<string, any>;
+  metaDatas: Record<string, any>[];
+  metaDataLabels: Record<string, any>[];
+  draftData: DraftData;
+  postedDraftData: PostedDraftData;
+};
+
+export type ApplyStateValue<T extends keyof FormTypeMap> = {
+  values: FormState<T>;
+  options: Record<string, OptionObj<any>>;
+  filterConditionsObj: FilterConditionsByKey | null;
+  quickFilterItemsObj: QuickFilterItemsByKey | null;
+};
