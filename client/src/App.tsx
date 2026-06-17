@@ -33,80 +33,81 @@ const App: React.FC = () => {
               <FormProvider>
                 <BrowserRouter>
                   <QueryProvider>
-                    <div className="App">
-                      <Routes>
-                        {Object.entries(models).map(
-                          ([key, { table: Table }]) => (
-                            <Route
-                              path={`/${key}/*`}
-                              element={wrapWithPrivateRoute(
-                                <Layout>
-                                  <Table />
-                                </Layout>,
-                              )}
-                            />
-                          ),
-                        )}
-
-                        <Route
-                          path={APP_ROUTES.ADMIN}
-                          element={wrapWithPrivateRoute(
-                            <Layout>
-                              <AdminDashboard />
-                            </Layout>,
+                    <TopPageProvider>
+                      <div className="App">
+                        <Routes>
+                          {Object.entries(models).map(
+                            ([key, { table: Table }]) => (
+                              <Route
+                                path={`/${key}/*`}
+                                element={wrapWithPrivateRoute(
+                                  <Layout>
+                                    <Table />
+                                  </Layout>,
+                                )}
+                              />
+                            ),
                           )}
-                        />
-                        <Route
-                          path={APP_ROUTES.HOME}
-                          element={
-                            <Layout>
-                              <TopPageProvider>
-                                <Top />
-                              </TopPageProvider>
-                            </Layout>
-                          }
-                        />
-                        <Route
-                          path={APP_ROUTES.LOGIN}
-                          element={
-                            <Layout>
-                              <Login />
-                            </Layout>
-                          }
-                        />
-                        <Route
-                          path={APP_ROUTES.ME}
-                          element={
-                            <PrivateRoute>
+
+                          <Route
+                            path={APP_ROUTES.ADMIN}
+                            element={wrapWithPrivateRoute(
                               <Layout>
-                                <Me />
+                                <AdminDashboard />
+                              </Layout>,
+                            )}
+                          />
+                          <Route
+                            path={APP_ROUTES.HOME}
+                            element={
+                              <Layout>
+                                <Top />
                               </Layout>
-                            </PrivateRoute>
-                          }
-                        />
-                        <Route
-                          path={`/${APP_ROUTES.NO_NUMBER}/*`}
-                          element={wrapWithPrivateRoute(
-                            <Layout>
-                              <NoNumber />
-                            </Layout>,
-                          )}
-                        />
+                            }
+                          />
+                          <Route
+                            path={APP_ROUTES.LOGIN}
+                            element={
+                              <Layout>
+                                <Login />
+                              </Layout>
+                            }
+                          />
+                          <Route
+                            path={APP_ROUTES.ME}
+                            element={
+                              <PrivateRoute>
+                                <Layout>
+                                  <Me />
+                                </Layout>
+                              </PrivateRoute>
+                            }
+                          />
+                          <Route
+                            path={`/${APP_ROUTES.NO_NUMBER}/*`}
+                            element={wrapWithPrivateRoute(
+                              <Layout>
+                                <NoNumber />
+                              </Layout>,
+                            )}
+                          />
 
-                        <Route
-                          path={`/${APP_ROUTES.NO_CALLUP}/*`}
-                          element={wrapWithPrivateRoute(
-                            <Layout>
-                              <NoCallUp />
-                            </Layout>,
-                          )}
-                        />
+                          <Route
+                            path={`/${APP_ROUTES.NO_CALLUP}/*`}
+                            element={wrapWithPrivateRoute(
+                              <Layout>
+                                <NoCallUp />
+                              </Layout>,
+                            )}
+                          />
 
-                        {Summary}
+                          {Summary}
 
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </div>
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </div>
+                    </TopPageProvider>
+
                     <Modal />
                   </QueryProvider>
                 </BrowserRouter>
