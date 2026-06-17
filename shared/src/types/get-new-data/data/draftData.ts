@@ -1,35 +1,35 @@
 import { TeamFormSchema } from "@dai0413/myorg-shared";
 import { z } from "zod";
-import { Form as MatchForm, Scraped as MatchScraped } from "../models/match";
+import { Form as MatchForm, Scraped as MatchScraped } from "../models/match.js";
 import {
   Form as PlayerAppearanceForm,
   Scraped as PlayerAppearanceScraped,
-} from "../models/player-appearance";
+} from "../models/player-appearance.js";
 import {
   Form as PlayerMatchEventLogForm,
   Scraped as PlayerMatchEventLogScraped,
-} from "../models/player-match-event-log";
+} from "../models/player-match-event-log.js";
 import {
   Form as RefereeAppearanceForm,
   Scraped as RefereeAppearanceScraped,
-} from "../models/referee-appearance";
+} from "../models/referee-appearance.js";
 import {
   Form as StaffAppearanceForm,
   Scraped as StaffAppearanceScraped,
-} from "../models/staff-appearance";
+} from "../models/staff-appearance.js";
 import {
   Form as StaffMatchEventLogForm,
   Scraped as StaffMatchEventLogScraped,
-} from "../models/staff-match-event-log";
+} from "../models/staff-match-event-log.js";
 import {
   Form as TeamMatchFormationForm,
   Scraped as TeamMatchFormationScraped,
-} from "../models/team-match-formation";
+} from "../models/team-match-formation.js";
 import {
   Form as StatsLForm,
   Scraped as StatsLScraped,
-} from "../models/stats-l";
-import { Scraped as PositionScraped } from "./position";
+} from "../models/stats-l.js";
+import { Scraped as PositionScraped } from "./position.js";
 
 export type Form = Record<
   string,

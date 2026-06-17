@@ -4,8 +4,8 @@ import {
 } from "@dai0413/myorg-shared";
 
 import z from "zod";
-import { ResolvableEntity } from "./base";
-import { Select } from "../select";
+import { ResolvableEntity } from "./base.js";
+import { Select } from "../select.js";
 
 type Base = z.infer<typeof StaffAppearancePopulatedSchema>;
 

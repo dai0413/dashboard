@@ -1,5 +1,5 @@
-import { Label } from "../label";
-import { Select } from "../select";
+import { Label } from "../label.js";
+import { Select } from "../select.js";
 
 type Resolvable<T, S extends Select> = S extends "Model" ? T : Label;
 

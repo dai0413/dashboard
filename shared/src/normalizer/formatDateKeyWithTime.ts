@@ -1,4 +1,4 @@
-import { FieldParser } from "./types";
+import { FieldParser } from "./types.js";
 
 export const formatDateKeyWithTime: FieldParser<string> = (
   value,

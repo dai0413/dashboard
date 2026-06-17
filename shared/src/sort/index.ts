@@ -1,1 +1,1 @@
-export { sortPositions } from "./sortPositions";
+export { sortPositions } from "./sortPositions.js";

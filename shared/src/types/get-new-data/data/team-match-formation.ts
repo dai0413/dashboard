@@ -1,7 +1,7 @@
 import {
   Scraped as ScrapedBase,
   Form as FormBase,
-} from "../models/team-match-formation";
+} from "../models/team-match-formation.js";
 
 export type Scraped = {
   home: ScrapedBase;
