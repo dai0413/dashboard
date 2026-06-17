@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 import { TransferModel } from "../models/transfer.js";
 import { SeasonModel } from "../models/season.js";
 import { Request } from "express";
-import { TransferResponseSchema } from "@dai0413/myorg-shared";
+import {
+  ReadItemsResponse,
+  TransferResponseSchema,
+} from "@dai0413/myorg-shared";
 import z from "zod";
 import { transfer } from "@dai0413/myorg-shared/models-config";
-import { ReadItemsResponse } from "../controllers/factories/crudFactory.js";
 
 type ResponseData = z.infer<typeof TransferResponseSchema | undefined>;
 

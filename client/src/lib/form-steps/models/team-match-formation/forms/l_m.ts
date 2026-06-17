@@ -101,8 +101,7 @@ export const teamMatchFormation: FormStep<BaseModel>[] = [
 
         const res = await createItemBase<Scraped>({
           apiInstance: api,
-          // backendRoute: API_PATHS.GET_NEW_DATA.L_M.FORMATION,
-          backendRoute: "/get-new-data/l-m/formation",
+          backendRoute: API_PATHS.GET_NEW_DATA.L_M.FORMATION,
           data: {
             date: matchObj.date,
             alph: matchObj.home_team.labalph,

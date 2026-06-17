@@ -1,10 +1,12 @@
 import { Request } from "express";
 import mongoose from "mongoose";
 import { NationalMatchSeriesModel } from "../models/national-match-series.js";
-import { NationalCallUpResponseSchema } from "@dai0413/myorg-shared";
+import {
+  NationalCallUpResponseSchema,
+  ReadItemsResponse,
+} from "@dai0413/myorg-shared";
 import z from "zod";
 import { nationalCallUp } from "@dai0413/myorg-shared/models-config";
-import { ReadItemsResponse } from "../controllers/factories/crudFactory.js";
 
 type ResponseData = z.infer<typeof NationalCallUpResponseSchema>;
 

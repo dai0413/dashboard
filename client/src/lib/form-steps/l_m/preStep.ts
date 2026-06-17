@@ -98,8 +98,7 @@ export const preStep: FormStep<BaseModel>[] = [
 
       const res = await createItemBase<DraftData>({
         apiInstance: api,
-        // backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
-        backendRoute: "/get-new-data/l-m/values",
+        backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
         data: {
           getParams: matchObjs,
         },

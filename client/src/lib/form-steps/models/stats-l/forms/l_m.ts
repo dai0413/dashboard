@@ -61,8 +61,7 @@ export const statsL: FormStep<BaseModel>[] = [
 
         const res = await createItemBase<Scraped>({
           apiInstance: api,
-          // backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
-          backendRoute: "/get-new-data/l-m/stats",
+          backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
           data: {
             date: matchObj.date,
             alph: matchObj.home_team.labalph,

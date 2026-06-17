@@ -9,27 +9,23 @@ type FailedReturn = {
 
 type Result<DATA> = SuccessReturn<DATA> | FailedReturn;
 
-type ResDataBase<DATA> = {
-  data: DATA;
-};
-
-type FailedItem<DATA> = {
-  _id?: string;
-  data: DATA;
-  error: string;
-};
-
 type BulkResult<DATA> = {
   totalCount: number;
   successCount: number;
   failedCount: number;
-  modifiedCount: number;
-  failedItems: FailedItem<DATA>[];
+  failedItems: {
+    _id?: string;
+    data: DATA;
+    error: string;
+  }[];
 };
 
 // read
-export type ReadItemResponse<DATA> = ResDataBase<DATA>;
-export type ReadItemsResponse<DATA> = ResDataBase<DATA> & {
+export type ReadItemResponse<DATA> = {
+  data: DATA;
+};
+export type ReadItemsResponse<DATA> = {
+  data: DATA;
   totalCount: number;
   page: number;
   pageSize: number;
@@ -47,12 +43,20 @@ export type CreateItemsResponse<DATA> = Result<DATA> & {
 export type UpdateItemResponse<DATA> = Result<DATA> & {
   message: string;
 };
-export type UpdateItemsResponse<DATA> = Result<DATA> & {
+export type UpdateItemsResponse<DATA, FAILED_DATA> = {
+  data: DATA;
+  success: boolean;
   message: string;
-} & BulkResult<DATA>;
+  modifiedCount: number;
+} & BulkResult<FAILED_DATA>;
 
 // delete
 export type DeleteItemResponse = {
   success: boolean;
   message: string;
 };
+export type DeleteItemsResponse<DATA> = {
+  success: boolean;
+  message: string;
+  deletedCount: number;
+} & BulkResult<DATA>;
