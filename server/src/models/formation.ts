@@ -42,7 +42,7 @@ const FormationSchema = new Schema<IFormation, any, IFormation>(
 
 // --- 共通ユーティリティ ---
 async function applyKey(updateOrDoc: Partial<IFormation>) {
-  updateOrDoc.key = key(updateOrDoc.position_formation);
+  updateOrDoc.key = key(updateOrDoc.position_formation || []);
 }
 
 // --- create / save 時 ---
