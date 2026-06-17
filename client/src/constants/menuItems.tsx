@@ -106,6 +106,10 @@ export const TeamTabItems: IconButtonProps[] = [
     text: "選手登録",
   },
   {
+    icon: "series",
+    text: "所属カテゴリ",
+  },
+  {
     icon: "line-plot",
     text: "勝点推移",
   },

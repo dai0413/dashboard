@@ -150,7 +150,7 @@ const TableToolbar = <Data, Form>({
   } = useListView();
 
   const {
-    form: { open },
+    form: { isOpen, open },
   } = useModal();
 
   const openForm = () => {
@@ -177,6 +177,7 @@ const TableToolbar = <Data, Form>({
   };
 
   const onClickTile = () => {
+    if (!isOpen) return;
     if (
       modelType === ModelType.TEAM_COMPETITION_SEASON ||
       modelType === ModelType.FORMATION

@@ -1062,6 +1062,61 @@ const Team = () => {
         </>
       )}
 
+      {selectedTab === "series" && id && (
+        <>
+          <TableWithFetch
+            modelType={ModelType.TEAM_COMPETITION_SEASON}
+            fieldDefinitions={[
+              {
+                label: "シーズン",
+                field: "season",
+                getValueType: ColumnType.FIELD,
+                key: "season",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "大会",
+                field: "competition",
+                getValueType: ColumnType.FIELD,
+                key: "competition",
+                displayOnTable: true,
+                type: "string",
+              },
+              {
+                label: "メモ",
+                field: "note",
+                isPrimary: true,
+                getValueType: ColumnType.FIELD,
+                key: "note",
+                displayOnTable: true,
+                type: "string",
+              },
+            ]}
+            fetch={{
+              apiRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
+              params: {
+                getAll: true,
+                team: id,
+                sort: "season",
+              },
+            }}
+            filterField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+              ?.filter(isFilterable)
+              .filter((file) => file.key !== "team")}
+            sortField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+              ?.filter(isSortable)
+              .filter((file) => file.key !== "team")}
+            linkField={[
+              {
+                field: "competition",
+                to: APP_ROUTES.COMPETITION_SUMMARY,
+              },
+            ]}
+          />
+        </>
+      )}
+
       {selectedTab === "line-plot" && id && (
         <>
           <div className="text-gray-600">
