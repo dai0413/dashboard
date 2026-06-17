@@ -5,6 +5,7 @@ import Table from "./Table";
 import { TableProps } from "../../types/table";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
+import { ViewMode } from "../../types/types";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -72,7 +73,7 @@ const ListView = <T,>({
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
-      {viewMode === "table" ? (
+      {viewMode === ViewMode.TABLE ? (
         <Table
           modelType={modelType}
           data={data}
@@ -94,7 +95,7 @@ const ListView = <T,>({
           selectedKeys={selectedKeys}
         />
       ) : (
-        viewMode === "tile" && (
+        viewMode === ViewMode.TILE && (
           <div className="mx-5">
             <Tile
               modelType={modelType}

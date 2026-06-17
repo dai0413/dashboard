@@ -26,6 +26,7 @@ import { isModelType, UIFieldDefinition } from "../../types/field";
 import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
 import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
 import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
+import { ViewMode } from "../../types/types";
 
 type TablePage = {
   pageNum: number;
@@ -56,6 +57,8 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     quickFilterItems?: QuickFilterItem[];
     noItemMessage?: ReactNode;
     noToolBar?: false;
+    viewMode?: ViewMode;
+    newItemsPerPage?: number;
   } & TableEditProps<T>;
 
 type TableContainerProps<T, F> = Original<T, F>;
@@ -86,13 +89,21 @@ const TableContainer = <K, F>({
   renderFieldCell,
   edit,
   noToolBar,
+  viewMode,
+  newItemsPerPage,
   selectedKeys,
   deleteOnClick,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
-  const { updateTrigger, itemsPerPage, setColumnVisibility } = useListView();
+  const {
+    updateTrigger,
+    itemsPerPage,
+    setItemsPerPage,
+    setColumnVisibility,
+    setViewMode,
+  } = useListView();
 
   const handleApplyFilter = useCallback(
     async (
@@ -118,6 +129,14 @@ const TableContainer = <K, F>({
     },
     [filterField],
   );
+
+  useEffect(() => {
+    viewMode && setViewMode(viewMode);
+  }, [viewMode]);
+
+  useEffect(() => {
+    newItemsPerPage && setItemsPerPage(newItemsPerPage);
+  }, [newItemsPerPage]);
 
   useEffect(() => {
     const initialVisibility = fieldDefinitions?.reduce(

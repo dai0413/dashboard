@@ -67,6 +67,11 @@ export enum FormMode {
   UPDATE = "update",
 }
 
+export enum ViewMode {
+  TABLE = "table",
+  TILE = "tile",
+}
+
 export type GetStepsArgs<T extends keyof FormTypeMap> = {
   modelType: T;
   inputMode: InputMode;

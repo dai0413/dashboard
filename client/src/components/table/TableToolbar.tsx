@@ -36,7 +36,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
-import { FormMode, From, InputMode } from "../../types/types";
+import { FormMode, From, InputMode, ViewMode } from "../../types/types";
 import CheckMenuItem from "../ui/CheckMenuItem";
 import { useModelContext } from "../../context/models/model-wrapper";
 
@@ -172,7 +172,7 @@ const TableToolbar = <Data, Form>({
   const fieldSelectRef = useRef<HTMLDivElement | null>(null);
 
   const onClickTable = () => {
-    setViewMode("table");
+    setViewMode(ViewMode.TABLE);
     setItemsPerPage(10);
   };
 
@@ -187,7 +187,7 @@ const TableToolbar = <Data, Form>({
       setItemsPerPage(10);
     }
 
-    setViewMode("tile");
+    setViewMode(ViewMode.TILE);
   };
 
   useEffect(() => {
