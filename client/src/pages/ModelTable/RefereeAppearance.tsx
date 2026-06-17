@@ -17,6 +17,10 @@ const RefereeAppearance = () => {
             field: "match",
             to: APP_ROUTES.MATCH_SUMMARY,
           },
+          {
+            field: "referee",
+            to: APP_ROUTES.REFEREE_SUMMARY,
+          },
         ]}
       />
     </div>

@@ -14,6 +14,10 @@ const StaffRegistrationHistory = () => {
         modelType={ModelType.STAFF_REGISTRATION_HISTORY}
         linkField={[
           {
+            field: "staff",
+            to: APP_ROUTES.STAFF_SUMMARY,
+          },
+          {
             field: "team",
             to: APP_ROUTES.TEAM_SUMMARY,
           },

@@ -303,7 +303,7 @@ const Match = () => {
                 label: "スタッフ",
                 field: "staff",
                 getValueType: ColumnType.FIELD,
-                key: "player",
+                key: "staff",
                 displayOnTable: true,
                 type: "string",
               },
@@ -332,14 +332,12 @@ const Match = () => {
             sortField={fieldDefinition[ModelType.STAFF_APPEARANCE]
               ?.filter(isSortable)
               .filter((file) => file.key !== "match")}
-            linkField={
-              [
-                // {
-                //   field: "staff",
-                //   to: APP_ROUTES.STAFF_SUMMARY,
-                // },
-              ]
-            }
+            linkField={[
+              {
+                field: "staff",
+                to: APP_ROUTES.STAFF_SUMMARY,
+              },
+            ]}
             initialData={{
               formData: {
                 match: id,
@@ -528,14 +526,12 @@ const Match = () => {
             sortField={fieldDefinition[ModelType.STAFF_MATCH_EVENT_LOG]
               ?.filter(isSortable)
               .filter((file) => file.key !== "match")}
-            linkField={
-              [
-                // {
-                //   field: "staff",
-                //   to: APP_ROUTES.STAFF_SUMMARY,
-                // },
-              ]
-            }
+            linkField={[
+              {
+                field: "staff",
+                to: APP_ROUTES.STAFF_SUMMARY,
+              },
+            ]}
             initialData={{
               formData: {
                 match: id,
@@ -757,14 +753,12 @@ const Match = () => {
             sortField={fieldDefinition[ModelType.REFEREE_APPEARANCE]
               ?.filter(isSortable)
               .filter((file) => file.key !== "match")}
-            linkField={
-              [
-                // {
-                //   field: "referee",
-                //   to: APP_ROUTES.REFEREE_SUMMARY,
-                // },
-              ]
-            }
+            linkField={[
+              {
+                field: "referee",
+                to: APP_ROUTES.REFEREE_SUMMARY,
+              },
+            ]}
             initialData={{
               formData: {
                 match: id,

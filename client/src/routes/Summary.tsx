@@ -10,6 +10,8 @@ import {
   Player,
   Team,
   Match,
+  Staff,
+  Referee,
 } from "../pages/Summary";
 
 export const Summary = (
@@ -51,6 +53,22 @@ export const Summary = (
       element={wrapWithPrivateRoute(
         <Layout>
           <Team />
+        </Layout>,
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.STAFF_SUMMARY}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Staff />
+        </Layout>,
+      )}
+    />
+    <Route
+      path={`${APP_ROUTES.REFEREE_SUMMARY}/:id`}
+      element={wrapWithPrivateRoute(
+        <Layout>
+          <Referee />
         </Layout>,
       )}
     />

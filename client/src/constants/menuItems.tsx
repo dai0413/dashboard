@@ -72,6 +72,15 @@ export const PlayerTabItems: IconButtonProps[] = [
   },
 ];
 
+export const StaffTabItems: IconButtonProps[] = [
+  {
+    icon: "registration",
+    text: "スタッフ登録",
+  },
+];
+
+export const RefereeTabItems: IconButtonProps[] = [];
+
 export const TeamTabItems: IconButtonProps[] = [
   {
     icon: "player",

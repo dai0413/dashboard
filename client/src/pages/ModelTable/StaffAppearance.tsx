@@ -14,6 +14,10 @@ const StaffAppearance = () => {
         modelType={ModelType.STAFF_APPEARANCE}
         linkField={[
           {
+            field: "staff",
+            to: APP_ROUTES.STAFF_SUMMARY,
+          },
+          {
             field: "team",
             to: APP_ROUTES.TEAM_SUMMARY,
           },

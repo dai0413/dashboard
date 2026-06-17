@@ -568,10 +568,10 @@ const Competition = () => {
             ?.filter(isSortable)
             .filter((file) => file.key !== "competition")}
           linkField={[
-            // {
-            //   field: "staff",
-            //   to: APP_ROUTES.STAFF_SUMMARY,
-            // },
+            {
+              field: "staff",
+              to: APP_ROUTES.STAFF_SUMMARY,
+            },
             {
               field: "team",
               to: APP_ROUTES.TEAM_SUMMARY,

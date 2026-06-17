@@ -14,6 +14,10 @@ const StaffMatchEventLog = () => {
         modelType={ModelType.STAFF_MATCH_EVENT_LOG}
         linkField={[
           {
+            field: "staff",
+            to: APP_ROUTES.STAFF_SUMMARY,
+          },
+          {
             field: "team",
             to: APP_ROUTES.TEAM_SUMMARY,
           },
