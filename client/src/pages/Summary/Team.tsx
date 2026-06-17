@@ -31,7 +31,7 @@ import { ColumnType } from "../../types/table";
 
 type DateUnit = "day" | "month" | "year";
 
-export const addDate = (date: Date, amount: number, unit: DateUnit): Date => {
+const addDate = (date: Date, amount: number, unit: DateUnit): Date => {
   const d = new Date(date);
 
   switch (unit) {
@@ -136,7 +136,7 @@ const Team = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("player");
+  const [selectedTab, setSelectedTab] = useState("match");
 
   const {
     metacrud: { selected, readItem },
@@ -388,6 +388,7 @@ const Team = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
+            <div className="text-gray-600">{`${selected.enTeam}`}</div>
             <div className="text-gray-600">{`略称：${selected.abbr}`}</div>
             <div className="text-sm text-gray-500">
               {`国：${selected.country.label}`}
@@ -450,6 +451,7 @@ const Team = () => {
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
             fieldDefinitions={[
               {
@@ -525,6 +527,7 @@ const Team = () => {
             {`${seasonDates.future.startDate}~~~${seasonDates.future.endDate}に日本国内育成年代チームから加入予定の選手`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
             fieldDefinitions={[
               {
@@ -601,6 +604,7 @@ const Team = () => {
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に加入した選手`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
             fieldDefinitions={[
               {
@@ -673,6 +677,7 @@ const Team = () => {
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に退団した選手`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
             fieldDefinitions={[
               {
@@ -744,6 +749,7 @@ const Team = () => {
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に期限付き移籍した選手`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
             fieldDefinitions={[
               {
@@ -816,6 +822,7 @@ const Team = () => {
             {`${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に発表された負傷者`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.INJURY}
             fieldDefinitions={[
               {
@@ -883,6 +890,7 @@ const Team = () => {
             {`${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に開催された試合`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.MATCH}
             fieldDefinitions={[
               {
@@ -986,6 +994,7 @@ const Team = () => {
             {`${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に出場登録された選手`}
           </div>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.PLAYER_REGISTRATION}
             fieldDefinitions={[
               {
@@ -1065,6 +1074,7 @@ const Team = () => {
       {selectedTab === "series" && id && (
         <>
           <TableWithFetch
+            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TEAM_COMPETITION_SEASON}
             fieldDefinitions={[
               {

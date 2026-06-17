@@ -198,6 +198,7 @@ const Competition = () => {
       {/* コンテンツ表示 */}
       {selectedTab === "teamCompetitionSeason" && id && selectedSeason && (
         <TableWithFetch
+          key={`${selectedTab}-${selectedSeason?._id}`}
           modelType={ModelType.TEAM_COMPETITION_SEASON}
           fieldDefinitions={[
             {
@@ -240,6 +241,7 @@ const Competition = () => {
 
       {selectedTab === "competitionStage" && selectedSeason && (
         <TableWithFetch
+          key={`${selectedTab}-${selectedSeason?._id}`}
           modelType={ModelType.COMPETITION_STAGE}
           fieldDefinitions={[
             {
@@ -291,6 +293,7 @@ const Competition = () => {
 
       {selectedTab === "match" && selectedSeason && (
         <TableWithFetch
+          key={`${selectedTab}-${selectedSeason?._id}`}
           modelType={ModelType.MATCH}
           fieldDefinitions={[
             {
@@ -393,6 +396,7 @@ const Competition = () => {
 
       {selectedTab === "registration" && selectedSeason && (
         <TableWithFetch
+          key={`${selectedTab}-${selectedSeason?._id}`}
           modelType={ModelType.PLAYER_REGISTRATION}
           fieldDefinitions={[
             {
@@ -497,6 +501,7 @@ const Competition = () => {
 
       {selectedTab === "staff" && selectedSeason && (
         <TableWithFetch
+          key={`${selectedTab}-${selectedSeason?._id}`}
           modelType={ModelType.STAFF_REGISTRATION}
           fieldDefinitions={[
             {
