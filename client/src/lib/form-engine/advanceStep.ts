@@ -19,7 +19,7 @@ export const advanceStep = async <T extends keyof FormTypeMap>(
     filterConditionsObj: FilterConditionsByKey | null;
     quickFilterItemsObj: QuickFilterItemsByKey | null;
   },
-  curInd?: number,
+  index?: number,
 ): Promise<{ index: number; result: ApplyStateValue<T> }> => {
   const { formData, metaData } = values;
   const { options, filterConditionsObj, quickFilterItemsObj } = prev;
@@ -36,9 +36,11 @@ export const advanceStep = async <T extends keyof FormTypeMap>(
     return step.skip(formData, metaData);
   };
 
-  let nextIndex = curInd ? Math.min(curInd + 1, formSteps.length - 1) : 0;
+  const curInd = index || 0;
 
-  let result = await runStepEffects(api, formSteps[curInd || 0], values, {
+  let nextIndex = Math.min(curInd + 1, formSteps.length - 1);
+
+  let result = await runStepEffects(api, formSteps[curInd], values, {
     options,
     filterConditionsObj,
     quickFilterItemsObj,
