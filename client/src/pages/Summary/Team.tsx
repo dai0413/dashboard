@@ -132,6 +132,7 @@ type SeasonDates = {
 const Team = () => {
   const { id } = useParams();
   const {
+    detail: { open },
     form: { isOpen: formIsOpen },
   } = useModal();
 
@@ -361,7 +362,14 @@ const Team = () => {
       {!teamCompetitionSeason.isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-            <div className="font-bold text-lg">{selected.team}</div>
+            <div
+              className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
+              onClick={() => {
+                open(ModelType.TEAM, selected._id);
+              }}
+            >
+              {selected.team}
+            </div>
             <div className="w-full md:w-50">
               <SelectField
                 type="text"

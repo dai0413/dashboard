@@ -22,6 +22,7 @@ import { Data } from "../../types/types";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { ColumnType } from "../../types/table";
 import { StaffRegistrationGet } from "../../types/models/staff-registration";
+import { useModal } from "../../context/modal-context";
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -33,6 +34,9 @@ const Tabs = CompetitionTabItems.filter(
 
 const Competition = () => {
   const { id } = useParams();
+  const {
+    detail: { open },
+  } = useModal();
 
   const [selectedTab, setSelectedTab] = useState("teamCompetitionSeason");
 
@@ -109,7 +113,14 @@ const Competition = () => {
       {!isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-            <div className="font-bold text-lg">{selected.name}</div>
+            <div
+              className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
+              onClick={() => {
+                open(ModelType.COMPETITION, selected._id);
+              }}
+            >
+              {selected.name}
+            </div>
             <div className="w-full md:w-50">
               <SelectField
                 type="text"

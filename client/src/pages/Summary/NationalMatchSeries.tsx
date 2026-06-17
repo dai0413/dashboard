@@ -27,6 +27,7 @@ const Tabs = NationalMatchSeriesTabItems.filter(
 const National = () => {
   const { id } = useParams();
   const {
+    detail: { open },
     form: { isOpen: formIsOpen },
   } = useModal();
 
@@ -55,7 +56,14 @@ const National = () => {
       {!isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
-            <div className="font-bold text-lg">{selected.name}</div>
+            <div
+              className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
+              onClick={() => {
+                open(ModelType.NATIONAL_MATCH_SERIES, selected._id);
+              }}
+            >
+              {selected.name}
+            </div>
             <div className="text-gray-600">{selected.country.label}</div>
             <div className="text-sm text-gray-500">{selected.age_group}</div>
             <div className="text-sm text-gray-500">

@@ -26,10 +26,11 @@ const Tabs = MatchTabItems.filter(
 const Match = () => {
   const { id } = useParams();
   const {
+    detail: { open },
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("");
+  const [selectedTab, setSelectedTab] = useState("player_event_log");
 
   const {
     metacrud: { selected, readItem, isLoading },
@@ -54,7 +55,14 @@ const Match = () => {
       {!isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
-            <div className="font-bold text-lg">{`${selected.home_team.label}-${selected.away_team.label}`}</div>
+            <div
+              className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
+              onClick={() => {
+                open(ModelType.MATCH, selected._id);
+              }}
+            >
+              {`${selected.home_team.label}-${selected.away_team.label}`}
+            </div>
             <div className="text-gray-600">{selected.competition.label}</div>
             {selected.competition_stage && (
               <div className="text-gray-600">
