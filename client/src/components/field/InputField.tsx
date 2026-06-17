@@ -137,7 +137,8 @@ const InputField = ({
     onChange(undefined);
   };
 
-  const { seasonStart, seasonEnd, nextSeasonStart } = getSeasonDates();
+  const { seasonStart, seasonEnd, nextSeasonStart, nextSeasonEnd } =
+    getSeasonDates();
 
   const displaySupportButton =
     supportButton && (type === "date" || type === "datetime-local");
@@ -216,6 +217,15 @@ const InputField = ({
           >
             <CalendarRange size={16} />
             来季開始
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange(nextSeasonEnd)}
+            className="flex items-center gap-1 bg-green-100 px-3 py-1 rounded-full text-sm hover:bg-green-200 transition"
+            title="EndNowSeason"
+          >
+            <CalendarRange size={16} />
+            来季終了
           </button>
         </div>
       )}

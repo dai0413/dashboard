@@ -39,9 +39,19 @@ export const getSeasonDates = () => {
   const seasonEnd = new Date(nextSeasonStart);
   seasonEnd.setDate(seasonEnd.getDate() - 1);
 
+  const afterNextSeasonStart = localDate(
+    startYear + 2,
+    SEASON_START_MONTH,
+    SEASON_START_DAY,
+  );
+
+  const nextSeasonEnd = new Date(afterNextSeasonStart);
+  nextSeasonEnd.setDate(nextSeasonEnd.getDate() - 1);
+
   return {
     seasonStart,
     seasonEnd,
     nextSeasonStart,
+    nextSeasonEnd,
   };
 };
