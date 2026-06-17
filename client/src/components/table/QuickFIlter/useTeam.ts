@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useListView } from "../../../context/listView-context";
 import { QuickFilterItem } from "../../../types/table";
 import { Season } from "../../../types/models/season";
+import { ViewMode } from "../../../types/types";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -108,7 +109,7 @@ export const useTeam = (): {
           label: "j1",
           onClick: async () => {
             setItemsPerPage(20);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await competitionOnClick("j1"),
           removeKey: ["age_group"],
@@ -118,7 +119,7 @@ export const useTeam = (): {
           label: "j2",
           onClick: async () => {
             setItemsPerPage(20);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await competitionOnClick("j2"),
           removeKey: ["age_group"],
@@ -128,7 +129,7 @@ export const useTeam = (): {
           label: "j3",
           onClick: async () => {
             setItemsPerPage(20);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await competitionOnClick("j3"),
           removeKey: ["age_group"],
@@ -138,7 +139,7 @@ export const useTeam = (): {
           label: "高校",
           onClick: async () => {
             setItemsPerPage(20);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await ageGroupOnClick("high_school"),
           removeKey: ["_id"],
@@ -148,7 +149,7 @@ export const useTeam = (): {
           label: "ユース",
           onClick: async () => {
             setItemsPerPage(20);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await ageGroupOnClick("youth"),
           removeKey: ["_id"],
@@ -158,7 +159,7 @@ export const useTeam = (): {
           label: "大学",
           onClick: async () => {
             setItemsPerPage(20);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await ageGroupOnClick("university"),
           removeKey: ["_id"],

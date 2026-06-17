@@ -8,16 +8,14 @@ const baseRoute = API_PATHS.GET_NEW_DATA.J_M;
 export const readValues: ReadFun<"values"> = async (api, readParams) =>
   createItemBase<DraftData>({
     apiInstance: api,
-    // backendRoute: baseRoute.VALUES,
-    backendRoute: "/get-new-data/j-m/values",
+    backendRoute: baseRoute.VALUES,
     data: readParams,
   });
 
 const readMatch: ReadFun<"match"> = async (api, readParams) =>
   createItemBase<DraftData[any]["match"]>({
     apiInstance: api,
-    // backendRoute: baseRoute.MATCH,
-    backendRoute: "/get-new-data/j-m/match",
+    backendRoute: baseRoute.MATCH,
     data: readParams,
   });
 
@@ -27,8 +25,7 @@ const readPlayerAppearance: ReadFun<"playerAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["playerAppearance"]>({
     apiInstance: api,
-    // backendRoute: baseRoute.PLAYER_APPEARANCE,
-    backendRoute: "/get-new-data/j-m/player-appearance",
+    backendRoute: baseRoute.PLAYER_APPEARANCE,
     data: readParams,
   });
 
@@ -38,8 +35,7 @@ const readPlayerMatchEventLog: ReadFun<"playerMatchEventLog"> = async (
 ) =>
   createItemBase<DraftData[any]["playerMatchEventLog"]>({
     apiInstance: api,
-    // backendRoute: baseRoute.PLAYER_MATCH_EVENT_LOG,
-    backendRoute: "/get-new-data/j-m/player-match-event-log",
+    backendRoute: baseRoute.PLAYER_MATCH_EVENT_LOG,
     data: readParams,
   });
 
@@ -49,8 +45,7 @@ const readStaffAppearance: ReadFun<"staffAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["staffAppearance"]>({
     apiInstance: api,
-    // backendRoute: baseRoute.STAFF_APPEARANCE,
-    backendRoute: "/get-new-data/j-m/staff-appearance",
+    backendRoute: baseRoute.STAFF_APPEARANCE,
     data: readParams,
   });
 
@@ -60,8 +55,7 @@ const readRefereeAppearance: ReadFun<"refereeAppearance"> = async (
 ) =>
   createItemBase<DraftData[any]["refereeAppearance"]>({
     apiInstance: api,
-    // backendRoute: baseRoute.REFEREE_APPEARANCE,
-    backendRoute: "/get-new-data/j-m/referee-appearance",
+    backendRoute: baseRoute.REFEREE_APPEARANCE,
     data: readParams,
   });
 

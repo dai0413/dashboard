@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useListView } from "../../../context/listView-context";
 import { QuickFilterItem } from "../../../types/table";
 import { MatchEventType } from "../../../types/models/match-event-type";
+import { ViewMode } from "../../../types/types";
 
 export const useMatchEventType = (): {
   items: QuickFilterItem[];
@@ -50,7 +51,7 @@ export const useMatchEventType = (): {
           label: "すべて",
           onClick: async () => {
             setItemsPerPage(10);
-            setViewMode("tile");
+            setViewMode(ViewMode.TILE);
           },
           filterCondition: await read(),
           defaultSelect: true,
