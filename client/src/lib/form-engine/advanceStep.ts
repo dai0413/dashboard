@@ -38,7 +38,10 @@ export const advanceStep = async <T extends keyof FormTypeMap>(
 
   const curInd = index || 0;
 
-  let nextIndex = Math.min(curInd + 1, formSteps.length - 1);
+  let nextIndex =
+    typeof index === "number"
+      ? Math.min(curInd + 1, formSteps.length - 1)
+      : Math.min(curInd, formSteps.length - 1);
 
   let result = await runStepEffects(api, formSteps[curInd], values, {
     options,
