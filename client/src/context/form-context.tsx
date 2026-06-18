@@ -172,12 +172,12 @@ export const FormProvider = <T extends ModelType>({
 
   useEffect(() => {
     const newState: Record<string, any> = {
-      ...formData,
-      ...metaData,
       ...bulkCommonData,
+      ...metaData,
+      ...formData,
     };
     setState(newState);
-  }, [formData, metaData]);
+  }, [formData, metaData, bulkCommonData]);
 
   useEffect(() => {
     const newStates: Record<string, any>[] = formDatas.map((d, i) => {
@@ -191,12 +191,12 @@ export const FormProvider = <T extends ModelType>({
 
   useEffect(() => {
     const newStateLabel: Record<string, any> = {
-      ...formLabel,
-      ...metaDataLabel,
       ...bulkCommonLabel,
+      ...metaDataLabel,
+      ...formLabel,
     };
     setStateLabel(newStateLabel);
-  }, [formLabel, metaDataLabel]);
+  }, [formLabel, metaDataLabel, bulkCommonLabel]);
 
   useEffect(() => {
     const newStateLabels: Record<string, any>[] = formLabels.map((d, i) => {
@@ -358,8 +358,8 @@ export const FormProvider = <T extends ModelType>({
     let updatingValues: FormState<T> = {
       formData: newFormData,
       formLabel: newFormLabel,
-      bulkCommonData: newFormData,
-      bulkCommonLabel: newFormLabel,
+      bulkCommonData: args.inputMode === InputMode.MANY ? newFormData : {},
+      bulkCommonLabel: args.inputMode === InputMode.MANY ? newFormLabel : {},
       formDatas: newFormDatas,
       formLabels: newFormLabels,
       metaData: newMetaData,
@@ -463,7 +463,6 @@ export const FormProvider = <T extends ModelType>({
       }
 
       if (inputMode === InputMode.MANY) {
-        console.log("in sendData", formDatas);
         res = await modelContext.createItems(formDatas);
       }
       success = res?.success || false;
@@ -701,7 +700,6 @@ export const FormProvider = <T extends ModelType>({
         updateMode,
         index,
       });
-
       setFormData(updatedValue);
       setFormLabel(updatedLabel);
     }
