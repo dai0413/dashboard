@@ -36,7 +36,6 @@ export const deleteItemsBase = async <DATA>({
 
     return false;
   } finally {
-    console.log("alert", alert);
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
   }

@@ -120,7 +120,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     let alert: AlertStatus = { success: false };
     try {
       const res = await api.post(API_PATHS.AUTH.LOGOUT, {});
-      console.log(res);
       api.defaults.headers.common["Authorization"] = "";
       setAccessToken(null);
       alert = { success: true, message: res.data?.message };

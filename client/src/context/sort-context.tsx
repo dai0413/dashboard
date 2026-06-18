@@ -67,7 +67,6 @@ const SortProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleAsc = (key: string, asc: boolean) => {
     setSortConditions((prev) => {
-      // console.log(prev);
       const existing = prev.find((c) => c.key === key);
 
       if (existing) {

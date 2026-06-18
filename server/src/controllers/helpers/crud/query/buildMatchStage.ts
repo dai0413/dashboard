@@ -143,8 +143,6 @@ export const buildMatchStage = (
     }
   }
 
-  // console.log(fieldConditions);
-
   // --- matchStage 組み立て ---
   let matchStage: Record<string, any> = {};
   const andConditions = Object.entries(fieldConditions).map(([k, v]) => ({

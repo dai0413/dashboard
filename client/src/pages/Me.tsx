@@ -2,7 +2,6 @@ import { useAuth } from "../context/auth-context";
 
 const Me = () => {
   const { staffState } = useAuth();
-  console.log(staffState);
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">マイページ</h1>
