@@ -1,0 +1,18 @@
+blank_issues_enabled: false # true にすると「Blank issue」ボタンが表示される
+
+contact_links: # オプション: リンクボタンを追加
+  - name: 質問・サポートはこちら
+    url: https://example.com/support
+    about: 質問・雑談などはディスカッションでどうぞ。
+
+issue_templates:
+  - name: 機能追加リクエスト
+    description: 新しい機能の提案用テンプレート
+    file: feature_request.md
+    labels: ["enhancement"]
+
+  - name: 🧱 新規モデル追加
+    description: データベースに新しいモデルを追加する手順を記録・共有
+    file: add-new-model.md
+    title: "[Model] 新規モデル追加: "
+    labels: ["model", "backend", "frontend"]
