@@ -26,6 +26,11 @@ export const setTeam: OnChange<TransferForm, false> = async ({
       returnValue["to_team"] = to_team.key;
       returnFormLabel["to_team"] = to_team.label;
     }
+
+    returnValue["from_team"] = undefined;
+    returnValue["from_team_name"] = undefined;
+    returnFormLabel["from_team"] = undefined;
+    returnFormLabel["from_team_name"] = undefined;
   } else if (
     formData.form === "期限付き延長" ||
     formData.form === "育成型期限付き延長"
