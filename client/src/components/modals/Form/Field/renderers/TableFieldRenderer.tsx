@@ -64,7 +64,12 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
 
     const valid = isModelType(optionKey) || isOptionType(optionKey);
 
-    if (filterConditionsObj && valid) {
+    if (
+      filterConditionsObj &&
+      valid &&
+      filterConditionsObj[optionKey] &&
+      filterConditionsObj[optionKey]?.length > 0
+    ) {
       return filterConditionsObj[optionKey];
     }
 
