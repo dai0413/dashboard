@@ -16,6 +16,7 @@ export type FormController<T extends keyof FormTypeMap> = {
   prevStep: () => void;
   nextData: () => void;
   processStep: () => void;
+  isProcessing: boolean;
 
   alert: AlertStatus;
   resetAlert: () => void;

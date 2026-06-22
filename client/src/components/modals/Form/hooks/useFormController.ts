@@ -17,6 +17,7 @@ export const useFormController = <
     inputMode,
     isEditing,
     formMode,
+    isProcessing,
     steps: { formSteps, currentStep, prevStep, nextData, processStep },
   } = useForm<T>();
 
@@ -44,6 +45,7 @@ export const useFormController = <
     prevStep,
     nextData,
     processStep,
+    isProcessing,
 
     alert,
     resetAlert,

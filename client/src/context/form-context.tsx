@@ -63,6 +63,7 @@ type FormContextValue<T extends ModelType> = {
 
   isEditing: boolean;
   formMode: FormMode;
+  isProcessing: boolean;
 
   single: {
     handleFormData: HandleFormData<T>;
@@ -166,6 +167,8 @@ export const FormProvider = <T extends ModelType>({
 
   const [options, setOptions] = useState<Record<string, OptionObj<any>>>({});
 
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
   const resetOptions = () => {
     setOptions({});
   };
@@ -262,20 +265,27 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const startForm = async (args: StartForm<T>): Promise<boolean> => {
+    setIsProcessing(true);
+
+    const failed = () => {
+      setIsProcessing(false);
+      return false;
+    };
+
     let newSteps: FormStep<T>[];
     if (args.steps) {
       newSteps = args.steps;
     } else {
       if (!args.modelType) {
         console.error("error in startForm : modelType");
-        return false;
+        return failed();
       }
 
       const stepsObj = getSteps(args);
 
       if (!stepsObj) console.error("error in startForm : getSteps");
 
-      if (!stepsObj?.steps) return false;
+      if (!stepsObj?.steps) return failed();
 
       newSteps = stepsObj?.steps;
     }
@@ -413,6 +423,7 @@ export const FormProvider = <T extends ModelType>({
     setModelType(args.modelType);
     setIsEditing(true);
 
+    setIsProcessing(false);
     return true;
   };
 
@@ -905,6 +916,7 @@ export const FormProvider = <T extends ModelType>({
   const value: FormContextValue<T> = {
     modelType,
     inputMode,
+    isProcessing,
 
     formOperator: {
       startForm,
