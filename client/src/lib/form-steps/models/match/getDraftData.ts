@@ -45,9 +45,13 @@ export const getDraftData = async ({
 } | null> => {
   const updatedDraftData = await readDraftData(readDraftDataParams);
 
-  const matchData: MatchScraped[] = Object.values(updatedDraftData)
-    .flatMap((v) => v.match)
-    .filter((v): v is MatchScraped => v !== undefined);
+  const matchData: MatchScraped[] = readDraftDataParams.identifiers.flatMap(
+    (id) => {
+      const draft = updatedDraftData[id];
+
+      return draft?.match ? [draft.match] : [];
+    },
+  );
 
   const { api } = readDraftDataParams;
 
