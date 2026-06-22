@@ -42,6 +42,7 @@ export function match<TModel = any>(
         { field: "competition", type: "ObjectId" },
         { field: "season", type: "ObjectId" },
         { field: "date", type: "Date" },
+        { field: "match_week", type: "Number" },
       ],
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
