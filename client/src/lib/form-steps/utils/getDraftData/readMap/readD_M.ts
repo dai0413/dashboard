@@ -5,7 +5,7 @@ import { createItemBase } from "../../../../api";
 
 const baseRoute = API_PATHS.GET_NEW_DATA.D_M;
 
-export const readValues: ReadFun<"values"> = async (api, readParams) =>
+const readValues: ReadFun<"values"> = async (api, readParams) =>
   createItemBase<DraftData>({
     apiInstance: api,
     backendRoute: baseRoute.VALUES,

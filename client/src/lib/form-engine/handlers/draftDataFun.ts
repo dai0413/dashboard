@@ -32,6 +32,7 @@ export const draftDataFun = async <T extends keyof FormTypeMap>(
   if (currentStep.getDraftData) {
     if (currentStep.many) {
       const gettedDraftData = await currentStep.getDraftData({
+        data: formData,
         draftData,
         postedDraftData,
         metaData,
@@ -47,6 +48,7 @@ export const draftDataFun = async <T extends keyof FormTypeMap>(
       }
     } else {
       const gettedDraftData = await currentStep.getDraftData({
+        data: formData,
         draftData,
         postedDraftData,
         metaData,

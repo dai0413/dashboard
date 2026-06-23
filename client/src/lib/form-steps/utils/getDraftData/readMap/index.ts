@@ -1,12 +1,14 @@
 import { From } from "../../../../../types/types";
 import { readD_MMap } from "./readD_M";
 import { readJ_MMap } from "./readJ_M";
+import { readL_MMap } from "./readL_M";
 import { readSN_MMap } from "./readSN_M";
 
 export const readMap = {
   values: {
     [From.D_M]: readD_MMap.values,
     [From.J_M]: readJ_MMap.values,
+    [From.L_M]: readL_MMap.values,
   },
 
   match: {
@@ -41,5 +43,10 @@ export const readMap = {
 
   positions: {
     [From.SN_M]: readSN_MMap.positions,
+    [From.L_M]: readL_MMap.positions,
+  },
+
+  statsL: {
+    [From.L_M]: readL_MMap.statsL,
   },
 };

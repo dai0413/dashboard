@@ -16,6 +16,7 @@ export type GetDraftData<
   K extends keyof FormTypeMap,
   T extends boolean,
 > = (args: {
+  data: FormTypeMap[K] & Record<string, any>;
   draftData: DraftData;
   postedDraftData: PostedDraftData;
   metaData: Record<string, any>;

@@ -30,6 +30,12 @@ type ReadParams =
     }
   | {
       url: string;
+    }
+  | {
+      getParams: { date: Date; alph: string; matchId: string }[];
+    }
+  | {
+      getParam: { date?: Date; alph?: string };
     };
 
 type ReadResult<K extends ReadableDraftDataKey> = K extends "values"
