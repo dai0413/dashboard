@@ -349,6 +349,8 @@ const Match = () => {
               metaData: {
                 match: [id],
                 urls: selected.urls,
+                date: selected.date,
+                season: selected.season.id,
                 competition_stage: selected.competition_stage.id,
               },
             }}
