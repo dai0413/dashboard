@@ -29,16 +29,4 @@ export const matchRelatedItems: Item[] = [
       relatedAll: true,
     },
   },
-  {
-    model: "StatsL, TeamMatchFormation",
-    desc: "L_M",
-    icon: "match",
-    startFormArgs: {
-      modelType: ModelType.STATS_L,
-      inputMode: InputMode.MANY,
-      formMode: FormMode.CREATE,
-      from: From.L_M,
-      relatedAll: true,
-    },
-  },
 ];
