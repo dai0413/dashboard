@@ -6,18 +6,22 @@ import BadRequestError from "../../../errors/bad-request.js";
 import InternalServerError from "../../../errors/internal-server.js";
 import { CreateItemResponse } from "@dai0413/myorg-shared";
 
+type Output = Record<string, Scraped>;
+
 const getStats = async (
   req: Request,
-  res: Response<CreateItemResponse<Scraped>>,
+  res: Response<CreateItemResponse<Output>>,
 ) => {
   try {
-    const { date, alph } = req.body;
-    if (!date || !alph)
-      throw new BadRequestError("date , alphを送信してください");
+    const { getParams } = req.body;
+    if (!getParams)
+      throw new BadRequestError("getParams(date , alph)を送信してください");
 
-    const result = await get({ date, alph });
+    console.log("getParams", getParams);
+
+    const result = await get(getParams);
     if (result.ok) {
-      const data: Scraped = result.data;
+      const data: Output = result.data;
 
       res
         .status(StatusCodes.OK)
