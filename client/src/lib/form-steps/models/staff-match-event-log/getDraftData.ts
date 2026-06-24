@@ -74,7 +74,7 @@ export const getDraftData = async ({
   const updatedPostedDraftData = await readPostedDraftData({
     ...readDraftDataParams,
     postedDraftData,
-    readPostedDraftDataKey: ["match"],
+    readPostedDraftDataKey: ["match", "staffAppearance"],
   });
 
   const { identifiers, api } = readDraftDataParams;

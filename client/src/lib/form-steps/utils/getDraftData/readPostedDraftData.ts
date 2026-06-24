@@ -7,6 +7,7 @@ import { AxiosInstance } from "axios";
 import { convert } from "../../../convert/DBtoGetted";
 import { convert as createLabel } from "../../../convert/CreateLabel";
 import { PlayerAppearance } from "../../../../types/models/player-appearance";
+import { StaffAppearance } from "../../../../types/models/staff-appearance";
 
 const readMatch: ReadFun = async (api: AxiosInstance, matchId: string) => {
   const res = await readItemBase<Match>({
@@ -56,6 +57,37 @@ const readPlayerAppearance = async (
   return result;
 };
 
+const readStaffAppearance = async (
+  api: AxiosInstance,
+  matchId: string,
+  postedDraftDataValues: PostedDraftDataValues,
+) => {
+  const homeId = postedDraftDataValues.match?.home_team.id;
+  const awayId = postedDraftDataValues.match?.away_team.id;
+
+  const res = await readItemsBase<StaffAppearance[]>({
+    apiInstance: api,
+    backendRoute: API_PATHS.STAFF_APPEARANCE.ROOT,
+    params: { match: matchId, getAll: true },
+  });
+
+  if (!res?.data) return undefined;
+
+  const staffs = convert(ModelType.STAFF_APPEARANCE, res.data);
+
+  const homeStaffAppearance = staffs.filter((d) => d.team.id === homeId);
+  const awayStaffAppearance = staffs.filter((d) => d.team.id === awayId);
+
+  const result: PostedDraftData[any] = {
+    staffAppearance: {
+      home: homeStaffAppearance,
+      away: awayStaffAppearance,
+    },
+  };
+
+  return result;
+};
+
 type ReadFun = (
   api: AxiosInstance,
   matchId: string,
@@ -65,6 +97,7 @@ type ReadFun = (
 const readMap = {
   match: readMatch,
   playerAppearance: readPlayerAppearance,
+  staffAppearance: readStaffAppearance,
 } satisfies Record<string, ReadFun>;
 
 type ReadableDraftDataKey = keyof typeof readMap;
