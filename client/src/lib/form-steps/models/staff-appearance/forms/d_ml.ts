@@ -30,11 +30,6 @@ export const staffAppearance: FormStep<BaseModel>[] = [
           identifiers: match,
           requests: [
             {
-              draftDataKey: "match",
-              from: From.D_M,
-              params: { url },
-            },
-            {
               draftDataKey: "staffAppearance",
               from: From.D_M,
               params: { url },
@@ -66,11 +61,6 @@ export const multiModel: FormStep<BaseModel>[] = [
           draftData,
           identifiers: cardIds,
           requests: [
-            {
-              draftDataKey: "match",
-              from: From.D_M,
-              params: { cardId: cardIds },
-            },
             {
               draftDataKey: "staffAppearance",
               from: From.D_M,

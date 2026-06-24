@@ -30,11 +30,6 @@ export const staffMatchEventLog: FormStep<BaseModel>[] = [
           identifiers: match,
           requests: [
             {
-              draftDataKey: "match",
-              from: From.D_M,
-              params: { url },
-            },
-            {
               draftDataKey: "staffMatchEventLog",
               from: From.D_M,
               params: { url },

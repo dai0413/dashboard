@@ -30,11 +30,6 @@ export const playerMatchEventLog: FormStep<BaseModel>[] = [
           identifiers: match,
           requests: [
             {
-              draftDataKey: "match",
-              from: From.D_M,
-              params: { url },
-            },
-            {
               draftDataKey: "playerMatchEventLog",
               from: From.D_M,
               params: { url },
@@ -65,11 +60,6 @@ export const multiModel: FormStep<BaseModel>[] = [
           draftData,
           identifiers: cardIds,
           requests: [
-            {
-              draftDataKey: "match",
-              from: From.D_M,
-              params: { cardId: cardIds },
-            },
             {
               draftDataKey: "playerMatchEventLog",
               from: From.D_M,
