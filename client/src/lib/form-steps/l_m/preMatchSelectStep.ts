@@ -90,13 +90,26 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
         valueType: "option",
         required: true,
       },
+      {
+        key: "match_week",
+        label: "節",
+        fieldType: "input",
+        valueType: "number",
+      },
     ],
     createFilterConditions: async ({ metaData, api }) => {
       if (!metaData || !metaData.competition || !api) return null;
+      let params: {
+        getAll: true;
+        season?: string;
+        match_week?: string;
+      } = { getAll: true };
+      if (metaData.season) params.season = metaData.season;
+      if (metaData.match_week) params.match_week = metaData.match_week;
       return createFilterFromParent({
         readItemParams: {
           apiInstance: api,
-          params: { season: metaData.season as string },
+          params: params,
           backendRoute: API_PATHS.MATCH.ROOT,
         },
         convertValueLabel: (data: Match) => convert(ModelType.MATCH, data),

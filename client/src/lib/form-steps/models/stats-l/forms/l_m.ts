@@ -1,151 +1,94 @@
-import {
-  DataSource,
-  DraftData,
-  FormStep,
-  StepType,
-} from "../../../../../types/form";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
-import { getFields } from "../fields";
+import { bulkBase, getFields } from "../fields";
 import { createField } from "../utils/createField";
-import { createItemBase, readItemBase } from "../../../../api";
-import { StatsLForm } from "../../../../../types/models/stats-l";
+import { readItemBase } from "../../../../api";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { Match } from "../../../../../types/models/match";
-import { Scraped } from "@dai0413/myorg-shared/types/get-new-data/data/stats-l";
-import { convert as convertToLabel } from "../../../../convert/CreateLabel";
-import { buildValueLabel } from "../../../utils/resolver/resolveToValue";
+import { readL_MMap } from "../../../utils/getDraftData/readMap/readL_M";
+import { ReadDraftDataParams } from "../../../utils/getDraftData/types";
+import { getDraftData } from "../getDraftData";
+import { Team } from "../../../../../types/models/team";
 import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
-
-const KEYS = ["match", "team"] as const;
 
 const preSteps = getPreMatchSelect<BaseModel>(baseModel);
 
 export const statsL: FormStep<BaseModel>[] = [
   ...preSteps,
   {
-    stepLabel: "試合を選択",
+    stepLabel: "L_M, STATS_Lモデルデータを取得します",
     type: StepType.FORM,
     modelType: baseModel,
     dataSource: DataSource.META_DATA,
     fields: getFields(["match"], { match: { multi: true } }),
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
-    addDraftData: async ({ api, draftData, metaData }) => {
-      if (!metaData || !api) return {};
-
-      const matchIds: string[] = metaData.match;
-
-      let newData: DraftData = { ...draftData };
-
-      const missingMatchIds = matchIds.filter(
-        (matchId) => !newData[matchId]?.statsL,
-      );
-
-      for (const matchId of missingMatchIds) {
-        const statsL = newData[matchId]?.statsL;
-
-        // 既存データあり
-        if (statsL) continue;
-
-        // 既存データなし
-        const matchObj = await readItemBase<Match>({
-          apiInstance: api,
-          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-        });
-
-        if (!matchObj) continue;
-
-        const res = await createItemBase<Scraped>({
-          apiInstance: api,
-          backendRoute: API_PATHS.GET_NEW_DATA.L_M.STATS,
-          data: {
-            date: matchObj.date,
-            alph: matchObj.home_team.labalph,
-            key: matchId,
-          },
-        });
-
-        if (!res.success) continue;
-
-        newData = {
-          ...newData,
-          [matchId]: {
-            ...draftData[matchId],
-            statsL: res.data,
-          },
-        };
-      }
-
-      return newData;
-    },
   },
   {
     stepLabel: "データ取得",
     type: StepType.FORM,
     modelType: baseModel,
     many: true,
-    getDraftData: async ({ api, draftData, metaData }) => {
+    getDraftData: async ({
+      api,
+      data,
+      draftData,
+      postedDraftData,
+      metaData,
+    }) => {
       if (!metaData || !api) return { value: [], label: [] };
 
-      const matchIds: string[] = metaData.match;
+      const match: string | undefined = data.match;
+      if (!match) return { value: [], label: [] };
 
-      let newDataValue: StatsLForm[] = [];
-      let newDataLabel: Record<string, any>[] = [];
+      const matchObj = await readItemBase<Match>({
+        apiInstance: api,
+        backendRoute: API_PATHS.MATCH.DETAIL(match),
+      });
 
-      const havingMatchIds = matchIds.filter(
-        (matchId) => draftData[matchId]?.statsL,
-      );
+      if (!matchObj) return { value: [], label: [] };
 
-      for (const matchId of havingMatchIds) {
-        const statsL = draftData[matchId]?.statsL;
+      let newDraftData = draftData;
 
-        if (!statsL) continue;
+      const date = matchObj.date;
+      const alph = matchObj.home_team.labalph;
 
-        const matchObj = await readItemBase<Match>({
-          apiInstance: api,
-          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
-        });
-
-        if (!matchObj) continue;
-
-        const match = {
-          id: matchId,
-          label: convertToLabel(ModelType.MATCH, matchObj) || "",
+      if (date && alph && match) {
+        const params: { date: Date; alph: string; matchId: string } = {
+          date,
+          alph,
+          matchId: match,
         };
 
-        const home = {
-          id: matchObj.home_team._id,
-          label: convertToLabel(ModelType.TEAM, matchObj.home_team),
-        };
+        let res =
+          readL_MMap.statsL &&
+          (await readL_MMap.statsL(api, { getParams: [params] }));
 
-        const away = {
-          id: matchObj.away_team._id,
-          label: convertToLabel(ModelType.TEAM, matchObj.away_team),
-        };
-
-        const homeData = {
-          ...statsL.home,
-          match,
-          team: home,
-        };
-        const awayData = {
-          ...statsL.away,
-          match,
-          team: away,
-        };
-
-        const homeResult = buildValueLabel([homeData], KEYS);
-        const awayResult = buildValueLabel([awayData], KEYS);
-
-        newDataValue.push(...homeResult.value, ...awayResult.value);
-        newDataLabel.push(...homeResult.label, ...awayResult.label);
+        const statsLDatas = res?.success ? res.data : undefined;
+        for (const positinKey in statsLDatas) {
+          const key = positinKey as keyof typeof newDraftData;
+          newDraftData[key] = {
+            ...newDraftData[key],
+            statsL: { ...statsLDatas[key] },
+          };
+        }
       }
 
-      return { value: newDataValue, label: newDataLabel };
+      const requests: ReadDraftDataParams["requests"] = [];
+
+      return await getDraftData({
+        readDraftDataParams: {
+          api,
+          draftData: newDraftData,
+          identifiers: [match],
+          requests,
+        },
+        postedDraftData,
+      });
     },
   },
   {
@@ -155,5 +98,72 @@ export const statsL: FormStep<BaseModel>[] = [
     fields: [...getFields(["team"]), ...createField()],
     many: true,
   },
+  createConfirmationStep<BaseModel>(baseModel),
+];
+
+export const multiModel: FormStep<BaseModel>[] = [
+  {
+    modelType: baseModel,
+    stepLabel: "L_M, STATS_Lモデルデータを取得します",
+    type: StepType.FORM,
+    many: true,
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
+      const cardIds: string[] = metaData.card_ids;
+      const params = (
+        await Promise.all(
+          cardIds.map(async (cardId) => {
+            const value = postedDraftData[cardId];
+            if (!value.match) return;
+
+            const { date, home_team } = value.match;
+
+            if (!date || !home_team.id) return;
+
+            const team = await readItemBase<Team>({
+              apiInstance: api,
+              backendRoute: API_PATHS.TEAM.DETAIL(home_team.id),
+            });
+
+            if (!team || !team.labalph) return;
+
+            return {
+              date: date,
+              alph: team.labalph,
+              matchId: cardId,
+            };
+          }),
+        )
+      ).filter((d) => typeof d !== "undefined");
+
+      let res =
+        readL_MMap.statsL &&
+        (await readL_MMap.statsL(api, { getParams: params }));
+
+      const positionDatas = res?.success ? res.data : undefined;
+
+      let newDraftData = draftData;
+
+      for (const positinKey in positionDatas) {
+        const key = positinKey as keyof typeof newDraftData;
+        newDraftData[key] = {
+          ...newDraftData[key],
+          statsL: { ...positionDatas[key] },
+        };
+      }
+
+      let gettedDraftData = await getDraftData({
+        readDraftDataParams: {
+          api,
+          draftData: newDraftData,
+          identifiers: cardIds,
+          requests: [],
+        },
+        postedDraftData,
+      });
+
+      return gettedDraftData;
+    },
+  },
+  bulkBase,
   createConfirmationStep<BaseModel>(baseModel),
 ];
