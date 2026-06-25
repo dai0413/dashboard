@@ -193,6 +193,15 @@ const National = () => {
             },
             {
               label: "年代",
+              field: "team",
+              width: "100px",
+              getValueType: ColumnType.FIELD,
+              key: "team",
+              displayOnTable: true,
+              type: "select",
+            },
+            {
+              label: "年代",
               field: "age_group",
               width: "100px",
               getValueType: ColumnType.FIELD,

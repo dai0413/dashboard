@@ -4,6 +4,7 @@ import {
   NationalMatchSeriesGet,
 } from "../../../types/models/national-match-series";
 import { country } from "../CreateLabel/country";
+import { team } from "../CreateLabel/team";
 
 export const nationalMatchSeries = (
   t: NationalMatchSeries,
@@ -18,6 +19,10 @@ export const nationalMatchSeries = (
     country: {
       label: country(t.country),
       id: t.country._id,
+    },
+    team: {
+      label: t.team ? team(t.team) : "",
+      id: t.team ? t.team._id : "",
     },
     age_group: age_group ? age_group : "",
   };

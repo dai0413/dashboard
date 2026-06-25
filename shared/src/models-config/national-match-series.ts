@@ -26,10 +26,14 @@ export function nationalMatchSeries<TModel = any>(
       POPULATED: NationalMatchSeriesPopulatedSchema,
     },
     MONGO_MODEL: mongoModel ?? null,
-    POPULATE_PATHS: [{ path: "country", collection: "countries" }],
+    POPULATE_PATHS: [
+      { path: "country", collection: "countries" },
+      { path: "team", collection: "teams" },
+    ],
     getAllConfig: {
       query: [
         { field: "country", type: "ObjectId" },
+        { field: "team", type: "ObjectId" },
         { field: "joined_at", type: "Date" },
         { field: "age_group", type: "String" },
       ],
@@ -44,11 +48,13 @@ export function nationalMatchSeries<TModel = any>(
           {
             name: "親善試合14年11月",
             country: deps.country[0]._id,
+            team: deps.team[0]._id,
             age_group: "full",
           },
           {
             name: "親善試合14年12月",
             country: deps.country[0]._id,
+            team: deps.team[0]._id,
             age_group: "full",
           },
         ];

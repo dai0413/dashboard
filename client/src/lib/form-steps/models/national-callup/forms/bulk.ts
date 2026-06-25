@@ -39,13 +39,20 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
         backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.DETAIL(metaData.series),
       });
 
-      if (!item?.country._id || !item.joined_at || !item.age_group) return {};
+      if (
+        !item?.country._id ||
+        !item.joined_at ||
+        !item.age_group ||
+        !item.team
+      )
+        return {};
 
       const res = await readItemsBase<NationalMatchSeries[]>({
         apiInstance: api,
         backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
         params: {
           country: item?.country._id,
+          team: item?.team._id,
           joined_at: `<${item.joined_at}`,
           age_group: item.age_group,
           sort: "-joined_at",

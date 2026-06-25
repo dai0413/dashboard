@@ -66,6 +66,7 @@ const National = () => {
             </div>
             <div className="text-gray-600">{selected.country.label}</div>
             <div className="text-sm text-gray-500">{selected.age_group}</div>
+            <div className="text-gray-600">{selected.team.label}</div>
             <div className="text-sm text-gray-500">
               {`${selected.joined_at && toDateKey(selected.joined_at)}~~~${
                 selected.left_at && toDateKey(selected.left_at)

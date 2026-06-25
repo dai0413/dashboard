@@ -3,6 +3,7 @@ import { objectId } from "./utils/objectId.js";
 import { dateField } from "./utils/dateField.js";
 import { ageGroup } from "../enum/ageGroup.js";
 import { CountryZodSchema } from "./country.schema.js";
+import { TeamZodSchema } from "./team.schema.js";
 import { MatchBaseZodSchema } from "./match.schema.js";
 import { getKey } from "../utils/getKey.js";
 import { label } from "./utils/label.js";
@@ -14,8 +15,9 @@ export const NationalMatchSeriesZodSchema = z.object({
     .nonempty()
     .refine((v) => !!v, { message: "nameは必須です" }),
   abbr: z.string().nonempty().optional(),
-  country: objectId.refine((v) => !!v, { message: "countryは必須です" }),
+  country: objectId.optional(),
   age_group: z.enum(getKey(ageGroup())).optional(),
+  team: objectId.optional(),
   matches: z.array(objectId).optional(),
   joined_at: dateField.optional(),
   left_at: dateField.optional(),
@@ -33,26 +35,32 @@ export const NationalMatchSeriesFormSchema = NationalMatchSeriesZodSchema.omit({
 export const NationalMatchSeriesResponseSchema =
   NationalMatchSeriesZodSchema.omit({
     country: true,
+    team: true,
     matches: true,
   }).safeExtend({
     country: CountryZodSchema,
+    team: TeamZodSchema.optional(),
     matches: z.array(MatchBaseZodSchema).optional(),
   });
 
 export const NationalMatchSeriesPopulatedSchema =
   NationalMatchSeriesZodSchema.omit({
     country: true,
+    team: true,
     matches: true,
   }).safeExtend({
     country: CountryZodSchema,
+    team: TeamZodSchema.optional(),
     matches: z.array(MatchBaseZodSchema).optional(),
   });
 
 export const NationalMatchSeriesPopulateLabelSchema =
   NationalMatchSeriesZodSchema.omit({
     country: true,
+    team: true,
     matches: true,
   }).safeExtend({
     country: label,
+    team: label,
     matches: z.array(label).optional(),
   });

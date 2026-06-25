@@ -15,6 +15,7 @@ export const nationalMatchSeries = (
     joined_at: toDateKey(t.joined_at),
     left_at: toDateKey(t.left_at),
     country: t.country.id,
+    team: t.team.id,
     age_group: age_group ? age_group : "",
   };
 };
