@@ -642,9 +642,10 @@ export const FormProvider = <T extends ModelType>({
   };
 
   const processStep = async () => {
+    setIsProcessing(true);
     const current = formSteps[currentStep];
 
-    if (!current) return;
+    if (!current) return setIsProcessing(false);
     if (current.modelType) {
       setModelType(current.modelType as T);
     }
@@ -653,6 +654,8 @@ export const FormProvider = <T extends ModelType>({
       sendData(current.modelType);
     }
     nextStep();
+
+    setIsProcessing(false);
   };
 
   const prevStep = () => {
