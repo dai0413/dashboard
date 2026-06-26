@@ -1,35 +1,41 @@
+import { IconButtonProps } from "../../../components/buttons/IconButton";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { TeamTabItems } from "../../constants/menuItems";
-import { api } from "../../context/api-context";
-import { useModal } from "../../context/modal-context";
-import { ModelType } from "../../types/models";
-import { OptionArray } from "../../types/form/option";
-import { isFilterable, isSortable } from "../../types/field";
+import { api } from "../../../context/api-context";
+import { useModal } from "../../../context/modal-context";
+import { ModelType } from "../../../types/models";
+import { OptionArray } from "../../../types/form/option";
+import { isFilterable, isSortable } from "../../../types/field";
 import {
   TeamCompetitionSeason,
   TeamCompetitionSeasonGet,
-} from "../../types/models/team-competition-season";
-import { Match, MatchGet } from "../../types/models/match";
-import { Season, SeasonGet } from "../../types/models/season";
-import { PlayerRegistrationGet } from "../../types/models/player-registration";
-import { Data, TeamMatch } from "../../types/types";
-import { TableWithFetch } from "../../components/table";
-import { IconButton } from "../../components/buttons";
-import { SelectField } from "../../components/field";
-import { FullScreenLoader } from "../../components/ui";
-import { useTeam } from "../../context/models/team";
-import { readItemBase, readItemsBase } from "../../lib/api";
-import { fieldDefinition } from "../../lib/model-fields";
-import { convert } from "../../lib/convert/DBtoGetted";
-import { APP_ROUTES } from "../../lib/appRoutes";
-import { convertMatchToTeamMatch } from "../../utils/data";
-import PointLine from "./Team/PointLine";
-import { ColumnType } from "../../types/table";
+} from "../../../types/models/team-competition-season";
+import { Match, MatchGet } from "../../../types/models/match";
+import { Season, SeasonGet } from "../../../types/models/season";
+import { PlayerRegistrationGet } from "../../../types/models/player-registration";
+import { Data, TeamMatch } from "../../../types/types";
+import { TableWithFetch } from "../../../components/table";
+import { IconButton } from "../../../components/buttons";
+import { SelectField } from "../../../components/field";
+import { FullScreenLoader } from "../../../components/ui";
+import { useTeam } from "../../../context/models/team";
+import { readItemBase, readItemsBase } from "../../../lib/api";
+import { fieldDefinition } from "../../../lib/model-fields";
+import { convert } from "../../../lib/convert/DBtoGetted";
+import { APP_ROUTES } from "../../../lib/appRoutes";
+import { convertMatchToTeamMatch } from "../../../utils/data";
+import PointLine from "./PointLine";
+import { ColumnType } from "../../../types/table";
 
 type DateUnit = "day" | "month" | "year";
+
+type SeasonDates = {
+  startDate: string | undefined;
+  endDate: string | undefined;
+  seasonRange: string[];
+};
 
 const addDate = (date: Date, amount: number, unit: DateUnit): Date => {
   const d = new Date(date);
@@ -115,6 +121,49 @@ const getSeasonDates = (
   return { normalSeason, transferWindow, future };
 };
 
+const TeamTabItems: IconButtonProps[] = [
+  {
+    icon: "player",
+    text: "選手",
+  },
+  {
+    icon: "future_in",
+    text: "内定",
+  },
+  {
+    icon: "transfer_in",
+    text: "加入",
+  },
+  {
+    icon: "transfer_out",
+    text: "退団",
+  },
+  {
+    icon: "loan",
+    text: "レンタル中",
+  },
+  {
+    icon: "injury",
+    text: "怪我",
+  },
+  {
+    icon: "match",
+    text: "試合",
+  },
+  {
+    icon: "registration",
+    text: "選手登録",
+  },
+  {
+    icon: "series",
+    text: "所属カテゴリ",
+  },
+  {
+    icon: "line-plot",
+    text: "勝点推移",
+  },
+];
+
 const Tabs = TeamTabItems.filter(
   (item) =>
     item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
@@ -123,13 +172,7 @@ const Tabs = TeamTabItems.filter(
   label: item.text as string,
 })) as OptionArray;
 
-type SeasonDates = {
-  startDate: string | undefined;
-  endDate: string | undefined;
-  seasonRange: string[];
-};
-
-const Team = () => {
+const ClubTeam = () => {
   const { id } = useParams();
   const {
     detail: { open },
@@ -355,6 +398,10 @@ const Team = () => {
       return;
     readPlotData(id, selectedteamCompetitionSeason.season.id);
   }, [id, selectedteamCompetitionSeason]);
+
+  if (selected?.genre === "代表") {
+    return <div>this is national team</div>;
+  }
 
   return (
     <div className="p-6">
@@ -1139,4 +1186,4 @@ const Team = () => {
   );
 };
 
-export default Team;
+export default ClubTeam;
