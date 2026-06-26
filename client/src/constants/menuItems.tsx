@@ -130,17 +130,8 @@ export const NationalTabItems: IconButtonProps[] = [
     text: "大会",
   },
   {
-    icon: "match",
-    text: "代表試合",
-    className: "cursor-not-allowed",
-  },
-  {
-    icon: "series",
-    text: "代表シリーズ",
-  },
-  {
-    icon: "player",
-    text: "代表招集選手",
+    icon: "team",
+    text: "代表チーム",
   },
 ];
 

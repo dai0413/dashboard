@@ -178,150 +178,87 @@ const National = () => {
         />
       )}
 
-      {selectedTab === "series" && id && (
+      {selectedTab === "team" && id && (
         <TableWithFetch
-          modelType={ModelType.NATIONAL_MATCH_SERIES}
+          modelType={ModelType.TEAM}
           fieldDefinitions={[
             {
-              label: "名称",
-              field: "name",
-              width: "250px",
-              getValueType: ColumnType.FIELD,
-              key: "name",
-              displayOnTable: true,
+              key: "normalized_name",
+              field: "normalized_name",
+              label: "チーム",
               type: "string",
-            },
-            {
-              label: "年代",
-              field: "team",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "team",
+              filterable: true,
+              sortable: true,
+              displayOnDetail: true,
               displayOnTable: true,
-              type: "select",
+              getValueType: ColumnType.FIELD,
+              width: "150px",
             },
             {
-              label: "年代",
-              field: "age_group",
-              width: "100px",
+              key: "abbr",
+              field: "abbr",
+              label: "略称",
+              type: "string",
+              filterable: true,
+              sortable: true,
+              displayOnDetail: true,
+              displayOnTable: true,
               getValueType: ColumnType.FIELD,
+              width: "100px",
+            },
+            {
+              key: "enTeam",
+              field: "enTeam",
+              label: "英名",
+              type: "string",
+              filterable: true,
+              sortable: true,
+              displayOnDetail: true,
+              displayOnTable: true,
+              getValueType: ColumnType.FIELD,
+              width: "250px",
+            },
+            {
+              key: "country",
+              field: "country",
+              filterKey: "country.name",
+              label: "国",
+              type: "string",
+              filterable: true,
+              sortable: true,
+              displayOnDetail: true,
+              displayOnTable: true,
+              getValueType: ColumnType.FIELD,
+              width: "100px",
+            },
+            {
               key: "age_group",
-              displayOnTable: true,
+              field: "age_group",
+              label: "年代",
               type: "select",
-            },
-            {
-              label: "招集日",
-              field: "joined_at",
-              getValueType: ColumnType.FIELD,
-              key: "joined_at",
+              filterable: true,
+              sortable: true,
+              displayOnDetail: true,
               displayOnTable: true,
-              type: "Date",
-            },
-            {
-              label: "解散日",
-              field: "left_at",
               getValueType: ColumnType.FIELD,
-              key: "left_at",
-              displayOnTable: true,
-              type: "Date",
+              width: "100px",
             },
           ]}
           fetch={{
-            apiRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
-            params: { getAll: true, country: id, sort: "-_id" },
-          }}
-          filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-            ?.filter(isFilterable)
-            .filter((file) => file.key !== "country")}
-          sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
-            ?.filter(isSortable)
-            .filter((file) => file.key !== "country")}
-          linkField={[
-            {
-              field: "name",
-              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
-            },
-          ]}
-          initialData={{
-            formData: {
-              country: id,
-            },
-          }}
-        />
-      )}
-
-      {selectedTab === "player" && id && (
-        <TableWithFetch
-          modelType={ModelType.NATIONAL_CALLUP}
-          fieldDefinitions={[
-            {
-              label: "代表試合シリーズ",
-              field: "series",
-              width: "250px",
-              getValueType: ColumnType.FIELD,
-              key: "series",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "選手",
-              field: "player",
-              isPrimary: true,
-              getValueType: ColumnType.FIELD,
-              key: "player",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "招集状況",
-              field: "status",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "status",
-              displayOnTable: true,
-              type: "select",
-            },
-            {
-              label: "背番号",
-              field: "number",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "number",
-              displayOnTable: true,
-              type: "number",
-            },
-            {
-              label: "ポジション",
-              field: "position_group",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "position_group",
-              displayOnTable: true,
-              type: "select",
-            },
-          ]}
-          fetch={{
-            apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
+            apiRoute: API_PATHS.TEAM.ROOT,
             params: {
               getAll: true,
-              "series.country": id,
-              sort: "-series,position_group_order,number",
+              genre: "national",
+              country: id,
+              sort: "age_group",
             },
           }}
-          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]?.filter(
-            isFilterable,
-          )}
-          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]?.filter(
-            isSortable,
-          )}
+          filterField={fieldDefinition[ModelType.TEAM]?.filter(isFilterable)}
+          sortField={fieldDefinition[ModelType.TEAM]?.filter(isSortable)}
           linkField={[
             {
-              field: "series",
-              to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
-            },
-            {
-              field: "player",
-              to: APP_ROUTES.PLAYER_SUMMARY,
+              field: "normalized_name",
+              to: APP_ROUTES.TEAM_SUMMARY,
             },
           ]}
         />
