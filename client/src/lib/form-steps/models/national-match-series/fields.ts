@@ -13,16 +13,10 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     valueType: "text",
     required: true,
   },
-  country: {
-    key: "country",
-    label: "国名",
+  team: {
+    key: "team",
+    label: "チーム",
     fieldType: "table",
-    valueType: "option",
-  },
-  age_group: {
-    key: "age_group",
-    label: "年代・種別",
-    fieldType: "select",
     valueType: "option",
   },
   joined_at: {

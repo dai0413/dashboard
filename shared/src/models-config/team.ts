@@ -32,6 +32,7 @@ export function team<TModel = any>(
         { field: "country", type: "ObjectId" },
         { field: "team", type: "String" },
         { field: "abbr", type: "String" },
+        { field: "genre", type: "String" },
       ],
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,

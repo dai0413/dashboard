@@ -40,7 +40,8 @@ export function nationalCallUp<TModel = any>(
         { field: "player", type: "ObjectId" },
         { field: "series", type: "ObjectId" },
         { field: "series.country", type: "ObjectId", populateAfter: true },
-        { field: "series.team", type: "ObjectId" },
+        { field: "series.team", type: "ObjectId", populateAfter: true },
+        { field: "series.joined_at", type: "Date", populateAfter: true },
       ],
       sort: {
         series: -1,
