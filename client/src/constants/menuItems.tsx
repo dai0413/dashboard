@@ -139,7 +139,6 @@ export const NationalMatchSeriesTabItems: IconButtonProps[] = [
   {
     icon: "match",
     text: "試合",
-    className: "cursor-not-allowed",
   },
   {
     icon: "player",
