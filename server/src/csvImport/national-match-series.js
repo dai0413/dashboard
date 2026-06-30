@@ -33,7 +33,7 @@ fs.createReadStream(path.resolve(inputPath))
         header // もとのヘッダー
           .replace(/^\uFEFF/, "") // 先頭の BOM を除去
           .trim(), // 前後の空白を除去
-    })
+    }),
   )
   .on("data", (row) => {
     datas.push(row);
@@ -47,7 +47,7 @@ fs.createReadStream(path.resolve(inputPath))
       abbr: row.abbr ? row.abbr : null,
       country: new mongoose.Types.ObjectId(row.country),
       team_class: row.team_class ? row.team_class : null,
-      matchs: null,
+      matches: null,
       joined_at: row.joined_at ? new Date(row.joined_at) : null,
       left_at: row.left_at ? new Date(row.left_at) : null,
       urls: row.urls ? row.urls.split(";") : [],

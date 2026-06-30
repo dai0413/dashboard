@@ -2,6 +2,7 @@ import { ageGroup } from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Country } from "./country";
 import { Team } from "./team";
+import { Match } from "./match";
 
 const AgeGroupOptions = ageGroup().map((item) => item.key);
 
@@ -14,7 +15,7 @@ export type NationalMatchSeries = {
   country: Country;
   team: Team;
   age_group: AgeGroup;
-  matchs: [];
+  matches: Match[];
   joined_at: Date | null;
   left_at: Date | null;
   urls: string[];
@@ -22,10 +23,11 @@ export type NationalMatchSeries = {
 
 type NationalMatchSeriesPost = Omit<
   NationalMatchSeries,
-  "_id" | "country" | "joined_at" | "left_at" | "team"
+  "_id" | "country" | "joined_at" | "left_at" | "team" | "matches"
 > & {
   country: Country["_id"];
   team: Team["_id"];
+  matches: Match["_id"][];
   joined_at: string | null;
   left_at: string | null;
 };
@@ -34,8 +36,9 @@ export type NationalMatchSeriesForm = Partial<NationalMatchSeriesPost>;
 
 export type NationalMatchSeriesGet = Omit<
   NationalMatchSeries,
-  "country" | "team"
+  "country" | "team" | "matches"
 > & {
   team: Label;
   country: Label;
+  matches: Label[];
 };

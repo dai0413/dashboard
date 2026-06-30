@@ -2,11 +2,11 @@ import { MatchGet } from "../../types/models/match";
 import { TeamMatch } from "../../types/types";
 
 export const convertMatchToTeamMatch = (
-  matchs: MatchGet[],
+  matches: MatchGet[],
   teamId: string,
 ): TeamMatch[] => {
   let teamMatchs = [];
-  for (const match of matchs) {
+  for (const match of matches) {
     const {
       home_team,
       away_team,

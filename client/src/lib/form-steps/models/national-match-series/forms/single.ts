@@ -60,7 +60,7 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
     stepLabel: "試合",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["matchs"]),
+    fields: getFields(["matches"]),
   },
   {
     stepLabel: "url",

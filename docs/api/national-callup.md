@@ -66,7 +66,7 @@
       "abbr": null,
       "country": "688b2c5fe7d7762ddaad1dfb",
       "team_class": "u21",
-      "matchs": null,
+      "matches": null,
       "joined_at": "2022-05-28T15:00:00.000Z",
       "left_at": "2022-06-17T15:00:00.000Z",
       "urls": [],
@@ -136,7 +136,6 @@
 ```
 
 - レスポンス
-
   - 成功時
 
     ```json
@@ -150,7 +149,7 @@
           "abbr": null,
           "country": "688b2c5fe7d7762ddaad1dfb",
           "team_class": "u21",
-          "matchs": null,
+          "matches": null,
           "joined_at": "2022-05-28T15:00:00.000Z",
           "left_at": "2022-06-17T15:00:00.000Z",
           "urls": [],
@@ -211,7 +210,7 @@
       "abbr": null,
       "country": "688b2c5fe7d7762ddaad1dfb",
       "team_class": "u21",
-      "matchs": null,
+      "matches": null,
       "joined_at": "2022-05-28T15:00:00.000Z",
       "left_at": "2022-06-17T15:00:00.000Z",
       "urls": [],
@@ -267,7 +266,6 @@
 ```
 
 - レスポンス
-
   - 成功時
 
   ```json
@@ -281,7 +279,7 @@
         "abbr": null,
         "country": "688b2c5fe7d7762ddaad1dfb",
         "team_class": "u21",
-        "matchs": null,
+        "matches": null,
         "joined_at": "2022-05-28T15:00:00.000Z",
         "left_at": "2022-06-17T15:00:00.000Z",
         "urls": [],

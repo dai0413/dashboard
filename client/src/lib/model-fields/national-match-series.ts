@@ -66,8 +66,8 @@ export const nationalMatchSeries: UIFieldDefinition<NationalMatchSeriesGet>[] =
       getValueType: ColumnType.FIELD,
     },
     {
-      key: "matchs",
-      field: "matchs",
+      key: "matches",
+      field: "matches",
       label: "試合",
       type: "string",
       filterable: false,

@@ -364,14 +364,14 @@ const ClubTeam = () => {
 
     if (!obj) return [];
 
-    const matchs = convert(ModelType.MATCH, obj.data);
+    const matches = convert(ModelType.MATCH, obj.data);
 
-    return matchs;
+    return matches;
   }
 
   const readPlotData = async (id: string, seasonId: string) => {
-    const matchs = await readMatchs(id, seasonId);
-    const teamMatchs = convertMatchToTeamMatch(matchs, id);
+    const matches = await readMatchs(id, seasonId);
+    const teamMatchs = convertMatchToTeamMatch(matches, id);
 
     setTeamMatchs(teamMatchs);
 
@@ -943,7 +943,7 @@ const ClubTeam = () => {
               {
                 label: "開催日",
                 key: "date",
-                getData: (d: MatchGet) => toDateKey(d.date) || "",
+                getData: (d: MatchGet) => toDateKey(d.date, true) || "",
                 getValueType: ColumnType.CUSTOM,
                 displayOnTable: true,
                 type: "Date",

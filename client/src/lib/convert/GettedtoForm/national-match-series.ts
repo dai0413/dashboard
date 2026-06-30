@@ -16,6 +16,7 @@ export const nationalMatchSeries = (
     left_at: toDateKey(t.left_at),
     country: t.country.id,
     team: t.team.id,
+    matches: t.matches.map((t) => t.id).filter((t) => typeof t === "string"),
     age_group: age_group ? age_group : "",
   };
 };

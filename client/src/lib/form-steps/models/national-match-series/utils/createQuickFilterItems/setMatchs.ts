@@ -16,7 +16,7 @@ export const setMatchs = async (
   if (data.joined_at) date.push(`>=${data.joined_at}`);
   if (data.left_at) date.push(`<=${data.left_at}`);
 
-  const matchs = await readItemsBase<Match[]>({
+  const matches = await readItemsBase<Match[]>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.ROOT,
     params: {
@@ -27,10 +27,10 @@ export const setMatchs = async (
     },
   });
 
-  if (!matchs) return null;
+  if (!matches) return null;
 
-  const value = matchs.data.map((match) => match._id);
-  const valueLabel = matchs.data.map((match) =>
+  const value = matches.data.map((match) => match._id);
+  const valueLabel = matches.data.map((match) =>
     convert(ModelType.MATCH, match),
   );
 

@@ -10,12 +10,12 @@ type NationalMatchSeriesType = z.infer<typeof NationalMatchSeriesZodSchema>;
 
 export interface INationalMatchSeries
   extends
-    Omit<NationalMatchSeriesType, "_id" | "country" | "matchs" | "team">,
+    Omit<NationalMatchSeriesType, "_id" | "country" | "matches" | "team">,
     Document {
   _id: Types.ObjectId;
   team: Types.ObjectId;
   country: Types.ObjectId;
-  matchs: Types.ObjectId[];
+  matches: Types.ObjectId[];
 }
 
 const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
@@ -37,7 +37,7 @@ const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
       required: true,
     },
     age_group: { type: String, enum: getKey(ageGroup()) },
-    matchs: {
+    matches: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Match",
     },

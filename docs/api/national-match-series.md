@@ -64,7 +64,7 @@
     "abbr": null,
     "national-match-series": "688b2c5fe7d7762ddaad1dfb",
     "team_class": "full",
-    "matchs": null,
+    "matches": null,
     "joined_at": "2014-11-09T15:00:00.000Z",
     "left_at": "2014-11-17T15:00:00.000Z",
     "urls": [],
@@ -85,7 +85,7 @@
   "abbr": null,
   "national-match-series": "688b2c5fe7d7762ddaad1dfb",
   "team_class": "full",
-  "matchs": null,
+  "matches": null,
   "joined_at": "2014-11-09T15:00:00.000Z",
   "left_at": "2014-11-17T15:00:00.000Z",
   "urls": []
@@ -93,7 +93,6 @@
 ```
 
 - レスポンス
-
   - 成功時
 
     ```json
@@ -104,7 +103,7 @@
         "abbr": null,
         "national-match-series": "688b2c5fe7d7762ddaad1dfb",
         "team_class": "full",
-        "matchs": null,
+        "matches": null,
         "joined_at": "2014-11-09T15:00:00.000Z",
         "left_at": "2014-11-17T15:00:00.000Z",
         "urls": [],
@@ -130,7 +129,7 @@
     "abbr": null,
     "national-match-series": "688b2c5fe7d7762ddaad1dfb",
     "team_class": "full",
-    "matchs": null,
+    "matches": null,
     "joined_at": "2014-10-05T15:00:00.000Z",
     "left_at": "2014-10-13T15:00:00.000Z",
     "urls": [],
@@ -150,7 +149,6 @@
 ```
 
 - レスポンス
-
   - 成功時
 
   ```json
@@ -162,7 +160,7 @@
       "abbr": null,
       "national-match-series": "688b2c5fe7d7762ddaad1dfb",
       "team_class": "full",
-      "matchs": null,
+      "matches": null,
       "joined_at": "2014-11-09T15:00:00.000Z",
       "left_at": "2014-11-17T15:00:00.000Z",
       "urls": [],
