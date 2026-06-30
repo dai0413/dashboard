@@ -579,6 +579,76 @@ const Competition = () => {
           ]}
         />
       )}
+
+      {selectedTab === "team" && id && (
+        <TableWithFetch
+          key={`${selectedTab}`}
+          modelType={ModelType.SEASON}
+          fieldDefinitions={[
+            {
+              label: "名前",
+              field: "name",
+              getValueType: ColumnType.FIELD,
+              key: "name",
+              displayOnTable: true,
+              type: "string",
+            },
+            {
+              label: "開始日",
+              field: "start_date",
+              width: "100px",
+              getValueType: ColumnType.FIELD,
+              key: "start_date",
+              displayOnTable: true,
+              type: "Date",
+            },
+            {
+              label: "終了日",
+              field: "end_date",
+              width: "100px",
+              getValueType: ColumnType.FIELD,
+              key: "end_date",
+              displayOnTable: true,
+              type: "Date",
+            },
+            {
+              label: "最新",
+              field: "current",
+              isPrimary: true,
+              getValueType: ColumnType.FIELD,
+              key: "current",
+              displayOnTable: true,
+              type: "checkbox",
+            },
+            {
+              label: "メモ",
+              field: "note",
+              isPrimary: true,
+              getValueType: ColumnType.FIELD,
+              key: "note",
+              displayOnTable: true,
+              type: "string",
+            },
+          ]}
+          fetch={{
+            apiRoute: API_PATHS.SEASON.ROOT,
+            params: {
+              getAll: true,
+              competition: id,
+            },
+          }}
+          filterField={fieldDefinition[ModelType.SEASON]
+            ?.filter(isFilterable)
+            .filter((file) => file.key !== "competition")}
+          sortField={fieldDefinition[ModelType.SEASON]
+            ?.filter(isSortable)
+            .filter((file) => file.key !== "competition")}
+          initialData={{
+            formData: { competition: id },
+            metaData: { competition: id },
+          }}
+        />
+      )}
     </div>
   );
 };

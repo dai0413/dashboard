@@ -168,6 +168,10 @@ export const CompetitionTabItems: IconButtonProps[] = [
     icon: "staff",
     text: "スタッフ登録",
   },
+  {
+    icon: "team",
+    text: "シーズン",
+  },
 ];
 
 export const MatchTabItems: IconButtonProps[] = [
