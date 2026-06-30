@@ -220,7 +220,7 @@ const NationalTeam = () => {
             {
               label: "開催日",
               key: "date",
-              getData: (d: MatchGet) => toDateKey(d.date) || "",
+              getData: (d: MatchGet) => toDateKey(d.date, true) || "",
               getValueType: ColumnType.CUSTOM,
               displayOnTable: true,
               type: "Date",

@@ -298,7 +298,7 @@ const Competition = () => {
           fieldDefinitions={[
             {
               label: "開催日",
-              getData: (d: MatchGet) => toDateKey(d.date) || "",
+              getData: (d: MatchGet) => toDateKey(d.date, true) || "",
               getValueType: ColumnType.CUSTOM,
               key: "date",
               displayOnTable: true,
