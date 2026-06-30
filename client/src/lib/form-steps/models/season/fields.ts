@@ -1,8 +1,13 @@
-import { FormFieldDefinition } from "../../../../types/form";
+import {
+  ArrayDataFormStep,
+  FormFieldDefinition,
+  StepType,
+} from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
 import { createFieldHelpers } from "../../core/createFieldHelpers";
 
 type BaseModel = ModelType.SEASON;
+const baseModel = ModelType.SEASON;
 type Key = FormFieldDefinition<BaseModel>["key"];
 
 export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
@@ -46,3 +51,18 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
+
+export const bulkBase: ArrayDataFormStep<BaseModel> = {
+  modelType: baseModel,
+  stepLabel: "大会を選択・シーズン名・日付を入力",
+  type: StepType.FORM,
+  fields: getFields([
+    "competition",
+    "name",
+    "start_date",
+    "end_date",
+    "current",
+    "note",
+  ]),
+  many: true,
+};

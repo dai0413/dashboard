@@ -1,7 +1,9 @@
-import { FormStep, StepType } from "../../../../../types/form";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
+import { setMatchs } from "../utils/createQuickFilterItems/setMatchs";
+import { setTeam } from "../utils/createQuickFilterItems/setTeam";
 
 type BaseModel = ModelType.NATIONAL_MATCH_SERIES;
 const baseModel = ModelType.NATIONAL_MATCH_SERIES;
@@ -14,22 +16,51 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
     fields: getFields(["name"]),
   },
   {
-    stepLabel: "国を選択",
+    stepLabel: "国選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["country"]),
+    dataSource: DataSource.META_DATA,
+    fields: [
+      {
+        key: "country",
+        label: "国",
+        fieldType: "table",
+        valueType: "option",
+      },
+    ],
+    createQuickFilterItems: (args) => setTeam(args.metaData, args.api),
+    skip: (data) => !!data.team,
   },
   {
-    stepLabel: "年代を選択",
+    stepLabel: "チーム",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["age_group"]),
+    fields: getFields(["team"]),
   },
+  // {
+  //   stepLabel: "国を選択",
+  //   type: StepType.FORM,
+  //   modelType: baseModel,
+  //   fields: getFields(["country"]),
+  // },
+  // {
+  //   stepLabel: "年代を選択",
+  //   type: StepType.FORM,
+  //   modelType: baseModel,
+  //   fields: getFields(["age_group"]),
+  // },
   {
     stepLabel: "日付",
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["joined_at", "left_at"]),
+    createQuickFilterItems: (args) => setMatchs(args.data, args.api),
+  },
+  {
+    stepLabel: "試合",
+    type: StepType.FORM,
+    modelType: baseModel,
+    fields: getFields(["matchs"]),
   },
   {
     stepLabel: "url",

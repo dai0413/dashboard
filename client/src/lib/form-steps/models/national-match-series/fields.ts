@@ -31,6 +31,13 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     fieldType: "input",
     valueType: "date",
   },
+  matchs: {
+    key: "matchs",
+    label: "matchs",
+    multi: true,
+    fieldType: "table",
+    valueType: "option",
+  },
   urls: {
     key: "urls",
     label: "urls",
