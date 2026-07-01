@@ -3,7 +3,7 @@ import { Confirm } from "./Confirm";
 import { ModelType } from "../../types/models";
 import { RenderLine, RenderLineOptions } from "./utils/RenderLine";
 import { countFn } from "./utils/countFun";
-import { RenderTeamCount } from "./utils/renderTeamCount";
+import { RenderTeamCount } from "./utils/RenderTeamCount";
 
 export const playerAppearance = (formDatas: PlayerAppearanceForm[]) => {
   const renderLine = (

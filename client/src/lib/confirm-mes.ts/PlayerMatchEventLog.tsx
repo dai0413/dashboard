@@ -3,7 +3,7 @@ import { ModelType } from "../../types/models";
 import { Confirm } from "./Confirm";
 import { RenderLine, RenderLineOptions } from "./utils/RenderLine";
 import { countFn } from "./utils/countFun";
-import { RenderTeamCount } from "./utils/renderTeamCount";
+import { RenderTeamCount } from "./utils/RenderTeamCount";
 
 export const playerMatchEventLog = (formDatas: PlayerMatchEventLogForm[]) => {
   const renderLine = (
