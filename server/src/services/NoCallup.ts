@@ -73,7 +73,17 @@ export const getNoCallUpService = async (
         as: "country",
       },
     },
+    {
+      $lookup: {
+        from: "teams",
+        localField: "team",
+        foreignField: "_id",
+        as: "team",
+      },
+    },
     { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
+    { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
+
     { $sort: { joined_at: -1, _id: -1 } },
     { $skip: skip },
     { $limit: limit },

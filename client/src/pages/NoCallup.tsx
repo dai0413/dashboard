@@ -3,6 +3,8 @@ import { ModelType } from "../types/models";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { ColumnType } from "../types/table";
+import { fieldDefinition } from "../lib/model-fields";
+import { isFilterable, isSortable } from "../types/field";
 
 const NoCallUp = () => {
   const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
@@ -15,6 +17,12 @@ const NoCallUp = () => {
           apiRoute: API_PATHS.AGGREGATE.NATIONAL_CALLUP.SERIES_COUNT(japan),
         }}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
+        filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]?.filter(
+          isFilterable,
+        )}
+        sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]?.filter(
+          isSortable,
+        )}
         fieldDefinitions={[
           {
             label: "名称",
@@ -26,31 +34,17 @@ const NoCallUp = () => {
             type: "string",
           },
           {
-            label: "国名",
-            field: "country",
-            width: "100px",
-            getValueType: ColumnType.FIELD,
-            key: "country",
-            displayOnTable: true,
-            type: "string",
-          },
-          {
-            label: "国名",
-            field: "team",
-            width: "100px",
-            getValueType: ColumnType.FIELD,
             key: "team",
-            displayOnTable: true,
-            type: "string",
-          },
-          {
-            label: "年代",
-            field: "age_group",
             width: "100px",
-            getValueType: ColumnType.FIELD,
-            key: "age_group",
+            field: "team",
+            filterKey: "team",
+            label: "チーム",
+            type: "string",
+            filterable: true,
+            sortable: true,
+            displayOnDetail: true,
             displayOnTable: true,
-            type: "select",
+            getValueType: ColumnType.FIELD,
           },
           {
             label: "招集日",
