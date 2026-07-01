@@ -71,6 +71,7 @@ const TransferSchema: Schema<ITransfer> = new Schema<ITransfer, any, ITransfer>(
     URL: {
       type: [String],
     },
+    isCancelled: { type: Boolean },
   },
   { timestamps: true },
 );

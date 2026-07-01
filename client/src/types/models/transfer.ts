@@ -20,6 +20,7 @@ export type Transfer = {
   from_date: Date;
   to_date: Date | null;
   URL: string[] | null;
+  isCancelled?: boolean;
 };
 
 type TransferPost = Omit<
@@ -38,11 +39,15 @@ type TransferPost = Omit<
 
 export type TransferForm = Partial<TransferPost>;
 
-export type TransferGet = Omit<Transfer, "player" | "from_team" | "to_team"> & {
+export type TransferGet = Omit<
+  Transfer,
+  "player" | "from_team" | "to_team" | "isCancelled"
+> & {
   // doa: string;
   // from_date: string;
   // to_date: string | null;
   player: Label;
   from_team: Label | null;
   to_team: Label | null;
+  isCancelled: string;
 };

@@ -260,6 +260,7 @@
 | from_date      | 日付             | 移籍日     | true    |         |
 | to_date        | 日付             | 満了日     |         |         |
 | URL            | [URL]            | URL        |         |         |
+| isCancelled    | 真偽値           | キャンセル |         |         |
 
 ### ENUM
 

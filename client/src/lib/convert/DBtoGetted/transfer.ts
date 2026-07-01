@@ -3,6 +3,11 @@ import { Label } from "../../../types/types";
 import { player } from "../CreateLabel/player";
 import { team } from "../CreateLabel/team";
 
+function getIsCancelled(isCancelled: boolean | undefined): string {
+  if (isCancelled === true) return "キャンセル済";
+  return "";
+}
+
 export const transfer = (t: Transfer): TransferGet => {
   let newFrom_team: Label | null = null;
 
@@ -36,5 +41,6 @@ export const transfer = (t: Transfer): TransferGet => {
     },
     from_team: newFrom_team,
     to_team: newTo_team,
+    isCancelled: getIsCancelled(t.isCancelled),
   };
 };

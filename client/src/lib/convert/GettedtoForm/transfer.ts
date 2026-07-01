@@ -1,6 +1,11 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TransferForm, TransferGet } from "../../../types/models/transfer";
 
+function getIsCancelled(isInjured: string): boolean {
+  if (isInjured === "キャンセル済") return true;
+  return false;
+}
+
 export const transfer = (t: TransferGet): TransferForm => {
   const from_team_name =
     t.from_team && !t.from_team.id ? t.from_team.label : undefined;
@@ -16,5 +21,6 @@ export const transfer = (t: TransferGet): TransferForm => {
     to_team: t.to_team ? t.to_team.id : undefined,
     from_team_name,
     to_team_name,
+    isCancelled: getIsCancelled(t.isCancelled),
   };
 };

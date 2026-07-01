@@ -59,7 +59,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
     stepLabel: "公式発表のURLを入力",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["URL"]),
+    fields: getFields(["URL", "isCancelled"]),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

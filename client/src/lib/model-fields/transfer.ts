@@ -116,4 +116,15 @@ export const transfer: UIFieldDefinition<TransferGet>[] = [
     displayOnTable: false,
     getValueType: ColumnType.FIELD,
   },
+  {
+    key: "isCancelled",
+    field: "isCancelled",
+    label: "キャンセル",
+    type: "checkbox",
+    filterable: true,
+    sortable: false,
+    displayOnDetail: true,
+    displayOnTable: false,
+    getValueType: ColumnType.FIELD,
+  },
 ];

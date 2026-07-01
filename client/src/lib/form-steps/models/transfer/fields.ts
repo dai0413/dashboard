@@ -82,6 +82,12 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     fieldType: "textarea",
     valueType: "text",
   },
+  isCancelled: {
+    key: "isCancelled",
+    label: "isCancelled",
+    fieldType: "input",
+    valueType: "boolean",
+  },
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);

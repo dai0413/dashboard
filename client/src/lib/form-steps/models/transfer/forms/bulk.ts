@@ -130,6 +130,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
       "number",
       "position",
       "URL",
+      "isCancelled",
     ]),
     many: true,
     validate: (formData) => teamCheck(formData),
