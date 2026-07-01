@@ -65,7 +65,7 @@ const parseValueWithOperator = (rawValue: string) => {
 // --- ヘルパー: query から matchStage を作る ---
 export const buildMatchStage = (
   query: ParsedQs,
-  queryConfig?: { field: string; type: string }[],
+  queryConfig?: { field: string; type: string; isArray?: boolean }[],
   buildCustomMatch?: (query: ParsedQs) => Record<string, any>,
 ) => {
   if (!queryConfig) return {};
@@ -73,7 +73,7 @@ export const buildMatchStage = (
   const fieldConditions: Record<string, any> = {}; // AND用
   const orConditions: any[] = []; // OR用
 
-  for (const { field, type } of queryConfig) {
+  for (const { field, type, isArray } of queryConfig) {
     const raw = query[field];
     if (!raw) continue;
 
@@ -91,6 +91,13 @@ export const buildMatchStage = (
       rawValues = raw.split("|").map((v) => v.trim());
     } else {
       rawValues = [String(raw)];
+    }
+
+    if (isArray) {
+      fieldConditions[field] = {
+        $in: rawValues.map((v) => getTypedValue(v, type)),
+      };
+      continue;
     }
 
     // --- 特殊ケース: 複数単純値なら OR 条件 ---

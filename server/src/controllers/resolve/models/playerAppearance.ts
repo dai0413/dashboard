@@ -5,11 +5,13 @@ import {
 } from "@dai0413/myorg-shared/types/resolver/playerAppearance";
 import { Types } from "mongoose";
 import { PlayerRegistrationModel } from "../../../models/player-registration.js";
+import { NationalCallUpModel } from "../../../models/national-callup.js";
 
 type ResolveData = ResolveInput<{
   player: Select.MODEL;
 }> & {
   season?: string[];
+  series?: string;
 };
 
 export const playerAppearance = async (
@@ -24,9 +26,15 @@ export const playerAppearance = async (
         const seasonObjectIds =
           d.season?.map((s) => new Types.ObjectId(s)) || [];
 
-        const teamObjectId = new Types.ObjectId(d.team?.id);
+        if (!d.team?.id) {
+          return {
+            ...d,
+            player: undefined,
+            team: undefined,
+          };
+        }
 
-        if (!teamObjectId) return { ...d, player: undefined, team: undefined };
+        const teamObjectId = new Types.ObjectId(d.team.id);
 
         const matchPlayers = await PlayerRegistrationModel.find({
           $or: [
@@ -47,8 +55,41 @@ export const playerAppearance = async (
           .select("player")
           .lean();
 
+        const callupPlayers: { player: Types.ObjectId }[] =
+          await NationalCallUpModel.aggregate([
+            {
+              $match: {
+                series: new Types.ObjectId(d.series),
+              },
+            },
+            {
+              $lookup: {
+                from: "players",
+                localField: "player",
+                foreignField: "_id",
+                as: "player",
+              },
+            },
+            {
+              $unwind: "$player",
+            },
+            {
+              $match: {
+                "player.name": d.player_name,
+              },
+            },
+            {
+              $project: {
+                player: "$player._id",
+              },
+            },
+          ]);
+
         const playerIds = [
-          ...new Set(matchPlayers.map((p) => p.player.toString())),
+          ...new Set([
+            ...matchPlayers.map((p) => p.player.toString()),
+            ...callupPlayers.map((p) => p.player.toString()),
+          ]),
         ];
 
         const playerId =

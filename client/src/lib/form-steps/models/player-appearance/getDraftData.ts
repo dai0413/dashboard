@@ -13,6 +13,7 @@ import { getSeasons } from "../../utils/getSeasons";
 import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { fetchResolved } from "../../utils/resolver/fetchResolved";
 import { ReadDraftDataParams } from "../../utils/getDraftData/types";
+import { getSeries } from "../../utils/getSeries";
 
 const KEYS = ["match", "player", "team"] as const;
 
@@ -38,6 +39,7 @@ const buildResolveInput = (
   draftData: Scraped[],
   match: Label,
   season: string[],
+  series?: string,
   team?: Label,
   play_time?: number,
 ) => {
@@ -48,6 +50,7 @@ const buildResolveInput = (
       team,
       time: calcTime(d, play_time),
       season,
+      series,
     };
   });
   return data;
@@ -60,10 +63,11 @@ const resolve = async (
   data: Input[],
   match: Label,
   season: string[],
+  series?: string,
   team?: Label,
   play_time?: number,
 ) => {
-  const input = buildResolveInput(data, match, season, team, play_time);
+  const input = buildResolveInput(data, match, season, series, team, play_time);
   return fetchResolved<"playerAppearance", Input, ResolveOutput>(
     api,
     "playerAppearance",
@@ -124,11 +128,14 @@ export const getDraftData = async ({
       const homeSeasons = await getSeasons(api, home_team.id, date);
       const awaySeasons = await getSeasons(api, away_team.id, date);
 
+      const series = await getSeries(api, matchId);
+
       const home = await resolve(
         api,
         homePlayerAppearance,
         match,
         [...new Set([season, ...homeSeasons])],
+        series,
         home_team,
         play_time,
       );
@@ -138,6 +145,7 @@ export const getDraftData = async ({
         awayPlayerAppearance,
         match,
         [...new Set([season, ...awaySeasons])],
+        series,
         away_team,
         play_time,
       );
