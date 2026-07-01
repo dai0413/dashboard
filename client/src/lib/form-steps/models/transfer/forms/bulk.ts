@@ -1,4 +1,4 @@
-import { API_PATHS } from "@dai0413/myorg-shared";
+import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import {
   FormStep,
   DataSource,
@@ -15,11 +15,50 @@ import { getFields } from "../fields";
 import { setTeam } from "../onChange/setTeam";
 import { teamCheck } from "../validate/teamCheck";
 import { getSeasonDates } from "../../../../../utils/date/getSeasonDates";
-import { convert } from "../../../../convert/CreateLabel";
 import { JOIN_TRANSFER_TYPES } from "../../../../../constants/transfer";
+import { AxiosInstance } from "axios";
 
 type BaseModel = ModelType.TRANSFER;
 const baseModel = ModelType.TRANSFER;
+
+const readTransfer = async (
+  label: string,
+  api: AxiosInstance,
+  team: string,
+  start: Date,
+  end: Date,
+): Promise<FilterableFieldDefinition | undefined> => {
+  const res = await readItemsBase<Transfer[]>({
+    apiInstance: api,
+    backendRoute: API_PATHS.TRANSFER.ROOT,
+    params: {
+      to_team: team,
+      form: JOIN_TRANSFER_TYPES,
+      from_date: [`>=${start}`, `<=${end}`],
+      sort: "position_group_order,number",
+      getAll: true,
+    },
+  });
+
+  if (!res?.data) return undefined;
+
+  const uniqueItems = [...new Set(res.data)];
+
+  const value = uniqueItems.map((d) => d._id);
+
+  if (!value) return undefined;
+
+  return {
+    key: "_id",
+    label: label,
+    type: "select",
+    filterKey: "_id",
+    filterable: true,
+    value: value,
+    valueLabel: [`${label}`],
+    operator: "equals",
+  };
+};
 
 export const bulk: FormStep<ModelType.TRANSFER>[] = [
   {
@@ -35,39 +74,40 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
 
       const { seasonStart, seasonEnd } = getSeasonDates();
 
-      const res = await readItemsBase<Transfer[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.TRANSFER.ROOT,
-        params: {
-          to_team: metaData.team,
-          form: JOIN_TRANSFER_TYPES,
-          from_date: [`>=${seasonStart}`, `<=${seasonEnd}`],
-          sort: "position_group_order,number",
-          getAll: true,
-        },
-      });
+      const previousSeasonStart = new Date(seasonStart);
+      previousSeasonStart.setFullYear(previousSeasonStart.getFullYear() - 1);
 
-      if (!res?.data) return {};
+      const previousSeasonEnd = new Date(seasonEnd);
+      previousSeasonEnd.setFullYear(previousSeasonEnd.getFullYear() - 1);
 
-      const value = res.data.map((d) => d._id);
-      const valueLabel = convert(ModelType.TRANSFER, res.data);
+      const thisYear = await readTransfer(
+        "今季",
+        api,
+        metaData.team,
+        seasonStart,
+        seasonEnd,
+      );
+
+      const lastYear = await readTransfer(
+        "昨季",
+        api,
+        metaData.team,
+        previousSeasonStart,
+        previousSeasonEnd,
+      );
 
       const first: QuickFilterItemsByKey = {
         transfer: [
           {
-            key: "player",
-            label: "選手",
-            filterCondition: {
-              key: "_id",
-              label: "選手",
-              type: "select",
-              filterKey: "_id",
-              filterable: true,
-              value: value,
-              valueLabel: valueLabel,
-              operator: "equals",
-            },
+            key: "this-year",
+            label: "今季",
+            filterCondition: thisYear,
             defaultSelect: true,
+          },
+          {
+            key: "last-year",
+            label: "昨季",
+            filterCondition: lastYear,
           },
         ],
       };
