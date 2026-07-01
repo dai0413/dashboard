@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 import {
   NotFoundError,
   BadRequestError,
@@ -130,16 +130,31 @@ const crudFactory = <
       }
 
       // ===== 🔹 Match Stages =====
-      const beforeMatch = buildMatchStage(
+      let beforeMatch = buildMatchStage(
         req.query,
         getAllConfig?.query?.filter((q) => !q.populateAfter),
         getAllConfig?.buildCustomMatch,
       );
 
-      const afterMatch = buildMatchStage(
+      let afterMatch = buildMatchStage(
         req.query,
         getAllConfig?.query?.filter((q) => q.populateAfter),
       );
+
+      let customPipeline: PipelineStage[] = [];
+
+      if (getAllConfig?.buildCustomPipeline) {
+        const custom = getAllConfig?.buildCustomPipeline?.({
+          req,
+          beforeMatch,
+          afterMatch,
+          filters,
+        });
+
+        beforeMatch = custom.beforeMatch ?? beforeMatch;
+        afterMatch = custom.afterMatch ?? afterMatch;
+        customPipeline = custom.pipeline ?? [];
+      }
 
       const beforePaths = POPULATE_PATHS.filter((path) => path.matchBefore);
       const afterPaths = POPULATE_PATHS.filter((path) => !path.matchBefore);
@@ -155,6 +170,7 @@ const crudFactory = <
         ...(filters && Object.keys(filters).length > 0
           ? [{ $match: filters }]
           : []),
+        ...customPipeline,
         ...getNest(false, afterPaths),
         ...(Object.keys(afterMatch).length > 0 ? [{ $match: afterMatch }] : []),
         ...(getAllConfig?.project &&

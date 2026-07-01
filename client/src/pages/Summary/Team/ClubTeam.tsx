@@ -16,7 +16,10 @@ import { Match, MatchGet } from "../../../types/models/match";
 import { Season, SeasonGet } from "../../../types/models/season";
 import { PlayerRegistrationGet } from "../../../types/models/player-registration";
 import { Data, TeamMatch } from "../../../types/types";
-import { TableWithFetch } from "../../../components/table";
+import {
+  CustomTableContainer,
+  TableWithFetch,
+} from "../../../components/table";
 import { IconButton } from "../../../components/buttons";
 import { SelectField } from "../../../components/field";
 import { FullScreenLoader } from "../../../components/ui";
@@ -28,6 +31,7 @@ import { APP_ROUTES } from "../../../lib/appRoutes";
 import { convertMatchToTeamMatch } from "../../../utils/data";
 import PointLine from "./PointLine";
 import { ColumnType } from "../../../types/table";
+import { Transfer, TransferGet } from "../../../types/models/transfer";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -179,7 +183,7 @@ const ClubTeam = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("match");
+  const [selectedTab, setSelectedTab] = useState("player");
 
   const {
     metacrud: { selected, readItem },
@@ -349,6 +353,32 @@ const ClubTeam = () => {
     [teamCompetitionSeason],
   );
 
+  const [players, setPlayers] = useState<TransferGet[]>([]);
+
+  const readPlayers = async (id: string, endDate: string) => {
+    const obj = await readItemsBase<Transfer[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.TRANSFER.ROOT,
+      params: {
+        getAll: true,
+        sort: "position_group_order,number",
+        to_team: id,
+        as_of: endDate,
+        form: ["!期限付き満了", "!育成型期限付き満了", "!育成型期限付き解除"],
+      },
+    });
+
+    if (!obj) return setPlayers([]);
+
+    const transfers = convert(ModelType.TRANSFER, obj.data);
+
+    const uniqueTransfers = Array.from(
+      new Map(transfers.map((t) => [t.player.id, t])).values(),
+    );
+
+    return setPlayers(uniqueTransfers);
+  };
+
   const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
   const [plotData, setPlotData] = useState<{
     label: string[];
@@ -399,9 +429,11 @@ const ClubTeam = () => {
     readPlotData(id, selectedteamCompetitionSeason.season.id);
   }, [id, selectedteamCompetitionSeason]);
 
-  if (selected?.genre === "代表") {
-    return <div>this is national team</div>;
-  }
+  useEffect(() => {
+    if (!id || !seasonDates.transferWindow.endDate) return;
+
+    readPlayers(id, seasonDates.transferWindow.endDate);
+  }, [id, seasonDates]);
 
   return (
     <div className="p-6">
@@ -492,14 +524,16 @@ const ClubTeam = () => {
       </div>
 
       {/* コンテンツ表示 */}
-      {selectedTab === "player" && id && (
+      {selectedTab === "player" && id && seasonDates.transferWindow.endDate && (
         <>
           <div className="text-gray-600">
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`}
           </div>
-          <TableWithFetch
+          <CustomTableContainer
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
+            pageNum={1}
+            items={players}
             fieldDefinitions={[
               {
                 label: "ポジション",
@@ -538,16 +572,6 @@ const ClubTeam = () => {
                 type: "string",
               },
             ]}
-            fetch={{
-              apiRoute: API_PATHS.TRANSFER.ROOT,
-              params: {
-                getAll: true,
-                from_date: seasonDates.transferWindow.seasonRange,
-                to_team: id,
-                sort: "position_group_order,number",
-                form: ["!期限付き満了"],
-              },
-            }}
             filterField={fieldDefinition[ModelType.TRANSFER]
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}

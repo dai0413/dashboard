@@ -15,7 +15,6 @@ import { getFields } from "../fields";
 import { setTeam } from "../onChange/setTeam";
 import { teamCheck } from "../validate/teamCheck";
 import { getSeasonDates } from "../../../../../utils/date/getSeasonDates";
-import { JOIN_TRANSFER_TYPES } from "../../../../../constants/transfer";
 import { AxiosInstance } from "axios";
 
 type BaseModel = ModelType.TRANSFER;
@@ -25,24 +24,25 @@ const readTransfer = async (
   label: string,
   api: AxiosInstance,
   team: string,
-  start: Date,
   end: Date,
 ): Promise<FilterableFieldDefinition | undefined> => {
   const res = await readItemsBase<Transfer[]>({
     apiInstance: api,
     backendRoute: API_PATHS.TRANSFER.ROOT,
     params: {
-      to_team: team,
-      form: JOIN_TRANSFER_TYPES,
-      from_date: [`>=${start}`, `<=${end}`],
-      sort: "position_group_order,number",
       getAll: true,
+      sort: "position_group_order,number",
+      to_team: team,
+      as_of: end,
+      form: ["!期限付き満了", "!育成型期限付き満了", "!育成型期限付き解除"],
     },
   });
 
   if (!res?.data) return undefined;
 
-  const uniqueItems = [...new Set(res.data)];
+  const uniqueItems = Array.from(
+    new Map(res.data.map((t) => [t.player._id, t])).values(),
+  );
 
   const value = uniqueItems.map((d) => d._id);
 
@@ -84,7 +84,6 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
         "今季",
         api,
         metaData.team,
-        seasonStart,
         seasonEnd,
       );
 
@@ -92,7 +91,6 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
         "昨季",
         api,
         metaData.team,
-        previousSeasonStart,
         previousSeasonEnd,
       );
 
