@@ -2,6 +2,8 @@ import { PlayerAppearanceForm } from "../../types/models/player-appearance";
 import { Confirm } from "./Confirm";
 import { ModelType } from "../../types/models";
 import { RenderLine, RenderLineOptions } from "./utils/RenderLine";
+import { countFn } from "./utils/countFun";
+import { RenderTeamCount } from "./utils/renderTeamCount";
 
 export const playerAppearance = (formDatas: PlayerAppearanceForm[]) => {
   const renderLine = (
@@ -16,15 +18,17 @@ export const playerAppearance = (formDatas: PlayerAppearanceForm[]) => {
       options,
     );
 
-  const countFn = (d: PlayerAppearanceForm[]) => {
-    return new Set(d.map((d) => d.match)).size;
-  };
-
   return (
     <Confirm count={formDatas.length}>
-      {renderLine("試合数", () => true, { countFn })}
-      {renderLine("登録済み選手", (d) => !!d.player)}
-      {renderLine("登録外選手", (d) => !!d.player_name)}
+      {renderLine("試合数", () => true, {
+        countFn: (d: PlayerAppearanceForm[]) => countFn(d, "match"),
+      })}
+      {renderLine("登録済み選手", (d) => !!d.player, {
+        renderContent: RenderTeamCount,
+      })}
+      {renderLine("登録外選手", (d) => !!d.player_name, {
+        renderContent: RenderTeamCount,
+      })}
     </Confirm>
   );
 };

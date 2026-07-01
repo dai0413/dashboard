@@ -1,9 +1,10 @@
-import { JSX } from "react";
+import { JSX, ReactNode } from "react";
 import { FormTypeMap } from "../../../types/models";
 
 export type RenderLineOptions<T extends keyof FormTypeMap> = {
   getString?: (filtered: FormTypeMap[T][]) => string;
   countFn?: (filtered: FormTypeMap[T][]) => number;
+  renderContent?: (filtered: FormTypeMap[T][]) => ReactNode;
 };
 
 export const RenderLine = <T extends keyof FormTypeMap>(
@@ -20,10 +21,16 @@ export const RenderLine = <T extends keyof FormTypeMap>(
 
   return (
     <div>
-      <span className="text-gray-400 ml-2">{`・${label} `}</span>
-      <span className="font-bold">
-        {`${count}件 ${options?.getString?.(filtered) ?? ""}`}
-      </span>
+      <div>
+        <span className="text-gray-400 ml-2">{`・${label} `}</span>
+        <span className="font-bold">{`${count}件`}</span>
+      </div>
+
+      {options?.renderContent ? (
+        <div className="ml-6 text-sm">{options.renderContent(filtered)}</div>
+      ) : options?.getString ? (
+        <span className="font-bold ml-1">{options.getString(filtered)}</span>
+      ) : null}
     </div>
   );
 };

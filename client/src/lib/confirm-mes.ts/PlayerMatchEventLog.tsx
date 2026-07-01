@@ -2,6 +2,8 @@ import { PlayerMatchEventLogForm } from "../../types/models/player-match-event-l
 import { ModelType } from "../../types/models";
 import { Confirm } from "./Confirm";
 import { RenderLine, RenderLineOptions } from "./utils/RenderLine";
+import { countFn } from "./utils/countFun";
+import { RenderTeamCount } from "./utils/renderTeamCount";
 
 export const playerMatchEventLog = (formDatas: PlayerMatchEventLogForm[]) => {
   const renderLine = (
@@ -16,15 +18,17 @@ export const playerMatchEventLog = (formDatas: PlayerMatchEventLogForm[]) => {
       options,
     );
 
-  const countFn = (d: PlayerMatchEventLogForm[]) => {
-    return new Set(d.map((d) => d.match)).size;
-  };
-
   return (
     <Confirm count={formDatas.length}>
-      {renderLine("試合数", () => true, { countFn })}
-      {renderLine("登録済み選手", (d) => !!d.player)}
-      {renderLine("登録外選手", (d) => !!d.player_name)}
+      {renderLine("試合数", () => true, {
+        countFn: (d: PlayerMatchEventLogForm[]) => countFn(d, "match"),
+      })}
+      {renderLine("登録済み選手", (d) => !!d.player, {
+        renderContent: RenderTeamCount,
+      })}
+      {renderLine("登録外選手", (d) => !!d.player_name, {
+        renderContent: RenderTeamCount,
+      })}
     </Confirm>
   );
 };
