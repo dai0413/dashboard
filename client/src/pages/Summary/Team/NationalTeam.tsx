@@ -2,7 +2,11 @@ import { IconButtonProps } from "../../../components/buttons/IconButton";
 import { useEffect, useState } from "react";
 import { api } from "../../../context/api-context";
 import { useParams } from "react-router-dom";
-import { API_PATHS } from "@dai0413/myorg-shared";
+import {
+  API_PATHS,
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { useModal } from "../../../context/modal-context";
 import { ModelType } from "../../../types/models";
@@ -24,7 +28,13 @@ import { PlayerGet } from "../../../types/models/player";
 import { readItemsBase } from "../../../lib/api";
 import { NationalCallup } from "../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../types/models/national-match-series";
-import CallUp from "./CallUp";
+import Matrix from "../../../components/table/Matrix";
+import { normalizeFiltersForApi } from "../../../utils/filter/normalizeFiltersForApi";
+import {
+  PlayerAppearance,
+  PlayerAppearanceGet,
+} from "../../../types/models/player-appearance";
+import { convert } from "../../../lib/convert/DBtoGetted";
 
 const TeamTabItems: IconButtonProps[] = [
   {
@@ -137,6 +147,89 @@ const NationalTeam = () => {
 
     setPlayerIsLoading(false);
   }, [id]);
+
+  const testParams = {
+    joined_at: ">2025/9/1",
+    left_at: "<2026/7/30",
+  };
+
+  const [nationalCallUp, setNationalCallUp] = useState<NationalCallup[]>([]);
+  const [nationalMatchSeries, setNationalMatchSeries] = useState<
+    NationalMatchSeries[]
+  >([]);
+  const [playerAppearance, setPlayerAppearance] = useState<
+    PlayerAppearanceGet[]
+  >([]);
+  const [callupPlotIsLoding, setCallupPlotIsLoding] = useState<boolean>(false);
+
+  const fetchData = async (
+    filterConditions?: FilterableFieldDefinition[],
+    sortConditions?: SortableFieldDefinition[],
+  ) => {
+    setCallupPlotIsLoding(true);
+    if (!id) return setCallupPlotIsLoding(false);
+    const readParams: Record<string, any> = {
+      getAll: true,
+      team: id,
+      ...testParams,
+    };
+
+    if (filterConditions && filterConditions.length > 0) {
+      readParams.filters = JSON.stringify(
+        normalizeFiltersForApi(filterConditions),
+      );
+    }
+
+    if (sortConditions && sortConditions.length > 0) {
+      readParams.sorts = JSON.stringify(sortConditions);
+    }
+
+    const obj = await readItemsBase<NationalMatchSeries[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
+      params: readParams,
+    });
+
+    if (obj?.data) setNationalMatchSeries(obj.data);
+
+    const seriesIds = obj?.data.map((d) => d._id);
+
+    if (!seriesIds) return setCallupPlotIsLoding(false);
+
+    const nationalCallupRes = await readItemsBase<NationalCallup[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
+      params: { getAll: true, series: seriesIds },
+    });
+
+    if (nationalCallupRes?.data) setNationalCallUp(nationalCallupRes.data);
+
+    const matchIds = [
+      ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
+    ];
+
+    if (!matchIds) return setCallupPlotIsLoding(false);
+
+    const playerAppearanceRes = await readItemsBase<PlayerAppearance[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
+      params: { getAll: true, match: matchIds, team: id },
+    });
+
+    if (playerAppearanceRes?.data) {
+      const newPlayerAppearance = convert(
+        ModelType.PLAYER_APPEARANCE,
+        playerAppearanceRes.data,
+      );
+      setPlayerAppearance(newPlayerAppearance);
+    }
+
+    setCallupPlotIsLoding(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className="p-6">
@@ -399,7 +492,31 @@ const NationalTeam = () => {
         />
       )}
 
-      {selectedTab === "line-plot" && id && <CallUp />}
+      {selectedTab === "line-plot" && id && (
+        <CustomTableContainer
+          itemsLoading={callupPlotIsLoding}
+          fieldDefinitions={[]}
+          pageNum={1}
+          items={nationalCallUp}
+          noToolBar={false}
+          filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]?.filter(
+            isFilterable,
+          )}
+          sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]?.filter(
+            isSortable,
+          )}
+          reloadFun={async (filterConditions, sortConditions) =>
+            fetchData(filterConditions, sortConditions)
+          }
+          renderView={() => (
+            <Matrix
+              nationalCallUp={nationalCallUp}
+              nationalMatchSeries={nationalMatchSeries}
+              playerAppearance={playerAppearance}
+            />
+          )}
+        />
+      )}
     </div>
   );
 };

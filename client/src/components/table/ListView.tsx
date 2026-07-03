@@ -73,7 +73,7 @@ const ListView = <T,>({
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
-      {viewMode === ViewMode.TABLE ? (
+      {viewMode === ViewMode.TABLE && (
         <Table
           modelType={modelType}
           data={data}
@@ -94,30 +94,29 @@ const ListView = <T,>({
           deleteOnClick={deleteOnClick}
           selectedKeys={selectedKeys}
         />
-      ) : (
-        viewMode === ViewMode.TILE && (
-          <div className="mx-5">
-            <Tile
-              modelType={modelType}
-              data={data}
-              totalCount={totalCount}
-              headers={headers}
-              pageNation={pageNation}
-              linkField={linkField}
-              detailLink={detailLink}
-              itemsPerPage={itemsPerPage || 10}
-              isLoading={isLoading}
-              currentPage={pageNum}
-              onPageChange={onPageChange}
-              form={form}
-              onClick={onClick}
-              selectedKey={selectedKey}
-              edit={edit}
-              renderFieldCell={renderFieldCell}
-              deleteOnClick={deleteOnClick}
-            />
-          </div>
-        )
+      )}
+      {viewMode === ViewMode.TILE && (
+        <div className="mx-5">
+          <Tile
+            modelType={modelType}
+            data={data}
+            totalCount={totalCount}
+            headers={headers}
+            pageNation={pageNation}
+            linkField={linkField}
+            detailLink={detailLink}
+            itemsPerPage={itemsPerPage || 10}
+            isLoading={isLoading}
+            currentPage={pageNum}
+            onPageChange={onPageChange}
+            form={form}
+            onClick={onClick}
+            selectedKey={selectedKey}
+            edit={edit}
+            renderFieldCell={renderFieldCell}
+            deleteOnClick={deleteOnClick}
+          />
+        </div>
       )}
       {pages.length > 1 ? (
         <div className="flex justify-center m-4 space-x-2">

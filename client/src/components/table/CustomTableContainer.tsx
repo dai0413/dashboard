@@ -57,8 +57,13 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     quickFilterItems?: QuickFilterItem[];
     noItemMessage?: ReactNode;
     noToolBar?: false;
-    viewMode?: ViewMode;
+    viewMode?: ViewMode.TABLE | ViewMode.TILE;
     newItemsPerPage?: number;
+    renderView?: (params: {
+      items: T[];
+      totalCount: number;
+      isLoading: boolean;
+    }) => React.ReactNode;
   } & TableEditProps<T>;
 
 type TableContainerProps<T, F> = Original<T, F>;
@@ -93,6 +98,7 @@ const TableContainer = <K, F>({
   newItemsPerPage,
   selectedKeys,
   deleteOnClick,
+  renderView,
 }: TableContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -231,27 +237,35 @@ const TableContainer = <K, F>({
             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
           </div>
         </div>
-      ) : items && items?.length > 0 && fieldDefinitions ? (
-        <ListView<K>
-          modelType={modelType ? modelType : undefined}
-          data={items}
-          totalCount={totalCount}
-          headers={fieldDefinitions}
-          pageNation={pageNation ? pageNation : "client"}
-          linkField={linkField}
-          detailLink={detailLink}
-          itemsPerPage={itemsPerPage || 10}
-          isLoading={itemsLoading}
-          currentPage={pageNum}
-          onPageChange={handlePageChange}
-          form={form}
-          onClick={onClick}
-          selectedKey={selectedKey}
-          renderFieldCell={renderFieldCell}
-          edit={edit}
-          selectedKeys={selectedKeys}
-          deleteOnClick={deleteOnClick}
-        />
+      ) : items && items.length > 0 ? (
+        renderView ? (
+          renderView({
+            items,
+            totalCount: totalCount || 0,
+            isLoading: itemsLoading || false,
+          })
+        ) : fieldDefinitions ? (
+          <ListView<K>
+            modelType={modelType ? modelType : undefined}
+            data={items}
+            totalCount={totalCount}
+            headers={fieldDefinitions}
+            pageNation={pageNation ? pageNation : "client"}
+            linkField={linkField}
+            detailLink={detailLink}
+            itemsPerPage={itemsPerPage || 10}
+            isLoading={itemsLoading}
+            currentPage={pageNum}
+            onPageChange={handlePageChange}
+            form={form}
+            onClick={onClick}
+            selectedKey={selectedKey}
+            renderFieldCell={renderFieldCell}
+            edit={edit}
+            selectedKeys={selectedKeys}
+            deleteOnClick={deleteOnClick}
+          />
+        ) : null
       ) : (
         <div className="flex items-center justify-center py-16">
           <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">

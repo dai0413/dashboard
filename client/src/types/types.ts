@@ -69,6 +69,7 @@ export enum FormMode {
 
 export enum ViewMode {
   TABLE = "table",
+  MATRIX = "matrix",
   TILE = "tile",
 }
 
