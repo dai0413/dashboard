@@ -38,6 +38,7 @@ export function match<TModel = any>(
     ],
     getAllConfig: {
       query: [
+        { field: "_id", type: "ObjectId" },
         { field: "limit", type: "Number" },
         { field: "competition", type: "ObjectId" },
         { field: "season", type: "ObjectId" },

@@ -38,7 +38,7 @@ export const NationalMatchSeriesResponseSchema =
     team: true,
     matches: true,
   }).safeExtend({
-    country: CountryZodSchema,
+    country: CountryZodSchema.optional(),
     team: TeamZodSchema.optional(),
     matches: z.array(MatchBaseZodSchema).optional(),
   });
@@ -49,7 +49,7 @@ export const NationalMatchSeriesPopulatedSchema =
     team: true,
     matches: true,
   }).safeExtend({
-    country: CountryZodSchema,
+    country: CountryZodSchema.optional(),
     team: TeamZodSchema.optional(),
     matches: z.array(MatchBaseZodSchema).optional(),
   });

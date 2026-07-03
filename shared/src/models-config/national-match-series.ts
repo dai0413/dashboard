@@ -29,13 +29,16 @@ export function nationalMatchSeries<TModel = any>(
     POPULATE_PATHS: [
       { path: "country", collection: "countries" },
       { path: "team", collection: "teams" },
+      { path: "matches", collection: "matches", isArray: true },
     ],
     getAllConfig: {
       query: [
         { field: "country", type: "ObjectId" },
         { field: "team", type: "ObjectId" },
         { field: "joined_at", type: "Date" },
+        { field: "left_at", type: "Date" },
         { field: "age_group", type: "String" },
+        { field: "matches", type: "ObjectId", isArray: true },
       ],
       sort: { joined_at: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
