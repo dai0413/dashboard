@@ -128,14 +128,15 @@ export const getDraftData = async ({
       const homeSeasons = await getSeasons(api, home_team.id, date);
       const awaySeasons = await getSeasons(api, away_team.id, date);
 
-      const series = await getSeries(api, matchId);
+      const home_series = await getSeries(home_team.id, api, matchId, date);
+      const away_series = await getSeries(away_team.id, api, matchId, date);
 
       const home = await resolve(
         api,
         homePlayerAppearance,
         match,
         [...new Set([season, ...homeSeasons])],
-        series,
+        home_series,
         home_team,
         play_time,
       );
@@ -145,7 +146,7 @@ export const getDraftData = async ({
         awayPlayerAppearance,
         match,
         [...new Set([season, ...awaySeasons])],
-        series,
+        away_series,
         away_team,
         play_time,
       );

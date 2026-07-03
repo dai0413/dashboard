@@ -83,7 +83,10 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
         return createFilterFromParent({
           readItemParams: {
             apiInstance: api,
-            params: { competition: metaData.competition as string },
+            params: {
+              getAll: true,
+              competition: metaData.competition as string,
+            },
             backendRoute: API_PATHS.SEASON.ROOT,
           },
           convertValueLabel: (data: Season) =>
@@ -113,7 +116,7 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
         return createFilterFromParent({
           readItemParams: {
             apiInstance: api,
-            params: { season: metaData.season as string },
+            params: { getAll: true, season: metaData.season as string },
             backendRoute: API_PATHS.COMPETITION_STAGE.ROOT,
           },
           convertValueLabel: (data: CompetitionStage) =>
