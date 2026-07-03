@@ -13,11 +13,10 @@ const playerMatchEventLog = (
 
   const player_obj = player ?? { name: player_name as string };
 
-  const result: Response = rest;
-
-  if (player) result["player"] = player_obj;
-
-  return result;
+  return {
+    ...rest,
+    player: player_obj,
+  };
 };
 
 export { playerMatchEventLog };
