@@ -1,5 +1,6 @@
 import z from "zod";
 import { ParsedQs } from "qs";
+import { PipelineStage } from "mongoose";
 import { TeamResponseSchema } from "../schemas/team.schema.js";
 import { PlayerResponseSchema } from "../schemas/player.schema.js";
 import { CountryResponseSchema } from "../schemas/country.schema.js";
@@ -24,9 +25,20 @@ type GetAllQuery = {
   query?: {
     field: string;
     type: "ObjectId" | "String" | "Number" | "Date" | "Boolean";
+    isArray?: true;
     populateAfter?: boolean;
   }[];
   buildCustomMatch?: (query: ParsedQs) => Record<string, any>;
+  buildCustomPipeline?: (args: {
+    req: { query: { as_of?: string; to_team?: string } };
+    beforeMatch: Record<string, any>;
+    afterMatch: Record<string, any>;
+    filters: Record<string, any>;
+  }) => {
+    pipeline?: PipelineStage[];
+    beforeMatch?: Record<string, any>;
+    afterMatch?: Record<string, any>;
+  };
 };
 
 export interface DependencyRefs {

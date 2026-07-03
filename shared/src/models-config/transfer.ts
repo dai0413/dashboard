@@ -1,3 +1,4 @@
+import { PipelineStage, Types } from "mongoose";
 import {
   TransferZodSchema,
   TransferFormSchema,
@@ -43,6 +44,73 @@ export function transfer<TModel = any>(
         { field: "form", type: "String" },
       ],
       buildCustomMatch: customMatchFn,
+      buildCustomPipeline: ({ req, beforeMatch }) => {
+        if (!req.query.as_of || !req.query.to_team) {
+          return {};
+        }
+
+        const conditions = beforeMatch.$and ?? [];
+
+        const newConditions = [];
+        let afterMatch = {};
+
+        const asOf = new Date(req.query.as_of as string);
+
+        for (const condition of conditions) {
+          if ("to_team" in condition) {
+            afterMatch = condition;
+            continue;
+          }
+
+          if ("from_date" in condition) {
+            newConditions.push({
+              from_date: {
+                $lt: asOf,
+              },
+            });
+            continue;
+          }
+
+          newConditions.push(condition);
+        }
+
+        const newBeforeMatch = {
+          $and: newConditions,
+        };
+
+        const pipeline: PipelineStage[] = [
+          {
+            $sort: {
+              player: 1,
+              from_date: -1,
+            },
+          },
+          {
+            $group: {
+              _id: "$player",
+              doc: {
+                $first: "$$ROOT",
+              },
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: "$doc",
+            },
+          },
+          {
+            $match: {
+              to_team: new Types.ObjectId(req.query.to_team),
+            },
+          },
+        ];
+
+        return {
+          beforeMatch: newBeforeMatch,
+
+          pipeline,
+        };
+      },
       sort: { doa: -1, _id: -1 },
     },
     bulk: true,
