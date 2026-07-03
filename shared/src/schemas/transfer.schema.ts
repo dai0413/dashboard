@@ -22,6 +22,7 @@ export const TransferBaseZodSchema = z.object({
   from_date: dateField.refine((v) => !!v, { message: "from_dateは必須です" }),
   to_date: dateField,
   URL: z.array(z.string().nonempty()).optional(),
+  isCancelled: z.boolean().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });
