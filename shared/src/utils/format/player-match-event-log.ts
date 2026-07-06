@@ -11,7 +11,11 @@ const playerMatchEventLog = (
 ): Response => {
   const { player, player_name, ...rest } = playerMatchEventLog;
 
-  const player_obj = player ?? { name: player_name as string };
+  const player_obj = player
+    ? player
+    : player_name
+      ? { name: player_name }
+      : undefined;
 
   return {
     ...rest,

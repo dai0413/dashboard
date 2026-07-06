@@ -76,6 +76,7 @@ export const PlayerMatchEventLogResponseSchema =
     team: true,
     match_event_type: true,
     player: true,
+    player_name: true,
   }).safeExtend({
     match: MatchBaseZodSchema,
     team: TeamZodSchema,

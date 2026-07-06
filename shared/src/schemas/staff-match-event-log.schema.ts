@@ -72,6 +72,7 @@ export const StaffMatchEventLogResponseSchema =
     team: true,
     match_event_type: true,
     staff: true,
+    staff_name: true,
   }).safeExtend({
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
@@ -79,7 +80,7 @@ export const StaffMatchEventLogResponseSchema =
     staff: StaffZodSchema.extend({
       _id: objectId.optional(),
       normalized_en_name: z.string().optional(),
-    }),
+    }).optional(),
   });
 
 export const StaffMatchEventLogPopulatedSchema =
