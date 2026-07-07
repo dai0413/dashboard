@@ -29,6 +29,9 @@ export const playerAppearance = (formDatas: PlayerAppearanceForm[]) => {
       {renderLine("登録外選手", (d) => !!d.player_name, {
         renderContent: RenderTeamCount,
       })}
+      {renderLine("ポジション持ち選手", (d) => !!d.position, {
+        renderContent: RenderTeamCount,
+      })}
     </Confirm>
   );
 };
