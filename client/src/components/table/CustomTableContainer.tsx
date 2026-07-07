@@ -27,6 +27,7 @@ import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
 import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
 import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
 import { ViewMode } from "../../types/types";
+import { downloadCsv } from "../../utils/data/downloadCsv";
 
 type TablePage = {
   pageNum: number;
@@ -68,7 +69,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
 
 type TableContainerProps<T, F> = Original<T, F>;
 
-const TableContainer = <K, F>({
+const TableContainer = <K extends Record<string, unknown>, F>({
   title,
   fieldDefinitions,
   modelType,
@@ -212,6 +213,8 @@ const TableContainer = <K, F>({
       ? ModelRouteMap[modelType]
       : "";
 
+  const downloadFile = async () => downloadCsv(`${modelType}.csv`, items ?? []);
+
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
       {title && (
@@ -224,6 +227,7 @@ const TableContainer = <K, F>({
         <TableToolbar<K, F>
           modelType={modelType}
           uploadFile={uploadFile}
+          downloadFile={downloadFile}
           initialData={initialData}
           reloadFun={reloadFun}
           quickFilterItems={quickFilterItemsParam}
