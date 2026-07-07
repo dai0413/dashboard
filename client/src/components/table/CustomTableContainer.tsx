@@ -213,7 +213,7 @@ const TableContainer = <K, F>({
       : "";
 
   return (
-    <div className="bg-white shadow-lg rounded-lg  w-full mx-auto">
+    <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
       {title && (
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
       )}
@@ -239,11 +239,13 @@ const TableContainer = <K, F>({
         </div>
       ) : items && items.length > 0 ? (
         renderView ? (
-          renderView({
-            items,
-            totalCount: totalCount || 0,
-            isLoading: itemsLoading || false,
-          })
+          <div className="flex justify-center">
+            {renderView({
+              items,
+              totalCount: totalCount || 0,
+              isLoading: itemsLoading || false,
+            })}
+          </div>
         ) : fieldDefinitions ? (
           <ListView<K>
             modelType={modelType ? modelType : undefined}

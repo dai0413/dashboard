@@ -55,6 +55,10 @@ export const SPMenuItems: IconButtonProps[] = [
 
 export const PlayerTabItems: IconButtonProps[] = [
   {
+    icon: "setting",
+    text: "ポジション",
+  },
+  {
     icon: "transfer",
     text: "移籍",
   },
@@ -177,12 +181,22 @@ export const MatchTabItems: IconButtonProps[] = [
   {
     icon: "team",
     key: "home_player",
-    text: "ホーム選手",
+    text: "ホームスタメン",
+  },
+  {
+    icon: "team",
+    key: "home_sub",
+    text: "ホームサブ",
   },
   {
     icon: "away",
     key: "away_player",
-    text: "アウェイ選手",
+    text: "アウェイスタメン",
+  },
+  {
+    icon: "away",
+    key: "away_sub",
+    text: "アウェイサブ",
   },
   {
     icon: "team",

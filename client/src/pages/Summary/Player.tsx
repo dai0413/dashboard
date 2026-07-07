@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { TableWithFetch } from "../../components/table";
+import { CustomTableContainer, TableWithFetch } from "../../components/table";
 import { usePlayer } from "../../context/models/player";
 import { ModelType } from "../../types/models";
 import { PlayerTabItems } from "../../constants/menuItems";
@@ -16,6 +16,13 @@ import { APP_ROUTES } from "../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { useModal } from "../../context/modal-context";
 import { ColumnType } from "../../types/table";
+import { Formation } from "../../components/formation";
+import { FormationItem } from "../../types/formation";
+import { readItemsBase } from "../../lib/api";
+import { PlayerAppearance } from "../../types/models/player-appearance";
+import { api } from "../../context/api-context";
+import { convert } from "../../lib/convert/DBtoGetted";
+import { positionBase } from "../../components/formation/positionBase";
 
 const Tabs = PlayerTabItems.filter(
   (item) =>
@@ -32,7 +39,84 @@ const Player = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("transfer");
+  const [selectedTab, setSelectedTab] = useState("setting");
+
+  const [positionItems, setPotitionItems] = useState<FormationItem[]>([]);
+  const [positionItemsIsLoading, setPositionItemsIsLoading] =
+    useState<boolean>(false);
+
+  const fetchData = async (id: string) => {
+    setPositionItemsIsLoading(true);
+
+    const obj = await readItemsBase<PlayerAppearance[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
+      params: { getAll: true, player: id },
+    });
+
+    if (obj?.data) {
+      const converted = convert(ModelType.PLAYER_APPEARANCE, obj.data);
+      const withPositions = converted.filter((a) => a.position);
+      const total = withPositions.length;
+
+      const stats = new Map<
+        string,
+        {
+          count: number;
+          minutes: number;
+        }
+      >();
+
+      for (const appearance of withPositions) {
+        if (!appearance.position) continue;
+
+        const stat = stats.get(appearance.position) ?? {
+          count: 0,
+          minutes: 0,
+        };
+
+        stat.count++;
+        stat.minutes += appearance.time ?? 0;
+
+        stats.set(appearance.position, stat);
+      }
+
+      const items: FormationItem[] = Array.from(stats.entries()).map(
+        ([position, stat]) => {
+          const point = positionBase[position as keyof typeof positionBase];
+
+          return {
+            position: position as keyof typeof positionBase,
+
+            centerText: stat.count,
+
+            label: position,
+
+            size: 24 + (stat.count / total) * 28,
+
+            color: point.color,
+
+            tooltip: [
+              {
+                text: position,
+                bold: true,
+              },
+              {
+                text: `${stat.count}試合`,
+              },
+              {
+                text: `${stat.minutes}分`,
+              },
+            ],
+          };
+        },
+      );
+
+      setPotitionItems(items);
+    }
+
+    setPositionItemsIsLoading(false);
+  };
 
   const {
     metacrud: { selected, readItem, isLoading },
@@ -42,6 +126,7 @@ const Player = () => {
     if (!id) return;
     (async () => {
       await readItem(id);
+      await fetchData(id);
     })();
   }, [id, formIsOpen]);
 
@@ -123,6 +208,22 @@ const Player = () => {
       </div>
 
       {/* コンテンツ表示 */}
+      {selectedTab === "setting" && id && (
+        <CustomTableContainer
+          modelType={ModelType.PLAYER_APPEARANCE}
+          fieldDefinitions={[]}
+          pageNum={1}
+          items={positionItems}
+          itemsLoading={positionItemsIsLoading}
+          reloadFun={async () => fetchData(id)}
+          initialData={{
+            formData: {},
+            metaData: {},
+          }}
+          renderView={() => <Formation datas={positionItems} />}
+        />
+      )}
+
       {selectedTab === "transfer" && id && (
         <TableWithFetch
           modelType={ModelType.TRANSFER}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { TableWithFetch } from "../../components/table";
+import { CustomTableContainer, TableWithFetch } from "../../components/table";
 import { useMatch } from "../../context/models/match";
 import { ModelType } from "../../types/models";
 import { MatchTabItems } from "../../constants/menuItems";
@@ -14,6 +14,13 @@ import { isFilterable, isSortable } from "../../types/field";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
 import { ColumnType } from "../../types/table";
+import { PlayerAppearance } from "../../types/models/player-appearance";
+import { api } from "../../context/api-context";
+import { readItemsBase } from "../../lib/api";
+import { convert } from "../../lib/convert/DBtoGetted";
+import { Formation } from "../../components/formation";
+import { FormationItem } from "../../types/formation";
+import { positionBase } from "../../components/formation/positionBase";
 
 const Tabs = MatchTabItems.filter(
   (item) =>
@@ -30,7 +37,7 @@ const Match = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("player_event_log");
+  const [selectedTab, setSelectedTab] = useState("home_player");
 
   const {
     metacrud: { selected, readItem, isLoading },
@@ -48,6 +55,61 @@ const Match = () => {
   ): void => {
     setSelectedTab(value as string);
   };
+
+  const [homePlayers, setHomePlayers] = useState<FormationItem[]>([]);
+  const [homeIsLoading, setHomeIsLoading] = useState<boolean>(false);
+  const [awayPlayers, setAwayPlayers] = useState<FormationItem[]>([]);
+  const [awayIsLoading, setAwayIsLoading] = useState<boolean>(false);
+
+  const fetchData = async (
+    setIsLoading: (val: boolean) => void,
+    setData: (data: FormationItem[]) => void,
+    teamId?: string,
+  ) => {
+    setIsLoading(true);
+    if (!id || !teamId) return setIsLoading(false);
+    const readParams: Record<string, any> = {
+      getAll: true,
+      match: id,
+      team: teamId,
+    };
+
+    const obj = await readItemsBase<PlayerAppearance[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
+      params: readParams,
+    });
+
+    if (obj?.data) {
+      const converted = convert(ModelType.PLAYER_APPEARANCE, obj.data);
+
+      const items: FormationItem[] = converted.map((p) => ({
+        position: p.position as keyof typeof positionBase,
+        centerText: p.number,
+        label: p.player?.label,
+        link: p.player.id
+          ? `${APP_ROUTES.PLAYER_SUMMARY}/${p.player.id}`
+          : undefined,
+        tooltip: [
+          { text: p.player?.label ?? "", bold: true },
+          { text: `背番号 ${p.number}` },
+        ],
+      }));
+
+      setData(items);
+    }
+
+    setIsLoading(false);
+  };
+
+  const readPlayers = async () => {
+    fetchData(setHomeIsLoading, setHomePlayers, selected?.home_team.id);
+    fetchData(setAwayIsLoading, setAwayPlayers, selected?.away_team.id);
+  };
+
+  useEffect(() => {
+    readPlayers();
+  }, [selected?.home_team.id, selected?.away_team.id]);
 
   return (
     <div className="p-6">
@@ -126,6 +188,33 @@ const Match = () => {
 
       {/* コンテンツ表示 */}
       {selectedTab === "home_player" && id && selected?.home_team.id && (
+        <CustomTableContainer
+          modelType={ModelType.PLAYER_APPEARANCE}
+          fieldDefinitions={[]}
+          pageNum={1}
+          items={homePlayers}
+          itemsLoading={homeIsLoading}
+          reloadFun={async () =>
+            fetchData(setHomeIsLoading, setHomePlayers, selected?.home_team.id)
+          }
+          initialData={{
+            formData: {
+              match: id,
+              team: selected?.home_team.id,
+            },
+            metaData: {
+              match: [id],
+              urls: selected.urls,
+              date: selected.date,
+              season: selected.season.id,
+              competition_stage: selected.competition_stage.id,
+            },
+          }}
+          renderView={() => <Formation datas={homePlayers} />}
+        />
+      )}
+
+      {selectedTab === "home_sub" && id && selected?.home_team.id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
           fieldDefinitions={[
@@ -136,7 +225,7 @@ const Match = () => {
               getValueType: ColumnType.FIELD,
               key: "number",
               displayOnTable: true,
-              type: "string",
+              type: "number",
             },
             {
               label: "ステータス",
@@ -156,15 +245,6 @@ const Match = () => {
               type: "string",
             },
             {
-              label: "ポジション",
-              field: "position",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "position",
-              displayOnTable: true,
-              type: "select",
-            },
-            {
               label: "時間",
               field: "time",
               width: "100px",
@@ -176,7 +256,12 @@ const Match = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
-            params: { getAll: true, match: id, team: selected.home_team.id },
+            params: {
+              getAll: true,
+              match: id,
+              team: selected.home_team.id,
+              play_status: "!start",
+            },
           }}
           filterField={fieldDefinition[ModelType.PLAYER_APPEARANCE]
             ?.filter(isFilterable)
@@ -207,6 +292,33 @@ const Match = () => {
       )}
 
       {selectedTab === "away_player" && id && selected?.away_team.id && (
+        <CustomTableContainer
+          modelType={ModelType.PLAYER_APPEARANCE}
+          fieldDefinitions={[]}
+          pageNum={1}
+          items={awayPlayers}
+          itemsLoading={awayIsLoading}
+          reloadFun={async () =>
+            fetchData(setAwayIsLoading, setAwayPlayers, selected?.away_team.id)
+          }
+          initialData={{
+            formData: {
+              match: id,
+              team: selected?.away_team.id,
+            },
+            metaData: {
+              match: [id],
+              urls: selected.urls,
+              date: selected.date,
+              season: selected.season.id,
+              competition_stage: selected.competition_stage.id,
+            },
+          }}
+          renderView={() => <Formation datas={awayPlayers} />}
+        />
+      )}
+
+      {selectedTab === "away_sub" && id && selected?.away_team.id && (
         <TableWithFetch
           modelType={ModelType.PLAYER_APPEARANCE}
           fieldDefinitions={[
@@ -237,15 +349,6 @@ const Match = () => {
               type: "string",
             },
             {
-              label: "ポジション",
-              field: "position",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "position",
-              displayOnTable: true,
-              type: "select",
-            },
-            {
               label: "時間",
               field: "time",
               width: "100px",
@@ -257,7 +360,12 @@ const Match = () => {
           ]}
           fetch={{
             apiRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
-            params: { getAll: true, match: id, team: selected.away_team.id },
+            params: {
+              getAll: true,
+              match: id,
+              team: selected.away_team.id,
+              play_status: "!start",
+            },
           }}
           filterField={fieldDefinition[ModelType.PLAYER_APPEARANCE]
             ?.filter(isFilterable)
