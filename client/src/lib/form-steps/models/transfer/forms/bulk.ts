@@ -34,6 +34,7 @@ const readTransfer = async (
       sort: "position_group_order,number",
       to_team: team,
       as_of: end,
+      is_cancelled: !true,
       form: ["!期限付き満了", "!育成型期限付き満了", "!育成型期限付き解除"],
     },
   });
