@@ -1,4 +1,4 @@
-import { TeamMatch } from "../../../types/types";
+import { TeamMatch } from "../../types/types";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,7 +18,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 type PointLine = {
