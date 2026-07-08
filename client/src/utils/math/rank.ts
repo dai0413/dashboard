@@ -1,5 +1,11 @@
-export const rank = (values: number[], target: number): number => {
-  const sorted = [...values].sort((a, b) => b - a);
+export const rank = (
+  values: number[],
+  target: number,
+  higherIsBetter = true,
+): number => {
+  const better = higherIsBetter
+    ? values.filter((v) => v > target)
+    : values.filter((v) => v < target);
 
-  return sorted.filter((v) => v > target).length + 1;
+  return better.length + 1;
 };
