@@ -29,9 +29,19 @@ import { fieldDefinition } from "../../../lib/model-fields";
 import { convert } from "../../../lib/convert/DBtoGetted";
 import { APP_ROUTES } from "../../../lib/appRoutes";
 import { convertMatchToTeamMatch } from "../../../utils/data";
-import PointLine from "./PointLine";
+import PointLine from "../../../components/plot/PointLine";
 import { ColumnType } from "../../../types/table";
 import { Transfer, TransferGet } from "../../../types/models/transfer";
+import { RadarChart } from "../../../components/plot/RadarChart/RadarChart";
+import {
+  RadarData,
+  RadarDataset,
+  RadarField,
+} from "../../../components/plot/RadarChart/types";
+import { radarFields } from "../../../components/plot/RadarChart/radarFields";
+import { TeamGet } from "../../../types/models/team";
+import { StatsL, StatsLGet } from "../../../types/models/stats-l";
+import { buildPlotData } from "../../../utils/plot";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -40,6 +50,27 @@ type SeasonDates = {
   endDate: string | undefined;
   seasonRange: string[];
 };
+
+const guideLine = (
+  value: number,
+  dataCount: number,
+  options?: {
+    dash?: number[];
+    color?: string;
+    width?: number;
+  },
+): RadarDataset => ({
+  label: `${value}`,
+  data: Array(dataCount).fill(value),
+  borderColor: options?.color ?? "#9ca3af",
+  backgroundColor: "transparent",
+  borderWidth: options?.width ?? 1,
+  borderDash: options?.dash ?? [4, 4],
+  pointRadius: 0,
+  pointHoverRadius: 0,
+  pointHitRadius: 0,
+  guide: true,
+});
 
 const addDate = (date: Date, amount: number, unit: DateUnit): Date => {
   const d = new Date(date);
@@ -166,6 +197,14 @@ const TeamTabItems: IconButtonProps[] = [
     icon: "line-plot",
     text: "勝点推移",
   },
+  {
+    icon: "pie-plot_1",
+    text: "攻撃スタッツ",
+  },
+  {
+    icon: "pie-plot_2",
+    text: "守備スタッツ",
+  },
 ];
 
 const Tabs = TeamTabItems.filter(
@@ -183,7 +222,7 @@ const ClubTeam = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("player");
+  const [selectedTab, setSelectedTab] = useState("pie-plot");
 
   const {
     metacrud: { selected, readItem },
@@ -419,6 +458,141 @@ const ClubTeam = () => {
     setPlotData({ label: labels, value: cumulativePoints });
   };
 
+  const [offRadarData, setOffRadarData] = useState<RadarData | null>(null);
+  const [defRadarData, setDefRadarData] = useState<RadarData | null>(null);
+  const [radarDataIsLoading, setRadarDataIsLoading] = useState<boolean>(false);
+
+  const convertToRadarData = (
+    teamId: string,
+    datasetLabel: string,
+    field: RadarField[],
+    baseData: StatsLGet[],
+    plotData: StatsLGet[],
+  ): RadarData | null => {
+    const plot = buildPlotData(
+      baseData,
+      plotData,
+      field,
+      (d) => d.team.id || "",
+    );
+
+    const teamData = plot.get(teamId);
+
+    if (!teamData) return null;
+
+    const labels = field.map((f) => f.label);
+    const fieldCountr = field.length;
+
+    const datasets = [
+      {
+        label: datasetLabel,
+        data: field.map((f) => teamData[f.key].deviation),
+        tooltipData: field.map((f) => teamData[f.key]),
+        borderColor: "#2563eb",
+        backgroundColor: "rgba(37,99,235,0.2)",
+      },
+      guideLine(40, fieldCountr),
+      guideLine(50, fieldCountr, {
+        dash: [],
+        width: 2,
+        color: "#6b7280",
+      }),
+      guideLine(60, fieldCountr),
+    ];
+
+    return { labels, datasets };
+  };
+
+  const readRadarData = async (selected: TeamGet | null, id: string) => {
+    setRadarDataIsLoading(true);
+
+    if (
+      !selected ||
+      !selectedteamCompetitionSeason ||
+      !selectedteamCompetitionSeason.season.id
+    )
+      return setRadarDataIsLoading(false);
+
+    let teamLabel = [
+      selected?.team || selected?.abbr || selected?.enTeam || "",
+    ];
+
+    // リーグ平均, 標準偏差用データ
+    const readBaseData = async (season: string): Promise<StatsLGet[]> => {
+      const res = await readItemsBase<StatsL[]>({
+        apiInstance: api,
+        backendRoute: API_PATHS.STATS_L.ROOT,
+        params: {
+          getAll: true,
+          "match.season": season,
+        },
+      });
+
+      if (!res?.data) return [];
+
+      const baseDatas = convert(ModelType.STATS_L, res?.data);
+      return baseDatas;
+    };
+
+    // リーグ平均, 標準偏差用データ
+    const readData = async (season: string): Promise<StatsLGet[]> => {
+      const res = await readItemsBase<StatsL[]>({
+        apiInstance: api,
+        backendRoute: API_PATHS.STATS_L.ROOT,
+        params: {
+          getAll: true,
+          "match.season": season,
+        },
+      });
+
+      if (!res?.data) return [];
+
+      const baseDatas = convert(ModelType.STATS_L, res?.data);
+      return baseDatas;
+    };
+
+    const baseData = await readBaseData(
+      selectedteamCompetitionSeason.season.id,
+    );
+    const plotData = await readData(selectedteamCompetitionSeason.season.id);
+
+    teamLabel.push(`${plotData.filter((d) => d.team.id === id).length}試合`);
+
+    const datasetLabel = teamLabel.join(" ");
+    const offFields = radarFields.filter(
+      (f) => !!f.default && f.category === "attack",
+    );
+    const defFields = radarFields.filter(
+      (f) => !!f.default && f.category === "defense",
+    );
+
+    const offRadarData = convertToRadarData(
+      id,
+      datasetLabel,
+      offFields,
+      baseData,
+      plotData,
+    );
+
+    const defRadarData = convertToRadarData(
+      id,
+      datasetLabel,
+      defFields,
+      baseData,
+      plotData,
+    );
+
+    if (offRadarData) {
+      setOffRadarData(offRadarData);
+    }
+
+    if (defRadarData) {
+      setDefRadarData(defRadarData);
+    }
+
+    setRadarDataIsLoading(false);
+  };
+
   useEffect(() => {
     if (
       !id ||
@@ -427,6 +601,7 @@ const ClubTeam = () => {
     )
       return;
     readPlotData(id, selectedteamCompetitionSeason.season.id);
+    readRadarData(selected, id);
   }, [id, selectedteamCompetitionSeason]);
 
   useEffect(() => {
@@ -1205,6 +1380,48 @@ const ClubTeam = () => {
           </div>
           <PointLine teamMatchs={teamMatchs} plotData={plotData} />
         </>
+      )}
+
+      {selectedTab === "pie-plot_1" && id && (
+        <CustomTableContainer
+          modelType={ModelType.STATS_L}
+          fieldDefinitions={[]}
+          pageNum={1}
+          items={offRadarData?.datasets || []}
+          itemsLoading={radarDataIsLoading}
+          reloadFun={async () => readRadarData(selected, id)}
+          initialData={{
+            formData: {},
+            metaData: {},
+          }}
+          renderView={() => (
+            <RadarChart
+              labels={offRadarData?.labels || []}
+              datasets={offRadarData?.datasets || []}
+            />
+          )}
+        />
+      )}
+
+      {selectedTab === "pie-plot_2" && id && (
+        <CustomTableContainer
+          modelType={ModelType.STATS_L}
+          fieldDefinitions={[]}
+          pageNum={1}
+          items={defRadarData?.datasets || []}
+          itemsLoading={radarDataIsLoading}
+          reloadFun={async () => readRadarData(selected, id)}
+          initialData={{
+            formData: {},
+            metaData: {},
+          }}
+          renderView={() => (
+            <RadarChart
+              labels={defRadarData?.labels || []}
+              datasets={defRadarData?.datasets || []}
+            />
+          )}
+        />
       )}
     </div>
   );

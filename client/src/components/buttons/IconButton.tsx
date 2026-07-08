@@ -21,8 +21,15 @@ import {
   TrophyIcon,
   IdentificationIcon,
   ServerStackIcon,
+  ChartPieIcon,
 } from "@heroicons/react/24/solid";
-import { XMarkIcon, PencilSquareIcon, UserIcon as OutLineUserIcon, UserGroupIcon as OutLineUserGroupIcon } from "@heroicons/react/24/outline";
+import {
+  XMarkIcon,
+  PencilSquareIcon,
+  UserIcon as OutLineUserIcon,
+  UserGroupIcon as OutLineUserGroupIcon,
+  ChartPieIcon as OutLineChartPieIcon,
+} from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
@@ -53,8 +60,11 @@ export type Icon =
   | "teamCompetitionSeason"
   | "registration"
   | "line-plot"
+  | "pie-plot"
   | "staff"
-  | "away";
+  | "away"
+  | "pie-plot_1"
+  | "pie-plot_2";
 
 export type IconButtonProps = {
   icon?: Icon;
@@ -150,6 +160,10 @@ const IconButton: React.FC<IconButtonProps> = ({
         return <IdentificationIcon className={iconClass} />;
       case "line-plot":
         return <PresentationChartLineIcon className={iconClass} />;
+      case "pie-plot_1":
+        return <ChartPieIcon className={iconClass} />;
+      case "pie-plot_2":
+        return <OutLineChartPieIcon className={iconClass} />;
       case "staff":
         return <OutLineUserIcon className={iconClass} />;
       case "away":
