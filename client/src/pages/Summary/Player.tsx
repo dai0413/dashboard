@@ -39,7 +39,7 @@ const Player = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("setting");
+  const [selectedTab, setSelectedTab] = useState("transfer");
 
   const [positionItems, setPotitionItems] = useState<FormationItem[]>([]);
   const [positionItemsIsLoading, setPositionItemsIsLoading] =

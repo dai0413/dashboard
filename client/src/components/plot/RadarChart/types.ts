@@ -38,3 +38,19 @@ export type RadarChartProps = {
   max?: number;
   stepSize?: number;
 };
+
+type StatsBase = Omit<StatsLGet, RadarKey | "match">;
+
+type StatsActual = StatsBase;
+type StatsDeviation = StatsBase & {
+  [K in RadarKey]?: number;
+};
+type StatsRank = StatsBase & {
+  [K in RadarKey]?: number;
+};
+
+export type TableData = {
+  actual: StatsActual[];
+  deviation: StatsDeviation[];
+  rank: StatsRank[];
+};

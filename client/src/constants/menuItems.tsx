@@ -150,33 +150,6 @@ export const NationalMatchSeriesTabItems: IconButtonProps[] = [
   },
 ];
 
-export const CompetitionTabItems: IconButtonProps[] = [
-  {
-    icon: "competitionStage",
-    text: "ステージ",
-  },
-  {
-    icon: "teamCompetitionSeason",
-    text: "チーム",
-  },
-  {
-    icon: "match",
-    text: "試合",
-  },
-  {
-    icon: "registration",
-    text: "選手登録",
-  },
-  {
-    icon: "staff",
-    text: "スタッフ登録",
-  },
-  {
-    icon: "team",
-    text: "シーズン",
-  },
-];
-
 export const MatchTabItems: IconButtonProps[] = [
   {
     icon: "team",

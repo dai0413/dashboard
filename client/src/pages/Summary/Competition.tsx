@@ -2,15 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { TableWithFetch } from "../../components/table";
+import { CustomTableContainer, TableWithFetch } from "../../components/table";
 import { ModelType } from "../../types/models";
-import { CompetitionTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
 import { OptionArray } from "../../types/form/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import { isFilterable, isSortable } from "../../types/field";
+import { isFilterable, isSortable, UIFieldDefinition } from "../../types/field";
 import { readItemsBase } from "../../lib/api";
 import { api } from "../../context/api-context";
 import { convert } from "../../lib/convert/DBtoGetted";
@@ -23,6 +22,50 @@ import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { ColumnType } from "../../types/table";
 import { StaffRegistrationGet } from "../../types/models/staff-registration";
 import { useModal } from "../../context/modal-context";
+import { IconButtonProps } from "../../components/buttons/IconButton";
+import { StatsL, StatsLGet } from "../../types/models/stats-l";
+import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
+import { buildTableData } from "../../utils/plot";
+import { radarFields } from "../../components/plot/RadarChart/radarFields";
+
+const CompetitionTabItems: IconButtonProps[] = [
+  {
+    icon: "competitionStage",
+    text: "ステージ",
+  },
+  {
+    icon: "teamCompetitionSeason",
+    text: "チーム",
+  },
+  {
+    icon: "match",
+    text: "試合",
+  },
+  {
+    icon: "registration",
+    text: "選手登録",
+  },
+  {
+    icon: "staff",
+    text: "スタッフ登録",
+  },
+  {
+    icon: "team",
+    text: "シーズン",
+  },
+  {
+    icon: "pie-plot_1",
+    text: "スタッツ実数値",
+  },
+  {
+    icon: "pie-plot_2",
+    text: "スタッツ偏差値",
+  },
+  {
+    icon: "line-plot",
+    text: "スタッツ順位",
+  },
+];
 
 const Tabs = CompetitionTabItems.filter(
   (item) =>
@@ -85,7 +128,71 @@ const Competition = () => {
     setSelectedTab(value as string);
   };
 
+  type StatsBase = Omit<StatsLGet, RadarKey | "match">;
+
+  type StatsActual = Omit<StatsLGet, "match">;
+  type StatsDeviation = StatsBase & {
+    [K in RadarKey]?: number;
+  };
+  type StatsRank = StatsBase & {
+    [K in RadarKey]?: number;
+  };
+
   const [selectedSeason, setSelectedSeason] = useState<SeasonGet | null>(null);
+  const [statsIsLoading, setStatsIsLoading] = useState<boolean>(false);
+  const [statsActual, setStatsActual] = useState<StatsActual[]>([]);
+  const [statsDeviation, setStatsDeviation] = useState<StatsDeviation[]>([]);
+  const [statsRank, setStatsRank] = useState<StatsRank[]>([]);
+
+  const defaultFields = ["xgFor", "xgAgainst"];
+
+  const statsFields = fieldDefinition[ModelType.STATS_L]
+    ?.filter(
+      (field): field is UIFieldDefinition<StatsActual> => field.key !== "match",
+    )
+    .map((f) => {
+      if (defaultFields.includes(f.key)) {
+        return { ...f, displayOnTable: true };
+      }
+
+      return f;
+    });
+
+  const readStats = async (seasonId?: string) => {
+    if (!seasonId) return setStatsIsLoading(false);
+    setStatsIsLoading(true);
+    const res = await readItemsBase<StatsL[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.STATS_L.ROOT,
+      params: {
+        getAll: true,
+        "match.season": seasonId,
+      },
+    });
+
+    if (!res?.data) return setStatsIsLoading(false);
+
+    const converted = convert(ModelType.STATS_L, res.data);
+
+    const fields: RadarField[] = radarFields.filter((f) => f.key);
+
+    console.log("converted", converted, fields);
+
+    const tableDatas = buildTableData(
+      converted,
+      converted,
+      fields,
+      (d) => d.team.id || "",
+    );
+
+    console.log("tableDatas", tableDatas);
+
+    setStatsActual(tableDatas.actual);
+    setStatsDeviation(tableDatas.deviation);
+    setStatsRank(tableDatas.rank);
+
+    setStatsIsLoading(false);
+  };
 
   useEffect(() => {
     const current = season.data.find((s) => s.current);
@@ -647,6 +754,63 @@ const Competition = () => {
             formData: { competition: id },
             metaData: { competition: id },
           }}
+        />
+      )}
+
+      {selectedTab === "pie-plot_1" && id && statsFields && (
+        <CustomTableContainer
+          pageNum={1}
+          items={statsActual}
+          newItemsPerPage={20}
+          itemsLoading={statsIsLoading}
+          fieldDefinitions={statsFields}
+          filterField={statsFields.filter(isFilterable)}
+          sortField={statsFields?.filter(isSortable)}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
+          reloadFun={() => readStats(selectedSeason?._id)}
+        />
+      )}
+
+      {selectedTab === "pie-plot_2" && id && statsFields && (
+        <CustomTableContainer
+          pageNum={1}
+          items={statsDeviation}
+          newItemsPerPage={20}
+          itemsLoading={statsIsLoading}
+          fieldDefinitions={statsFields}
+          filterField={statsFields.filter(isFilterable)}
+          sortField={statsFields?.filter(isSortable)}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
+          reloadFun={() => readStats(selectedSeason?._id)}
+        />
+      )}
+
+      {selectedTab === "line-plot" && id && statsFields && (
+        <CustomTableContainer
+          pageNum={1}
+          items={statsRank}
+          newItemsPerPage={20}
+          itemsLoading={statsIsLoading}
+          fieldDefinitions={statsFields}
+          filterField={statsFields.filter(isFilterable)}
+          sortField={statsFields?.filter(isSortable)}
+          linkField={[
+            {
+              field: "team",
+              to: APP_ROUTES.TEAM_SUMMARY,
+            },
+          ]}
+          reloadFun={() => readStats(selectedSeason?._id)}
         />
       )}
     </div>

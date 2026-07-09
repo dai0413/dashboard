@@ -69,7 +69,7 @@ const Table = <T,>({
             <th
               scope="col"
               key={`${header.key}-${header.label}`}
-              className="px-4 py-2 border"
+              className="px-4 py-1 border"
               style={
                 header.width
                   ? { width: header.width }
@@ -113,17 +113,17 @@ const Table = <T,>({
           {[...Array(itemsPerPage)].map((_, i) => (
             <tr key={i} className="animate-pulse border-t">
               {visibleHeaders.map((_, j) => (
-                <td key={j} className="px-4 py-2 border">
+                <td key={j} className="px-4 py-1 border">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </td>
               ))}
               {detailLink && !form && (
-                <td className="px-4 py-2 border">
+                <td className="px-4 py-1 border">
                   <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
                 </td>
               )}
               {form && (
-                <td className="px-4 py-2 border">
+                <td className="px-4 py-1 border">
                   <div className="h-6 w-6 bg-gray-200 rounded-full mx-auto"></div>
                 </td>
               )}
@@ -165,7 +165,7 @@ const Table = <T,>({
                 return (
                   <td
                     key={`${header.key}-${header.label}`}
-                    className={`border px-4 py-2 overflow-hidden text-ellipsis whitespace-nowrap
+                    className={`border px-4 py-1 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${bgIsBlue ? "bg-blue-100" : ""}
                       ${textIsRed ? "text-red-500 font-semibold" : ""}
@@ -193,7 +193,7 @@ const Table = <T,>({
               })}
               {detailLink && !form && (
                 <td
-                  className={`px-4 py-2 border overflow-hidden text-ellipsis whitespace-nowrap ${
+                  className={`px-4 py-1 border overflow-hidden text-ellipsis whitespace-nowrap ${
                     hasKey(row) && selectedKey.includes(row.key)
                       ? "bg-blue-100"
                       : ""
@@ -212,7 +212,7 @@ const Table = <T,>({
               )}
               {form && (
                 <td
-                  className={`px-4 py-2 border ${
+                  className={`px-4 py-1 border ${
                     hasKey(row) && selectedKey.includes(row.key)
                       ? "bg-blue-100"
                       : ""

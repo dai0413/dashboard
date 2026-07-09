@@ -1,1 +1,2 @@
-export { buildPlotData } from "./buildPlotData";
+export { buildRadarPlotData } from "./buildRadarPlotData";
+export { buildTableData } from "./buildTableData";

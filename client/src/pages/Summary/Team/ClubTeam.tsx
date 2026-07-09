@@ -41,7 +41,7 @@ import {
 import { radarFields } from "../../../components/plot/RadarChart/radarFields";
 import { TeamGet } from "../../../types/models/team";
 import { StatsL, StatsLGet } from "../../../types/models/stats-l";
-import { buildPlotData } from "../../../utils/plot";
+import { buildRadarPlotData } from "../../../utils/plot";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -222,7 +222,7 @@ const ClubTeam = () => {
     form: { isOpen: formIsOpen },
   } = useModal();
 
-  const [selectedTab, setSelectedTab] = useState("pie-plot");
+  const [selectedTab, setSelectedTab] = useState("player");
 
   const {
     metacrud: { selected, readItem },
@@ -469,7 +469,7 @@ const ClubTeam = () => {
     baseData: StatsLGet[],
     plotData: StatsLGet[],
   ): RadarData | null => {
-    const plot = buildPlotData(
+    const plot = buildRadarPlotData(
       baseData,
       plotData,
       field,
