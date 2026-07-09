@@ -7,37 +7,26 @@ import { aggregateStdDev } from "./aggregateStdDev";
 import { calculateDeviation } from "./calculateDeviation";
 import { calculateRank } from "./calculateRank";
 
-type Values = Record<
-  RadarKey,
-  { actual: number; deviation: number; rank: number }
->;
+type PlotValues = {
+  actual: Record<RadarKey, number>;
+  deviation: Record<RadarKey, number>;
+  rank: Record<RadarKey, number>;
+};
 
-export const buildPlotData = <T extends string>(
+export const buildPlotValues = <T extends string>(
   baseData: StatsLGet[],
   plotData: StatsLGet[],
   fields: RadarField[],
   groupBy: (item: StatsLGet) => T,
-): Map<T, Values> => {
-  // ①リーグ平均
-  const baseAverage = aggregateAverage(
-    baseData,
-    fields.map((f) => f.key),
-  );
+): Map<T, PlotValues> => {
+  const keys = fields.map((f) => f.key);
 
-  // ②リーグ標準偏差
-  const baseStdDev = aggregateStdDev(
-    baseData,
-    fields.map((f) => f.key),
-  );
+  const baseAverage = aggregateAverage(baseData, keys);
 
-  // ③plot対象の平均
-  const plotAverages = aggregateAverageByGroup(
-    plotData,
-    fields.map((f) => f.key),
-    groupBy,
-  );
+  const baseStdDev = aggregateStdDev(baseData, keys);
 
-  // ④偏差値
+  const plotAverages = aggregateAverageByGroup(plotData, keys, groupBy);
+
   const deviations = calculateDeviation(
     plotAverages,
     baseAverage,
@@ -45,27 +34,27 @@ export const buildPlotData = <T extends string>(
     fields,
   );
 
-  // ⑤順位
   const ranks = calculateRank(baseData, plotData, fields, groupBy);
 
-  const result = new Map<T, Values>();
+  const result = new Map<T, PlotValues>();
 
-  for (const [group, average] of plotAverages) {
-    const value = {} as Values;
-
+  for (const [group, actual] of plotAverages) {
     const deviation = deviations.get(group)!;
     const rank = ranks.get(group)!;
 
+    const roundedActual = {} as Record<RadarKey, number>;
+    const roundedDeviation = {} as Record<RadarKey, number>;
+
     for (const field of fields) {
-      value[field.key] = {
-        actual: round(average[field.key], 2),
-        deviation: round(deviation[field.key], 2),
-        rank: rank[field.key],
-      };
+      roundedActual[field.key] = round(actual[field.key], 2);
+      roundedDeviation[field.key] = round(deviation[field.key], 2);
     }
 
-    result.set(group, value);
+    result.set(group, {
+      actual: roundedActual,
+      deviation: roundedDeviation,
+      rank,
+    });
   }
-
   return result;
 };
