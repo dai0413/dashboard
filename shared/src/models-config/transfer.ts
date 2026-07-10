@@ -42,43 +42,58 @@ export function transfer<TModel = any>(
         { field: "to_date", type: "Date" },
         { field: "from_team.age_group", type: "String", populateAfter: true },
         { field: "form", type: "String" },
+        { field: "isCancelled", type: "Boolean" },
       ],
       buildCustomMatch: customMatchFn,
-      buildCustomPipeline: ({ req, beforeMatch }) => {
-        if (!req.query.as_of || !req.query.to_team) {
-          return {};
+      buildCustomPipeline: ({ req, beforeMatch, afterMatch }) => {
+        const conditionMap = new Map<string, any>();
+
+        for (const condition of beforeMatch.$and ?? []) {
+          const key = Object.keys(condition)[0];
+          conditionMap.set(key, condition[key]);
         }
 
-        const conditions = beforeMatch.$and ?? [];
+        const fromDate = conditionMap.get("from_date");
 
-        const newConditions = [];
-        let afterMatch = {};
+        const seasonStart = fromDate?.$gte;
+        const seasonEnd = fromDate?.$lte;
+        const toTeam = conditionMap.get("to_team");
 
-        const asOf = new Date(req.query.as_of as string);
-
-        for (const condition of conditions) {
-          if ("to_team" in condition) {
-            afterMatch = condition;
-            continue;
-          }
-
-          if ("from_date" in condition) {
-            newConditions.push({
-              from_date: {
-                $lt: asOf,
-              },
-            });
-            continue;
-          }
-
-          newConditions.push(condition);
+        if (!seasonStart || !seasonEnd || !toTeam) {
+          return {
+            beforeMatch,
+            afterMatch,
+          };
         }
 
-        const newBeforeMatch = {
-          $and: newConditions,
+        const seasonStartConditions = [];
+
+        for (const [key, value] of conditionMap) {
+          switch (key) {
+            case "from_date":
+              seasonStartConditions.push({
+                from_date: {
+                  $lte: seasonEnd,
+                },
+              });
+              break;
+
+            case "to_team":
+              // 最後に判定するので除外
+              break;
+
+            default:
+              seasonStartConditions.push({
+                [key]: value,
+              });
+          }
+        }
+
+        beforeMatch = {
+          $and: seasonStartConditions,
         };
 
-        const pipeline: PipelineStage[] = [
+        const seasonStartPipeline: PipelineStage[] = [
           {
             $sort: {
               player: 1,
@@ -100,14 +115,90 @@ export function transfer<TModel = any>(
           },
           {
             $match: {
-              to_team: new Types.ObjectId(req.query.to_team),
+              to_team: conditionMap.get("to_team"),
             },
           },
         ];
 
-        return {
-          beforeMatch: newBeforeMatch,
+        const joinedConditions = [];
 
+        for (const [key, value] of conditionMap) {
+          switch (key) {
+            case "from_date":
+              joinedConditions.push({
+                from_date: {
+                  $gte: seasonStart,
+                  $lte: seasonEnd,
+                },
+              });
+              break;
+
+            default:
+              joinedConditions.push({
+                [key]: value,
+              });
+          }
+        }
+
+        const joinedDuringSeasonPipeline: PipelineStage[] = [
+          {
+            $match: {
+              $and: joinedConditions,
+            },
+          },
+          {
+            $sort: {
+              player: 1,
+              from_date: -1,
+            },
+          },
+          {
+            $group: {
+              _id: "$player",
+              doc: {
+                $first: "$$ROOT",
+              },
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: "$doc",
+            },
+          },
+        ];
+
+        const pipeline = [
+          ...seasonStartPipeline,
+          {
+            $unionWith: {
+              coll: "transfers",
+              pipeline: joinedDuringSeasonPipeline,
+            },
+          },
+          {
+            $sort: {
+              player: 1,
+              from_date: -1,
+            },
+          },
+          {
+            $group: {
+              _id: "$player",
+              doc: {
+                $first: "$$ROOT",
+              },
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: "$doc",
+            },
+          },
+        ] as PipelineStage[];
+
+        return {
+          beforeMatch,
+          afterMatch,
           pipeline,
         };
       },

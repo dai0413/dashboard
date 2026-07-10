@@ -31,7 +31,6 @@ import { APP_ROUTES } from "../../../lib/appRoutes";
 import { convertMatchToTeamMatch } from "../../../utils/data";
 import PointLine from "../../../components/plot/PointLine";
 import { ColumnType } from "../../../types/table";
-import { Transfer, TransferGet } from "../../../types/models/transfer";
 import { RadarChart } from "../../../components/plot/RadarChart/RadarChart";
 import {
   RadarData,
@@ -392,32 +391,6 @@ const ClubTeam = () => {
     [teamCompetitionSeason],
   );
 
-  const [players, setPlayers] = useState<TransferGet[]>([]);
-
-  const readPlayers = async (id: string, endDate: string) => {
-    const obj = await readItemsBase<Transfer[]>({
-      apiInstance: api,
-      backendRoute: API_PATHS.TRANSFER.ROOT,
-      params: {
-        getAll: true,
-        sort: "position_group_order,number",
-        to_team: id,
-        as_of: endDate,
-        form: ["!期限付き満了", "!育成型期限付き満了", "!育成型期限付き解除"],
-      },
-    });
-
-    if (!obj) return setPlayers([]);
-
-    const transfers = convert(ModelType.TRANSFER, obj.data);
-
-    const uniqueTransfers = Array.from(
-      new Map(transfers.map((t) => [t.player.id, t])).values(),
-    );
-
-    return setPlayers(uniqueTransfers);
-  };
-
   const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
   const [plotData, setPlotData] = useState<{
     label: string[];
@@ -604,12 +577,6 @@ const ClubTeam = () => {
     readRadarData(selected, id);
   }, [id, selectedteamCompetitionSeason]);
 
-  useEffect(() => {
-    if (!id || !seasonDates.transferWindow.endDate) return;
-
-    readPlayers(id, seasonDates.transferWindow.endDate);
-  }, [id, seasonDates]);
-
   return (
     <div className="p-6">
       {/* Header情報 */}
@@ -704,11 +671,9 @@ const ClubTeam = () => {
           <div className="text-gray-600">
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`}
           </div>
-          <CustomTableContainer
-            key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
+          <TableWithFetch
+            key={`${selectedTab}-${seasonDates.transferWindow.endDate}`}
             modelType={ModelType.TRANSFER}
-            pageNum={1}
-            items={players}
             fieldDefinitions={[
               {
                 label: "ポジション",
@@ -747,6 +712,16 @@ const ClubTeam = () => {
                 type: "string",
               },
             ]}
+            fetch={{
+              apiRoute: API_PATHS.TRANSFER.ROOT,
+              params: {
+                getAll: true,
+                sort: "position_group_order,number",
+                to_team: id,
+                from_date: seasonDates.transferWindow.seasonRange,
+                form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
+              },
+            }}
             filterField={fieldDefinition[ModelType.TRANSFER]
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
@@ -1037,7 +1012,12 @@ const ClubTeam = () => {
               params: {
                 getAll: true,
                 from_team: id,
-                form: ["期限付き", "育成型期限付き"],
+                form: [
+                  "期限付き",
+                  "育成型期限付き",
+                  "期限付き延長",
+                  "育成型期限付き延長",
+                ],
                 from_date: seasonDates.transferWindow.seasonRange,
               },
             }}

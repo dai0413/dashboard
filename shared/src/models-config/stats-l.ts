@@ -34,6 +34,8 @@ export function statsL<TModel = any>(
       query: [
         { field: "match", type: "ObjectId" },
         { field: "team", type: "ObjectId" },
+        { field: "match.date", type: "Date", populateAfter: true },
+        { field: "match.season", type: "ObjectId", populateAfter: true },
       ],
       sort: { _id: -1 },
       buildCustomMatch: customMatchFn,

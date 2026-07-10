@@ -30,7 +30,7 @@ type GetAllQuery = {
   }[];
   buildCustomMatch?: (query: ParsedQs) => Record<string, any>;
   buildCustomPipeline?: (args: {
-    req: { query: { as_of?: string; to_team?: string } };
+    req: { query: Record<string, any> };
     beforeMatch: Record<string, any>;
     afterMatch: Record<string, any>;
     filters: Record<string, any>;
