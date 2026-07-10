@@ -34,11 +34,12 @@ export const RefereeAppearanceResponseSchema =
   RefereeAppearanceBaseZodSchema.omit({
     match: true,
     referee: true,
+    referee_name: true,
   }).safeExtend({
     referee: RefereeZodSchema.extend({
       _id: objectId.optional(),
       normalized_en_name: z.string().optional(),
-    }),
+    }).optional(),
     match: MatchBaseZodSchema,
   });
 

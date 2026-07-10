@@ -9,7 +9,11 @@ const playerAppearance = (
 ): z.infer<typeof PlayerAppearanceResponseSchema> => {
   const { player, player_name, ...rest } = PlayerAppearance;
 
-  const player_obj = player ?? { name: player_name as string };
+  const player_obj = player
+    ? player
+    : player_name
+      ? { name: player_name }
+      : undefined;
 
   return {
     ...rest,

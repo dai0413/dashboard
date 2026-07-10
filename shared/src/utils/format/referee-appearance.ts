@@ -9,7 +9,11 @@ const refereeAppearance = (
 ): z.infer<typeof RefereeAppearanceResponseSchema> => {
   const { referee, referee_name, ...rest } = refereeAppearance;
 
-  const referee_obj = referee ?? { name: referee_name as string };
+  const referee_obj = referee
+    ? referee
+    : referee_name
+      ? { name: referee_name }
+      : undefined;
 
   return {
     ...rest,

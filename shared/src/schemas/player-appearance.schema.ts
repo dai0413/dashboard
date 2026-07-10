@@ -52,11 +52,12 @@ export const PlayerAppearanceResponseSchema =
     match: true,
     player: true,
     team: true,
+    player_name: true,
   }).safeExtend({
     player: PlayerZodSchema.extend({
       _id: objectId.optional(),
       normalized_en_name: z.string().optional(),
-    }),
+    }).optional(),
     match: MatchBaseZodSchema,
     team: TeamZodSchema,
   });

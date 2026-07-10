@@ -9,7 +9,11 @@ const staffMatchEventLog = (
 ): z.infer<typeof StaffMatchEventLogResponseSchema> => {
   const { staff, staff_name, ...rest } = staffMatchEventLog;
 
-  const staff_obj = staff ?? { name: staff_name as string };
+  const staff_obj = staff
+    ? staff
+    : staff_name
+      ? { name: staff_name }
+      : undefined;
 
   return {
     ...rest,
