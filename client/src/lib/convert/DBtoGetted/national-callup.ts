@@ -11,17 +11,15 @@ import { team } from "../CreateLabel/team";
 export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
   const statusOptions = status().find((item) => item.key === t.status)?.label;
   const left_reason = leftReason().find(
-    (item) => item.key === t.left_reason
+    (item) => item.key === t.left_reason,
   )?.label;
 
-  let newTeam: Label = { id: undefined, label: "" };
+  let team_obj: Label;
 
-  if ("team" in t && t.team) {
-    if (t.team._id) {
-      newTeam = { label: team(t.team), id: t.team._id };
-    } else {
-      newTeam = { label: t.team.team, id: undefined };
-    }
+  if (t.team) {
+    team_obj = { label: team(t.team), id: t.team._id };
+  } else {
+    team_obj = { label: t.team_name || "", id: undefined };
   }
 
   return {
@@ -37,7 +35,7 @@ export const nationalCallup = (t: NationalCallup): NationalCallupGet => {
       label: player(t.player),
       id: t.player._id,
     },
-    team: newTeam,
+    team: team_obj,
     status: statusOptions ? statusOptions : "",
     left_reason: left_reason ? left_reason : "",
   };

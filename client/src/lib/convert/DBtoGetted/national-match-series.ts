@@ -12,12 +12,14 @@ export const nationalMatchSeries = (
 ): NationalMatchSeriesGet => {
   const age_group = ageGroup().find((item) => item.key === t.age_group)?.label;
 
-  const matches = t.matches.map((d) => {
-    return {
-      label: match(d),
-      id: d._id,
-    };
-  });
+  const matches = t.matches
+    ? t.matches.map((d) => {
+        return {
+          label: match(d),
+          id: d._id,
+        };
+      })
+    : [];
 
   return {
     ...t,

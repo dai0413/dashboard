@@ -25,7 +25,7 @@ export const nationalCallup = (
         field: "series",
         getValueType: ColumnType.FIELD,
         key: "series",
-        displayOnTable: true,
+        displayOnTable: false,
         type: "string",
       },
       {
@@ -41,7 +41,7 @@ export const nationalCallup = (
         field: "number",
         getValueType: ColumnType.FIELD,
         key: "number",
-        displayOnTable: true,
+        displayOnTable: false,
         type: "string",
       },
       {
@@ -57,7 +57,7 @@ export const nationalCallup = (
         field: "team_name",
         getValueType: ColumnType.FIELD,
         key: "team_name",
-        displayOnTable: true,
+        displayOnTable: false,
         type: "string",
       },
       {

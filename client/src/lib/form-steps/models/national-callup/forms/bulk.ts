@@ -117,7 +117,6 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
           formData: {
             key: row.key,
             player: row.player.id,
-            number: row.number,
             team: row.team.id,
             team_name: row.team_name,
             position_group: row.position_group,
@@ -125,7 +124,6 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
           formLabel: {
             key: `${row.player.label}`,
             player: row.player.label,
-            number: row.number,
             team: row.team.label,
             team_name: row.team_name,
             position_group: row.position_group,
