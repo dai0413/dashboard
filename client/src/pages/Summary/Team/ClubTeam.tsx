@@ -719,6 +719,7 @@ const ClubTeam = () => {
                 sort: "position_group_order,number",
                 to_team: id,
                 from_date: seasonDates.transferWindow.seasonRange,
+                isCancelled: !true,
                 form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
               },
             }}
@@ -796,6 +797,7 @@ const ClubTeam = () => {
                 to_team: id,
                 "from_team.age_group": "!full",
                 from_team: `exists`,
+                isCancelled: !true,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -869,6 +871,7 @@ const ClubTeam = () => {
                 to_team: id,
                 form: "!更新",
                 from_date: seasonDates.transferWindow.seasonRange,
+                isCancelled: !true,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -941,6 +944,7 @@ const ClubTeam = () => {
                 getAll: true,
                 from_team: id,
                 from_date: seasonDates.transferWindow.seasonRange,
+                isCancelled: !true,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -1019,6 +1023,7 @@ const ClubTeam = () => {
                   "育成型期限付き延長",
                 ],
                 from_date: seasonDates.transferWindow.seasonRange,
+                isCancelled: !true,
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]

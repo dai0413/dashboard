@@ -38,7 +38,7 @@ export const currentTransfer = async <T extends ModelType>({
 
   const params = {
     player: formData.player,
-    is_cancelled: !true,
+    isCancelled: !true,
     sort: "-from_date,-_id",
     limit: 1,
     ...(from_date !== undefined && { from_date: `<=${from_date}` }),
