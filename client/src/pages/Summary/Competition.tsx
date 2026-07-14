@@ -65,6 +65,10 @@ const CompetitionTabItems: IconButtonProps[] = [
     icon: "line-plot",
     text: "スタッツ順位",
   },
+  {
+    icon: "setting",
+    text: "スタッツ",
+  },
 ];
 
 const Tabs = CompetitionTabItems.filter(
@@ -812,6 +816,35 @@ const Competition = () => {
           ]}
           reloadFun={() => readStats(selectedSeason?._id)}
         />
+      )}
+
+      {selectedTab === "setting" && selectedSeason && (
+        <>
+          <TableWithFetch
+            key={`${selectedTab}-${selectedSeason?._id}`}
+            modelType={ModelType.STATS_L}
+            fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
+            fetch={{
+              apiRoute: API_PATHS.STATS_L.ROOT,
+              params: {
+                getAll: true,
+                "match.season": selectedSeason._id,
+                registration_type: "register",
+                sort: "team, match.date",
+              },
+            }}
+            filterField={fieldDefinition[ModelType.STATS_L]?.filter(
+              isFilterable,
+            )}
+            sortField={fieldDefinition[ModelType.STATS_L]?.filter(isSortable)}
+            linkField={[
+              {
+                field: "match",
+                to: APP_ROUTES.MATCH_SUMMARY,
+              },
+            ]}
+          />
+        </>
       )}
     </div>
   );

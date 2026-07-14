@@ -204,6 +204,10 @@ const TeamTabItems: IconButtonProps[] = [
     icon: "pie-plot_2",
     text: "守備スタッツ",
   },
+  {
+    icon: "setting",
+    text: "スタッツ",
+  },
 ];
 
 const Tabs = TeamTabItems.filter(
@@ -1352,6 +1356,39 @@ const ClubTeam = () => {
           />
         </>
       )}
+
+      {selectedTab === "setting" &&
+        id &&
+        selectedteamCompetitionSeason?.season.id && (
+          <>
+            <TableWithFetch
+              key={`${selectedTab}-${selectedteamCompetitionSeason?.season.id}`}
+              modelType={ModelType.STATS_L}
+              fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
+              fetch={{
+                apiRoute: API_PATHS.STATS_L.ROOT,
+                params: {
+                  getAll: true,
+                  team: id,
+                  "match.season": selectedteamCompetitionSeason?.season.id,
+                  sort: "match.date",
+                },
+              }}
+              filterField={fieldDefinition[ModelType.STATS_L]
+                ?.filter(isFilterable)
+                .filter((file) => file.key !== "team")}
+              sortField={fieldDefinition[ModelType.STATS_L]
+                ?.filter(isSortable)
+                .filter((file) => file.key !== "team")}
+              linkField={[
+                {
+                  field: "match",
+                  to: APP_ROUTES.MATCH_SUMMARY,
+                },
+              ]}
+            />
+          </>
+        )}
 
       {selectedTab === "line-plot" && id && (
         <>
