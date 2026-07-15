@@ -70,6 +70,12 @@ export function transfer<TModel = any>(
 
         for (const [key, value] of conditionMap) {
           switch (key) {
+            case "player":
+              seasonStartConditions.push({
+                player: value,
+              });
+              break;
+
             case "from_date":
               seasonStartConditions.push({
                 from_date: {
@@ -83,9 +89,7 @@ export function transfer<TModel = any>(
               break;
 
             default:
-              seasonStartConditions.push({
-                [key]: value,
-              });
+              break;
           }
         }
 
