@@ -1,12 +1,7 @@
-import { ageGroup } from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Country } from "./country";
 import { Team } from "./team";
 import { Match } from "./match";
-
-const AgeGroupOptions = ageGroup().map((item) => item.key);
-
-type AgeGroup = (typeof AgeGroupOptions)[number] | null;
 
 export type NationalMatchSeries = {
   _id: string;
@@ -14,7 +9,6 @@ export type NationalMatchSeries = {
   abbr: string | null;
   country: Country;
   team: Team;
-  age_group: AgeGroup;
   matches: Match[];
   joined_at: Date | null;
   left_at: Date | null;

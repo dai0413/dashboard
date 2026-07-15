@@ -1,4 +1,3 @@
-import { ageGroup } from "@dai0413/myorg-shared";
 import {
   NationalMatchSeries,
   NationalMatchSeriesGet,
@@ -10,8 +9,6 @@ import { match } from "../CreateLabel/match";
 export const nationalMatchSeries = (
   t: NationalMatchSeries,
 ): NationalMatchSeriesGet => {
-  const age_group = ageGroup().find((item) => item.key === t.age_group)?.label;
-
   const matches = t.matches
     ? t.matches.map((d) => {
         return {
@@ -35,6 +32,5 @@ export const nationalMatchSeries = (
       id: t.team ? t.team._id : "",
     },
     matches: matches,
-    age_group: age_group ? age_group : "",
   };
 };

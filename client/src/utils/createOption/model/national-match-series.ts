@@ -10,7 +10,6 @@ export const nationalMatchSeries = (
     label: d.name,
     key: d._id,
     country: d.country.label,
-    age_group: d.age_group,
     team: d.team.label,
   }));
 
@@ -37,14 +36,6 @@ export const nationalMatchSeries = (
         field: "country",
         getValueType: ColumnType.FIELD,
         key: "country",
-        displayOnTable: true,
-        type: "string",
-      },
-      {
-        label: "年代・種別",
-        field: "age_group",
-        getValueType: ColumnType.FIELD,
-        key: "age_group",
         displayOnTable: true,
         type: "string",
       },

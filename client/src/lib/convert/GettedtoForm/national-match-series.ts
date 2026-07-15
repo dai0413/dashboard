@@ -1,4 +1,3 @@
-import { ageGroup } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import {
   NationalMatchSeriesForm,
@@ -8,8 +7,6 @@ import {
 export const nationalMatchSeries = (
   t: NationalMatchSeriesGet,
 ): NationalMatchSeriesForm => {
-  const age_group = ageGroup().find((item) => item.label === t.age_group)?.key;
-
   return {
     ...t,
     joined_at: toDateKey(t.joined_at),
@@ -17,6 +14,5 @@ export const nationalMatchSeries = (
     country: t.country.id,
     team: t.team.id,
     matches: t.matches.map((t) => t.id).filter((t) => typeof t === "string"),
-    age_group: age_group ? age_group : "",
   };
 };
