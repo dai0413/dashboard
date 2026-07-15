@@ -24,7 +24,7 @@ const readTransfer = async (
   label: string,
   api: AxiosInstance,
   team: string,
-  end: Date,
+  from_date: string[],
 ): Promise<FilterableFieldDefinition | undefined> => {
   const res = await readItemsBase<Transfer[]>({
     apiInstance: api,
@@ -33,9 +33,9 @@ const readTransfer = async (
       getAll: true,
       sort: "position_group_order,number",
       to_team: team,
-      as_of: end,
+      from_date: from_date,
       is_cancelled: !true,
-      form: ["!期限付き満了", "!育成型期限付き満了", "!育成型期限付き解除"],
+      form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
     },
   });
 
@@ -81,19 +81,15 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
       const previousSeasonEnd = new Date(seasonEnd);
       previousSeasonEnd.setFullYear(previousSeasonEnd.getFullYear() - 1);
 
-      const thisYear = await readTransfer(
-        "今季",
-        api,
-        metaData.team,
-        seasonEnd,
-      );
+      const thisYear = await readTransfer("今季", api, metaData.team, [
+        `>=${seasonStart}`,
+        `<=${seasonEnd}`,
+      ]);
 
-      const lastYear = await readTransfer(
-        "昨季",
-        api,
-        metaData.team,
-        previousSeasonEnd,
-      );
+      const lastYear = await readTransfer("昨季", api, metaData.team, [
+        `>=${previousSeasonStart}`,
+        `<=${previousSeasonEnd}`,
+      ]);
 
       const first: QuickFilterItemsByKey = {
         transfer: [
