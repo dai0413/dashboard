@@ -86,7 +86,7 @@ const getTransfer = async (
       to_team: teamId,
       form: JOIN_TRANSFER_TYPES,
       from_date: fromDateRange.value,
-      isCancelled: !true,
+      isCancelled: "!true",
     },
   });
 

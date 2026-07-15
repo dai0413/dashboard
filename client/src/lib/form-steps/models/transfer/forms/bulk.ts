@@ -34,7 +34,7 @@ const readTransfer = async (
       sort: "position_group_order,number",
       to_team: team,
       from_date: from_date,
-      isCancelled: !true,
+      isCancelled: "!true",
       form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
     },
   });
