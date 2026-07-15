@@ -49,7 +49,7 @@ const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
 );
 
 NationalMatchSeriesSchema.index(
-  { team: 1, country: 1, age_group: 1, joined_at: 1 },
+  { team: 1, joined_at: 1 },
   {
     unique: true,
     partialFilterExpression: {
