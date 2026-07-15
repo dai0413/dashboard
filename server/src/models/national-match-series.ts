@@ -1,8 +1,4 @@
-import {
-  getKey,
-  ageGroup,
-  NationalMatchSeriesZodSchema,
-} from "@dai0413/myorg-shared";
+import { NationalMatchSeriesZodSchema } from "@dai0413/myorg-shared";
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import z from "zod";
 
@@ -36,7 +32,6 @@ const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
       ref: "Team",
       required: true,
     },
-    age_group: { type: String, enum: getKey(ageGroup()) },
     matches: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Match",
