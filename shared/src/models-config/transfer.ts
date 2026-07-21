@@ -9,6 +9,16 @@ import { ControllerConfig } from "../types/models-config.js";
 import { transfer as convertFun } from "../utils/format/transfer.js";
 import { ParsedQs } from "qs";
 
+const ACTIVE_TRANSFER_FORMS = [
+  "完全",
+  "期限付き",
+  "育成型期限付き",
+  "期限付き延長",
+  "育成型期限付き延長",
+  "復帰",
+  "更新",
+] as const;
+
 export function transfer<TModel = any>(
   mongoModel?: TModel,
   customMatchFn?: (query: ParsedQs) => Record<string, any>,
@@ -46,6 +56,13 @@ export function transfer<TModel = any>(
       ],
       buildCustomMatch: customMatchFn,
       buildCustomPipeline: ({ req, beforeMatch, afterMatch }) => {
+        if (req.query.mode !== "squad") {
+          return {
+            beforeMatch,
+            afterMatch,
+          };
+        }
+
         const conditionMap = new Map<string, any>();
 
         for (const condition of beforeMatch.$and ?? []) {
@@ -102,6 +119,8 @@ export function transfer<TModel = any>(
             $sort: {
               player: 1,
               from_date: -1,
+              doa: -1,
+              _id: -1,
             },
           },
           {
@@ -120,6 +139,10 @@ export function transfer<TModel = any>(
           {
             $match: {
               to_team: conditionMap.get("to_team"),
+              form: {
+                $in: ACTIVE_TRANSFER_FORMS,
+              },
+              isCancelled: undefined,
             },
           },
         ];
@@ -144,6 +167,13 @@ export function transfer<TModel = any>(
           }
         }
 
+        joinedConditions.push({
+          form: {
+            $in: ACTIVE_TRANSFER_FORMS,
+          },
+          isCancelled: undefined,
+        });
+
         const joinedDuringSeasonPipeline: PipelineStage[] = [
           {
             $match: {
@@ -154,6 +184,8 @@ export function transfer<TModel = any>(
             $sort: {
               player: 1,
               from_date: -1,
+              doa: -1,
+              _id: -1,
             },
           },
           {
@@ -183,6 +215,8 @@ export function transfer<TModel = any>(
             $sort: {
               player: 1,
               from_date: -1,
+              doa: -1,
+              _id: -1,
             },
           },
           {
