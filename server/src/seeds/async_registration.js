@@ -1,14 +1,14 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import connectDB from "../dist/db/connect.js";
+import connectDB from "../../dist/db/connect.js";
 import mongoose, { Types } from "mongoose";
-import { PlayerModel } from "../dist/models/player.js";
-import { TeamModel } from "../dist/models/team.js";
-import { SeasonModel } from "../dist/models/season.js";
-import { PlayerRegistrationModel } from "../dist/models/player-registration.js";
-import { PlayerRegistrationHistoryModel } from "../dist/models/player-registration-history.js";
-import { asyncRegistration } from "../dist/utils/async/applyHistoryRecord.js";
+import { PlayerModel } from "../../dist/models/player.js";
+import { TeamModel } from "../../dist/models/team.js";
+import { SeasonModel } from "../../dist/models/season.js";
+import { PlayerRegistrationModel } from "../../dist/models/player-registration.js";
+import { PlayerRegistrationHistoryModel } from "../../dist/models/player-registration-history.js";
+import { asyncRegistration } from "../../dist/utils/async/playerApplyHistoryRecord.js";
 
 async function rebuildPlayerRegistrationFromHistory(filter = {}) {
   console.log("=== PlayerRegistration 再構築開始 ===");
