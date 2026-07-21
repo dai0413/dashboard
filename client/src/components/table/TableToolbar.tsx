@@ -177,10 +177,10 @@ const TableToolbar = <Data, Form>({
   };
 
   const onClickTile = () => {
-    if (!isOpen) return;
     if (
-      modelType === ModelType.TEAM_COMPETITION_SEASON ||
-      modelType === ModelType.FORMATION
+      isOpen &&
+      (modelType === ModelType.TEAM_COMPETITION_SEASON ||
+        modelType === ModelType.FORMATION)
     ) {
       setItemsPerPage(20);
     } else {
