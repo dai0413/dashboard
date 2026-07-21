@@ -720,11 +720,12 @@ const ClubTeam = () => {
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
                 getAll: true,
-                sort: "position_group_order,number",
+                sort: "position_group_order,number,_id",
                 to_team: id,
                 from_date: seasonDates.transferWindow.seasonRange,
                 isCancelled: "!true",
                 form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
+                mode: "squad",
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
@@ -802,6 +803,7 @@ const ClubTeam = () => {
                 "from_team.age_group": "!full",
                 from_team: `exists`,
                 isCancelled: "!true",
+                form: "完全",
               },
             }}
             filterField={fieldDefinition[ModelType.TRANSFER]
