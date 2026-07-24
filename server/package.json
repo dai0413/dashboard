@@ -1,9 +1,9 @@
 {
-  "version": "3.2.2",
+  "version": "3.2.3",
   "type": "module",
   "dependencies": {
     "@dai0413/myorg-shared": "^4.3.2",
-    "@dai0413/scraping-logic": "^3.1.2",
+    "@dai0413/scraping-logic": "^4.0.2",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
