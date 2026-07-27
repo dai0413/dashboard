@@ -1,4 +1,4 @@
-import { IconButtonProps } from "../../../components/buttons/IconButton";
+import { SummaryTabItems } from "../../../types/menu/IconButton";
 import { useEffect, useState } from "react";
 import { api } from "../../../context/api-context";
 import { useParams } from "react-router-dom";
@@ -10,7 +10,6 @@ import {
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { useModal } from "../../../context/modal-context";
 import { ModelType } from "../../../types/models";
-import { OptionArray } from "../../../types/form/option";
 import { isFilterable, isSortable } from "../../../types/field";
 import { MatchGet } from "../../../types/models/match";
 import {
@@ -35,33 +34,32 @@ import {
   PlayerAppearanceGet,
 } from "../../../types/models/player-appearance";
 import { convert } from "../../../lib/convert/DBtoGetted";
+import { createTabsOptionArray } from "../../../utils/tab/createTabsOptionArray";
 
-const TeamTabItems: IconButtonProps[] = [
+const TeamTabItems: SummaryTabItems[] = [
   {
     icon: "series",
+    key: "series",
     text: "シリーズ",
   },
   {
     icon: "match",
+    key: "match",
     text: "試合",
   },
   {
     icon: "player",
+    key: "player",
     text: "選手",
   },
   {
     icon: "line-plot",
+    key: "line-plot",
     text: "選手推移",
   },
 ];
 
-const Tabs = TeamTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const Tabs = createTabsOptionArray(TeamTabItems);
 
 const NationalTeam = () => {
   const { id } = useParams();
@@ -277,7 +275,7 @@ const NationalTeam = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {TeamTabItems.map(({ icon, text, className }) => {
+            {TeamTabItems.map(({ icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -294,7 +292,6 @@ const NationalTeam = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

@@ -5,10 +5,8 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { CustomTableContainer, TableWithFetch } from "../../components/table";
 import { usePlayer } from "../../context/models/player";
 import { ModelType } from "../../types/models";
-import { PlayerTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
-import { OptionArray } from "../../types/form/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
@@ -23,14 +21,38 @@ import { PlayerAppearance } from "../../types/models/player-appearance";
 import { api } from "../../context/api-context";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { positionBase } from "../../components/formation/positionBase";
+import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
+import { SummaryTabItems } from "../../types/menu/IconButton";
 
-const Tabs = PlayerTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const PlayerTabItems: SummaryTabItems[] = [
+  {
+    icon: "setting",
+    key: "setting",
+    text: "ポジション",
+  },
+  {
+    icon: "transfer",
+    key: "transfer",
+    text: "移籍",
+  },
+  {
+    icon: "injury",
+    key: "injury",
+    text: "怪我",
+  },
+  {
+    icon: "nationality",
+    key: "nationality",
+    text: "代表歴",
+  },
+  {
+    icon: "registration",
+    key: "registration",
+    text: "選手登録",
+  },
+];
+
+const Tabs = createTabsOptionArray(PlayerTabItems);
 
 const Player = () => {
   const { id } = useParams();
@@ -180,7 +202,7 @@ const Player = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {PlayerTabItems.map(({ icon, text, className }) => {
+            {PlayerTabItems.map(({ icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -197,7 +219,6 @@ const Player = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

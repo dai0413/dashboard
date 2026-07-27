@@ -4,10 +4,8 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TableWithFetch } from "../../components/table";
 import { ModelType } from "../../types/models";
-import { NationalMatchSeriesTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
-import { OptionArray } from "../../types/form/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
@@ -16,14 +14,23 @@ import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
 import { ColumnType } from "../../types/table";
 import { MatchGet } from "../../types/models/match";
+import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
+import { SummaryTabItems } from "../../types/menu/IconButton";
 
-const Tabs = NationalMatchSeriesTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const NationalMatchSeriesTabItems: SummaryTabItems[] = [
+  {
+    icon: "match",
+    key: "match",
+    text: "試合",
+  },
+  {
+    icon: "player",
+    key: "player",
+    text: "招集選手",
+  },
+];
+
+const Tabs = createTabsOptionArray(NationalMatchSeriesTabItems);
 
 const National = () => {
   const { id } = useParams();
@@ -115,7 +122,7 @@ const National = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {NationalMatchSeriesTabItems.map(({ icon, text, className }) => {
+            {NationalMatchSeriesTabItems.map(({ icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -132,7 +139,6 @@ const National = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

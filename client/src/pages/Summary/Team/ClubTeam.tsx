@@ -1,4 +1,4 @@
-import { IconButtonProps } from "../../../components/buttons/IconButton";
+import { SummaryTabItems } from "../../../types/menu/IconButton";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
@@ -41,6 +41,7 @@ import { radarFields } from "../../../components/plot/RadarChart/radarFields";
 import { TeamGet } from "../../../types/models/team";
 import { StatsL, StatsLGet } from "../../../types/models/stats-l";
 import { buildRadarPlotData } from "../../../utils/plot";
+import { createTabsOptionArray } from "../../../utils/tab/createTabsOptionArray";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -155,68 +156,75 @@ const getSeasonDates = (
   return { normalSeason, transferWindow, future };
 };
 
-const TeamTabItems: IconButtonProps[] = [
+const TeamTabItems: SummaryTabItems[] = [
   {
     icon: "player",
+    key: "player",
     text: "選手",
   },
   {
     icon: "future_in",
+    key: "future_in",
     text: "内定",
   },
   {
     icon: "transfer_in",
+    key: "transfer_in",
     text: "加入",
   },
   {
     icon: "transfer_out",
+    key: "transfer_out",
     text: "退団",
   },
   {
     icon: "loan",
+    key: "loan",
     text: "レンタル中",
   },
   {
     icon: "injury",
+    key: "injury",
     text: "怪我",
   },
   {
     icon: "match",
+    key: "match",
     text: "試合",
   },
   {
     icon: "registration",
+    key: "registration",
     text: "選手登録",
   },
   {
     icon: "series",
+    key: "series",
     text: "所属カテゴリ",
   },
   {
     icon: "line-plot",
+    key: "line-plot",
     text: "勝点推移",
   },
   {
     icon: "pie-plot_1",
+    key: "pie-plot_1",
     text: "攻撃スタッツ",
   },
   {
     icon: "pie-plot_2",
+    key: "pie-plot_2",
     text: "守備スタッツ",
   },
   {
     icon: "setting",
+    key: "setting",
     text: "スタッツ",
   },
 ];
 
-const Tabs = TeamTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const Tabs = createTabsOptionArray(TeamTabItems);
 
 const ClubTeam = () => {
   const { id } = useParams();
@@ -642,7 +650,7 @@ const ClubTeam = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {TeamTabItems.map(({ icon, text, className }) => {
+            {TeamTabItems.map(({ icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -659,7 +667,6 @@ const ClubTeam = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

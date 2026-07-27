@@ -1,4 +1,4 @@
-import { Icon } from "../../../components/buttons/IconButton";
+import { Icon } from "../../../types/menu/IconButton";
 import { APP_ROUTES } from "../../../lib/appRoutes";
 
 export const models: {

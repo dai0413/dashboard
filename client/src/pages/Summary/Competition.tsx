@@ -22,62 +22,67 @@ import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { ColumnType } from "../../types/table";
 import { StaffRegistrationGet } from "../../types/models/staff-registration";
 import { useModal } from "../../context/modal-context";
-import { IconButtonProps } from "../../components/buttons/IconButton";
+import { SummaryTabItems } from "../../types/menu/IconButton";
 import { StatsL, StatsLGet } from "../../types/models/stats-l";
 import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
 import { buildTableData } from "../../utils/plot";
 import { radarFields } from "../../components/plot/RadarChart/radarFields";
+import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
 
-const CompetitionTabItems: IconButtonProps[] = [
+const CompetitionTabItems: SummaryTabItems[] = [
   {
     icon: "competitionStage",
+    key: "competitionStage",
     text: "ステージ",
   },
   {
     icon: "teamCompetitionSeason",
+    key: "teamCompetitionSeason",
     text: "チーム",
   },
   {
     icon: "match",
+    key: "match",
     text: "試合",
   },
   {
     icon: "registration",
+    key: "registration",
     text: "選手登録",
   },
   {
     icon: "staff",
+    key: "staff",
     text: "スタッフ登録",
   },
   {
     icon: "team",
+    key: "team",
     text: "シーズン",
   },
   {
     icon: "pie-plot_1",
+    key: "pie-plot_1",
     text: "スタッツ実数値",
   },
   {
     icon: "pie-plot_2",
+    key: "pie-plot_2",
     text: "スタッツ偏差値",
   },
   {
     icon: "line-plot",
+    key: "line-plot",
     text: "スタッツ順位",
   },
   {
     icon: "setting",
+    key: "setting",
     text: "スタッツ",
   },
 ];
 
-const Tabs = CompetitionTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const Tabs = createTabsOptionArray(CompetitionTabItems);
 
 const Competition = () => {
   const { id } = useParams();
@@ -279,11 +284,12 @@ const Competition = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {CompetitionTabItems.map(({ icon, text, className }) => {
+            {CompetitionTabItems.map(({ key, icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
                   <IconButton
+                    key={key}
                     icon={icon}
                     text={text}
                     color={isActive ? "green" : "gray"}
@@ -296,7 +302,6 @@ const Competition = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

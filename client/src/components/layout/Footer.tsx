@@ -1,7 +1,36 @@
-import { BottomMenuItems } from "../../constants/menuItems";
 import { useAuth } from "../../context/auth-context";
+import { APP_ROUTES } from "../../lib/appRoutes";
 import { isDev } from "../../utils/env";
 import { IconButton } from "../buttons";
+import { MenuItems } from "../../types/menu/IconButton";
+const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
+
+export const BottomMenuItems: MenuItems[] = [
+  {
+    to: APP_ROUTES.TRANSFER,
+    key: "transfer",
+    icon: "transfer",
+    text: "移籍",
+  },
+  {
+    to: APP_ROUTES.INJURY,
+    icon: "injury",
+    key: "injury",
+    text: "怪我",
+  },
+  {
+    to: APP_ROUTES.HOME,
+    icon: "home",
+    key: "home",
+    text: "ホーム",
+  },
+  {
+    icon: "series",
+    key: "series",
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`,
+    text: "日本",
+  },
+];
 
 const Footer = () => {
   const { staffState } = useAuth();
@@ -33,9 +62,9 @@ const Footer = () => {
               staffState.admin || isDev ? "grid-cols-4" : "grid-cols-4"
             }`}
           >
-            {BottomMenuItems.map(({ to, icon, text }) => (
+            {BottomMenuItems.map(({ key, to, icon, text }) => (
               <IconButton
-                key={text}
+                key={key}
                 icon={icon}
                 text={text}
                 color="gray"

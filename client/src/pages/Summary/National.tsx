@@ -3,10 +3,8 @@ import { useParams } from "react-router-dom";
 import { TableWithFetch } from "../../components/table";
 import { useCountry } from "../../context/models/country";
 import { ModelType } from "../../types/models";
-import { NationalTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
-import { OptionArray } from "../../types/form/option";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
@@ -14,14 +12,23 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
 import { ColumnType } from "../../types/table";
+import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
+import { SummaryTabItems } from "../../types/menu/IconButton";
 
-const Tabs = NationalTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const NationalTabItems: SummaryTabItems[] = [
+  {
+    icon: "competition",
+    key: "competition",
+    text: "大会",
+  },
+  {
+    icon: "team",
+    key: "team",
+    text: "代表チーム",
+  },
+];
+
+const Tabs = createTabsOptionArray(NationalTabItems);
 
 const National = () => {
   const { id } = useParams();
@@ -86,7 +93,7 @@ const National = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {NationalTabItems.map(({ icon, text, className }) => {
+            {NationalTabItems.map(({ icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -103,7 +110,6 @@ const National = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

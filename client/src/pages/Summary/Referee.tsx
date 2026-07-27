@@ -3,20 +3,16 @@ import { useParams } from "react-router-dom";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { useReferee } from "../../context/models/referee";
 import { ModelType } from "../../types/models";
-import { RefereeTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
-import { OptionArray } from "../../types/form/option";
 import { FullScreenLoader } from "../../components/ui";
 import { useModal } from "../../context/modal-context";
+import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
+import { SummaryTabItems } from "../../types/menu/IconButton";
 
-const Tabs = RefereeTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.icon as string,
-  label: item.text as string,
-})) as OptionArray;
+const RefereeTabItems: SummaryTabItems[] = [];
+
+const Tabs = createTabsOptionArray(RefereeTabItems);
 
 const Referee = () => {
   const { id } = useParams();
@@ -83,7 +79,7 @@ const Referee = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {RefereeTabItems.map(({ icon, text, className }) => {
+            {RefereeTabItems.map(({ icon, text }) => {
               const isActive = selectedTab === icon;
               return (
                 <li key={text}>
@@ -100,7 +96,6 @@ const Referee = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

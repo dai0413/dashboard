@@ -5,7 +5,6 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { CustomTableContainer, TableWithFetch } from "../../components/table";
 import { useMatch } from "../../context/models/match";
 import { ModelType } from "../../types/models";
-import { MatchTabItems } from "../../constants/menuItems";
 import { IconButton } from "../../components/buttons";
 import { SelectField } from "../../components/field";
 import { FullScreenLoader } from "../../components/ui";
@@ -21,14 +20,68 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { Formation } from "../../components/formation";
 import { FormationItem } from "../../types/formation";
 import { positionBase } from "../../components/formation/positionBase";
+import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
+import { SummaryTabItems } from "../../types/menu/IconButton";
 
-const Tabs = MatchTabItems.filter(
-  (item) =>
-    item.icon && item.text && !item.className?.includes("cursor-not-allowed"),
-).map((item) => ({
-  key: item.key ? item.key : item.icon || "",
-  label: item.text || "",
-}));
+const MatchTabItems: SummaryTabItems[] = [
+  {
+    icon: "team",
+    key: "home_player",
+    text: "ホームスタメン",
+  },
+  {
+    icon: "team",
+    key: "home_sub",
+    text: "ホームサブ",
+  },
+  {
+    icon: "away",
+    key: "away_player",
+    text: "アウェイスタメン",
+  },
+  {
+    icon: "away",
+    key: "away_sub",
+    text: "アウェイサブ",
+  },
+  {
+    icon: "team",
+    key: "staff",
+    text: "スタッフ",
+  },
+  {
+    icon: "player",
+    key: "player_event_log",
+    text: "選手イベント",
+  },
+  {
+    icon: "staff",
+    key: "staff_event_log",
+    text: "監督イベント",
+  },
+  {
+    icon: "setting",
+    key: "formation",
+    text: "フォーメーション",
+  },
+  {
+    icon: "setting",
+    key: "home-stats-l",
+    text: "ホームスタッツ",
+  },
+  {
+    icon: "setting",
+    key: "away-stats-l",
+    text: "アウェイスタッツ",
+  },
+  {
+    icon: "player",
+    key: "referee",
+    text: "審判",
+  },
+];
+
+const Tabs = createTabsOptionArray(MatchTabItems);
 
 const Match = () => {
   const { id } = useParams();
@@ -158,12 +211,13 @@ const Match = () => {
         {/* PC: tabs */}
         <div className="hidden sm:flex gap-4 border-b border-gray-700">
           <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {MatchTabItems.map(({ key, icon, text, className }) => {
+            {MatchTabItems.map(({ key, icon, text }) => {
               const tabKey = key ? key : icon;
               const isActive = selectedTab === tabKey;
               return (
                 <li key={text}>
                   <IconButton
+                    key={key}
                     icon={icon}
                     text={text}
                     color={isActive ? "green" : "gray"}
@@ -176,7 +230,6 @@ const Match = () => {
                             ? "border-green-500 text-green-700 font-semibold"
                             : "border-transparent hover:border-gray-300"
                         }
-                        ${className}
                     `}
                   />
                 </li>

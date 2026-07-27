@@ -4,8 +4,42 @@ import { APP_ROUTES } from "../../lib/appRoutes";
 import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "../buttons";
-import { SPMenuItems } from "../../constants/menuItems";
 import { isDev } from "../../utils/env";
+import { MenuItems } from "../../types/menu/IconButton";
+const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
+
+export const SPMenuItems: MenuItems[] = [
+  {
+    icon: "transfer",
+    key: "transfer",
+    to: APP_ROUTES.TRANSFER,
+    text: "移籍",
+  },
+  {
+    icon: "injury",
+    key: "injury",
+    to: APP_ROUTES.INJURY,
+    text: "怪我",
+  },
+  {
+    icon: "series",
+    key: "series",
+    to: `${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`,
+    text: "日本",
+  },
+  {
+    icon: "my-page",
+    key: "my-page",
+    to: APP_ROUTES.ME,
+    text: "マイページ",
+  },
+  {
+    icon: "setting",
+    key: "setting",
+    to: APP_ROUTES.ADMIN,
+    text: "管理",
+  },
+];
 
 const Header = () => {
   const { accessToken, staffState, logout } = useAuth();
@@ -106,9 +140,9 @@ const Header = () => {
 
       {isOpen && (
         <div className="fixed top-16 left-0 right-0 bottom-0 bg-white z-40 flex flex-col items-center justify-center">
-          {SPMenuItems.map(({ icon, text, to }, index) => (
+          {SPMenuItems.map(({ key, icon, text, to }) => (
             <IconButton
-              key={String(index)}
+              key={key}
               icon={icon}
               text={text}
               to={to}
