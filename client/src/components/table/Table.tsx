@@ -97,6 +97,7 @@ const Table = <T,>({
             <td colSpan={visibleHeaders.length}>
               <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                 <IconButton
+                  key=""
                   icon="delete"
                   text="該当データはありません"
                   color="gray"

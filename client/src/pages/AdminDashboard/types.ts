@@ -1,4 +1,4 @@
-import { Icon } from "../../components/buttons/IconButton";
+import { Icon } from "../../types/menu/IconButton";
 import { ModelType } from "../../types/models";
 import { StartFormArgs } from "../../types/types";
 

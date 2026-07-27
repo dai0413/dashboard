@@ -32,43 +32,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { colorMap } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
+import { Icon } from "../../types/menu/IconButton";
 
-export type Icon =
-  | "add"
-  | "delete"
-  | "edit"
-  | "arrow-up"
-  | "arrow-down"
-  | "home"
-  | "my-page"
-  | "transfer"
-  | "injury"
-  | "nationality"
-  | "player"
-  | "transfer_in"
-  | "transfer_out"
-  | "future_in"
-  | "loan"
-  | "series"
-  | "match"
-  | "tournament"
-  | "team"
-  | "callup"
-  | "setting"
-  | "competition"
-  | "competitionStage"
-  | "teamCompetitionSeason"
-  | "registration"
-  | "line-plot"
-  | "pie-plot"
-  | "staff"
-  | "away"
-  | "pie-plot_1"
-  | "pie-plot_2";
-
-export type IconButtonProps = {
+type IconButtonProps = {
   icon?: Icon;
-  key?: string;
   text?: string;
   color?: keyof typeof colorMap;
   onClick?: () => void;
