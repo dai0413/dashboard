@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { TableWithFetch } from "../../components/table";
-import { ModelType } from "../../types/models";
+import { GettedModelDataMap, ModelType } from "../../types/models";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
-import { isFilterable, isSortable } from "../../types/field";
+import { isFilterable, isSortable, UIFieldDefinition } from "../../types/field";
 import { useNationalMatchSeries } from "../../context/models/national-match-series";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
@@ -14,6 +14,7 @@ import { ColumnType } from "../../types/table";
 import { MatchGet } from "../../types/models/match";
 import { SummaryTabItems } from "../../types/menu/IconButton";
 import SummaryTabMenu from "./components/SummaryTabMenu";
+import { convertFieldDefinition } from "../../utils/displayField/convertFieldDefinition";
 
 const tabItems: SummaryTabItems[] = [
   {
@@ -27,6 +28,51 @@ const tabItems: SummaryTabItems[] = [
     text: "招集選手",
   },
 ];
+
+const matchFieldDefinition: UIFieldDefinition<
+  GettedModelDataMap[ModelType.MATCH]
+>[] = [
+  ...convertFieldDefinition<ModelType.MATCH>(
+    [
+      "competition",
+      "date",
+      "match_week",
+      "competition_stage",
+      "home_team",
+      "result",
+      "away_team",
+    ],
+    fieldDefinition[ModelType.MATCH],
+  ).filter((v) => !["result"].includes(v.key)),
+  {
+    label: "結果",
+    getValueType: ColumnType.CUSTOM,
+    key: "result",
+    displayOnTable: true,
+    getData: (d: MatchGet) => {
+      // ゴール数がある場合
+      const score =
+        d.home_goal !== undefined && d.away_goal !== undefined
+          ? `${d.home_goal}-${d.away_goal}`
+          : "";
+
+      // PKがある場合
+      const pk =
+        d.home_pk_goal !== undefined && d.away_pk_goal !== undefined
+          ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
+          : "";
+
+      return score + pk;
+    },
+    type: "string",
+  },
+];
+
+const nationalCallupFieldDefinition =
+  convertFieldDefinition<ModelType.NATIONAL_CALLUP>(
+    ["player", "team", "status", "number", "position_group"],
+    fieldDefinition[ModelType.NATIONAL_CALLUP],
+  );
 
 const National = () => {
   const { id } = useParams();
@@ -113,80 +159,7 @@ const National = () => {
       {selectedTab === "match" && (
         <TableWithFetch
           modelType={ModelType.MATCH}
-          fieldDefinitions={[
-            {
-              label: "大会",
-              field: "competition",
-              getValueType: ColumnType.FIELD,
-              key: "competition",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "開催日",
-              getData: (d: MatchGet) => toDateKey(d.date, true) || "",
-              getValueType: ColumnType.CUSTOM,
-              key: "date",
-              displayOnTable: true,
-              type: "datetime-local",
-            },
-            {
-              label: "節",
-              field: "match_week",
-              width: "80px",
-              getValueType: ColumnType.FIELD,
-              key: "match_week",
-              displayOnTable: true,
-              type: "number",
-            },
-            {
-              label: "ステージ",
-              field: "competition_stage",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "competition_stage",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "ホーム",
-              field: "home_team",
-              getValueType: ColumnType.FIELD,
-              key: "home_team",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "結果",
-              getValueType: ColumnType.CUSTOM,
-              key: "result",
-              displayOnTable: true,
-              getData: (d: MatchGet) => {
-                // ゴール数がある場合
-                const score =
-                  d.home_goal !== undefined && d.away_goal !== undefined
-                    ? `${d.home_goal}-${d.away_goal}`
-                    : "";
-
-                // PKがある場合
-                const pk =
-                  d.home_pk_goal !== undefined && d.away_pk_goal !== undefined
-                    ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
-                    : "";
-
-                return score + pk;
-              },
-              type: "string",
-            },
-            {
-              label: "アウェイ",
-              field: "away_team",
-              getValueType: ColumnType.FIELD,
-              key: "away_team",
-              displayOnTable: true,
-              type: "string",
-            },
-          ]}
+          fieldDefinitions={matchFieldDefinition}
           fetch={{
             apiRoute: API_PATHS.MATCH.ROOT,
             params: {
@@ -195,8 +168,8 @@ const National = () => {
               sort: "date",
             },
           }}
-          filterField={fieldDefinition[ModelType.MATCH]?.filter(isFilterable)}
-          sortField={fieldDefinition[ModelType.MATCH]?.filter(isSortable)}
+          filterField={matchFieldDefinition?.filter(isFilterable)}
+          sortField={matchFieldDefinition?.filter(isSortable)}
           linkField={[
             {
               field: "home_team",
@@ -222,48 +195,7 @@ const National = () => {
       {selectedTab === "player" && id && (
         <TableWithFetch
           modelType={ModelType.NATIONAL_CALLUP}
-          fieldDefinitions={[
-            {
-              label: "選手",
-              field: "player",
-              getValueType: ColumnType.FIELD,
-              key: "player",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "所属チーム",
-              field: "team",
-              getValueType: ColumnType.FIELD,
-              key: "team",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "招集状況",
-              field: "status",
-              getValueType: ColumnType.FIELD,
-              key: "status",
-              displayOnTable: true,
-              type: "select",
-            },
-            {
-              label: "背番号",
-              field: "number",
-              getValueType: ColumnType.FIELD,
-              key: "number",
-              displayOnTable: true,
-              type: "number",
-            },
-            {
-              label: "ポジション",
-              field: "position_group",
-              getValueType: ColumnType.FIELD,
-              key: "position_group",
-              displayOnTable: true,
-              type: "select",
-            },
-          ]}
+          fieldDefinitions={nationalCallupFieldDefinition}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
             params: {
@@ -272,10 +204,10 @@ const National = () => {
               sort: "position_group_order,number",
             },
           }}
-          filterField={fieldDefinition[ModelType.NATIONAL_CALLUP]
+          filterField={nationalCallupFieldDefinition
             ?.filter(isFilterable)
             .filter((file) => file.key !== "series")}
-          sortField={fieldDefinition[ModelType.NATIONAL_CALLUP]
+          sortField={nationalCallupFieldDefinition
             ?.filter(isSortable)
             .filter((file) => file.key !== "series")}
           linkField={[

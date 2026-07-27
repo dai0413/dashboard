@@ -9,8 +9,12 @@ import {
 } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { useModal } from "../../../context/modal-context";
-import { ModelType } from "../../../types/models";
-import { isFilterable, isSortable } from "../../../types/field";
+import { GettedModelDataMap, ModelType } from "../../../types/models";
+import {
+  isFilterable,
+  isSortable,
+  UIFieldDefinition,
+} from "../../../types/field";
 import { MatchGet } from "../../../types/models/match";
 import {
   CustomTableContainer,
@@ -33,6 +37,7 @@ import {
 } from "../../../types/models/player-appearance";
 import { convert } from "../../../lib/convert/DBtoGetted";
 import SummaryTabMenu from "../components/SummaryTabMenu";
+import { convertFieldDefinition } from "../../../utils/displayField/convertFieldDefinition";
 
 const tabItems: SummaryTabItems[] = [
   {
@@ -56,6 +61,17 @@ const tabItems: SummaryTabItems[] = [
     text: "選手推移",
   },
 ];
+
+const playerFieldDefinition = convertFieldDefinition<ModelType.PLAYER>(
+  ["name", "dob"],
+  fieldDefinition[ModelType.PLAYER],
+);
+
+const nationalMatchSeriesFieldDefinition =
+  convertFieldDefinition<ModelType.NATIONAL_MATCH_SERIES>(
+    ["name", "joined_at", "left_at"],
+    fieldDefinition[ModelType.NATIONAL_MATCH_SERIES],
+  );
 
 const NationalTeam = () => {
   const { id } = useParams();
@@ -225,6 +241,62 @@ const NationalTeam = () => {
     fetchData();
   }, []);
 
+  const matchFieldDefinition: UIFieldDefinition<
+    GettedModelDataMap[ModelType.MATCH]
+  >[] = [
+    ...convertFieldDefinition<ModelType.MATCH>(
+      ["date", "competition", "competition_stage", "match_week"],
+      fieldDefinition[ModelType.MATCH],
+    ).filter((v) => !["result", "date"].includes(v.key)),
+    {
+      label: "開催日",
+      key: "date",
+      getData: (d: MatchGet) => toDateKey(d.date, true) || "",
+      getValueType: ColumnType.CUSTOM,
+      displayOnTable: true,
+      type: "Date",
+    },
+    {
+      label: "相手",
+      key: "vsTeam",
+      displayOnTable: true,
+      getData: (d: MatchGet) => {
+        const isHome = d.home_team.id === id;
+        const vsTeam = isHome ? d.away_team : d.home_team;
+
+        return vsTeam;
+      },
+      getValueType: ColumnType.CUSTOM,
+      type: "string",
+    },
+    {
+      label: "結果",
+      key: "result",
+      displayOnTable: true,
+      getData: (d: MatchGet) => {
+        const isHome = d.home_team.id === id;
+        const goal = isHome ? d.home_goal : d.away_goal;
+        const againstGoal = isHome ? d.away_goal : d.home_goal;
+        const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
+        const againstPkGoal = isHome ? d.away_pk_goal : d.home_pk_goal;
+
+        const score =
+          goal !== undefined && againstGoal !== undefined
+            ? `${goal}-${againstGoal}`
+            : "";
+
+        const pk =
+          pkGoal !== undefined && againstPkGoal !== undefined
+            ? `(${pkGoal}PK${againstPkGoal})`
+            : "";
+
+        return score + pk;
+      },
+      getValueType: ColumnType.CUSTOM,
+      type: "string",
+    },
+  ];
+
   return (
     <div className="p-6">
       {/* Header情報 */}
@@ -267,80 +339,7 @@ const NationalTeam = () => {
         <TableWithFetch
           key={`${selectedTab}`}
           modelType={ModelType.MATCH}
-          fieldDefinitions={[
-            {
-              label: "開催日",
-              key: "date",
-              getData: (d: MatchGet) => toDateKey(d.date, true) || "",
-              getValueType: ColumnType.CUSTOM,
-              displayOnTable: true,
-              type: "Date",
-            },
-            {
-              label: "大会",
-              field: "competition",
-              getValueType: ColumnType.FIELD,
-              key: "competition",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "ステージ",
-              field: "competition_stage",
-              getValueType: ColumnType.FIELD,
-              key: "competition_stage",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "節",
-              field: "match_week",
-              width: "80px",
-              getValueType: ColumnType.FIELD,
-              key: "match_week",
-              displayOnTable: true,
-              type: "number",
-            },
-            {
-              label: "相手",
-              key: "vsTeam",
-              displayOnTable: true,
-              getData: (d: MatchGet) => {
-                const isHome = d.home_team.id === id;
-                const vsTeam = isHome ? d.away_team : d.home_team;
-
-                return vsTeam;
-              },
-              getValueType: ColumnType.CUSTOM,
-              type: "string",
-            },
-            {
-              label: "結果",
-              key: "result",
-              displayOnTable: true,
-              getData: (d: MatchGet) => {
-                const isHome = d.home_team.id === id;
-                const goal = isHome ? d.home_goal : d.away_goal;
-                const againstGoal = isHome ? d.away_goal : d.home_goal;
-                const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
-                const againstPkGoal = isHome ? d.away_pk_goal : d.home_pk_goal;
-
-                const score =
-                  goal !== undefined && againstGoal !== undefined
-                    ? `${goal}-${againstGoal}`
-                    : "";
-
-                const pk =
-                  pkGoal !== undefined && againstPkGoal !== undefined
-                    ? `(${pkGoal}PK${againstPkGoal})`
-                    : "";
-
-                return score + pk;
-              },
-              getValueType: ColumnType.CUSTOM,
-              type: "string",
-            },
-          ]}
+          fieldDefinitions={matchFieldDefinition}
           fetch={{
             apiRoute: API_PATHS.MATCH.ROOT,
             params: {
@@ -349,8 +348,8 @@ const NationalTeam = () => {
               sort: "date",
             },
           }}
-          filterField={fieldDefinition[ModelType.MATCH]?.filter(isFilterable)}
-          sortField={fieldDefinition[ModelType.MATCH]?.filter(isSortable)}
+          filterField={matchFieldDefinition?.filter(isFilterable)}
+          sortField={matchFieldDefinition?.filter(isSortable)}
           linkField={[
             { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
             { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
@@ -363,30 +362,11 @@ const NationalTeam = () => {
         <CustomTableContainer
           modelType={ModelType.PLAYER}
           itemsLoading={playerIsLoading}
-          fieldDefinitions={[
-            {
-              label: "選手",
-              field: "name",
-              isPrimary: true,
-              getValueType: ColumnType.FIELD,
-              key: "name",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "生年月日",
-              field: "dob",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "dob",
-              displayOnTable: true,
-              type: "Date",
-            },
-          ]}
+          fieldDefinitions={playerFieldDefinition}
           pageNum={1}
           items={players}
-          filterField={fieldDefinition[ModelType.PLAYER]?.filter(isFilterable)}
-          sortField={fieldDefinition[ModelType.PLAYER]?.filter(isSortable)}
+          filterField={playerFieldDefinition?.filter(isFilterable)}
+          sortField={playerFieldDefinition?.filter(isSortable)}
           linkField={[
             {
               field: "name",
@@ -399,41 +379,15 @@ const NationalTeam = () => {
       {selectedTab === "series" && id && (
         <TableWithFetch
           modelType={ModelType.NATIONAL_MATCH_SERIES}
-          fieldDefinitions={[
-            {
-              label: "名称",
-              field: "name",
-              width: "250px",
-              getValueType: ColumnType.FIELD,
-              key: "name",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "招集日",
-              field: "joined_at",
-              getValueType: ColumnType.FIELD,
-              key: "joined_at",
-              displayOnTable: true,
-              type: "Date",
-            },
-            {
-              label: "解散日",
-              field: "left_at",
-              getValueType: ColumnType.FIELD,
-              key: "left_at",
-              displayOnTable: true,
-              type: "Date",
-            },
-          ]}
+          fieldDefinitions={nationalMatchSeriesFieldDefinition}
           fetch={{
             apiRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
             params: { getAll: true, team: id, sort: "-joined_at" },
           }}
-          filterField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+          filterField={nationalMatchSeriesFieldDefinition
             ?.filter(isFilterable)
             .filter((file) => file.key !== "team")}
-          sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]
+          sortField={nationalMatchSeriesFieldDefinition
             ?.filter(isSortable)
             .filter((file) => file.key !== "team")}
           linkField={[

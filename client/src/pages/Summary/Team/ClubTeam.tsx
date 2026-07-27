@@ -5,9 +5,13 @@ import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { api } from "../../../context/api-context";
 import { useModal } from "../../../context/modal-context";
-import { ModelType } from "../../../types/models";
+import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { OptionArray } from "../../../types/form/option";
-import { isFilterable, isSortable } from "../../../types/field";
+import {
+  isFilterable,
+  isSortable,
+  UIFieldDefinition,
+} from "../../../types/field";
 import {
   TeamCompetitionSeason,
   TeamCompetitionSeasonGet,
@@ -41,6 +45,7 @@ import { TeamGet } from "../../../types/models/team";
 import { StatsL, StatsLGet } from "../../../types/models/stats-l";
 import { buildRadarPlotData } from "../../../utils/plot";
 import SummaryTabMenu from "../components/SummaryTabMenu";
+import { convertFieldDefinition } from "../../../utils/displayField/convertFieldDefinition";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -208,20 +213,77 @@ const tabItems: SummaryTabItems[] = [
   },
   {
     icon: "pie-plot_1",
-    key: "pie-plot_1",
+    key: "pie-plot-attack",
     text: "攻撃スタッツ",
   },
   {
     icon: "pie-plot_2",
-    key: "pie-plot_2",
+    key: "pie-plot-defence",
     text: "守備スタッツ",
   },
   {
     icon: "setting",
-    key: "setting",
+    key: "stats-l",
     text: "スタッツ",
   },
 ];
+
+const playerFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+  ["position", "player", "from_date", "form"],
+  fieldDefinition[ModelType.TRANSFER],
+);
+
+const futureInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+  ["from_date", "player", "from_team", "position"],
+  fieldDefinition[ModelType.TRANSFER],
+);
+
+const transferInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+  ["from_date", "player", "from_team", "form"],
+  fieldDefinition[ModelType.TRANSFER],
+);
+
+const transferOutFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+  ["from_date", "player", "to_team", "form"],
+  fieldDefinition[ModelType.TRANSFER],
+);
+
+const onLoanFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+  ["from_date", "player", "to_team", "form"],
+  fieldDefinition[ModelType.TRANSFER],
+);
+
+const injuryFieldDefinition = convertFieldDefinition<ModelType.INJURY>(
+  ["doa", "player", "injured_part", "ttp"],
+  fieldDefinition[ModelType.INJURY],
+);
+
+const registrationFieldDefinition: UIFieldDefinition<
+  GettedModelDataMap[ModelType.PLAYER_REGISTRATION]
+>[] = [
+  ...convertFieldDefinition<ModelType.PLAYER_REGISTRATION>(
+    ["season", "number", "player", "registration_status"],
+    fieldDefinition[ModelType.PLAYER_REGISTRATION],
+  ),
+  {
+    label: "2種・特別指定",
+    key: "special_type",
+    displayOnTable: true,
+    getData: (data: PlayerRegistrationGet) => {
+      if (data.isSpecialDesignation) return "特別指定";
+      if (data.isTypeTwo) return "2種";
+      return "";
+    },
+    getValueType: ColumnType.CUSTOM,
+    type: "string",
+  },
+];
+
+const teamCompetitionSeasonFieldDefinition =
+  convertFieldDefinition<ModelType.TEAM_COMPETITION_SEASON>(
+    ["season", "competition", "note"],
+    fieldDefinition[ModelType.TEAM_COMPETITION_SEASON],
+  );
 
 const ClubTeam = () => {
   const { id } = useParams();
@@ -586,6 +648,62 @@ const ClubTeam = () => {
     readRadarData(selected, id);
   }, [id, selectedteamCompetitionSeason]);
 
+  const matchFieldDefinition: UIFieldDefinition<
+    GettedModelDataMap[ModelType.MATCH]
+  >[] = [
+    ...convertFieldDefinition<ModelType.MATCH>(
+      ["date", "competition", "competition_stage", "match_week"],
+      fieldDefinition[ModelType.MATCH],
+    ).filter((v) => !["result", "date"].includes(v.key)),
+    {
+      label: "開催日",
+      key: "date",
+      getData: (d: MatchGet) => toDateKey(d.date, true) || "",
+      getValueType: ColumnType.CUSTOM,
+      displayOnTable: true,
+      type: "Date",
+    },
+    {
+      label: "相手",
+      key: "vsTeam",
+      displayOnTable: true,
+      getData: (d: MatchGet) => {
+        const isHome = d.home_team.id === id;
+        const vsTeam = isHome ? d.away_team : d.home_team;
+
+        return vsTeam;
+      },
+      getValueType: ColumnType.CUSTOM,
+      type: "string",
+    },
+    {
+      label: "結果",
+      key: "result",
+      displayOnTable: true,
+      getData: (d: MatchGet) => {
+        const isHome = d.home_team.id === id;
+        const goal = isHome ? d.home_goal : d.away_goal;
+        const againstGoal = isHome ? d.away_goal : d.home_goal;
+        const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
+        const againstPkGoal = isHome ? d.away_pk_goal : d.home_pk_goal;
+
+        const score =
+          goal !== undefined && againstGoal !== undefined
+            ? `${goal}-${againstGoal}`
+            : "";
+
+        const pk =
+          pkGoal !== undefined && againstPkGoal !== undefined
+            ? `(${pkGoal}PK${againstPkGoal})`
+            : "";
+
+        return score + pk;
+      },
+      getValueType: ColumnType.CUSTOM,
+      type: "string",
+    },
+  ];
+
   return (
     <div className="p-6">
       {/* Header情報 */}
@@ -647,44 +765,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.transferWindow.endDate}`}
             modelType={ModelType.TRANSFER}
-            fieldDefinitions={[
-              {
-                label: "ポジション",
-                field: "position",
-                width: "70px",
-                getValueType: ColumnType.FIELD,
-                key: "position",
-                displayOnTable: true,
-                type: "select",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "加入日",
-                field: "from_date",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "from_date",
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "移籍形態",
-                field: "form",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "form",
-                displayOnTable: true,
-                type: "string",
-              },
-            ]}
+            fieldDefinitions={playerFieldDefinition || []}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
@@ -697,10 +778,10 @@ const ClubTeam = () => {
                 mode: "squad",
               },
             }}
-            filterField={fieldDefinition[ModelType.TRANSFER]
+            filterField={playerFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
-            sortField={fieldDefinition[ModelType.TRANSFER]
+            sortField={playerFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "to_team")}
             linkField={[
@@ -725,41 +806,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
-            fieldDefinitions={[
-              {
-                label: "加入日",
-                field: "from_date",
-                getValueType: ColumnType.FIELD,
-                key: "from_date",
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "移籍元",
-                field: "from_team",
-                getValueType: ColumnType.FIELD,
-                key: "from_team",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "ポジション",
-                field: "position",
-                getValueType: ColumnType.FIELD,
-                key: "position",
-                displayOnTable: true,
-                type: "select",
-              },
-            ]}
+            fieldDefinitions={futureInFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
@@ -775,10 +822,10 @@ const ClubTeam = () => {
                 form: "完全",
               },
             }}
-            filterField={fieldDefinition[ModelType.TRANSFER]
+            filterField={futureInFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
-            sortField={fieldDefinition[ModelType.TRANSFER]
+            sortField={futureInFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "to_team")}
             linkField={[
@@ -804,41 +851,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
-            fieldDefinitions={[
-              {
-                label: "加入日",
-                field: "from_date",
-                getValueType: ColumnType.FIELD,
-                key: "from_date",
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "移籍元",
-                field: "from_team",
-                getValueType: ColumnType.FIELD,
-                key: "from_team",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "形態",
-                field: "form",
-                getValueType: ColumnType.FIELD,
-                key: "form",
-                displayOnTable: true,
-                type: "select",
-              },
-            ]}
+            fieldDefinitions={transferInFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
@@ -849,10 +862,10 @@ const ClubTeam = () => {
                 isCancelled: "!true",
               },
             }}
-            filterField={fieldDefinition[ModelType.TRANSFER]
+            filterField={transferInFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
-            sortField={fieldDefinition[ModelType.TRANSFER]
+            sortField={transferInFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "to_team")}
             linkField={[
@@ -878,41 +891,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
-            fieldDefinitions={[
-              {
-                label: "加入日",
-                field: "from_date",
-                getValueType: ColumnType.FIELD,
-                key: "from_date",
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "移籍先",
-                field: "to_team",
-                getValueType: ColumnType.FIELD,
-                key: "to_team",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "形態",
-                field: "form",
-                getValueType: ColumnType.FIELD,
-                key: "form",
-                displayOnTable: true,
-                type: "select",
-              },
-            ]}
+            fieldDefinitions={transferOutFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
@@ -922,10 +901,10 @@ const ClubTeam = () => {
                 isCancelled: "!true",
               },
             }}
-            filterField={fieldDefinition[ModelType.TRANSFER]
+            filterField={transferOutFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "from_team")}
-            sortField={fieldDefinition[ModelType.TRANSFER]
+            sortField={transferOutFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "from_team")}
             linkField={[
@@ -951,41 +930,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
-            fieldDefinitions={[
-              {
-                label: "加入日",
-                field: "from_date",
-                getValueType: ColumnType.FIELD,
-                key: "from_date",
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "select",
-              },
-              {
-                label: "移籍先",
-                field: "to_team",
-                getValueType: ColumnType.FIELD,
-                key: "to_team",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "形態",
-                field: "form",
-                getValueType: ColumnType.FIELD,
-                key: "form",
-                displayOnTable: true,
-                type: "select",
-              },
-            ]}
+            fieldDefinitions={onLoanFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.TRANSFER.ROOT,
               params: {
@@ -1001,10 +946,10 @@ const ClubTeam = () => {
                 isCancelled: "!true",
               },
             }}
-            filterField={fieldDefinition[ModelType.TRANSFER]
+            filterField={onLoanFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
-            sortField={fieldDefinition[ModelType.TRANSFER]
+            sortField={onLoanFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "to_team")}
             linkField={[
@@ -1030,41 +975,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.INJURY}
-            fieldDefinitions={[
-              {
-                label: "発表日",
-                field: "doa",
-                getValueType: ColumnType.FIELD,
-                key: "doa",
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "負傷箇所・診断結果",
-                field: "injured_part",
-                getValueType: ColumnType.FIELD,
-                key: "injured_part",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "全治",
-                field: "ttp",
-                getValueType: ColumnType.FIELD,
-                key: "ttp",
-                displayOnTable: true,
-                type: "string",
-              },
-            ]}
+            fieldDefinitions={injuryFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.INJURY.ROOT,
               params: {
@@ -1073,12 +984,12 @@ const ClubTeam = () => {
                 doa: seasonDates.normalSeason.seasonRange,
               },
             }}
-            filterField={fieldDefinition[ModelType.INJURY]
+            filterField={injuryFieldDefinition
               ?.filter(isFilterable)
-              .filter((file) => file.key !== "player")}
-            sortField={fieldDefinition[ModelType.INJURY]
+              .filter((file) => file.key !== "team")}
+            sortField={injuryFieldDefinition
               ?.filter(isSortable)
-              .filter((file) => file.key !== "player")}
+              .filter((file) => file.key !== "team")}
             linkField={[
               {
                 field: "player",
@@ -1098,82 +1009,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.MATCH}
-            fieldDefinitions={[
-              {
-                label: "開催日",
-                key: "date",
-                getData: (d: MatchGet) => toDateKey(d.date, true) || "",
-                getValueType: ColumnType.CUSTOM,
-                displayOnTable: true,
-                type: "Date",
-              },
-              {
-                label: "大会",
-                field: "competition",
-                getValueType: ColumnType.FIELD,
-                key: "competition",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "ステージ",
-                field: "competition_stage",
-                getValueType: ColumnType.FIELD,
-                key: "competition_stage",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "節",
-                field: "match_week",
-                width: "80px",
-                getValueType: ColumnType.FIELD,
-                key: "match_week",
-                displayOnTable: true,
-                type: "number",
-              },
-              {
-                label: "相手",
-                key: "vsTeam",
-                displayOnTable: true,
-                getData: (d: MatchGet) => {
-                  const isHome = d.home_team.id === id;
-                  const vsTeam = isHome ? d.away_team : d.home_team;
-
-                  return vsTeam;
-                },
-                getValueType: ColumnType.CUSTOM,
-                type: "string",
-              },
-              {
-                label: "結果",
-                key: "result",
-                displayOnTable: true,
-                getData: (d: MatchGet) => {
-                  const isHome = d.home_team.id === id;
-                  const goal = isHome ? d.home_goal : d.away_goal;
-                  const againstGoal = isHome ? d.away_goal : d.home_goal;
-                  const pkGoal = isHome ? d.home_pk_goal : d.away_pk_goal;
-                  const againstPkGoal = isHome
-                    ? d.away_pk_goal
-                    : d.home_pk_goal;
-
-                  const score =
-                    goal !== undefined && againstGoal !== undefined
-                      ? `${goal}-${againstGoal}`
-                      : "";
-
-                  const pk =
-                    pkGoal !== undefined && againstPkGoal !== undefined
-                      ? `(${pkGoal}PK${againstPkGoal})`
-                      : "";
-
-                  return score + pk;
-                },
-                getValueType: ColumnType.CUSTOM,
-                type: "string",
-              },
-            ]}
+            fieldDefinitions={matchFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.MATCH.ROOT,
               params: {
@@ -1183,8 +1019,8 @@ const ClubTeam = () => {
                 sort: "date",
               },
             }}
-            filterField={fieldDefinition[ModelType.MATCH]?.filter(isFilterable)}
-            sortField={fieldDefinition[ModelType.MATCH]?.filter(isSortable)}
+            filterField={matchFieldDefinition?.filter(isFilterable)}
+            sortField={matchFieldDefinition?.filter(isSortable)}
             linkField={[
               { field: "competition", to: APP_ROUTES.COMPETITION_SUMMARY },
               { field: "vsTeam", to: APP_ROUTES.TEAM_SUMMARY },
@@ -1202,55 +1038,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.PLAYER_REGISTRATION}
-            fieldDefinitions={[
-              {
-                label: "シーズン",
-                field: "season",
-                getValueType: ColumnType.FIELD,
-                key: "season",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "背番号",
-                key: "number",
-                displayOnTable: true,
-                getData: (data: PlayerRegistrationGet) => {
-                  return data.number ? String(data.number) : "";
-                },
-                getValueType: ColumnType.CUSTOM,
-                type: "number",
-              },
-              {
-                label: "選手",
-                field: "player",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "player",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "登録中・抹消済",
-                field: "registration_status",
-                getValueType: ColumnType.FIELD,
-                key: "registration_status",
-                displayOnTable: true,
-                type: "select",
-              },
-              {
-                label: "2種・特別指定",
-                key: "special_type",
-                displayOnTable: true,
-                getData: (data: PlayerRegistrationGet) => {
-                  if (data.isSpecialDesignation) return "特別指定";
-                  if (data.isTypeTwo) return "2種";
-                  return "";
-                },
-                getValueType: ColumnType.CUSTOM,
-                type: "string",
-              },
-            ]}
+            fieldDefinitions={registrationFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
               params: {
@@ -1261,10 +1049,10 @@ const ClubTeam = () => {
                 sort: "number,date",
               },
             }}
-            filterField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            filterField={registrationFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "team")}
-            sortField={fieldDefinition[ModelType.PLAYER_REGISTRATION]
+            sortField={registrationFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "team")}
             linkField={[
@@ -1282,33 +1070,7 @@ const ClubTeam = () => {
           <TableWithFetch
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TEAM_COMPETITION_SEASON}
-            fieldDefinitions={[
-              {
-                label: "シーズン",
-                field: "season",
-                getValueType: ColumnType.FIELD,
-                key: "season",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "大会",
-                field: "competition",
-                getValueType: ColumnType.FIELD,
-                key: "competition",
-                displayOnTable: true,
-                type: "string",
-              },
-              {
-                label: "メモ",
-                field: "note",
-                isPrimary: true,
-                getValueType: ColumnType.FIELD,
-                key: "note",
-                displayOnTable: true,
-                type: "string",
-              },
-            ]}
+            fieldDefinitions={teamCompetitionSeasonFieldDefinition}
             fetch={{
               apiRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
               params: {
@@ -1317,10 +1079,10 @@ const ClubTeam = () => {
                 sort: "season",
               },
             }}
-            filterField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+            filterField={teamCompetitionSeasonFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "team")}
-            sortField={fieldDefinition[ModelType.TEAM_COMPETITION_SEASON]
+            sortField={teamCompetitionSeasonFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "team")}
             linkField={[

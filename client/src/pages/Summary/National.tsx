@@ -9,9 +9,9 @@ import { isFilterable, isSortable } from "../../types/field";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { useModal } from "../../context/modal-context";
-import { ColumnType } from "../../types/table";
 import { SummaryTabItems } from "../../types/menu/IconButton";
 import SummaryTabMenu from "./components/SummaryTabMenu";
+import { convertFieldDefinition } from "../../utils/displayField/convertFieldDefinition";
 
 const tabItems: SummaryTabItems[] = [
   {
@@ -25,6 +25,17 @@ const tabItems: SummaryTabItems[] = [
     text: "代表チーム",
   },
 ];
+
+const competitionFieldDefinition =
+  convertFieldDefinition<ModelType.COMPETITION>(
+    ["name", "competition_type", "category", "age_group"],
+    fieldDefinition[ModelType.COMPETITION],
+  );
+
+const teamFieldDefinition = convertFieldDefinition<ModelType.TEAM>(
+  ["normalized_name", "abbr", "enTeam", "country", "age_group"],
+  fieldDefinition[ModelType.TEAM],
+);
 
 const National = () => {
   const { id } = useParams();
@@ -84,51 +95,15 @@ const National = () => {
       {selectedTab === "competition" && id && (
         <TableWithFetch
           modelType={ModelType.COMPETITION}
-          fieldDefinitions={[
-            {
-              label: "大会名",
-              field: "name",
-              getValueType: ColumnType.FIELD,
-              key: "name",
-              displayOnTable: true,
-              type: "string",
-            },
-            {
-              label: "大会規模",
-              field: "competition_type",
-              width: "90px",
-              getValueType: ColumnType.FIELD,
-              key: "competition_type",
-              displayOnTable: true,
-              type: "select",
-            },
-            {
-              label: "大会タイプ",
-              field: "category",
-              width: "100px",
-              getValueType: ColumnType.FIELD,
-              key: "category",
-              displayOnTable: true,
-              type: "select",
-            },
-            {
-              label: "年代",
-              field: "age_group",
-              width: "70px",
-              getValueType: ColumnType.FIELD,
-              key: "age_group",
-              displayOnTable: true,
-              type: "select",
-            },
-          ]}
+          fieldDefinitions={competitionFieldDefinition}
           fetch={{
             apiRoute: API_PATHS.COMPETITION.ROOT,
             params: { getAll: true, country: id, sort: "_id" },
           }}
-          filterField={fieldDefinition[ModelType.COMPETITION]
+          filterField={competitionFieldDefinition
             ?.filter(isFilterable)
             .filter((file) => file.key !== "country")}
-          sortField={fieldDefinition[ModelType.COMPETITION]
+          sortField={competitionFieldDefinition
             ?.filter(isSortable)
             .filter((file) => file.key !== "country")}
           linkField={[
@@ -148,69 +123,7 @@ const National = () => {
       {selectedTab === "team" && id && (
         <TableWithFetch
           modelType={ModelType.TEAM}
-          fieldDefinitions={[
-            {
-              key: "normalized_name",
-              field: "normalized_name",
-              label: "チーム",
-              type: "string",
-              filterable: true,
-              sortable: true,
-              displayOnDetail: true,
-              displayOnTable: true,
-              getValueType: ColumnType.FIELD,
-              width: "150px",
-            },
-            {
-              key: "abbr",
-              field: "abbr",
-              label: "略称",
-              type: "string",
-              filterable: true,
-              sortable: true,
-              displayOnDetail: true,
-              displayOnTable: true,
-              getValueType: ColumnType.FIELD,
-              width: "100px",
-            },
-            {
-              key: "enTeam",
-              field: "enTeam",
-              label: "英名",
-              type: "string",
-              filterable: true,
-              sortable: true,
-              displayOnDetail: true,
-              displayOnTable: true,
-              getValueType: ColumnType.FIELD,
-              width: "250px",
-            },
-            {
-              key: "country",
-              field: "country",
-              filterKey: "country.name",
-              label: "国",
-              type: "string",
-              filterable: true,
-              sortable: true,
-              displayOnDetail: true,
-              displayOnTable: true,
-              getValueType: ColumnType.FIELD,
-              width: "100px",
-            },
-            {
-              key: "age_group",
-              field: "age_group",
-              label: "年代",
-              type: "select",
-              filterable: true,
-              sortable: true,
-              displayOnDetail: true,
-              displayOnTable: true,
-              getValueType: ColumnType.FIELD,
-              width: "100px",
-            },
-          ]}
+          fieldDefinitions={teamFieldDefinition}
           fetch={{
             apiRoute: API_PATHS.TEAM.ROOT,
             params: {
@@ -220,8 +133,8 @@ const National = () => {
               sort: "age_group",
             },
           }}
-          filterField={fieldDefinition[ModelType.TEAM]?.filter(isFilterable)}
-          sortField={fieldDefinition[ModelType.TEAM]?.filter(isSortable)}
+          filterField={teamFieldDefinition?.filter(isFilterable)}
+          sortField={teamFieldDefinition?.filter(isSortable)}
           linkField={[
             {
               field: "normalized_name",
