@@ -5,8 +5,6 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { CustomTableContainer, TableWithFetch } from "../../components/table";
 import { useMatch } from "../../context/models/match";
 import { ModelType } from "../../types/models";
-import { IconButton } from "../../components/buttons";
-import { SelectField } from "../../components/field";
 import { FullScreenLoader } from "../../components/ui";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
@@ -20,10 +18,10 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { Formation } from "../../components/formation";
 import { FormationItem } from "../../types/formation";
 import { positionBase } from "../../components/formation/positionBase";
-import { createTabsOptionArray } from "../../utils/tab/createTabsOptionArray";
 import { SummaryTabItems } from "../../types/menu/IconButton";
+import SummaryTabMenu from "./components/SummaryTabMenu";
 
-const MatchTabItems: SummaryTabItems[] = [
+const tabItems: SummaryTabItems[] = [
   {
     icon: "team",
     key: "home_player",
@@ -80,8 +78,6 @@ const MatchTabItems: SummaryTabItems[] = [
     text: "審判",
   },
 ];
-
-const Tabs = createTabsOptionArray(MatchTabItems);
 
 const Match = () => {
   const { id } = useParams();
@@ -196,48 +192,11 @@ const Match = () => {
         <FullScreenLoader />
       )}
 
-      {/* タブメニュー */}
-      <div className="mb-4 pb-2">
-        {/* SP: select */}
-        <div className="mt-4 block sm:hidden">
-          <SelectField
-            type="text"
-            value={selectedTab}
-            options={Tabs}
-            onChange={handleSelectedTab}
-          />
-        </div>
-
-        {/* PC: tabs */}
-        <div className="hidden sm:flex gap-4 border-b border-gray-700">
-          <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {MatchTabItems.map(({ key, icon, text }) => {
-              const tabKey = key ? key : icon;
-              const isActive = selectedTab === tabKey;
-              return (
-                <li key={text}>
-                  <IconButton
-                    key={key}
-                    icon={icon}
-                    text={text}
-                    color={isActive ? "green" : "gray"}
-                    onClick={() => handleSelectedTab(tabKey)}
-                    direction="horizontal"
-                    className={`
-                        px-4 py-2 border-b-2
-                        ${
-                          isActive
-                            ? "border-green-500 text-green-700 font-semibold"
-                            : "border-transparent hover:border-gray-300"
-                        }
-                    `}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      <SummaryTabMenu
+        items={tabItems}
+        selectedTab={selectedTab}
+        onChange={handleSelectedTab}
+      />
 
       {/* コンテンツ表示 */}
       {selectedTab === "home_player" && id && selected?.home_team.id && (

@@ -16,8 +16,6 @@ import {
   CustomTableContainer,
   TableWithFetch,
 } from "../../../components/table";
-import { IconButton } from "../../../components/buttons";
-import { SelectField } from "../../../components/field";
 import { FullScreenLoader } from "../../../components/ui";
 import { useTeam } from "../../../context/models/team";
 import { fieldDefinition } from "../../../lib/model-fields";
@@ -34,9 +32,9 @@ import {
   PlayerAppearanceGet,
 } from "../../../types/models/player-appearance";
 import { convert } from "../../../lib/convert/DBtoGetted";
-import { createTabsOptionArray } from "../../../utils/tab/createTabsOptionArray";
+import SummaryTabMenu from "../components/SummaryTabMenu";
 
-const TeamTabItems: SummaryTabItems[] = [
+const tabItems: SummaryTabItems[] = [
   {
     icon: "series",
     key: "series",
@@ -58,8 +56,6 @@ const TeamTabItems: SummaryTabItems[] = [
     text: "選手推移",
   },
 ];
-
-const Tabs = createTabsOptionArray(TeamTabItems);
 
 const NationalTeam = () => {
   const { id } = useParams();
@@ -260,46 +256,11 @@ const NationalTeam = () => {
         <FullScreenLoader />
       )}
 
-      {/* タブメニュー */}
-      <div className="mb-4 pb-2">
-        {/* SP: select */}
-        <div className="mt-4 block sm:hidden">
-          <SelectField
-            type="text"
-            value={selectedTab}
-            options={Tabs}
-            onChange={handleSelectedTab}
-          />
-        </div>
-
-        {/* PC: tabs */}
-        <div className="hidden sm:flex gap-4 border-b border-gray-700">
-          <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {TeamTabItems.map(({ icon, text }) => {
-              const isActive = selectedTab === icon;
-              return (
-                <li key={text}>
-                  <IconButton
-                    icon={icon}
-                    text={text}
-                    color={isActive ? "green" : "gray"}
-                    onClick={() => icon && handleSelectedTab(icon)}
-                    direction="horizontal"
-                    className={`
-                        px-4 py-2 border-b-2 
-                        ${
-                          isActive
-                            ? "border-green-500 text-green-700 font-semibold"
-                            : "border-transparent hover:border-gray-300"
-                        }
-                    `}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      <SummaryTabMenu
+        items={tabItems}
+        selectedTab={selectedTab}
+        onChange={handleSelectedTab}
+      />
 
       {/* コンテンツ表示 */}
       {selectedTab === "match" && id && (

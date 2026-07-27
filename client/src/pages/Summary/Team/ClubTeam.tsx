@@ -20,7 +20,6 @@ import {
   CustomTableContainer,
   TableWithFetch,
 } from "../../../components/table";
-import { IconButton } from "../../../components/buttons";
 import { SelectField } from "../../../components/field";
 import { FullScreenLoader } from "../../../components/ui";
 import { useTeam } from "../../../context/models/team";
@@ -41,7 +40,7 @@ import { radarFields } from "../../../components/plot/RadarChart/radarFields";
 import { TeamGet } from "../../../types/models/team";
 import { StatsL, StatsLGet } from "../../../types/models/stats-l";
 import { buildRadarPlotData } from "../../../utils/plot";
-import { createTabsOptionArray } from "../../../utils/tab/createTabsOptionArray";
+import SummaryTabMenu from "../components/SummaryTabMenu";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -156,7 +155,7 @@ const getSeasonDates = (
   return { normalSeason, transferWindow, future };
 };
 
-const TeamTabItems: SummaryTabItems[] = [
+const tabItems: SummaryTabItems[] = [
   {
     icon: "player",
     key: "player",
@@ -223,8 +222,6 @@ const TeamTabItems: SummaryTabItems[] = [
     text: "スタッツ",
   },
 ];
-
-const Tabs = createTabsOptionArray(TeamTabItems);
 
 const ClubTeam = () => {
   const { id } = useParams();
@@ -635,46 +632,11 @@ const ClubTeam = () => {
         <FullScreenLoader />
       )}
 
-      {/* タブメニュー */}
-      <div className="mb-4 pb-2">
-        {/* SP: select */}
-        <div className="mt-4 block sm:hidden">
-          <SelectField
-            type="text"
-            value={selectedTab}
-            options={Tabs}
-            onChange={handleSelectedTab}
-          />
-        </div>
-
-        {/* PC: tabs */}
-        <div className="hidden sm:flex gap-4 border-b border-gray-700">
-          <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-            {TeamTabItems.map(({ icon, text }) => {
-              const isActive = selectedTab === icon;
-              return (
-                <li key={text}>
-                  <IconButton
-                    icon={icon}
-                    text={text}
-                    color={isActive ? "green" : "gray"}
-                    onClick={() => icon && handleSelectedTab(icon)}
-                    direction="horizontal"
-                    className={`
-                        px-4 py-2 border-b-2 
-                        ${
-                          isActive
-                            ? "border-green-500 text-green-700 font-semibold"
-                            : "border-transparent hover:border-gray-300"
-                        }
-                    `}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      <SummaryTabMenu
+        items={tabItems}
+        selectedTab={selectedTab}
+        onChange={handleSelectedTab}
+      />
 
       {/* コンテンツ表示 */}
       {selectedTab === "player" && id && seasonDates.transferWindow.endDate && (
