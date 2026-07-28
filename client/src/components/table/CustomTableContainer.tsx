@@ -37,6 +37,10 @@ type TablePage = {
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
+  handleFilterSort?: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
 };
 
 type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
@@ -67,7 +71,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     }) => React.ReactNode;
   } & TableEditProps<T>;
 
-type TableContainerProps<T, F> = Original<T, F>;
+export type TableContainerProps<T, F> = Original<T, F>;
 
 const TableContainer = <K extends Record<string, unknown>, F>({
   title,
@@ -84,6 +88,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   pageNum,
   totalCount,
   handlePageChange,
+  handleFilterSort,
   uploadFile,
   reloadFun,
   form,
@@ -128,7 +133,9 @@ const TableContainer = <K extends Record<string, unknown>, F>({
 
       closeFilter();
 
-      if (handlePageChange) {
+      if (handleFilterSort) {
+        await handleFilterSort(paramFilterConditions, sortConditions);
+      } else if (handlePageChange) {
         await handlePageChange(1, paramFilterConditions, sortConditions);
       }
 
