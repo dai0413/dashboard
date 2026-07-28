@@ -1,8 +1,8 @@
 import { getComparisonValue } from "./getComparisonValue";
 
-export function compareSortValue(a: any, b: any): number {
-  const normalizedA = getComparisonValue(a);
-  const normalizedB = getComparisonValue(b);
+export function compareSortValue(a: any, b: any, mode: "id" | "label"): number {
+  const normalizedA = getComparisonValue(a, mode);
+  const normalizedB = getComparisonValue(b, mode);
 
   // nullish は後ろ
   if (normalizedA == null && normalizedB == null) {

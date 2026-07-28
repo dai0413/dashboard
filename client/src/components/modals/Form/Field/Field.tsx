@@ -90,8 +90,8 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
 
       let processed = [...optionData.data];
 
-      processed = applyFilterClient(processed, filterConditions);
-      processed = applySortClient(processed, sortConditions);
+      processed = applyFilterClient(processed, "id", filterConditions);
+      processed = applySortClient(processed, "id", sortConditions);
 
       const nextViewOptionData = {
         ...optionData,

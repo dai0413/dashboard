@@ -5,10 +5,11 @@ import { isComparableEqual } from "./isCompareableEqual";
 export function compareValue(
   itemValue: any,
   conditionValue: any,
+  mode: "id" | "label",
   operator?: FilterOperator,
 ): boolean {
-  const item = getComparisonValue(itemValue);
-  const condition = getComparisonValue(conditionValue);
+  const item = getComparisonValue(itemValue, mode);
+  const condition = getComparisonValue(conditionValue, mode);
 
   const itemValues = Array.isArray(item) ? item : [item];
 

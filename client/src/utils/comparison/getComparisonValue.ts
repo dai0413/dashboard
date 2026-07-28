@@ -1,7 +1,10 @@
 import { Comparison } from "../../types/comparison";
 import { isLabelObject } from "../data/isLabelObject";
 
-export const getComparisonValue = (value: any): Comparison => {
+export const getComparisonValue = (
+  value: any,
+  mode: "id" | "label" = "id",
+): Comparison => {
   if (Array.isArray(value)) {
     return value.map((item) =>
       item && isLabelObject(item)
@@ -13,7 +16,10 @@ export const getComparisonValue = (value: any): Comparison => {
   }
 
   if (value && isLabelObject(value)) {
-    return value.id;
+    if (mode === "id") {
+      return value.id;
+    }
+    return value.label;
   }
 
   if (value instanceof Date) {

@@ -1,8 +1,9 @@
 import { SortableFieldDefinition } from "@dai0413/myorg-shared";
-import { normalizeFilterValue, compareSortValue } from "../comparison";
+import { compareSortValue } from "../comparison";
 
 export const applySortClient = <T extends Record<string, any>>(
   items: T[],
+  mode: "id" | "label",
   sortConditions?: SortableFieldDefinition[],
 ): T[] => {
   if (!sortConditions?.length) {
@@ -24,11 +25,7 @@ export const applySortClient = <T extends Record<string, any>>(
     for (const condition of activeSorts) {
       const key = condition.key;
 
-      const aValue = normalizeFilterValue(a[key], condition.type);
-
-      const bValue = normalizeFilterValue(b[key], condition.type);
-
-      const comparison = compareSortValue(aValue, bValue);
+      const comparison = compareSortValue(a[key], b[key], mode);
 
       if (comparison !== 0) {
         return condition.asc ? comparison : -comparison;
