@@ -5,7 +5,11 @@ import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { api } from "../../../context/api-context";
 import { useModal } from "../../../context/modal-context";
-import { GettedModelDataMap, ModelType } from "../../../types/models";
+import {
+  GettedModelDataMap,
+  ModelDataMap,
+  ModelType,
+} from "../../../types/models";
 import { OptionArray } from "../../../types/form/option";
 import {
   isFilterable,
@@ -46,6 +50,7 @@ import { StatsL, StatsLGet } from "../../../types/models/stats-l";
 import { buildRadarPlotData } from "../../../utils/plot";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { convertFieldDefinition } from "../../../utils/displayField/convertFieldDefinition";
+import TableClient from "../../../components/table/TableClient";
 
 type DateUnit = "day" | "month" | "year";
 
@@ -228,10 +233,26 @@ const tabItems: SummaryTabItems[] = [
   },
 ];
 
-const playerFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+const prePlayerFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["position", "player", "from_date", "form"],
   fieldDefinition[ModelType.TRANSFER],
 );
+
+const playerFieldDefinition: UIFieldDefinition<
+  GettedModelDataMap[ModelType.TRANSFER]
+>[] = [
+  ...prePlayerFieldDefinition.filter((d) => d.key !== "player"),
+  {
+    ...prePlayerFieldDefinition.find((d) => d.key === "player"),
+    label: "選手",
+    key: "player",
+    filterKey: "player",
+    field: "player",
+    getValueType: ColumnType.FIELD,
+    type: "string",
+    displayOnTable: true,
+  },
+];
 
 const futureInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["from_date", "player", "from_team", "position"],
@@ -462,6 +483,47 @@ const ClubTeam = () => {
     [teamCompetitionSeason],
   );
 
+  const [players, setPlayers] = useState<
+    Data<GettedModelDataMap[ModelType.TRANSFER]>
+  >({
+    data: [],
+    page: 1,
+    totalCount: 1,
+    isLoading: false,
+  });
+
+  const readPlayers = async () => {
+    if (!id) return;
+
+    const obj = await readItemsBase<ModelDataMap[ModelType.TRANSFER][]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.TRANSFER.ROOT,
+      params: {
+        getAll: true,
+        sort: "position_group_order,number,_id",
+        to_team: id,
+        from_date: seasonDates.transferWindow.seasonRange,
+        isCancelled: "!true",
+        form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
+        mode: "squad",
+      },
+      handleLoading: (time) => {
+        setPlayers((prev) => ({ ...prev, isLoading: time === "start" }));
+      },
+    });
+
+    if (obj) {
+      let processed = convert(ModelType.TRANSFER, obj.data);
+
+      setPlayers({
+        data: processed,
+        totalCount: obj.totalCount ? obj.totalCount : 0,
+        page: obj.page ? obj.page : 1,
+        isLoading: false,
+      });
+    }
+  };
+
   const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
   const [plotData, setPlotData] = useState<{
     label: string[];
@@ -638,14 +700,18 @@ const ClubTeam = () => {
   };
 
   useEffect(() => {
-    if (
-      !id ||
-      !selectedteamCompetitionSeason ||
-      !selectedteamCompetitionSeason.season.id
-    )
-      return;
-    readPlotData(id, selectedteamCompetitionSeason.season.id);
-    readRadarData(selected, id);
+    (async () => {
+      if (
+        !id ||
+        !selectedteamCompetitionSeason ||
+        !selectedteamCompetitionSeason.season.id
+      )
+        return;
+
+      readPlotData(id, selectedteamCompetitionSeason.season.id);
+      readRadarData(selected, id);
+      readPlayers();
+    })();
   }, [id, selectedteamCompetitionSeason]);
 
   const matchFieldDefinition: UIFieldDefinition<
@@ -762,38 +828,29 @@ const ClubTeam = () => {
           <div className="text-gray-600">
             {`${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`}
           </div>
-          <TableWithFetch
+          <TableClient
             key={`${selectedTab}-${seasonDates.transferWindow.endDate}`}
             modelType={ModelType.TRANSFER}
             fieldDefinitions={playerFieldDefinition || []}
-            fetch={{
-              apiRoute: API_PATHS.TRANSFER.ROOT,
-              params: {
-                getAll: true,
-                sort: "position_group_order,number,_id",
-                to_team: id,
-                from_date: seasonDates.transferWindow.seasonRange,
-                isCancelled: "!true",
-                form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
-                mode: "squad",
-              },
-            }}
+            pageNum={1}
+            items={players.data}
+            reloadFun={readPlayers}
             filterField={playerFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
             sortField={playerFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "to_team")}
+            initialData={{
+              formData: { to_team: id },
+              metaData: { team: id },
+            }}
             linkField={[
               {
                 field: "player",
                 to: APP_ROUTES.PLAYER_SUMMARY,
               },
             ]}
-            initialData={{
-              formData: { to_team: id },
-              metaData: { team: id },
-            }}
           />
         </>
       )}
