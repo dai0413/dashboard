@@ -1,7 +1,7 @@
 import { SummaryTabItems } from "../../../types/menu/IconButton";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
+import { API_PATHS } from "@dai0413/myorg-shared";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { api } from "../../../context/api-context";
 import { useModal } from "../../../context/modal-context";
@@ -16,10 +16,7 @@ import {
   isSortable,
   UIFieldDefinition,
 } from "../../../types/field";
-import {
-  TeamCompetitionSeason,
-  TeamCompetitionSeasonGet,
-} from "../../../types/models/team-competition-season";
+import { TeamCompetitionSeason } from "../../../types/models/team-competition-season";
 import { Match, MatchGet } from "../../../types/models/match";
 import { Season, SeasonGet } from "../../../types/models/season";
 import { PlayerRegistrationGet } from "../../../types/models/player-registration";
@@ -34,6 +31,7 @@ import { useTeam } from "../../../context/models/team";
 import { readItemBase, readItemsBase } from "../../../lib/api";
 import { fieldDefinition } from "../../../lib/model-fields";
 import { convert } from "../../../lib/convert/DBtoGetted";
+import { convert as createLabel } from "../../../lib/convert/CreateLabel";
 import { APP_ROUTES } from "../../../lib/appRoutes";
 import { convertMatchToTeamMatch } from "../../../utils/data";
 import PointLine from "../../../components/plot/PointLine";
@@ -233,6 +231,16 @@ const tabItems: SummaryTabItems[] = [
   },
 ];
 
+const playerField: UIFieldDefinition<GettedModelDataMap[ModelType.TRANSFER]> = {
+  label: "選手",
+  key: "player",
+  filterKey: "player",
+  field: "player",
+  getValueType: ColumnType.FIELD,
+  type: "string",
+  displayOnTable: true,
+};
+
 const prePlayerFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["position", "player", "from_date", "form"],
   fieldDefinition[ModelType.TRANSFER],
@@ -244,20 +252,24 @@ const playerFieldDefinition: UIFieldDefinition<
   ...prePlayerFieldDefinition.filter((d) => d.key !== "player"),
   {
     ...prePlayerFieldDefinition.find((d) => d.key === "player"),
-    label: "選手",
-    key: "player",
-    filterKey: "player",
-    field: "player",
-    getValueType: ColumnType.FIELD,
-    type: "string",
-    displayOnTable: true,
+    ...playerField,
   },
 ];
 
-const futureInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+const preFutureinFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["from_date", "player", "from_team", "position"],
   fieldDefinition[ModelType.TRANSFER],
 );
+
+const futureInFieldDefinition: UIFieldDefinition<
+  GettedModelDataMap[ModelType.TRANSFER]
+>[] = [
+  ...preFutureinFieldDefinition.filter((d) => d.key !== "player"),
+  {
+    ...preFutureinFieldDefinition.find((d) => d.key === "player"),
+    ...playerField,
+  },
+];
 
 const transferInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["from_date", "player", "from_team", "form"],
@@ -320,7 +332,7 @@ const ClubTeam = () => {
   } = useTeam();
 
   const [teamCompetitionSeason, setTeamCompetitionSeason] = useState<
-    Data<TeamCompetitionSeasonGet>
+    Data<TeamCompetitionSeason>
   >({
     data: [],
     page: 1,
@@ -341,11 +353,16 @@ const ClubTeam = () => {
     setSeasonDates(nextSeasonDates);
   };
 
-  const readTeamCompetitionSeason = async (params: QueryParams) => {
+  const readTeamCompetitionSeason = async (teamId: string, team: TeamGet) => {
     const obj = await readItemsBase<TeamCompetitionSeason[]>({
       apiInstance: api,
       backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
-      params,
+      params: {
+        team: teamId,
+        "competition.category": "league",
+        "competition.level": "exists",
+        getAll: true,
+      },
       handleLoading: (time) =>
         setTeamCompetitionSeason((prev) => ({
           ...prev,
@@ -355,11 +372,6 @@ const ClubTeam = () => {
 
     if (obj?.data && obj.data.length > 0) {
       const seasons: TeamCompetitionSeason[] = obj?.data;
-
-      const nextTeamCompetitionSeason = convert(
-        ModelType.TEAM_COMPETITION_SEASON,
-        seasons,
-      );
 
       const todaySeason = seasons.find(
         (s: TeamCompetitionSeason) =>
@@ -395,37 +407,43 @@ const ClubTeam = () => {
           ModelType.SEASON,
           nextSelectedTeamCompetitionSeason.season,
         );
-        setSeasonDates(getSeasonDates(nextSeasonRange));
+        const newSeasonDates = getSeasonDates(nextSeasonRange);
+        setSeasonDates(newSeasonDates);
 
         setTeamCompetitionSeason({
-          data: nextTeamCompetitionSeason,
+          data: seasons,
           page: obj.page ? obj.page : 1,
           totalCount: obj.totalCount ? obj.totalCount : 1,
           isLoading: false,
         });
 
-        setSelectedTeamCompetitionSeason(
-          convert(
-            ModelType.TEAM_COMPETITION_SEASON,
-            nextSelectedTeamCompetitionSeason,
-          ),
+        setSelectedTeamCompetitionSeason(nextSelectedTeamCompetitionSeason);
+
+        readDatas(
+          teamId,
+          nextSelectedTeamCompetitionSeason._id,
+          team,
+          newSeasonDates,
         );
       }
     }
   };
 
   useEffect(() => {
-    if (!id) return;
     (async () => {
-      await readItem(id);
-      await readTeamCompetitionSeason({
-        team: id,
-        "competition.category": "league",
-        "competition.level": "exists",
-        getAll: true,
-      });
+      if (id) {
+        await readItem(id);
+      }
     })();
   }, [id]);
+
+  useEffect(() => {
+    (async () => {
+      if (id && selected) {
+        await readTeamCompetitionSeason(id, selected);
+      }
+    })();
+  }, [selected]);
 
   const handleSelectedTab = (
     value: string | number | Date | undefined,
@@ -434,7 +452,7 @@ const ClubTeam = () => {
   };
 
   const [selectedteamCompetitionSeason, setSelectedTeamCompetitionSeason] =
-    useState<TeamCompetitionSeasonGet | null>(null);
+    useState<TeamCompetitionSeason | null>(null);
 
   const [seasonDates, setSeasonDates] = useState<{
     normalSeason: SeasonDates;
@@ -459,30 +477,50 @@ const ClubTeam = () => {
   });
 
   useEffect(() => {
-    const seasonId = selectedteamCompetitionSeason?.season.id;
+    const seasonId = selectedteamCompetitionSeason?.season._id;
     if (!seasonId) return;
     (async () => {
       readSeason(seasonId);
     })();
   }, [selectedteamCompetitionSeason?._id, formIsOpen]);
 
-  const handleSetSelectedSeason = (id: string | number | Date | undefined) => {
-    const selected =
-      teamCompetitionSeason.data.find((s) => s._id === id) ?? null;
-    setSelectedTeamCompetitionSeason(selected);
-  };
+  const handleSetSelectedSeason = useMemo(() => {
+    return (seasonId: string | number | Date | undefined) => {
+      console.log("seasonId", seasonId, id, selected);
+      const nextSelectedTeamCompetitionSeason =
+        teamCompetitionSeason.data.find((s) => s._id === seasonId) ?? null;
+      setSelectedTeamCompetitionSeason(nextSelectedTeamCompetitionSeason);
+
+      if (id && selected && nextSelectedTeamCompetitionSeason) {
+        const newSeason = convert(
+          ModelType.SEASON,
+          nextSelectedTeamCompetitionSeason.season,
+        );
+        const newSeasonDates = getSeasonDates(newSeason);
+        readDatas(
+          id,
+          nextSelectedTeamCompetitionSeason._id,
+          selected,
+          newSeasonDates,
+        );
+      }
+    };
+  }, [id, selected]);
 
   const seasonOptions: OptionArray = useMemo(
     () =>
       teamCompetitionSeason.data.map((s) => {
+        const label = createLabel(ModelType.SEASON, s.season);
+
         return {
           key: s._id,
-          label: s.season.label,
+          label: label,
         };
       }),
     [teamCompetitionSeason],
   );
 
+  // //players
   const [players, setPlayers] = useState<
     Data<GettedModelDataMap[ModelType.TRANSFER]>
   >({
@@ -492,17 +530,15 @@ const ClubTeam = () => {
     isLoading: false,
   });
 
-  const readPlayers = async () => {
-    if (!id) return;
-
+  const readPlayers = async (teamId: string, seasonRange: string[]) => {
     const obj = await readItemsBase<ModelDataMap[ModelType.TRANSFER][]>({
       apiInstance: api,
       backendRoute: API_PATHS.TRANSFER.ROOT,
       params: {
         getAll: true,
         sort: "position_group_order,number,_id",
-        to_team: id,
-        from_date: seasonDates.transferWindow.seasonRange,
+        to_team: teamId,
+        from_date: seasonRange,
         isCancelled: "!true",
         form: "完全|期限付き|育成型期限付き|期限付き延長|育成型期限付き延長|復帰|更新",
         mode: "squad",
@@ -516,6 +552,46 @@ const ClubTeam = () => {
       let processed = convert(ModelType.TRANSFER, obj.data);
 
       setPlayers({
+        data: processed,
+        totalCount: obj.totalCount ? obj.totalCount : 0,
+        page: obj.page ? obj.page : 1,
+        isLoading: false,
+      });
+    }
+  };
+
+  // //future_in
+  const [futurein, setFuturein] = useState<
+    Data<GettedModelDataMap[ModelType.TRANSFER]>
+  >({
+    data: [],
+    page: 1,
+    totalCount: 1,
+    isLoading: false,
+  });
+
+  const readFutureins = async (teamId: string, from_date: string[]) => {
+    const obj = await readItemsBase<ModelDataMap[ModelType.TRANSFER][]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.TRANSFER.ROOT,
+      params: {
+        getAll: true,
+        from_date: from_date,
+        to_team: teamId,
+        "from_team.age_group": "!full",
+        from_team: `exists`,
+        isCancelled: "!true",
+        form: "完全",
+      },
+      handleLoading: (time) => {
+        setFuturein((prev) => ({ ...prev, isLoading: time === "start" }));
+      },
+    });
+
+    if (obj) {
+      let processed = convert(ModelType.TRANSFER, obj.data);
+
+      setFuturein({
         data: processed,
         totalCount: obj.totalCount ? obj.totalCount : 0,
         page: obj.page ? obj.page : 1,
@@ -612,11 +688,7 @@ const ClubTeam = () => {
   const readRadarData = async (selected: TeamGet | null, id: string) => {
     setRadarDataIsLoading(true);
 
-    if (
-      !selected ||
-      !selectedteamCompetitionSeason ||
-      !selectedteamCompetitionSeason.season.id
-    )
+    if (!selected || !selectedteamCompetitionSeason)
       return setRadarDataIsLoading(false);
 
     let teamLabel = [
@@ -658,9 +730,9 @@ const ClubTeam = () => {
     };
 
     const baseData = await readBaseData(
-      selectedteamCompetitionSeason.season.id,
+      selectedteamCompetitionSeason.season._id,
     );
-    const plotData = await readData(selectedteamCompetitionSeason.season.id);
+    const plotData = await readData(selectedteamCompetitionSeason.season._id);
 
     teamLabel.push(`${plotData.filter((d) => d.team.id === id).length}試合`);
 
@@ -699,20 +771,24 @@ const ClubTeam = () => {
     setRadarDataIsLoading(false);
   };
 
-  useEffect(() => {
-    (async () => {
-      if (
-        !id ||
-        !selectedteamCompetitionSeason ||
-        !selectedteamCompetitionSeason.season.id
-      )
-        return;
-
-      readPlotData(id, selectedteamCompetitionSeason.season.id);
-      readRadarData(selected, id);
-      readPlayers();
-    })();
-  }, [id, selectedteamCompetitionSeason]);
+  const readDatas = async (
+    teamId: string,
+    seasonId: string,
+    team: TeamGet,
+    seasonDates: {
+      normalSeason: SeasonDates;
+      transferWindow: SeasonDates;
+      future: SeasonDates;
+    },
+  ) => {
+    await readPlotData(teamId, seasonId);
+    await readRadarData(team, teamId);
+    await readPlayers(teamId, seasonDates.transferWindow.seasonRange);
+    await readFutureins(teamId, [
+      `>=${seasonDates.future.startDate}`,
+      `<=${seasonDates.future.endDate}`,
+    ]);
+  };
 
   const matchFieldDefinition: UIFieldDefinition<
     GettedModelDataMap[ModelType.MATCH]
@@ -834,7 +910,9 @@ const ClubTeam = () => {
             fieldDefinitions={playerFieldDefinition || []}
             pageNum={1}
             items={players.data}
-            reloadFun={readPlayers}
+            reloadFun={async () =>
+              readPlayers(id, seasonDates.transferWindow.seasonRange)
+            }
             filterField={playerFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
@@ -860,31 +938,25 @@ const ClubTeam = () => {
           <div className="text-gray-600">
             {`${seasonDates.future.startDate}~~~${seasonDates.future.endDate}に日本国内育成年代チームから加入予定の選手`}
           </div>
-          <TableWithFetch
+          <TableClient
             key={`${selectedTab}-${seasonDates.normalSeason.startDate}`}
             modelType={ModelType.TRANSFER}
-            fieldDefinitions={futureInFieldDefinition}
-            fetch={{
-              apiRoute: API_PATHS.TRANSFER.ROOT,
-              params: {
-                getAll: true,
-                from_date: [
-                  `>=${seasonDates.future.startDate}`,
-                  `<=${seasonDates.future.endDate}`,
-                ].filter((t) => t !== undefined),
-                to_team: id,
-                "from_team.age_group": "!full",
-                from_team: `exists`,
-                isCancelled: "!true",
-                form: "完全",
-              },
-            }}
+            fieldDefinitions={futureInFieldDefinition || []}
+            pageNum={1}
+            items={futurein.data}
+            reloadFun={async () =>
+              readFutureins(id, seasonDates.future.seasonRange)
+            }
             filterField={futureInFieldDefinition
               ?.filter(isFilterable)
               .filter((file) => file.key !== "to_team")}
             sortField={futureInFieldDefinition
               ?.filter(isSortable)
               .filter((file) => file.key !== "to_team")}
+            initialData={{
+              formData: { to_team: id },
+              metaData: { team: id },
+            }}
             linkField={[
               {
                 field: "player",
@@ -895,7 +967,6 @@ const ClubTeam = () => {
                 to: APP_ROUTES.TEAM_SUMMARY,
               },
             ]}
-            initialData={{ formData: { to_team: id } }}
           />
         </>
       )}
@@ -1152,12 +1223,12 @@ const ClubTeam = () => {
         </>
       )}
 
-      {selectedTab === "setting" &&
+      {selectedTab === "stats-l" &&
         id &&
-        selectedteamCompetitionSeason?.season.id && (
+        selectedteamCompetitionSeason?.season._id && (
           <>
             <TableWithFetch
-              key={`${selectedTab}-${selectedteamCompetitionSeason?.season.id}`}
+              key={`${selectedTab}-${selectedteamCompetitionSeason?.season._id}`}
               modelType={ModelType.STATS_L}
               fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
               fetch={{
@@ -1165,7 +1236,7 @@ const ClubTeam = () => {
                 params: {
                   getAll: true,
                   team: id,
-                  "match.season": selectedteamCompetitionSeason?.season.id,
+                  "match.season": selectedteamCompetitionSeason?.season._id,
                   sort: "match.date",
                 },
               }}
@@ -1188,13 +1259,13 @@ const ClubTeam = () => {
       {selectedTab === "line-plot" && id && (
         <>
           <div className="text-gray-600">
-            {`${selectedteamCompetitionSeason?.season.label} ${selectedteamCompetitionSeason?.team.label} の勝点推移`}
+            {`${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} の勝点推移`}
           </div>
           <PointLine teamMatchs={teamMatchs} plotData={plotData} />
         </>
       )}
 
-      {selectedTab === "pie-plot_1" && id && (
+      {selectedTab === "pie-plot-attack" && id && (
         <CustomTableContainer
           modelType={ModelType.STATS_L}
           fieldDefinitions={[]}
@@ -1215,7 +1286,7 @@ const ClubTeam = () => {
         />
       )}
 
-      {selectedTab === "pie-plot_2" && id && (
+      {selectedTab === "pie-plot-defence" && id && (
         <CustomTableContainer
           modelType={ModelType.STATS_L}
           fieldDefinitions={[]}
