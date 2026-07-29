@@ -9,5 +9,6 @@ export { useLoanPanel } from "./useLoanPanel";
 export { useInjuryPanel } from "./useInjuryPanel";
 export { useMatchPanel } from "./useMatchPanel";
 export { usePlayerRegistrationPanel } from "./usePlayerRegistrationPanel";
+export { useStaffRegistrationPanel } from "./useStaffRegistrationPanel";
 export { useTeamCompetitionSeasonPanel } from "./useTeamCompetitionSeason";
 export { useStatsLPanel } from "./useStatsLPanel";

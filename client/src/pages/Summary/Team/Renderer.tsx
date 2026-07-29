@@ -1,6 +1,6 @@
 import { useTeam } from "../../../context/models/team";
-import ClubTeam from "./ClubTeam";
-import NationalTeam from "./NationalTeam";
+import { ClubTeam } from "./ClubTeam";
+import { NationalTeam } from "./NationalTeam";
 
 const Team = () => {
   const {

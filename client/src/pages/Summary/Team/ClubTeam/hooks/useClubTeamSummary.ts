@@ -20,9 +20,9 @@ import {
   usePlayerRegistrationPanel,
   useTeamCompetitionSeasonPanel,
   useStatsLPanel,
+  useStaffRegistrationPanel,
 } from "./index";
 import { CLUB_TEAM_TAB, ClubTeamTab, UseClubTeamSummary } from "../types";
-import { useStaffRegistrationPanel } from "./useStaffRegistrationPanel";
 
 export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
   const {
