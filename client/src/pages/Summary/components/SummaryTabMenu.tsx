@@ -2,18 +2,18 @@ import { IconButton } from "../../../components/buttons";
 import { SelectField } from "../../../components/field";
 import { SummaryTabItems } from "../../../types/menu/IconButton";
 import { createTabsOptionArray } from "../../../utils/tab/createTabsOptionArray";
+import { TabState } from "../types";
 
-type Props = {
+type Props<T> = {
   items: SummaryTabItems[];
-  selectedTab: string;
-  onChange: (value: string | number | Date | undefined) => void;
+  tab: TabState<T>;
 };
 
-export default function SummaryTabMenu({
+export default function SummaryTabMenu<T extends string | number | Date>({
   items,
-  selectedTab,
-  onChange,
-}: Props) {
+  tab,
+}: Props<T>) {
+  const { selectedTab, handleSelect } = tab;
   const options = createTabsOptionArray(items);
 
   return (
@@ -24,7 +24,7 @@ export default function SummaryTabMenu({
           type="text"
           value={selectedTab}
           options={options}
-          onChange={onChange}
+          onChange={handleSelect}
         />
       </div>
 
@@ -41,7 +41,7 @@ export default function SummaryTabMenu({
                   icon={icon}
                   text={text}
                   color={isActive ? "green" : "gray"}
-                  onClick={() => onChange(tabKey)}
+                  onClick={() => handleSelect(tabKey)}
                   direction="horizontal"
                   className={`
                         px-4 py-2 border-b-2

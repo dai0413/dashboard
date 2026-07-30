@@ -1,83 +1,63 @@
-import { OptionArray } from "@dai0413/myorg-shared";
-import { Data, TeamMatch } from "../../../../types/types";
-import { RadarData } from "../../../../components/plot/RadarChart/types";
-import { GettedModelDataMap, ModelType } from "../../../../types/models";
-import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
+import { RadarKey } from "../../../components/plot/RadarChart/types";
+import { GettedModelDataMap, ModelType } from "../../../types/models";
+import { PanelSummary, UseSummary } from "../types";
 
-export const CLUB_TEAM_TAB = {
-  PLAYER: "player",
-  FUTURE_IN: "future_in",
-  TRANSFER_IN: "transfer_in",
-  TRANSFER_OUT: "transfer_out",
-  LOAN: "loan",
-  INJURY: "injury",
+type StatsBase = Omit<
+  GettedModelDataMap[ModelType.STATS_L],
+  RadarKey | "match"
+>;
+
+export type StatsActual = Omit<GettedModelDataMap[ModelType.STATS_L], "match">;
+export type StatsDeviation = StatsBase & {
+  [K in RadarKey]?: number;
+};
+export type StatsRank = StatsBase & {
+  [K in RadarKey]?: number;
+};
+
+export const COMPETITION_TAB = {
+  COMPETITION_STAGE: "competitionStage",
+  TEAM_COMPETITION_SEASON: "teamCompetitionSeason",
   MATCH: "match",
   PLAYER_REGISTRATION: "playerRegistration",
   STAFF_REGISTRATION: "staffRegistration",
-  TEAM_COMPETITION_SEASON: "teamCompetitionSeason",
+  SEASON: "season",
+  STATS_L_ACTUAL: "statsLActual",
+  STATS_L_DEVIATION: "statsLDeviation",
+  STATS_L_RANK: "statsLRank",
   STATS_L: "statsL",
-  LINE_PLOT: "linePlot",
-  PIE_PLOT_ATTACK: "piePlot_attack",
-  PIE_PLOT_DEFENCE: "piePlot_defence",
 } as const;
 
-export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
+export type CompetitionTab =
+  (typeof COMPETITION_TAB)[keyof typeof COMPETITION_TAB];
 
-type SummarySection<T> = {
-  text: string;
-  key: string;
-  items: T;
-  reloadFun: () => Promise<void>;
-};
-
-export type UseClubTeamSummary = {
-  id: string;
-  info: {
-    selected: GettedModelDataMap[ModelType.TEAM] | null;
-    teamCompetitionSeason: Data<TeamCompetitionSeason>;
-    selectedteamCompetitionSeason: TeamCompetitionSeason | null;
-    seasonOptions: OptionArray;
-    handleSetSelectedSeason: (
-      seasonId: string | number | Date | undefined,
-    ) => void;
-  };
-  selectedTab: ClubTeamTab;
-  handleSelectedTab: (value: string | number | Date | undefined) => void;
-
-  player: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  future_in: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  transfer_in: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  transfer_out: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  loan: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  injury: SummarySection<GettedModelDataMap[ModelType.INJURY][]>;
-  match: SummarySection<GettedModelDataMap[ModelType.MATCH][]>;
-  playerRegistration: SummarySection<
+type CompetitionPanels = {
+  competitionStage: PanelSummary<
+    GettedModelDataMap[ModelType.COMPETITION_STAGE][]
+  >;
+  teamCompetitionSeason: PanelSummary<
+    GettedModelDataMap[ModelType.TEAM_COMPETITION_SEASON][]
+  >;
+  match: PanelSummary<GettedModelDataMap[ModelType.MATCH][]>;
+  playerRegistration: PanelSummary<
     GettedModelDataMap[ModelType.PLAYER_REGISTRATION][]
   >;
-  staffRegistration: SummarySection<
+  staffRegistration: PanelSummary<
     GettedModelDataMap[ModelType.STAFF_REGISTRATION][]
   >;
-  teamCompetitionSeason: SummarySection<TeamCompetitionSeason[]>;
-  statsL: SummarySection<GettedModelDataMap[ModelType.STATS_L][]>;
+  season: PanelSummary<GettedModelDataMap[ModelType.SEASON][]>;
 
-  linePlot: {
-    text: string;
-    items: {
-      teamMatchs: TeamMatch[];
-      plotData: {
-        label: string[];
-        value: number[];
-      };
-    };
-  };
-
-  piePlot: {
-    text: string;
-    items: {
-      offRadarData: RadarData | null;
-      defRadarData: RadarData | null;
-      isLoading: boolean;
-    };
-    reloadFun: () => Promise<void>;
-  };
+  statsL: PanelSummary<{
+    raw: GettedModelDataMap[ModelType.STATS_L][];
+    actual: StatsActual[];
+    deviation: StatsDeviation[];
+    rank: StatsRank[];
+  }>;
 };
+
+export type UseCompetitionSummary = UseSummary<
+  GettedModelDataMap[ModelType.COMPETITION],
+  GettedModelDataMap[ModelType.SEASON],
+  CompetitionTab,
+  CompetitionPanels
+>;

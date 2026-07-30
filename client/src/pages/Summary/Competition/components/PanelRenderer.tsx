@@ -1,66 +1,52 @@
 import {
-  PlayerPanel,
-  FutureInPanel,
-  TransferInPanel,
-  TransferOutPanel,
-  LoanPanel,
-  InjuryPanel,
+  CompetitionStagePanel,
   MatchPanel,
   PlayerRegistrationPanel,
-  TeamCompetitionSeasonPanel,
-  StatsLPanel,
-  LinePlotPanel,
-  PiePlotAttack,
-  PiePlotDefence,
+  SeasonPanel,
   StaffRegistrationPanel,
+  StatsLActualPanel,
+  StatsLDeviationPanel,
+  StatsLPanel,
+  StatsLRankPanel,
+  TeamCompetitionSeasonPanel,
 } from "../panels/index";
-import { CLUB_TEAM_TAB, UseClubTeamSummary } from "../types";
+import { COMPETITION_TAB, UseCompetitionSummary } from "../types";
 
-const PanelRenderer = ({ summary }: { summary: UseClubTeamSummary }) => {
-  const { selectedTab } = summary;
+const PanelRenderer = ({ summary }: { summary: UseCompetitionSummary }) => {
+  const {
+    tab: { selectedTab },
+  } = summary;
 
   switch (selectedTab) {
-    case CLUB_TEAM_TAB.PLAYER:
-      return <PlayerPanel summary={summary} />;
+    case COMPETITION_TAB.COMPETITION_STAGE:
+      return <CompetitionStagePanel summary={summary} />;
 
-    case CLUB_TEAM_TAB.FUTURE_IN:
-      return <FutureInPanel summary={summary} />;
-
-    case CLUB_TEAM_TAB.TRANSFER_IN:
-      return <TransferInPanel summary={summary} />;
-
-    case CLUB_TEAM_TAB.TRANSFER_OUT:
-      return <TransferOutPanel summary={summary} />;
-
-    case CLUB_TEAM_TAB.LOAN:
-      return <LoanPanel summary={summary} />;
-
-    case CLUB_TEAM_TAB.INJURY:
-      return <InjuryPanel summary={summary} />;
-
-    case CLUB_TEAM_TAB.MATCH:
+    case COMPETITION_TAB.MATCH:
       return <MatchPanel summary={summary} />;
 
-    case CLUB_TEAM_TAB.PLAYER_REGISTRATION:
+    case COMPETITION_TAB.PLAYER_REGISTRATION:
       return <PlayerRegistrationPanel summary={summary} />;
 
-    case CLUB_TEAM_TAB.STAFF_REGISTRATION:
+    case COMPETITION_TAB.SEASON:
+      return <SeasonPanel summary={summary} />;
+
+    case COMPETITION_TAB.STAFF_REGISTRATION:
       return <StaffRegistrationPanel summary={summary} />;
 
-    case CLUB_TEAM_TAB.TEAM_COMPETITION_SEASON:
-      return <TeamCompetitionSeasonPanel summary={summary} />;
+    case COMPETITION_TAB.STATS_L_ACTUAL:
+      return <StatsLActualPanel summary={summary} />;
 
-    case CLUB_TEAM_TAB.STATS_L:
+    case COMPETITION_TAB.STATS_L_DEVIATION:
+      return <StatsLDeviationPanel summary={summary} />;
+
+    case COMPETITION_TAB.STATS_L_RANK:
+      return <StatsLRankPanel summary={summary} />;
+
+    case COMPETITION_TAB.STATS_L:
       return <StatsLPanel summary={summary} />;
 
-    case CLUB_TEAM_TAB.LINE_PLOT:
-      return <LinePlotPanel summary={summary} />;
-
-    case CLUB_TEAM_TAB.PIE_PLOT_ATTACK:
-      return <PiePlotAttack summary={summary} />;
-
-    case CLUB_TEAM_TAB.PIE_PLOT_DEFENCE:
-      return <PiePlotDefence summary={summary} />;
+    case COMPETITION_TAB.TEAM_COMPETITION_SEASON:
+      return <TeamCompetitionSeasonPanel summary={summary} />;
 
     default:
       return null;
