@@ -7,7 +7,9 @@ import {
 import { NATIONAL_TEAM_TAB, UseNationalTeamSummary } from "../types";
 
 const PanelRenderer = ({ summary }: { summary: UseNationalTeamSummary }) => {
-  const { selectedTab } = summary;
+  const {
+    tab: { selectedTab },
+  } = summary;
 
   switch (selectedTab) {
     case NATIONAL_TEAM_TAB.MATCH:

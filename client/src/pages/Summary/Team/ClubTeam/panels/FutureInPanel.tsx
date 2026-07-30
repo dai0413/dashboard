@@ -29,7 +29,9 @@ const futureInFieldDefinition: UIFieldDefinition<
 const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    future_in: { text, key, items, reloadFun },
+    panels: {
+      future_in: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

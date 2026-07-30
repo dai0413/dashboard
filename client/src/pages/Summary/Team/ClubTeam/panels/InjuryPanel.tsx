@@ -14,7 +14,9 @@ const injuryFieldDefinition = convertFieldDefinition<ModelType.INJURY>(
 const InjuryPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    injury: { text, key, items, reloadFun },
+    panels: {
+      injury: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

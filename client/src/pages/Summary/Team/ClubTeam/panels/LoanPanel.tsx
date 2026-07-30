@@ -14,7 +14,9 @@ const onLoanFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
 const LoanPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    loan: { text, key, items, reloadFun },
+    panels: {
+      loan: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

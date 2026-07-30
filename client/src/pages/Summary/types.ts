@@ -5,7 +5,7 @@ export type PanelSummary<T> = {
   key: string;
   items: T;
   isLoading?: boolean;
-  reloadFun: () => Promise<void>;
+  reloadFun?: () => Promise<void>;
 };
 
 export type TabState<T> = {
@@ -19,12 +19,12 @@ type SelectState<T> = {
   handleSelect: (seasonId: string | number | Date | undefined) => void;
 };
 
-export type UseSummary<TItem, TSelect, TTab, TPanels> = {
+export type UseSummary<TItem, TTab, TPanels, TSelect = never> = {
   id: string;
   isLoading: boolean;
   selected: TItem | null;
 
-  select: SelectState<TSelect>;
+  select?: SelectState<TSelect>;
 
   tab: TabState<TTab>;
 

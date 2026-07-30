@@ -9,19 +9,15 @@ const Info = ({ summary }: { summary: UseClubTeamSummary }) => {
     detail: { open },
   } = useModal();
 
-  const {
-    info: {
-      selected,
-      teamCompetitionSeason,
-      selectedteamCompetitionSeason,
-      seasonOptions,
-      handleSetSelectedSeason,
-    },
-  } = summary;
+  const { selected, isLoading } = summary;
+
+  if (!summary.select) return;
+
+  const { selectedOption, options, handleSelect } = summary.select;
 
   return (
     <>
-      {!teamCompetitionSeason.isLoading && selected ? (
+      {isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div
@@ -35,15 +31,11 @@ const Info = ({ summary }: { summary: UseClubTeamSummary }) => {
             <div className="w-full md:w-50">
               <SelectField
                 type="text"
-                value={
-                  selectedteamCompetitionSeason
-                    ? selectedteamCompetitionSeason?._id
-                    : ""
-                }
-                options={seasonOptions}
-                onChange={handleSetSelectedSeason}
+                value={selectedOption ? selectedOption?._id : ""}
+                options={options}
+                onChange={handleSelect}
                 defaultOption={
-                  seasonOptions.length > 0 ? undefined : "登録シーズンなし"
+                  options.length > 0 ? undefined : "登録シーズンなし"
                 }
               />
             </div>

@@ -14,7 +14,9 @@ const transferOutFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
 const TransferOutPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    transfer_out: { text, key, items, reloadFun },
+    panels: {
+      transfer_out: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

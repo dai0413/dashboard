@@ -53,11 +53,14 @@ const matchFieldDefinition: UIFieldDefinition<
 const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
     id,
-    select: { selectedOption },
     panels: {
       match: { text, key, items, reloadFun },
     },
   } = summary;
+
+  if (!summary.select) return;
+
+  const { selectedOption } = summary.select;
 
   return (
     <>

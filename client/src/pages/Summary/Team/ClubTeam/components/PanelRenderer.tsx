@@ -17,7 +17,9 @@ import {
 import { CLUB_TEAM_TAB, UseClubTeamSummary } from "../types";
 
 const PanelRenderer = ({ summary }: { summary: UseClubTeamSummary }) => {
-  const { selectedTab } = summary;
+  const {
+    tab: { selectedTab },
+  } = summary;
 
   switch (selectedTab) {
     case CLUB_TEAM_TAB.PLAYER:

@@ -151,8 +151,7 @@ const National = () => {
 
       <SummaryTabMenu
         items={tabItems}
-        selectedTab={selectedTab}
-        onChange={handleSelectedTab}
+        tab={{ selectedTab: selectedTab, handleSelect: handleSelectedTab }}
       />
 
       {/* コンテンツ表示 */}

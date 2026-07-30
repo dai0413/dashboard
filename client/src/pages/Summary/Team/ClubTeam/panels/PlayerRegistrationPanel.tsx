@@ -39,7 +39,9 @@ const PlayerRegistrationPanel = ({
   summary: UseClubTeamSummary;
 }) => {
   const {
-    playerRegistration: { text, key, items, reloadFun },
+    panels: {
+      playerRegistration: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

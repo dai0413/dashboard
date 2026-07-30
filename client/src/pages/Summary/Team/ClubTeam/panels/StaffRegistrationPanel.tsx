@@ -25,7 +25,9 @@ const StaffRegistrationPanel = ({
   summary: UseClubTeamSummary;
 }) => {
   const {
-    staffRegistration: { text, key, items, reloadFun },
+    panels: {
+      staffRegistration: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

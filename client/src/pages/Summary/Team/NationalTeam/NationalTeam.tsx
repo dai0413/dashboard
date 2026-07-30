@@ -14,11 +14,7 @@ const NationalTeam = () => {
     <div className="p-6">
       <Info summary={summary} />
 
-      <SummaryTabMenu
-        items={tabItems}
-        selectedTab={summary.selectedTab}
-        onChange={summary.handleSelectedTab}
-      />
+      <SummaryTabMenu items={tabItems} tab={summary.tab} />
 
       <PanelRenderer summary={summary} />
     </div>

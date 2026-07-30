@@ -16,7 +16,9 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
     id,
-    match: { text, key, items, reloadFun },
+    panels: {
+      match: { text, key, items, reloadFun },
+    },
   } = summary;
 
   const matchFieldDefinition: UIFieldDefinition<

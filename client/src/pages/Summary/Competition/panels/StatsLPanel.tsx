@@ -8,11 +8,14 @@ import { UseCompetitionSummary } from "../types";
 const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
     id,
-    select: { selectedOption },
     panels: {
       statsL: { text, key, items, reloadFun },
     },
   } = summary;
+
+  if (!summary.select) return;
+
+  const { selectedOption } = summary.select;
 
   return (
     <>

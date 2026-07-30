@@ -5,7 +5,9 @@ import { RadarChart } from "../../../../../components/plot/RadarChart/RadarChart
 
 const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
-    piePlot: { text, items, reloadFun },
+    panels: {
+      piePlot: { text, items, reloadFun },
+    },
   } = summary;
 
   return (

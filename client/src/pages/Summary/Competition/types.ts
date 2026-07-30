@@ -57,7 +57,7 @@ type CompetitionPanels = {
 
 export type UseCompetitionSummary = UseSummary<
   GettedModelDataMap[ModelType.COMPETITION],
-  GettedModelDataMap[ModelType.SEASON],
   CompetitionTab,
-  CompetitionPanels
+  CompetitionPanels,
+  GettedModelDataMap[ModelType.SEASON]
 >;

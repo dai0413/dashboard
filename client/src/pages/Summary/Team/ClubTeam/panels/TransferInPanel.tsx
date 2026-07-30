@@ -14,7 +14,9 @@ const transferInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
 const TransferInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    transfer_in: { text, key, items, reloadFun },
+    panels: {
+      transfer_in: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

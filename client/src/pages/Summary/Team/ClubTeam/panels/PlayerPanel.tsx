@@ -29,7 +29,9 @@ const playerFieldDefinition: UIFieldDefinition<
 const PlayerPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    player: { text, key, items, reloadFun },
+    panels: {
+      player: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

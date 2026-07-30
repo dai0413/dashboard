@@ -7,7 +7,9 @@ import Matrix from "../../../../../components/table/Matrix";
 
 const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
-    playerPlot: { text, items, reloadFun },
+    panels: {
+      playerPlot: { text, items, reloadFun },
+    },
   } = summary;
 
   return (
@@ -24,7 +26,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         sortField={fieldDefinition[ModelType.NATIONAL_MATCH_SERIES]?.filter(
           isSortable,
         )}
-        reloadFun={async () => reloadFun()}
+        reloadFun={reloadFun}
         renderView={() => (
           <Matrix
             nationalCallUp={items.nationalCallUp}

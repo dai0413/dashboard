@@ -13,7 +13,9 @@ const playerFieldDefinition = convertFieldDefinition<ModelType.PLAYER>(
 
 const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
-    player: { text, key, items, reloadFun },
+    panels: {
+      player: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

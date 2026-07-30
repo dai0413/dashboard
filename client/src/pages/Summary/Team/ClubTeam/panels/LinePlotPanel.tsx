@@ -3,7 +3,9 @@ import PointLine from "../../../../../components/plot/PointLine";
 
 const LinePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
-    linePlot: { text, items },
+    panels: {
+      linePlot: { text, items },
+    },
   } = summary;
 
   return (

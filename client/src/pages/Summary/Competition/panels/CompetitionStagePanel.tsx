@@ -18,11 +18,14 @@ const CompetitionStagePanel = ({
 }) => {
   const {
     id,
-    select: { selectedOption },
     panels: {
       competitionStage: { text, key, items, reloadFun },
     },
   } = summary;
+
+  if (!summary.select) return;
+
+  const { selectedOption } = summary.select;
 
   return (
     <>

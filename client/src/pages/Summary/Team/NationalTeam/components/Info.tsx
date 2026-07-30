@@ -8,9 +8,7 @@ const Info = ({ summary }: { summary: UseNationalTeamSummary }) => {
     detail: { open },
   } = useModal();
 
-  const {
-    info: { selected, isLoading },
-  } = summary;
+  const { selected, isLoading } = summary;
 
   return (
     <>

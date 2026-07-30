@@ -20,7 +20,9 @@ const TeamCompetitionSeasonPanel = ({
   summary: UseClubTeamSummary;
 }) => {
   const {
-    teamCompetitionSeason: { text, key, items, reloadFun },
+    panels: {
+      teamCompetitionSeason: { text, key, items, reloadFun },
+    },
   } = summary;
 
   const converted = convert(ModelType.TEAM_COMPETITION_SEASON, items);

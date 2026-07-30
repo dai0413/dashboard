@@ -1,8 +1,8 @@
-import { OptionArray } from "@dai0413/myorg-shared";
-import { Data, TeamMatch } from "../../../../types/types";
+import { TeamMatch } from "../../../../types/types";
 import { RadarData } from "../../../../components/plot/RadarChart/types";
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
+import { PanelSummary, UseSummary } from "../../types";
 
 export const CLUB_TEAM_TAB = {
   PLAYER: "player",
@@ -23,61 +23,41 @@ export const CLUB_TEAM_TAB = {
 
 export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
 
-type SummarySection<T> = {
-  text: string;
-  key: string;
-  items: T;
-  reloadFun: () => Promise<void>;
-};
-
-export type UseClubTeamSummary = {
-  id: string;
-  info: {
-    selected: GettedModelDataMap[ModelType.TEAM] | null;
-    teamCompetitionSeason: Data<TeamCompetitionSeason>;
-    selectedteamCompetitionSeason: TeamCompetitionSeason | null;
-    seasonOptions: OptionArray;
-    handleSetSelectedSeason: (
-      seasonId: string | number | Date | undefined,
-    ) => void;
-  };
-  selectedTab: ClubTeamTab;
-  handleSelectedTab: (value: string | number | Date | undefined) => void;
-
-  player: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  future_in: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  transfer_in: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  transfer_out: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  loan: SummarySection<GettedModelDataMap[ModelType.TRANSFER][]>;
-  injury: SummarySection<GettedModelDataMap[ModelType.INJURY][]>;
-  match: SummarySection<GettedModelDataMap[ModelType.MATCH][]>;
-  playerRegistration: SummarySection<
+type ClubTeamPanels = {
+  player: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
+  future_in: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
+  transfer_in: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
+  transfer_out: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
+  loan: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
+  injury: PanelSummary<GettedModelDataMap[ModelType.INJURY][]>;
+  match: PanelSummary<GettedModelDataMap[ModelType.MATCH][]>;
+  playerRegistration: PanelSummary<
     GettedModelDataMap[ModelType.PLAYER_REGISTRATION][]
   >;
-  staffRegistration: SummarySection<
+  staffRegistration: PanelSummary<
     GettedModelDataMap[ModelType.STAFF_REGISTRATION][]
   >;
-  teamCompetitionSeason: SummarySection<TeamCompetitionSeason[]>;
-  statsL: SummarySection<GettedModelDataMap[ModelType.STATS_L][]>;
+  teamCompetitionSeason: PanelSummary<TeamCompetitionSeason[]>;
+  statsL: PanelSummary<GettedModelDataMap[ModelType.STATS_L][]>;
 
-  linePlot: {
-    text: string;
-    items: {
-      teamMatchs: TeamMatch[];
-      plotData: {
-        label: string[];
-        value: number[];
-      };
+  linePlot: PanelSummary<{
+    teamMatchs: TeamMatch[];
+    plotData: {
+      label: string[];
+      value: number[];
     };
-  };
+  }>;
 
-  piePlot: {
-    text: string;
-    items: {
-      offRadarData: RadarData | null;
-      defRadarData: RadarData | null;
-      isLoading: boolean;
-    };
-    reloadFun: () => Promise<void>;
-  };
+  piePlot: PanelSummary<{
+    offRadarData: RadarData | null;
+    defRadarData: RadarData | null;
+    isLoading: boolean;
+  }>;
 };
+
+export type UseClubTeamSummary = UseSummary<
+  GettedModelDataMap[ModelType.TEAM],
+  ClubTeamTab,
+  ClubTeamPanels,
+  TeamCompetitionSeason
+>;

@@ -9,12 +9,11 @@ const Info = ({ summary }: { summary: UseCompetitionSummary }) => {
     detail: { open },
   } = useModal();
 
-  const {
-    isLoading,
-    selected,
+  const { isLoading, selected } = summary;
 
-    select: { selectedOption, options, handleSelect },
-  } = summary;
+  if (!summary.select) return;
+
+  const { selectedOption, options, handleSelect } = summary.select;
 
   return (
     <>

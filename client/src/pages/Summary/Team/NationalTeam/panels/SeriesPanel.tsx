@@ -15,7 +15,9 @@ const nationalMatchSeriesFieldDefinition =
 const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
     id,
-    series: { text, key, items, reloadFun },
+    panels: {
+      series: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

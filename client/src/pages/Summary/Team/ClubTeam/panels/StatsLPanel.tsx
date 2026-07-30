@@ -8,7 +8,9 @@ import { UseClubTeamSummary } from "../types";
 const StatsLPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
-    statsL: { text, key, items, reloadFun },
+    panels: {
+      statsL: { text, key, items, reloadFun },
+    },
   } = summary;
 
   return (

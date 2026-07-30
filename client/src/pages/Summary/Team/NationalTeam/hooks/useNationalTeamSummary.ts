@@ -53,42 +53,47 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
 
   return {
     id,
-    info: {
-      selected,
-      isLoading,
-    },
-    selectedTab,
-    handleSelectedTab,
 
-    player: {
-      text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
-      key: `${selectedTab}`,
-      items: players.data,
-      reloadFun: async () => readPlayers(id),
+    selected,
+    isLoading,
+
+    tab: {
+      selectedTab,
+      handleSelect: handleSelectedTab,
     },
 
-    match: {
-      text: `${selected?.normalized_name || selected?.abbr}の試合`,
-      key: `${selectedTab}`,
-      items: matches.data,
-      reloadFun: async () => readMatches(id),
-    },
-
-    series: {
-      text: `${selected?.normalized_name || selected?.abbr}の試合シリーズ`,
-      key: `${selectedTab}`,
-      items: series.data,
-      reloadFun: async () => readSeries(id),
-    },
-
-    playerPlot: {
-      text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
-      items: {
-        nationalCallUp,
-        nationalMatchSeries,
-        playerAppearance,
+    panels: {
+      player: {
+        text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
+        key: `${selectedTab}`,
+        items: players.data,
+        reloadFun: async () => readPlayers(id),
       },
-      reloadFun: async () => readPlayerPlot(id),
+
+      match: {
+        text: `${selected?.normalized_name || selected?.abbr}の試合`,
+        key: `${selectedTab}`,
+        items: matches.data,
+        reloadFun: async () => readMatches(id),
+      },
+
+      series: {
+        text: `${selected?.normalized_name || selected?.abbr}の試合シリーズ`,
+        key: `${selectedTab}`,
+        items: series.data,
+        reloadFun: async () => readSeries(id),
+      },
+
+      playerPlot: {
+        key: `${selectedTab}`,
+        text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
+        items: {
+          nationalCallUp,
+          nationalMatchSeries,
+          playerAppearance,
+        },
+        reloadFun: async () => readPlayerPlot(id),
+      },
     },
   };
 };
