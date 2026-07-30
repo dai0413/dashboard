@@ -9,7 +9,7 @@ export type PanelSummary<T> = {
 };
 
 export type TabState<T> = {
-  selectedTab: T;
+  selectedTab: T | null;
   handleSelect: (value: string | number | Date | undefined) => void;
 };
 

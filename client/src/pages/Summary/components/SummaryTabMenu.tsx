@@ -22,7 +22,7 @@ export default function SummaryTabMenu<T extends string | number | Date>({
       <div className="mt-4 block sm:hidden">
         <SelectField
           type="text"
-          value={selectedTab}
+          value={selectedTab || ""}
           options={options}
           onChange={handleSelect}
         />
