@@ -1,6 +1,6 @@
 export { Competition } from "./Competition";
 export { Team } from "./Team/Renderer";
-export { default as National } from "./National";
+export { National } from "./National";
 export { default as NationalMatchSeries } from "./NationalMatchSeries";
 export { default as Player } from "./Player";
 export { default as Referee } from "./Referee";
