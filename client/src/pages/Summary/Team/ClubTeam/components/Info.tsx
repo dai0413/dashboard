@@ -17,7 +17,7 @@ const Info = ({ summary }: { summary: UseClubTeamSummary }) => {
 
   return (
     <>
-      {isLoading && selected ? (
+      {!isLoading && selected ? (
         <div className="border-b pb-2">
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div
