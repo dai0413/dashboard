@@ -4,5 +4,5 @@ export { National } from "./National";
 export { NationalMatchSeries } from "./NationalMatchSeries";
 export { Player } from "./Player";
 export { Referee } from "./Referee";
-export { default as Staff } from "./Staff";
+export { Staff } from "./Staff";
 export { default as Match } from "./Match";

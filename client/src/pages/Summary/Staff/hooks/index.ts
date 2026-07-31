@@ -1,0 +1,1 @@
+export { useStaffRegistrationPanel } from "./useStaffRegistrationPanel";

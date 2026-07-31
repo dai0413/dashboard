@@ -1,5 +1,5 @@
-import { positionBase } from "../../components/formation/positionBase";
-import { FormationItem } from "../../types/formation";
+import { positionBase } from "../../../../components/formation/positionBase";
+import { FormationItem } from "../../../../types/formation";
 
 const positionCounts: Record<keyof typeof positionBase, number> = {
   GK: 18,
