@@ -9,7 +9,6 @@ export const nationalMatchSeries = (
   const options: NationalMatchSeries[] = data.map((d) => ({
     label: d.name,
     key: d._id,
-    country: d.country.label,
     team: d.team.label,
   }));
 
@@ -28,14 +27,6 @@ export const nationalMatchSeries = (
         field: "team",
         getValueType: ColumnType.FIELD,
         key: "team",
-        displayOnTable: true,
-        type: "string",
-      },
-      {
-        label: "国名",
-        field: "country",
-        getValueType: ColumnType.FIELD,
-        key: "country",
         displayOnTable: true,
         type: "string",
       },
