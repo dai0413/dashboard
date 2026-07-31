@@ -27,13 +27,11 @@ export function nationalMatchSeries<TModel = any>(
     },
     MONGO_MODEL: mongoModel ?? null,
     POPULATE_PATHS: [
-      { path: "country", collection: "countries" },
       { path: "team", collection: "teams" },
       { path: "matches", collection: "matches", isArray: true },
     ],
     getAllConfig: {
       query: [
-        { field: "country", type: "ObjectId" },
         { field: "team", type: "ObjectId" },
         { field: "joined_at", type: "Date" },
         { field: "left_at", type: "Date" },
