@@ -14,9 +14,10 @@ type ResponseData = z.infer<typeof TransferResponseSchema | undefined>;
 export const getNoNumberService = async (
   req: Request,
 ): Promise<ReadItemsResponse<ResponseData[]>> => {
+  const getAll = req.query.getAll === "true";
   const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
+  const limit = getAll ? 0 : Number(req.query.limit) || 10;
+  const skip = getAll ? 0 : (page - 1) * limit;
 
   const { competition } = req.query;
 
@@ -199,8 +200,7 @@ export const getNoNumberService = async (
     },
     { $unwind: { path: "$player", preserveNullAndEmptyArrays: true } },
     { $sort: { from_date: -1, _id: -1 } },
-    { $skip: skip },
-    { $limit: limit },
+    ...(getAll ? [] : [{ $skip: skip }, { $limit: limit }]),
   ]);
 
   const convertFun = transfer().convertFun;
