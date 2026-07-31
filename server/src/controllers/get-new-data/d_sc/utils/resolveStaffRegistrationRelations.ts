@@ -37,7 +37,7 @@ export const resolveStaffRegistrationRelations = async (
       if (
         d.date &&
         d.date >= new Date("2026/01/01") &&
-        d.date < new Date("2026/08/01")
+        d.date < new Date("2026/07/01")
       ) {
         if (competitionName === "Ｊ１リーグ") {
           competitionName = "Ｊ１百年構想リーグ";
