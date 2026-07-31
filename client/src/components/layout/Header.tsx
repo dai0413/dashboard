@@ -51,11 +51,11 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-white shadow-md overflow-visible z-50 h-16 sm:h-auto">
-        <div className="container mx-auto p-4 flex justify-between items-center">
+      <header className="bg-white shadow-md overflow-visible z-50 h-10 sm:h-auto">
+        <div className="container mx-auto p-2 flex justify-between items-center">
           <Link
             to={APP_ROUTES.HOME}
-            className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
+            className="flex items-center title-font font-medium text-gray-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -64,10 +64,10 @@ const Header = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              className="w-10 h-10 text-white p-2 bg-green-500 rounded-full"
+              className="w-7 h-7 text-white p-2 bg-green-500 rounded-full"
               viewBox="0 0 24 24"
             >
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
             <span className="ml-3 text-xl">DASHBOARD</span>
           </Link>
