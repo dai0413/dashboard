@@ -5,11 +5,11 @@ import {
 } from "../../schemas/national-callup.schema.js";
 
 const nationalCallup = (
-  nationalCallup: z.infer<typeof NationalCallUpPopulatedSchema>
+  nationalCallup: z.infer<typeof NationalCallUpPopulatedSchema>,
 ): z.infer<typeof NationalCallUpResponseSchema> => {
   const { team, team_name, ...rest } = nationalCallup;
 
-  const team_obj = team ?? { team: team_name as string };
+  const team_obj = team ?? { team: (team_name as string) || "無所属" };
 
   return {
     ...rest,
