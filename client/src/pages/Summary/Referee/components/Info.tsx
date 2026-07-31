@@ -2,8 +2,12 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ModelType } from "../../../../types/models";
 import { UseRefereeSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
+import { useModal } from "../../../../context/modal-context";
 
 const Info = ({ summary }: { summary: UseRefereeSummary }) => {
+  const {
+    detail: { open },
+  } = useModal();
   const { isLoading, selected } = summary;
 
   return (

@@ -1,8 +1,13 @@
 import { FullScreenLoader } from "../../../../components/ui";
+import { useModal } from "../../../../context/modal-context";
 import { ModelType } from "../../../../types/models";
 import { UseNationalSummary } from "../types";
 
 const Info = ({ summary }: { summary: UseNationalSummary }) => {
+  const {
+    detail: { open },
+  } = useModal();
+
   const { selected, isLoading } = summary;
 
   return (
