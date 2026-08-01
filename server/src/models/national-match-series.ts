@@ -5,12 +5,9 @@ import z from "zod";
 type NationalMatchSeriesType = z.infer<typeof NationalMatchSeriesZodSchema>;
 
 export interface INationalMatchSeries
-  extends
-    Omit<NationalMatchSeriesType, "_id" | "country" | "matches" | "team">,
-    Document {
+  extends Omit<NationalMatchSeriesType, "_id" | "matches" | "team">, Document {
   _id: Types.ObjectId;
   team: Types.ObjectId;
-  country: Types.ObjectId;
   matches: Types.ObjectId[];
 }
 
@@ -22,11 +19,6 @@ const NationalMatchSeriesSchema: Schema<INationalMatchSeries> = new Schema<
   {
     name: { type: String, required: true },
     abbr: { type: String },
-    country: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Country",
-      required: true,
-    },
     team: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
