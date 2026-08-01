@@ -2,8 +2,12 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ModelType } from "../../../../types/models";
 import { UseNationalMatchSeriesSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
+import { useModal } from "../../../../context/modal-context";
 
 const Info = ({ summary }: { summary: UseNationalMatchSeriesSummary }) => {
+  const {
+    detail: { open },
+  } = useModal();
   const { selected, isLoading } = summary;
   return (
     <>
