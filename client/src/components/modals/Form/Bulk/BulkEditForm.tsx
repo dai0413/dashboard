@@ -120,7 +120,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
     <>
       <CustomTableContainer
         pageNation="client"
-        items={many?.state.length === 0 ? [{}] : many?.state || []}
+        items={many?.state.length === 0 ? [] : many?.state}
         fieldDefinitions={headers}
         renderFieldCell={(
           header: TableHeader<Record<string, any>>,

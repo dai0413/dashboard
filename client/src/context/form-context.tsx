@@ -291,7 +291,6 @@ export const FormProvider = <T extends ModelType>({
     }
 
     let newFormData: FormTypeMap[T] = {};
-    let newFormDatas = [newFormData];
     let newMetaData: Record<string, any> =
       args.formMode === FormMode.CREATE &&
       args.initialData &&
@@ -317,13 +316,6 @@ export const FormProvider = <T extends ModelType>({
       if (modelType === ModelType.MATCH_FORMAT) {
         const matchFormatEditItem =
           args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
-        const dat = args.editItem && {
-          ...getDefault(ModelType.MATCH_FORMAT),
-          ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
-        };
-        const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
-
-        newFormDatas = periodArray as FormTypeMap[ModelType.MATCH_FORMAT][];
 
         const { period, ...data } = matchFormatEditItem;
         newFormData = convertGettedToForm(ModelType.MATCH_FORMAT, {
@@ -355,14 +347,10 @@ export const FormProvider = <T extends ModelType>({
         },
       );
 
-      newFormDatas = newOriginalDatas;
       setOriginalDatas(newOriginalDatas);
     }
 
     let newFormLabel = await resolveForeignKeyLabels(api, newFormData);
-    let newFormLabels = await Promise.all(
-      newFormDatas.map((data) => resolveForeignKeyLabels(api, data)),
-    );
     let newMetaDataLabel = await resolveForeignKeyLabels(api, newMetaData);
 
     let updatingValues: FormState<T> = {
@@ -370,8 +358,8 @@ export const FormProvider = <T extends ModelType>({
       formLabel: newFormLabel,
       bulkCommonData: args.inputMode === InputMode.MANY ? newFormData : {},
       bulkCommonLabel: args.inputMode === InputMode.MANY ? newFormLabel : {},
-      formDatas: newFormDatas,
-      formLabels: newFormLabels,
+      formDatas: [],
+      formLabels: [],
       metaData: newMetaData,
       metaDataLabel: newMetaDataLabel,
       metaDatas: [],
@@ -392,9 +380,13 @@ export const FormProvider = <T extends ModelType>({
           quickFilterItemsObj,
         },
       );
+
+      console.log("new", result.values.formDatas);
       newNextStepIndex = index;
       applyState(result);
     } else if (args.formMode === FormMode.CREATE) {
+      console.log("new 2", updatingValues.formDatas);
+
       applyState({
         values: updatingValues,
         filterConditionsObj: {},
