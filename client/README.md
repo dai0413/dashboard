@@ -16,19 +16,19 @@
 ```
 project/
 │
-├── client/             # フロントエンド（React）
-│   ├── src/            # ソースコード
-│   │   ├── components/ # UI コンポーネント
-│   │   ├── context/    # グローバルステート管理
-│   │   ├── lib/        # ルーティング,バックエンドDBへの変換
-│   │   ├── pages/      # ページ
-│   │   ├── styles/     # 型定義
-│   │   ├── utils/      # 関数
-│   │   ├── App.ts      # ルーティング設定
-│   │   ├── index.ts    # エントリーポイント
-│   ├── test_data       # テストデータ
-│   ├── package.json    # React の設定
-│   └── README.md       # フロントエンドの説明
+├── client/
+│   ├── package.json
+│   ├── index.html
+│   ├── src/
+│   │  ├── index.tsx
+│   │  ├── App.tsx
+│   │  ├── components/
+│   │  ├── pages/
+│   │  ├── routes/
+│   │  ├── lib/
+│   │  └── styles/
+│   ├── test_data/
+│   └── README.md
 ```
 
 ## 2.セットアップ

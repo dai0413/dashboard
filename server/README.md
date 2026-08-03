@@ -17,33 +17,22 @@
 ```
 project/
 │
-├──server/
-│ ├── app.ts # サーバーエントリーポイント
-│ ├── controllers/ # ビジネスロジック
-│ │ ├── auth.ts
-│ │ ├── player.ts
-│ │ ├── transfer.ts
-│ │ └── injury.ts
-│ ├── csvImport/ # csvダウンロードロジック
-│ ├── db/ # db 接続
-│ │ └── connect.ts
-│ ├── erros/ # エラー処理
-│ ├── middleware/ # ミドルウェア
-│ ├── models/ # データベースのモデル
-│ │ ├── user.ts
-│ │ ├── team.ts
-│ │ ├── player.ts
-│ │ ├── transfer.ts
-│ │ └── injury.ts
-│ ├── routes/ # ルーティング
-│ │ ├── auth.ts
-│ │ ├── player.ts
-│ │ ├── transfer.ts
-│ │ └── injury.ts
-│ ├── utils/ # ヘルパー関数やユーティリティ
-│ │ └── generateToken.ts
-│ ├── .env
-│ └── README.md       # バックエンドの説明
+├── server/
+│ ├── package.json
+│ ├── tsconfig.json
+│ ├── src/
+│ │  ├── app.ts                  # サーバーエントリーポイント
+│ │  ├── controllers/            # API ロジック（aggregate, auth, upload, など）
+│ │  ├── routes/                 # ルート定義
+│ │  ├── models/                 # Mongoose モデル
+│ │  ├── services/               # ビジネスロジック層
+│ │  ├── db/                     # DB 接続・migration・seeds
+│ │  ├── utils/                  # ユーティリティ
+│ │  ├── errors/                 # エラー処理
+│ │  ├── middleware/             # ミドルウェア
+│ │  └── migration/              # migration スクリプト
+│ ├── __tests__/                 # テスト
+│ └── README.md                  # このファイル
 ```
 
 ## 2. 環境変数
