@@ -18,8 +18,10 @@ Node.js、Express.js、および MongoDB を使用して選手と怪我の管理
 ```
 project/
 │
-├── server/ # バックエンド
-├── client/ # フロントエンド
+├── server/    # バックエンド (TypeScript, Express API)
+├── client/    # フロントエンド (React, Vite)
+├── shared/    # 共有ライブラリ (ビルド済みパッケージやユーティリティ)
+├── docs/      # ドキュメント
 └── README.md
 ```
 
