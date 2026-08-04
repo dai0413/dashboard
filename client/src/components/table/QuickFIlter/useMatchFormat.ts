@@ -19,7 +19,7 @@ export const useMatchFormat = (): {
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const read = async (): Promise<FilterableFieldDefinition | undefined> => {
+  const read = async (): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = await readItemsBase<MatchFormat[]>({
       apiInstance: api,
       params: { getAll: true },
@@ -29,16 +29,18 @@ export const useMatchFormat = (): {
     if (!obj) return;
     const matchFormats = convert(ModelType.MATCH_FORMAT, obj.data);
 
-    const filterCondition: FilterableFieldDefinition = {
-      key: "_id",
-      label: "試合形式",
-      operator: "equals",
-      type: "select",
-      value: matchFormats.map((t) => t._id),
-      valueLabel: matchFormats.map((t) =>
-        createLabel(ModelType.MATCH_FORMAT, t),
-      ),
-    };
+    const filterCondition: FilterableFieldDefinition[] = [
+      {
+        key: "_id",
+        label: "試合形式",
+        operator: "equals",
+        type: "select",
+        value: matchFormats.map((t) => t._id),
+        valueLabel: matchFormats.map((t) =>
+          createLabel(ModelType.MATCH_FORMAT, t),
+        ),
+      },
+    ];
 
     return filterCondition;
   };

@@ -70,7 +70,7 @@ const readMatchEventType = async (
   if (!api || !data) return null;
   const read = async (
     api: AxiosInstance,
-  ): Promise<FilterableFieldDefinition | undefined> => {
+  ): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = await readItemsBase<MatchEventType[]>({
       apiInstance: api,
       params: { getAll: true, event_type: "card" },
@@ -80,16 +80,18 @@ const readMatchEventType = async (
     if (!obj) return;
     const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, obj.data);
 
-    const filterCondition: FilterableFieldDefinition = {
-      key: "_id",
-      label: "カード",
-      operator: "equals",
-      type: "select",
-      value: matchEventTypes.map((t) => t._id),
-      valueLabel: matchEventTypes.map((t) =>
-        createLabel(ModelType.MATCH_EVENT_TYPE, t),
-      ),
-    };
+    const filterCondition: FilterableFieldDefinition[] = [
+      {
+        key: "_id",
+        label: "カード",
+        operator: "equals",
+        type: "select",
+        value: matchEventTypes.map((t) => t._id),
+        valueLabel: matchEventTypes.map((t) =>
+          createLabel(ModelType.MATCH_EVENT_TYPE, t),
+        ),
+      },
+    ];
 
     return filterCondition;
   };

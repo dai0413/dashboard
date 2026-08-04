@@ -17,7 +17,7 @@ const getRegistration = async (
   teamId: string,
   competition: Competition,
   season: Season,
-): Promise<FilterableFieldDefinition | undefined> => {
+): Promise<FilterableFieldDefinition[] | undefined> => {
   const obj = await readItemsBase<PlayerRegistration[]>({
     apiInstance: api,
     backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
@@ -48,15 +48,17 @@ const getRegistration = async (
   )
     return undefined;
 
-  return {
-    key: "_id",
-    label: "選手",
-    type: "string",
-    filterable: true,
-    value: playersId,
-    valueLabel: [`${season.name}-${competition.name}登録選手`],
-    operator: "equals",
-  };
+  return [
+    {
+      key: "_id",
+      label: "選手",
+      type: "string",
+      filterable: true,
+      value: playersId,
+      valueLabel: [`${season.name}-${competition.name}登録選手`],
+      operator: "equals",
+    },
+  ];
 };
 
 const getTransfer = async (
@@ -64,7 +66,7 @@ const getTransfer = async (
   teamId: string,
   startDate?: Date,
   endDate?: Date,
-): Promise<FilterableFieldDefinition | undefined> => {
+): Promise<FilterableFieldDefinition[] | undefined> => {
   const labelParts = [
     startDate && `${toDateKey(new Date(startDate))}から`,
     endDate && `${toDateKey(new Date(endDate))}に所属した選手`,
@@ -109,15 +111,17 @@ const getTransfer = async (
   )
     return undefined;
 
-  return {
-    key: "_id",
-    label: "選手",
-    type: "string",
-    filterable: true,
-    value: playersId,
-    valueLabel: [fromDateRange.label],
-    operator: "equals",
-  };
+  return [
+    {
+      key: "_id",
+      label: "選手",
+      type: "string",
+      filterable: true,
+      value: playersId,
+      valueLabel: [fromDateRange.label],
+      operator: "equals",
+    },
+  ];
 };
 
 export const setPlayerQuickFilter = async (

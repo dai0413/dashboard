@@ -19,7 +19,7 @@ export const useMatchEventType = (): {
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const read = async (): Promise<FilterableFieldDefinition | undefined> => {
+  const read = async (): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = await readItemsBase<MatchEventType[]>({
       apiInstance: api,
       params: { getAll: true },
@@ -29,16 +29,18 @@ export const useMatchEventType = (): {
     if (!obj) return;
     const matchEventTypes = convert(ModelType.MATCH_EVENT_TYPE, obj.data);
 
-    const filterCondition: FilterableFieldDefinition = {
-      key: "_id",
-      label: "イベントタイプ",
-      operator: "equals",
-      type: "select",
-      value: matchEventTypes.map((t) => t._id),
-      valueLabel: matchEventTypes.map((t) =>
-        createLabel(ModelType.MATCH_EVENT_TYPE, t),
-      ),
-    };
+    const filterCondition: FilterableFieldDefinition[] = [
+      {
+        key: "_id",
+        label: "イベントタイプ",
+        operator: "equals",
+        type: "select",
+        value: matchEventTypes.map((t) => t._id),
+        valueLabel: matchEventTypes.map((t) =>
+          createLabel(ModelType.MATCH_EVENT_TYPE, t),
+        ),
+      },
+    ];
 
     return filterCondition;
   };
