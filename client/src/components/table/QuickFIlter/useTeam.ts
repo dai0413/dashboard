@@ -39,7 +39,7 @@ export const useTeam = (): {
 
   const competitionOnClick = async (
     competition: Competition,
-  ): Promise<FilterableFieldDefinition | undefined> => {
+  ): Promise<FilterableFieldDefinition[] | undefined> => {
     const competitionId = getCompetitionId(competition);
     if (!competitionId) {
       console.error("competition setting error ");
@@ -68,21 +68,23 @@ export const useTeam = (): {
     );
 
     const teams = teamCompetitionSeason.map((t) => t.team);
-    const filterCondition: FilterableFieldDefinition = {
-      key: "_id",
-      label: "チーム",
-      operator: "equals",
-      type: "select",
-      value: teams.map((t) => t.id).filter((id): id is string => Boolean(id)),
-      valueLabel: teams.map((t) => t.label),
-    };
+    const filterCondition: FilterableFieldDefinition[] = [
+      {
+        key: "_id",
+        label: "チーム",
+        operator: "equals",
+        type: "select",
+        value: teams.map((t) => t.id).filter((id): id is string => Boolean(id)),
+        valueLabel: teams.map((t) => t.label),
+      },
+    ];
 
     return filterCondition;
   };
 
   const ageGroupOnClick = async (
     ageGroupKey: string,
-  ): Promise<FilterableFieldDefinition | undefined> => {
+  ): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = ageGroup().find((a) => a.key === ageGroupKey);
 
     const defaultFieldObj = fieldDefinition[ModelType.TEAM]
@@ -91,12 +93,14 @@ export const useTeam = (): {
 
     if (!obj || !defaultFieldObj) return undefined;
 
-    const filterCondition = {
-      ...defaultFieldObj,
-      value: [obj.key],
-      valueLabel: [obj.label],
-      operator: "equals",
-    };
+    const filterCondition = [
+      {
+        ...defaultFieldObj,
+        value: [obj.key],
+        valueLabel: [obj.label],
+        operator: "equals",
+      },
+    ];
 
     return filterCondition;
   };

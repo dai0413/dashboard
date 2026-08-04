@@ -176,7 +176,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
     filterConditions &&
       filterConditions?.length > 0 &&
       handleApplyFilter(filterConditions, sortConditions);
-  }, [filterField]);
+  }, []);
 
   useEffect(() => {
     if (!modelType || !isModelType(modelType)) return;

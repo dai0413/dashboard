@@ -19,7 +19,7 @@ export const useFormation = (): {
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const read = async (): Promise<FilterableFieldDefinition | undefined> => {
+  const read = async (): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = await readItemsBase<Formation[]>({
       apiInstance: api,
       params: { getAll: true },
@@ -30,14 +30,16 @@ export const useFormation = (): {
     const data: Formation[] = obj.data;
     const formations = convert(ModelType.FORMATION, data);
 
-    const filterCondition: FilterableFieldDefinition = {
-      key: "_id",
-      label: "フォーメーション",
-      operator: "equals",
-      type: "select",
-      value: formations.map((t) => t._id),
-      valueLabel: formations.map((t) => createLabel(ModelType.FORMATION, t)),
-    };
+    const filterCondition: FilterableFieldDefinition[] = [
+      {
+        key: "_id",
+        label: "フォーメーション",
+        operator: "equals",
+        type: "select",
+        value: formations.map((t) => t._id),
+        valueLabel: formations.map((t) => createLabel(ModelType.FORMATION, t)),
+      },
+    ];
 
     return filterCondition;
   };

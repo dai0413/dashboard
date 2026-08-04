@@ -3,7 +3,7 @@ import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 export type QuickFilterItem = {
   key: string;
   label: string;
-  filterCondition?: FilterableFieldDefinition;
+  filterCondition?: FilterableFieldDefinition[];
   onClick?: (() => void) | (() => Promise<void>);
   defaultSelect?: boolean;
   removeKey?: string[];

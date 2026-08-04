@@ -27,11 +27,6 @@ export const usePlayerPlotPanel = () => {
   const [playerPlotIsLoading, setPlayerPlotIsLoading] =
     useState<boolean>(false);
 
-  const testParams = {
-    joined_at: ">2025/9/1",
-    left_at: "<2026/7/30",
-  };
-
   const readPlayerPlot = async (
     teamId: string,
     filterConditions?: FilterableFieldDefinition[],
@@ -41,8 +36,12 @@ export const usePlayerPlotPanel = () => {
     const readParams: Record<string, any> = {
       getAll: true,
       team: teamId,
-      ...testParams,
     };
+
+    const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
+    const left_atObj = filterConditions?.find((f) => f.key === "left_at");
+
+    if (!joined_atObj || !left_atObj) return;
 
     if (filterConditions && filterConditions.length > 0) {
       readParams.filters = JSON.stringify(

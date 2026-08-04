@@ -38,15 +38,17 @@ export const setMatchs = async (
     {
       key: "match",
       label: "試合",
-      filterCondition: {
-        key: "_id",
-        label: "試合",
-        type: "string",
-        filterable: true,
-        value,
-        valueLabel,
-        operator: "equals",
-      },
+      filterCondition: [
+        {
+          key: "_id",
+          label: "試合",
+          type: "string",
+          filterable: true,
+          value,
+          valueLabel,
+          operator: "equals",
+        },
+      ],
       defaultSelect: true,
     },
   ];

@@ -32,15 +32,17 @@ export const setTeam = async (
     {
       key: "team",
       label: "チーム",
-      filterCondition: {
-        key: "_id",
-        label: "チーム",
-        type: "string",
-        filterable: true,
-        value,
-        valueLabel,
-        operator: "equals",
-      },
+      filterCondition: [
+        {
+          key: "_id",
+          label: "チーム",
+          type: "string",
+          filterable: true,
+          value,
+          valueLabel,
+          operator: "equals",
+        },
+      ],
       defaultSelect: true,
     },
   ];

@@ -27,7 +27,7 @@ export const setCompetition = async <K extends keyof FormTypeMap>({
   const read = async (
     api: AxiosInstance,
     readParams: Record<string, string>,
-  ): Promise<FilterableFieldDefinition | undefined> => {
+  ): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = await readItemsBase<Competition[]>({
       apiInstance: api,
       params: { getAll: true, ...readParams },
@@ -37,14 +37,16 @@ export const setCompetition = async <K extends keyof FormTypeMap>({
     if (!obj) return;
     const competitions = convert(ModelType.COMPETITION, obj.data);
 
-    const filterCondition: FilterableFieldDefinition = {
-      key: "_id",
-      label: "大会",
-      operator: "equals",
-      type: "select",
-      value: competitions.map((t) => t._id),
-      valueLabel: obj.data.map((t) => createLabel(ModelType.COMPETITION, t)),
-    };
+    const filterCondition: FilterableFieldDefinition[] = [
+      {
+        key: "_id",
+        label: "大会",
+        operator: "equals",
+        type: "select",
+        value: competitions.map((t) => t._id),
+        valueLabel: obj.data.map((t) => createLabel(ModelType.COMPETITION, t)),
+      },
+    ];
 
     return filterCondition;
   };

@@ -1,29 +1,27 @@
 import { FilterableFieldDefinition } from "@dai0413/myorg-shared";
 
 export const toggleQuickFilter = (
-  filterCondition: FilterableFieldDefinition,
+  newFilterConditions: FilterableFieldDefinition[],
   filterConditions: FilterableFieldDefinition[],
   removeKey?: string[],
-) => {
-  const existing = filterConditions.find((f) => f.key === filterCondition.key);
+): FilterableFieldDefinition[] => {
+  // removeKey対象を削除
+  let result = filterConditions.filter((f) => !removeKey?.includes(f.key));
 
-  // すでにあるが別の値 → 更新
-  if (existing) {
-    return filterConditions.map((f) =>
-      f.key === filterCondition.key
-        ? {
-            ...f,
-            ...filterCondition,
-          }
-        : f,
-    );
+  for (const newCondition of newFilterConditions) {
+    const index = result.findIndex((f) => f.key === newCondition.key);
+
+    if (index >= 0) {
+      // 更新
+      result[index] = {
+        ...result[index],
+        ...newCondition,
+      };
+    } else {
+      // 追加
+      result.push(newCondition);
+    }
   }
 
-  // 存在しない → 新規追加
-  const newCondition = [
-    ...filterConditions.filter((p) => !removeKey?.includes(p.key)),
-    filterCondition,
-  ];
-
-  return newCondition;
+  return result;
 };

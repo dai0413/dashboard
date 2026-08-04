@@ -67,7 +67,7 @@ const Matrix = ({
     const matrix = new Map<
       string,
       {
-        appearances: CallUpCircleProps[];
+        appearances: CallUpInfo[];
       }
     >();
 
@@ -76,12 +76,23 @@ const Matrix = ({
 
       const matches = seriesToMatches.get(callUp.series._id) ?? [];
 
-      const appearances: CallUpCircleProps[] =
+      let title = "招集";
+      if (callUp.is_backup) {
+        title = "バックアップ";
+      }
+
+      if (callUp.is_training_partner) {
+        title = "トレーニングパートナー";
+      }
+
+      const appearances: CallUpInfo[] =
         matches.length === 0
           ? [
               {
+                toolTipTitle: title,
+                is_backup: callUp.is_backup,
+                is_training_partner: callUp.is_training_partner,
                 calledUp: true,
-                toolTipTitle: "招集",
               },
             ]
           : matches.map((match) => {
@@ -125,6 +136,8 @@ const Matrix = ({
               }
 
               return {
+                is_backup: callUp.is_backup,
+                is_training_partner: callUp.is_training_partner,
                 matchId: match._id,
                 match,
                 toolTipTitle: title,
@@ -264,7 +277,7 @@ const Matrix = ({
                             arrow
                           >
                             <span>
-                              <CallUpCircle props={appearance} />
+                              <CallUpCircle appearance={appearance} />
                             </span>
                           </Tooltip>
                         );
@@ -283,12 +296,16 @@ const Matrix = ({
 
 export default Matrix;
 
-type CallUpCircleProps = {
+type CallUpInfo = {
+  is_backup: boolean;
+  is_training_partner: boolean;
   calledUp: boolean;
   toolTipTitle: string;
   match?: MatchGet;
   playerAppearance?: PlayerAppearanceGet;
 };
+
+type CallUpCircleProps = Omit<CallUpInfo, "toolTipTitle">;
 
 const COLORS = {
   border: "#d1d5db", // gray-300
@@ -297,19 +314,59 @@ const COLORS = {
   substitute: "#f472b6", // pink-500
 };
 
-type CallupCircleParams = {
-  props: CallUpCircleProps;
+const SIZE = {
+  circle: 20,
+  square: 16,
 };
 
-const CallUpCircle = ({ props }: CallupCircleParams) => {
-  const { calledUp, match, playerAppearance } = props;
+const circleStyle = {
+  width: SIZE.circle,
+  height: SIZE.circle,
+  borderRadius: "50%",
+  border: `2px solid ${COLORS.border}`,
+};
+
+type CallupCircleParams = {
+  appearance: CallUpCircleProps;
+};
+
+const CallUpCircle = ({ appearance }: CallupCircleParams) => {
+  const { is_backup, is_training_partner, calledUp, match, playerAppearance } =
+    appearance;
   // 招集外
   if (!calledUp) {
     return (
       <div
         style={{
-          width: 20,
-          height: 20,
+          width: SIZE.circle,
+          height: SIZE.circle,
+        }}
+      />
+    );
+  }
+
+  // バックアップ
+  if (is_backup) {
+    return (
+      <div
+        style={{
+          ...circleStyle,
+          transform: "rotate(45deg)",
+          background: "white",
+        }}
+      />
+    );
+  }
+
+  // トレーニングパートナー
+  if (is_training_partner) {
+    return (
+      <div
+        style={{
+          width: SIZE.square,
+          height: SIZE.square,
+          border: `2px solid ${COLORS.border}`,
+          background: "white",
         }}
       />
     );
@@ -320,10 +377,7 @@ const CallUpCircle = ({ props }: CallupCircleParams) => {
     return (
       <div
         style={{
-          width: 20,
-          height: 20,
-          borderRadius: "50%",
-          border: `2px solid ${COLORS.border}`,
+          ...circleStyle,
           background: "white",
         }}
       />
@@ -331,14 +385,11 @@ const CallUpCircle = ({ props }: CallupCircleParams) => {
   }
 
   // ベンチ
-  if (playerAppearance?.play_status === "ベンチ") {
+  if (playerAppearance.play_status === "ベンチ") {
     return (
       <div
         style={{
-          width: 20,
-          height: 20,
-          borderRadius: "50%",
-          border: `2px solid ${COLORS.border}`,
+          ...circleStyle,
           background: `${COLORS.bench}`,
         }}
       />
@@ -355,10 +406,7 @@ const CallUpCircle = ({ props }: CallupCircleParams) => {
   return (
     <div
       style={{
-        width: 20,
-        height: 20,
-        borderRadius: "50%",
-        border: "2px solid #d1d5db",
+        ...circleStyle,
         background: `conic-gradient(
       ${color} ${ratio * 360}deg,
       white 0deg

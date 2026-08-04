@@ -37,11 +37,11 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
   if (loading) return null;
 
   const handleOnClick = (
-    filterCondition: FilterableFieldDefinition,
+    newFilterCondition: FilterableFieldDefinition[],
     removeKey?: string[],
   ): void => {
     const newFilterConditions = toggleQuickFilter(
-      filterCondition,
+      newFilterCondition,
       filterConditions,
       removeKey,
     );
