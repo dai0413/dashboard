@@ -25,7 +25,7 @@ const readTransfer = async (
   api: AxiosInstance,
   team: string,
   from_date: string[],
-): Promise<FilterableFieldDefinition | undefined> => {
+): Promise<FilterableFieldDefinition[] | undefined> => {
   const res = await readItemsBase<Transfer[]>({
     apiInstance: api,
     backendRoute: API_PATHS.TRANSFER.ROOT,
@@ -49,16 +49,18 @@ const readTransfer = async (
 
   if (!value) return undefined;
 
-  return {
-    key: "_id",
-    label: label,
-    type: "select",
-    filterKey: "_id",
-    filterable: true,
-    value: value,
-    valueLabel: [`${label}`],
-    operator: "equals",
-  };
+  return [
+    {
+      key: "_id",
+      label: label,
+      type: "select",
+      filterKey: "_id",
+      filterable: true,
+      value: value,
+      valueLabel: [`${label}`],
+      operator: "equals",
+    },
+  ];
 };
 
 export const bulk: FormStep<ModelType.TRANSFER>[] = [

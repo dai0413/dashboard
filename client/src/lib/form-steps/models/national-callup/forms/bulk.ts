@@ -62,16 +62,18 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
           {
             key: "series",
             label: "前回",
-            filterCondition: {
-              key: "series",
-              label: "前回",
-              type: "select",
-              filterKey: "series",
-              filterable: true,
-              value: value,
-              valueLabel: valueLabel,
-              operator: "equals",
-            },
+            filterCondition: [
+              {
+                key: "series",
+                label: "前回",
+                type: "select",
+                filterKey: "series",
+                filterable: true,
+                value: value,
+                valueLabel: valueLabel,
+                operator: "equals",
+              },
+            ],
             defaultSelect: true,
           },
         ],
