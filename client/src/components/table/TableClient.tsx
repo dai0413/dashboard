@@ -10,6 +10,26 @@ import { applyFilterClient } from "../../utils/filter/applyFilterClient";
 import { applySortClient } from "../../utils/sort/applySortClient";
 import { Data } from "../../types/types";
 
+export const trimFilterKey = (
+  fieldDefinitions: FilterableFieldDefinition[],
+): FilterableFieldDefinition[] => {
+  return fieldDefinitions.map((field) => ({
+    ...field,
+    key: field.key?.split(".")[0],
+    filterKey: field.key?.split(".")[0],
+  }));
+};
+
+export const trimSortKey = (
+  fieldDefinitions: SortableFieldDefinition[],
+): SortableFieldDefinition[] => {
+  return fieldDefinitions.map((field) => ({
+    ...field,
+    key: field.key?.split(".")[0],
+    filterKey: field.key?.split(".")[0],
+  }));
+};
+
 const defalut = {
   data: [],
   page: 1,
@@ -58,8 +78,16 @@ const TableClient = <
 
         let processed = [...props.items];
 
-        processed = applyFilterClient(processed, "label", filterConditions);
-        processed = applySortClient(processed, "label", sortConditions);
+        processed = applyFilterClient(
+          processed,
+          "label",
+          trimFilterKey(filterConditions || []),
+        );
+        processed = applySortClient(
+          processed,
+          "label",
+          trimSortKey(sortConditions || []),
+        );
 
         const nextViewOptionData = {
           data: processed,

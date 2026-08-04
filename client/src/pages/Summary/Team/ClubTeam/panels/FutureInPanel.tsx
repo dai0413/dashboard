@@ -1,30 +1,15 @@
-import { GettedModelDataMap, ModelType } from "../../../../../types/models";
+import { ModelType } from "../../../../../types/models";
 import TableClient from "../../../../../components/table/TableClient";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../../lib/model-fields";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../../types/field";
+import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
-import { playerField } from "../constants/field";
 
-const preFutureinFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+const futureInFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["from_date", "player", "from_team", "position"],
   fieldDefinition[ModelType.TRANSFER],
 );
-
-const futureInFieldDefinition: UIFieldDefinition<
-  GettedModelDataMap[ModelType.TRANSFER]
->[] = [
-  ...preFutureinFieldDefinition.filter((d) => d.key !== "player"),
-  {
-    ...preFutureinFieldDefinition.find((d) => d.key === "player"),
-    ...playerField,
-  },
-];
 
 const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {

@@ -1,30 +1,15 @@
-import { GettedModelDataMap, ModelType } from "../../../../../types/models";
+import { ModelType } from "../../../../../types/models";
 import TableClient from "../../../../../components/table/TableClient";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../../lib/model-fields";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../../types/field";
+import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
-import { playerField } from "../constants/field";
 import { UseClubTeamSummary } from "../types";
 
-const prePlayerFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+const playerFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
   ["position", "player", "from_date", "form"],
   fieldDefinition[ModelType.TRANSFER],
 );
-
-const playerFieldDefinition: UIFieldDefinition<
-  GettedModelDataMap[ModelType.TRANSFER]
->[] = [
-  ...prePlayerFieldDefinition.filter((d) => d.key !== "player"),
-  {
-    ...prePlayerFieldDefinition.find((d) => d.key === "player"),
-    ...playerField,
-  },
-];
 
 const PlayerPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
