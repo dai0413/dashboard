@@ -1,5 +1,18 @@
 # 更新履歴
 
+## v3.2.6 #214
+
+### 追加
+
+- 代表選手推移のプロットにfilter, sort機能を追加
+- quickFilterItemにて多数filterConditionを考慮
+
+### 修正・改善
+
+- 多数データ入力時の初期値を空にする(共通値を反映させるため)
+- national-callupの多数入力時、numberフィールドが狭すぎる問題を修正
+- national-match-seriesのサマリーページで、national-callupコンテンツテーブルのpositionフィルターが正しく機能していない問題を修正
+
 ## v2.2.0 #145
 
 ### 追加
