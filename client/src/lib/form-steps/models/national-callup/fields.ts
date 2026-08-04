@@ -18,7 +18,7 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     label: "POS.",
     fieldType: "select",
     valueType: "option",
-    width: "120px",
+    width: "150px",
   },
   player: {
     key: "player",
@@ -47,7 +47,7 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     label: "背番号",
     fieldType: "input",
     valueType: "number",
-    width: "100px",
+    width: "150px",
   },
   is_captain: {
     key: "is_captain",

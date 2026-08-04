@@ -28,7 +28,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     stepLabel: "代表試合シリーズを選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["series"]),
+    fields: getFields(["series", "position_group"]),
     dataSource: DataSource.BULK_COMMON,
     onChange: updateDatesFromSeries,
     createQuickFilterItems: async ({ metaData, api }) => {
