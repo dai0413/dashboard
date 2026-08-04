@@ -125,6 +125,7 @@ const FilterProvider = ({ children }: { children: ReactNode }) => {
     let valueLabel = "";
     switch (field.key) {
       case "position":
+      case "position_group":
         value = valueLabel = "GK";
         break;
       case "form":

@@ -115,6 +115,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
     setItemsPerPage,
     setColumnVisibility,
     setViewMode,
+    setPageNum,
   } = useListView();
 
   const handleApplyFilter = useCallback(
@@ -122,6 +123,8 @@ const TableContainer = <K extends Record<string, unknown>, F>({
       filterConditions: FilterableFieldDefinition[],
       sortConditions: SortableFieldDefinition[],
     ) => {
+      setPageNum(1);
+
       const forceFilterConditions = filterField
         ? filterField.filter((f) => !!f.value)
         : null;
