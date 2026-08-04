@@ -1,4 +1,8 @@
-import { OptionArray } from "@dai0413/myorg-shared";
+import {
+  FilterableFieldDefinition,
+  OptionArray,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
 
 export type PanelSummary<T> = {
   text?: string;
@@ -6,6 +10,17 @@ export type PanelSummary<T> = {
   items: T;
   isLoading?: boolean;
   reloadFun?: () => Promise<void>;
+};
+
+export type ServerDepPanelSummary<T> = {
+  text?: string;
+  key: string;
+  items: T;
+  isLoading: boolean;
+  reloadFun: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
 };
 
 export type TabState<T> = {

@@ -35,6 +35,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
     nationalMatchSeries,
     playerAppearance,
     readPlayerPlot,
+    playerPlotIsLoading,
   } = usePlayerPlotPanel();
 
   useEffect(() => {
@@ -87,12 +88,14 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
       playerPlot: {
         key: `${selectedTab}`,
         text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
+        isLoading: playerPlotIsLoading,
         items: {
           nationalCallUp,
           nationalMatchSeries,
           playerAppearance,
         },
-        reloadFun: async () => readPlayerPlot(id),
+        reloadFun: async (filterConditions, sortConditions) =>
+          readPlayerPlot(id, filterConditions, sortConditions),
       },
     },
   };

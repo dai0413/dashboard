@@ -1,7 +1,7 @@
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
-import { PanelSummary, UseSummary } from "../../types";
+import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
 
 export const NATIONAL_TEAM_TAB = {
   SERIES: "series",
@@ -18,7 +18,7 @@ type NationalTeamPanels = {
   player: PanelSummary<GettedModelDataMap[ModelType.PLAYER][]>;
   series: PanelSummary<GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES][]>;
 
-  playerPlot: PanelSummary<{
+  playerPlot: ServerDepPanelSummary<{
     nationalCallUp: NationalCallup[];
     nationalMatchSeries: NationalMatchSeries[];
     playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
