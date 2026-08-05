@@ -200,6 +200,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         }}
         renderView={() => (
           <Matrix
+            playerStatistics={items.playerStatistics}
             nationalCallUp={items.nationalCallUp}
             nationalMatchSeries={items.nationalMatchSeries}
             playerAppearance={items.playerAppearance}

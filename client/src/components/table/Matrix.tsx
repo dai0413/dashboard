@@ -1,32 +1,116 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { Tooltip } from "@mui/material";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { PlayerAppearanceGet } from "../../types/models/player-appearance";
 import { MatchGet } from "../../types/models/match";
 import { ModelType } from "../../types/models";
 import { convert } from "../../lib/convert/DBtoGetted";
 import { MatrixParams } from "../../types/table/matrix";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { positionColorMap } from "../../styles/colors";
+
+const sortDob = (a: PlayerStatistic, b: PlayerStatistic) => {
+  if (!a.player.dob && !b.player.dob) return 0;
+  if (!a.player.dob) return 1;
+  if (!b.player.dob) return -1;
+
+  return new Date(a.player.dob).getTime() - new Date(b.player.dob).getTime();
+};
+
+const displayPositions = [
+  {
+    key: "GK",
+    label: "ゴールキーパー",
+    color: positionColorMap.GK,
+    positions: ["GK"],
+  },
+  {
+    key: "CB",
+    label: "センターバック",
+    color: positionColorMap.CB,
+    positions: ["CB", "RCB", "LCB"],
+  },
+  {
+    key: "SB",
+    label: "サイドバック",
+    color: positionColorMap.SB,
+    positions: ["RSB", "LSB"],
+  },
+  {
+    key: "WB",
+    label: "ウイングバック",
+    color: positionColorMap.WB,
+    positions: ["RWB", "LWB"],
+  },
+  {
+    key: "CM",
+    label: "ボランチ",
+    color: positionColorMap.CM,
+    positions: ["RCM", "LCM", "DM"],
+  },
+  {
+    key: "OM",
+    label: "トップ下",
+    color: positionColorMap.OM,
+    positions: ["OM", "RST", "LST", "RIH", "LIH"],
+  },
+  {
+    key: "WG",
+    label: "ウイング",
+    color: positionColorMap.WG,
+    positions: ["RSH", "LSH", "RWG", "LWG"],
+  },
+  {
+    key: "CF",
+    label: "センターフォワード",
+    color: positionColorMap.CF,
+    positions: ["RCF", "LCF", "CF"],
+  },
+];
+
+type GroupedPlayers = {
+  key: string;
+  label: string;
+  color?: string;
+  positions?: string[];
+  players: PlayerStatistic[];
+};
 
 const Matrix = ({
+  playerStatistics,
   nationalCallUp,
   nationalMatchSeries,
   playerAppearance,
 }: MatrixParams) => {
-  const { players, seriesList, matrix } = useMemo(() => {
+  const { groupedPlayers, seriesList, matrix } = useMemo(() => {
     // 選手一覧（重複除去）
-    const uniquePlayers = Array.from(
-      new Map(nationalCallUp.map((v) => [v.player._id, v.player])).values(),
+    const uniquePlayerStatistics = Array.from(
+      new Map(playerStatistics.map((v) => [v.player._id, v])).values(),
     );
-    const players = [
-      ...uniquePlayers.sort((a, b) => {
-        if (!a.dob && !b.dob) return 0;
-        if (!a.dob) return 1;
-        if (!b.dob) return -1;
 
-        return new Date(a.dob).getTime() - new Date(b.dob).getTime();
+    const hasPositionPlayers: GroupedPlayers[] = displayPositions.map(
+      (group) => ({
+        ...group,
+        players: uniquePlayerStatistics
+          .filter(
+            (p) => p.mainPosition && group.positions.includes(p.mainPosition),
+          )
+          .sort((a, b) => sortDob(a, b)),
       }),
+    );
+
+    const noPositionPlayers: GroupedPlayers[] = [
+      {
+        key: "no-pos",
+        label: "データなし",
+        players: uniquePlayerStatistics
+          .filter((p) => !p.mainPosition)
+          .sort((a, b) => sortDob(a, b)),
+      },
     ];
+
+    const groupedPlayers = [...hasPositionPlayers, ...noPositionPlayers];
 
     // series一覧
     const seriesList = [
@@ -152,41 +236,25 @@ const Matrix = ({
     });
 
     return {
-      players,
+      groupedPlayers,
       seriesList,
       matrix,
     };
   }, [nationalCallUp, nationalMatchSeries, playerAppearance]);
 
   return (
-    <div
-      style={{
-        maxHeight: "80vh",
-        overflowX: "auto",
-        maxWidth: "100%",
-        border: "1px solid #ddd",
-      }}
-    >
-      <table
-        style={{
-          borderCollapse: "collapse",
-        }}
-      >
+    <div className="max-h-[80vh] max-w-full overflow-auto rounded-md border border-gray-300">
+      <table className="border-collapse">
         <thead>
           <tr>
             <th
-              style={{
-                border: "1px solid #ddd",
-                padding: "2px 12px",
-                position: "sticky",
-                left: 0,
-                top: 0,
-                background: "#fff",
-                zIndex: 4,
-
-                minWidth: "140px",
-                whiteSpace: "nowrap",
-              }}
+              className="
+                sticky top-0 left-0 z-40
+                min-w-[140px] whitespace-nowrap
+                border border-gray-300
+                bg-white
+                px-3 py-0.5
+              "
             >
               選手
             </th>
@@ -194,19 +262,17 @@ const Matrix = ({
             {seriesList.map((series) => (
               <th
                 key={series._id}
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "5px",
-                  minWidth: "80px",
-                  position: "sticky",
-                  top: 0,
-                  background: "#fff",
-                  zIndex: 3,
-                }}
+                className="
+                  sticky top-0 z-30
+                  min-w-[80px]
+                  border border-gray-300
+                  bg-white
+                  p-1
+                "
               >
                 <Link
                   to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${series._id}`}
-                  className="hover:text-blue-600 underline"
+                  className="underline hover:text-blue-600"
                 >
                   {series.name}
                 </Link>
@@ -214,79 +280,83 @@ const Matrix = ({
             ))}
           </tr>
         </thead>
-
         <tbody>
-          {players.map((player, index) => (
-            <tr
-              key={player._id}
-              style={{
-                background: index % 2 === 0 ? "#fafafa" : "#fff",
-              }}
-            >
-              <td
-                style={{
-                  border: "1px solid #ddd",
-                  padding: "2px 12px",
-                  position: "sticky",
-                  left: 0,
-                  background: index % 2 === 0 ? "#fafafa" : "#fff",
-                  fontWeight: 600,
-
-                  minWidth: "140px",
-                  whiteSpace: "nowrap",
-                  zIndex: 1,
-                }}
-              >
-                <Link
-                  to={`${APP_ROUTES.PLAYER_SUMMARY}/${player._id}`}
-                  className="hover:text-blue-600 underline"
+          {groupedPlayers.map((group) => (
+            <React.Fragment key={group.key}>
+              <tr>
+                <td
+                  className="
+                    sticky left-0 z-20
+                    min-w-[140px]
+                    border border-gray-300
+                    bg-gray-100
+                    px-5 py-1.5
+                    font-bold
+                    whitespace-nowrap
+                  "
                 >
-                  {player.name}
-                </Link>
-              </td>
+                  {group.label} ({group.players.length})
+                </td>
 
-              {seriesList.map((series, i) => {
-                const value = matrix.get(`${player._id}-${series._id}`) ?? {
-                  appearances: [],
-                };
-
-                return (
+                {seriesList.map((series) => (
                   <td
-                    key={`${i}`}
-                    style={{
-                      border: "1px solid #ddd",
-                      padding: "4px",
-                      textAlign: "center",
-                      width: "50px",
-                      height: "20px",
-                    }}
+                    key={series._id}
+                    className="border-y border-gray-300 bg-gray-100"
+                  />
+                ))}
+              </tr>
+
+              {group.players.map((player, index) => (
+                <tr key={player.player._id}>
+                  <td
+                    className={`
+                      sticky left-0 z-10
+                      min-w-[140px] whitespace-nowrap
+                      border border-gray-300
+                      px-5 py-0.5
+                      font-semibold
+                      ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                    `}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: 4,
-                        flexWrap: "wrap",
-                      }}
+                    <Link
+                      to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
+                      className="underline hover:text-blue-600"
                     >
-                      {value.appearances.map((appearance, i) => {
-                        return (
-                          <Tooltip
-                            key={`${i}`}
-                            title={appearance.toolTipTitle}
-                            arrow
-                          >
-                            <span>
-                              <CallUpCircle appearance={appearance} />
-                            </span>
-                          </Tooltip>
-                        );
-                      })}
-                    </div>
+                      {player.player.name}
+                    </Link>
                   </td>
-                );
-              })}
-            </tr>
+
+                  {seriesList.map((series) => {
+                    const value = matrix.get(
+                      `${player.player._id}-${series._id}`,
+                    ) ?? {
+                      appearances: [],
+                    };
+
+                    return (
+                      <td
+                        key={series._id}
+                        className={`border border-gray-300 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                      >
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {value.appearances.map((appearance, i) => (
+                            <Tooltip
+                              key={i}
+                              title={appearance.toolTipTitle}
+                              arrow
+                            >
+                              <span>
+                                <CallUpCircle appearance={appearance} />
+                              </span>
+                            </Tooltip>
+                          ))}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

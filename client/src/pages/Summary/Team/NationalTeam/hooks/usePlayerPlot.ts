@@ -4,6 +4,7 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
 import { readItemsBase } from "../../../../../lib/api";
@@ -26,6 +27,9 @@ export const usePlayerPlotPanel = () => {
   >([]);
   const [playerPlotIsLoading, setPlayerPlotIsLoading] =
     useState<boolean>(false);
+  const [playerStatistics, setPlayerStatistics] = useState<PlayerStatistic[]>(
+    [],
+  );
 
   const readPlayerPlot = async (
     teamId: string,
@@ -73,6 +77,20 @@ export const usePlayerPlotPanel = () => {
 
     if (nationalCallupRes?.data) setNationalCallUp(nationalCallupRes.data);
 
+    const playerIds: string[] = [
+      ...new Set((nationalCallupRes?.data ?? []).map((d) => d.player._id)),
+    ];
+
+    const playerStatistic = await readItemsBase<PlayerStatistic[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
+      params: { player: playerIds },
+    });
+
+    if (playerStatistic?.data) {
+      setPlayerStatistics(playerStatistic.data);
+    }
+
     const matchIds = [
       ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
     ];
@@ -100,6 +118,7 @@ export const usePlayerPlotPanel = () => {
     nationalCallUp,
     nationalMatchSeries,
     playerAppearance,
+    playerStatistics,
     playerPlotIsLoading,
     readPlayerPlot,
   };

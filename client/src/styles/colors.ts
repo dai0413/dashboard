@@ -34,40 +34,17 @@ export const colorMap = {
   },
 };
 
-// // client/src/styles/colors.ts
-// const colors = {
-//   // ブランドカラー
-//   primary: "#1E40AF",
-//   secondary: "#FBBF24",
-//   accent: "#10B981",
-
-//   // UI 状態色
-//   success: "#22C55E",
-//   warning: "#F97316",
-//   error: "#EF4444",
-//   info: "#3B82F6",
-
-//   // テキストカラー
-//   text: {
-//     base: "#111827",
-//     muted: "#6B7280",
-//     inverted: "#FFFFFF",
-//   },
-
-//   // 背景カラー
-//   background: {
-//     default: "#FFFFFF",
-//     soft: "#F9FAFB",
-//     subtle: "#F3F4F6",
-//   },
-
-//   // ボーダーなど
-//   border: {
-//     default: "#E5E7EB",
-//     strong: "#D1D5DB",
-//   },
-
-//   // その他のカスタム色
-// };
-
-// export default colors;
+export const positionColorMap = {
+  GK: "#E91E63",
+  CB: "#1565C0",
+  SB: "#29B6F6",
+  DM: "#FB8C00",
+  CM: "#FB8C00",
+  WB: "#4FC3F7",
+  IH: "#FFB300",
+  OM: "#FDD835",
+  SH: "#66BB6A",
+  WG: "#43A047",
+  ST: "#9CCC65",
+  CF: "#2E7D32",
+};

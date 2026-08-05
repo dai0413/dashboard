@@ -34,6 +34,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
     nationalCallUp,
     nationalMatchSeries,
     playerAppearance,
+    playerStatistics,
     readPlayerPlot,
     playerPlotIsLoading,
   } = usePlayerPlotPanel();
@@ -90,6 +91,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
         text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
         isLoading: playerPlotIsLoading,
         items: {
+          playerStatistics,
           nationalCallUp,
           nationalMatchSeries,
           playerAppearance,
