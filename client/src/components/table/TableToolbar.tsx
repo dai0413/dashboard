@@ -377,189 +377,194 @@ const TableToolbar = <Data, Form>({
   };
 
   return (
-    <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
-      {/* 左側：フィルター・行間・ソート */}
+    <div>
+      <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
+        {/* 左側：フィルター・行間・ソート */}
 
-      <div className="flex flex-wrap items-center gap-4">
-        {/* 行間操作ボタン */}
-        <div className="flex">
-          <button
-            onClick={() => setRowSpacing("wide")}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-              rowSpacing === "wide"
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
-          >
-            <Bars2Icon className="w-6 h-6" />
-            <span className="hidden lg:inline">広い</span>
-          </button>
-          <button
-            onClick={() => setRowSpacing("narrow")}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-              rowSpacing === "narrow"
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
-          >
-            <Bars3Icon className="w-6 h-6" />
-            <span className="hidden lg:inline">狭い</span>
-          </button>
-        </div>
-        {/* 表示方式ボタン */}
-        <div className="flex">
-          <button
-            onClick={onClickTable}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-              viewMode === "table"
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
-          >
-            <TableCellsIcon className="w-6 h-6" />
-            <span className="hidden lg:inline">テーブル</span>
-          </button>
-          <button
-            onClick={onClickTile}
-            className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-              viewMode === "tile"
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
-          >
-            <Squares2X2Icon className="w-6 h-6" />
-            <span className="hidden lg:inline">タイル</span>
-          </button>
-        </div>
-
-        <div className="relative" ref={fieldSelectRef}>
-          <button
-            onClick={() => setIsFieldSelectOpen((prev) => !prev)}
-            className="cursor-pointer flex items-center gap-x-2"
-          >
-            <ViewColumnsIcon className="w-6 h-6" />
-            <span className="hidden lg:inline">フィールド</span>
-          </button>
-
-          {isFieldSelectOpen && (
-            <DropDownMenu menuItems={fieldSelectMenuItems} />
-          )}
-        </div>
-
-        <button
-          className="cursor-pointer flex items-center gap-x-2 relative"
-          onClick={() => openSort()}
-        >
-          <AdjustmentsVerticalIcon className="w-6 h-6" />
-          {sortConditions.filter((c) => typeof c.asc === "boolean").length >
-            0 && (
-            <span
-              className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
-      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
+        <div className="flex flex-wrap items-center gap-4">
+          {/* 行間操作ボタン */}
+          <div className="flex">
+            <button
+              onClick={() => setRowSpacing("wide")}
+              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+                rowSpacing === "wide"
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
             >
-              {sortConditions.filter((c) => typeof c.asc === "boolean").length}
-            </span>
-          )}
-          <span className="hidden lg:inline">ソート</span>
-        </button>
-
-        {/* フィルターを開くボタン */}
-        <button
-          className="cursor-pointer flex items-center gap-x-2 relative"
-          onClick={() => openFilter()}
-        >
-          <FunnelIcon className="w-6 h-6" />
-          {filterConditions.length > 0 && (
-            <span
-              className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
-      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
+              <Bars2Icon className="w-6 h-6" />
+              <span className="hidden lg:inline">広い</span>
+            </button>
+            <button
+              onClick={() => setRowSpacing("narrow")}
+              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+                rowSpacing === "narrow"
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
             >
-              {filterConditions.length}
-            </span>
-          )}
-          <span className="hidden lg:inline">フィルター</span>
-        </button>
+              <Bars3Icon className="w-6 h-6" />
+              <span className="hidden lg:inline">狭い</span>
+            </button>
+          </div>
+          {/* 表示方式ボタン */}
+          <div className="flex">
+            <button
+              onClick={onClickTable}
+              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+                viewMode === "table"
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
+            >
+              <TableCellsIcon className="w-6 h-6" />
+              <span className="hidden lg:inline">テーブル</span>
+            </button>
+            <button
+              onClick={onClickTile}
+              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+                viewMode === "tile"
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
+            >
+              <Squares2X2Icon className="w-6 h-6" />
+              <span className="hidden lg:inline">タイル</span>
+            </button>
+          </div>
 
-        <div className="flex">
-          {quickFilterItems.length > 0 && (
-            <QuickFilterBar
-              items={quickFilterItems}
-              loading={false}
-              reloadFun={reloadFun}
-            />
-          )}
-        </div>
-      </div>
+          <div className="relative" ref={fieldSelectRef}>
+            <button
+              onClick={() => setIsFieldSelectOpen((prev) => !prev)}
+              className="cursor-pointer flex items-center gap-x-2"
+            >
+              <ViewColumnsIcon className="w-6 h-6" />
+              <span className="hidden lg:inline">フィールド</span>
+            </button>
 
-      <div className="flex items-center gap-x-4">
-        {/* リロード */}
-        {reloadFun && (
+            {isFieldSelectOpen && (
+              <DropDownMenu menuItems={fieldSelectMenuItems} />
+            )}
+          </div>
+
           <button
-            className="cursor-pointer flex items-center gap-x-2"
-            onClick={() => reloadFun(filterConditions, sortConditions)}
+            className="cursor-pointer flex items-center gap-x-2 relative"
+            onClick={() => openSort()}
           >
-            <ArrowPathIcon className="w-6 h-6" />
-            <span className="hidden lg:inline">リロード</span>
-          </button>
-        )}
-
-        {modelType && (staffState.admin || isDev) && (
-          <>
-            {items && items.length > 0 && (
-              <div className="relative inline-block text-left">
-                <button
-                  onClick={startUpdates}
-                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                  type="button"
-                >
-                  <PencilSquareIcon className="w-8 h-8" />
-                  <span className="hidden lg:inline">修正</span>
-                </button>
-              </div>
-            )}
-            {items && items.length > 0 && (
-              <div className="relative inline-block text-left">
-                <button
-                  onClick={deleteOnClick}
-                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                  type="button"
-                >
-                  <TrashIcon className="w-8 h-8" />
-                  <span className="hidden lg:inline">削除</span>
-                </button>
-              </div>
-            )}
-            {/* 右側：新規追加ボタン */}
-            {hasFormSteps && (
-              <AddButton
-                menuItems={menuItems}
-                dropdownRef={addDropdownRef}
-                isAddDropDownOpen={isAddDropDownOpen}
-                setIsAddDropDownOpen={setIsAddDropDownOpen}
-                openForm={openForm}
-              />
-            )}
-            {/* 右側：フォルダーボタン */}
-            {(uploadFile || downloadFile) && (
-              <div
-                ref={folderDropdownRef}
-                className="relative inline-block text-left"
+            <AdjustmentsVerticalIcon className="w-6 h-6" />
+            {sortConditions.filter((c) => typeof c.asc === "boolean").length >
+              0 && (
+              <span
+                className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
+      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
               >
-                <button
-                  onClick={() => setIsFolderOpen(!isFolderOpen)}
-                  className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                  type="button"
-                >
-                  <FolderPlusIcon className="w-8 h-8" />
-                  <span className="hidden lg:inline">CSV</span>
-                </button>
-
-                {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
-              </div>
+                {
+                  sortConditions.filter((c) => typeof c.asc === "boolean")
+                    .length
+                }
+              </span>
             )}
-          </>
-        )}
+            <span className="hidden lg:inline">ソート</span>
+          </button>
+
+          {/* フィルターを開くボタン */}
+          <button
+            className="cursor-pointer flex items-center gap-x-2 relative"
+            onClick={() => openFilter()}
+          >
+            <FunnelIcon className="w-6 h-6" />
+            {filterConditions.length > 0 && (
+              <span
+                className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
+      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
+              >
+                {filterConditions.length}
+              </span>
+            )}
+            <span className="hidden lg:inline">フィルター</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-x-4">
+          {/* リロード */}
+          {reloadFun && (
+            <button
+              className="cursor-pointer flex items-center gap-x-2"
+              onClick={() => reloadFun(filterConditions, sortConditions)}
+            >
+              <ArrowPathIcon className="w-6 h-6" />
+              <span className="hidden lg:inline">リロード</span>
+            </button>
+          )}
+
+          {modelType && (staffState.admin || isDev) && (
+            <>
+              {items && items.length > 0 && (
+                <div className="relative inline-block text-left">
+                  <button
+                    onClick={startUpdates}
+                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                    type="button"
+                  >
+                    <PencilSquareIcon className="w-8 h-8" />
+                    <span className="hidden lg:inline">修正</span>
+                  </button>
+                </div>
+              )}
+              {items && items.length > 0 && (
+                <div className="relative inline-block text-left">
+                  <button
+                    onClick={deleteOnClick}
+                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                    type="button"
+                  >
+                    <TrashIcon className="w-8 h-8" />
+                    <span className="hidden lg:inline">削除</span>
+                  </button>
+                </div>
+              )}
+              {/* 右側：新規追加ボタン */}
+              {hasFormSteps && (
+                <AddButton
+                  menuItems={menuItems}
+                  dropdownRef={addDropdownRef}
+                  isAddDropDownOpen={isAddDropDownOpen}
+                  setIsAddDropDownOpen={setIsAddDropDownOpen}
+                  openForm={openForm}
+                />
+              )}
+              {/* 右側：フォルダーボタン */}
+              {(uploadFile || downloadFile) && (
+                <div
+                  ref={folderDropdownRef}
+                  className="relative inline-block text-left"
+                >
+                  <button
+                    onClick={() => setIsFolderOpen(!isFolderOpen)}
+                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
+                    type="button"
+                  >
+                    <FolderPlusIcon className="w-8 h-8" />
+                    <span className="hidden lg:inline">CSV</span>
+                  </button>
+
+                  {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
+
+      {quickFilterItems.length > 0 && (
+        <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
+          <QuickFilterBar
+            items={quickFilterItems}
+            loading={false}
+            reloadFun={reloadFun}
+          />
+        </div>
+      )}
     </div>
   );
 };
