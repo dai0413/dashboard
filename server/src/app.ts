@@ -6,9 +6,17 @@ import "express-async-errors";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import qs from "qs";
+
 const app = express();
 
 const CLIENT_URLS = process.env.CLIENT_URL?.split(",");
+
+app.set("query parser", (str: string) =>
+  qs.parse(str, {
+    arrayLimit: 1000,
+  }),
+);
 
 app.use(
   cors({
