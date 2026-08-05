@@ -193,6 +193,11 @@ export const API_PATHS = {
         `/aggregate/transfer/current-loans/${id}`,
       NO_NUMBER: "/aggregate/transfer/no-number",
     },
+
+    PLAYER: {
+      ROOT: "aggregate/player",
+      STATISTICS: "aggregate/player/statistics",
+    },
   },
 
   UPLOAD_STATUS: (jobId: string = ":id") => `/upload-status/${jobId}`,
