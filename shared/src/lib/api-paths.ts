@@ -195,8 +195,8 @@ export const API_PATHS = {
     },
 
     PLAYER: {
-      ROOT: "aggregate/player",
-      STATISTICS: "aggregate/player/statistics",
+      ROOT: "/aggregate/player",
+      STATISTICS: "/aggregate/player/statistics",
     },
   },
 
