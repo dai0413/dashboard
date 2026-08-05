@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { Tooltip } from "@mui/material";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { PlayerAppearanceGet } from "../../types/models/player-appearance";
 import { MatchGet } from "../../types/models/match";
 import { ModelType } from "../../types/models";
@@ -9,6 +9,8 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { MatrixParams } from "../../types/table/matrix";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { positionColorMap } from "../../styles/colors";
+import { useFilter } from "../../context/filter-context";
+import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 
 const sortDob = (a: PlayerStatistic, b: PlayerStatistic) => {
   if (!a.player.dob && !b.player.dob) return 0;
@@ -16,6 +18,50 @@ const sortDob = (a: PlayerStatistic, b: PlayerStatistic) => {
   if (!b.player.dob) return -1;
 
   return new Date(a.player.dob).getTime() - new Date(b.player.dob).getTime();
+};
+
+const calcAge = (dob: Date, base: Date): number => {
+  const birthYear = dob.getUTCFullYear();
+  const birthMonth = dob.getUTCMonth();
+  const birthDate = dob.getUTCDate();
+
+  let age = base.getFullYear() - birthYear;
+
+  const hasBirthdayPassed =
+    base.getMonth() > birthMonth ||
+    (base.getMonth() === birthMonth && base.getDate() >= birthDate);
+
+  if (!hasBirthdayPassed) {
+    age--;
+  }
+
+  return age;
+};
+
+const getAgeLabel = (
+  birthDate: Date,
+  startBaseDate?: Date,
+  endBaseDate?: Date,
+) => {
+  const startAge = startBaseDate
+    ? calcAge(birthDate, startBaseDate)
+    : undefined;
+
+  const endAge = endBaseDate ? calcAge(birthDate, endBaseDate) : undefined;
+
+  if (startAge !== undefined && endAge !== undefined) {
+    return startAge === endAge ? `${startAge}歳` : `${startAge}→${endAge}歳`;
+  }
+
+  if (startAge !== undefined) {
+    return `${startAge}歳`;
+  }
+
+  if (endAge !== undefined) {
+    return `${endAge}歳`;
+  }
+
+  return "";
 };
 
 const displayPositions = [
@@ -69,6 +115,8 @@ const displayPositions = [
   },
 ];
 
+const positionOptions: string[] = displayPositions.map((d) => d.key);
+
 type GroupedPlayers = {
   key: string;
   label: string;
@@ -83,6 +131,54 @@ const Matrix = ({
   nationalMatchSeries,
   playerAppearance,
 }: MatrixParams) => {
+  const { filterConditions } = useFilter();
+
+  const { startBaseDate, endBaseDate } = useMemo(() => {
+    let startBaseDate: Date | undefined;
+    let endBaseDate: Date | undefined;
+
+    filterConditions?.forEach((filterCondition) => {
+      if (filterCondition.key === "joined_at" && filterCondition.value) {
+        const value = filterCondition.value[0];
+
+        if (typeof value !== "boolean") {
+          startBaseDate = new Date(value);
+        }
+      }
+
+      if (filterCondition.key === "left_at" && filterCondition.value) {
+        const value = filterCondition.value[0];
+
+        if (typeof value !== "boolean") {
+          endBaseDate = new Date(value);
+        }
+      }
+    });
+
+    return {
+      startBaseDate,
+      endBaseDate,
+    };
+  }, [filterConditions]);
+
+  const [openPositions, setOpenPositions] = useState<Set<string>>(
+    new Set([...positionOptions, "no-pos"]),
+  );
+
+  const togglePosition = (key: string) => {
+    setOpenPositions((prev) => {
+      const next = new Set(prev);
+
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+
+      return next;
+    });
+  };
+
   const { groupedPlayers, seriesList, matrix } = useMemo(() => {
     // 選手一覧（重複除去）
     const uniquePlayerStatistics = Array.from(
@@ -110,7 +206,9 @@ const Matrix = ({
       },
     ];
 
-    const groupedPlayers = [...hasPositionPlayers, ...noPositionPlayers];
+    const groupedPlayers = [...hasPositionPlayers, ...noPositionPlayers].filter(
+      (group) => group.players.length > 0,
+    );
 
     // series一覧
     const seriesList = [
@@ -250,13 +348,21 @@ const Matrix = ({
             <th
               className="
                 sticky top-0 left-0 z-40
-                min-w-[140px] whitespace-nowrap
+                min-w-[180px] whitespace-nowrap
                 border border-gray-300
                 bg-white
-                px-3 py-0.5
+                px-3 py-1
               "
             >
-              選手
+              <div>選手</div>
+
+              {(startBaseDate || endBaseDate) && (
+                <div className="text-xs font-normal text-gray-500">
+                  {startBaseDate && `${toDateKey(startBaseDate)}時点`}
+                  {startBaseDate && endBaseDate && " → "}
+                  {endBaseDate && `${toDateKey(endBaseDate)}時点`}
+                </div>
+              )}
             </th>
 
             {seriesList.map((series) => (
@@ -293,8 +399,13 @@ const Matrix = ({
                     px-5 py-1.5
                     font-bold
                     whitespace-nowrap
+                    hover:cursor-pointer
                   "
+                  onClick={() => togglePosition(group.key)}
                 >
+                  <span className="mr-2">
+                    {openPositions.has(group.key) ? "▼" : "▶"}
+                  </span>
                   {group.label} ({group.players.length})
                 </td>
 
@@ -306,10 +417,11 @@ const Matrix = ({
                 ))}
               </tr>
 
-              {group.players.map((player, index) => (
-                <tr key={player.player._id}>
-                  <td
-                    className={`
+              {openPositions.has(group.key) &&
+                group.players.map((player, index) => (
+                  <tr key={player.player._id}>
+                    <td
+                      className={`
                       sticky left-0 z-10
                       min-w-[140px] whitespace-nowrap
                       border border-gray-300
@@ -317,45 +429,53 @@ const Matrix = ({
                       font-semibold
                       ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                     `}
-                  >
-                    <Link
-                      to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
-                      className="underline hover:text-blue-600"
                     >
-                      {player.player.name}
-                    </Link>
-                  </td>
-
-                  {seriesList.map((series) => {
-                    const value = matrix.get(
-                      `${player.player._id}-${series._id}`,
-                    ) ?? {
-                      appearances: [],
-                    };
-
-                    return (
-                      <td
-                        key={series._id}
-                        className={`border border-gray-300 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                      <Link
+                        to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
+                        className="underline hover:text-blue-600"
                       >
-                        <div className="flex flex-wrap justify-center gap-1">
-                          {value.appearances.map((appearance, i) => (
-                            <Tooltip
-                              key={i}
-                              title={appearance.toolTipTitle}
-                              arrow
-                            >
-                              <span>
-                                <CallUpCircle appearance={appearance} />
-                              </span>
-                            </Tooltip>
-                          ))}
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+                        {player.player.name}
+                      </Link>
+                      <span className="ml-1 text-sm text-gray-500">
+                        {player.player.dob &&
+                          getAgeLabel(
+                            new Date(player.player.dob),
+                            startBaseDate,
+                            endBaseDate,
+                          )}
+                      </span>
+                    </td>
+
+                    {seriesList.map((series) => {
+                      const value = matrix.get(
+                        `${player.player._id}-${series._id}`,
+                      ) ?? {
+                        appearances: [],
+                      };
+
+                      return (
+                        <td
+                          key={series._id}
+                          className={`border border-gray-300 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                        >
+                          <div className="flex flex-wrap justify-center gap-1">
+                            {value.appearances.map((appearance, i) => (
+                              <Tooltip
+                                key={i}
+                                title={appearance.toolTipTitle}
+                                arrow
+                              >
+                                <span>
+                                  <CallUpCircle appearance={appearance} />
+                                </span>
+                              </Tooltip>
+                            ))}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
             </React.Fragment>
           ))}
         </tbody>
