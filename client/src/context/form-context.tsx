@@ -291,6 +291,7 @@ export const FormProvider = <T extends ModelType>({
     }
 
     let newFormData: FormTypeMap[T] = {};
+    let newFormDatas = [newFormData];
     let newMetaData: Record<string, any> =
       args.formMode === FormMode.CREATE &&
       args.initialData &&
@@ -316,6 +317,13 @@ export const FormProvider = <T extends ModelType>({
       if (modelType === ModelType.MATCH_FORMAT) {
         const matchFormatEditItem =
           args.editItem as GettedModelDataMap[ModelType.MATCH_FORMAT];
+        const dat = args.editItem && {
+          ...getDefault(ModelType.MATCH_FORMAT),
+          ...convertGettedToForm(ModelType.MATCH_FORMAT, matchFormatEditItem),
+        };
+        const periodArray = dat && "period" in dat ? dat["period"] || [] : [];
+
+        newFormDatas = periodArray as FormTypeMap[ModelType.MATCH_FORMAT][];
 
         const { period, ...data } = matchFormatEditItem;
         newFormData = convertGettedToForm(ModelType.MATCH_FORMAT, {
@@ -347,26 +355,50 @@ export const FormProvider = <T extends ModelType>({
         },
       );
 
+      newFormDatas = newOriginalDatas;
       setOriginalDatas(newOriginalDatas);
     }
 
     let newFormLabel = await resolveForeignKeyLabels(api, newFormData);
+    let newFormLabels = await Promise.all(
+      newFormDatas.map((data) => resolveForeignKeyLabels(api, data)),
+    );
     let newMetaDataLabel = await resolveForeignKeyLabels(api, newMetaData);
 
-    let updatingValues: FormState<T> = {
-      formData: newFormData,
-      formLabel: newFormLabel,
-      bulkCommonData: args.inputMode === InputMode.MANY ? newFormData : {},
-      bulkCommonLabel: args.inputMode === InputMode.MANY ? newFormLabel : {},
-      formDatas: [],
-      formLabels: [],
-      metaData: newMetaData,
-      metaDataLabel: newMetaDataLabel,
-      metaDatas: [],
-      metaDataLabels: [],
-      draftData: {},
-      postedDraftData: {},
-    };
+    let updatingValues: FormState<T> =
+      args.formMode === FormMode.CREATE
+        ? {
+            formData: newFormData,
+            formLabel: newFormLabel,
+            bulkCommonData:
+              args.inputMode === InputMode.MANY ? newFormData : {},
+            bulkCommonLabel:
+              args.inputMode === InputMode.MANY ? newFormLabel : {},
+            formDatas: [],
+            formLabels: [],
+            metaData: newMetaData,
+            metaDataLabel: newMetaDataLabel,
+            metaDatas: [],
+            metaDataLabels: [],
+            draftData: {},
+            postedDraftData: {},
+          }
+        : {
+            formData: newFormData,
+            formLabel: newFormLabel,
+            bulkCommonData:
+              args.inputMode === InputMode.MANY ? newFormData : {},
+            bulkCommonLabel:
+              args.inputMode === InputMode.MANY ? newFormLabel : {},
+            formDatas: newFormDatas,
+            formLabels: newFormLabels,
+            metaData: newMetaData,
+            metaDataLabel: newMetaDataLabel,
+            metaDatas: [],
+            metaDataLabels: [],
+            draftData: {},
+            postedDraftData: {},
+          };
 
     let newNextStepIndex = 0;
     if (args.formMode === FormMode.CREATE && args.initialData) {
