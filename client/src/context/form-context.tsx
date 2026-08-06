@@ -381,12 +381,9 @@ export const FormProvider = <T extends ModelType>({
         },
       );
 
-      console.log("new", result.values.formDatas);
       newNextStepIndex = index;
       applyState(result);
     } else if (args.formMode === FormMode.CREATE) {
-      console.log("new 2", updatingValues.formDatas);
-
       applyState({
         values: updatingValues,
         filterConditionsObj: {},
@@ -446,9 +443,12 @@ export const FormProvider = <T extends ModelType>({
     }
   };
 
-  const sendData = async (modelType: ModelType): Promise<boolean> => {
-    if (!modelContext || !modelType) return false;
+  const sendData = async (
+    modelType: ModelType,
+  ): Promise<{ success: boolean; newPostedDraftData?: PostedDraftData }> => {
+    if (!modelContext || !modelType) return { success: false };
     let success: boolean = false;
+    let newPostedDraftData: PostedDraftData | undefined = undefined;
 
     if (formMode === FormMode.CREATE) {
       let res: CreateItemResponse<FormTypeMap[T] | FormTypeMap[T][]> | null =
@@ -470,13 +470,19 @@ export const FormProvider = <T extends ModelType>({
       }
       success = res?.success || false;
 
-      if (success) {
+      if (res?.success) {
+        const dataNum: number = Array.isArray(res.data) ? res.data.length : 1;
+
+        handleSetAlert({
+          success: true,
+          message: `${modelType} を ${dataNum}件 追加しました`,
+        });
         const current = formSteps[currentStep];
 
-        if (!current) return false;
+        if (!current) return { success: false };
         const addPostedDraftData = current.addPostedDraftData;
         if (addPostedDraftData && res) {
-          const newPostedDraftData = addPostedDraftData({
+          newPostedDraftData = addPostedDraftData({
             draftData,
             postedDraftData,
             metaData,
@@ -499,7 +505,7 @@ export const FormProvider = <T extends ModelType>({
             success: false,
             message: "id設定ミス",
           });
-          return false;
+          return { success: false };
         }
 
         const difKeys = [
@@ -512,7 +518,7 @@ export const FormProvider = <T extends ModelType>({
             success: false,
             message: "変更点がありません",
           });
-          return false;
+          return { success: false };
         }
 
         const updated: Record<string, any> = {};
@@ -567,17 +573,19 @@ export const FormProvider = <T extends ModelType>({
             success: false,
             message: "変更点がありません",
           });
-          return false;
+          return { success: false };
         } else {
           success = await modelContext.updateItems(updateDatas);
         }
       }
     }
 
-    return success;
+    return { success, newPostedDraftData };
   };
 
-  const nextStep = async (): Promise<void> => {
+  const nextStep = async (
+    newPostedDraftData?: PostedDraftData,
+  ): Promise<void> => {
     const current = formSteps[currentStep];
 
     if (!current) return;
@@ -594,7 +602,7 @@ export const FormProvider = <T extends ModelType>({
       metaDatas,
       metaDataLabels,
       draftData,
-      postedDraftData,
+      postedDraftData: { ...postedDraftData, ...newPostedDraftData },
     };
 
     // --- 必須チェック ---
@@ -607,7 +615,7 @@ export const FormProvider = <T extends ModelType>({
     }
 
     const valid = validateFun(current, updatingValues);
-    handleSetAlert(valid);
+    if (!valid.success) handleSetAlert(valid);
 
     const { index, result } = await advanceStep(
       api,
@@ -630,7 +638,6 @@ export const FormProvider = <T extends ModelType>({
     }
 
     setCurrentStep(index);
-    resetAlert();
   };
 
   const processStep = async () => {
@@ -643,9 +650,11 @@ export const FormProvider = <T extends ModelType>({
     }
 
     if (current.type === StepType.CONFIRM) {
-      sendData(current.modelType);
+      const { newPostedDraftData } = await sendData(current.modelType);
+      await nextStep(newPostedDraftData);
+    } else {
+      await nextStep();
     }
-    nextStep();
 
     setIsProcessing(false);
   };
