@@ -67,7 +67,8 @@ export const usePlayerPlotPanel = () => {
 
     const seriesIds = obj?.data.map((d) => d._id);
 
-    if (!seriesIds) return setPlayerPlotIsLoading(false);
+    if (!seriesIds || seriesIds.length === 0)
+      return setPlayerPlotIsLoading(false);
 
     const nationalCallupRes = await readItemsBase<NationalCallup[]>({
       apiInstance: api,
