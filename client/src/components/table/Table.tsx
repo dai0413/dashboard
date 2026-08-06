@@ -135,7 +135,7 @@ const Table = <T,>({
       {!isLoading && paginatedData.length > 0 && (
         <tbody>
           {paginatedData.map((row, i) => (
-            <tr key={hasId(row) ? row._id : hasKey(row) ? row.key : i}>
+            <tr key={i}>
               {edit && (
                 <th
                   className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
