@@ -1,4 +1,4 @@
-import { FormStep, StepType } from "../../../../../types/form";
+import { DataSource, FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
@@ -11,6 +11,7 @@ export const bulk: FormStep<ModelType.TEAM_COMPETITION_SEASON>[] = [
     stepLabel: "シーズンを選択",
     type: StepType.FORM,
     modelType: baseModel,
+    dataSource: DataSource.BULK_COMMON,
     fields: getFields(["season"]),
   },
   {
