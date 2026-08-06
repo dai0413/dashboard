@@ -51,7 +51,11 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
 ): FormStep<K>[] => {
   const createFilterConditions =
     modelType === ModelType.MATCH
-      ? (setTeamByCompetition as CreateFilterConditions<K>)
+      ? ((async ({ metaData, api }) =>
+          setTeamByCompetition({
+            data: metaData,
+            api,
+          })) as CreateFilterConditions<K>)
       : undefined;
 
   const base: FormStep<K>[] = [
