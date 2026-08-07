@@ -42,64 +42,6 @@ import { useModelContext } from "../../context/models/model-wrapper";
 
 type MenuItem = { label: string; onClick: () => void };
 
-type AddButtonProps = {
-  menuItems: MenuItem[];
-  dropdownRef: React.RefObject<HTMLDivElement | null>;
-  isAddDropDownOpen: boolean;
-  setIsAddDropDownOpen: (value: React.SetStateAction<boolean>) => void;
-  openForm: () => void;
-};
-
-const AddButton = ({
-  menuItems,
-  dropdownRef,
-  isAddDropDownOpen,
-  setIsAddDropDownOpen,
-  openForm,
-}: AddButtonProps) => {
-  const handleClick = () => {
-    if (menuItems.length === 1) {
-      // 1つだけ → 直接実行
-      menuItems[0].onClick();
-      openForm();
-    } else {
-      // 2つ以上 → dropdown 切り替え
-      setIsAddDropDownOpen((prev) => !prev);
-    }
-  };
-
-  return (
-    <div ref={dropdownRef} className="relative inline-block text-left">
-      <button
-        onClick={handleClick}
-        className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-        type="button"
-      >
-        <PlusCircleIcon className="w-8 h-8" />
-        <span className="hidden lg:inline">新規追加</span>
-      </button>
-
-      {menuItems.length > 1 && isAddDropDownOpen && (
-        <DropDownMenu
-          menuItems={menuItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => {
-                item.onClick();
-                setIsAddDropDownOpen((prev) => !prev);
-                openForm();
-              }}
-              className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            >
-              {item.label}
-            </button>
-          ))}
-        />
-      )}
-    </div>
-  );
-};
-
 type TableToolbarProps<Data, Form> = {
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
@@ -116,6 +58,54 @@ type TableToolbarProps<Data, Form> = {
   headers?: TableHeader<Data>[];
   items?: Data[];
 };
+
+type ToolbarButtonProps = {
+  text: string;
+  icon: React.ReactNode;
+  isActive?: boolean;
+  onClick: () => void;
+  badge?: number;
+  className?: string;
+};
+
+const ToolbarButton = ({
+  text,
+  icon,
+  isActive,
+  onClick,
+  badge,
+  className,
+}: ToolbarButtonProps) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
+        isActive
+          ? "bg-blue-500 text-white"
+          : "transition-colors hover:bg-gray-100 border-gray-400"
+      } ${className ?? ""}`}
+    >
+      {icon}
+      {typeof badge === "number" && (
+        <span
+          className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
+      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
+        >
+          {badge}
+        </span>
+      )}
+      <span className="hidden lg:inline">{text}</span>
+    </button>
+  );
+};
+
+type ToolbarGroupProps = {
+  children: React.ReactNode;
+};
+
+const ToolbarGroup = ({ children }: ToolbarGroupProps) => (
+  <div className="flex flex-wrap items-center gap-x-1">{children}</div>
+);
 
 const TableToolbar = <Data, Form>({
   modelType,
@@ -376,182 +366,182 @@ const TableToolbar = <Data, Form>({
     }
   };
 
+  const addButtonHandleClick = () => {
+    if (menuItems.length === 1) {
+      // 1つだけ → 直接実行
+      menuItems[0].onClick();
+      openForm();
+    } else {
+      // 2つ以上 → dropdown 切り替え
+      setIsAddDropDownOpen((prev) => !prev);
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
         {/* 左側：フィルター・行間・ソート */}
 
         <div className="flex flex-wrap items-center gap-4">
-          {/* 行間操作ボタン */}
-          <div className="flex">
-            <button
-              onClick={() => setRowSpacing("wide")}
-              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-                rowSpacing === "wide"
-                  ? "bg-blue-500 text-white"
-                  : "border-gray-400 text-gray-700"
-              }`}
-            >
-              <Bars2Icon className="w-6 h-6" />
-              <span className="hidden lg:inline">広い</span>
-            </button>
-            <button
-              onClick={() => setRowSpacing("narrow")}
-              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-                rowSpacing === "narrow"
-                  ? "bg-blue-500 text-white"
-                  : "border-gray-400 text-gray-700"
-              }`}
-            >
-              <Bars3Icon className="w-6 h-6" />
-              <span className="hidden lg:inline">狭い</span>
-            </button>
-          </div>
-          {/* 表示方式ボタン */}
-          <div className="flex">
-            <button
-              onClick={onClickTable}
-              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-                viewMode === "table"
-                  ? "bg-blue-500 text-white"
-                  : "border-gray-400 text-gray-700"
-              }`}
-            >
-              <TableCellsIcon className="w-6 h-6" />
-              <span className="hidden lg:inline">テーブル</span>
-            </button>
-            <button
-              onClick={onClickTile}
-              className={`cursor-pointer flex items-center px-2 py-1 border rounded-md ${
-                viewMode === "tile"
-                  ? "bg-blue-500 text-white"
-                  : "border-gray-400 text-gray-700"
-              }`}
-            >
-              <Squares2X2Icon className="w-6 h-6" />
-              <span className="hidden lg:inline">タイル</span>
-            </button>
-          </div>
+          <ToolbarGroup
+            children={
+              <>
+                <ToolbarButton
+                  text={"広い"}
+                  icon={<Bars2Icon className="w-6 h-6" />}
+                  isActive={rowSpacing === "wide"}
+                  onClick={() => setRowSpacing("wide")}
+                />
+                <ToolbarButton
+                  text={"狭い"}
+                  icon={<Bars3Icon className="w-6 h-6" />}
+                  isActive={rowSpacing === "narrow"}
+                  onClick={() => setRowSpacing("narrow")}
+                />
+              </>
+            }
+          />
 
-          <div className="relative" ref={fieldSelectRef}>
-            <button
-              onClick={() => setIsFieldSelectOpen((prev) => !prev)}
-              className="cursor-pointer flex items-center gap-x-2"
-            >
-              <ViewColumnsIcon className="w-6 h-6" />
-              <span className="hidden lg:inline">フィールド</span>
-            </button>
+          <div className="h-6 w-px bg-gray-300" />
 
-            {isFieldSelectOpen && (
-              <DropDownMenu menuItems={fieldSelectMenuItems} />
-            )}
-          </div>
+          <ToolbarGroup
+            children={
+              <>
+                <ToolbarButton
+                  text={"テーブル"}
+                  icon={<TableCellsIcon className="w-6 h-6" />}
+                  isActive={viewMode === "table"}
+                  onClick={onClickTable}
+                />
 
-          <button
-            className="cursor-pointer flex items-center gap-x-2 relative"
-            onClick={() => openSort()}
-          >
-            <AdjustmentsVerticalIcon className="w-6 h-6" />
-            {sortConditions.filter((c) => typeof c.asc === "boolean").length >
-              0 && (
-              <span
-                className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
-      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
-              >
-                {
-                  sortConditions.filter((c) => typeof c.asc === "boolean")
-                    .length
-                }
-              </span>
-            )}
-            <span className="hidden lg:inline">ソート</span>
-          </button>
+                <ToolbarButton
+                  text={"タイル"}
+                  icon={<Squares2X2Icon className="w-6 h-6" />}
+                  isActive={viewMode === "tile"}
+                  onClick={onClickTile}
+                />
+              </>
+            }
+          />
 
-          {/* フィルターを開くボタン */}
-          <button
-            className="cursor-pointer flex items-center gap-x-2 relative"
-            onClick={() => openFilter()}
-          >
-            <FunnelIcon className="w-6 h-6" />
-            {filterConditions.length > 0 && (
-              <span
-                className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1
-      rounded-full bg-blue-500 text-white text-xs flex items-center justify-center"
-              >
-                {filterConditions.length}
-              </span>
-            )}
-            <span className="hidden lg:inline">フィルター</span>
-          </button>
+          <div className="h-6 w-px bg-gray-300" />
+
+          <ToolbarGroup
+            children={
+              <>
+                <div className="relative" ref={fieldSelectRef}>
+                  <ToolbarButton
+                    text={"フィールド"}
+                    icon={<ViewColumnsIcon className="w-6 h-6" />}
+                    onClick={() => setIsFieldSelectOpen((prev) => !prev)}
+                  />
+
+                  {isFieldSelectOpen && (
+                    <DropDownMenu menuItems={fieldSelectMenuItems} />
+                  )}
+                </div>
+
+                <ToolbarButton
+                  text={"ソート"}
+                  icon={<AdjustmentsVerticalIcon className="w-6 h-6" />}
+                  onClick={() => openSort()}
+                  badge={
+                    sortConditions.filter((c) => typeof c.asc === "boolean")
+                      .length
+                  }
+                  className={"relative"}
+                />
+
+                <ToolbarButton
+                  text={"フィルター"}
+                  icon={<FunnelIcon className="w-6 h-6" />}
+                  onClick={() => openFilter()}
+                  badge={filterConditions.length}
+                  className={"relative"}
+                />
+              </>
+            }
+          />
         </div>
 
-        <div className="flex items-center gap-x-4">
+        <div className="flex flex-wrap items-center gap-x-4">
           {/* リロード */}
           {reloadFun && (
-            <button
-              className="cursor-pointer flex items-center gap-x-2"
+            <ToolbarButton
+              text={"リロード"}
+              icon={<ArrowPathIcon className="w-6 h-6" />}
               onClick={() => reloadFun(filterConditions, sortConditions)}
-            >
-              <ArrowPathIcon className="w-6 h-6" />
-              <span className="hidden lg:inline">リロード</span>
-            </button>
+            />
           )}
 
-          {modelType && (staffState.admin || isDev) && (
-            <>
-              {items && items.length > 0 && (
-                <div className="relative inline-block text-left">
-                  <button
-                    onClick={startUpdates}
-                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                    type="button"
-                  >
-                    <PencilSquareIcon className="w-8 h-8" />
-                    <span className="hidden lg:inline">修正</span>
-                  </button>
-                </div>
-              )}
-              {items && items.length > 0 && (
-                <div className="relative inline-block text-left">
-                  <button
-                    onClick={deleteOnClick}
-                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                    type="button"
-                  >
-                    <TrashIcon className="w-8 h-8" />
-                    <span className="hidden lg:inline">削除</span>
-                  </button>
-                </div>
-              )}
-              {/* 右側：新規追加ボタン */}
-              {hasFormSteps && (
-                <AddButton
-                  menuItems={menuItems}
-                  dropdownRef={addDropdownRef}
-                  isAddDropDownOpen={isAddDropDownOpen}
-                  setIsAddDropDownOpen={setIsAddDropDownOpen}
-                  openForm={openForm}
-                />
-              )}
-              {/* 右側：フォルダーボタン */}
-              {(uploadFile || downloadFile) && (
-                <div
-                  ref={folderDropdownRef}
-                  className="relative inline-block text-left"
-                >
-                  <button
-                    onClick={() => setIsFolderOpen(!isFolderOpen)}
-                    className="cursor-pointer flex items-center gap-x-2 text-blue-500"
-                    type="button"
-                  >
-                    <FolderPlusIcon className="w-8 h-8" />
-                    <span className="hidden lg:inline">CSV</span>
-                  </button>
+          <div className="h-6 w-px bg-gray-300" />
 
-                  {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
-                </div>
-              )}
-            </>
+          {modelType && (staffState.admin || isDev) && (
+            <ToolbarGroup
+              children={
+                <>
+                  {items && items.length > 0 && (
+                    <>
+                      <ToolbarButton
+                        text={"削除"}
+                        icon={<TrashIcon className="w-6 h-6" />}
+                        onClick={deleteOnClick}
+                        className="text-red-600"
+                      />
+                      <ToolbarButton
+                        text={"修正"}
+                        icon={<PencilSquareIcon className="w-6 h-6" />}
+                        onClick={startUpdates}
+                        className="text-blue-600"
+                      />
+                    </>
+                  )}
+                  {hasFormSteps && (
+                    <div
+                      ref={addDropdownRef}
+                      className="relative inline-block text-left"
+                    >
+                      <ToolbarButton
+                        text={"新規追加"}
+                        icon={<PlusCircleIcon className="w-6 h-6" />}
+                        onClick={addButtonHandleClick}
+                        className="text-blue-600 font-medium"
+                      />
+
+                      {menuItems.length > 1 && isAddDropDownOpen && (
+                        <DropDownMenu
+                          menuItems={menuItems.map((item) => (
+                            <button
+                              key={item.label}
+                              onClick={() => {
+                                item.onClick();
+                                setIsAddDropDownOpen((prev) => !prev);
+                                openForm();
+                              }}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            >
+                              {item.label}
+                            </button>
+                          ))}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {(uploadFile || downloadFile) && (
+                    <div className="relative" ref={folderDropdownRef}>
+                      <ToolbarButton
+                        text={"CSV"}
+                        icon={<FolderPlusIcon className="w-6 h-6" />}
+                        onClick={() => setIsFolderOpen(!isFolderOpen)}
+                        className="text-blue-600"
+                      />
+
+                      {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
+                    </div>
+                  )}
+                </>
+              }
+            />
           )}
         </div>
       </div>
