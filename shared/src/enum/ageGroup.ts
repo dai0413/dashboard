@@ -1,5 +1,7 @@
 export const ageGroup = () => [
   { key: "full", label: "A" },
+  { key: "u15", label: "u15" },
+  { key: "u16", label: "u16" },
   { key: "u17", label: "u17" },
   { key: "u18", label: "u18" },
   { key: "u19", label: "u19" },
