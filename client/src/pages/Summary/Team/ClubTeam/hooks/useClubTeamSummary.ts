@@ -21,6 +21,7 @@ import {
   useTeamCompetitionSeasonPanel,
   useStatsLPanel,
   useStaffRegistrationPanel,
+  useAppearancePlotPanel,
 } from "./index";
 import { CLUB_TEAM_TAB, ClubTeamTab, UseClubTeamSummary } from "../types";
 
@@ -64,6 +65,16 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
   const { teamCompetitionSeason, readTeamCompetitionSeason, seasonOptions } =
     useTeamCompetitionSeasonPanel();
 
+  const {
+    playerAppearance,
+    playerStatistics,
+    matches: appearancePlotMatches,
+    playerRegistrations: appearancePlotRegistrations,
+    formationCounts,
+    appearancePlotIsLoading,
+    readAppearancePlot,
+  } = useAppearancePlotPanel();
+
   // id変更, season変更両方で読み込む
   const readDatas = async (
     teamId: string,
@@ -91,6 +102,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       readPlayerRegistrations(teamId, seasonId),
       readStatsL(teamId, seasonId),
       readStaffRegistrations(teamId, seasonId),
+      readAppearancePlot(teamId, seasonDates.normalSeason.seasonRange),
     ]);
   };
 
@@ -205,10 +217,6 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       options: seasonOptions,
       handleSelect: handleSetSelectedSeason,
     },
-
-    // info: {
-    //   teamCompetitionSeason,
-    // },
 
     tab: {
       selectedTab,
@@ -326,6 +334,21 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
             id,
             selectedteamCompetitionSeason?.season._id,
           ),
+      },
+
+      appearancePlot: {
+        key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
+        items: {
+          playerAppearance,
+          playerRegistrations: appearancePlotRegistrations,
+          playerStatistics,
+          matches: appearancePlotMatches,
+          formationCounts,
+        },
+        isLoading: appearancePlotIsLoading,
+        reloadFun: async () =>
+          readAppearancePlot(id, seasonDates.normalSeason.seasonRange),
       },
     },
   };

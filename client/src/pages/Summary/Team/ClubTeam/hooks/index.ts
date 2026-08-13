@@ -12,3 +12,4 @@ export { usePlayerRegistrationPanel } from "./usePlayerRegistrationPanel";
 export { useStaffRegistrationPanel } from "./useStaffRegistrationPanel";
 export { useTeamCompetitionSeasonPanel } from "./useTeamCompetitionSeason";
 export { useStatsLPanel } from "./useStatsLPanel";
+export { useAppearancePlotPanel } from "./useAppearancePlotPanel";

@@ -68,6 +68,8 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
       items: T[];
       totalCount: number;
       isLoading: boolean;
+      filterConditions?: FilterableFieldDefinition[];
+      sortConditions?: SortableFieldDefinition[];
     }) => React.ReactNode;
   } & TableEditProps<T>;
 

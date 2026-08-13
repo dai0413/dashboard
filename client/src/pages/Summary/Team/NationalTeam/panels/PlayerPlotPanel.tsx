@@ -1,7 +1,7 @@
 import { isFilterable, UIFieldDefinition } from "../../../../../types/field";
 import { UseNationalTeamSummary } from "../types";
 import { CustomTableContainer } from "../../../../../components/table";
-import Matrix from "../../../../../components/table/Matrix";
+import { SeriesMatrix } from "../../../../../components/table/Matrix";
 import { ColumnType, QuickFilterItem } from "../../../../../types/table";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 
@@ -198,8 +198,10 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         handleFilterSort={async (filterConditions, sortConditions) => {
           await reloadFun(filterConditions, sortConditions);
         }}
-        renderView={() => (
-          <Matrix
+        renderView={({ filterConditions, sortConditions }) => (
+          <SeriesMatrix
+            filterConditions={filterConditions}
+            sortConditions={sortConditions}
             playerStatistics={items.playerStatistics}
             nationalCallUp={items.nationalCallUp}
             nationalMatchSeries={items.nationalMatchSeries}
