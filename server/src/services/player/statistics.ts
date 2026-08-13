@@ -1,68 +1,32 @@
 import { Request } from "express";
 import { Types } from "mongoose";
-import { position, ReadItemsResponse } from "@dai0413/myorg-shared";
+import { ReadItemsResponse } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import BadRequestError from "../../errors/bad-request.js";
 import { PlayerModel } from "../../models/player.js";
-import { PlayerAppearanceModel } from "../../models/player-appearance.js";
-import { PlayerMatchEventLogModel } from "../../models/player-match-event-log.js";
 import { MatchEventTypeModel } from "../../models/match-event-type.js";
 import InternalServerError from "../../errors/internal-server.js";
+import { MatchModel } from "../../models/match.js";
+import { buildMatchStage } from "../../controllers/helpers/crud/query/buildMatchStage.js";
+import { resolvePlayerPositions } from "./statistics/position.js";
+import { getPlayerAppearanceStatistics } from "./statistics/appearance.js";
+import { getPlayerMatchEventLogStatistics } from "./statistics/eventLog.js";
 
-const positionOptions = position().map((item) => item.key);
-type Position = (typeof positionOptions)[number];
-
-const isValidPosition = (position: string): position is Position => {
-  return (positionOptions as string[]).includes(position);
-};
-
-const createPositionCounts = (
-  positions: string[],
-): Partial<Record<Position, number>> => {
-  return positions.reduce(
-    (acc, position) => {
-      if (!position) return acc;
-
-      if (!isValidPosition(position)) {
-        console.warn(`Unknown position value: ${position}`);
-        return acc;
-      }
-
-      acc[position] = (acc[position] ?? 0) + 1;
-
-      return acc;
-    },
-    {} as Partial<Record<Position, number>>,
-  );
-};
-
-const getMainPosition = (
-  positionCounts: Partial<Record<Position, number>>,
-): Position | undefined => {
-  return positionOptions
-    .filter((position) => positionCounts[position] !== undefined)
-    .sort((a, b) => (positionCounts[b] ?? 0) - (positionCounts[a] ?? 0))[0];
-};
-
-type AppearanceAggregate = {
-  _id: Types.ObjectId;
-  starts: number;
-  subs: number;
-  bench: number;
-  minutes: number;
-  positions: Position[];
-};
-
-type MatchEventLogAggregate = {
-  _id: Types.ObjectId;
-  goals: number;
-  assists: number;
-};
+const matchQueryConfig = [
+  {
+    field: "date",
+    type: "Date",
+  },
+  {
+    field: "_id",
+    type: "ObjectId",
+  },
+];
 
 export const getPlayerStatistics = async (
   req: Request,
 ): Promise<ReadItemsResponse<PlayerStatistic[]>> => {
-  const { player } = req.query;
+  const { player, team } = req.query;
 
   if (!player) {
     throw new BadRequestError("playerIdを指定してください");
@@ -71,6 +35,12 @@ export const getPlayerStatistics = async (
   const playerIds = (Array.isArray(player) ? player : [player]).filter(
     (id): id is string => typeof id === "string",
   );
+
+  let teamObjectId: undefined | Types.ObjectId;
+
+  if (team) {
+    teamObjectId = new Types.ObjectId(team as string);
+  }
 
   if (playerIds.length === 0) {
     throw new BadRequestError("playerIdを指定してください");
@@ -81,6 +51,11 @@ export const getPlayerStatistics = async (
   if (invalidIds.length > 0) {
     throw new BadRequestError(`不正なplayerIdです: ${invalidIds.join(",")}`);
   }
+
+  const dateFilter = buildMatchStage(req.query, matchQueryConfig);
+
+  const matches = await MatchModel.find(dateFilter).select("_id").lean();
+  const matchIds = matches.map((match) => match._id);
 
   const [players, eventTypes] = await Promise.all([
     PlayerModel.find({ _id: { $in: playerIds } }).lean(),
@@ -101,56 +76,21 @@ export const getPlayerStatistics = async (
     );
   }
 
-  const objectIds = playerIds.map((id) => new Types.ObjectId(id));
+  const playerObjectIds = playerIds.map((id) => new Types.ObjectId(id));
 
   const [appearanceStats, matchEventLogStats] = await Promise.all([
-    PlayerAppearanceModel.aggregate<AppearanceAggregate>([
-      {
-        $match: {
-          player: { $in: objectIds },
-        },
-      },
-      {
-        $group: {
-          _id: "$player",
-          starts: {
-            $sum: { $cond: [{ $eq: ["$play_status", "start"] }, 1, 0] },
-          },
-          subs: {
-            $sum: { $cond: [{ $eq: ["$play_status", "sub"] }, 1, 0] },
-          },
-          bench: {
-            $sum: { $cond: [{ $eq: ["$play_status", "bench"] }, 1, 0] },
-          },
-          minutes: {
-            $sum: "$time",
-          },
-          positions: {
-            $push: "$position",
-          },
-        },
-      },
-    ]),
-    PlayerMatchEventLogModel.aggregate<MatchEventLogAggregate>([
-      {
-        $match: {
-          player: { $in: objectIds },
-        },
-      },
-      {
-        $group: {
-          _id: "$player",
-          goals: {
-            $sum: { $cond: [{ $eq: ["$match_event_type", goalId] }, 1, 0] },
-          },
-          assists: {
-            $sum: {
-              $cond: [{ $eq: ["$match_event_type", assistId] }, 1, 0],
-            },
-          },
-        },
-      },
-    ]),
+    getPlayerAppearanceStatistics({
+      playerObjectIds,
+      matchIds,
+      teamObjectId,
+    }),
+    getPlayerMatchEventLogStatistics({
+      playerObjectIds,
+      matchIds,
+      teamObjectId,
+      goalId,
+      assistId,
+    }),
   ]);
 
   const appearanceMap = new Map(
@@ -160,6 +100,12 @@ export const getPlayerStatistics = async (
   const matchEventLogMap = new Map(
     matchEventLogStats.map((a) => [a._id.toString(), a]),
   );
+
+  const positionMap = await resolvePlayerPositions({
+    playerIds: playerObjectIds,
+    matchIds,
+    teamId: teamObjectId,
+  });
 
   const result: PlayerStatistic[] = playerIds
     .map((id) => playerMap.get(id))
@@ -176,8 +122,7 @@ export const getPlayerStatistics = async (
         _id: playerObj._id.toString(),
       };
 
-      const positionCounts = createPositionCounts(appearance?.positions ?? []);
-      const mainPosition = getMainPosition(positionCounts);
+      const position = positionMap.get(playerObj._id.toString());
 
       const starts = appearance?.starts ?? 0;
       const subs = appearance?.subs ?? 0;
@@ -191,8 +136,8 @@ export const getPlayerStatistics = async (
         minutes: appearance?.minutes ?? 0,
         goals: matchEventLog?.goals ?? 0,
         assists: matchEventLog?.assists ?? 0,
-        mainPosition,
-        positionCounts,
+        mainPosition: position?.mainPosition,
+        positionCounts: position?.positionCounts ?? {},
       };
     });
 
