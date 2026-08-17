@@ -73,12 +73,21 @@ export enum ViewMode {
   TILE = "tile",
 }
 
-export type GetStepsArgs<T extends keyof FormTypeMap> = {
+type GetStepsBaseArgs<T extends ModelType> = {
   modelType: T;
-  inputMode: InputMode;
-  from: From;
   relatedAll?: boolean;
 };
+
+export type GetStepsArgs<T extends ModelType> =
+  | (GetStepsBaseArgs<T> & {
+      inputMode: InputMode;
+      from: Exclude<From, From.D_ML>;
+    })
+  | (GetStepsBaseArgs<T> & {
+      inputMode: InputMode;
+      from: From.D_ML;
+      updateAndCreate: boolean;
+    });
 
 type NewDataStartFormArgs<T extends ModelType> = GetStepsArgs<T> & {
   formMode: FormMode.CREATE;
@@ -88,21 +97,25 @@ type NewDataStartFormArgs<T extends ModelType> = GetStepsArgs<T> & {
   };
 };
 
-type UpdateDataStartFormArgs<T extends ModelType> = Omit<
+type ReplaceInputMode<T, M extends InputMode> = T extends any
+  ? Omit<T, "inputMode"> & {
+      inputMode: M;
+    }
+  : never;
+
+type UpdateDataStartFormArgs<T extends ModelType> = ReplaceInputMode<
   GetStepsArgs<T>,
-  "inputMode"
+  InputMode.SINGLE
 > & {
-  inputMode: InputMode.SINGLE;
   formMode: FormMode.UPDATE;
   id: string;
   editItem: GettedModelDataMap[T];
 };
 
-type UpdateDatasStartFormArgs<T extends ModelType> = Omit<
+type UpdateDatasStartFormArgs<T extends ModelType> = ReplaceInputMode<
   GetStepsArgs<T>,
-  "inputMode"
+  InputMode.MANY
 > & {
-  inputMode: InputMode.MANY;
   formMode: FormMode.UPDATE;
   ids: string[];
   editItem: GettedModelDataMap[T][];
