@@ -4,17 +4,27 @@ import { ModelType } from "../../../types/models";
 import { createItemBase } from "../../api";
 import { DraftData } from "../../../types/form/draftData";
 import { getPreMatchSelect } from "./preMatchSelectStep";
+import { FormMode } from "../../../types/types";
 
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
 
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "cardId");
+export const createPreStep = (
+  updateAndCreate: boolean,
+): FormStep<BaseModel>[] => {
+  const matchSelectSteps = getPreMatchSelect<BaseModel>(
+    updateAndCreate,
+    baseModel,
+    "cardId",
+  );
 
-export const preStep: FormStep<BaseModel>[] = [
-  ...matchSelectSteps,
-  {
+  const stepLabel = updateAndCreate
+    ? "D_M 試合更新 + 試合関連新規追加"
+    : "D_M 全新規追加";
+
+  const baseStep: FormStep<BaseModel> = {
     modelType: baseModel,
-    stepLabel: "D_M, VALUESデータを取得します",
+    stepLabel: stepLabel,
     type: StepType.FORM,
     many: true,
     addDraftData: async ({ metaData, api }) => {
@@ -35,5 +45,19 @@ export const preStep: FormStep<BaseModel>[] = [
 
       return draftDataValue;
     },
-  },
-];
+  };
+
+  const createBaseStep = (updateAndCreate: boolean): FormStep<BaseModel> => {
+    if (updateAndCreate) {
+      return {
+        ...baseStep,
+        nextFormMode: FormMode.UPDATE,
+      };
+    }
+    return baseStep;
+  };
+
+  const step = createBaseStep(updateAndCreate);
+
+  return [...matchSelectSteps, step];
+};

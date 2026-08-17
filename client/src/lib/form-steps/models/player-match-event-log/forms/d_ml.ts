@@ -5,11 +5,11 @@ import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
-import { From } from "../../../../../types/types";
+import { FormMode, From } from "../../../../../types/types";
 
 type BaseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
 const baseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "id");
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel, "id");
 
 export const playerMatchEventLog: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -49,6 +49,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     modelType: baseModel,
     stepLabel: "D_M, PLAYER_MATCH_EVENT_LOGモデルデータを取得します",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {

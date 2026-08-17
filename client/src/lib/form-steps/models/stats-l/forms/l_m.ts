@@ -12,6 +12,7 @@ import { ReadDraftDataParams } from "../../../utils/getDraftData/types";
 import { getDraftData } from "../getDraftData";
 import { Team } from "../../../../../types/models/team";
 import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
+import { FormMode } from "../../../../../types/types";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
@@ -106,6 +107,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     modelType: baseModel,
     stepLabel: "L_M, STATS_Lモデルデータを取得します",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const cardIds: string[] = metaData.card_ids;

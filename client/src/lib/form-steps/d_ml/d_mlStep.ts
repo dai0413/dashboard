@@ -8,10 +8,9 @@ import { multiModel as refereeAppearance } from "../models/referee-appearance/fo
 import { multiModel as staffMatchEventLog } from "../models/staff-match-event-log/forms/d_ml";
 import { multiModel as teamMatchFormation } from "../models/team-match-formation/forms/l_m";
 import { multiModel as statsL } from "../models/stats-l/forms/l_m";
-import { preStep } from "./preStep";
+import { createPreStep } from "./preStep";
 
 type Steps = {
-  [ModelType.MATCH]: FormStep<ModelType.MATCH>[];
   [ModelType.PLAYER_APPEARANCE]: FormStep<ModelType.PLAYER_APPEARANCE>[];
   [ModelType.PLAYER_MATCH_EVENT_LOG]: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[];
   [ModelType.STAFF_APPEARANCE]: FormStep<ModelType.STAFF_APPEARANCE>[];
@@ -22,7 +21,6 @@ type Steps = {
 };
 
 const steps: Steps = {
-  [ModelType.MATCH]: match,
   [ModelType.PLAYER_APPEARANCE]: playerAppearance,
   [ModelType.PLAYER_MATCH_EVENT_LOG]: playerMatchEventLog,
   [ModelType.STAFF_APPEARANCE]: staffAppearance,
@@ -32,14 +30,19 @@ const steps: Steps = {
   [ModelType.STATS_L]: statsL,
 };
 
-export const d_mlStep: {
+export const d_mlStep = <F extends ModelType>(
+  updateAndCreate: boolean,
+): {
   label: string;
-  steps: FormStep<any>[];
-} = {
-  label: "d_mlStep",
-  steps: [
-    ...preStep,
-    ...steps[ModelType.MATCH],
+  steps: FormStep<F>[];
+} => {
+  const label = updateAndCreate
+    ? "d_mlStep 試合更新 + 試合関連新規追加"
+    : "d_mlStep 全新規追加";
+
+  const retSteps = [
+    ...createPreStep(updateAndCreate),
+    ...match(updateAndCreate),
     ...steps[ModelType.PLAYER_APPEARANCE],
     ...steps[ModelType.PLAYER_MATCH_EVENT_LOG],
     ...steps[ModelType.STAFF_APPEARANCE],
@@ -47,5 +50,10 @@ export const d_mlStep: {
     ...steps[ModelType.REFEREE_APPEARANCE],
     ...steps[ModelType.TEAM_MATCH_FORMATION],
     ...steps[ModelType.STATS_L],
-  ],
+  ] as FormStep<F>[];
+
+  return {
+    label: label,
+    steps: retSteps,
+  };
 };

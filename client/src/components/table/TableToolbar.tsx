@@ -289,6 +289,7 @@ const TableToolbar = <Data, Form>({
                 ...rest,
                 formMode: FormMode.CREATE,
                 initialData: initialData ? initialData : undefined,
+                updateAndCreate: false,
               }),
           };
         })

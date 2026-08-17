@@ -5,7 +5,7 @@ import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
-import { From } from "../../../../../types/types";
+import { FormMode, From } from "../../../../../types/types";
 import { addPostedDraftData } from "../addPostedDraftData";
 import { ReadDraftDataParams } from "../../../utils/getDraftData/types";
 import { readItemBase } from "../../../../api";
@@ -16,7 +16,7 @@ import { readL_MMap } from "../../../utils/getDraftData/readMap/readL_M";
 
 type BaseModel = ModelType.PLAYER_APPEARANCE;
 const baseModel = ModelType.PLAYER_APPEARANCE;
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "id");
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel, "id");
 
 export const playerAppearance: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -99,6 +99,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     modelType: baseModel,
     stepLabel: "D_M, PLAYER_APPEARANCEモデルデータを取得します",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const cardIds: string[] = metaData.card_ids;

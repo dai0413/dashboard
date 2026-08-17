@@ -3,7 +3,9 @@ import { From, InputMode } from "../../../../types/types";
 import { FormStepsConfig } from "../../types";
 import { single } from "./forms/single";
 import { match as j_m } from "./forms/j_m";
-import { match as d_ml } from "./forms/d_ml";
+import { d_mlStep } from "../../d_ml/d_mlStep";
+
+const d_mlSteps = d_mlStep<ModelType.MATCH>(true);
 
 export const match: FormStepsConfig<ModelType.MATCH> = {
   [InputMode.SINGLE]: {
@@ -18,8 +20,8 @@ export const match: FormStepsConfig<ModelType.MATCH> = {
       steps: j_m,
     },
     [From.D_ML]: {
-      label: "D_ML",
-      steps: d_ml,
+      label: d_mlSteps.label,
+      steps: d_mlSteps.steps,
     },
   },
 };

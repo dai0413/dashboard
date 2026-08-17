@@ -10,17 +10,16 @@ type GetStepsReturnVal<T extends keyof FormTypeMap> = {
   steps: FormStep<T>[];
 };
 
-export const getSteps = <T extends keyof FormTypeMap>({
-  modelType,
-  inputMode,
-  from = From.NORMAL,
-  relatedAll = false,
-}: GetStepsArgs<T>): GetStepsReturnVal<T> | null => {
+export const getSteps = <T extends keyof FormTypeMap>(
+  props: GetStepsArgs<T>,
+): GetStepsReturnVal<T> | null => {
+  const { modelType, inputMode, from, relatedAll = false } = props;
+
   if (relatedAll) {
     if (from === From.J_M) {
       return j_mStep as GetStepsReturnVal<T>;
     } else if (from === From.D_ML) {
-      return d_mlStep as GetStepsReturnVal<T>;
+      return d_mlStep(props.updateAndCreate) as GetStepsReturnVal<T>;
     }
   }
 

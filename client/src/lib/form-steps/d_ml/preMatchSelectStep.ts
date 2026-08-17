@@ -22,6 +22,7 @@ import { convert as createLabel } from "../../convert/CreateLabel";
 import { setCompetition } from "../utils/createQuickFilterItems/setCompetition";
 import { getFields } from "../models/match/fields";
 import { ReadCompetitionItems } from "../types";
+import { FormMode } from "../../../types/types";
 
 const readCompetitionItems: ReadCompetitionItems[] = [
   {
@@ -188,6 +189,7 @@ const getMatchSelectStep = <K extends keyof FormTypeMap>(
 };
 
 export const getPreMatchSelect = <K extends keyof FormTypeMap>(
+  updateAndCreate: boolean,
   modelType: keyof FormTypeMap,
   matchSelect: "cardId" | "id",
 ): FormStep<K>[] => {
@@ -200,16 +202,29 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
           })) as CreateFilterConditions<K>)
       : undefined;
 
+  const createFirstStep = (): FormStep<K> => ({
+    modelType: modelType,
+    stepLabel: "試合入力準備",
+    type: StepType.FORM,
+    dataSource: DataSource.META_DATA,
+    createQuickFilterItems: (params) =>
+      setCompetition({ ...params, items: readCompetitionItems }),
+    skip: (_data, metaData) => metaData.competition || metaData.match,
+  });
+
+  const firstStep: FormStep<K>[] = [
+    updateAndCreate
+      ? {
+          ...createFirstStep(),
+          nextFormMode: FormMode.UPDATE,
+        }
+      : {
+          ...createFirstStep(),
+        },
+  ];
+
   const base: FormStep<K>[] = [
-    {
-      modelType: modelType,
-      stepLabel: "試合入力準備",
-      type: StepType.FORM,
-      dataSource: DataSource.META_DATA,
-      createQuickFilterItems: (params) =>
-        setCompetition({ ...params, items: readCompetitionItems }),
-      skip: (_data, metaData) => metaData.competition || metaData.match,
-    },
+    ...firstStep,
     {
       modelType: modelType,
       stepLabel: "更新する試合の大会を入力",
@@ -281,6 +296,15 @@ export const getPreMatchSelect = <K extends keyof FormTypeMap>(
       fields: getFields(["competition_stage"]),
       createFilterConditions: createFilterConditions,
       skip: (_data, mataData) => mataData.competition_stage,
+    },
+    {
+      modelType: modelType,
+      stepLabel: "更新する試合の節を入力",
+      type: StepType.FORM,
+      dataSource: DataSource.META_DATA,
+      fields: getFields(["match_week"]),
+      createFilterConditions: createFilterConditions,
+      skip: (_data, mataData) => mataData.match_week,
     },
   ];
 

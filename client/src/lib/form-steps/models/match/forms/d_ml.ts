@@ -5,13 +5,18 @@ import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { bulkBase } from "../fields";
 import { getDraftData } from "../getDraftData";
 import { Label } from "@dai0413/myorg-shared";
-import { From } from "../../../../../types/types";
+import { FormMode, From } from "../../../../../types/types";
 import { addPostedDraftData } from "../addPostedDraftData";
+import { prepareUpdateData } from "../utils/prepareUpdateData";
 
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
 
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, "cardId");
+const matchSelectSteps = getPreMatchSelect<BaseModel>(
+  false,
+  baseModel,
+  "cardId",
+);
 
 export const match: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -27,7 +32,7 @@ export const match: FormStep<BaseModel>[] = [
         label: formLabel.competition_stage,
       };
 
-      return getDraftData({
+      const newValue = await getDraftData({
         readDraftDataParams: {
           api,
           draftData,
@@ -42,6 +47,8 @@ export const match: FormStep<BaseModel>[] = [
         },
         competition_stage,
       });
+
+      return newValue;
     },
   },
   bulkBase,
@@ -56,8 +63,8 @@ export const match: FormStep<BaseModel>[] = [
   },
 ];
 
-export const multiModel: FormStep<BaseModel>[] = [
-  {
+export const multiModel = (updateAndCreate: boolean): FormStep<BaseModel>[] => {
+  const firstStepBase: FormStep<BaseModel> = {
     modelType: baseModel,
     stepLabel: "D_M, MATCHモデルデータを取得します",
     type: StepType.FORM,
@@ -69,7 +76,7 @@ export const multiModel: FormStep<BaseModel>[] = [
         label: formLabel.competition_stage,
       };
 
-      return getDraftData({
+      const newValue = await getDraftData({
         readDraftDataParams: {
           api,
           draftData,
@@ -84,16 +91,38 @@ export const multiModel: FormStep<BaseModel>[] = [
         },
         competition_stage,
       });
+
+      return newValue;
     },
-  },
-  bulkBase,
-  {
-    ...createConfirmationStep<BaseModel>(baseModel),
-    addPostedDraftData: ({ metaData, res, postedDraftData }) =>
-      addPostedDraftData({
-        postedDraftData,
-        res,
-        identifiers: metaData.card_ids,
-      }),
-  },
-];
+  };
+
+  const createFirstStep = (updateAndCreate: boolean): FormStep<BaseModel> => {
+    if (updateAndCreate) {
+      return {
+        ...firstStepBase,
+        nextFormMode: FormMode.UPDATE,
+        prepareUpdateData: prepareUpdateData,
+      };
+    }
+    return firstStepBase;
+  };
+
+  const firstStep = createFirstStep(updateAndCreate);
+
+  return [
+    firstStep,
+    bulkBase,
+    {
+      ...createConfirmationStep<BaseModel>(baseModel),
+      addPostedDraftData: ({ metaData, res, postedDraftData }) => {
+        const result = addPostedDraftData({
+          postedDraftData,
+          res,
+          identifiers: metaData.card_ids,
+        });
+
+        return result;
+      },
+    },
+  ];
+};
