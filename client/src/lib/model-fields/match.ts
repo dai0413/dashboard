@@ -141,19 +141,23 @@ export const match: UIFieldDefinition<MatchGet>[] = [
     displayOnTable: true,
     getValueType: ColumnType.CUSTOM,
     getData: (d: MatchGet) => {
-      // ゴール数がある場合
-      const score =
-        d.home_goal !== undefined && d.away_goal !== undefined
-          ? `${d.home_goal}-${d.away_goal}`
-          : "";
+      if (d.home_goal !== undefined && d.away_goal !== undefined) {
+        // ゴール数がある場合
+        const score =
+          d.home_goal !== undefined && d.away_goal !== undefined
+            ? `${d.home_goal}-${d.away_goal}`
+            : "";
 
-      // PKがある場合
-      const pk =
-        d.home_pk_goal !== undefined && d.away_pk_goal !== undefined
-          ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
-          : "";
+        // PKがある場合
+        const pk =
+          d.home_pk_goal !== undefined && d.away_pk_goal !== undefined
+            ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
+            : "";
 
-      return score + pk;
+        return score + pk;
+      }
+
+      return "試合前";
     },
   },
   {
