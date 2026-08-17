@@ -12,7 +12,7 @@ const nationalMatchSeriesFieldDefinition =
     fieldDefinition[ModelType.NATIONAL_MATCH_SERIES],
   );
 
-const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
+const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
     id,
     panels: {
@@ -48,4 +48,4 @@ const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   );
 };
 
-export default MatchPanel;
+export default SereisPanel;

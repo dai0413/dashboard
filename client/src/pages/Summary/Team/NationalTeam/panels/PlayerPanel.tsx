@@ -11,7 +11,7 @@ const playerFieldDefinition = convertFieldDefinition<ModelType.PLAYER>(
   fieldDefinition[ModelType.PLAYER],
 );
 
-const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
+const PlayerPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
     panels: {
       player: { text, key, items, reloadFun },
@@ -41,4 +41,4 @@ const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   );
 };
 
-export default MatchPanel;
+export default PlayerPanel;

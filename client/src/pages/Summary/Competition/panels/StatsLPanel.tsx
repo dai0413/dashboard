@@ -5,7 +5,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
 
-const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
+const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
     id,
     panels: {
@@ -50,4 +50,4 @@ const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   );
 };
 
-export default MatchPanel;
+export default StatsLPanel;
