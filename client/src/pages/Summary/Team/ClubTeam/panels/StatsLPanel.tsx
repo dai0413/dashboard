@@ -18,7 +18,7 @@ const StatsLPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
-        modelType={ModelType.TRANSFER}
+        modelType={ModelType.STATS_L}
         fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
         pageNum={1}
         items={items}

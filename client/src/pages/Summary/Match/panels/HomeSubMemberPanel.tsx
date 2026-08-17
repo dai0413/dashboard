@@ -21,7 +21,7 @@ const HomeSubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
-        modelType={ModelType.STAFF_APPEARANCE}
+        modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
         pageNum={1}
         items={items}

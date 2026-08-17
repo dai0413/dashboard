@@ -48,7 +48,7 @@ const StaffRegistrationPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
-        modelType={ModelType.STAFF_REGISTRATION}
+        modelType={ModelType.STAFF_REGISTRATION_HISTORY}
         fieldDefinitions={staffRegistrationFieldDefinition}
         pageNum={1}
         items={items}

@@ -24,7 +24,7 @@ const InjuryPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
-        modelType={ModelType.TRANSFER}
+        modelType={ModelType.INJURY}
         fieldDefinitions={injuryFieldDefinition}
         pageNum={1}
         items={items}

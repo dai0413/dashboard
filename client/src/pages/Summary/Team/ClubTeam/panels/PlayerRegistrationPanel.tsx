@@ -49,7 +49,7 @@ const PlayerRegistrationPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
-        modelType={ModelType.PLAYER_REGISTRATION}
+        modelType={ModelType.PLAYER_REGISTRATION_HISTORY}
         fieldDefinitions={registrationFieldDefinition}
         pageNum={1}
         items={items}

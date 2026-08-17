@@ -56,7 +56,7 @@ const PlayerRegistrationPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
-        modelType={ModelType.NATIONAL_CALLUP}
+        modelType={ModelType.PLAYER_REGISTRATION_HISTORY}
         fieldDefinitions={playerRegistrationFieldDefinition}
         pageNum={1}
         items={items}
