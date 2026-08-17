@@ -36,24 +36,27 @@ export const playerAppearance = async (
 
         const teamObjectId = new Types.ObjectId(d.team.id);
 
-        const matchPlayers = await PlayerRegistrationModel.find({
-          $or: [
-            {
-              season: { $in: seasonObjectIds },
-              team: teamObjectId,
-              registration_type: "register",
-              number: d.number,
-            },
-            {
-              season: { $in: seasonObjectIds },
-              team: teamObjectId,
-              registration_type: "register",
-              name: d.player_name,
-            },
-          ],
+        const registrationFilter = {
+          season: { $in: seasonObjectIds },
+          team: teamObjectId,
+          registration_type: "register",
+        };
+
+        let matchPlayers = await PlayerRegistrationModel.find({
+          ...registrationFilter,
+          name: d.player_name,
         })
-          .select("player")
+          .select(["player"])
           .lean();
+
+        if (matchPlayers.length === 0 && d.number != null) {
+          matchPlayers = await PlayerRegistrationModel.find({
+            ...registrationFilter,
+            number: d.number,
+          })
+            .select(["player"])
+            .lean();
+        }
 
         const callupPlayers: { player: Types.ObjectId }[] =
           await NationalCallUpModel.aggregate([
