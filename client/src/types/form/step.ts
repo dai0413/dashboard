@@ -10,8 +10,32 @@ import { OnChange } from "./onChange";
 import { DataSource, StepType } from "./common";
 import { AddOptions, OptionObj } from "./option";
 import { FieldCopy } from "./fieldCopy";
+import { FormMode } from "../types";
+import { UpdateData } from "./update";
+import { PrepareUpdateData } from "./prepareUpdateData";
 
-type BaseFormStep<K extends keyof FormTypeMap> = {
+type noChangeFormStep = {
+  nextFormMode?: FormMode.CREATE;
+};
+
+type ChangeToCreateFormStep = {
+  nextFormMode: FormMode.CREATE;
+};
+
+type ChangeToUpdateFormStep<K extends keyof FormTypeMap, T extends boolean> = {
+  nextFormMode: FormMode.UPDATE;
+  prepareUpdateData?: PrepareUpdateData<FormTypeMap[K], T>;
+};
+
+type FormModeStep<K extends keyof FormTypeMap, T extends boolean> =
+  | noChangeFormStep
+  | ChangeToCreateFormStep
+  | ChangeToUpdateFormStep<K, T>;
+
+type BaseFormStep<
+  K extends keyof FormTypeMap,
+  T extends boolean,
+> = FormModeStep<K, T> & {
   modelType: ModelType;
   stepLabel: string;
   type: StepType;
@@ -27,7 +51,10 @@ type BaseFormStep<K extends keyof FormTypeMap> = {
   addOptions?: AddOptions<K>;
 };
 
-export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
+export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
+  K,
+  true
+> & {
   many: true;
   fetchValue?: (
     data?: FormTypeMap[K],
@@ -40,14 +67,16 @@ export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<K> & {
   fieldCopy?: FieldCopy<K>;
 };
 
-export type RecordDataFormStep<K extends keyof FormTypeMap> =
-  BaseFormStep<K> & {
-    many?: false;
-    dataSource?: DataSource;
-    skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
-    getDraftData?: GetDraftData<K, false>;
-    onChange?: OnChange<FormTypeMap[K], false>;
-  };
+export type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
+  K,
+  false
+> & {
+  many?: false;
+  dataSource?: DataSource;
+  skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
+  getDraftData?: GetDraftData<K, false>;
+  onChange?: OnChange<FormTypeMap[K], false>;
+};
 
 export type FormStep<K extends keyof FormTypeMap> =
   | ArrayDataFormStep<K>
@@ -66,6 +95,8 @@ export type FormState<T extends keyof FormTypeMap> = {
   metaDataLabels: Record<string, any>[];
   draftData: DraftData;
   postedDraftData: PostedDraftData;
+  originalData: UpdateData<FormTypeMap[T]> | null;
+  originalDatas: UpdateData<FormTypeMap[T]>[];
 };
 
 export type ApplyStateValue<T extends keyof FormTypeMap> = {

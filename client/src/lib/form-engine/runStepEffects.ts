@@ -13,6 +13,7 @@ import {
   draftDataFun,
   fetchValueFun,
   onChangeFun,
+  prepareUpdateDataFun,
 } from "./handlers";
 import { FormTypeMap } from "../../types/models";
 import { OptionObj } from "../../types/form/option";
@@ -31,6 +32,7 @@ export const runStepEffects = async <T extends keyof FormTypeMap>(
   values = await onChangeFun(api, step, values);
   values = await fetchValueFun(api, step, values);
   values = await draftDataFun(api, step, values);
+  values = await prepareUpdateDataFun(api, step, values);
 
   const newOptions = await addOptionsFun(api, step, values, options);
   const newFilterConditionsObj = await createFilterConditionsFun(
