@@ -69,7 +69,7 @@ type FormContextValue<T extends ModelType> = {
     handleFormData: HandleFormData<T>;
     state: Record<string, any>;
     stateLabel: Record<string, any>;
-    originalData: UpdateData<T> | null;
+    originalData: UpdateData<FormTypeMap[T]> | null;
   };
 
   many?: {
@@ -84,7 +84,7 @@ type FormContextValue<T extends ModelType> = {
     state: Record<string, any>[];
     stateLabel: Record<string, any>[];
 
-    originalDatas: UpdateData<T>[] | null;
+    originalDatas: UpdateData<FormTypeMap[T]>[] | null;
   };
 
   steps: {
@@ -162,8 +162,12 @@ export const FormProvider = <T extends ModelType>({
   const [stateLabel, setStateLabel] = useState<Record<string, any>>({});
   const [stateLabels, setStateLabels] = useState<Record<string, any>[]>([]);
 
-  const [originalData, setOriginalData] = useState<UpdateData<T> | null>(null);
-  const [originalDatas, setOriginalDatas] = useState<UpdateData<T>[]>([]);
+  const [originalData, setOriginalData] = useState<UpdateData<
+    FormTypeMap[T]
+  > | null>(null);
+  const [originalDatas, setOriginalDatas] = useState<
+    UpdateData<FormTypeMap[T]>[]
+  >([]);
 
   const [options, setOptions] = useState<Record<string, OptionObj<any>>>({});
 
@@ -254,6 +258,8 @@ export const FormProvider = <T extends ModelType>({
     setMetaDataLabels(values.metaDataLabels);
     setDraftData(values.draftData);
     setPostedDraftData(values.postedDraftData);
+    setOriginalData(values.originalData);
+    setOriginalDatas(values.originalDatas);
 
     setOptions(options);
     setFilterConditionsObj(filterConditionsObj);
@@ -298,6 +304,8 @@ export const FormProvider = <T extends ModelType>({
       args.initialData.metaData
         ? args.initialData.metaData
         : {};
+    let newOriginalData: UpdateData<FormTypeMap[T]> | null = null;
+    let newOriginalDatas: UpdateData<FormTypeMap[T]>[] = [];
 
     if (
       args.formMode === FormMode.CREATE &&
@@ -332,31 +340,27 @@ export const FormProvider = <T extends ModelType>({
         });
       }
 
-      const originalData = {
+      newOriginalData = {
         _id: args.id,
         ...getDefault(args.modelType),
         ...convertGettedToForm(args.modelType, args.editItem),
       };
 
-      newFormData = originalData;
-      setOriginalData(originalData);
+      newFormData = newOriginalData;
     } else if (
       args.formMode === FormMode.UPDATE &&
       args.inputMode === InputMode.MANY
     ) {
-      const newOriginalDatas: UpdateData<T>[] = args.editItem.flatMap(
-        (item, i) => {
-          const newData = {
-            _id: args.ids[i],
-            ...getDefault(args.modelType),
-            ...convertGettedToForm(args.modelType, item),
-          };
-          return newData;
-        },
-      );
+      newOriginalDatas = args.editItem.flatMap((item, i) => {
+        const newData = {
+          _id: args.ids[i],
+          ...getDefault(args.modelType),
+          ...convertGettedToForm(args.modelType, item),
+        };
+        return newData;
+      });
 
       newFormDatas = newOriginalDatas;
-      setOriginalDatas(newOriginalDatas);
     }
 
     let newFormLabel = await resolveForeignKeyLabels(api, newFormData);
@@ -382,6 +386,8 @@ export const FormProvider = <T extends ModelType>({
             metaDataLabels: [],
             draftData: {},
             postedDraftData: {},
+            originalData: null,
+            originalDatas: [],
           }
         : {
             formData: newFormData,
@@ -398,6 +404,8 @@ export const FormProvider = <T extends ModelType>({
             metaDataLabels: [],
             draftData: {},
             postedDraftData: {},
+            originalData: newOriginalData,
+            originalDatas: newOriginalDatas,
           };
 
     let newNextStepIndex = 0;
@@ -479,13 +487,12 @@ export const FormProvider = <T extends ModelType>({
     modelType: ModelType,
   ): Promise<{ success: boolean; newPostedDraftData?: PostedDraftData }> => {
     if (!modelContext || !modelType) return { success: false };
-    let success: boolean = false;
     let newPostedDraftData: PostedDraftData | undefined = undefined;
 
-    if (formMode === FormMode.CREATE) {
-      let res: CreateItemResponse<FormTypeMap[T] | FormTypeMap[T][]> | null =
-        null;
+    let res: CreateItemResponse<FormTypeMap[T] | FormTypeMap[T][]> | null =
+      null;
 
+    if (formMode === FormMode.CREATE) {
       if (inputMode === InputMode.SINGLE) {
         let item: FormTypeMap[T];
         if (modelType === ModelType.MATCH_FORMAT) {
@@ -500,7 +507,6 @@ export const FormProvider = <T extends ModelType>({
       if (inputMode === InputMode.MANY) {
         res = await modelContext.createItems(formDatas);
       }
-      success = res?.success || false;
 
       if (res?.success) {
         const dataNum: number = Array.isArray(res.data) ? res.data.length : 1;
@@ -512,17 +518,6 @@ export const FormProvider = <T extends ModelType>({
         const current = formSteps[currentStep];
 
         if (!current) return { success: false };
-        const addPostedDraftData = current.addPostedDraftData;
-        if (addPostedDraftData && res) {
-          newPostedDraftData = addPostedDraftData({
-            draftData,
-            postedDraftData,
-            metaData,
-            res,
-            formLabel,
-          });
-          setPostedDraftData(newPostedDraftData);
-        }
 
         if (formSteps.length - 1 === currentStep) {
           setIsEditing(false);
@@ -563,12 +558,12 @@ export const FormProvider = <T extends ModelType>({
           }
         });
 
-        success = await modelContext.updateItem(originalData._id, {
+        res = await modelContext.updateItem(originalData._id, {
           ...getDefault(modelType),
           ...updated,
         });
       } else if (inputMode === InputMode.MANY) {
-        const updateDatas: UpdateData<T>[] = originalDatas.flatMap(
+        const updateDatas: UpdateData<FormTypeMap[T]>[] = originalDatas.flatMap(
           (originalData, i) => {
             const formData = formDatas[i];
             const difKeys = [
@@ -589,7 +584,7 @@ export const FormProvider = <T extends ModelType>({
               }
             });
 
-            const updatedData: UpdateData<T> = updated;
+            const updatedData: UpdateData<FormTypeMap[T]> = updated;
 
             return [
               {
@@ -607,12 +602,25 @@ export const FormProvider = <T extends ModelType>({
           });
           return { success: false };
         } else {
-          success = await modelContext.updateItems(updateDatas);
+          res = await modelContext.updateItems(updateDatas);
         }
       }
     }
 
-    return { success, newPostedDraftData };
+    const current = formSteps[currentStep];
+    const addPostedDraftData = current.addPostedDraftData;
+    if (addPostedDraftData && res) {
+      newPostedDraftData = addPostedDraftData({
+        draftData,
+        postedDraftData,
+        metaData,
+        res,
+        formLabel,
+      });
+      setPostedDraftData(newPostedDraftData);
+    }
+
+    return { success: res?.success || false, newPostedDraftData };
   };
 
   const nextStep = async (
@@ -635,6 +643,8 @@ export const FormProvider = <T extends ModelType>({
       metaDataLabels,
       draftData,
       postedDraftData: { ...postedDraftData, ...newPostedDraftData },
+      originalData,
+      originalDatas,
     };
 
     // --- 必須チェック ---
@@ -679,6 +689,9 @@ export const FormProvider = <T extends ModelType>({
     if (!current) return setIsProcessing(false);
     if (current.modelType) {
       setModelType(current.modelType as T);
+    }
+    if (current.nextFormMode) {
+      setFormMode(current.nextFormMode);
     }
 
     if (current.type === StepType.CONFIRM) {
