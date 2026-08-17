@@ -1,10 +1,11 @@
 import { AlertStatus } from "../../../../types/alert";
 import { FormStep } from "../../../../types/form";
-import { FormTypeMap } from "../../../../types/models";
+import { FormTypeMap, ModelType } from "../../../../types/models";
 import { FormMode } from "../../../../types/types";
 import Alert from "../../../layout/Alert";
 
 type FormHeader<T extends keyof FormTypeMap> = {
+  modelType: ModelType | null;
   formMode: FormMode;
   formSteps: FormStep<T>[];
   currentStep: number;
@@ -13,6 +14,7 @@ type FormHeader<T extends keyof FormTypeMap> = {
 };
 
 export const FormHeader = <T extends keyof FormTypeMap>({
+  modelType,
   formMode,
   formSteps,
   currentStep,
@@ -22,7 +24,9 @@ export const FormHeader = <T extends keyof FormTypeMap>({
   return (
     <>
       <h3 className="text-xl font-semibold text-gray-700 mb-1">
-        {formMode === "create" ? "新規データ作成" : "既存データ編集"}
+        {formMode === "create"
+          ? `${modelType} : 新規データ作成`
+          : `${modelType} : 既存データ編集`}
       </h3>
 
       <div>

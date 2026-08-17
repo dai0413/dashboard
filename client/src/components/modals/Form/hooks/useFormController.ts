@@ -14,6 +14,7 @@ export const useFormController = <
   } = useModal();
 
   const {
+    modelType,
     inputMode,
     isEditing,
     formMode,
@@ -33,6 +34,8 @@ export const useFormController = <
   const setFormPage = (p: number) => setPage("formPage", p);
 
   const value: FormController<T> = {
+    modelType,
+
     isOpen,
     close,
 

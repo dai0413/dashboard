@@ -1,9 +1,11 @@
 import { AlertStatus } from "../../../types/alert";
 import { FormStep } from "../../../types/form";
-import { FormTypeMap } from "../../../types/models";
+import { FormTypeMap, ModelType } from "../../../types/models";
 import { FormMode, InputMode } from "../../../types/types";
 
 export type FormController<T extends keyof FormTypeMap> = {
+  modelType: ModelType | null;
+
   isOpen: boolean;
   close: () => void;
 
