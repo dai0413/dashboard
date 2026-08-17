@@ -3,6 +3,7 @@ import {
   NationalCallupPanel,
   PlayerRegistrationPanel,
   PositionPanel,
+  StatisticsPanel,
   TransferPanel,
 } from "../panels/index";
 import { PLAYER_TAB, UsePlayerSummary } from "../types";
@@ -27,6 +28,9 @@ const PanelRenderer = ({ summary }: { summary: UsePlayerSummary }) => {
 
     case PLAYER_TAB.TRANSFER:
       return <TransferPanel summary={summary} />;
+
+    case PLAYER_TAB.STATISTICS:
+      return <StatisticsPanel summary={summary} />;
 
     default:
       return null;

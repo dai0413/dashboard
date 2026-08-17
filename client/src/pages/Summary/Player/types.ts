@@ -1,3 +1,4 @@
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { FormationItem } from "../../../types/formation";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { PanelSummary, UseSummary } from "../types";
@@ -8,6 +9,7 @@ export const PLAYER_TAB = {
   INJURY: "injury",
   PLAYER_REGISTRATION: "playerRegistration",
   NATIONAL_CALLUP: "nationalCallup",
+  STATISTICS: "statistics",
 } as const;
 
 export type PlayerTab = (typeof PLAYER_TAB)[keyof typeof PLAYER_TAB];
@@ -20,6 +22,7 @@ type PlayerPanels = {
     GettedModelDataMap[ModelType.PLAYER_REGISTRATION][]
   >;
   nationalCallup: PanelSummary<GettedModelDataMap[ModelType.NATIONAL_CALLUP][]>;
+  statistics: PanelSummary<PlayerStatistic[]>;
 };
 
 export type UsePlayerSummary = UseSummary<

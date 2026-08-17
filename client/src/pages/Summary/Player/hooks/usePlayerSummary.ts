@@ -4,6 +4,7 @@ import {
   useNationalCallupPanel,
   usePlayerRegistrationPanel,
   usePositionPanel,
+  useStatisticsPanel,
   useTransferPanel,
 } from "./index";
 import { PLAYER_TAB, PlayerTab, UsePlayerSummary } from "../types";
@@ -30,6 +31,7 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
     usePlayerRegistrationPanel();
   const { positions, readPositions } = usePositionPanel();
   const { transfers, readTransfers } = useTransferPanel();
+  const { statistics, readStatistics } = useStatisticsPanel();
 
   const readDatas = async (playerId: string) => {
     await Promise.all([
@@ -38,6 +40,7 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
       readPlayerRegistrations(playerId),
       readPositions(playerId),
       readTransfers(playerId),
+      readStatistics(playerId),
     ]);
   };
 
@@ -97,6 +100,12 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
         key: `${selectedTab}`,
         items: playerRegistrations.data,
         reloadFun: async () => readPlayerRegistrations(id),
+      },
+      statistics: {
+        key: `${selectedTab}`,
+        items: statistics.data,
+        isLoading: statistics.isLoading,
+        reloadFun: async () => readStatistics(id),
       },
     },
   };

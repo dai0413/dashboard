@@ -27,4 +27,9 @@ export const tabItems: SummaryTabItems[] = [
     key: PLAYER_TAB.PLAYER_REGISTRATION,
     text: "選手登録",
   },
+  {
+    icon: "setting",
+    key: PLAYER_TAB.STATISTICS,
+    text: "統計",
+  },
 ];
