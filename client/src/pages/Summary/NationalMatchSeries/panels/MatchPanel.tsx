@@ -9,8 +9,6 @@ import {
 } from "../../../../types/field";
 import { UseNationalMatchSeriesSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { ColumnType } from "../../../../types/table";
-import { MatchGet } from "../../../../types/models/match";
 
 const matchFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.MATCH]
@@ -22,33 +20,11 @@ const matchFieldDefinition: UIFieldDefinition<
       "match_week",
       "competition_stage",
       "home_team",
-      "result",
+      "result-string",
       "away_team",
     ],
     fieldDefinition[ModelType.MATCH],
-  ).filter((v) => !["result"].includes(v.key)),
-  {
-    label: "結果",
-    getValueType: ColumnType.CUSTOM,
-    key: "result",
-    displayOnTable: true,
-    getData: (d: MatchGet) => {
-      // ゴール数がある場合
-      const score =
-        d.home_goal !== undefined && d.away_goal !== undefined
-          ? `${d.home_goal}-${d.away_goal}`
-          : "";
-
-      // PKがある場合
-      const pk =
-        d.home_pk_goal !== undefined && d.away_pk_goal !== undefined
-          ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
-          : "";
-
-      return score + pk;
-    },
-    type: "string",
-  },
+  ),
 ];
 
 const MatchPanel = ({
@@ -84,7 +60,7 @@ const MatchPanel = ({
             to: APP_ROUTES.TEAM_SUMMARY,
           },
           {
-            field: "result",
+            field: "result-string",
             to: APP_ROUTES.MATCH_SUMMARY,
           },
           {
