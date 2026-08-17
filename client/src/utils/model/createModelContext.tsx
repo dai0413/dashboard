@@ -52,7 +52,7 @@ export function createModelContext<T extends ModelType>(
     const resetItems = () => setItems([]);
 
     const createItems = async (formDatas: Form[]) => {
-      const success = await createItemBase<Form[]>({
+      const result = await createItemBase<Form[]>({
         apiInstance: api,
         backendRoute: backendRoute.ROOT,
         data: cleanData(formDatas),
@@ -61,7 +61,7 @@ export function createModelContext<T extends ModelType>(
         returnResponse: true,
       });
 
-      return success;
+      return result;
     };
 
     const createItem = async (formData: Form) => {
@@ -145,7 +145,7 @@ export function createModelContext<T extends ModelType>(
     };
 
     const updateItems = async (updated: Update[]) => {
-      const result = await updateItemsBase<Update[]>({
+      const result = await updateItemsBase<Update>({
         apiInstance: api,
         backendRoute: backendRoute.ROOT,
         data: updated,

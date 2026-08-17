@@ -27,8 +27,13 @@ export type MetaCrudContext<K extends ModelType> = {
     formDatas: FormTypeMap[K][],
   ) => Promise<CreateItemResponse<FormTypeMap[K][]>>;
 
-  updateItem: (id: string, data: FormTypeMap[K]) => Promise<boolean>;
-  updateItems: (data: UpdateData<K>[]) => Promise<boolean>;
+  updateItem: (
+    id: string,
+    data: FormTypeMap[K],
+  ) => Promise<CreateItemResponse<FormTypeMap[K]>>;
+  updateItems: (
+    data: UpdateData<FormTypeMap[K]>[],
+  ) => Promise<CreateItemResponse<FormTypeMap[K][]>>;
 
   deleteItem: (id: string) => Promise<boolean>;
   deleteItems: (data: GettedModelDataMap[K][]) => Promise<boolean>;

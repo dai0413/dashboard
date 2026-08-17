@@ -1,6 +1,10 @@
 import { AxiosInstance } from "axios";
 import { AlertStatus } from "../../types/alert";
-import { APIError, UpdateItemsResponse } from "@dai0413/myorg-shared";
+import {
+  APIError,
+  CreateItemResponse,
+  UpdateItemsResponse,
+} from "@dai0413/myorg-shared";
 
 type UpdateParams = {
   apiInstance: AxiosInstance;
@@ -16,7 +20,7 @@ export const updateItemsBase = async <DATA>({
   backendRoute,
   handleLoading,
   handleSetAlert,
-}: UpdateParams): Promise<boolean> => {
+}: UpdateParams): Promise<CreateItemResponse<DATA[]>> => {
   handleLoading && handleLoading("start");
   let alert: AlertStatus = { success: false };
   try {
@@ -24,7 +28,11 @@ export const updateItemsBase = async <DATA>({
     const responseData: UpdateItemsResponse<DATA[], DATA[]> = res.data;
     alert = { success: true, message: responseData.message };
 
-    return true;
+    return {
+      success: true,
+      data: responseData.data,
+      message: responseData.message,
+    };
   } catch (err: any) {
     const apiError = err.response?.data as APIError;
 
@@ -34,7 +42,11 @@ export const updateItemsBase = async <DATA>({
       message: apiError.error?.message,
     };
 
-    return false;
+    return {
+      success: false,
+      message: "データの更新に失敗しました",
+      error: apiError.error.message,
+    };
   } finally {
     handleSetAlert && handleSetAlert(alert);
     handleLoading && handleLoading("end");
