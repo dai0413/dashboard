@@ -6,3 +6,4 @@ export { useSelectOption } from "./useSelectOption";
 export { useStaffRegistrationPanel } from "./useStaffRegistrationPanel";
 export { useStatsLPanel } from "./useStatsLPanel";
 export { useTeamCompetitionSeasonPanel } from "./useTeamCompetitionSeasonPanel";
+export { usePlayerStatistics } from "./usePlayerStatistics";

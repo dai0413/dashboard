@@ -1,6 +1,7 @@
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { RadarKey } from "../../../components/plot/RadarChart/types";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
-import { PanelSummary, UseSummary } from "../types";
+import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../types";
 
 type StatsBase = Omit<
   GettedModelDataMap[ModelType.STATS_L],
@@ -26,6 +27,7 @@ export const COMPETITION_TAB = {
   STATS_L_DEVIATION: "statsLDeviation",
   STATS_L_RANK: "statsLRank",
   STATS_L: "statsL",
+  PLAYER_STATISTICS: "playerStatistics",
 } as const;
 
 export type CompetitionTab =
@@ -53,6 +55,8 @@ type CompetitionPanels = {
     deviation: StatsDeviation[];
     rank: StatsRank[];
   }>;
+
+  playerStatistics: ServerDepPanelSummary<PlayerStatistic[]>;
 };
 
 export type UseCompetitionSummary = UseSummary<

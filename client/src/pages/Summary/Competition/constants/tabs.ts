@@ -52,4 +52,9 @@ export const tabItems: SummaryTabItems[] = [
     key: COMPETITION_TAB.STATS_L,
     text: "スタッツ",
   },
+  {
+    icon: "setting",
+    key: COMPETITION_TAB.PLAYER_STATISTICS,
+    text: "選手統計",
+  },
 ];

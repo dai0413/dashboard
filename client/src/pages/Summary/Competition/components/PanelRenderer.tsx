@@ -9,6 +9,7 @@ import {
   StatsLPanel,
   StatsLRankPanel,
   TeamCompetitionSeasonPanel,
+  PlayerStatisticsPanel,
 } from "../panels/index";
 import { COMPETITION_TAB, UseCompetitionSummary } from "../types";
 
@@ -47,6 +48,9 @@ const PanelRenderer = ({ summary }: { summary: UseCompetitionSummary }) => {
 
     case COMPETITION_TAB.TEAM_COMPETITION_SEASON:
       return <TeamCompetitionSeasonPanel summary={summary} />;
+
+    case COMPETITION_TAB.PLAYER_STATISTICS:
+      return <PlayerStatisticsPanel summary={summary} />;
 
     default:
       return null;

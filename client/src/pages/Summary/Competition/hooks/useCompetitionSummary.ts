@@ -8,6 +8,7 @@ import {
   useStaffRegistrationPanel,
   useStatsLPanel,
   useSeasonPanel,
+  usePlayerStatistics,
 } from "./index";
 import {
   COMPETITION_TAB,
@@ -43,6 +44,7 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
     useStaffRegistrationPanel();
   const { statsL, readStatsL } = useStatsLPanel();
   const { season, readSeason, seasonOptions } = useSeasonPanel();
+  const { playerStatistics, readPlayerStatistics } = usePlayerStatistics();
 
   // id変更, season変更両方で読み込む
   const readDatas = async (competitionId: string, seasonId: string) => {
@@ -54,6 +56,7 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
       readStaffRegistrations(seasonId),
       readStatsL(seasonId),
       readSeason(competitionId),
+      readPlayerStatistics(seasonId),
     ]);
   };
 
@@ -160,6 +163,13 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
         items: statsL.items,
         reloadFun: async () => readStatsL(selectedSeason?._id),
         isLoading: statsL.isLoading,
+      },
+
+      playerStatistics: {
+        key: `${selectedTab}-${selectedSeason?._id}`,
+        items: playerStatistics.data,
+        isLoading: playerStatistics.isLoading,
+        reloadFun: async () => readPlayerStatistics(selectedSeason?._id),
       },
     },
   };
