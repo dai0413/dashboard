@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { Types } from "mongoose";
-import { ReadItemsResponse } from "@dai0413/myorg-shared";
+import { CreateItemsResponse, ReadItemsResponse } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import BadRequestError from "../../errors/bad-request.js";
 import { PlayerModel } from "../../models/player.js";
@@ -11,6 +11,10 @@ import { buildMatchStage } from "../../controllers/helpers/crud/query/buildMatch
 import { resolvePlayerPositions } from "./statistics/position.js";
 import { getPlayerAppearanceStatistics } from "./statistics/appearance.js";
 import { getPlayerMatchEventLogStatistics } from "./statistics/eventLog.js";
+import {
+  getAppearancePlayerIds,
+  getRegisteredPlayerIds,
+} from "./resolve/playerIds.js";
 
 const matchQueryConfig = [
   {
@@ -21,20 +25,70 @@ const matchQueryConfig = [
     field: "_id",
     type: "ObjectId",
   },
+  {
+    field: "competition",
+    type: "ObjectId",
+  },
+  {
+    field: "season",
+    type: "ObjectId",
+  },
 ];
 
 export const getPlayerStatistics = async (
   req: Request,
-): Promise<ReadItemsResponse<PlayerStatistic[]>> => {
-  const { player, team } = req.query;
+): Promise<CreateItemsResponse<PlayerStatistic[]>> => {
+  const { player, team, season } = req.body;
 
-  if (!player) {
-    throw new BadRequestError("playerIdを指定してください");
+  let playerObjectIds: Types.ObjectId[];
+
+  if (player) {
+    const playerIds = (Array.isArray(player) ? player : [player]).filter(
+      (id): id is string => typeof id === "string",
+    );
+
+    const invalidIds = playerIds.filter((id) => !Types.ObjectId.isValid(id));
+
+    if (invalidIds.length > 0) {
+      throw new BadRequestError(`不正なplayerIdです: ${invalidIds.join(",")}`);
+    }
+
+    playerObjectIds = playerIds.map((id) => new Types.ObjectId(id));
+  } else {
+    if (!season || !Types.ObjectId.isValid(season)) {
+      throw new BadRequestError("seasonを指定してください");
+    }
+
+    const playerIdSet = new Set<Types.ObjectId>();
+
+    // ① Registration
+    const registrationPlayerIds = await getRegisteredPlayerIds(season);
+
+    registrationPlayerIds.forEach((id) => {
+      playerIdSet.add(id);
+    });
+
+    // ② Appearance
+    const appearancePlayerIds = await getAppearancePlayerIds(season);
+
+    appearancePlayerIds.forEach((id) => {
+      playerIdSet.add(id);
+    });
+
+    playerObjectIds = [...playerIdSet];
   }
 
-  const playerIds = (Array.isArray(player) ? player : [player]).filter(
-    (id): id is string => typeof id === "string",
-  );
+  if (playerObjectIds.length === 0) {
+    return {
+      data: [],
+      totalCount: 0,
+      success: true,
+      message: "取得しました",
+      successCount: 0,
+      failedCount: 0,
+      failedItems: [],
+    };
+  }
 
   let teamObjectId: undefined | Types.ObjectId;
 
@@ -42,23 +96,13 @@ export const getPlayerStatistics = async (
     teamObjectId = new Types.ObjectId(team as string);
   }
 
-  if (playerIds.length === 0) {
-    throw new BadRequestError("playerIdを指定してください");
-  }
+  const filterCondition = buildMatchStage(req.body, matchQueryConfig);
 
-  const invalidIds = playerIds.filter((id) => !Types.ObjectId.isValid(id));
-
-  if (invalidIds.length > 0) {
-    throw new BadRequestError(`不正なplayerIdです: ${invalidIds.join(",")}`);
-  }
-
-  const dateFilter = buildMatchStage(req.query, matchQueryConfig);
-
-  const matches = await MatchModel.find(dateFilter).select("_id").lean();
+  const matches = await MatchModel.find(filterCondition).select("_id").lean();
   const matchIds = matches.map((match) => match._id);
 
   const [players, eventTypes] = await Promise.all([
-    PlayerModel.find({ _id: { $in: playerIds } }).lean(),
+    PlayerModel.find({ _id: { $in: playerObjectIds } }).lean(),
     MatchEventTypeModel.find({
       name: { $in: ["得点", "アシスト"] },
     }).lean(),
@@ -75,8 +119,6 @@ export const getPlayerStatistics = async (
       "MatchEventTypeマスタに「得点」または「アシスト」が登録されていません",
     );
   }
-
-  const playerObjectIds = playerIds.map((id) => new Types.ObjectId(id));
 
   const [appearanceStats, matchEventLogStats] = await Promise.all([
     getPlayerAppearanceStatistics({
@@ -107,8 +149,8 @@ export const getPlayerStatistics = async (
     teamId: teamObjectId,
   });
 
-  const result: PlayerStatistic[] = playerIds
-    .map((id) => playerMap.get(id))
+  const result: PlayerStatistic[] = playerObjectIds
+    .map((id) => playerMap.get(id.toString()))
     .filter(
       (playerObj): playerObj is (typeof players)[number] =>
         playerObj !== undefined,
@@ -141,5 +183,13 @@ export const getPlayerStatistics = async (
       };
     });
 
-  return { data: result, totalCount: result.length, page: 1, pageSize: 1 };
+  return {
+    data: result,
+    totalCount: result.length,
+    success: true,
+    message: "取得しました",
+    successCount: result.length,
+    failedCount: 0,
+    failedItems: [],
+  };
 };

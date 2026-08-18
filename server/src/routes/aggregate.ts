@@ -20,6 +20,6 @@ router.route(API_PATHS.AGGREGATE.TRANSFER.NO_NUMBER).get(getNoNumberByCountry);
 router
   .route(API_PATHS.AGGREGATE.NATIONAL_CALLUP.SERIES_COUNT(":countryId"))
   .get(getNoCallUp);
-router.route(API_PATHS.AGGREGATE.PLAYER.STATISTICS).get(getPlayerStatistics);
+router.route(API_PATHS.AGGREGATE.PLAYER.STATISTICS).post(getPlayerStatistics);
 
 export default router;
