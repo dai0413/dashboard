@@ -25,6 +25,7 @@ export const CLUB_TEAM_TAB = {
   PIE_PLOT_ATTACK: "piePlot_attack",
   PIE_PLOT_DEFENCE: "piePlot_defence",
   APPEARANCE_PLOT: "appearancePlot",
+  PLAYER_STATISTICS: "playerStatistics",
 } as const;
 
 export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
@@ -72,6 +73,8 @@ type ClubTeamPanels = {
     matches: MatchGet[];
     formationCounts: FormationCounts[];
   }>;
+
+  playerStatistics: PanelSummary<PlayerStatistic[]>;
 };
 
 export type UseClubTeamSummary = UseSummary<

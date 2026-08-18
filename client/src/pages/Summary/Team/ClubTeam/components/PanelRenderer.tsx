@@ -14,6 +14,7 @@ import {
   PiePlotDefence,
   StaffRegistrationPanel,
   AppearancePlot,
+  PlayerStatisticsPanel,
 } from "../panels/index";
 import { CLUB_TEAM_TAB, UseClubTeamSummary } from "../types";
 
@@ -67,6 +68,9 @@ const PanelRenderer = ({ summary }: { summary: UseClubTeamSummary }) => {
 
     case CLUB_TEAM_TAB.APPEARANCE_PLOT:
       return <AppearancePlot summary={summary} />;
+
+    case CLUB_TEAM_TAB.PLAYER_STATISTICS:
+      return <PlayerStatisticsPanel summary={summary} />;
 
     default:
       return null;

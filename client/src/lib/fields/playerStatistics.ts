@@ -90,7 +90,7 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
   },
   {
     key: "goals",
-    label: "G",
+    label: "得点",
     type: "number",
     displayOnTable: true,
     filterable: true,
@@ -101,7 +101,7 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
   },
   {
     key: "assists",
-    label: "A",
+    label: "アシスト",
     type: "number",
     displayOnTable: true,
     filterable: true,

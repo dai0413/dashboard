@@ -13,3 +13,4 @@ export { default as TeamCompetitionSeasonPanel } from "./TeamCompetitionSeasonPa
 export { default as TransferInPanel } from "./TransferInPanel";
 export { default as TransferOutPanel } from "./TransferOutPanel";
 export { default as AppearancePlot } from "./AppearancePlot";
+export { default as PlayerStatisticsPanel } from "./PlayerStatisticsPanel";

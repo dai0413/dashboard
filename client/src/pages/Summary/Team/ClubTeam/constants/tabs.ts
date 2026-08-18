@@ -77,4 +77,9 @@ export const tabItems: SummaryTabItems[] = [
     key: CLUB_TEAM_TAB.APPEARANCE_PLOT,
     text: "出場プロット",
   },
+  {
+    icon: "setting",
+    key: CLUB_TEAM_TAB.PLAYER_STATISTICS,
+    text: "選手スタッツ",
+  },
 ];

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
+import { API_PATHS, QueryParams, sortByPosition } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
@@ -139,7 +139,7 @@ export const useAppearancePlotPanel = () => {
     });
 
     if (playerStatistic?.data) {
-      setPlayerStatistics(playerStatistic.data);
+      setPlayerStatistics(sortByPosition(playerStatistic.data, "mainPosition"));
     }
 
     setAppearancePlotIsLoading(false);

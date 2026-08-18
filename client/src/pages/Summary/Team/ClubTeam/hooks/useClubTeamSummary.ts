@@ -350,6 +350,15 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         reloadFun: async () =>
           readAppearancePlot(id, seasonDates.normalSeason.seasonRange),
       },
+
+      playerStatistics: {
+        key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
+        items: playerStatistics,
+        isLoading: appearancePlotIsLoading,
+        reloadFun: async () =>
+          readAppearancePlot(id, seasonDates.normalSeason.seasonRange),
+      },
     },
   };
 };
