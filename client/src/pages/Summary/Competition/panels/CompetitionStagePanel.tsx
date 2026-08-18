@@ -20,7 +20,7 @@ const CompetitionStagePanel = ({
   const {
     id,
     panels: {
-      competitionStage: { text, key, items, reloadFun },
+      competitionStage: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -33,6 +33,7 @@ const CompetitionStagePanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.COMPETITION_STAGE}
         fieldDefinitions={competitionStageFieldDefinition}
         pageNum={1}

@@ -24,7 +24,7 @@ const StaffRegistrationPanel = ({ summary }: { summary: UseStaffSummary }) => {
   const {
     id,
     panels: {
-      staffRegistration: { text, key, items, reloadFun },
+      staffRegistration: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -33,6 +33,7 @@ const StaffRegistrationPanel = ({ summary }: { summary: UseStaffSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={registrationFieldDefinition}
         pageNum={1}

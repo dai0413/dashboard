@@ -31,7 +31,7 @@ const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
     id,
     panels: {
-      match: { text, key, items, reloadFun },
+      match: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -45,6 +45,7 @@ const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
       <TableClient
         key={key}
         modelType={ModelType.MATCH}
+        itemsLoading={isLoading}
         fieldDefinitions={matchFieldDefinition}
         pageNum={1}
         items={items}

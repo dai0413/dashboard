@@ -16,7 +16,7 @@ const PlayerPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      player: { text, key, items, reloadFun },
+      player: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const PlayerPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={playerFieldDefinition || []}
         pageNum={1}

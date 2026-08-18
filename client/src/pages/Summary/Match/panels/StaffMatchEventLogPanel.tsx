@@ -25,7 +25,7 @@ const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      staffMatchEventLog: { text, key, items, reloadFun },
+      staffMatchEventLog: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -36,6 +36,7 @@ const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STAFF_MATCH_EVENT_LOG}
         fieldDefinitions={staffEventLogFieldDefinition}
         pageNum={1}

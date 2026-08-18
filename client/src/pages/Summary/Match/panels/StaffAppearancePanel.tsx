@@ -18,7 +18,7 @@ const StaffAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      staffAppearance: { text, key, items, reloadFun },
+      staffAppearance: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -29,6 +29,7 @@ const StaffAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STAFF_APPEARANCE}
         fieldDefinitions={staffAppearanceFieldDefinition}
         pageNum={1}

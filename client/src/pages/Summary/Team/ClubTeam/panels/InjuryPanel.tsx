@@ -16,7 +16,7 @@ const InjuryPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      injury: { text, key, items, reloadFun },
+      injury: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -26,6 +26,7 @@ const InjuryPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <TableClient
         key={key}
         modelType={ModelType.INJURY}
+        itemsLoading={isLoading}
         fieldDefinitions={injuryFieldDefinition}
         pageNum={1}
         items={items}

@@ -16,7 +16,7 @@ const NationalCallupPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
     id,
     panels: {
-      nationalCallup: { text, key, items, reloadFun },
+      nationalCallup: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const NationalCallupPanel = ({ summary }: { summary: UsePlayerSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_CALLUP}
         fieldDefinitions={nationalCallupFieldDefinition}
         pageNum={1}

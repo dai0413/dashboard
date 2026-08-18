@@ -21,7 +21,7 @@ const TeamCompetitionSeasonPanel = ({
   const {
     id,
     panels: {
-      teamCompetitionSeason: { text, key, items, reloadFun },
+      teamCompetitionSeason: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -34,6 +34,7 @@ const TeamCompetitionSeasonPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TEAM_COMPETITION_SEASON}
         fieldDefinitions={teamCompetitionSeasonFieldDefinition}
         pageNum={1}

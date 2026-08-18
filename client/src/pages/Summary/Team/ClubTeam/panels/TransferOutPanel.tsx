@@ -16,7 +16,7 @@ const TransferOutPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      transfer_out: { text, key, items, reloadFun },
+      transfer_out: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const TransferOutPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferOutFieldDefinition}
         pageNum={1}

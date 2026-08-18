@@ -19,7 +19,7 @@ const StaffRegistrationPanel = ({
   const {
     id,
     panels: {
-      season: { text, key, items, reloadFun },
+      season: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -29,6 +29,7 @@ const StaffRegistrationPanel = ({
       <TableClient
         key={key}
         modelType={ModelType.SEASON}
+        itemsLoading={isLoading}
         fieldDefinitions={seasonFieldDefinition}
         pageNum={1}
         items={items}

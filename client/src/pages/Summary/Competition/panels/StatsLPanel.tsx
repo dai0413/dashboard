@@ -9,7 +9,7 @@ const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
     id,
     panels: {
-      statsL: { text, key, items, reloadFun },
+      statsL: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -22,6 +22,7 @@ const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
         pageNum={1}

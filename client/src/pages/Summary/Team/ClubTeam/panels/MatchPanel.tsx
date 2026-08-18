@@ -16,7 +16,7 @@ const MatchPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      match: { text, key, items, reloadFun },
+      match: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -51,6 +51,7 @@ const MatchPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.MATCH}
         fieldDefinitions={matchFieldDefinition}
         pageNum={1}

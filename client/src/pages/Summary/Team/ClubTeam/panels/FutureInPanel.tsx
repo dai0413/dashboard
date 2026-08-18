@@ -16,7 +16,7 @@ const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      future_in: { text, key, items, reloadFun },
+      future_in: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -26,6 +26,7 @@ const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <TableClient
         key={key}
         modelType={ModelType.TRANSFER}
+        itemsLoading={isLoading}
         fieldDefinitions={futureInFieldDefinition}
         pageNum={1}
         items={items}

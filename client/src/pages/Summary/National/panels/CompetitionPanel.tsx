@@ -16,7 +16,7 @@ const CompetitionPanel = ({ summary }: { summary: UseNationalSummary }) => {
   const {
     id,
     panels: {
-      competition: { text, key, items, reloadFun },
+      competition: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const CompetitionPanel = ({ summary }: { summary: UseNationalSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.COMPETITION}
         fieldDefinitions={competitionFieldDefinition}
         pageNum={1}

@@ -17,7 +17,7 @@ const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
     id,
     panels: {
-      series: { text, key, items, reloadFun },
+      series: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -26,6 +26,7 @@ const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         fieldDefinitions={nationalMatchSeriesFieldDefinition}
         pageNum={1}

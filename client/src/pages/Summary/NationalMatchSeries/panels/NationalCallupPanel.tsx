@@ -22,7 +22,7 @@ const NationalCallupPanel = ({
     id,
     selected,
     panels: {
-      nationalCallup: { text, key, items, reloadFun },
+      nationalCallup: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -31,6 +31,7 @@ const NationalCallupPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_CALLUP}
         fieldDefinitions={nationalCallupFieldDefinition}
         pageNum={1}

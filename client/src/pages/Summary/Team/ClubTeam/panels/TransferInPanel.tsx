@@ -16,7 +16,7 @@ const TransferInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      transfer_in: { text, key, items, reloadFun },
+      transfer_in: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const TransferInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferInFieldDefinition}
         pageNum={1}

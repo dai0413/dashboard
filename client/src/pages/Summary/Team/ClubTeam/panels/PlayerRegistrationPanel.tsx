@@ -40,7 +40,7 @@ const PlayerRegistrationPanel = ({
 }) => {
   const {
     panels: {
-      playerRegistration: { text, key, items, reloadFun },
+      playerRegistration: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -49,6 +49,7 @@ const PlayerRegistrationPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.PLAYER_REGISTRATION_HISTORY}
         fieldDefinitions={registrationFieldDefinition}
         pageNum={1}

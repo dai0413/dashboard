@@ -16,7 +16,7 @@ const InjuryPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
     id,
     panels: {
-      injury: { text, key, items, reloadFun },
+      injury: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const InjuryPanel = ({ summary }: { summary: UsePlayerSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.INJURY}
         fieldDefinitions={injuryFieldDefinition}
         pageNum={1}

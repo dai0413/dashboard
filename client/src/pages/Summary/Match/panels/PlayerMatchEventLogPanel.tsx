@@ -29,7 +29,7 @@ const PlayerMatchEventLogPanel = ({
     id,
     selected,
     panels: {
-      playerMatchEventLog: { text, key, items, reloadFun },
+      playerMatchEventLog: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -40,6 +40,7 @@ const PlayerMatchEventLogPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
         fieldDefinitions={playerEventLogFieldDefinition}
         pageNum={1}

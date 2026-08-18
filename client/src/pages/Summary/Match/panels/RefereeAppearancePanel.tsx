@@ -18,7 +18,7 @@ const RefereeAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      refereeAppearance: { text, key, items, reloadFun },
+      refereeAppearance: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -29,6 +29,7 @@ const RefereeAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.REFEREE_APPEARANCE}
         fieldDefinitions={refereeAppearanceFieldDefinition}
         pageNum={1}

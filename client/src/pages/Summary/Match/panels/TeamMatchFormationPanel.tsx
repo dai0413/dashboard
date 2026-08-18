@@ -18,7 +18,7 @@ const TeamMatchFormationPanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      teamMatchFormation: { text, key, items, reloadFun },
+      teamMatchFormation: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -29,6 +29,7 @@ const TeamMatchFormationPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TEAM_MATCH_FORMATION}
         fieldDefinitions={teamMatchFormationFieldDefinition}
         pageNum={1}

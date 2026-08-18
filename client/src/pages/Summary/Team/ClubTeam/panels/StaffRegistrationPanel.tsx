@@ -25,7 +25,7 @@ const StaffRegistrationPanel = ({
 }) => {
   const {
     panels: {
-      staffRegistration: { text, key, items, reloadFun },
+      staffRegistration: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -34,6 +34,7 @@ const StaffRegistrationPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STAFF_REGISTRATION_HISTORY}
         fieldDefinitions={registrationFieldDefinition}
         pageNum={1}

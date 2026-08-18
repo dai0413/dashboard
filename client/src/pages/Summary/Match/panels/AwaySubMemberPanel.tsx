@@ -10,7 +10,7 @@ const AwaySubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      awaySubMember: { text, key, items, reloadFun },
+      awaySubMember: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -21,6 +21,7 @@ const AwaySubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
         pageNum={1}

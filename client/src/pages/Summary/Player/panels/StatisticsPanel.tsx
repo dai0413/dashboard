@@ -6,7 +6,7 @@ import { playerStatistics as fieldDefinitions } from "../../../../lib/fields/pla
 const StatisticsPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
     panels: {
-      statistics: { text, key, items, reloadFun },
+      statistics: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -15,6 +15,7 @@ const StatisticsPanel = ({ summary }: { summary: UsePlayerSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
         pageNum={1}
         items={items}

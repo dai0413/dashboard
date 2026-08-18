@@ -16,7 +16,7 @@ const LoanPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      loan: { text, key, items, reloadFun },
+      loan: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const LoanPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={onLoanFieldDefinition}
         pageNum={1}

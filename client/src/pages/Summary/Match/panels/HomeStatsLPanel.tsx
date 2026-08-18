@@ -10,7 +10,7 @@ const HomeStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      homeStatsL: { text, key, items, reloadFun },
+      homeStatsL: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -21,6 +21,7 @@ const HomeStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={statsLFieldDefinition}
         pageNum={1}

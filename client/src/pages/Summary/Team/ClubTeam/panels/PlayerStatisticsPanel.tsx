@@ -46,7 +46,7 @@ const PlayerStatisticsPanel = ({
   const {
     id,
     panels: {
-      playerStatistics: { text, key, items, reloadFun },
+      playerStatistics: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -55,6 +55,7 @@ const PlayerStatisticsPanel = ({
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
         pageNum={1}
         items={items}

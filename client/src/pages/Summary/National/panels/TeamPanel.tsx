@@ -15,7 +15,7 @@ const teamFieldDefinition = convertFieldDefinition<TeamGet>(
 const TeamPanel = ({ summary }: { summary: UseNationalSummary }) => {
   const {
     panels: {
-      team: { text, key, items, reloadFun },
+      team: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -24,6 +24,7 @@ const TeamPanel = ({ summary }: { summary: UseNationalSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TEAM}
         fieldDefinitions={teamFieldDefinition}
         pageNum={1}

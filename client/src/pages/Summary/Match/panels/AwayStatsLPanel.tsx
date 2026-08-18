@@ -10,7 +10,7 @@ const AwayStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
     id,
     selected,
     panels: {
-      awayStatsL: { text, key, items, reloadFun },
+      awayStatsL: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -21,6 +21,7 @@ const AwayStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={statsLFieldDefinition}
         pageNum={1}

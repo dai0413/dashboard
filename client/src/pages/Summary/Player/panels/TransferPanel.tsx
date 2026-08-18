@@ -16,7 +16,7 @@ const TransferPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
     id,
     panels: {
-      transfer: { text, key, items, reloadFun },
+      transfer: { isLoading, text, key, items, reloadFun },
     },
   } = summary;
 
@@ -25,6 +25,7 @@ const TransferPanel = ({ summary }: { summary: UsePlayerSummary }) => {
       <div className="text-gray-600">{text}</div>
       <TableClient
         key={key}
+        itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferFieldDefinition}
         pageNum={1}
