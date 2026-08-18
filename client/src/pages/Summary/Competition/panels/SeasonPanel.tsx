@@ -4,8 +4,9 @@ import { convertFieldDefinition } from "../../../../utils/displayField/convertFi
 import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
+import { SeasonGet } from "../../../../types/models/season";
 
-const seasonFieldDefinition = convertFieldDefinition<ModelType.SEASON>(
+const seasonFieldDefinition = convertFieldDefinition<SeasonGet>(
   ["name", "start_date", "end_date", "current", "note"],
   fieldDefinition[ModelType.SEASON],
 );

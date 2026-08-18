@@ -5,9 +5,10 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { RefereeAppearanceGet } from "../../../../types/models/referee-appearance";
 
 const refereeAppearanceFieldDefinition =
-  convertFieldDefinition<ModelType.REFEREE_APPEARANCE>(
+  convertFieldDefinition<RefereeAppearanceGet>(
     ["referee", "role"],
     fieldDefinition[ModelType.REFEREE_APPEARANCE],
   );

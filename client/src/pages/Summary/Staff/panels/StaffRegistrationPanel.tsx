@@ -9,11 +9,12 @@ import {
 } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseStaffSummary } from "../types";
+import { StaffRegistrationGet } from "../../../../types/models/staff-registration";
 
 const registrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.STAFF_REGISTRATION]
 >[] = [
-  ...convertFieldDefinition<ModelType.STAFF_REGISTRATION>(
+  ...convertFieldDefinition<StaffRegistrationGet>(
     ["season", "competition", "date", "team", "role", "registration_status"],
     fieldDefinition[ModelType.STAFF_REGISTRATION],
   ),

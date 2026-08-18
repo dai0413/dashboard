@@ -5,12 +5,12 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { NationalCallupGet } from "../../../../types/models/national-callup";
 
-const nationalCallupFieldDefinition =
-  convertFieldDefinition<ModelType.NATIONAL_CALLUP>(
-    ["series", "status", "number", "joined_at"],
-    fieldDefinition[ModelType.NATIONAL_CALLUP],
-  );
+const nationalCallupFieldDefinition = convertFieldDefinition<NationalCallupGet>(
+  ["series", "status", "number", "joined_at"],
+  fieldDefinition[ModelType.NATIONAL_CALLUP],
+);
 
 const NationalCallupPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {

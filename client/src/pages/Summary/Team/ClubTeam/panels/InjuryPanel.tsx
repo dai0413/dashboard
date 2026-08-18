@@ -5,8 +5,9 @@ import { fieldDefinition } from "../../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
+import { InjuryGet } from "../../../../../types/models/injury";
 
-const injuryFieldDefinition = convertFieldDefinition<ModelType.INJURY>(
+const injuryFieldDefinition = convertFieldDefinition<InjuryGet>(
   ["doa", "player", "injured_part", "ttp"],
   fieldDefinition[ModelType.INJURY],
 );

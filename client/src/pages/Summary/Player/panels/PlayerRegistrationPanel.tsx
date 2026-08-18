@@ -14,7 +14,7 @@ import { ColumnType } from "../../../../types/table";
 
 const playerRegistrationFieldDefinition: UIFieldDefinition<PlayerRegistrationGet>[] =
   [
-    ...convertFieldDefinition<ModelType.PLAYER_REGISTRATION>(
+    ...convertFieldDefinition<PlayerRegistrationGet>(
       [
         "season",
         "competition",

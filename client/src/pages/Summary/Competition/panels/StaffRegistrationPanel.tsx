@@ -15,7 +15,7 @@ import { StaffRegistrationGet } from "../../../../types/models/staff-registratio
 const staffRegistrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.STAFF_REGISTRATION]
 >[] = [
-  ...convertFieldDefinition<ModelType.STAFF_REGISTRATION>(
+  ...convertFieldDefinition<StaffRegistrationGet>(
     ["date", "team", "role", "staff"],
     fieldDefinition[ModelType.STAFF_REGISTRATION],
   ),

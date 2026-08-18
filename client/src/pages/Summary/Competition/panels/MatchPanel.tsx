@@ -9,11 +9,12 @@ import {
 } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
+import { MatchGet } from "../../../../types/models/match";
 
 const matchFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.MATCH]
 >[] = [
-  ...convertFieldDefinition<ModelType.MATCH>(
+  ...convertFieldDefinition<MatchGet>(
     [
       "date",
       "match_week",

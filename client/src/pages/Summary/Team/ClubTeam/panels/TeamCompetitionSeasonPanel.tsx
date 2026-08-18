@@ -7,9 +7,10 @@ import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 
 import { convert } from "../../../../../lib/convert/DBtoGetted";
+import { TeamCompetitionSeasonGet } from "../../../../../types/models/team-competition-season";
 
 const teamCompetitionSeasonFieldDefinition =
-  convertFieldDefinition<ModelType.TEAM_COMPETITION_SEASON>(
+  convertFieldDefinition<TeamCompetitionSeasonGet>(
     ["season", "competition", "note"],
     fieldDefinition[ModelType.TEAM_COMPETITION_SEASON],
   );

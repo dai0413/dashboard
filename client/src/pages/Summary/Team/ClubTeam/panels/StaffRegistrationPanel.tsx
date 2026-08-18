@@ -1,4 +1,4 @@
-import { GettedModelDataMap, ModelType } from "../../../../../types/models";
+import { ModelType } from "../../../../../types/models";
 import TableClient from "../../../../../components/table/TableClient";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../../lib/model-fields";
@@ -9,11 +9,10 @@ import {
 } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
+import { StaffRegistrationGet } from "../../../../../types/models/staff-registration";
 
-const registrationFieldDefinition: UIFieldDefinition<
-  GettedModelDataMap[ModelType.STAFF_REGISTRATION]
->[] = [
-  ...convertFieldDefinition<ModelType.STAFF_REGISTRATION>(
+const registrationFieldDefinition: UIFieldDefinition<StaffRegistrationGet>[] = [
+  ...convertFieldDefinition<StaffRegistrationGet>(
     ["season", "role", "staff", "registration_status"],
     fieldDefinition[ModelType.STAFF_REGISTRATION],
   ),

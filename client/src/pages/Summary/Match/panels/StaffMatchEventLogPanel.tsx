@@ -5,9 +5,10 @@ import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
+import { StaffMatchEventLogGet } from "../../../../types/models/staff-match-event-log";
 
 const staffEventLogFieldDefinition =
-  convertFieldDefinition<ModelType.STAFF_MATCH_EVENT_LOG>(
+  convertFieldDefinition<StaffMatchEventLogGet>(
     [
       "period_label",
       "time_name",

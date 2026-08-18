@@ -21,7 +21,7 @@ const MatchPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   } = summary;
 
   const matchFieldDefinition: UIFieldDefinition<MatchGet>[] = [
-    ...convertFieldDefinition<ModelType.MATCH>(
+    ...convertFieldDefinition<MatchGet>(
       [
         "date",
         "competition",

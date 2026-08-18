@@ -5,8 +5,9 @@ import { fieldDefinition } from "../../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
+import { PlayerGet } from "../../../../../types/models/player";
 
-const playerFieldDefinition = convertFieldDefinition<ModelType.PLAYER>(
+const playerFieldDefinition = convertFieldDefinition<PlayerGet>(
   ["name", "dob"],
   fieldDefinition[ModelType.PLAYER],
 );

@@ -15,7 +15,7 @@ import { PlayerRegistrationGet } from "../../../../../types/models/player-regist
 const registrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.PLAYER_REGISTRATION]
 >[] = [
-  ...convertFieldDefinition<ModelType.PLAYER_REGISTRATION>(
+  ...convertFieldDefinition<PlayerRegistrationGet>(
     ["season", "number", "player", "registration_status"],
     fieldDefinition[ModelType.PLAYER_REGISTRATION],
   ),

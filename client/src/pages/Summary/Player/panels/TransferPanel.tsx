@@ -5,8 +5,9 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { TransferGet } from "../../../../types/models/transfer";
 
-const transferFieldDefinition = convertFieldDefinition<ModelType.TRANSFER>(
+const transferFieldDefinition = convertFieldDefinition<TransferGet>(
   ["from_date", "from_team", "to_team", "form"],
   fieldDefinition[ModelType.TRANSFER],
 );

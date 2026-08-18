@@ -4,9 +4,10 @@ import { convertFieldDefinition } from "../../../../utils/displayField/convertFi
 import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
+import { CompetitionStageGet } from "../../../../types/models/competition-stage";
 
 const competitionStageFieldDefinition =
-  convertFieldDefinition<ModelType.COMPETITION_STAGE>(
+  convertFieldDefinition<CompetitionStageGet>(
     ["name", "stage_type", "left"],
     fieldDefinition[ModelType.COMPETITION_STAGE],
   );

@@ -1,10 +1,9 @@
 import { UIFieldDefinition } from "../../types/field";
-import { GettedModelDataMap, ModelType } from "../../types/models";
 
-export const convertFieldDefinition = <T extends ModelType>(
+export const convertFieldDefinition = <T extends Object>(
   keys: string[],
-  fieldDefinition?: UIFieldDefinition<GettedModelDataMap[T]>[],
-): UIFieldDefinition<GettedModelDataMap[T]>[] => {
+  fieldDefinition?: UIFieldDefinition<T>[],
+): UIFieldDefinition<T>[] => {
   if (!fieldDefinition) return [];
 
   const orderMap = new Map(keys.map((key, index) => [key, index]));

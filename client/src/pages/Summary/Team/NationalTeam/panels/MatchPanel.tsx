@@ -23,7 +23,7 @@ const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const matchFieldDefinition: UIFieldDefinition<
     GettedModelDataMap[ModelType.MATCH]
   >[] = [
-    ...convertFieldDefinition<ModelType.MATCH>(
+    ...convertFieldDefinition<MatchGet>(
       [
         "date",
         "competition",

@@ -5,12 +5,12 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { CompetitionGet } from "../../../../types/models/competition";
 
-const competitionFieldDefinition =
-  convertFieldDefinition<ModelType.COMPETITION>(
-    ["name", "competition_type", "category", "age_group"],
-    fieldDefinition[ModelType.COMPETITION],
-  );
+const competitionFieldDefinition = convertFieldDefinition<CompetitionGet>(
+  ["name", "competition_type", "category", "age_group"],
+  fieldDefinition[ModelType.COMPETITION],
+);
 
 const CompetitionPanel = ({ summary }: { summary: UseNationalSummary }) => {
   const {

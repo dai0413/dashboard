@@ -5,8 +5,9 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { TeamGet } from "../../../../types/models/team";
 
-const teamFieldDefinition = convertFieldDefinition<ModelType.TEAM>(
+const teamFieldDefinition = convertFieldDefinition<TeamGet>(
   ["normalized_name", "abbr", "enTeam", "country", "age_group"],
   fieldDefinition[ModelType.TEAM],
 );

@@ -5,9 +5,10 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
+import { TeamCompetitionSeasonGet } from "../../../../types/models/team-competition-season";
 
 const teamCompetitionSeasonFieldDefinition =
-  convertFieldDefinition<ModelType.TEAM_COMPETITION_SEASON>(
+  convertFieldDefinition<TeamCompetitionSeasonGet>(
     ["team"],
     fieldDefinition[ModelType.TEAM_COMPETITION_SEASON],
   );

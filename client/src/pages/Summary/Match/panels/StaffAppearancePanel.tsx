@@ -5,9 +5,10 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { StaffAppearanceGet } from "../../../../types/models/staff-appearance";
 
 const staffAppearanceFieldDefinition =
-  convertFieldDefinition<ModelType.STAFF_APPEARANCE>(
+  convertFieldDefinition<StaffAppearanceGet>(
     ["team", "staff", "role"],
     fieldDefinition[ModelType.STAFF_APPEARANCE],
   );

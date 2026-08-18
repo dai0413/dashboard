@@ -5,9 +5,10 @@ import { fieldDefinition } from "../../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
+import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 
 const nationalMatchSeriesFieldDefinition =
-  convertFieldDefinition<ModelType.NATIONAL_MATCH_SERIES>(
+  convertFieldDefinition<NationalMatchSeriesGet>(
     ["name", "joined_at", "left_at"],
     fieldDefinition[ModelType.NATIONAL_MATCH_SERIES],
   );

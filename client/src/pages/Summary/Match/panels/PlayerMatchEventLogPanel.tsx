@@ -5,9 +5,10 @@ import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
+import { PlayerMatchEventLogGet } from "../../../../types/models/player-match-event-log";
 
 const playerEventLogFieldDefinition =
-  convertFieldDefinition<ModelType.PLAYER_MATCH_EVENT_LOG>(
+  convertFieldDefinition<PlayerMatchEventLogGet>(
     [
       "period_label",
       "time_name",

@@ -5,9 +5,10 @@ import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
+import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
 
 const teamMatchFormationFieldDefinition =
-  convertFieldDefinition<ModelType.TEAM_MATCH_FORMATION>(
+  convertFieldDefinition<TeamMatchFormationGet>(
     ["team", "formation"],
     fieldDefinition[ModelType.TEAM_MATCH_FORMATION],
   );
