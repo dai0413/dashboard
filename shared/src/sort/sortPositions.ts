@@ -20,3 +20,28 @@ export const sortPositions = (
       return desc ? -diff : diff;
     });
 };
+
+export const sortByPosition = <T extends object>(
+  data: T[],
+  field: keyof T,
+  { desc = false }: { desc?: boolean } = {},
+): T[] => {
+  return [...data].sort((a, b) => {
+    const aPosition = a[field];
+    const bPosition = b[field];
+
+    const aIndex =
+      typeof aPosition === "string"
+        ? (positionIndexMap[aPosition] ?? DEFAULT_INDEX)
+        : DEFAULT_INDEX;
+
+    const bIndex =
+      typeof bPosition === "string"
+        ? (positionIndexMap[bPosition] ?? DEFAULT_INDEX)
+        : DEFAULT_INDEX;
+
+    const diff = aIndex - bIndex;
+
+    return desc ? -diff : diff;
+  });
+};
