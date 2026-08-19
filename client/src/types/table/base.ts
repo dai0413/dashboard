@@ -20,10 +20,21 @@ type FieldHeader<T> = BaseField &
     field: keyof T;
   };
 
+export type DataValue =
+  | string
+  | Label
+  | Label[]
+  | (object & { id?: string })
+  | (object & { id?: string })[];
+
+export type RenderCellValue = Label & {
+  to?: string;
+};
+
 type CustomHeader<T> = BaseField &
   TableHeaderBase & {
     getValueType: ColumnType.CUSTOM;
-    getData: (data: T) => string | Label | (object & { id?: string });
+    getData: (data: T) => DataValue;
   };
 
 export type TableHeader<T> = FieldHeader<T> | CustomHeader<T>;

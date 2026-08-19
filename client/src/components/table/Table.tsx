@@ -153,8 +153,11 @@ const Table = <T,>({
                 </th>
               )}
               {visibleHeaders.map((header) => {
-                const isObject = typeof row === "object" && row !== null;
-                const displayValue = toDisplayValue(header, row);
+                const { renderCellValue, title } = toDisplayValue(
+                  header,
+                  row,
+                  linkField,
+                );
 
                 const dataIndex = itemsPerPage
                   ? (pageNum - 1) * itemsPerPage + i
@@ -179,16 +182,17 @@ const Table = <T,>({
                       }
 
                     `}
-                    title={displayValue}
+                    title={title}
                     style={{
                       width: `${renderFieldCell ? "200px" : "150px"}`,
                     }}
                   >
-                    {edit
-                      ? renderFieldCell &&
-                        renderFieldCell(header, row, dataIndex)
-                      : isObject &&
-                        RenderCell(displayValue, header, row, form, linkField)}
+                    {form
+                      ? title
+                      : edit
+                        ? renderFieldCell &&
+                          renderFieldCell(header, row, dataIndex)
+                        : RenderCell(renderCellValue)}
                   </td>
                 );
               })}

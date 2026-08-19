@@ -5,7 +5,7 @@ import {
   getDeepValue,
   setDeepValue,
 } from "./helpers/deepValue";
-import { getKey, getLabel, isLabelObj } from "./helpers/label";
+import { getKey, getLabel, isKeyLabelObj } from "./helpers/label";
 import { normalize } from "./helpers/normalize";
 import { resolveMode } from "./resolveMode";
 
@@ -52,11 +52,11 @@ export function updateFormValue<T extends object, K extends keyof T>(
       storedValue = undefined;
       labelValue = undefined;
     } else {
-      storedValue = isLabelObj(normalizedValue)
+      storedValue = isKeyLabelObj(normalizedValue)
         ? getKey(normalizedValue)
         : normalizedValue;
 
-      labelValue = isLabelObj(normalizedValue)
+      labelValue = isKeyLabelObj(normalizedValue)
         ? getLabel(normalizedValue)
         : normalizedValue;
     }
@@ -66,11 +66,11 @@ export function updateFormValue<T extends object, K extends keyof T>(
     const currentValArr = Array.isArray(currentValue) ? currentValue : [];
     const currentLabelArr = Array.isArray(currentLabel) ? currentLabel : [];
 
-    const targetKey = isLabelObj(normalizedValue)
+    const targetKey = isKeyLabelObj(normalizedValue)
       ? getKey(normalizedValue)
       : normalizedValue;
 
-    const targetLabel = isLabelObj(normalizedValue)
+    const targetLabel = isKeyLabelObj(normalizedValue)
       ? getLabel(normalizedValue)
       : normalizedValue;
 
@@ -94,11 +94,11 @@ export function updateFormValue<T extends object, K extends keyof T>(
     const nextValArr = [...currentValArr];
     const nextLabelArr = [...currentLabelArr];
 
-    const val = isLabelObj(normalizedValue)
+    const val = isKeyLabelObj(normalizedValue)
       ? getKey(normalizedValue)
       : normalizedValue;
 
-    const label = isLabelObj(normalizedValue)
+    const label = isKeyLabelObj(normalizedValue)
       ? getLabel(normalizedValue)
       : normalizedValue;
 

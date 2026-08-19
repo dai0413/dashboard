@@ -1,148 +1,41 @@
 import { Link } from "react-router-dom";
-import { LinkField } from "../../types/types";
-import { ColumnType, TableHeader } from "../../types/table";
+import { RenderCellValue } from "../../types/table";
 import React from "react";
+import { isRenderCellValue } from "../../utils/data/isLabelObject";
 
-type BaseRow = {
-  key?: string;
-  _id?: string;
-};
-
-const RenderCell = <T extends BaseRow>(
-  displayValue: string,
-  header: TableHeader<T>,
-  row: T,
-  form: boolean,
-  linkField?: LinkField[],
+const RenderCell = (
+  value: RenderCellValue | RenderCellValue[] | string,
 ): React.ReactNode => {
-  if (
-    header.getValueType === ColumnType.FIELD &&
-    "element" in row &&
-    React.isValidElement(row.element)
-  ) {
-    if (row.key === header.field) return row.element;
-  }
+  const renderValue = (value: RenderCellValue | string) => {
+    if (!isRenderCellValue(value)) {
+      return value;
+    }
 
-  const value =
-    header.getValueType === ColumnType.CUSTOM
-      ? header.getData(row)
-      : row[header.field];
+    if (value.to) {
+      return (
+        <Link to={value.to} className="hover:text-blue-600 underline">
+          {value.label}
+        </Link>
+      );
+    }
 
-  const field =
-    linkField && linkField.find((field) => field.field === header.key);
-
-  const hasId = (value: unknown): value is { id: string } => {
-    return (
-      value !== null &&
-      typeof value === "object" &&
-      "id" in value &&
-      typeof value.id === "string"
-    );
+    return value.label;
   };
 
-  const hasObjectId = (value: unknown): value is { _id: string } => {
-    return (
-      value !== null &&
-      typeof value === "object" &&
-      "_id" in value &&
-      typeof value._id === "string"
-    );
-  };
-
-  /*
-   * 配列の場合
-   */
-  if (!form && field && Array.isArray(value)) {
+  if (Array.isArray(value)) {
     return (
       <>
-        {value.map((item, index) => {
-          const id = hasId(item)
-            ? item.id
-            : hasObjectId(item)
-              ? item._id
-              : undefined;
-
-          const itemDisplayValue: string =
-            typeof item === "string"
-              ? item
-              : typeof item === "object" && item !== null
-                ? String(
-                    "name" in item
-                      ? item.name
-                      : "team" in item
-                        ? item.team
-                        : "label" in item
-                          ? item.label
-                          : displayValue,
-                  )
-                : String(item);
-
-          return (
-            <React.Fragment key={id ?? index}>
-              {index > 0 && ", "}
-
-              {id ? (
-                <Link
-                  to={`${field.to}/${id}`}
-                  className="hover:text-blue-600 underline"
-                >
-                  {itemDisplayValue}
-                </Link>
-              ) : (
-                itemDisplayValue
-              )}
-            </React.Fragment>
-          );
-        })}
+        {value.map((item, index) => (
+          <React.Fragment key={item.id ?? index}>
+            {index > 0 && ", "}
+            {renderValue(item)}
+          </React.Fragment>
+        ))}
       </>
     );
   }
 
-  /*
-   * オブジェクトで id を持つ場合
-   */
-  if (!form && field && hasId(value)) {
-    return (
-      <Link
-        to={`${field.to}/${value.id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {displayValue}
-      </Link>
-    );
-  }
-
-  /*
-   * オブジェクトで _id を持つ場合
-   */
-  if (!form && field && hasObjectId(value)) {
-    return (
-      <Link
-        to={`${field.to}/${value._id}`}
-        className="hover:text-blue-600 underline"
-      >
-        {displayValue}
-      </Link>
-    );
-  }
-
-  /*
-   * row._id を使う場合
-   */
-  if (!form && field && value !== null) {
-    if (row._id) {
-      return (
-        <Link
-          to={`${field.to}/${row._id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {displayValue}
-        </Link>
-      );
-    }
-  }
-
-  return displayValue;
+  return renderValue(value);
 };
 
 export default RenderCell;

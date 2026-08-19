@@ -90,8 +90,6 @@ export const Tile = <T,>({
         const isSelected = selectedKey.includes(getKey(row));
         const isOpen = openKeys.includes(getKey(row));
 
-        const isObject = typeof row === "object" && row !== null;
-
         return (
           <div
             key={getKey(row) ?? index}
@@ -121,20 +119,17 @@ export const Tile = <T,>({
             <div className="flex items-center justify-between">
               <div className="flex gap-4 text-sm">
                 {fallbackPrimary.map((header) => {
-                  const displayValue = toDisplayValue(header, row);
+                  const { renderCellValue, title } = toDisplayValue(
+                    header,
+                    row,
+                    linkField,
+                  );
 
                   return (
                     <div key={header.key} className="flex gap-2">
                       <span className="text-gray-500">{header.label}</span>
                       <span className="font-medium">
-                        {isObject &&
-                          RenderCell(
-                            displayValue,
-                            header,
-                            row,
-                            form,
-                            linkField,
-                          )}
+                        {form ? title : RenderCell(renderCellValue)}
                       </span>
                     </div>
                   );
@@ -181,33 +176,32 @@ export const Tile = <T,>({
             {isOpen && (
               <div className="mt-3 space-y-1 border-t pt-2">
                 {secondaryHeaders.map((header) => {
-                  const displayValue = toDisplayValue(header, row);
+                  const { renderCellValue, title } = toDisplayValue(
+                    header,
+                    row,
+                    linkField,
+                  );
 
                   return (
                     <div
                       key={header.key}
                       className="flex justify-between text-sm"
-                      title={displayValue}
+                      title={title}
                     >
                       <span className="text-gray-500">{header.label}</span>
                       <span className="font-medium text-right ml-2">
-                        {edit
-                          ? renderFieldCell &&
-                            renderFieldCell(
-                              header,
-                              row,
-                              itemsPerPage
-                                ? (pageNum - 1) * itemsPerPage + index
-                                : index,
-                            )
-                          : isObject &&
-                            RenderCell(
-                              displayValue,
-                              header,
-                              row,
-                              form,
-                              linkField,
-                            )}
+                        {form
+                          ? title
+                          : edit
+                            ? renderFieldCell &&
+                              renderFieldCell(
+                                header,
+                                row,
+                                itemsPerPage
+                                  ? (pageNum - 1) * itemsPerPage + index
+                                  : index,
+                              )
+                            : RenderCell(renderCellValue)}
                       </span>
                     </div>
                   );
