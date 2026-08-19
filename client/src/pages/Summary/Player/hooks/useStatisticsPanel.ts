@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { Data } from "../../../../types/types";
-import { readItemsBase } from "../../../../lib/api";
+import { createItemBase } from "../../../../lib/api";
 import { api } from "../../../../context/api-context";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 
@@ -14,12 +14,13 @@ export const useStatisticsPanel = () => {
   });
 
   const readStatistics = async (playerId: string) => {
-    const obj = await readItemsBase<PlayerStatistic[]>({
+    const obj = await createItemBase<PlayerStatistic[]>({
       apiInstance: api,
       backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
-      params: {
+      data: {
         getAll: true,
         player: playerId,
+        groupBy: "season",
       },
       handleLoading: (time) => {
         setStatistics((prev) => ({
@@ -29,11 +30,25 @@ export const useStatisticsPanel = () => {
       },
     });
 
-    if (obj) {
+    if (obj.success) {
       setStatistics({
-        data: obj.data,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
+        data: obj.data.sort((a, b) => {
+          if (
+            a.group?.by === "season" &&
+            b.group?.by === "season" &&
+            a.group?.data?.start_date &&
+            b.group?.data?.start_date
+          ) {
+            const aDate = a.group?.data?.start_date;
+            const bDate = b.group?.data?.start_date;
+
+            return new Date(bDate).getTime() - new Date(aDate).getTime();
+          }
+
+          return 0;
+        }),
+        totalCount: obj.data.length ? obj.data.length : 0,
+        page: 1,
         isLoading: false,
       });
     }

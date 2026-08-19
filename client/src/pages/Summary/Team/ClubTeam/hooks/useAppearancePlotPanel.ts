@@ -3,7 +3,7 @@ import { API_PATHS, QueryParams, sortByPosition } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
-import { readItemsBase } from "../../../../../lib/api";
+import { createItemBase, readItemsBase } from "../../../../../lib/api";
 import {
   PlayerAppearance,
   PlayerAppearanceGet,
@@ -132,13 +132,13 @@ export const useAppearancePlotPanel = () => {
       params["_id"] = matchIds;
     }
 
-    const playerStatistic = await readItemsBase<PlayerStatistic[]>({
+    const playerStatistic = await createItemBase<PlayerStatistic[]>({
       apiInstance: api,
       backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
-      params: params,
+      data: params,
     });
 
-    if (playerStatistic?.data) {
+    if (playerStatistic?.success) {
       setPlayerStatistics(sortByPosition(playerStatistic.data, "mainPosition"));
     }
 

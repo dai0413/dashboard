@@ -12,7 +12,9 @@ import { ColumnType } from "../../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 
-const keys = playerStatistics.map((ps) => ps.key);
+const keys = playerStatistics
+  .map((ps) => ps.key)
+  .filter((d) => d !== "group.season" && d !== "group.season.competition");
 const secondKeys = keys.filter((d) => d !== "player" && d !== "mainPosition");
 
 const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [

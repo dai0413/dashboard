@@ -34,7 +34,11 @@ const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
     width: "80px",
   },
   ...convertFieldDefinition(secondKeys, playerStatistics).filter(
-    (d) => d.key !== "mainPosition" && d.key !== "player",
+    (d) =>
+      d.key !== "mainPosition" &&
+      d.key !== "player" &&
+      d.key !== "group.season" &&
+      d.key !== "group.season.competition",
   ),
 ];
 
