@@ -31,27 +31,104 @@ const RenderCell = <T extends BaseRow>(
   const field =
     linkField && linkField.find((field) => field.field === header.key);
 
-  const hasId = (row: any): row is { id: string } => {
-    return row && typeof row === "object" && "id" in row;
+  const hasId = (value: unknown): value is { id: string } => {
+    return (
+      value !== null &&
+      typeof value === "object" &&
+      "id" in value &&
+      typeof value.id === "string"
+    );
   };
 
-  // ① オブジェクトでidを持つ場合
-  if (!form && field && hasId(value)) {
-    if (typeof value.id === "string" && value.id !== "undefined") {
-      return (
-        <Link
-          to={`${field.to}/${value.id}`}
-          className="hover:text-blue-600 underline"
-        >
-          {displayValue}
-        </Link>
-      );
-    } else {
-      return displayValue;
-    }
+  const hasObjectId = (value: unknown): value is { _id: string } => {
+    return (
+      value !== null &&
+      typeof value === "object" &&
+      "_id" in value &&
+      typeof value._id === "string"
+    );
+  };
+
+  /*
+   * 配列の場合
+   */
+  if (!form && field && Array.isArray(value)) {
+    return (
+      <>
+        {value.map((item, index) => {
+          const id = hasId(item)
+            ? item.id
+            : hasObjectId(item)
+              ? item._id
+              : undefined;
+
+          const itemDisplayValue: string =
+            typeof item === "string"
+              ? item
+              : typeof item === "object" && item !== null
+                ? String(
+                    "name" in item
+                      ? item.name
+                      : "team" in item
+                        ? item.team
+                        : "label" in item
+                          ? item.label
+                          : displayValue,
+                  )
+                : String(item);
+
+          return (
+            <React.Fragment key={id ?? index}>
+              {index > 0 && ", "}
+
+              {id ? (
+                <Link
+                  to={`${field.to}/${id}`}
+                  className="hover:text-blue-600 underline"
+                >
+                  {itemDisplayValue}
+                </Link>
+              ) : (
+                itemDisplayValue
+              )}
+            </React.Fragment>
+          );
+        })}
+      </>
+    );
   }
 
-  // ② row._idを使う場合
+  /*
+   * オブジェクトで id を持つ場合
+   */
+  if (!form && field && hasId(value)) {
+    return (
+      <Link
+        to={`${field.to}/${value.id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {displayValue}
+      </Link>
+    );
+  }
+
+  /*
+   * オブジェクトで _id を持つ場合
+   */
+  if (!form && field && hasObjectId(value)) {
+    return (
+      <Link
+        to={`${field.to}/${value._id}`}
+        className="hover:text-blue-600 underline"
+      >
+        {displayValue}
+      </Link>
+    );
+  }
+
+  /*
+   * row._id を使う場合
+   */
   if (!form && field && value !== null) {
     if (row._id) {
       return (

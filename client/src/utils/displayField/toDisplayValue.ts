@@ -15,7 +15,13 @@ export const toDisplayValue = <T>(header: TableHeader<T>, row: T): string => {
 
     if (isLabelObject(value)) return value.label;
 
-    if (Array.isArray(value)) return value.join(", ");
+    if (Array.isArray(value)) {
+      if (value.some((v) => isLabelObject(v))) {
+        return value.map((v) => v.abbr).join(",");
+      }
+
+      return value.join(", ");
+    }
 
     if (header.type === "Date") {
       return toDateKey(value as string, false) || "";

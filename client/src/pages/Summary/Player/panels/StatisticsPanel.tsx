@@ -48,6 +48,10 @@ const StatisticsPanel = ({ summary }: { summary: UsePlayerSummary }) => {
             field: "group.season.competition",
             to: APP_ROUTES.COMPETITION_SUMMARY,
           },
+          {
+            field: "teams",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
         ]}
       />
     </>
