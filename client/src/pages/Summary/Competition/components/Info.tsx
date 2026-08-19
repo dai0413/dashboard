@@ -39,7 +39,7 @@ const Info = ({ summary }: { summary: UseCompetitionSummary }) => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center md:gap-4">
             <div className="text-gray-600">{selected.en_name}</div>
-            {selected.country.label ? (
+            {selected.country?.label ? (
               <div className="text-md text-gray-500">{`国：${selected.country.label}`}</div>
             ) : undefined}
             {selected.competition_type ? (

@@ -1,24 +1,23 @@
+import {
+  StadiumFormSchema,
+  StadiumPopulatedSchema,
+} from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Country } from "./country";
+import z from "zod";
 
-export type Stadium = {
-  _id: string;
-  name: string;
-  abbr?: string;
-  en_name?: string;
-  alt_names: string[];
-  alt_abbrs: string[];
-  alt_en_names: string[];
+export type Stadium = Omit<
+  z.infer<typeof StadiumPopulatedSchema>,
+  "country"
+> & {
   country: Country;
-  transferurl?: null;
-  sofaurl?: null;
 };
 
-type StadiumPost = Omit<Stadium, "_id" | "country"> & {
-  country: Country["_id"] | null;
-};
-
-export type StadiumForm = Partial<StadiumPost>;
+export type StadiumForm = Partial<
+  Omit<z.infer<typeof StadiumFormSchema>, "country"> & {
+    country: Country["_id"];
+  }
+>;
 
 export type StadiumGet = Omit<Stadium, "country"> & {
   country: Label;

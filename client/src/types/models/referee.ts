@@ -1,28 +1,27 @@
 import { Label } from "../types";
 import { Player } from "./player";
 import { Country } from "./country";
+import {
+  RefereeFormSchema,
+  RefereePopulatedSchema,
+} from "@dai0413/myorg-shared";
+import z from "zod";
 
-export type Referee = {
-  _id: string;
-  name: string;
-  en_name: string | null;
-  dob: Date | null;
-  pob: String | null;
-  citizenship: Country[] | null;
-  player: Player | null;
-  transferurl?: string;
-  sofaurl?: string;
-  old_id?: string;
-  normalized_en_name: string;
+export type Referee = Omit<
+  z.infer<typeof RefereePopulatedSchema>,
+  "citizenship" | "player"
+> & {
+  citizenship?: Country[];
+  player?: Player;
 };
 
-type RefereePost = Omit<Referee, "_id" | "player" | "citizenship" | "dob"> & {
-  citizenship: Country["_id"][] | null;
-  player?: Player["_id"];
-  dob: string;
-};
-
-export type RefereeForm = Partial<RefereePost>;
+export type RefereeForm = Partial<
+  Omit<z.infer<typeof RefereeFormSchema>, "citizenship" | "player" | "dob"> & {
+    citizenship?: Country["_id"][];
+    player?: Player["_id"];
+    dob?: string;
+  }
+>;
 
 export type RefereeGet = Omit<Referee, "player" | "citizenship"> & {
   player?: Label;

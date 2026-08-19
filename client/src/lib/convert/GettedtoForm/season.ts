@@ -1,11 +1,9 @@
 import { SeasonForm, SeasonGet } from "../../../types/models/season";
 
-function getStatus(
-  isInjured: string | null | undefined
-): boolean | null | undefined {
+function getStatus(isInjured: string | undefined): boolean | undefined {
   if (isInjured === "最新") return true;
   if (isInjured === "") return false;
-  return null;
+  return undefined;
 }
 
 export const season = (t: SeasonGet): SeasonForm => ({

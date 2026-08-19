@@ -1,26 +1,32 @@
+import z from "zod";
 import { Label } from "../types";
 import { Competition } from "./competition";
 import { Season } from "./season";
 import { Team } from "./team";
+import {
+  TeamCompetitionSeasonFormSchema,
+  TeamCompetitionSeasonPopulatedSchema,
+} from "@dai0413/myorg-shared";
 
-export type TeamCompetitionSeason = {
-  _id: string;
+export type TeamCompetitionSeason = Omit<
+  z.infer<typeof TeamCompetitionSeasonPopulatedSchema>,
+  "team" | "season" | "competition"
+> & {
   team: Team;
   season: Season;
   competition: Competition;
-  note?: String | null;
 };
 
-type TeamCompetitionSeasonPost = Omit<
-  TeamCompetitionSeason,
-  "_id" | "team" | "season" | "competition"
-> & {
-  team: Team["_id"] | null;
-  season: Season["_id"] | null;
-  competition: Competition["_id"] | null;
-};
-
-export type TeamCompetitionSeasonForm = Partial<TeamCompetitionSeasonPost>;
+export type TeamCompetitionSeasonForm = Partial<
+  Omit<
+    z.infer<typeof TeamCompetitionSeasonFormSchema>,
+    "team" | "season" | "competition"
+  > & {
+    team?: Team["_id"];
+    season?: Season["_id"];
+    competition?: Competition["_id"];
+  }
+>;
 
 export type TeamCompetitionSeasonGet = Omit<
   TeamCompetitionSeason,

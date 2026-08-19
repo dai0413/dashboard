@@ -11,8 +11,8 @@ type AgeGroup = (typeof AgeGroupOptions)[number] | null;
 export type Competition = {
   label: string;
   key: string;
-  country: string;
-  competition_type: CompetitionType;
-  category: Category | undefined;
-  age_group: AgeGroup | undefined;
+  country?: string;
+  competition_type?: CompetitionType;
+  category?: Category;
+  age_group?: AgeGroup;
 };

@@ -1,19 +1,17 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { InjuryForm, InjuryGet } from "../../../types/models/injury";
 
-function getInjuryStatus(
-  isInjured: string | null | undefined,
-): boolean | null | undefined {
+function getInjuryStatus(isInjured: string | undefined): boolean | undefined {
   if (isInjured === "負傷中") return true;
   if (isInjured === "復帰済み") return false;
-  return null;
+  return undefined;
 }
 
 export const injury = (p: InjuryGet): InjuryForm => ({
   ...p,
   doa: toDateKey(p.doa),
   player: p.player.id,
-  team: p.team.id,
+  team: p.team?.id,
   now_team: p.team?.id ?? "不明",
   doi: toDateKey(p.doi),
   dos: toDateKey(p.dos),

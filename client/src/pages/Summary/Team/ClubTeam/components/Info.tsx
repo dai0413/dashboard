@@ -45,7 +45,7 @@ const Info = ({ summary }: { summary: UseClubTeamSummary }) => {
             <div className="text-gray-600">{`${selected.enTeam}`}</div>
             <div className="text-gray-600">{`略称：${selected.abbr}`}</div>
             <div className="text-sm text-gray-500">
-              {`国：${selected.country.label}`}
+              {`国：${selected.country?.label}`}
             </div>
             <div className="text-sm text-gray-500">
               {`ジャンル：${selected.genre}`}

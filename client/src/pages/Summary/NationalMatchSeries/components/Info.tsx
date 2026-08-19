@@ -29,7 +29,7 @@ const Info = ({ summary }: { summary: UseNationalMatchSeriesSummary }) => {
               }`}
             </div>
             <div className="text-sm text-gray-500">
-              {selected.urls.map((url, index) => {
+              {selected.urls?.map((url, index) => {
                 return (
                   <a
                     key={`url-${index}`}

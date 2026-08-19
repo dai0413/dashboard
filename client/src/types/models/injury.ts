@@ -1,45 +1,39 @@
+import { InjuryFormSchema, InjuryPopulatedSchema } from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Player } from "./player";
 import { Team } from "./team";
+import z from "zod";
 
-export type Injury = {
-  _id: string;
-  doa: Date;
-  team: Team | null;
-  now_team: Team | null;
-  player: Player;
-  doi: Date | null;
-  dos: Date | null;
-  injured_part: string[];
-  is_injured: boolean | null;
-  ttp: string[] | null;
-  erd: Date | null;
-  URL: string[] | null;
-};
-
-type InjuryPost = Omit<
-  Injury,
-  "_id" | "player" | "team" | "now_team" | "doa" | "doi" | "dos" | "erd"
+export type Injury = Omit<
+  z.infer<typeof InjuryPopulatedSchema>,
+  "team" | "now_team" | "player"
 > & {
-  player: Player["_id"];
-  team: Team["_id"] | null;
-  now_team: Team["_id"] | null;
-  doa: string;
-  doi: string;
-  dos: string;
-  erd: string;
+  team?: Team;
+  now_team?: Team;
+  player: Player;
 };
 
-export type InjuryForm = Partial<InjuryPost>;
+export type InjuryForm = Partial<
+  Omit<
+    z.infer<typeof InjuryFormSchema>,
+    "player" | "team" | "now_team" | "doa" | "doi" | "dos" | "erd"
+  > & {
+    player: Player["_id"];
+    team: Team["_id"];
+    now_team: Team["_id"];
+    doa: string;
+    doi: string;
+    dos: string;
+    erd: string;
+  }
+>;
 
 export type InjuryGet = Omit<
   Injury,
   "player" | "team" | "now_team" | "is_injured"
 > & {
   player: Label;
-  team: Label;
-  now_team: Label;
-  // injured_part: string | null;
-  // ttp: string | null;
-  is_injured: string | null;
+  team?: Label;
+  now_team?: Label;
+  is_injured?: string;
 };

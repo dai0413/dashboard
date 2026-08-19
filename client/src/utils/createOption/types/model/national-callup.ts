@@ -9,8 +9,8 @@ export type NationalCallup = {
 
   series: Label;
   player: Label;
-  number: number | null;
+  number?: number;
   team: Label;
-  team_name: string | null;
-  position_group: PositionGroup;
+  team_name?: string;
+  position_group?: PositionGroup;
 };

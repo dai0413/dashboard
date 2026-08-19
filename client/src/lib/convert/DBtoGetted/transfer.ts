@@ -9,7 +9,7 @@ function getIsCancelled(isCancelled: boolean | undefined): string {
 }
 
 export const transfer = (t: Transfer): TransferGet => {
-  let newFrom_team: Label | null = null;
+  let newFrom_team: Label | undefined = undefined;
 
   if ("from_team" in t && t.from_team) {
     if (t.from_team._id) {
@@ -19,7 +19,7 @@ export const transfer = (t: Transfer): TransferGet => {
     }
   }
 
-  let newTo_team: Label | null = null;
+  let newTo_team: Label | undefined = undefined;
 
   if ("to_team" in t && t.to_team) {
     if (t.to_team._id) {

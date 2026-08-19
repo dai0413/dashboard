@@ -1,53 +1,43 @@
-import { form, position } from "@dai0413/myorg-shared";
+import {
+  TransferFormSchema,
+  TransferPopulatedSchema,
+} from "@dai0413/myorg-shared";
 import { Label } from "../types";
 import { Player } from "./player";
 import { Team } from "./team";
+import z from "zod";
 
-const positionOptions = position().map((item) => item.key);
-const formOptions = form().map((item) => item.key);
-type Position = (typeof positionOptions)[number] | null;
-type Form = (typeof formOptions)[number] | null;
-
-export type Transfer = {
-  _id: string;
-  doa: Date;
-  from_team: Team | null;
-  to_team: Team | null;
-  player: Player;
-  position: Position[] | null;
-  form: Form | null;
-  number: number | null;
-  from_date: Date;
-  to_date: Date | null;
-  URL: string[] | null;
-  isCancelled?: boolean;
-};
-
-type TransferPost = Omit<
-  Transfer,
-  "_id" | "player" | "from_team" | "to_team" | "from_date" | "to_date" | "doa"
+export type Transfer = Omit<
+  z.infer<typeof TransferPopulatedSchema>,
+  "from_team" | "to_team" | "player"
 > & {
-  player: Player["_id"];
-  from_team: Team["_id"] | null;
-  to_team: Team["_id"] | null;
-  from_date: string;
-  to_date: string;
-  doa: string;
-  from_team_name: string | null;
-  to_team_name: string | null;
+  from_team?: Team;
+  to_team?: Team;
+  player: Player;
 };
 
-export type TransferForm = Partial<TransferPost>;
+export type TransferForm = Partial<
+  Omit<
+    z.infer<typeof TransferFormSchema>,
+    "player" | "from_team" | "to_team" | "from_date" | "to_date" | "doa"
+  > & {
+    player: Player["_id"];
+    from_team: Team["_id"];
+    to_team: Team["_id"];
+    from_date: string;
+    to_date: string;
+    doa: string;
+    from_team_name: string;
+    to_team_name: string;
+  }
+>;
 
 export type TransferGet = Omit<
   Transfer,
   "player" | "from_team" | "to_team" | "isCancelled"
 > & {
-  // doa: string;
-  // from_date: string;
-  // to_date: string | null;
   player: Label;
-  from_team: Label | null;
-  to_team: Label | null;
+  from_team?: Label;
+  to_team?: Label;
   isCancelled: string;
 };

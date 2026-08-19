@@ -1,21 +1,11 @@
-import { periodLabel } from "@dai0413/myorg-shared";
+import {
+  MatchFormatFormSchema,
+  MatchFormatZodSchema,
+} from "@dai0413/myorg-shared";
+import z from "zod";
 
-const periodlabelOptions = periodLabel().map((p) => p.key);
-type PeriodLabel = (typeof periodlabelOptions)[number];
+export type MatchFormat = z.infer<typeof MatchFormatZodSchema>;
 
-export type MatchFormat = {
-  _id: string;
-  name: string;
-  period: {
-    period_label: PeriodLabel;
-    start?: Number | null;
-    end?: Number | null;
-    order?: Number | null;
-  }[];
-};
-
-type MatchFormatPost = Omit<MatchFormat, "_id"> & {};
-
-export type MatchFormatForm = Partial<MatchFormatPost>;
+export type MatchFormatForm = Partial<z.infer<typeof MatchFormatFormSchema>>;
 
 export type MatchFormatGet = MatchFormat;

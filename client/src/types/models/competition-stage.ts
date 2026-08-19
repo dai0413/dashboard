@@ -1,39 +1,37 @@
-import { stageType } from "@dai0413/myorg-shared";
+import {
+  CompetitionStageZodSchema,
+  CompetitionStageFormSchema,
+} from "@dai0413/myorg-shared";
 import { Label } from "../types";
-import { Competition } from "./competition";
 import { Season } from "./season";
+import { Competition } from "./competition";
+import z from "zod";
 
-const StageTypeOptions = stageType().map((item) => item.key);
-
-type StageType = (typeof StageTypeOptions)[number] | null;
-
-export type CompetitionStage = {
-  _id: string;
+export type CompetitionStage = Omit<
+  z.infer<typeof CompetitionStageZodSchema>,
+  "competition" | "season" | "parent_stage"
+> & {
   competition: Competition;
   season: Season;
-  stage_type: StageType;
-  name?: string;
-  round_number?: Number | null;
-  leg?: Number | null;
-  order?: Number | null;
   parent_stage?: CompetitionStage;
-  notes?: String | null;
 };
 
-type CompetitionStagePost = Omit<
-  CompetitionStage,
-  "_id" | "competition" | "season"
-> & {
-  competition: Competition["_id"];
-  season: Season["_id"];
-};
-
-export type CompetitionStageForm = Partial<CompetitionStagePost>;
+export type CompetitionStageForm = Partial<
+  Omit<
+    z.infer<typeof CompetitionStageFormSchema>,
+    "competition" | "season" | "parent_stage"
+  > & {
+    competition: Competition["_id"];
+    season: Season["_id"];
+    parent_stage: CompetitionStage["_id"];
+  }
+>;
 
 export type CompetitionStageGet = Omit<
   CompetitionStage,
-  "competition" | "season"
+  "competition" | "season" | "parent_stage"
 > & {
   competition: Label;
   season: Label;
+  parent_stage?: Label;
 };

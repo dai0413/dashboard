@@ -77,7 +77,7 @@ export const setTeam: OnChange<TransferForm, false> = async ({
   }
 
   if (position) {
-    returnValue["position"] = position;
+    returnValue["position"] = position as string[];
     returnFormLabel["position"] = position;
   }
 

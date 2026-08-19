@@ -1,23 +1,22 @@
+import { SeasonPopulatedSchema, SeasonFormSchema } from "@dai0413/myorg-shared";
 import { Label } from "../types";
+import z from "zod";
 import { Competition } from "./competition";
 
-export type Season = {
-  _id: string;
+export type Season = Omit<
+  z.infer<typeof SeasonPopulatedSchema>,
+  "competition"
+> & {
   competition: Competition;
-  name: string;
-  start_date?: Date | null;
-  end_date?: Date | null;
-  current?: boolean | null;
-  note?: String | null;
 };
 
-type SeasonPost = Omit<Season, "_id" | "competition"> & {
-  competition: Competition["_id"] | null;
-};
-
-export type SeasonForm = Partial<SeasonPost>;
+export type SeasonForm = Partial<
+  Omit<z.infer<typeof SeasonFormSchema>, "competition"> & {
+    competition: Competition["_id"];
+  }
+>;
 
 export type SeasonGet = Omit<Season, "current" | "competition"> & {
   competition: Label;
-  current: string | null;
+  current?: string;
 };

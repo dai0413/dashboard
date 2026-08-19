@@ -10,7 +10,7 @@ export const transfer = (data: TransferGet[]): OptionObj<Transfer> => {
 
     to_team: d.to_team,
     player: d.player,
-    position: d.position,
+    position: d.position || [],
   }));
 
   return {

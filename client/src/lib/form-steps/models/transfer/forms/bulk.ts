@@ -143,7 +143,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
             key: row.key,
             player: row.player.id,
             to_team: row.to_team?.id,
-            position: row.position,
+            position: row.position as string[],
           },
           formLabel: {
             key: row.player.label,

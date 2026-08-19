@@ -8,6 +8,6 @@ export type Transfer = {
   key: string;
 
   player: Label;
-  to_team: Label | null;
-  position: Position[] | null;
+  to_team?: Label;
+  position?: Position[];
 };

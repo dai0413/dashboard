@@ -7,7 +7,7 @@ export const competition = (data: CompetitionGet[]): OptionObj<Competition> => {
   const options: Competition[] = data.map((d) => ({
     label: d.abbr || d.name || "不明",
     key: d._id,
-    country: d.country.label,
+    country: d.country?.label,
     competition_type: d.competition_type,
     category: d.category,
     age_group: d.age_group,

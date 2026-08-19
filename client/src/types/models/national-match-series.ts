@@ -1,29 +1,31 @@
 import { Label } from "../types";
 import { Team } from "./team";
 import { Match } from "./match";
+import z from "zod";
+import {
+  NationalMatchSeriesFormSchema,
+  NationalMatchSeriesZodSchema,
+} from "@dai0413/myorg-shared";
 
-export type NationalMatchSeries = {
-  _id: string;
-  name: string;
-  abbr: string | null;
+export type NationalMatchSeries = Omit<
+  z.infer<typeof NationalMatchSeriesZodSchema>,
+  "team" | "matches"
+> & {
   team: Team;
   matches: Match[];
-  joined_at: Date | null;
-  left_at: Date | null;
-  urls: string[];
 };
 
-type NationalMatchSeriesPost = Omit<
-  NationalMatchSeries,
-  "_id" | "joined_at" | "left_at" | "team" | "matches"
-> & {
-  team: Team["_id"];
-  matches: Match["_id"][];
-  joined_at: string | null;
-  left_at: string | null;
-};
-
-export type NationalMatchSeriesForm = Partial<NationalMatchSeriesPost>;
+export type NationalMatchSeriesForm = Partial<
+  Omit<
+    z.infer<typeof NationalMatchSeriesFormSchema>,
+    "joined_at" | "left_at" | "team" | "matches"
+  > & {
+    team: Team["_id"];
+    matches: Match["_id"][];
+    joined_at: string;
+    left_at: string;
+  }
+>;
 
 export type NationalMatchSeriesGet = Omit<
   NationalMatchSeries,

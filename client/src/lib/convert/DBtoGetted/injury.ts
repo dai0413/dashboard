@@ -2,10 +2,10 @@ import { Injury, InjuryGet } from "../../../types/models/injury";
 import { player } from "../CreateLabel/player";
 import { team } from "../CreateLabel/team";
 
-function getInjuryStatus(isInjured: boolean | null | undefined): string | null {
+function getInjuryStatus(isInjured: boolean | undefined): string | undefined {
   if (isInjured === true) return "負傷中";
   if (isInjured === false) return "復帰済み";
-  return null;
+  return undefined;
 }
 
 export const injury = (p: Injury): InjuryGet => ({
@@ -29,7 +29,7 @@ export const injury = (p: Injury): InjuryGet => ({
           .replace("m", "ヶ月")
           .replace("d", "日")
           .replace("w", "週間")
-          .replace("y", "年")
+          .replace("y", "年"),
       )
     : p.ttp,
   is_injured: getInjuryStatus(p.is_injured),

@@ -113,7 +113,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
             player: row.player.id,
             team: row.team.id,
             team_name: row.team_name,
-            position_group: row.position_group,
+            position_group: row.position_group as string,
           },
           formLabel: {
             key: `${row.player.label}`,

@@ -16,7 +16,7 @@ const defaultDatamap: Partial<
 };
 
 export function getDefault<T extends ModelType>(
-  modelType: T
+  modelType: T,
 ): FormTypeMap[T] | GettedModelDataMap[ModelType] {
   const defaultValue = defaultDatamap[modelType];
   if (defaultValue) return defaultValue;
