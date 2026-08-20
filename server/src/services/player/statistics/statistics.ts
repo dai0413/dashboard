@@ -6,30 +6,27 @@ import {
   PlayerStatisticsGroupBy,
 } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { competition, team, season } from "@dai0413/myorg-shared/models-config";
-import BadRequestError from "../../errors/bad-request.js";
-import { PlayerModel } from "../../models/player.js";
-import { MatchEventTypeModel } from "../../models/match-event-type.js";
-import { MatchModel } from "../../models/match.js";
-import { TeamModel } from "../../models/team.js";
-import { CompetitionModel } from "../../models/competition.js";
-import { SeasonModel } from "../../models/season.js";
-import { getNest } from "../../controllers/helpers/getNest.js";
-import { PlayerRegistrationModel } from "../../models/player-registration.js";
-import { PlayerAppearanceModel } from "../../models/player-appearance.js";
-import InternalServerError from "../../errors/internal-server.js";
-import { buildMatchStage } from "../../controllers/helpers/crud/query/buildMatchStage.js";
+import BadRequestError from "../../../errors/bad-request.js";
+import { PlayerModel } from "../../../models/player.js";
+import { MatchEventTypeModel } from "../../../models/match-event-type.js";
+import { MatchModel } from "../../../models/match.js";
+import { TeamModel } from "../../../models/team.js";
+import { CompetitionModel } from "../../../models/competition.js";
+import { SeasonModel } from "../../../models/season.js";
+import { getNest } from "../../../controllers/helpers/getNest.js";
+import { PlayerRegistrationModel } from "../../../models/player-registration.js";
+import { PlayerAppearanceModel } from "../../../models/player-appearance.js";
+import InternalServerError from "../../../errors/internal-server.js";
+import { buildMatchStage } from "../../../controllers/helpers/crud/query/buildMatchStage.js";
 import {
   resolvePlayerPositions,
   getPlayerAppearanceStatistics,
   getPlayerMatchEventLogStatistics,
   getPlayerTeams,
-} from "./statistics/index.js";
-import {
-  getAppearancePlayerIds,
-  getRegisteredPlayerIds,
-} from "./resolve/playerIds.js";
+} from "./index.js";
 import { createStatisticsKey } from "./utils/createStatisticsKey.js";
 import { MatchGroupInfo } from "./types.js";
+import { resolvePlayerTargets } from "./resolve/index.js";
 
 const modelsConfig = {
   competition,
@@ -173,45 +170,10 @@ export const getPlayerStatistics = async (
     );
   }
 
-  let playerObjectIds: Types.ObjectId[];
-  let seasonObjectIds: Types.ObjectId[] = [];
-
-  if (player) {
-    const playerIds = (Array.isArray(player) ? player : [player]).filter(
-      (id): id is string => typeof id === "string",
-    );
-
-    const invalidIds = playerIds.filter((id) => !Types.ObjectId.isValid(id));
-
-    if (invalidIds.length > 0) {
-      throw new BadRequestError(`不正なplayerIdです: ${invalidIds.join(",")}`);
-    }
-
-    playerObjectIds = playerIds.map((id) => new Types.ObjectId(id));
-  } else {
-    if (!season || !Types.ObjectId.isValid(season)) {
-      throw new BadRequestError("seasonを指定してください");
-    }
-
-    seasonObjectIds = [new Types.ObjectId(season)];
-    const playerIdSet = new Set<string>();
-
-    // ① Registration
-    const registrationPlayerIds = await getRegisteredPlayerIds(seasonObjectIds);
-
-    registrationPlayerIds.forEach((id) => {
-      playerIdSet.add(id.toString());
-    });
-
-    // ② Appearance
-    const appearancePlayerIds = await getAppearancePlayerIds(seasonObjectIds);
-
-    appearancePlayerIds.forEach((id) => {
-      playerIdSet.add(id.toString());
-    });
-
-    playerObjectIds = [...playerIdSet].map((id) => new Types.ObjectId(id));
-  }
+  let { playerObjectIds, seasonObjectIds } = await resolvePlayerTargets({
+    player,
+    season,
+  });
 
   if (playerObjectIds.length === 0) {
     return {

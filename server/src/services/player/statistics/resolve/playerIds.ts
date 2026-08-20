@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
-import { MatchModel } from "../../../models/match.js";
-import { PlayerAppearanceModel } from "../../../models/player-appearance.js";
-import { PlayerRegistrationModel } from "../../../models/player-registration.js";
+import { MatchModel } from "../../../../models/match.js";
+import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
+import { PlayerRegistrationModel } from "../../../../models/player-registration.js";
 
 export const getRegisteredPlayerIds = async (
   seasonIds: Types.ObjectId[],

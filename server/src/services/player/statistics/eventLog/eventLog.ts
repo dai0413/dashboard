@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { PlayerMatchEventLogModel } from "../../../models/player-match-event-log.js";
+import { PlayerMatchEventLogModel } from "../../../../models/player-match-event-log.js";
 import { MatchGroupInfo } from "../types.js";
 import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 

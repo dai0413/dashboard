@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { PlayerAppearanceModel } from "../../../models/player-appearance.js";
+import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
 import { MatchGroupInfo } from "../types.js";
 import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 

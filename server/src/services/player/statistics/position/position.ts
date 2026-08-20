@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import { PlayerAppearanceModel } from "../../../models/player-appearance.js";
-import { TransferModel } from "../../../models/transfer.js";
+import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
+import { TransferModel } from "../../../../models/transfer.js";
 import { position } from "@dai0413/myorg-shared";
 import { MatchGroupInfo } from "../types.js";
 import { createStatisticsKey } from "../utils/createStatisticsKey.js";

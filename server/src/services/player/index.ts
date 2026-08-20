@@ -1,1 +1,1 @@
-export { getPlayerStatistics } from "./statistics.js";
+export { getPlayerStatistics } from "./statistics/statistics.js";
