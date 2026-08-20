@@ -1,12 +1,8 @@
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { UIFieldDefinition } from "../../types/field";
 import { ColumnType } from "../../types/table";
-
-const convert = (p: PlayerStatistic["player"]): string => {
-  if (p.name) return p.name;
-  if (p.en_name) return p.en_name;
-  return "";
-};
+import { convert } from "../convert/CreateLabel";
+import { ModelType } from "../../types/models";
 
 export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
   {
@@ -19,8 +15,31 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
     displayOnDetail: true,
     displayOnTable: true,
     getValueType: ColumnType.CUSTOM,
-    getData: (d) => ({ id: d.player._id, label: convert(d.player) }),
+    getData: (d) => ({
+      id: d.player._id,
+      label: convert(ModelType.PLAYER, d.player),
+    }),
     width: "100px",
+  },
+  {
+    key: "teams",
+    label: "チーム",
+    type: "number",
+    displayOnTable: true,
+    filterable: true,
+    sortable: true,
+    getValueType: ColumnType.CUSTOM,
+    getData: (d) => {
+      const values = d.teams.map((team) => {
+        return {
+          id: team._id,
+          label: convert(ModelType.TEAM, team),
+        };
+      });
+
+      return values;
+    },
+    width: "50px",
   },
   {
     key: "mainPosition",
@@ -108,6 +127,44 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
     sortable: true,
     getValueType: ColumnType.FIELD,
     field: "assists",
+    width: "50px",
+  },
+  {
+    key: "group.season",
+    label: "シーズン",
+    type: "string",
+    displayOnTable: true,
+    filterable: true,
+    sortable: true,
+    getValueType: ColumnType.CUSTOM,
+    getData: (d) => {
+      if (d.group && d.group.by === "season" && d.group.data) {
+        return {
+          id: d.group.data._id,
+          label: convert(ModelType.SEASON, d.group.data),
+        };
+      }
+      return "";
+    },
+    width: "50px",
+  },
+  {
+    key: "group.season.competition",
+    label: "大会",
+    type: "string",
+    displayOnTable: true,
+    filterable: true,
+    sortable: true,
+    getValueType: ColumnType.CUSTOM,
+    getData: (d) => {
+      if ("group" in d && d.group && d.group.by === "season") {
+        return {
+          id: d.group.data.competition._id,
+          label: convert(ModelType.COMPETITION, d.group.data.competition),
+        };
+      }
+      return "";
+    },
     width: "50px",
   },
 ];

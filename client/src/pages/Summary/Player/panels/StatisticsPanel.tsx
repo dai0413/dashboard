@@ -12,7 +12,8 @@ const secondKeys = playerStatistics
     (d) =>
       d !== "player" &&
       d !== "group.season" &&
-      d !== "group.season.competition",
+      d !== "group.season.competition" &&
+      d !== "appearances",
   );
 
 const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [

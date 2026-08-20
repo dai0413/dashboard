@@ -72,6 +72,10 @@ const PlayerStatisticsPanel = ({
             field: "player",
             to: APP_ROUTES.PLAYER_SUMMARY,
           },
+          {
+            field: "teams",
+            to: APP_ROUTES.TEAM_SUMMARY,
+          },
         ]}
       />
     </>

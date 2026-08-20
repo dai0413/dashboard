@@ -14,7 +14,13 @@ import { convertFieldDefinition } from "../../../../../utils/displayField/conver
 
 const keys = playerStatistics
   .map((ps) => ps.key)
-  .filter((d) => d !== "group.season" && d !== "group.season.competition");
+  .filter(
+    (d) =>
+      d !== "group.season" &&
+      d !== "group.season.competition" &&
+      d !== "teams" &&
+      d !== "appearances",
+  );
 const secondKeys = keys.filter((d) => d !== "player" && d !== "mainPosition");
 
 const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
