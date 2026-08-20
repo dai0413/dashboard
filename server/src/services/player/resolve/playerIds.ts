@@ -4,18 +4,20 @@ import { PlayerAppearanceModel } from "../../../models/player-appearance.js";
 import { PlayerRegistrationModel } from "../../../models/player-registration.js";
 
 export const getRegisteredPlayerIds = async (
-  seasonId: string,
+  seasonIds: Types.ObjectId[],
 ): Promise<Types.ObjectId[]> => {
-  return PlayerRegistrationModel.distinct("player", {
-    season: seasonId,
+  const playerIds = await PlayerRegistrationModel.distinct("player", {
+    season: { $in: seasonIds },
   });
+
+  return playerIds;
 };
 
 export const getAppearancePlayerIds = async (
-  seasonId: string,
+  seasonIds: Types.ObjectId[],
 ): Promise<Types.ObjectId[]> => {
   const matchIds = await MatchModel.distinct("_id", {
-    season: seasonId,
+    season: { $in: seasonIds },
   });
 
   const playerIds = await PlayerAppearanceModel.distinct("player", {
