@@ -34,49 +34,62 @@ export const statsL: FormStep<BaseModel>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     many: true,
-    getDraftData: async ({
-      api,
-      data,
-      draftData,
-      postedDraftData,
-      metaData,
-    }) => {
-      if (!metaData || !api) return { value: [], label: [] };
+    getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
+      if (!metaData || !api || !readL_MMap.statsL)
+        return { value: [], label: [] };
 
-      const match: string | undefined = data.match;
-      if (!match) return { value: [], label: [] };
+      if (!Array.isArray(metaData.match)) {
+        console.error("metaData.matchの入力ミス");
+        return { value: [], label: [] };
+      }
 
-      const matchObj = await readItemBase<Match>({
-        apiInstance: api,
-        backendRoute: API_PATHS.MATCH.DETAIL(match),
-      });
+      if (!metaData.match.every((m) => typeof m === "string")) {
+        console.error("metaData.matchの入力ミス");
+        return { value: [], label: [] };
+      }
 
-      if (!matchObj) return { value: [], label: [] };
+      const matchIds: string[] = metaData.match;
+
+      if (matchIds.length === 0) return { value: [], label: [] };
 
       let newDraftData = draftData;
+      let params: { date: Date; alph: string; matchId: string }[] = [];
 
-      const date = matchObj.date;
-      const alph = matchObj.home_team.labalph;
+      for (const matchId of matchIds) {
+        const matchObj = await readItemBase<Match>({
+          apiInstance: api,
+          backendRoute: API_PATHS.MATCH.DETAIL(matchId),
+        });
 
-      if (date && alph && match) {
-        const params: { date: Date; alph: string; matchId: string } = {
-          date,
-          alph,
-          matchId: match,
-        };
+        if (!matchObj || !matchObj.date) continue;
 
-        let res =
-          readL_MMap.statsL &&
-          (await readL_MMap.statsL(api, { getParams: [params] }));
+        const matchDate = matchObj.date as unknown as string;
+        const date = matchDate
+          ? new Date(`${matchDate.slice(0, 10)}T00:00:00.000Z`)
+          : undefined;
 
-        const statsLDatas = res?.success ? res.data : undefined;
-        for (const positinKey in statsLDatas) {
-          const key = positinKey as keyof typeof newDraftData;
-          newDraftData[key] = {
-            ...newDraftData[key],
-            statsL: { ...statsLDatas[key] },
+        const alph = matchObj.home_team.labalph;
+
+        if (date && alph && matchId) {
+          const param: { date: Date; alph: string; matchId: string } = {
+            date,
+            alph,
+            matchId: matchId,
           };
+
+          params.push(param);
         }
+      }
+
+      let res = await readL_MMap.statsL(api, { getParams: params });
+
+      const statsLDatas = res?.success ? res.data : undefined;
+      for (const positinKey in statsLDatas) {
+        const key = positinKey as keyof typeof newDraftData;
+        newDraftData[key] = {
+          ...newDraftData[key],
+          statsL: { ...statsLDatas[key] },
+        };
       }
 
       const requests: ReadDraftDataParams["requests"] = [];
@@ -85,7 +98,7 @@ export const statsL: FormStep<BaseModel>[] = [
         readDraftDataParams: {
           api,
           draftData: newDraftData,
-          identifiers: [match],
+          identifiers: matchIds,
           requests,
         },
         postedDraftData,
