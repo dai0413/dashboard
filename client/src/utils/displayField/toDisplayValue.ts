@@ -50,13 +50,27 @@ export const toDisplayValue = <T>(
 
     return String(value);
   };
+  const field = linkField?.find((field) => field.field === header.key);
 
-  const value =
+  const rawValue =
     header.getValueType === ColumnType.CUSTOM
       ? header.getData(row)
       : row[header.field];
 
-  const field = linkField?.find((field) => field.field === header.key);
+  const isLink =
+    linkField?.some((field) => field.field === header.key) &&
+    typeof row === "object" &&
+    row !== null &&
+    "_id" in row &&
+    typeof row._id === "string";
+
+  const value =
+    isLink && !isLabelObject(rawValue)
+      ? {
+          id: row._id,
+          label: String(rawValue),
+        }
+      : rawValue;
 
   const createTo = (value: unknown): string | undefined => {
     if (!field) return undefined;
