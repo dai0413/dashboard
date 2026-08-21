@@ -7,7 +7,7 @@ import {
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
-import { readItemsBase } from "../../../../../lib/api";
+import { createItemBase, readItemsBase } from "../../../../../lib/api";
 import { NationalCallup } from "../../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../../types/models/national-match-series";
 import {
@@ -82,13 +82,13 @@ export const usePlayerPlotPanel = () => {
       ...new Set((nationalCallupRes?.data ?? []).map((d) => d.player._id)),
     ];
 
-    const playerStatistic = await readItemsBase<PlayerStatistic[]>({
+    const playerStatistic = await createItemBase<PlayerStatistic[]>({
       apiInstance: api,
       backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
-      params: { player: playerIds },
+      data: { player: playerIds },
     });
 
-    if (playerStatistic?.data) {
+    if (playerStatistic?.success) {
       setPlayerStatistics(playerStatistic.data);
     }
 
