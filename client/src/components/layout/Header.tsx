@@ -22,6 +22,12 @@ export const SPMenuItems: MenuItems[] = [
     text: "怪我",
   },
   {
+    icon: "transfer",
+    key: "news",
+    to: APP_ROUTES.NEWS,
+    text: "カレンダー",
+  },
+  {
     icon: "series",
     key: "series",
     to: `${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`,
@@ -83,6 +89,9 @@ const Header = () => {
             </Link>
             <Link to={APP_ROUTES.INJURY} className="hover:text-gray-900">
               怪我
+            </Link>
+            <Link to={APP_ROUTES.NEWS} className="hover:text-gray-900">
+              カレンダー
             </Link>
             <Link
               to={`${APP_ROUTES.NATIONAL_SUMMARY}/${japan}`}

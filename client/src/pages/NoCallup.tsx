@@ -61,6 +61,7 @@ const NoCallUp = () => {
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         title="登録メンバーなし"
         fieldDefinitions={fields}
+        itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         pageNum={1}
         items={items.data}

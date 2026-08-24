@@ -5,6 +5,7 @@ export const APP_ROUTES = {
   ME: "/me",
   NO_NUMBER: "/transfer/no-number",
   NO_CALLUP: "/national-callup/series-count",
+  NEWS: "/news",
 
   // model
   COMPETITION_STAGE: "/competition-stage",

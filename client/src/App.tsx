@@ -21,6 +21,7 @@ import NoCallUp from "./pages/NoCallup";
 import NotFound from "./pages/NotFound";
 import models from "./pages/Models";
 import Modal from "./pages/Modal";
+import News from "./pages/News";
 import { Summary } from "./routes";
 
 const App: React.FC = () => {
@@ -97,6 +98,15 @@ const App: React.FC = () => {
                             element={wrapWithPrivateRoute(
                               <Layout>
                                 <NoCallUp />
+                              </Layout>,
+                            )}
+                          />
+
+                          <Route
+                            path={`/${APP_ROUTES.NEWS}/*`}
+                            element={wrapWithPrivateRoute(
+                              <Layout>
+                                <News />
                               </Layout>,
                             )}
                           />
