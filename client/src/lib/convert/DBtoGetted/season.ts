@@ -1,10 +1,10 @@
 import { Season, SeasonGet } from "../../../types/models/season";
 import { competition } from "../CreateLabel/competition";
 
-function getStatus(isCurrent: boolean | null | undefined): string | null {
+function getStatus(isCurrent: boolean | undefined): string | undefined {
   if (isCurrent === true) return "最新";
   if (isCurrent === false) return "";
-  return null;
+  return undefined;
 }
 
 export const season = (t: Season): SeasonGet => {
