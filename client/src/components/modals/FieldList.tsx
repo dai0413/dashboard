@@ -130,7 +130,6 @@ const FieldList = (props: Props) => {
           >
             {displayValue}
           </span>
-          {/* <span>{displayValue}</span> */}
           {value !== "入力対象外" && isForm && typeof onEdit === "function" && (
             <button className="font-semibold hover:underline" onClick={onEdit}>
               編集
