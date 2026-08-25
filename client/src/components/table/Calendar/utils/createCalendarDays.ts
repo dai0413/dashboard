@@ -1,4 +1,4 @@
-import { CalendarData, CalendarDay, CalendarDataItem } from "../types";
+import { CalendarData, CalendarDataItem } from "../types";
 import { createEmptyCalendarData } from "./createEmptyCalendarData";
 
 const getCalendarData = (
@@ -24,7 +24,7 @@ export const createCalendarDays = (
   data: CalendarDataItem[],
   year: number,
   month: number,
-): CalendarDay[] => {
+): CalendarDataItem[] => {
   const firstDate = new Date(year, month - 1, 1);
   const lastDate = new Date(year, month, 0);
 
@@ -38,7 +38,7 @@ export const createCalendarDays = (
   const endDate = new Date(lastDate);
   endDate.setDate(lastDate.getDate() + (6 - lastDayOfWeek));
 
-  const days: CalendarDay[] = [];
+  const days: CalendarDataItem[] = [];
 
   const currentDate = new Date(startDate);
 

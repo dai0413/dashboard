@@ -10,9 +10,12 @@ export const calendarModelTypes = [
   ModelType.STAFF_REGISTRATION,
 ] as const;
 
+type DetailValue = { to?: string; label: string };
+
 export type CalendarEvent = {
-  data?: Label;
+  groupByData?: Label;
   counts: number;
+  datas: DetailValue[];
 };
 
 export type CalendarData = {
@@ -24,11 +27,15 @@ export type CalendarData = {
   [ModelType.STAFF_REGISTRATION]: CalendarEvent[];
 };
 
+export type CalendarDetailItem = {
+  group: string;
+  value: DetailValue;
+  field?: string;
+  isRed?: boolean;
+};
+
 export type CalendarDataItem = {
   date: Date;
   data: Partial<CalendarData>;
-};
-
-export type CalendarDay = CalendarDataItem & {
-  isCurrentMonth: boolean;
+  isCurrentMonth?: boolean;
 };

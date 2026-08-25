@@ -9,7 +9,6 @@ import { NationalMatchSeries } from "../../../../types/models/national-match-ser
 import { Transfer } from "../../../../types/models/transfer";
 import { Injury } from "../../../../types/models/injury";
 import { CalendarDataItem } from "../types";
-import { convert } from "../../../../lib/convert/DBtoGetted";
 import { ModelType } from "../../../../types/models";
 
 export const fetchCalendarData = async (
@@ -83,50 +82,44 @@ export const fetchCalendarData = async (
   const calendarDataList: CalendarDataItem[][] = [];
 
   if (matchRes) {
-    const data = convert(ModelType.MATCH, matchRes.data);
-    const newCalendarDataList = createData(data, ModelType.MATCH);
+    const newCalendarDataList = createData(matchRes.data, ModelType.MATCH);
     calendarDataList.push(newCalendarDataList);
   }
 
   if (playerRegistrationRes) {
-    const data = convert(
-      ModelType.PLAYER_REGISTRATION,
+    const newCalendarDataList = createData(
       playerRegistrationRes.data,
+      ModelType.PLAYER_REGISTRATION,
     );
-    const newCalendarDataList = createData(data, ModelType.PLAYER_REGISTRATION);
     calendarDataList.push(newCalendarDataList);
   }
 
   if (staffRegistrationRes) {
-    const data = convert(
-      ModelType.STAFF_REGISTRATION,
+    const newCalendarDataList = createData(
       staffRegistrationRes.data,
+      ModelType.STAFF_REGISTRATION,
     );
-    const newCalendarDataList = createData(data, ModelType.STAFF_REGISTRATION);
     calendarDataList.push(newCalendarDataList);
   }
 
   if (nationalMatchSeriesRes) {
-    const data = convert(
-      ModelType.NATIONAL_MATCH_SERIES,
-      nationalMatchSeriesRes.data,
-    );
     const newCalendarDataList = createData(
-      data,
+      nationalMatchSeriesRes.data,
       ModelType.NATIONAL_MATCH_SERIES,
     );
     calendarDataList.push(newCalendarDataList);
   }
 
   if (transfersRes) {
-    const data = convert(ModelType.TRANSFER, transfersRes.data);
-    const newCalendarDataList = createData(data, ModelType.TRANSFER);
+    const newCalendarDataList = createData(
+      transfersRes.data,
+      ModelType.TRANSFER,
+    );
     calendarDataList.push(newCalendarDataList);
   }
 
   if (injuriesRes) {
-    const data = convert(ModelType.INJURY, injuriesRes.data);
-    const newCalendarDataList = createData(data, ModelType.INJURY);
+    const newCalendarDataList = createData(injuriesRes.data, ModelType.INJURY);
     calendarDataList.push(newCalendarDataList);
   }
 

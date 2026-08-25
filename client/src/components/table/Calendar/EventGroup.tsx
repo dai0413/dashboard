@@ -22,12 +22,12 @@ export const EventGroup = ({
       <div className="text-xs font-semibold">{label}</div>
 
       <div className="space-y-0.5">
-        {items.map((item) => (
+        {items.map((item, i) => (
           <div
-            key={`${date.getTime()}-${label}-${item.data?.id || "no-id"}`}
+            key={`${date.getTime()}-${label}-${item.groupByData?.id || "no-id"}-${i}`}
             className="flex justify-between gap-2 text-xs"
           >
-            <span className="truncate">{item.data?.label}</span>
+            <span className="truncate">{item.groupByData?.label}</span>
 
             <span className="shrink-0">
               {item.counts}

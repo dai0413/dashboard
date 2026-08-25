@@ -15,7 +15,6 @@ const News = () => {
   });
 
   const reloadFun = useCallback(async () => {
-    console.log("reload start", currentDate);
     setItems((prev) => ({
       ...prev,
       isLoading: true,

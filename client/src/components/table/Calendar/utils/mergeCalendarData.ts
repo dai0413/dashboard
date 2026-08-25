@@ -1,6 +1,30 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { CalendarData, CalendarDataItem, calendarModelTypes } from "../types";
+import { CalendarData, CalendarDataItem } from "../types";
 import { createEmptyCalendarData } from "./createEmptyCalendarData";
+import { ModelType } from "../../../../types/models";
+
+const mergeCalendarDataItem = (
+  target: CalendarData,
+  source: Partial<CalendarData>,
+) => {
+  target[ModelType.TRANSFER].push(...(source[ModelType.TRANSFER] ?? []));
+
+  target[ModelType.INJURY].push(...(source[ModelType.INJURY] ?? []));
+
+  target[ModelType.NATIONAL_MATCH_SERIES].push(
+    ...(source[ModelType.NATIONAL_MATCH_SERIES] ?? []),
+  );
+
+  target[ModelType.MATCH].push(...(source[ModelType.MATCH] ?? []));
+
+  target[ModelType.PLAYER_REGISTRATION].push(
+    ...(source[ModelType.PLAYER_REGISTRATION] ?? []),
+  );
+
+  target[ModelType.STAFF_REGISTRATION].push(
+    ...(source[ModelType.STAFF_REGISTRATION] ?? []),
+  );
+};
 
 export const mergeCalendarData = (
   ...items: CalendarDataItem[][]
@@ -20,9 +44,7 @@ export const mergeCalendarData = (
       if (!existing) {
         const data = createEmptyCalendarData();
 
-        for (const modelType of calendarModelTypes) {
-          data[modelType].push(...(item.data[modelType] || []));
-        }
+        mergeCalendarDataItem(data, item.data);
 
         map.set(key, {
           date: item.date,
@@ -32,9 +54,7 @@ export const mergeCalendarData = (
         continue;
       }
 
-      for (const modelType of calendarModelTypes) {
-        existing.data[modelType].push(...(item.data[modelType] || []));
-      }
+      mergeCalendarDataItem(existing.data, item.data);
     }
   }
 

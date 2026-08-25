@@ -47,7 +47,7 @@ const CalendarDataDetail = ({
           return (
             <Fragment key={`${d.group}-${d.field ?? ""}-${key}-${i}`}>
               {displayGroupLabel && (
-                <div className="bg-gray-200 w-full">
+                <div className="bg-gray-200 w-full p-1 rounded-lg">
                   <span className="font-bold">{d.group}</span>
                 </div>
               )}
