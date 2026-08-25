@@ -7,11 +7,11 @@ import {
 } from "react";
 import { ModelType } from "../types/models";
 import { useAlert } from "./alert-context";
-import { CalendarDetailItem } from "../components/table/Calendar/types";
+import { DisplayListItem } from "../types/detail";
 
 type OpenDetailProps = {
   title: string;
-  data: CalendarDetailItem[];
+  data: DisplayListItem[];
 };
 
 export type ModelDataModelState = {
@@ -27,7 +27,7 @@ type ModalState = {
   calendarData: {
     title?: string;
     isOpen: boolean;
-    data: CalendarDetailItem[];
+    data: DisplayListItem[];
     open: (props: OpenDetailProps) => void;
     close: () => void;
   };
@@ -56,7 +56,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
   const [calendarDataIsOpen, setCalDetailIsOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [calendarDetailData, setCalendarDetailData] = useState<
-    CalendarDetailItem[]
+    DisplayListItem[]
   >([]);
 
   const {

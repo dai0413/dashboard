@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { useAlert } from "../../context/alert-context";
 import Alert from "../layout/Alert";
 import { Modal } from "../ui";
-import { CalendarDetailItem } from "../table/Calendar/types";
 import { Fragment } from "react/jsx-runtime";
+import { DisplayListItem } from "../../types/detail";
 
 type CalendarDataDetailProps = {
-  data: CalendarDetailItem[];
+  data: DisplayListItem[];
   title?: string;
   isOpen: boolean;
   close: () => void;
@@ -39,26 +39,22 @@ const CalendarDataDetail = ({
       />
 
       <div className="space-y-2 text-sm text-gray-700">
-        {data.map((d, i) => {
-          const key = typeof d.value === "object" ? d.value.to : d.value;
-          const displayGroupLabel = i === 0 || data[i - 1]?.group !== d.group;
-          const displayField = i === 0 || data[i - 1]?.field !== d.field;
-
+        {data.map((d) => {
           return (
-            <Fragment key={`${d.group}-${d.field ?? ""}-${key}-${i}`}>
-              {displayGroupLabel && (
+            <Fragment key={d.id}>
+              {d.displayGroup && (
                 <div className="bg-gray-200 w-full p-1 rounded-lg">
                   <span className="font-bold">{d.group}</span>
                 </div>
               )}
               <div
-                key={key}
+                key={d.id}
                 className={[
                   "items-center border-b border-dotted py-1",
-                  displayField ? "grid grid-cols-2" : "flex justify-end",
+                  d.displayField ? "grid grid-cols-2" : "flex justify-end",
                 ].join(" ")}
               >
-                {displayField && (
+                {d.displayField && (
                   <span className="font-semibold">{d.field}</span>
                 )}
 

@@ -21,7 +21,7 @@ export const DayCell = ({ date, isCurrentMonth, data }: CalendarDataItem) => {
     <div
       onClick={() => {
         open({
-          title: toDateKey(date) || "",
+          title: `${toDateKey(date)}のニュース` || "",
           data: convertToDetailData(data),
         });
       }}
