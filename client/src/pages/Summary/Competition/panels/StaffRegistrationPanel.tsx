@@ -24,8 +24,8 @@ const staffRegistrationFieldDefinition: UIFieldDefinition<
     key: "registration_status",
     displayOnTable: true,
     getData: (data: StaffRegistrationGet) => {
-      if (data.registration_status === "抹消済み") return "済";
-      return "";
+      if (data.registration_status === "抹消済み") return { label: "済" };
+      return { label: "" };
     },
     getValueType: ColumnType.CUSTOM,
     type: "select",

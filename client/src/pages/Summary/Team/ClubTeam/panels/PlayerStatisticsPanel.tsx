@@ -38,7 +38,9 @@ const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
     displayOnDetail: true,
     displayOnTable: true,
     getValueType: ColumnType.CUSTOM,
-    getData: (d) => toDateKey(d.player.dob) || "",
+    getData: (d) => ({
+      label: toDateKey(d.player.dob) || "",
+    }),
     width: "80px",
   },
   ...convertFieldDefinition(secondKeys, playerStatistics).filter(

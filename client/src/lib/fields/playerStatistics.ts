@@ -144,7 +144,7 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
           label: convert(ModelType.SEASON, d.group.data),
         };
       }
-      return "";
+      return { label: "" };
     },
     width: "50px",
   },
@@ -163,7 +163,7 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
           label: convert(ModelType.COMPETITION, d.group.data.competition),
         };
       }
-      return "";
+      return { label: "" };
     },
     width: "50px",
   },

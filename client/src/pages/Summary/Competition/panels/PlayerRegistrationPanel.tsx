@@ -24,8 +24,8 @@ const playerRegistrationFieldDefinition: UIFieldDefinition<
     key: "registration_status",
     displayOnTable: true,
     getData: (data: PlayerRegistrationGet) => {
-      if (data.registration_status === "抹消済み") return "済";
-      return "";
+      if (data.registration_status === "抹消済み") return { label: "済" };
+      return { label: "" };
     },
     width: "80px",
     getValueType: ColumnType.CUSTOM,
@@ -36,9 +36,9 @@ const playerRegistrationFieldDefinition: UIFieldDefinition<
     key: "special_type",
     displayOnTable: true,
     getData: (data: PlayerRegistrationGet) => {
-      if (data.isSpecialDesignation) return "特別指定";
-      if (data.isTypeTwo) return "2種";
-      return "";
+      if (data.isSpecialDesignation) return { label: "特別指定" };
+      if (data.isTypeTwo) return { label: "2種" };
+      return { label: "" };
     },
     width: "100px",
     getValueType: ColumnType.CUSTOM,

@@ -88,7 +88,9 @@ export const staffRegistrationHistory: UIFieldDefinition<StaffRegistrationHistor
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.role ? `${base}${data.changes?.role}` : "";
+        return {
+          label: data.changes?.role ? `${base}${data.changes?.role}` : "",
+        };
       },
     },
     {
@@ -105,7 +107,9 @@ export const staffRegistrationHistory: UIFieldDefinition<StaffRegistrationHistor
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.name ? `${base}${data.changes?.name}` : "";
+        return {
+          label: data.changes?.name ? `${base}${data.changes?.name}` : "",
+        };
       },
     },
     {
@@ -122,7 +126,9 @@ export const staffRegistrationHistory: UIFieldDefinition<StaffRegistrationHistor
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.en_name ? `${base}${data.changes?.en_name}` : "";
+        return {
+          label: data.changes?.en_name ? `${base}${data.changes?.en_name}` : "",
+        };
       },
     },
     {
@@ -139,7 +145,9 @@ export const staffRegistrationHistory: UIFieldDefinition<StaffRegistrationHistor
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.note ? `${base}${data.changes?.note}` : "";
+        return {
+          label: data.changes?.note ? `${base}${data.changes?.note}` : "",
+        };
       },
     },
   ];

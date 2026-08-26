@@ -154,10 +154,10 @@ export const match: UIFieldDefinition<MatchGet>[] = [
             ? `(${d.home_pk_goal}PK${d.away_pk_goal})`
             : "";
 
-        return score + pk;
+        return { label: score + pk };
       }
 
-      return "試合前";
+      return { label: "試合前" };
     },
   },
   {

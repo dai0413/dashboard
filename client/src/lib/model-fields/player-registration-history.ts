@@ -88,7 +88,9 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.number ? `${base}${data.changes?.number}` : "";
+        return {
+          label: data.changes?.number ? `${base}${data.changes?.number}` : "",
+        };
       },
     },
     {
@@ -105,9 +107,11 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.position_group
-          ? `${base}${data.changes?.position_group}`
-          : "";
+        return {
+          label: data.changes?.position_group
+            ? `${base}${data.changes?.position_group}`
+            : "",
+        };
       },
     },
     {
@@ -124,7 +128,9 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.name ? `${base}${data.changes?.name}` : "";
+        return {
+          label: data.changes?.name ? `${base}${data.changes?.name}` : "",
+        };
       },
     },
     {
@@ -141,7 +147,9 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.en_name ? `${base}${data.changes?.en_name}` : "";
+        return {
+          label: data.changes?.en_name ? `${base}${data.changes?.en_name}` : "",
+        };
       },
     },
     {
@@ -158,7 +166,9 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.height ? `${base}${data.changes?.height}` : "";
+        return {
+          label: data.changes?.height ? `${base}${data.changes?.height}` : "",
+        };
       },
     },
     {
@@ -175,7 +185,9 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.weight ? `${base}${data.changes?.weight}` : "";
+        return {
+          label: data.changes?.weight ? `${base}${data.changes?.weight}` : "",
+        };
       },
     },
     {
@@ -192,9 +204,11 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.homegrown
-          ? `${base}${data.changes?.homegrown}`
-          : "";
+        return {
+          label: data.changes?.homegrown
+            ? `${base}${data.changes?.homegrown}`
+            : "",
+        };
       },
     },
     {
@@ -211,9 +225,11 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.isTypeTwo
-          ? `${base}${data.changes?.isTypeTwo}`
-          : "";
+        return {
+          label: data.changes?.isTypeTwo
+            ? `${base}${data.changes?.isTypeTwo}`
+            : "",
+        };
       },
     },
     {
@@ -230,9 +246,11 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.isSpecialDesignation
-          ? `${base}${data.changes?.isSpecialDesignation}`
-          : "";
+        return {
+          label: data.changes?.isSpecialDesignation
+            ? `${base}${data.changes?.isSpecialDesignation}`
+            : "",
+        };
       },
     },
     {
@@ -249,7 +267,9 @@ export const playerRegistrationHistory: UIFieldDefinition<PlayerRegistrationHist
         if (data.registration_type === "変更") {
           base = "変更後→→→";
         }
-        return data.changes?.note ? `${base}${data.changes?.note}` : "";
+        return {
+          label: data.changes?.note ? `${base}${data.changes?.note}` : "",
+        };
       },
     },
   ];

@@ -57,7 +57,7 @@ export const staff: UIFieldDefinition<StaffGet>[] = [
     displayOnTable: true,
     getValueType: ColumnType.CUSTOM,
     getData: (data: StaffGet) => {
-      return data.citizenship?.map((c) => c.label).join(",") || "";
+      return data.citizenship?.map((c) => c) || [];
     },
   },
   {
