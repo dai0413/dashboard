@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
 import { useAlert } from "../../context/alert-context";
 import Alert from "../layout/Alert";
 import { Modal } from "../ui";
 import { Fragment } from "react/jsx-runtime";
 import { DisplayListItem } from "../../types/detail";
+import RenderCell from "../table/RenderCell";
 
 type CalendarDataDetailProps = {
   data: DisplayListItem[];
@@ -59,21 +59,11 @@ const CalendarDataDetail = ({
                 )}
 
                 <div className="flex justify-end items-center gap-4">
-                  {d.value.to ? (
-                    <Link
-                      onClick={() => close()}
-                      to={d.value.to}
-                      className="hover:text-blue-600 underline"
-                    >
-                      {d.value.label}
-                    </Link>
-                  ) : (
-                    <span
-                      className={d.isRed ? "text-red-500 font-semibold" : ""}
-                    >
-                      {d.value.label}
-                    </span>
-                  )}
+                  <RenderCell
+                    value={d.value}
+                    isRed={d.isRed}
+                    onClick={() => close()}
+                  />
                 </div>
               </div>
             </Fragment>

@@ -26,7 +26,7 @@ export const toDisplayValue = <T>(
   row: T,
   linkField?: LinkField[],
 ): {
-  renderCellValue: RenderCellValue[] | string | RenderCellValue;
+  renderCellValue: RenderCellValue[] | RenderCellValue;
   title: string;
 } => {
   const convertDisplayValue = (value: unknown): string => {
@@ -62,7 +62,8 @@ export const toDisplayValue = <T>(
     typeof row === "object" &&
     row !== null &&
     "_id" in row &&
-    typeof row._id === "string";
+    typeof row._id === "string" &&
+    !!rawValue;
 
   const value =
     isLink && !isLabelObject(rawValue)
@@ -72,7 +73,7 @@ export const toDisplayValue = <T>(
         }
       : rawValue;
 
-  const createTo = (value: unknown): string | undefined => {
+  const createTo = (value: unknown, field?: LinkField): string | undefined => {
     if (!field) return undefined;
 
     if (typeof value === "object" && value !== null) {
@@ -89,7 +90,7 @@ export const toDisplayValue = <T>(
       return `${field.to}/${row._id}`;
     }
 
-    return undefined;
+    return String(value);
   };
 
   if (Array.isArray(value)) {
@@ -97,7 +98,7 @@ export const toDisplayValue = <T>(
       const renderCellValue: RenderCellValue[] = value.map((v) => ({
         id: v.id,
         label: v.label,
-        to: createTo(v),
+        to: createTo(v, field),
       }));
 
       return {
@@ -109,16 +110,15 @@ export const toDisplayValue = <T>(
     const title = value.map(convertDisplayValue).join(", ");
 
     return {
-      renderCellValue: title,
+      renderCellValue: { label: title },
       title,
     };
   }
 
   if (isLabelObject(value)) {
     const renderCellValue: RenderCellValue = {
-      id: value.id,
       label: value.label,
-      to: createTo(value),
+      to: createTo(value, field),
     };
 
     return {
@@ -127,10 +127,10 @@ export const toDisplayValue = <T>(
     };
   }
 
-  const renderCellValue = convertDisplayValue(value);
+  const title = convertDisplayValue(value);
 
   return {
-    renderCellValue,
-    title: renderCellValue,
+    renderCellValue: { label: title },
+    title,
   };
 };

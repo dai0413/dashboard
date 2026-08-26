@@ -192,7 +192,7 @@ const Table = <T,>({
                       : edit
                         ? renderFieldCell &&
                           renderFieldCell(header, row, dataIndex)
-                        : RenderCell(renderCellValue)}
+                        : RenderCell({ value: renderCellValue })}
                   </td>
                 );
               })}

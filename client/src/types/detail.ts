@@ -1,11 +1,10 @@
+import { RenderCellValue } from "./table";
+
 export type DisplayListItem = {
   id: string;
   group?: string;
   field?: string;
-  value: {
-    label: string;
-    to?: string;
-  };
+  value: RenderCellValue | RenderCellValue[];
   isRed?: boolean;
 
   displayGroup?: boolean;

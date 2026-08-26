@@ -27,7 +27,8 @@ export type DataValue =
   | (object & { id?: string })
   | (object & { id?: string })[];
 
-export type RenderCellValue = Label & {
+export type RenderCellValue = {
+  label: string;
   to?: string;
 };
 

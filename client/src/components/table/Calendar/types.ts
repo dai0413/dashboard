@@ -1,5 +1,6 @@
 import { Label } from "@dai0413/myorg-shared";
 import { ModelType } from "../../../types/models";
+import { RenderCellValue } from "../../../types/table";
 
 export const calendarModelTypes = [
   ModelType.TRANSFER,
@@ -10,12 +11,10 @@ export const calendarModelTypes = [
   ModelType.STAFF_REGISTRATION,
 ] as const;
 
-type DetailValue = { to?: string; label: string };
-
 export type CalendarEvent = {
   groupByData?: Label;
   counts: number;
-  datas: DetailValue[];
+  datas: RenderCellValue[];
 };
 
 export type CalendarData = {
@@ -29,7 +28,7 @@ export type CalendarData = {
 
 export type CalendarDetailItem = {
   group: string;
-  value: DetailValue;
+  value: RenderCellValue;
   field?: string;
   isRed?: boolean;
 };

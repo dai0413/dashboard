@@ -8,6 +8,7 @@ const DetailModal = () => {
   return (
     <>
       <ModelDataDetail
+        title={"詳細ページ"}
         modelType={detail.modelType}
         isOpen={detail.isOpen}
         id={detail.id}

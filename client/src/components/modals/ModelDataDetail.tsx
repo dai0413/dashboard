@@ -12,13 +12,13 @@ import { isDev } from "../../utils/env";
 import { FieldList } from "./index";
 import { FieldListData, FormMode, From, InputMode } from "../../types/types";
 import { hasSteps } from "../../lib/form-steps/core/hasSteps";
-import { ClipboardDocumentListIcon } from "@heroicons/react/24/solid";
-
 import { useModelContext } from "../../context/models/model-wrapper";
 import { ColumnType } from "../../types/table";
 import { SkeletonFieldList } from "./SkeletonFieldList";
+import CopyButton from "./Detail/ModelData/CopyButton";
 
 type ModelDataDetailProps = {
+  title: string;
   modelType: ModelType | null;
   isOpen: boolean;
   id: string | null;
@@ -27,6 +27,7 @@ type ModelDataDetailProps = {
 };
 
 const ModelDataDetail = ({
+  title,
   modelType,
   isOpen,
   id,
@@ -40,7 +41,7 @@ const ModelDataDetail = ({
   if (!modelContext) return <></>;
 
   const {
-    modal: { alert, resetAlert, handleSetAlert },
+    modal: { alert, resetAlert },
   } = useAlert();
 
   const {
@@ -139,28 +140,8 @@ const ModelDataDetail = ({
       onClose={() => close()}
       header={
         <div className="flex items-center gap-x-2 mb-4">
-          <h3 className="text-xl font-semibold text-gray-700">詳細ページ</h3>
-          {(staffState.admin || isDev) && (
-            <button
-              type="button"
-              className="text-gray-400 hover:text-gray-600 px-2 hover:cursor-pointer"
-              title="id_copy"
-              onClick={() => {
-                if (!fieldListData._id)
-                  return handleSetAlert({
-                    success: false,
-                    message: `${modelType}のidコピーに失敗しました`,
-                  });
-                navigator.clipboard.writeText(fieldListData._id.value);
-                handleSetAlert({
-                  success: true,
-                  message: `${modelType}のidをコピーしました`,
-                });
-              }}
-            >
-              <ClipboardDocumentListIcon className="w-5 h-5" />
-            </button>
-          )}
+          <h3 className="text-xl font-semibold text-gray-700">{title}</h3>
+          <CopyButton />
         </div>
       }
       footer={
