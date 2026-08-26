@@ -7,6 +7,7 @@ import RenderCell from "./RenderCell";
 import { ColumnType, TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
+import { convertToDisplayListData } from "../modals/Detail/ModelData/utils/convertToDisplayListData ";
 
 const Table = <T,>({
   modelType,
@@ -208,7 +209,17 @@ const Table = <T,>({
                   <button
                     className="underline hover:text-blue-600 cursor-pointer"
                     onClick={() => {
-                      modelType && hasId(row) && open(modelType, row._id);
+                      modelType &&
+                        hasId(row) &&
+                        open(
+                          modelType,
+                          row._id,
+                          convertToDisplayListData(
+                            modelType,
+                            row,
+                            linkField || [],
+                          ),
+                        );
                     }}
                   >
                     詳細

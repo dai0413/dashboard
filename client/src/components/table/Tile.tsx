@@ -6,6 +6,7 @@ import RenderCell from "./RenderCell";
 import { TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
+import { convertToDisplayListData } from "../modals/Detail/ModelData/utils/convertToDisplayListData ";
 
 export const Tile = <T,>({
   modelType,
@@ -129,7 +130,7 @@ export const Tile = <T,>({
                     <div key={header.key} className="flex gap-2">
                       <span className="text-gray-500">{header.label}</span>
                       <span className="font-medium">
-                        {form ? title : RenderCell(renderCellValue)}
+                        {form ? title : RenderCell({ value: renderCellValue })}
                       </span>
                     </div>
                   );
@@ -144,7 +145,16 @@ export const Tile = <T,>({
                       <button
                         className="underline hover:text-blue-600 cursor-pointer"
                         onClick={() => {
-                          modelType && open(modelType, row._id);
+                          modelType &&
+                            open(
+                              modelType,
+                              row._id,
+                              convertToDisplayListData(
+                                modelType,
+                                row,
+                                linkField || [],
+                              ),
+                            );
                         }}
                       >
                         詳細
@@ -201,7 +211,7 @@ export const Tile = <T,>({
                                   ? (pageNum - 1) * itemsPerPage + index
                                   : index,
                               )
-                            : RenderCell(renderCellValue)}
+                            : RenderCell({ value: renderCellValue })}
                       </span>
                     </div>
                   );
