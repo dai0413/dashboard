@@ -57,6 +57,7 @@ export const toDisplayValue = <T>(
       ? header.getData(row)
       : row[header.field];
 
+  // row._idまたは , row[field.field].idがリンク先あり
   const isLink =
     linkField?.some((field) => field.field === header.key) &&
     typeof row === "object" &&
@@ -66,12 +67,20 @@ export const toDisplayValue = <T>(
     !!rawValue;
 
   const value =
-    isLink && !isLabelObject(rawValue)
+    isLink && !isLabelObject(rawValue) && typeof rawValue === "string"
       ? {
           id: row._id,
           label: String(rawValue),
         }
-      : rawValue;
+      : isLink &&
+          typeof rawValue === "object" &&
+          !("id" in rawValue) &&
+          "label" in rawValue
+        ? {
+            id: row._id,
+            label: rawValue.label,
+          }
+        : rawValue;
 
   const createTo = (value: unknown, field?: LinkField): string | undefined => {
     if (!field) return undefined;
@@ -107,11 +116,19 @@ export const toDisplayValue = <T>(
       };
     }
 
-    const title = value.map(convertDisplayValue).join(", ");
+    const renderCellValue: RenderCellValue[] = value.map((v) => {
+      if (typeof v === "object" && "label" in v) {
+        return {
+          label: v.label,
+        };
+      } else {
+        return { label: v };
+      }
+    });
 
     return {
-      renderCellValue: { label: title },
-      title,
+      renderCellValue,
+      title: renderCellValue.map((v) => v.label).join(", "),
     };
   }
 
@@ -119,6 +136,17 @@ export const toDisplayValue = <T>(
     const renderCellValue: RenderCellValue = {
       label: value.label,
       to: createTo(value, field),
+    };
+
+    return {
+      renderCellValue,
+      title: value.label,
+    };
+  }
+
+  if (value !== null && typeof value === "object" && "label" in value) {
+    const renderCellValue: RenderCellValue = {
+      label: value.label,
     };
 
     return {

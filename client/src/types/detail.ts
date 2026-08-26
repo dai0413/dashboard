@@ -6,6 +6,7 @@ export type DisplayListItem = {
   field?: string;
   value: RenderCellValue | RenderCellValue[];
   isRed?: boolean;
+  isLink?: boolean;
 
   displayGroup?: boolean;
   displayField?: boolean;

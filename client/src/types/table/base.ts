@@ -20,12 +20,7 @@ type FieldHeader<T> = BaseField &
     field: keyof T;
   };
 
-export type DataValue =
-  | string
-  | Label
-  | Label[]
-  | (object & { id?: string })
-  | (object & { id?: string })[];
+type DataValue = Label | Label[];
 
 export type RenderCellValue = {
   label: string;
