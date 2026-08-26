@@ -1,4 +1,4 @@
-import CalendarDataDetail from "./CalendarDataDetail";
+import CalendarDataDetail from "./Detail/CalendarData/CalendarDataDetail";
 import ModelDataDetail from "./ModelDataDetail";
 import { useModal } from "../../context/modal-context";
 
@@ -8,6 +8,7 @@ const DetailModal = () => {
   return (
     <>
       <ModelDataDetail
+        data={detail.data}
         title={"詳細ページ"}
         modelType={detail.modelType}
         isOpen={detail.isOpen}
