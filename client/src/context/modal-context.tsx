@@ -14,16 +14,15 @@ type OpenDetailProps = {
   data: DisplayListItem[];
 };
 
-export type ModelDataModelState = {
-  modelType: ModelType | null;
-  isOpen: boolean;
-  id: string | null;
-  open: (modelType: ModelType, id: string) => void;
-  close: () => void;
-};
-
 type ModalState = {
-  detail: ModelDataModelState;
+  detail: {
+    modelType: ModelType | null;
+    isOpen: boolean;
+    data: DisplayListItem[];
+    id: string | null;
+    open: (modelType: ModelType, id: string, data: DisplayListItem[]) => void;
+    close: () => void;
+  };
   calendarData: {
     title?: string;
     isOpen: boolean;
@@ -48,6 +47,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     null,
   );
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [modelDetailData, setModelDetailData] = useState<DisplayListItem[]>([]);
 
   const [formIsOpen, setFormIsOpen] = useState<boolean>(false);
   const [formModelType, setFormModelType] = useState<ModelType | null>(null);
@@ -67,9 +67,14 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     handleSetAlert({ success: null });
   }, [detailIsOpen, formIsOpen]);
 
-  const openDetail = (modelType: ModelType, id: string) => {
+  const openDetail = (
+    modelType: ModelType,
+    id: string,
+    data: DisplayListItem[],
+  ) => {
     setDetailIsOpen(true);
     setDetailModelType(modelType);
+    setModelDetailData(data);
     setDetailId(id);
   };
 
@@ -104,6 +109,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     detail: {
       modelType: detailModelType,
       isOpen: detailIsOpen,
+      data: modelDetailData,
       id: detailId,
       open: openDetail,
       close: closeDetail,
