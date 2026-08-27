@@ -25,6 +25,7 @@ export type PlayerRegistrationHistoryForm = Partial<
     "season" | "competition" | "player" | "team" | "date"
   > & {
     season: Season["_id"];
+    competition: Competition["_id"];
     player: Player["_id"];
     team: Team["_id"];
     date: string;

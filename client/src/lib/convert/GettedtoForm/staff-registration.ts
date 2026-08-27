@@ -19,6 +19,7 @@ export const staffRegistration = (
     ...t,
     date: toDateKey(t.date),
     season: t.season.id,
+    competition: t.competition.id,
     staff: t.staff.id,
     team: t.team.id,
     registration_type,

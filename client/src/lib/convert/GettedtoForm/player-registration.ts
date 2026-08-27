@@ -18,6 +18,7 @@ export const playerRegistration = (
   return {
     ...t,
     date: toDateKey(t.date),
+    competition: t.competition.id,
     season: t.season.id,
     player: t.player.id,
     team: t.team.id,

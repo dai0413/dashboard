@@ -25,6 +25,7 @@ export type StaffRegistrationForm = Partial<
     "season" | "competition" | "staff" | "team" | "date"
   > & {
     season: Season["_id"];
+    competition: Competition["_id"];
     staff: Staff["_id"];
     team: Team["_id"];
     date: string;

@@ -13,7 +13,6 @@ import { nationalMatchSeries } from "../models/national-match-series";
 import { player } from "../models/player";
 import { playerAppearance } from "../models/player-appearance";
 import { playerMatchEventLog } from "../models/player-match-event-log";
-import { playerRegistration } from "../models/player-registration";
 import { playerRegistrationHistory } from "../models/player-registration-history";
 import { referee } from "../models/referee";
 import { refereeAppearance } from "../models/referee-appearance";
@@ -22,7 +21,6 @@ import { stadium } from "../models/stadium";
 import { staff } from "../models/staff";
 import { staffAppearance } from "../models/staff-appearance";
 import { staffMatchEventLog } from "../models/staff-match-event-log";
-import { staffRegistration } from "../models/staff-registration";
 import { staffRegistrationHistory } from "../models/staff-registration-history";
 import { statsL } from "../models/stats-l";
 import { team } from "../models/team";
@@ -48,7 +46,6 @@ export const formStepsMap: FormStepsMap = {
   [ModelType.PLAYER]: player,
   [ModelType.PLAYER_APPEARANCE]: playerAppearance,
   [ModelType.PLAYER_MATCH_EVENT_LOG]: playerMatchEventLog,
-  [ModelType.PLAYER_REGISTRATION]: playerRegistration,
   [ModelType.PLAYER_REGISTRATION_HISTORY]: playerRegistrationHistory,
   [ModelType.REFEREE]: referee,
   [ModelType.REFEREE_APPEARANCE]: refereeAppearance,
@@ -57,7 +54,6 @@ export const formStepsMap: FormStepsMap = {
   [ModelType.STAFF]: staff,
   [ModelType.STAFF_APPEARANCE]: staffAppearance,
   [ModelType.STAFF_MATCH_EVENT_LOG]: staffMatchEventLog,
-  [ModelType.STAFF_REGISTRATION]: staffRegistration,
   [ModelType.STAFF_REGISTRATION_HISTORY]: staffRegistrationHistory,
   [ModelType.STATS_L]: statsL,
   [ModelType.TEAM]: team,
