@@ -3,6 +3,10 @@ import { ModelType } from "../../../../types/models";
 import { UseMatchSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
 import { useModal } from "../../../../context/modal-context";
+import { getLinkFields } from "../../../../lib/model-link-fields";
+import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
+
+const linkField = getLinkFields(ModelType.MATCH);
 
 const Info = ({ summary }: { summary: UseMatchSummary }) => {
   const {
@@ -17,7 +21,14 @@ const Info = ({ summary }: { summary: UseMatchSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.MATCH, selected._id);
+                open(
+                  ModelType.MATCH,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.MATCH, linkField },
+                  }),
+                );
               }}
             >
               {`${selected.home_team.label}-${selected.away_team.label}`}

@@ -3,6 +3,10 @@ import { ModelType } from "../../../../types/models";
 import { UseRefereeSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
 import { useModal } from "../../../../context/modal-context";
+import { getLinkFields } from "../../../../lib/model-link-fields";
+import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
+
+const linkField = getLinkFields(ModelType.REFEREE);
 
 const Info = ({ summary }: { summary: UseRefereeSummary }) => {
   const {
@@ -18,7 +22,14 @@ const Info = ({ summary }: { summary: UseRefereeSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.REFEREE, selected._id);
+                open(
+                  ModelType.REFEREE,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.REFEREE, linkField },
+                  }),
+                );
               }}
             >
               {selected.name}

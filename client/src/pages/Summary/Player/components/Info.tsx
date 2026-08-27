@@ -3,6 +3,10 @@ import { ModelType } from "../../../../types/models";
 import { UsePlayerSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
 import { useModal } from "../../../../context/modal-context";
+import { getLinkFields } from "../../../../lib/model-link-fields";
+import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
+
+const linkField = getLinkFields(ModelType.PLAYER);
 
 const Info = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
@@ -17,7 +21,14 @@ const Info = ({ summary }: { summary: UsePlayerSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.PLAYER, selected._id);
+                open(
+                  ModelType.PLAYER,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.PLAYER, linkField },
+                  }),
+                );
               }}
             >
               {selected.name}

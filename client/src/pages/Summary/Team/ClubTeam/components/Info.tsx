@@ -3,6 +3,10 @@ import { SelectField } from "../../../../../components/field";
 import { FullScreenLoader } from "../../../../../components/ui";
 import { useModal } from "../../../../../context/modal-context";
 import { UseClubTeamSummary } from "../types";
+import { getLinkFields } from "../../../../../lib/model-link-fields";
+import { convertToDisplayListData } from "../../../../../components/modals/Detail/utils/convertToDisplayListData ";
+
+const linkField = getLinkFields(ModelType.TEAM);
 
 const Info = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
@@ -23,7 +27,14 @@ const Info = ({ summary }: { summary: UseClubTeamSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.TEAM, selected._id);
+                open(
+                  ModelType.TEAM,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.TEAM, linkField },
+                  }),
+                );
               }}
             >
               {selected.team}

@@ -1,7 +1,11 @@
+import { convertToDisplayListData } from "../../../../../components/modals/Detail/utils/convertToDisplayListData ";
 import { FullScreenLoader } from "../../../../../components/ui";
 import { useModal } from "../../../../../context/modal-context";
+import { getLinkFields } from "../../../../../lib/model-link-fields";
 import { ModelType } from "../../../../../types/models";
 import { UseNationalTeamSummary } from "../types";
+
+const linkField = getLinkFields(ModelType.TEAM);
 
 const Info = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
@@ -18,7 +22,14 @@ const Info = ({ summary }: { summary: UseNationalTeamSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.TEAM, selected._id);
+                open(
+                  ModelType.TEAM,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.TEAM, linkField },
+                  }),
+                );
               }}
             >
               {selected.team}

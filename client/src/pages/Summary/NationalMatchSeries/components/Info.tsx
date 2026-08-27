@@ -3,6 +3,10 @@ import { ModelType } from "../../../../types/models";
 import { UseNationalMatchSeriesSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
 import { useModal } from "../../../../context/modal-context";
+import { getLinkFields } from "../../../../lib/model-link-fields";
+import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
+
+const linkField = getLinkFields(ModelType.NATIONAL_MATCH_SERIES);
 
 const Info = ({ summary }: { summary: UseNationalMatchSeriesSummary }) => {
   const {
@@ -17,7 +21,17 @@ const Info = ({ summary }: { summary: UseNationalMatchSeriesSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.NATIONAL_MATCH_SERIES, selected._id);
+                open(
+                  ModelType.NATIONAL_MATCH_SERIES,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: {
+                      modelType: ModelType.NATIONAL_MATCH_SERIES,
+                      linkField,
+                    },
+                  }),
+                );
               }}
             >
               {selected.name}

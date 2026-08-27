@@ -1,8 +1,12 @@
 import { SelectField } from "../../../../components/field";
+import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
 import { FullScreenLoader } from "../../../../components/ui";
 import { useModal } from "../../../../context/modal-context";
+import { getLinkFields } from "../../../../lib/model-link-fields";
 import { ModelType } from "../../../../types/models";
 import { UseCompetitionSummary } from "../types";
+
+const linkField = getLinkFields(ModelType.COMPETITION);
 
 const Info = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
@@ -23,7 +27,14 @@ const Info = ({ summary }: { summary: UseCompetitionSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.COMPETITION, selected._id);
+                open(
+                  ModelType.COMPETITION,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.COMPETITION, linkField },
+                  }),
+                );
               }}
             >
               {selected.name}

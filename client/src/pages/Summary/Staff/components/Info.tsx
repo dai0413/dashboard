@@ -3,6 +3,10 @@ import { ModelType } from "../../../../types/models";
 import { UseStaffSummary } from "../types";
 import { FullScreenLoader } from "../../../../components/ui";
 import { useModal } from "../../../../context/modal-context";
+import { getLinkFields } from "../../../../lib/model-link-fields";
+import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
+
+const linkField = getLinkFields(ModelType.STAFF);
 
 const Info = ({ summary }: { summary: UseStaffSummary }) => {
   const {
@@ -17,7 +21,14 @@ const Info = ({ summary }: { summary: UseStaffSummary }) => {
             <div
               className="font-bold text-lg underline hover:text-blue-600 cursor-pointer"
               onClick={() => {
-                open(ModelType.STAFF, selected._id);
+                open(
+                  ModelType.STAFF,
+                  selected._id,
+                  convertToDisplayListData({
+                    data: selected,
+                    model: { modelType: ModelType.STAFF, linkField },
+                  }),
+                );
               }}
             >
               {selected.name}
