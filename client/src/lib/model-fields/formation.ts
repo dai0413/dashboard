@@ -3,10 +3,10 @@ import { UIFieldDefinition } from "../../types/field";
 import { FormationGet } from "../../types/models/formation";
 import { ColumnType } from "../../types/table";
 
-const getData = (data: FormationGet, position: string): string => {
+const getData = (data: FormationGet, position: string): { label: string } => {
   return data.position_formation.findIndex((f) => f === position) > -1
-    ? "◯"
-    : "";
+    ? { label: "◯" }
+    : { label: "" };
 };
 
 const positions = position_formation();
