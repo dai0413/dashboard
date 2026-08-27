@@ -2,7 +2,7 @@ import { useAlert } from "../../../../context/alert-context";
 import Alert from "../../../layout/Alert";
 import { Modal } from "../../../ui";
 import { DisplayListItem } from "../../../../types/detail";
-import FieldList2 from "../../FieldList2";
+import FieldList from "../../FieldList";
 
 type CalendarDataDetailProps = {
   data: DisplayListItem[];
@@ -37,7 +37,7 @@ const CalendarDataDetail = ({
         resetAlert={resetAlert}
       />
 
-      <FieldList2 data={data} onCLick={close} />
+      <FieldList data={data} onClick={close} />
     </Modal>
   );
 };

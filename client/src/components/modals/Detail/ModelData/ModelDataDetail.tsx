@@ -1,20 +1,20 @@
-import { ModelType } from "../../types/models";
-import { useEffect } from "react";
-import { LinkButtonGroup } from "../buttons";
-import { Modal } from "../ui";
-import Alert from "../layout/Alert";
-import { useAlert } from "../../context/alert-context";
-import { useForm } from "../../context/form-context";
-import { getOnDetailFields } from "../../lib/model-fields";
-import { useAuth } from "../../context/auth-context";
-import { isDev } from "../../utils/env";
-import { FormMode, From, InputMode } from "../../types/types";
-import { hasSteps } from "../../lib/form-steps/core/hasSteps";
-import { useModelContext } from "../../context/models/model-wrapper";
-import { SkeletonFieldList } from "./SkeletonFieldList";
-import CopyButton from "./Detail/ModelData/CopyButton";
-import FieldList2 from "./FieldList2";
-import { DisplayListItem } from "../../types/detail";
+import { ModelType } from "../../../../types/models";
+import { useCallback, useEffect } from "react";
+import { LinkButtonGroup } from "../../../buttons";
+import { Modal } from "../../../ui";
+import Alert from "../../../layout/Alert";
+import { useAlert } from "../../../../context/alert-context";
+import { useForm } from "../../../../context/form-context";
+import { getOnDetailFields } from "../../../../lib/model-fields";
+import { useAuth } from "../../../../context/auth-context";
+import { isDev } from "../../../../utils/env";
+import { FormMode, From, InputMode } from "../../../../types/types";
+import { hasSteps } from "../../../../lib/form-steps/core/hasSteps";
+import { useModelContext } from "../../../../context/models/model-wrapper";
+import { SkeletonFieldList } from "../SkeletonFieldList";
+import CopyButton from "./CopyButton";
+import FieldList from "../../FieldList";
+import { DisplayListItem } from "../../../../types/detail";
 
 type ModelDataDetailProps = {
   title: string;
@@ -61,7 +61,7 @@ const ModelDataDetail = ({
 
   const displayableField = modelType ? getOnDetailFields(modelType) : [];
 
-  const editOnClick = async () => {
+  const editOnClick = useCallback(async () => {
     if (id) {
       const success = await startForm({
         id,
@@ -74,16 +74,16 @@ const ModelDataDetail = ({
 
       if (success) formOpen(modelType, id);
     }
-  };
+  }, [selected, modelType, id]);
 
-  const deleteOnClick = () => {
+  const deleteOnClick = useCallback(() => {
     if (!id) return;
 
     const confirmDelete = window.confirm("本当に削除しますか？");
     if (confirmDelete) {
       deleteItem(id);
     }
-  };
+  }, [id]);
 
   const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
 
@@ -119,10 +119,10 @@ const ModelDataDetail = ({
         resetAlert={resetAlert}
       />
 
-      {isLoading || !selected ? (
+      {isLoading ? (
         <SkeletonFieldList rows={displayableField.length} />
       ) : (
-        <FieldList2 data={data} onCLick={close} />
+        <FieldList data={data} onClick={close} />
       )}
     </Modal>
   );

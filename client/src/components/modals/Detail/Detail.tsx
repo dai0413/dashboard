@@ -1,6 +1,6 @@
-import CalendarDataDetail from "./Detail/CalendarData/CalendarDataDetail";
-import ModelDataDetail from "./ModelDataDetail";
-import { useModal } from "../../context/modal-context";
+import CalendarDataDetail from "./CalendarData/CalendarDataDetail";
+import ModelDataDetail from "./ModelData/ModelDataDetail";
+import { useModal } from "../../../context/modal-context";
 
 const DetailModal = () => {
   const { detail, calendarData, form } = useModal();

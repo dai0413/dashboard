@@ -2,6 +2,7 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ColumnType, RenderCellValue, TableHeader } from "../../types/table";
 import { isLabelObject } from "../data/isLabelObject";
 import { LinkField } from "../../types/types";
+import { UIFieldDefinition } from "../../types/field";
 
 const hasId = (value: unknown): value is { id: string } => {
   return (
@@ -21,35 +22,42 @@ const hasObjectId = (value: unknown): value is { _id: string } => {
   );
 };
 
-export const toDisplayValue = <T>(
+const convertDisplayValue = <T>(
+  value: unknown,
   header: TableHeader<T>,
+  isForm?: boolean,
+): string => {
+  const blankString = isForm ? "未入力" : "";
+  if (value == null) return blankString;
+
+  if (isLabelObject(value)) {
+    return value.label;
+  }
+
+  if (header.type === "Date") {
+    return toDateKey(value as string, false) || blankString;
+  }
+
+  if (header.type === "datetime-local") {
+    return toDateKey(value as string, true) || blankString;
+  }
+
+  if (value instanceof Date) {
+    return toDateKey(value, false) || blankString;
+  }
+
+  return String(value);
+};
+
+export const toDisplayValue = <T>(
+  header: UIFieldDefinition<T>,
   row: T,
   linkField?: LinkField[],
+  isForm?: boolean,
 ): {
   renderCellValue: RenderCellValue[] | RenderCellValue;
   title: string;
 } => {
-  const convertDisplayValue = (value: unknown): string => {
-    if (value == null) return "";
-
-    if (isLabelObject(value)) {
-      return value.label;
-    }
-
-    if (header.type === "Date") {
-      return toDateKey(value as string, false) || "";
-    }
-
-    if (header.type === "datetime-local") {
-      return toDateKey(value as string, true) || "";
-    }
-
-    if (value instanceof Date) {
-      return toDateKey(value, false) || "";
-    }
-
-    return String(value);
-  };
   const field = linkField?.find((field) => field.field === header.key);
 
   const rawValue =
@@ -155,7 +163,7 @@ export const toDisplayValue = <T>(
     };
   }
 
-  const title = convertDisplayValue(value);
+  const title = convertDisplayValue(value, header, isForm);
 
   return {
     renderCellValue: { label: title },
