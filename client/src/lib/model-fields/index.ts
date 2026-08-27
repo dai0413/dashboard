@@ -121,3 +121,12 @@ export function getOnDetailFields<K extends ModelType>(
 
   return defs.filter(isDisplayOnDetail);
 }
+
+export function getFields<K extends ModelType>(
+  modelType: K,
+): UIFieldDefinition<GettedModelDataMap[K]>[] {
+  const defs = fieldDefinition[modelType];
+  if (!defs) return [];
+
+  return defs;
+}

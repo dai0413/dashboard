@@ -6,7 +6,7 @@ import RenderCell from "./RenderCell";
 import { TableProps } from "../../types/table";
 import { useModal } from "../../context/modal-context";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
-import { convertToDisplayListData } from "../modals/Detail/ModelData/utils/convertToDisplayListData ";
+import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
 
 export const Tile = <T,>({
   modelType,
@@ -149,11 +149,13 @@ export const Tile = <T,>({
                             open(
                               modelType,
                               row._id,
-                              convertToDisplayListData(
-                                modelType,
-                                row,
-                                linkField || [],
-                              ),
+                              convertToDisplayListData({
+                                data: row,
+                                model: {
+                                  modelType,
+                                  linkField: linkField || [],
+                                },
+                              }),
                             );
                         }}
                       >
