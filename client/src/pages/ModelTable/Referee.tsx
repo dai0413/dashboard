@@ -1,6 +1,5 @@
 import { ModelTableContainer } from "../../components/table";
 import { useReferee } from "../../context/models/referee";
-import { APP_ROUTES } from "../../lib/appRoutes";
 import { ModelType } from "../../types/models";
 
 const Referee = () => {
@@ -12,12 +11,6 @@ const Referee = () => {
         title={"審判情報"}
         contextState={RefereeContext}
         modelType={ModelType.REFEREE}
-        linkField={[
-          {
-            field: "name",
-            to: APP_ROUTES.REFEREE_SUMMARY,
-          },
-        ]}
       />
     </div>
   );

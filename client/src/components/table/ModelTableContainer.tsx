@@ -22,10 +22,11 @@ import {
 } from "@dai0413/myorg-shared";
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
+import { getLinkFields } from "../../lib/model-link-fields";
 
 type ModelBase<K extends keyof GettedModelDataMap> = Omit<
   TableBase<GettedModelDataMap[K], FormTypeMap[K]>,
-  "modelType" | "fieldDefinitions"
+  "modelType" | "fieldDefinitions" | "linkField"
 > & {
   modelType: K;
   contextState: ModelContext<K>;
@@ -70,6 +71,10 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   );
   const sortField = useMemo(
     () => fieldDefinition[props.modelType]?.filter(isSortable) || [],
+    [props.modelType],
+  );
+  const linkField = useMemo(
+    () => getLinkFields(props.modelType),
     [props.modelType],
   );
 
@@ -152,7 +157,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
           totalCount={totalCount}
           headers={headers}
           pageNation="server"
-          linkField={props.linkField}
+          linkField={linkField}
           detailLink={detailLink}
           itemsPerPage={itemsPerPage || 10}
           isLoading={tableIsLoading}

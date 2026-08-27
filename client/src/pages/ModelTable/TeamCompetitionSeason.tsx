@@ -1,7 +1,6 @@
 import { ModelTableContainer } from "../../components/table";
 import { useTeamCompetitionSeason } from "../../context/models/team-competition-season";
 import { ModelType } from "../../types/models";
-import { APP_ROUTES } from "../../lib/appRoutes";
 
 const TeamCompetitionSeason = () => {
   const teamCompetitionSeason = useTeamCompetitionSeason();
@@ -12,16 +11,6 @@ const TeamCompetitionSeason = () => {
         title={"チームの大会参加記録"}
         contextState={teamCompetitionSeason}
         modelType={ModelType.TEAM_COMPETITION_SEASON}
-        linkField={[
-          {
-            field: "competition",
-            to: APP_ROUTES.COMPETITION_SUMMARY,
-          },
-          {
-            field: "team",
-            to: APP_ROUTES.TEAM_SUMMARY,
-          },
-        ]}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import { ModelTableContainer } from "../../components/table";
 import { useStaffRegistration } from "../../context/models/staff-registration";
 import { ModelType } from "../../types/models";
-import { APP_ROUTES } from "../../lib/appRoutes";
 
 const StaffRegistration = () => {
   const staffRegistrationContext = useStaffRegistration();
@@ -12,16 +11,6 @@ const StaffRegistration = () => {
         title={"スタッフ登録情報"}
         contextState={staffRegistrationContext}
         modelType={ModelType.STAFF_REGISTRATION}
-        linkField={[
-          {
-            field: "staff",
-            to: APP_ROUTES.STAFF_SUMMARY,
-          },
-          {
-            field: "team",
-            to: APP_ROUTES.TEAM_SUMMARY,
-          },
-        ]}
       />
     </div>
   );

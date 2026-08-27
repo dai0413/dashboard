@@ -1,7 +1,6 @@
 import { ModelTableContainer } from "../../components/table";
 import { useTeam } from "../../context/models/team";
 import { ModelType } from "../../types/models";
-import { APP_ROUTES } from "../../lib/appRoutes";
 
 const Team = () => {
   const teamContext = useTeam();
@@ -12,12 +11,6 @@ const Team = () => {
         title={"チーム情報"}
         contextState={teamContext}
         modelType={ModelType.TEAM}
-        linkField={[
-          {
-            field: "team",
-            to: APP_ROUTES.TEAM_SUMMARY,
-          },
-        ]}
       />
     </div>
   );
