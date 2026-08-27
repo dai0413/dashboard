@@ -7,6 +7,7 @@ export type DisplayListItem = {
   value: RenderCellValue | RenderCellValue[];
   isRed?: boolean;
   isLink?: boolean;
+  onEdit?: () => void;
 
   displayGroup?: boolean;
   displayField?: boolean;
