@@ -30,6 +30,8 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
     sortable: true,
     getValueType: ColumnType.CUSTOM,
     getData: (d) => {
+      if (!d.teams) return { label: "" };
+
       const values = d.teams.map((team) => {
         return {
           id: team._id,
