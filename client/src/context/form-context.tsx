@@ -22,8 +22,8 @@ import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/form/updateFormValue";
 import { getSteps } from "../lib/form-steps/core/getSteps";
-import { fieldDefinition } from "../lib/model-fields";
-import { DetailFieldDefinition, isDisplayOnDetail } from "../types/field";
+import { getFields } from "../lib/model-fields";
+import { UIFieldDefinition } from "../types/field";
 import { api } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
@@ -98,7 +98,7 @@ type FormContextValue<T extends ModelType> = {
 
   options: Record<string, OptionObj<any>>;
 
-  displayableField: DetailFieldDefinition[];
+  displayableField: UIFieldDefinition<GettedModelDataMap[T]>[];
   autoFill: (() => Promise<void>) | undefined;
   filterConditionsObj: FilterConditionsByKey | null;
   removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
@@ -954,11 +954,8 @@ export const FormProvider = <T extends ModelType>({
   ) => JSX.Element = modelType ? getConfirmMes(modelType) : () => <></>;
 
   // 確認画面
-  const displayableField = useMemo(
-    () =>
-      modelType
-        ? fieldDefinition[modelType]?.filter(isDisplayOnDetail) || []
-        : [],
+  const displayableField: UIFieldDefinition<GettedModelDataMap[T]>[] = useMemo(
+    () => (modelType ? getFields(modelType) : []),
     [modelType],
   );
 
