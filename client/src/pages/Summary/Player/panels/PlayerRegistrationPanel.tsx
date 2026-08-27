@@ -57,7 +57,7 @@ const PlayerRegistrationPanel = ({
       <TableClient
         key={key}
         itemsLoading={isLoading}
-        modelType={ModelType.PLAYER_REGISTRATION_HISTORY}
+        modelType={ModelType.PLAYER_REGISTRATION}
         fieldDefinitions={playerRegistrationFieldDefinition}
         pageNum={1}
         items={items}

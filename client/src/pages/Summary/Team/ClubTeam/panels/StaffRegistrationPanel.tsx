@@ -35,7 +35,7 @@ const StaffRegistrationPanel = ({
       <TableClient
         key={key}
         itemsLoading={isLoading}
-        modelType={ModelType.STAFF_REGISTRATION_HISTORY}
+        modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={registrationFieldDefinition}
         pageNum={1}
         items={items}
