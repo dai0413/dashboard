@@ -13,7 +13,7 @@ import {
 
 const TEAM_POPULATE_PATHS = modelsConfig().POPULATE_PATHS;
 
-type Team = PlayerStatistic["teams"][number];
+type Team = NonNullable<PlayerStatistic["teams"]>[number];
 
 type Params = {
   seasonIds?: Types.ObjectId[];

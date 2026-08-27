@@ -50,6 +50,7 @@ export function transfer<TModel = any>(
         { field: "to_team", type: "ObjectId" },
         { field: "from_date", type: "Date" },
         { field: "to_date", type: "Date" },
+        { field: "doa", type: "Date" },
         { field: "from_team.age_group", type: "String", populateAfter: true },
         { field: "form", type: "String" },
         { field: "isCancelled", type: "Boolean" },
