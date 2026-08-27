@@ -138,7 +138,7 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
             </span>
           )}
 
-          <div className="bg-gray-200 w-full p-1">
+          <div className="bg-gray-200 w-full mt-2 p-1 rounded-lg">
             <span className="font-bold">多数データ入力値</span>
           </div>
 

@@ -1,108 +1,13 @@
-import { get } from "lodash";
-import { FormTypeMap } from "../../../../types/models";
-import { FormStep } from "../../../../types/form";
+import { FormTypeMap, GettedModelDataMap } from "../../../../types/models";
 import { useForm } from "../../../../context/form-context";
-import FieldList from "../../FieldList";
 import { isEmptyObject } from "../../../../utils/data";
-import { DetailFieldDefinition } from "../../../../types/field";
-import { FieldListData } from "../../../../types/types";
-import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { getDiffKeys } from "../../../../utils/comparison";
 import { useAlert } from "../../../../context/alert-context";
-
-const convertDisplayField = <T extends keyof FormTypeMap>(
-  displayableField: DetailFieldDefinition[],
-  formLabel: Record<string, any>,
-  steps: FormStep<T>[],
-  onEdit: (nextStepIndex: number) => void,
-): FieldListData => {
-  const data: FieldListData = {};
-  displayableField.forEach((display) => {
-    if (typeof display.key === "string") {
-      let value = null;
-      value = get(formLabel, display.key);
-
-      let da: {
-        value: string;
-        onEdit: (() => void) | undefined;
-      } = {
-        value:
-          typeof value === "undefined" ||
-          value === null ||
-          value === "" ||
-          (Array.isArray(value) && value.length === 0)
-            ? "未入力"
-            : (value as string),
-        onEdit: undefined,
-      };
-
-      if (Array.isArray(value) && value.length === 0) da.value = "未入力";
-
-      if (steps) {
-        const fields = steps
-          .flatMap((step) => step.fields || [])
-          .filter(Boolean);
-        const inputField = fields.find(
-          (f) => typeof f === "object" && "key" in f && f.key === display.key,
-        );
-
-        const stepIndex = steps.findIndex((step) =>
-          (step.fields || []).some(
-            (f) =>
-              f && typeof f === "object" && "key" in f && f.key === display.key,
-          ),
-        );
-
-        da.onEdit = () => onEdit(stepIndex);
-
-        if (!inputField) {
-          da = {
-            value: typeof value !== "undefined" ? String(value) : "入力対象外",
-            onEdit: undefined,
-          };
-        } else {
-          if (
-            inputField.fieldType === "select" ||
-            inputField.fieldType === "table"
-          ) {
-            const selected =
-              inputField?.multi && Array.isArray(value)
-                ? value.join(", ")
-                : (value as string);
-
-            da.value = selected || "未選択";
-          }
-
-          if (
-            inputField.valueType === "date" ||
-            inputField.valueType === "datetime-local"
-          ) {
-            let datevalue: string = "";
-            if (inputField.valueType === "date") {
-              datevalue = toDateKey(value as string | number | Date) || "";
-            }
-            if (inputField.valueType === "datetime-local") {
-              datevalue =
-                toDateKey(value as string | number | Date, true) || "";
-            }
-            if (datevalue === "NaN-NaN-NaN") {
-              da.value = "未入力";
-            } else da.value = datevalue;
-          }
-        }
-      }
-
-      data[display.key] = da;
-    }
-  });
-
-  return data;
-};
+import FieldList from "../../FieldList";
+import { convertToDisplayListData } from "../../Detail/utils/convertToDisplayListData ";
 
 const SingleConfirmForm = <T extends keyof FormTypeMap>() => {
   const {
-    formMode,
-    inputMode,
     single: { state, originalData, stateLabel },
     steps: { formSteps, handleStep },
     displayableField,
@@ -133,18 +38,15 @@ const SingleConfirmForm = <T extends keyof FormTypeMap>() => {
 
       {!isEmptyObject(state) && (
         <FieldList
+          data={convertToDisplayListData({
+            data: stateLabel as GettedModelDataMap[T],
+            form: {
+              displayableField,
+              steps: formSteps,
+              onEdit: handleStep,
+            },
+          })}
           isForm={true}
-          fields={displayableField}
-          data={convertDisplayField(
-            displayableField,
-            stateLabel,
-            formSteps,
-            handleStep,
-          )}
-          diffKeys={diffKeys}
-          diffColor={formMode === "update"}
-          isEmpty={inputMode === "single" ? true : false}
-          isExclude={inputMode === "single" ? true : false}
         />
       )}
     </div>
