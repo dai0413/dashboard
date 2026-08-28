@@ -48,7 +48,7 @@ export const single: FormStep<ModelType.PLAYER_MATCH_EVENT_LOG>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["time", "add_time", "special_time", "order"]),
-    onChange: combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
+    prepareNext: combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
     validate: validateExclusiveSpecialTime,
   },
   createConfirmationStep<BaseModel>(baseModel),

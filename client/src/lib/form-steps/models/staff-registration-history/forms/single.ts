@@ -32,7 +32,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION_HISTORY>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["staff"]),
-    onChange: onChangeFillChangesByRegistrationType,
+    prepareNext: onChangeFillChangesByRegistrationType,
   },
   {
     stepLabel: "役割・名前・英名を入力",

@@ -61,9 +61,11 @@ export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
     api?: AxiosInstance,
   ) => Promise<FormTypeMap[K][]>;
   getDraftData?: GetDraftData<K, true>;
-  onChange?: OnChange<FormTypeMap[K], true>; //自動実行　更新フィールドのみ返す
-  autoFill?: OnChange<FormTypeMap[K], true>; //ボタンクリック　すべてのフィールド返す
-
+  prepareNext?: OnChange<FormTypeMap[K], true>;
+  actions?: {
+    label: string;
+    onClick: OnChange<FormTypeMap[K], true>;
+  }[];
   fieldCopy?: FieldCopy<K>;
 };
 
@@ -75,7 +77,11 @@ export type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
   dataSource?: DataSource;
   skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
   getDraftData?: GetDraftData<K, false>;
-  onChange?: OnChange<FormTypeMap[K], false>;
+  prepareNext?: OnChange<FormTypeMap[K], false>;
+  actions?: {
+    label: string;
+    onClick: OnChange<FormTypeMap[K], false>;
+  }[];
 };
 
 export type FormStep<K extends keyof FormTypeMap> =

@@ -34,7 +34,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["player"]),
-    onChange: onChangeFillChangesByRegistrationType,
+    prepareNext: onChangeFillChangesByRegistrationType,
   },
   {
     stepLabel: "背番号・POS.・名前・英名・身長・体重を入力",

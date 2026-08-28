@@ -22,7 +22,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["player"]),
-    onChange: updateTeamFromTransfer,
+    prepareNext: updateTeamFromTransfer,
   },
   {
     stepLabel: "選手のチームを選択",
@@ -61,7 +61,7 @@ export const single: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     modelType: baseModel,
     fields: getFields(["status", "left_reason"]),
     validate: (formData) => leftReasonCheck(formData),
-    onChange: updateDatesFromStatus,
+    prepareNext: updateDatesFromStatus,
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -16,7 +16,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["form", "player"]),
-    onChange: combineOnChanges(setTeam, setFromDate),
+    prepareNext: combineOnChanges(setTeam, setFromDate),
   },
   {
     stepLabel: "移籍元を選択",

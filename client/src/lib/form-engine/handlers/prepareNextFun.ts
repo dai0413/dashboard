@@ -8,7 +8,7 @@ import {
 } from "../../../types/form";
 import { FormTypeMap } from "../../../types/models";
 
-export const onChangeFun = async <T extends keyof FormTypeMap>(
+export const prepareNextFun = async <T extends keyof FormTypeMap>(
   api: AxiosInstance,
   currentStep: FormStep<T>,
   values: FormState<T>,
@@ -23,12 +23,12 @@ export const onChangeFun = async <T extends keyof FormTypeMap>(
   } = values;
 
   if (currentStep.many) {
-    const result = await onChangeBulkFun(api, currentStep, values);
+    const result = await prepareNextBulkFun(api, currentStep, values);
 
     formDatas = result.formDatas;
     formLabels = result.formLabels;
   } else {
-    const result = await onChangeSingleFun(api, currentStep, values);
+    const result = await prepareNextSingleFun(api, currentStep, values);
 
     formData = result.formData;
     formLabel = result.formLabel;
@@ -47,7 +47,7 @@ export const onChangeFun = async <T extends keyof FormTypeMap>(
   };
 };
 
-const onChangeSingleFun = async <T extends keyof FormTypeMap>(
+const prepareNextSingleFun = async <T extends keyof FormTypeMap>(
   api: AxiosInstance,
   currentStep: RecordDataFormStep<T>,
   values: FormState<T>,
@@ -60,14 +60,14 @@ const onChangeSingleFun = async <T extends keyof FormTypeMap>(
   let newBulkCommonData = bulkCommonData;
   let newBulkCommonLabel = bulkCommonLabel;
 
-  if (currentStep.onChange) {
-    const onChange = currentStep.onChange;
+  if (currentStep.prepareNext) {
+    const prepareNext = currentStep.prepareNext;
 
     if (currentStep.dataSource === DataSource.BULK_COMMON) {
       const {
-        formData: onChangedBulkCommonData,
-        formLabel: onChangedBulkCommonLabel,
-      } = await onChange({
+        formData: preparedBulkCommonData,
+        formLabel: preparedBulkCommonLabel,
+      } = await prepareNext({
         formData: bulkCommonData,
         formLabel: bulkCommonLabel,
         metaData,
@@ -75,18 +75,18 @@ const onChangeSingleFun = async <T extends keyof FormTypeMap>(
       });
       newBulkCommonData = {
         ...newBulkCommonData,
-        ...onChangedBulkCommonData,
+        ...preparedBulkCommonData,
       };
       newBulkCommonLabel = {
         ...newBulkCommonLabel,
-        ...onChangedBulkCommonLabel,
+        ...preparedBulkCommonLabel,
       };
     } else {
       // formData更新
-      const { formData: onChangedFormData, formLabel: onChangedFormLabel } =
-        await onChange({ formData, formLabel, metaData, api });
-      newFormData = { ...newFormData, ...onChangedFormData };
-      newFormLabel = { ...newFormLabel, ...onChangedFormLabel };
+      const { formData: preparedFormData, formLabel: preparedFormLabel } =
+        await prepareNext({ formData, formLabel, metaData, api });
+      newFormData = { ...newFormData, ...preparedFormData };
+      newFormLabel = { ...newFormLabel, ...preparedFormLabel };
     }
   }
 
@@ -98,7 +98,7 @@ const onChangeSingleFun = async <T extends keyof FormTypeMap>(
   };
 };
 
-const onChangeBulkFun = async <T extends keyof FormTypeMap>(
+const prepareNextBulkFun = async <T extends keyof FormTypeMap>(
   api: AxiosInstance,
   currentStep: ArrayDataFormStep<T>,
   values: FormState<T>,
@@ -107,10 +107,10 @@ const onChangeBulkFun = async <T extends keyof FormTypeMap>(
   let newFormDatas = values.formDatas;
   let newFormLabels = values.formLabels;
 
-  if (currentStep.onChange) {
-    const onChange = currentStep.onChange;
-    const { formDatas: onChangedFormDatas, formLabels: onChangedFormLabels } =
-      await onChange({
+  if (currentStep.prepareNext) {
+    const prepareNext = currentStep.prepareNext;
+    const { formDatas: preparedFormDatas, formLabels: preparedFormLabels } =
+      await prepareNext({
         formDatas,
         formLabels,
         metaData,
@@ -119,12 +119,12 @@ const onChangeBulkFun = async <T extends keyof FormTypeMap>(
 
     newFormDatas = formDatas.map((formData, index) => ({
       ...formData,
-      ...onChangedFormDatas[index],
+      ...preparedFormDatas[index],
     }));
 
     newFormLabels = formLabels.map((formLabel, index) => ({
       ...formLabel,
-      ...onChangedFormLabels[index],
+      ...preparedFormLabels[index],
     }));
   }
 

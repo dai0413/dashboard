@@ -21,7 +21,7 @@ export const single: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["team"]),
-    onChange: updateFormationFromLineup,
+    prepareNext: updateFormationFromLineup,
   },
   {
     stepLabel: "フォーメーションを選択",

@@ -58,7 +58,7 @@ export const single: FormStep<ModelType.STAFF_MATCH_EVENT_LOG>[] = [
     modelType: baseModel,
     fields: getFields(["time", "add_time", "special_time"]),
     validate: validateExclusiveSpecialTime,
-    onChange: combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
+    prepareNext: combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

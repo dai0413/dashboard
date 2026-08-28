@@ -19,7 +19,7 @@ export const single: FormStep<ModelType.STAFF_REGISTRATION>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["staff"]),
-    onChange: updateName,
+    prepareNext: updateName,
   },
   {
     stepLabel: "チーム選択",

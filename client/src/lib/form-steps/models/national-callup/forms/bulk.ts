@@ -30,7 +30,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     modelType: baseModel,
     fields: getFields(["series", "position_group"]),
     dataSource: DataSource.BULK_COMMON,
-    onChange: updateDatesFromSeries,
+    prepareNext: updateDatesFromSeries,
     createQuickFilterItems: async ({ metaData, api }) => {
       if (!api || !metaData) return {};
 

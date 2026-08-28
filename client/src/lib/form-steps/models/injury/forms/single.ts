@@ -13,7 +13,7 @@ export const single: FormStep<ModelType.INJURY>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["player"]),
-    onChange: updateTeam,
+    prepareNext: updateTeam,
   },
   {
     stepLabel: "チームを選択",

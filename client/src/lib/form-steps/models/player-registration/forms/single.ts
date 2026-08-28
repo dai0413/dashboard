@@ -21,7 +21,7 @@ export const single: FormStep<ModelType.PLAYER_REGISTRATION>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["player"]),
-    onChange: combineOnChanges(updateName, updateTeam),
+    prepareNext: combineOnChanges(updateName, updateTeam),
   },
   {
     stepLabel: "チーム選択",

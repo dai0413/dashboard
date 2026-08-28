@@ -12,7 +12,7 @@ import {
   createQuickFilterItemsFun,
   draftDataFun,
   fetchValueFun,
-  onChangeFun,
+  prepareNextFun,
   prepareUpdateDataFun,
 } from "./handlers";
 import { FormTypeMap } from "../../types/models";
@@ -29,7 +29,7 @@ export const runStepEffects = async <T extends keyof FormTypeMap>(
   },
 ): Promise<ApplyStateValue<T>> => {
   const { options, filterConditionsObj, quickFilterItemsObj } = prev;
-  values = await onChangeFun(api, step, values);
+  values = await prepareNextFun(api, step, values);
   values = await fetchValueFun(api, step, values);
   values = await draftDataFun(api, step, values);
   values = await prepareUpdateDataFun(api, step, values);
