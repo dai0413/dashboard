@@ -99,7 +99,7 @@ export const bulkBase: ArrayDataFormStep<BaseModel> = {
     validatePlayerRequiredForEvent,
     validateExclusiveSpecialTime,
   ),
-  onChange: toManyOnChange(
+  prepareNext: toManyOnChange(
     combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
   ),
 };

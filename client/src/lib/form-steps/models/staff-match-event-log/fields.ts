@@ -87,7 +87,7 @@ export const bulkBase: ArrayDataFormStep<BaseModel> = {
   ]),
   many: true,
   validate: validateExclusiveSpecialTime,
-  onChange: toManyOnChange(
+  prepareNext: toManyOnChange(
     combineOnChanges(updateTimeName, updatePeriodLabelFromMatch),
   ),
 };
