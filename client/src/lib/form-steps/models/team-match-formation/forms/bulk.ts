@@ -121,32 +121,37 @@ export const bulk: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     ...bulkBase,
     many: true,
-    autoFill: async ({ formDatas, formLabels, api }) => {
-      if (!api) return { formDatas, formLabels };
+    actions: [
+      {
+        label: "Player-Appearanceから計算",
+        onClick: async ({ formDatas, formLabels, api }) => {
+          if (!api) return { formDatas, formLabels };
 
-      const matchIds: string[] = formDatas
-        .map((d) => d.match)
-        .filter((d) => typeof d === "string");
-      const matchLabels: string[] = formLabels
-        .map((d) => d.match)
-        .filter((d) => typeof d === "string");
+          const matchIds: string[] = formDatas
+            .map((d) => d.match)
+            .filter((d) => typeof d === "string");
+          const matchLabels: string[] = formLabels
+            .map((d) => d.match)
+            .filter((d) => typeof d === "string");
 
-      const applied = await Promise.all(
-        matchIds.map((matchId, i) =>
-          applyPosition(api, matchId, matchLabels[i]),
-        ),
-      );
+          const applied = await Promise.all(
+            matchIds.map((matchId, i) =>
+              applyPosition(api, matchId, matchLabels[i]),
+            ),
+          );
 
-      const flattened = applied.flat();
+          const flattened = applied.flat();
 
-      const returnFormDatas = flattened.map((d) => d.formData);
-      const returnFormLabels = flattened.map((d) => d.formLabel);
+          const returnFormDatas = flattened.map((d) => d.formData);
+          const returnFormLabels = flattened.map((d) => d.formLabel);
 
-      return {
-        formDatas: returnFormDatas,
-        formLabels: returnFormLabels,
-      };
-    },
+          return {
+            formDatas: returnFormDatas,
+            formLabels: returnFormLabels,
+          };
+        },
+      },
+    ],
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

@@ -99,7 +99,7 @@ type FormContextValue<T extends ModelType> = {
   options: Record<string, OptionObj<any>>;
 
   displayableField: UIFieldDefinition<GettedModelDataMap[T]>[];
-  autoFill: (() => Promise<void>) | undefined;
+  actions: { label: string; onClick: () => Promise<void> }[] | undefined;
   filterConditionsObj: FilterConditionsByKey | null;
   removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
   quickFilterItemsObj: QuickFilterItemsByKey | null;
@@ -920,34 +920,62 @@ export const FormProvider = <T extends ModelType>({
   };
 
   // ////////////////////////////////////////////////////// //
-  const autoFillFun = async (): Promise<void> => {
-    const current = formSteps[currentStep];
+  const actions: { label: string; onClick: () => Promise<void> }[] =
+    useMemo(() => {
+      const current = formSteps[currentStep];
+      if (!current?.actions) return [];
 
-    if (current.many) {
-      const autoFill = current.autoFill;
-      if (autoFill) {
-        const {
-          formDatas: autoFilldFormDatas,
-          formLabels: autoFilldFormLabels,
-        } = await autoFill({
-          formDatas,
-          formLabels,
-          metaData,
-          api,
+      let clickActions: { label: string; onClick: () => Promise<void> }[] = [];
+
+      if (current.many && current.actions) {
+        clickActions = current.actions?.map((action) => {
+          const onClick = async () => {
+            const {
+              formDatas: updatedFormDatas,
+              formLabels: updatedFormLabels,
+            } = await action.onClick({
+              formDatas,
+              formLabels,
+              metaData,
+              api,
+            });
+
+            setFormDatas(updatedFormDatas);
+            setFormLabels(updatedFormLabels);
+          };
+
+          return { label: action.label, onClick: onClick };
         });
+      } else if (!current.many && current.actions) {
+        clickActions = current.actions?.map((action) => {
+          const onClick = async () => {
+            const { formData: updatedFormData, formLabel: updatedFormLabel } =
+              await action.onClick({
+                formData,
+                formLabel,
+                metaData,
+                api,
+              });
 
-        setFormDatas(autoFilldFormDatas);
-        setFormLabels(autoFilldFormLabels);
+            setFormData(updatedFormData);
+            setFormLabel(updatedFormLabel);
+          };
+
+          return { label: action.label, onClick: onClick };
+        });
       }
-    }
-  };
 
-  const autoFill =
-    formSteps[currentStep] &&
-    formSteps[currentStep].many &&
-    formSteps[currentStep].autoFill
-      ? autoFillFun
-      : undefined;
+      return clickActions;
+    }, [
+      formDatas,
+      formLabels,
+      formData,
+      formLabel,
+      metaData,
+      api,
+      formSteps,
+      currentStep,
+    ]);
 
   const renderer: (
     confirmData: Record<string, string | number | undefined>[],
@@ -1001,7 +1029,7 @@ export const FormProvider = <T extends ModelType>({
     options,
 
     displayableField,
-    autoFill,
+    actions,
     filterConditionsObj,
     removeFilterConditionsObj,
     quickFilterItemsObj,

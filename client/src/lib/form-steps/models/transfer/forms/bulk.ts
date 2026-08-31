@@ -133,7 +133,7 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
     ]),
     many: true,
     validate: (formData) => teamCheck(formData),
-    autoFill: toManyOnChange(setTeam),
+    actions: [{ label: "チーム取得", onClick: toManyOnChange(setTeam) }],
     fieldCopy: {
       label: "チーム所属",
       optionKey: "transfer",

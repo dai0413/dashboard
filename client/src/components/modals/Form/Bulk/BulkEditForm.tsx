@@ -20,7 +20,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
 }: RenderFieldProps) => {
   const {
     many,
-    autoFill,
+    actions,
     options,
     steps: { formSteps, currentStep },
     filterConditionsObj,
@@ -194,11 +194,13 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
         </div>
 
         <div>
-          {autoFill && (
-            <IconTextButton icon="edit" color="gray" onClick={autoFill}>
-              自動入力
-            </IconTextButton>
-          )}
+          {actions?.map((action) => {
+            return (
+              <IconTextButton icon="edit" color="gray" onClick={action.onClick}>
+                {action.label}
+              </IconTextButton>
+            );
+          })}
         </div>
 
         {fieldCopy && (

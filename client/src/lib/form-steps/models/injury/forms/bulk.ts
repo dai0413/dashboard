@@ -76,7 +76,7 @@ export const bulk: FormStep<ModelType.INJURY>[] = [
       },
     ],
     many: true,
-    autoFill: toManyOnChange(updateTeam),
+    actions: [{ label: "チーム取得", onClick: toManyOnChange(updateTeam) }],
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

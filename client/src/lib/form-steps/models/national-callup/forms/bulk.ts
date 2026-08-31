@@ -10,11 +10,9 @@ import { NationalCallupForm } from "../../../../../types/models/national-callup"
 import { NationalCallup } from "../../../../../utils/createOption/types/model/national-callup";
 import { readItemBase, readItemsBase } from "../../../../api";
 import { createConfirmationStep } from "../../../confirmationStep";
-import { combineOnChanges } from "../../../utils/onChange/combine";
 import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
 import { getFields } from "../fields";
 import { updateDatesFromSeries } from "../onChanges/updateDatesFromSeries";
-import { updateDatesFromStatus } from "../onChanges/updateDatesFromStatus";
 import { updateTeamFromTransfer } from "../onChanges/updateTeamFromTransfer";
 import { teamCheck } from "../validations/teamCheck";
 import { NationalMatchSeries } from "../../../../../types/models/national-match-series";
@@ -135,9 +133,10 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
       },
     },
     validate: (formData) => teamCheck(formData, "team", "team_name"),
-    autoFill: toManyOnChange(
-      combineOnChanges(updateTeamFromTransfer, updateDatesFromStatus),
-    ),
+    prepareNext: toManyOnChange(updateDatesFromSeries),
+    actions: [
+      { label: "チーム取得", onClick: toManyOnChange(updateTeamFromTransfer) },
+    ],
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

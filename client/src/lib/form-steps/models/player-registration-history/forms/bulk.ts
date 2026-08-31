@@ -52,7 +52,7 @@ export const bulk: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       "changes.homegrown",
       "changes.note",
     ]),
-    autoFill: toManyOnChange(onChangeFillChangesByRegistrationType),
+    prepareNext: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },

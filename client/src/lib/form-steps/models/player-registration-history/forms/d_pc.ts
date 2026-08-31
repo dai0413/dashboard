@@ -30,7 +30,7 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       return obj.data;
     },
     many: true,
-    autoFill: toManyOnChange(onChangeFillChangesByRegistrationType),
+    prepareNext: toManyOnChange(onChangeFillChangesByRegistrationType),
   },
   {
     stepLabel: "取得したデータを編集してください",
@@ -53,7 +53,7 @@ export const d_pc: FormStep<ModelType.PLAYER_REGISTRATION_HISTORY>[] = [
       "changes.homegrown",
       "changes.note",
     ]),
-    autoFill: toManyOnChange(onChangeFillChangesByRegistrationType),
+    prepareNext: toManyOnChange(onChangeFillChangesByRegistrationType),
     validate: validateByRegistrationType,
     many: true,
   },
