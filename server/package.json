@@ -3,7 +3,7 @@
   "type": "module",
   "dependencies": {
     "@dai0413/myorg-shared": "^4.4.0",
-    "@dai0413/scraping-logic": "^4.1.1",
+    "@dai0413/scraping-logic": "^4.1.2",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
