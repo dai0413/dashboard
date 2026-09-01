@@ -29,6 +29,9 @@ export const onChangeFillChangesByRegistrationType: OnChange<
     if (!item) return { formData, formLabel };
     const { name, en_name } = convert(ModelType.STAFF, item);
 
+    returnValue = { changes: { ...formData.changes } };
+    returnFormLabel = { changes: { ...formLabel.changes } };
+
     if (name) {
       returnValue = set(returnValue, "changes.name", name);
       returnFormLabel["changes.name"] = name;
@@ -71,6 +74,8 @@ export const onChangeFillChangesByRegistrationType: OnChange<
     }
 
     if (changes) {
+      returnValue = { changes: { ...formData.changes } };
+      returnFormLabel = { changes: { ...formLabel.changes } };
       const flattedChanges = flattenChanges(changes);
       flattedChanges.forEach((change) => {
         returnValue = set(returnValue, change.key, change.value);
