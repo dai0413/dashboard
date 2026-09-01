@@ -9,14 +9,14 @@ import { season } from "../CreateLabel/season";
 import { team } from "../CreateLabel/team";
 
 export const playerRegistration = (
-  t: PlayerRegistration
+  t: PlayerRegistration,
 ): PlayerRegistrationGet => {
   const registration_type = registrationType().find(
-    (item) => item.key === t.registration_type
+    (item) => item.key === t.registration_type,
   )?.label;
 
   const registration_status = registrationStatus().find(
-    (item) => item.key === t.registration_status
+    (item) => item.key === t.registration_status,
   )?.label;
 
   return {

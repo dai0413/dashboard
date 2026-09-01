@@ -1,4 +1,4 @@
-import { API_PATHS } from "@dai0413/myorg-shared";
+import { API_PATHS, registrationType } from "@dai0413/myorg-shared";
 import { readItemsBase } from "../../../../lib/api";
 import { createData, getMonthDateRange, mergeCalendarData } from "../utils";
 import { api } from "../../../../context/api-context";
@@ -10,6 +10,18 @@ import { Transfer } from "../../../../types/models/transfer";
 import { Injury } from "../../../../types/models/injury";
 import { CalendarDataItem } from "../types";
 import { ModelType } from "../../../../types/models";
+
+type Target = {
+  registration_type: string;
+};
+
+const registrationTypeToLabel = <T extends Target>(t: T): T => {
+  const registration_type =
+    registrationType().find((item) => item.key === t.registration_type)
+      ?.label || "";
+
+  return { ...t, registration_type };
+};
 
 export const fetchCalendarData = async (
   currentDate: Date,
@@ -87,16 +99,23 @@ export const fetchCalendarData = async (
   }
 
   if (playerRegistrationRes) {
+    const converted = playerRegistrationRes.data.map((d) =>
+      registrationTypeToLabel(d),
+    );
     const newCalendarDataList = createData(
-      playerRegistrationRes.data,
+      converted,
       ModelType.PLAYER_REGISTRATION,
     );
     calendarDataList.push(newCalendarDataList);
   }
 
   if (staffRegistrationRes) {
+    const converted = staffRegistrationRes.data.map((d) =>
+      registrationTypeToLabel(d),
+    );
+
     const newCalendarDataList = createData(
-      staffRegistrationRes.data,
+      converted,
       ModelType.STAFF_REGISTRATION,
     );
     calendarDataList.push(newCalendarDataList);
