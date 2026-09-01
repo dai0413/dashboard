@@ -7,14 +7,30 @@ interface ModalProps {
   header?: React.ReactNode;
   footer?: React.ReactNode;
   children: React.ReactNode;
+  isForm?: boolean;
 }
 
-const Modal = ({ isOpen, onClose, children, header, footer }: ModalProps) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  children,
+  header,
+  footer,
+  isForm,
+}: ModalProps) => {
   if (!isOpen) return null;
+
+  const baseClassName = [
+    "relative bg-white rounded-lg shadow-lg h-[90%] w-[95%] flex flex-col",
+  ];
+
+  const className: string[] = isForm
+    ? baseClassName
+    : [...baseClassName, "max-w-2xl sm:w-full"];
 
   const modal = (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-start justify-center pt-[5vh]">
-      <div className="relative bg-white rounded-lg shadow-lg h-[90%] w-[95%] flex flex-col">
+      <div className={className.join(" ")}>
         {/* Close Button */}
         {onClose && (
           <button

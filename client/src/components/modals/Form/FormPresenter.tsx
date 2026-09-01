@@ -13,6 +13,7 @@ export const FormPresenter = <T extends keyof FormTypeMap>(
 
   return (
     <Modal
+      isForm={true}
       isOpen={isOpen}
       onClose={close}
       header={<FormHeader {...props} />}
