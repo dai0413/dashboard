@@ -34,7 +34,14 @@ const SingleEditForm = <T extends keyof FormTypeMap>() => {
               <span className="mr-2 text-gray-400">
                 {stepIndex}/{stepTotal}
               </span>
+
               {field.label}
+
+              {field.required && (
+                <span className="ml-2 text-xs text-red-500 font-normal">
+                  必須
+                </span>
+              )}
             </label>
             <RenderField
               key={field.key as string}
