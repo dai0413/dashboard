@@ -64,6 +64,7 @@ const readCompetitionItems: ReadCompetitionItems[] = [
         "Ｊユースリーグ",
         "Ｊリーグ育成マッチデー",
         "Ｊサテライトリーグ",
+        "U-21 Ｊリーグ",
       ].join("|"),
     },
   },

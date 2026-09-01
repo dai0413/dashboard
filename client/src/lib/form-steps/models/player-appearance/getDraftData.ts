@@ -1,5 +1,5 @@
 import { AxiosInstance } from "axios";
-import { Label, Select } from "@dai0413/myorg-shared";
+import { API_PATHS, Label, Select } from "@dai0413/myorg-shared";
 import {
   ResolveInput,
   ResolveOutput,
@@ -14,6 +14,9 @@ import { buildValueLabel } from "../../utils/resolver/resolveToValue";
 import { fetchResolved } from "../../utils/resolver/fetchResolved";
 import { ReadDraftDataParams } from "../../utils/getDraftData/types";
 import { getSeries } from "../../utils/getSeries";
+import { readItemsBase } from "../../../api";
+import { Team } from "../../../../types/models/team";
+import { convert } from "../../../convert/CreateLabel";
 
 const KEYS = ["match", "player", "team"] as const;
 
@@ -39,8 +42,8 @@ const buildResolveInput = (
   draftData: Scraped[],
   match: Label,
   season: string[],
+  team: Label,
   series?: string,
-  team?: Label,
   play_time?: number,
 ) => {
   const data = draftData.map((d) => {
@@ -58,21 +61,71 @@ const buildResolveInput = (
 
 type Input = ResolveInput<{ player: Select.MODEL }>;
 
-const resolve = async (
-  api: AxiosInstance,
-  data: Input[],
-  match: Label,
-  season: string[],
-  series?: string,
-  team?: Label,
-  play_time?: number,
-) => {
-  const input = buildResolveInput(data, match, season, series, team, play_time);
-  return fetchResolved<"playerAppearance", Input, ResolveOutput>(
-    api,
-    "playerAppearance",
-    input,
+type Resolve = {
+  api: AxiosInstance;
+  data: Input[];
+  match: Label;
+  season: string[];
+  series?: string;
+  resolveTeam?: Label;
+  matchTeam: Label;
+  play_time?: number;
+};
+
+const resolve = async ({
+  api,
+  data,
+  season,
+  match,
+  series,
+  resolveTeam,
+  matchTeam,
+  play_time,
+}: Resolve) => {
+  const input = buildResolveInput(
+    data,
+    match,
+    season,
+    resolveTeam ?? matchTeam,
+    series,
+    play_time,
   );
+
+  const resolved = await fetchResolved<
+    "playerAppearance",
+    Input,
+    ResolveOutput
+  >(api, "playerAppearance", input);
+
+  if (!resolveTeam) return resolved;
+
+  return resolved.map((d) => {
+    return {
+      ...d,
+      team: matchTeam,
+    };
+  });
+};
+
+const resolveTeam = async (api: AxiosInstance, team: Label) => {
+  let resolvedTeam: Label | undefined = undefined;
+
+  const abbr = team.label.replace("U-21", "").trim();
+  const homeRes = await readItemsBase<Team[]>({
+    apiInstance: api,
+    backendRoute: API_PATHS.TEAM.ROOT,
+    params: { abbr: abbr },
+  });
+
+  if (homeRes?.data && homeRes.data.length === 1) {
+    const original = homeRes.data[0];
+    resolvedTeam = {
+      id: original._id,
+      label: convert(ModelType.TEAM, original),
+    };
+  }
+
+  return resolvedTeam;
 };
 
 type GetDraftDataParams = {
@@ -114,6 +167,7 @@ export const getDraftData = async ({
 
       const {
         _id: matchId,
+        competition,
         home_team,
         away_team,
         play_time,
@@ -125,31 +179,58 @@ export const getDraftData = async ({
         label: posted.matchLabel || "",
       };
 
-      const homeSeasons = await getSeasons(api, home_team.id, date);
-      const awaySeasons = await getSeasons(api, away_team.id, date);
+      let resolveHomeTeam: Label | undefined = undefined;
+      let resolveAwayTeam: Label | undefined = undefined;
+      if (competition.label === "U-21Jリーグ") {
+        resolveHomeTeam = await resolveTeam(api, home_team);
+        resolveAwayTeam = await resolveTeam(api, away_team);
+      }
 
-      const home_series = await getSeries(home_team.id, api, matchId, date);
-      const away_series = await getSeries(away_team.id, api, matchId, date);
-
-      const home = await resolve(
+      const homeSeasons = await getSeasons(
         api,
-        homePlayerAppearance,
-        match,
-        [...new Set([season, ...homeSeasons])],
-        home_series,
-        home_team,
-        play_time,
+        resolveHomeTeam?.id ?? home_team.id,
+        date,
+      );
+      const awaySeasons = await getSeasons(
+        api,
+        resolveAwayTeam?.id ?? away_team.id,
+        date,
       );
 
-      const away = await resolve(
+      const home_series = await getSeries(
+        resolveHomeTeam?.id ?? home_team.id,
         api,
-        awayPlayerAppearance,
-        match,
-        [...new Set([season, ...awaySeasons])],
-        away_series,
-        away_team,
-        play_time,
+        matchId,
+        date,
       );
+      const away_series = await getSeries(
+        resolveAwayTeam?.id ?? away_team.id,
+        api,
+        matchId,
+        date,
+      );
+
+      const home = await resolve({
+        api,
+        data: homePlayerAppearance,
+        match,
+        season: [...new Set([season, ...homeSeasons])],
+        series: home_series,
+        matchTeam: home_team,
+        resolveTeam: resolveHomeTeam,
+        play_time,
+      });
+
+      const away = await resolve({
+        api,
+        data: awayPlayerAppearance,
+        match,
+        season: [...new Set([season, ...awaySeasons])],
+        series: away_series,
+        matchTeam: away_team,
+        resolveTeam: resolveAwayTeam,
+        play_time,
+      });
 
       const homeResult = buildValueLabel(home, KEYS);
       const awayResult = buildValueLabel(away, KEYS);
