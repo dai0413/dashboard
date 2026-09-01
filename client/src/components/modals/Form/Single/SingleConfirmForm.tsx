@@ -44,6 +44,7 @@ const SingleConfirmForm = <T extends keyof FormTypeMap>() => {
               displayableField,
               steps: formSteps,
               onEdit: handleStep,
+              diffKeys: diffKeys,
             },
           })}
           isForm={true}

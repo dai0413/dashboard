@@ -57,6 +57,7 @@ type ConvertToDisplayListDataOptions<T extends ModelType> = {
         displayableField: UIFieldDefinition<GettedModelDataMap[T]>[];
         steps: FormStep<T>[];
         onEdit: (nextStepIndex: number) => void;
+        diffKeys: string[];
       };
     }
 );
@@ -77,6 +78,8 @@ export const convertToDisplayListData = <T extends ModelType>({
   const inputFields = form
     ? form.steps.flatMap((step) => step.fields || []).filter(Boolean)
     : [];
+
+  const diffKeys = form ? form.diffKeys : [];
 
   const result: DisplayListItem[] = displayableField
     .map((field) => {
@@ -163,6 +166,7 @@ export const convertToDisplayListData = <T extends ModelType>({
         value,
         displayField: true,
         isLink: field.key === "URL" || field.key === "urls",
+        isRed: diffKeys.includes(field.key),
       };
 
       return displayListItem;
