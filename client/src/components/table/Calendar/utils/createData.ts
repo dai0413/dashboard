@@ -38,7 +38,7 @@ const readConfig: {
   },
   [ModelType.NATIONAL_MATCH_SERIES]: {
     createToLink: (data) => {
-      return `${APP_ROUTES.NATIONAL_MATCH_SERIES}/${data._id}`;
+      return `${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${data._id}`;
     },
     groupByField: CalendarGroupByField.TEAM,
     dateField: CalendarDateField.JOINED_AT,
