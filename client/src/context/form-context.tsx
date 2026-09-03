@@ -431,10 +431,6 @@ export const FormProvider = <T extends ModelType>({
         options: {},
       });
     } else if (args.formMode === FormMode.UPDATE) {
-      newSteps = newSteps.filter((step) => {
-        if (step.many) return step;
-        if (!step.dataSource) return step;
-      });
       newNextStepIndex = newSteps.length - 1;
       applyState({
         values: updatingValues,
