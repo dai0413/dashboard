@@ -90,7 +90,7 @@ export const playerAppearance: FormStep<BaseModel>[] = [
       });
     },
   },
-  bulkBase,
+  ...bulkBase,
   createConfirmationStep<BaseModel>(baseModel),
 ];
 
@@ -165,7 +165,7 @@ export const multiModel: FormStep<BaseModel>[] = [
       return gettedDraftData;
     },
   },
-  bulkBase,
+  ...bulkBase,
   {
     ...createConfirmationStep<BaseModel>(baseModel),
     addPostedDraftData: ({ metaData, res, postedDraftData }) =>
