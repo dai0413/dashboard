@@ -73,6 +73,12 @@ export enum ViewMode {
   TILE = "tile",
 }
 
+export enum ModalSize {
+  SMALL = "small",
+  MEDIUM = "medium",
+  LARGE = "large",
+}
+
 type GetStepsBaseArgs<T extends ModelType> = {
   modelType: T;
   relatedAll?: boolean;

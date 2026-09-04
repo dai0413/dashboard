@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useAlert } from "./alert-context";
 import {
+  ActionInModal,
   ApplyStateValue,
   DataSource,
   FilterConditionsByKey,
@@ -41,17 +42,9 @@ import { checkRequiredFields } from "../utils/form/checkRequiredFields";
 import { resolveForeignKeyLabels } from "../utils/data/resolveForeignKeyLabels";
 import { validateFun } from "../lib/form-engine/validateFun";
 import { advanceStep } from "../lib/form-engine/advanceStep";
-
-type AddFormDatasParams<T extends ModelType> = {
-  setPage?: (p: number) => void;
-  formData?: FormTypeMap[T];
-  formLabel?: Record<string, any>;
-
-  duplicateCheck?: (
-    existing: FormTypeMap[T],
-    incoming: FormTypeMap[T],
-  ) => boolean;
-};
+import { Many } from "../types/form/many";
+import { AddFormDatasParams } from "../types/form/addFormDatas";
+import { Single } from "../types/form/single";
 
 type FormContextValue<T extends ModelType> = {
   modelType: T | null;
@@ -65,27 +58,9 @@ type FormContextValue<T extends ModelType> = {
   formMode: FormMode;
   isProcessing: boolean;
 
-  single: {
-    handleFormData: HandleFormData<T>;
-    state: Record<string, any>;
-    stateLabel: Record<string, any>;
-    originalData: UpdateData<FormTypeMap[T]> | null;
-  };
+  single: Single<T>;
 
-  many?: {
-    bulkCommonData: FormTypeMap[T];
-    bulkCommonLabel: Record<string, any>;
-    handleFormData: ArrayHandleFormData<T>;
-    addFormDatas: (params: AddFormDatasParams<T>) => void;
-    deleteFormDatas: (index: number) => void;
-    renderConfirmMes: (
-      confirmData: Record<string, string | number | undefined>[],
-    ) => JSX.Element;
-    state: Record<string, any>[];
-    stateLabel: Record<string, any>[];
-
-    originalDatas: UpdateData<FormTypeMap[T]>[] | null;
-  };
+  many?: Many<T>;
 
   steps: {
     currentStep: number;
@@ -96,10 +71,16 @@ type FormContextValue<T extends ModelType> = {
     processStep: () => Promise<void>;
   };
 
+  action: {
+    actionModal: ActionInModal<T> | undefined;
+    openActionModal: (action: ActionInModal<T> | undefined) => void;
+    closeActionModal: () => void;
+  };
+
   options: Record<string, OptionObj<any>>;
 
   displayableField: UIFieldDefinition<GettedModelDataMap[T]>[];
-  actions: { label: string; onClick: () => Promise<void> }[] | undefined;
+  actions: ActionInModal<T>[] | undefined;
   filterConditionsObj: FilterConditionsByKey | null;
   removeFilterConditionsObj: (key: keyof FilterConditionsByKey) => void;
   quickFilterItemsObj: QuickFilterItemsByKey | null;
@@ -172,6 +153,17 @@ export const FormProvider = <T extends ModelType>({
   const [options, setOptions] = useState<Record<string, OptionObj<any>>>({});
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [actionModal, setActionModal] = useState<
+    ActionInModal<T> | undefined
+  >();
+
+  const openActionModal = (action: ActionInModal<T> | undefined) => {
+    setActionModal(action);
+  };
+
+  const closeActionModal = () => {
+    setActionModal(undefined);
+  };
 
   const resetOptions = () => {
     setOptions({});
@@ -183,6 +175,7 @@ export const FormProvider = <T extends ModelType>({
       ...metaData,
       ...formData,
     };
+
     setState(newState);
   }, [formData, metaData, bulkCommonData]);
 
@@ -431,6 +424,10 @@ export const FormProvider = <T extends ModelType>({
         options: {},
       });
     } else if (args.formMode === FormMode.UPDATE) {
+      newSteps = newSteps.filter((step) => {
+        if (step.many) return step;
+        if (!step.dataSource) return step;
+      });
       newNextStepIndex = newSteps.length - 1;
       applyState({
         values: updatingValues,
@@ -916,62 +913,59 @@ export const FormProvider = <T extends ModelType>({
   };
 
   // ////////////////////////////////////////////////////// //
-  const actions: { label: string; onClick: () => Promise<void> }[] =
-    useMemo(() => {
-      const current = formSteps[currentStep];
-      if (!current?.actions) return [];
+  const actions: ActionInModal<T>[] = useMemo(() => {
+    const current = formSteps[currentStep];
+    if (!current?.actions) return [];
 
-      let clickActions: { label: string; onClick: () => Promise<void> }[] = [];
+    let clickActions: ActionInModal<T>[] = [];
 
-      if (current.many && current.actions) {
-        clickActions = current.actions?.map((action) => {
-          const onClick = async () => {
-            const {
-              formDatas: updatedFormDatas,
-              formLabels: updatedFormLabels,
-            } = await action.onClick({
+    if (current.many && current.actions) {
+      clickActions = current.actions?.map((action) => {
+        const onClick = async () => {
+          const { formDatas: updatedFormDatas, formLabels: updatedFormLabels } =
+            await action.onClick({
               formDatas,
               formLabels,
               metaData,
               api,
             });
 
-            setFormDatas(updatedFormDatas);
-            setFormLabels(updatedFormLabels);
-          };
+          setFormDatas(updatedFormDatas);
+          setFormLabels(updatedFormLabels);
+        };
 
-          return { label: action.label, onClick: onClick };
-        });
-      } else if (!current.many && current.actions) {
-        clickActions = current.actions?.map((action) => {
-          const onClick = async () => {
-            const { formData: updatedFormData, formLabel: updatedFormLabel } =
-              await action.onClick({
-                formData,
-                formLabel,
-                metaData,
-                api,
-              });
+        return { label: action.label, onClick: onClick, fields: action.fields };
+      });
+    } else if (!current.many && current.actions) {
+      clickActions = current.actions?.map((action) => {
+        const onClick = async () => {
+          const { formData: updatedFormData, formLabel: updatedFormLabel } =
+            await action.onClick({
+              formData,
+              formLabel,
+              metaData,
+              api,
+            });
 
-            setFormData(updatedFormData);
-            setFormLabel(updatedFormLabel);
-          };
+          setFormData(updatedFormData);
+          setFormLabel(updatedFormLabel);
+        };
 
-          return { label: action.label, onClick: onClick };
-        });
-      }
+        return { label: action.label, onClick: onClick, fields: action.fields };
+      });
+    }
 
-      return clickActions;
-    }, [
-      formDatas,
-      formLabels,
-      formData,
-      formLabel,
-      metaData,
-      api,
-      formSteps,
-      currentStep,
-    ]);
+    return clickActions;
+  }, [
+    formDatas,
+    formLabels,
+    formData,
+    formLabel,
+    metaData,
+    api,
+    formSteps,
+    currentStep,
+  ]);
 
   const renderer: (
     confirmData: Record<string, string | number | undefined>[],
@@ -1020,6 +1014,12 @@ export const FormProvider = <T extends ModelType>({
       nextData,
       handleStep,
       processStep,
+    },
+
+    action: {
+      actionModal,
+      openActionModal,
+      closeActionModal,
     },
 
     options,
