@@ -51,6 +51,18 @@ type BaseFormStep<
   addOptions?: AddOptions<K>;
 };
 
+type Action<K extends keyof FormTypeMap, T extends boolean> = {
+  label: string;
+  fields?: FormFieldDefinition<K>[];
+  onClick: OnChange<FormTypeMap[K], T>;
+};
+
+export type ActionInModal<K extends keyof FormTypeMap> = {
+  label: string;
+  onClick: () => Promise<void>;
+  fields?: FormFieldDefinition<K>[];
+};
+
 export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
   K,
   true
@@ -62,10 +74,7 @@ export type ArrayDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
   ) => Promise<FormTypeMap[K][]>;
   getDraftData?: GetDraftData<K, true>;
   prepareNext?: OnChange<FormTypeMap[K], true>;
-  actions?: {
-    label: string;
-    onClick: OnChange<FormTypeMap[K], true>;
-  }[];
+  actions?: Action<K, true>[];
   fieldCopy?: FieldCopy<K>;
 };
 
@@ -78,10 +87,7 @@ export type RecordDataFormStep<K extends keyof FormTypeMap> = BaseFormStep<
   skip?: (data: FormTypeMap[K], metaData: Record<string, any>) => boolean;
   getDraftData?: GetDraftData<K, false>;
   prepareNext?: OnChange<FormTypeMap[K], false>;
-  actions?: {
-    label: string;
-    onClick: OnChange<FormTypeMap[K], false>;
-  }[];
+  actions?: Action<K, false>[];
 };
 
 export type FormStep<K extends keyof FormTypeMap> =

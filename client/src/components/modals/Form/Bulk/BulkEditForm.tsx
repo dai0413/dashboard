@@ -23,6 +23,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
     actions,
     options,
     steps: { formSteps, currentStep },
+    action: { openActionModal },
     filterConditionsObj,
   } = useForm<T>();
 
@@ -181,27 +182,27 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
       />
 
       <div className="flex gap-x-2 pt-10">
-        <div>
-          <IconTextButton
-            icon="add"
-            color="blue"
-            onClick={() => {
-              many?.addFormDatas({ setPage: handleSetPage });
-            }}
-          >
-            データ追加
-          </IconTextButton>
-        </div>
+        <IconTextButton
+          icon="add"
+          color="blue"
+          onClick={() => {
+            many?.addFormDatas({ setPage: handleSetPage });
+          }}
+        >
+          データ追加
+        </IconTextButton>
 
-        <div>
-          {actions?.map((action) => {
-            return (
-              <IconTextButton icon="edit" color="gray" onClick={action.onClick}>
-                {action.label}
-              </IconTextButton>
-            );
-          })}
-        </div>
+        {actions?.map((action) => {
+          return (
+            <IconTextButton
+              icon="edit"
+              color="gray"
+              onClick={() => openActionModal(action)}
+            >
+              {action.label}
+            </IconTextButton>
+          );
+        })}
 
         {fieldCopy && (
           <IconTextButton
