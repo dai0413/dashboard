@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ModalSize } from "../../types/types";
 
 interface ModalProps {
   isOpen?: boolean;
@@ -7,7 +8,7 @@ interface ModalProps {
   header?: React.ReactNode;
   footer?: React.ReactNode;
   children: React.ReactNode;
-  isForm?: boolean;
+  size?: ModalSize;
 }
 
 const Modal = ({
@@ -16,21 +17,23 @@ const Modal = ({
   children,
   header,
   footer,
-  isForm,
+  size = ModalSize.MEDIUM,
 }: ModalProps) => {
   if (!isOpen) return null;
 
-  const baseClassName = [
-    "relative bg-white rounded-lg shadow-lg h-[90%] w-[95%] flex flex-col",
-  ];
+  const baseClassName = "relative bg-white rounded-lg shadow-lg flex flex-col";
 
-  const className: string[] = isForm
-    ? baseClassName
-    : [...baseClassName, "max-w-2xl sm:w-full"];
+  const sizeClassName = {
+    small: "w-[90%] max-w-lg h-auto max-h-[70%]",
+    medium: "w-[90%] max-w-2xl h-auto max-h-[80%]",
+    large: "w-[95%] h-[90%]",
+  }[size];
+
+  const className = `${baseClassName} ${sizeClassName}`;
 
   const modal = (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-start justify-center pt-[5vh]">
-      <div className={className.join(" ")}>
+      <div className={className}>
         {/* Close Button */}
         {onClose && (
           <button
