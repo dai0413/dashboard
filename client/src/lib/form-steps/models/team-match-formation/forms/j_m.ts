@@ -13,19 +13,23 @@ export const multiModel: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const getDataUrl: string = metaData.getDataUrl;
+      if (!api) return { value: [], label: [] };
 
-      if (!metaData || !postedDraftData || !draftData || !api)
-        return { value: [], label: [] };
+      if (metaData && postedDraftData && draftData) {
+        const getDataUrl: string = metaData.getDataUrl;
+        if (!getDataUrl) return { value: [], label: [] };
 
-      const { value, label } = await dataToFormData(
-        api,
-        draftData,
-        postedDraftData,
-        [getDataUrl],
-      );
+        const { value, label } = await dataToFormData(
+          api,
+          draftData,
+          postedDraftData,
+          [getDataUrl],
+        );
 
-      return { value, label };
+        return { value, label };
+      }
+
+      return { value: [], label: [] };
     },
   },
   bulkBase,

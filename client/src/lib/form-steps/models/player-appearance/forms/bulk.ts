@@ -8,7 +8,7 @@ const baseModel = ModelType.PLAYER_APPEARANCE;
 
 export const bulk: FormStep<ModelType.PLAYER_APPEARANCE>[] = [
   {
-    stepLabel: "出場状況を入力",
+    stepLabel: "共通要素を入力",
     type: StepType.FORM,
     many: false,
     modelType: baseModel,

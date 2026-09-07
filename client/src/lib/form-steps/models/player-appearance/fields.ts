@@ -1,5 +1,4 @@
 import {
-  DataSource,
   FormFieldDefinition,
   FormStep,
   StepType,
@@ -75,27 +74,6 @@ export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);
 export const bulkBase: FormStep<BaseModel>[] = [
   {
     modelType: baseModel,
-    stepLabel: "更新する試合のJ_M:URLを入力",
-    type: StepType.FORM,
-    many: false,
-    dataSource: DataSource.META_DATA,
-    fields: [
-      {
-        key: "getDataUrl",
-        label: "データ取得url",
-        fieldType: "input",
-        valueType: "text",
-      },
-      {
-        key: "getPositionUrl",
-        label: "ポジション取得url",
-        fieldType: "input",
-        valueType: "text",
-      },
-    ],
-  },
-  {
-    modelType: baseModel,
     stepLabel: "背番号・ステータス・ポジション・プレイ時間を入力",
     type: StepType.FORM,
     fields: getFields([
@@ -112,13 +90,21 @@ export const bulkBase: FormStep<BaseModel>[] = [
     validate: validatePlayerEitherOne,
     actions: [
       {
-        label: "L_Mから計算",
+        label: "L_Mからposition計算",
         onClick: async ({ formDatas, formLabels, api }) => {
           return applyPositions(api, formDatas, formLabels, readL_MPosition);
         },
       },
       {
-        label: "SN_Mから計算",
+        label: "SN_Mからposition計算",
+        fields: [
+          {
+            key: "getPositionUrl",
+            label: "ポジション取得url",
+            fieldType: "input",
+            valueType: "text",
+          },
+        ],
         onClick: async ({ metaData, formDatas, formLabels, api }) => {
           if (!metaData.getPositionUrl) {
             return { formDatas, formLabels };

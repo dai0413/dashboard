@@ -11,6 +11,7 @@ import { key } from "@dai0413/myorg-shared/generateField";
 import { AxiosInstance } from "axios";
 import { convert } from "../../../../convert/CreateLabel";
 import { getFormation } from "../utils/getFormation";
+import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
 
 type BaseModel = ModelType.TEAM_MATCH_FORMATION;
 const baseModel = ModelType.TEAM_MATCH_FORMATION;
@@ -117,6 +118,7 @@ export const bulk: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     modelType: baseModel,
     dataSource: DataSource.BULK_COMMON,
     fields: getFields(["match"]),
+    createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
   },
   {
     ...bulkBase,

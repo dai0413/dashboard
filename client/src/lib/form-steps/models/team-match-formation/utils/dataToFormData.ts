@@ -20,14 +20,19 @@ export const dataToFormData = async (
 
   await Promise.all(
     identifiers.map(async (identify) => {
-      if (
-        !draftData[identify].playerAppearance ||
-        !postedDraftData[identify].match
-      ) {
+      if (!postedDraftData[identify].match) {
         return;
       }
 
-      const { home, away } = draftData[identify].playerAppearance;
+      const playerAppearance =
+        postedDraftData[identify].playerAppearance ||
+        draftData[identify].playerAppearance;
+
+      if (!playerAppearance) {
+        return;
+      }
+
+      const { home, away } = playerAppearance;
 
       const {
         _id: matchId,
@@ -37,11 +42,9 @@ export const dataToFormData = async (
       const { matchLabel } = postedDraftData[identify];
 
       const homePositions: string[] = home
-        .filter((d) => d.play_status === "start")
         .map((d) => d.position)
         .filter((d) => typeof d === "string");
       const awayPositions: string[] = away
-        .filter((d) => d.play_status === "start")
         .map((d) => d.position)
         .filter((d) => typeof d === "string");
 
