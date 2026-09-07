@@ -72,8 +72,8 @@ type FormContextValue<T extends ModelType> = {
   };
 
   action: {
-    actionModal: ActionInModal<T> | undefined;
-    openActionModal: (action: ActionInModal<T> | undefined) => void;
+    actionIndex: number | undefined;
+    openActionModal: (actionIndex: number | undefined) => void;
     closeActionModal: () => void;
   };
 
@@ -153,16 +153,14 @@ export const FormProvider = <T extends ModelType>({
   const [options, setOptions] = useState<Record<string, OptionObj<any>>>({});
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [actionModal, setActionModal] = useState<
-    ActionInModal<T> | undefined
-  >();
+  const [actionIndex, setActionIndex] = useState<number | undefined>();
 
-  const openActionModal = (action: ActionInModal<T> | undefined) => {
-    setActionModal(action);
+  const openActionModal = (actionIndex?: number) => {
+    setActionIndex(actionIndex);
   };
 
   const closeActionModal = () => {
-    setActionModal(undefined);
+    setActionIndex(undefined);
   };
 
   const resetOptions = () => {
@@ -922,16 +920,24 @@ export const FormProvider = <T extends ModelType>({
     if (current.many && current.actions) {
       clickActions = current.actions?.map((action) => {
         const onClick = async () => {
-          const { formDatas: updatedFormDatas, formLabels: updatedFormLabels } =
-            await action.onClick({
+          setIsProcessing(true);
+
+          try {
+            const {
+              formDatas: updatedFormDatas,
+              formLabels: updatedFormLabels,
+            } = await action.onClick({
               formDatas,
               formLabels,
               metaData,
               api,
             });
 
-          setFormDatas(updatedFormDatas);
-          setFormLabels(updatedFormLabels);
+            setFormDatas(updatedFormDatas);
+            setFormLabels(updatedFormLabels);
+          } finally {
+            setIsProcessing(false);
+          }
         };
 
         return { label: action.label, onClick: onClick, fields: action.fields };
@@ -939,16 +945,22 @@ export const FormProvider = <T extends ModelType>({
     } else if (!current.many && current.actions) {
       clickActions = current.actions?.map((action) => {
         const onClick = async () => {
-          const { formData: updatedFormData, formLabel: updatedFormLabel } =
-            await action.onClick({
-              formData,
-              formLabel,
-              metaData,
-              api,
-            });
+          setIsProcessing(true);
 
-          setFormData(updatedFormData);
-          setFormLabel(updatedFormLabel);
+          try {
+            const { formData: updatedFormData, formLabel: updatedFormLabel } =
+              await action.onClick({
+                formData,
+                formLabel,
+                metaData,
+                api,
+              });
+
+            setFormData(updatedFormData);
+            setFormLabel(updatedFormLabel);
+          } finally {
+            setIsProcessing(false);
+          }
         };
 
         return { label: action.label, onClick: onClick, fields: action.fields };
@@ -1017,7 +1029,7 @@ export const FormProvider = <T extends ModelType>({
     },
 
     action: {
-      actionModal,
+      actionIndex,
       openActionModal,
       closeActionModal,
     },

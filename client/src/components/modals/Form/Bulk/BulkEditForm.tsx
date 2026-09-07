@@ -192,12 +192,12 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
           データ追加
         </IconTextButton>
 
-        {actions?.map((action) => {
+        {actions?.map((action, i) => {
           return (
             <IconTextButton
               icon="edit"
               color="gray"
-              onClick={() => openActionModal(action)}
+              onClick={() => openActionModal(i)}
             >
               {action.label}
             </IconTextButton>
