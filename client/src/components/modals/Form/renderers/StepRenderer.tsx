@@ -1,4 +1,12 @@
-import { DataSource, FormStep, StepType } from "../../../../types/form";
+import {
+  DataSource,
+  FilterConditionsByKey,
+  FormStep,
+  StepType,
+} from "../../../../types/form";
+import { Many } from "../../../../types/form/many";
+import { OptionObj } from "../../../../types/form/option";
+import { Single } from "../../../../types/form/single";
 import { FormTypeMap } from "../../../../types/models";
 import { InputMode } from "../../../../types/types";
 import BulkConfirmForm from "../Bulk/BulkConfirmForm";
@@ -8,39 +16,64 @@ import SingleEditForm from "../Single/SingleEditForm";
 
 type StepRenderer<T extends keyof FormTypeMap> = {
   inputMode: InputMode;
-  formSteps: FormStep<T>[];
-  currentStep: number;
   isTableOpen: boolean;
   toggleTableOpen: () => void;
+
+  options: Record<string, OptionObj<any>>;
+  step: FormStep<T>;
+  filterConditionsObj: FilterConditionsByKey | null;
+  single: Single<T>;
+  many?: Many<T>;
 };
 
 export const StepRenderer = <T extends keyof FormTypeMap>({
   inputMode,
-  formSteps,
-  currentStep,
   isTableOpen,
   toggleTableOpen,
-}: StepRenderer<T>) => {
-  const current = formSteps[currentStep];
 
-  if (current.type === StepType.FORM) {
-    if (!current.fields || current.fields?.length === 0) {
+  options,
+  step,
+  filterConditionsObj,
+  single,
+  many,
+}: StepRenderer<T>) => {
+  if (step.type === StepType.FORM) {
+    if (!step.fields || step.fields?.length === 0) {
       return <></>;
     }
 
-    if (inputMode === InputMode.SINGLE) {
-      return <SingleEditForm />;
-    }
-
     if (
-      !current.many &&
-      (current.dataSource === DataSource.BULK_COMMON ||
-        current.dataSource === DataSource.META_DATA)
+      !step.many &&
+      (step.dataSource === DataSource.BULK_COMMON ||
+        step.dataSource === DataSource.META_DATA)
     ) {
-      return <SingleEditForm />;
+      return (
+        <SingleEditForm
+          options={options}
+          fields={step.fields}
+          filterConditionsObj={filterConditionsObj}
+          formData={
+            step.dataSource === DataSource.BULK_COMMON
+              ? many?.bulkCommonData || {}
+              : single.state
+          }
+          formLabel={
+            step.dataSource === DataSource.BULK_COMMON
+              ? many?.bulkCommonLabel || {}
+              : single.stateLabel
+          }
+          handleFormData={(props) =>
+            single.handleFormData({
+              ...props,
+              dataSource: step.dataSource,
+            })
+          }
+          displaySupportButton={!step.many}
+        />
+      );
     }
 
-    if (inputMode === InputMode.MANY || current.many) {
+    if (inputMode === InputMode.MANY || step.many) {
       return (
         <BulkEditForm
           isTableOpen={isTableOpen}
@@ -48,9 +81,23 @@ export const StepRenderer = <T extends keyof FormTypeMap>({
         />
       );
     }
+
+    if (inputMode === InputMode.SINGLE) {
+      return (
+        <SingleEditForm
+          options={options}
+          fields={step.fields}
+          filterConditionsObj={filterConditionsObj}
+          formData={single.state}
+          formLabel={single.stateLabel}
+          handleFormData={single.handleFormData}
+          displaySupportButton={!step.many}
+        />
+      );
+    }
   }
 
-  if (current.type === StepType.CONFIRM) {
+  if (step.type === StepType.CONFIRM) {
     return (
       <>
         <SingleConfirmForm />

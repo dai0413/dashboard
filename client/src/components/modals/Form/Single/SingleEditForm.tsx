@@ -1,31 +1,40 @@
 import { FormTypeMap } from "../../../../types/models";
 import { RenderField } from "../Field/Field";
-import { useForm } from "../../../../context/form-context";
-import { DataSource } from "../../../../types/form";
+import {
+  FilterConditionsByKey,
+  FormFieldDefinition,
+} from "../../../../types/form";
+import { OptionObj } from "../../../../types/form/option";
+import { HandleFormData } from "../../../../types/form/handleFormData";
 
-const SingleEditForm = <T extends keyof FormTypeMap>() => {
-  const {
-    many,
-    single,
-    options,
-    steps: { formSteps, currentStep },
-    filterConditionsObj,
-  } = useForm<T>();
+type SingleEditForm<T extends keyof FormTypeMap> = {
+  options: Record<string, OptionObj<any>>;
+  fields?: FormFieldDefinition<T>[];
+  filterConditionsObj: FilterConditionsByKey | null;
 
-  const current = formSteps[currentStep];
+  formData: FormTypeMap[T];
+  formLabel: Record<string, any>;
+  handleFormData: HandleFormData<T>;
+  displaySupportButton: boolean;
+};
 
-  if (!current.fields || current.fields?.length === 0) {
-    return <></>;
-  }
-
-  if (current.many) {
+const SingleEditForm = <T extends keyof FormTypeMap>({
+  options,
+  fields,
+  filterConditionsObj,
+  formData,
+  formLabel,
+  handleFormData,
+  displaySupportButton,
+}: SingleEditForm<T>) => {
+  if (!fields || fields?.length === 0) {
     return <></>;
   }
 
   return (
     <>
-      {current.fields.map((field, fieldIndex) => {
-        const stepTotal = current?.fields?.length ?? 0;
+      {fields.map((field, fieldIndex) => {
+        const stepTotal = fields?.length ?? 0;
         const stepIndex = fieldIndex + 1;
 
         return (
@@ -46,23 +55,10 @@ const SingleEditForm = <T extends keyof FormTypeMap>() => {
             <RenderField
               key={field.key as string}
               field={field}
-              formData={
-                current.dataSource === DataSource.BULK_COMMON
-                  ? many?.bulkCommonData || {}
-                  : single.state
-              }
-              formLabel={
-                current.dataSource === DataSource.BULK_COMMON
-                  ? many?.bulkCommonLabel || {}
-                  : single.stateLabel
-              }
-              handleFormData={(props) =>
-                single.handleFormData({
-                  ...props,
-                  dataSource: current.dataSource,
-                })
-              }
-              supportButton={!current.many}
+              formData={formData}
+              formLabel={formLabel}
+              handleFormData={handleFormData}
+              supportButton={displaySupportButton}
               options={options}
               filterConditionsObj={filterConditionsObj}
             />
