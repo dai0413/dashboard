@@ -236,6 +236,14 @@ export const API_PATHS = {
       REFEREE_APPEARANCE: "/get-new-data/j-m/referee-appearance",
     },
     SN_M: {
+      VALUES: "/get-new-data/sn-m/values",
+      MATCH: "/get-new-data/sn-m/match",
+      PLAYER_APPEARANCE: "/get-new-data/sn-m/player-appearance",
+      PLAYER_MATCH_EVENT_LOG: "/get-new-data/sn-m/player-match-event-log",
+      STAFF_APPEARANCE: "/get-new-data/sn-m/staff-appearance",
+      STAFF_MATCH_EVENT_LOG: "/get-new-data/sn-m/staff-match-event-log",
+      REFEREE_APPEARANCE: "/get-new-data/sn-m/referee-appearance",
+
       POSITION: "/get-new-data/sn-m/position",
     },
     L_M: {
