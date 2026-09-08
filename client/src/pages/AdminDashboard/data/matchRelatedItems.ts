@@ -44,4 +44,17 @@ export const matchRelatedItems: Item[] = [
       updateAndCreate: false,
     },
   },
+  {
+    model:
+      "Match, PlayerAppearance, PlayerMatchEventLog, StaffAppearance, StaffMatchEventLog, RefereeAppearance, TeamMatchFormation",
+    desc: "SN_M",
+    icon: "match",
+    startFormArgs: {
+      modelType: ModelType.MATCH,
+      inputMode: InputMode.MANY,
+      formMode: FormMode.CREATE,
+      from: From.SN_M,
+      relatedAll: true,
+    },
+  },
 ];
