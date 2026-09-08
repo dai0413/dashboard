@@ -48,6 +48,8 @@ export const FormPresenter = <T extends keyof FormTypeMap>(
     steps.formSteps,
     toggleTableOpen,
     steps.prevStep,
+    steps.nextData,
+    steps.processStep,
   ]);
 
   const approve = useMemo(() => {
@@ -75,7 +77,15 @@ export const FormPresenter = <T extends keyof FormTypeMap>(
         onClick: steps.processStep,
       };
     }
-  }, [steps.currentStep, steps.formSteps, steps.nextData, steps.processStep]);
+  }, [
+    isTableOpen,
+    steps.currentStep,
+    steps.formSteps,
+    toggleTableOpen,
+    steps.prevStep,
+    steps.nextData,
+    steps.processStep,
+  ]);
 
   const headingLabel = useMemo(() => {
     return formMode === "create"
