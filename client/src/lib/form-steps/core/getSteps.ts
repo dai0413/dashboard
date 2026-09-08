@@ -4,6 +4,7 @@ import { From, GetStepsArgs } from "../../../types/types";
 import { formStepsMap } from "./formStepsMap";
 import { d_mlStep } from "../d_ml/d_mlStep";
 import { j_mStep } from "../j_m/j_mStep";
+import { sn_mStep } from "../sn_m/sn_mStep";
 
 type GetStepsReturnVal<T extends keyof FormTypeMap> = {
   label: string;
@@ -16,7 +17,9 @@ export const getSteps = <T extends keyof FormTypeMap>(
   const { modelType, inputMode, from, relatedAll = false } = props;
 
   if (relatedAll) {
-    if (from === From.J_M) {
+    if (from === From.SN_M) {
+      return sn_mStep as GetStepsReturnVal<T>;
+    } else if (from === From.J_M) {
       return j_mStep as GetStepsReturnVal<T>;
     } else if (from === From.D_ML) {
       return d_mlStep(props.updateAndCreate) as GetStepsReturnVal<T>;

@@ -5,6 +5,7 @@ import { single } from "./forms/single";
 import { bulk } from "./forms/bulk";
 import { staffAppearance as d_ml } from "./forms/d_ml";
 import { staffAppearance as j_m } from "./forms/j_m";
+import { staffAppearance as sn_m } from "./forms/sn_m";
 
 export const staffAppearance: FormStepsConfig<ModelType.STAFF_APPEARANCE> = {
   [InputMode.SINGLE]: {
@@ -21,6 +22,10 @@ export const staffAppearance: FormStepsConfig<ModelType.STAFF_APPEARANCE> = {
     [From.J_M]: {
       label: "J_M",
       steps: j_m,
+    },
+    [From.SN_M]: {
+      label: "SN_M",
+      steps: sn_m,
     },
     [From.D_ML]: {
       label: "D_ML",

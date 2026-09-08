@@ -5,6 +5,7 @@ import { bulk } from "./forms/bulk";
 import { single } from "./forms/single";
 import { playerAppearance as d_ml } from "./forms/d_ml";
 import { playerAppearance as j_m } from "./forms/j_m";
+import { playerAppearance as sn_m } from "./forms/sn_m";
 
 export const playerAppearance: FormStepsConfig<ModelType.PLAYER_APPEARANCE> = {
   [InputMode.SINGLE]: {
@@ -21,6 +22,10 @@ export const playerAppearance: FormStepsConfig<ModelType.PLAYER_APPEARANCE> = {
     [From.J_M]: {
       label: "J_M",
       steps: j_m,
+    },
+    [From.SN_M]: {
+      label: "SN_M",
+      steps: sn_m,
     },
     [From.D_ML]: {
       label: "D_ML",

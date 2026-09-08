@@ -9,36 +9,43 @@ export const readMap = {
     [From.D_M]: readD_MMap.values,
     [From.J_M]: readJ_MMap.values,
     [From.L_M]: readL_MMap.values,
+    [From.SN_M]: readSN_MMap.values,
   },
 
   match: {
     [From.D_M]: readD_MMap.match,
     [From.J_M]: readJ_MMap.match,
+    [From.SN_M]: readSN_MMap.match,
   },
 
   playerAppearance: {
     [From.D_M]: readD_MMap.playerAppearance,
     [From.J_M]: readJ_MMap.playerAppearance,
+    [From.SN_M]: readSN_MMap.playerAppearance,
   },
 
   playerMatchEventLog: {
     [From.D_M]: readD_MMap.playerMatchEventLog,
     [From.J_M]: readJ_MMap.playerMatchEventLog,
+    [From.SN_M]: readSN_MMap.playerMatchEventLog,
   },
 
   staffAppearance: {
     [From.D_M]: readD_MMap.staffAppearance,
     [From.J_M]: readJ_MMap.staffAppearance,
+    [From.SN_M]: readSN_MMap.staffAppearance,
   },
 
   staffMatchEventLog: {
     [From.D_M]: readD_MMap.staffMatchEventLog,
     [From.J_M]: readJ_MMap.staffMatchEventLog,
+    [From.SN_M]: readSN_MMap.staffMatchEventLog,
   },
 
   refereeAppearance: {
     [From.D_M]: readD_MMap.refereeAppearance,
     [From.J_M]: readJ_MMap.refereeAppearance,
+    [From.SN_M]: readSN_MMap.refereeAppearance,
   },
 
   positions: {
