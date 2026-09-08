@@ -26,7 +26,7 @@ export const preStep: FormStep<BaseModel>[] = [
         {
           draftDataKey: "values",
           from: From.SN_M,
-          params: { url: getDataUrl },
+          params: { url: [getDataUrl] },
         },
       ];
 

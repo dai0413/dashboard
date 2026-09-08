@@ -32,6 +32,9 @@ type ReadParams =
       url: string;
     }
   | {
+      url: string[];
+    }
+  | {
       getParams: { date: Date; alph: string; matchId: string }[];
     }
   | {
