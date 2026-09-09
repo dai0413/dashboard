@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import Tile from "./Tile";
 import Table from "./Table";
@@ -6,6 +6,8 @@ import { TableProps } from "../../types/table";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
 import { ViewMode } from "../../types/types";
+import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
+import { useModal } from "../../context/modal-context";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -31,6 +33,10 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
   return pages;
 }
 
+const hasId = (row: any): row is { _id: string } => {
+  return row && typeof row === "object" && "_id" in row;
+};
+
 const ListView = <T,>({
   modelType,
   data = [],
@@ -54,6 +60,9 @@ const ListView = <T,>({
   const { viewMode, pageNum, setPageNum } = useListView();
   const { filterConditions } = useFilter();
   const { sortConditions } = useSort();
+  const {
+    detail: { open },
+  } = useModal();
 
   useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
 
@@ -70,6 +79,25 @@ const ListView = <T,>({
         : 1;
 
   const pages = getPageNumbers(pageNum, totalPages);
+
+  const onDetailClick = useCallback(
+    (row: T) => {
+      modelType &&
+        hasId(row) &&
+        open(
+          modelType,
+          row._id,
+          convertToDisplayListData({
+            data: row,
+            model: {
+              modelType,
+              linkField: linkField || [],
+            },
+          }),
+        );
+    },
+    [modelType, linkField],
+  );
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
@@ -93,6 +121,7 @@ const ListView = <T,>({
           renderFieldCell={renderFieldCell}
           deleteOnClick={deleteOnClick}
           selectedKeys={selectedKeys}
+          onDetailClick={onDetailClick}
         />
       )}
       {viewMode === ViewMode.TILE && (

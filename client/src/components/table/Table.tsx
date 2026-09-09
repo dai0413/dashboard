@@ -5,9 +5,7 @@ import { useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { ColumnType, TableProps } from "../../types/table";
-import { useModal } from "../../context/modal-context";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
-import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
 
 // type TableProps<T> = {
 //   data: T[];
@@ -30,8 +28,11 @@ import { convertToDisplayListData } from "../modals/Detail/utils/convertToDispla
 //   edit?: boolean;
 // };
 
+type NewTableProps<T> = TableProps<T> & {
+  onDetailClick: (row: T) => void;
+};
+
 const Table = <T,>({
-  modelType,
   data = [],
   headers = [],
   linkField,
@@ -40,26 +41,19 @@ const Table = <T,>({
   onClick = () => {},
   selectedKey = [],
   selectedKeys,
-  itemsPerPage,
   isLoading,
   edit,
   renderFieldCell,
   deleteOnClick,
-}: TableProps<T>) => {
-  const { pageNum, rowSpacing, columnVisibility } = useListView();
 
-  const {
-    detail: { open },
-  } = useModal();
+  onDetailClick,
+}: NewTableProps<T>) => {
+  const { itemsPerPage, pageNum, rowSpacing, columnVisibility } = useListView();
 
   const visibleHeaders = useMemo(
     () => headers.filter((h) => columnVisibility[h.key]),
     [headers, columnVisibility],
   );
-
-  const hasId = (row: any): row is { _id: string } => {
-    return row && typeof row === "object" && "_id" in row;
-  };
 
   const hasKey = (row: any): row is { key: string } => {
     return row && typeof row === "object" && "key" in row;
@@ -214,21 +208,7 @@ const Table = <T,>({
                 >
                   <button
                     className="underline hover:text-blue-600 cursor-pointer"
-                    onClick={() => {
-                      modelType &&
-                        hasId(row) &&
-                        open(
-                          modelType,
-                          row._id,
-                          convertToDisplayListData({
-                            data: row,
-                            model: {
-                              modelType,
-                              linkField: linkField || [],
-                            },
-                          }),
-                        );
-                    }}
+                    onClick={() => onDetailClick(row)}
                   >
                     詳細
                   </button>
