@@ -28,7 +28,6 @@ const LoanPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={onLoanFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={onLoanFieldDefinition

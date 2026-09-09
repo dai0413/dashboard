@@ -28,7 +28,6 @@ const TransferInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferInFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={transferInFieldDefinition

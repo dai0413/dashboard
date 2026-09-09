@@ -63,7 +63,6 @@ const PlayerStatisticsPanel = ({
         key={key}
         fieldDefinitions={fieldDefinitions}
         itemsLoading={isLoading}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}

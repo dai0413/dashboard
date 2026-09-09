@@ -28,7 +28,6 @@ const PlayerPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={playerFieldDefinition || []}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={playerFieldDefinition

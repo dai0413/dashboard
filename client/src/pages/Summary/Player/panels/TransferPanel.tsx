@@ -28,7 +28,6 @@ const TransferPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={transferFieldDefinition

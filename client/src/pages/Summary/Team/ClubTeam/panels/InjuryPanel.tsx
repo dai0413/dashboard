@@ -28,7 +28,6 @@ const InjuryPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.INJURY}
         itemsLoading={isLoading}
         fieldDefinitions={injuryFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={injuryFieldDefinition

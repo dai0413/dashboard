@@ -34,7 +34,6 @@ const NationalCallupPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_CALLUP}
         fieldDefinitions={nationalCallupFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={nationalCallupFieldDefinition

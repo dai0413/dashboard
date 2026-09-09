@@ -28,7 +28,6 @@ const TransferOutPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferOutFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={transferOutFieldDefinition

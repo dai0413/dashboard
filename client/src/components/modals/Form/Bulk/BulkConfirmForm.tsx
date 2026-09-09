@@ -17,7 +17,7 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
     steps: { formSteps, currentStep },
   } = useForm<T>();
 
-  const { page, setPage } = useQuery();
+  const { setPage } = useQuery();
 
   const {
     modal: { alert },
@@ -148,7 +148,6 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
             pageNation="client"
             items={confirmBulkData || []}
             fieldDefinitions={confirmBulkDataHeaders || []}
-            pageNum={page.formPage}
             handlePageChange={async (p: number) => setPage("formPage", p)}
             selectedKeys={diffKeysObj}
           />

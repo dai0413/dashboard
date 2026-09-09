@@ -24,7 +24,6 @@ const HomeSubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={playerAppearanceFieldDefinition

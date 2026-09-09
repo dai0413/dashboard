@@ -37,7 +37,6 @@ const TeamCompetitionSeasonPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.TEAM_COMPETITION_SEASON}
         fieldDefinitions={teamCompetitionSeasonFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={teamCompetitionSeasonFieldDefinition

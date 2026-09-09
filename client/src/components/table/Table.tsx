@@ -1,7 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "../buttons";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { ColumnType, TableProps } from "../../types/table";
@@ -9,11 +9,31 @@ import { useModal } from "../../context/modal-context";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
 
+// type TableProps<T> = {
+//   data: T[];
+//   headers: TableHeader<T>[];
+//   isLoading?: boolean;
+
+//   onDetailClick?: (row: T) => void;
+//   onActionClick?: (row: T, index: number) => void;
+//   onDeleteClick?: (row: T, index: number) => void;
+//   renderFieldCell?: (
+//     header: TableHeader<T>,
+//     row: T,
+//     index: number,
+//   ) => React.ReactNode;
+
+//   selectedKey?: string[];
+//   selectedKeys?: Record<number, string[]>;
+
+//   form?: boolean;
+//   edit?: boolean;
+// };
+
 const Table = <T,>({
   modelType,
   data = [],
   headers = [],
-  pageNation = "client",
   linkField,
   detailLink = "",
   form = false,
@@ -22,34 +42,20 @@ const Table = <T,>({
   selectedKeys,
   itemsPerPage,
   isLoading,
-  currentPage,
   edit,
   renderFieldCell,
   deleteOnClick,
 }: TableProps<T>) => {
-  const { pageNum, rowSpacing, setPageNum, columnVisibility } = useListView();
+  const { pageNum, rowSpacing, columnVisibility } = useListView();
 
   const {
     detail: { open },
   } = useModal();
 
-  useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
-
   const visibleHeaders = useMemo(
     () => headers.filter((h) => columnVisibility[h.key]),
     [headers, columnVisibility],
   );
-
-  const paginatedData = useMemo(() => {
-    const targetData =
-      pageNation === "client"
-        ? itemsPerPage
-          ? data.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
-          : data
-        : data;
-
-    return targetData;
-  }, [data, itemsPerPage, pageNum]);
 
   const hasId = (row: any): row is { _id: string } => {
     return row && typeof row === "object" && "_id" in row;
@@ -92,7 +98,7 @@ const Table = <T,>({
           )}
         </tr>
       </thead>
-      {!isLoading && paginatedData.length == 0 && (
+      {!isLoading && data.length == 0 && (
         <tbody>
           <tr>
             <td colSpan={visibleHeaders.length}>
@@ -133,9 +139,9 @@ const Table = <T,>({
           ))}
         </tbody>
       )}
-      {!isLoading && paginatedData.length > 0 && (
+      {!isLoading && data.length > 0 && (
         <tbody>
-          {paginatedData.map((row, i) => (
+          {data.map((row, i) => (
             <tr key={i}>
               {edit && (
                 <th

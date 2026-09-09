@@ -29,7 +29,6 @@ const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         fieldDefinitions={nationalMatchSeriesFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={nationalMatchSeriesFieldDefinition?.filter(isFilterable)}

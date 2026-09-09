@@ -147,7 +147,6 @@ const Main = () => {
                   },
                 ]}
                 itemsLoading={isLoading}
-                pageNum={1}
                 noToolBar={false}
               />
               <div className={`p-2`}></div>
@@ -192,7 +191,6 @@ const Main = () => {
                   },
                 ]}
                 itemsLoading={isLoading}
-                pageNum={1}
                 noToolBar={false}
               />
 

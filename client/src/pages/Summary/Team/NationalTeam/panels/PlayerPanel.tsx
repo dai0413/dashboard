@@ -27,7 +27,6 @@ const PlayerPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER}
         fieldDefinitions={playerFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={playerFieldDefinition?.filter(isFilterable)}

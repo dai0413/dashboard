@@ -39,7 +39,6 @@ const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_MATCH_EVENT_LOG}
         fieldDefinitions={staffEventLogFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={staffEventLogFieldDefinition

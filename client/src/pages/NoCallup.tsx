@@ -63,7 +63,6 @@ const NoCallUp = () => {
         fieldDefinitions={fields}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
-        pageNum={1}
         items={items.data}
         filterField={fields?.filter(isFilterable)}
         sortField={fields?.filter(isSortable)}

@@ -27,7 +27,6 @@ const TeamPanel = ({ summary }: { summary: UseNationalSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TEAM}
         fieldDefinitions={teamFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={teamFieldDefinition?.filter(isFilterable)}

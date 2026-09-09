@@ -56,7 +56,6 @@ const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.MATCH}
         fieldDefinitions={matchFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition?.filter(isFilterable)}

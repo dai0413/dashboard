@@ -15,7 +15,6 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <CustomTableContainer
         fieldDefinitions={[]}
-        pageNum={1}
         items={items.playerStatistics}
         filterField={[]}
         sortField={[]}

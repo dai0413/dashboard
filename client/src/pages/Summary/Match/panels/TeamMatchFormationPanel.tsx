@@ -32,7 +32,6 @@ const TeamMatchFormationPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TEAM_MATCH_FORMATION}
         fieldDefinitions={teamMatchFormationFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={teamMatchFormationFieldDefinition

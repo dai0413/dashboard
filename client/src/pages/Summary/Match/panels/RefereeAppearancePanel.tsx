@@ -32,7 +32,6 @@ const RefereeAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.REFEREE_APPEARANCE}
         fieldDefinitions={refereeAppearanceFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={refereeAppearanceFieldDefinition

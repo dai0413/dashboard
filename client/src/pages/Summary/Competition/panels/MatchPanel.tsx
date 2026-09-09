@@ -47,7 +47,6 @@ const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         modelType={ModelType.MATCH}
         itemsLoading={isLoading}
         fieldDefinitions={matchFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition

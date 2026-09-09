@@ -27,7 +27,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
     filterConditionsObj,
   } = useForm<T>();
 
-  const { page, setPage } = useQuery();
+  const { setPage } = useQuery();
 
   type Focus = {
     field?: FormFieldDefinition<T>;
@@ -174,7 +174,6 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
               />
             );
         }}
-        pageNum={page.formPage}
         handlePageChange={async (p: number) => setPage("formPage", p)}
         edit={true}
         deleteOnClick={many?.deleteFormDatas}

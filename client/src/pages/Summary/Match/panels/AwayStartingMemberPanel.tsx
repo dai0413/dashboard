@@ -20,7 +20,6 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <CustomTableContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
-        pageNum={1}
         items={items.away}
         itemsLoading={isLoading}
         reloadFun={reloadFun}

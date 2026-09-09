@@ -28,7 +28,6 @@ const InjuryPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.INJURY}
         fieldDefinitions={injuryFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={injuryFieldDefinition

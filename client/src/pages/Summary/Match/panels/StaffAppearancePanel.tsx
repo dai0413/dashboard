@@ -32,7 +32,6 @@ const StaffAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_APPEARANCE}
         fieldDefinitions={staffAppearanceFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={staffAppearanceFieldDefinition

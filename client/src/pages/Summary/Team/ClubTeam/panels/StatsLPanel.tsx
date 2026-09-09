@@ -21,7 +21,6 @@ const StatsLPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={fieldDefinition[ModelType.STATS_L]

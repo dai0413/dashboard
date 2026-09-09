@@ -58,7 +58,6 @@ const News = () => {
         key={items.data.length}
         fieldDefinitions={[]}
         noToolBar={false}
-        pageNum={1}
         items={[{ id: "test", label: "test" }]}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}

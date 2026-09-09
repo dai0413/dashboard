@@ -31,7 +31,6 @@ const StaffRegistrationPanel = ({
         modelType={ModelType.SEASON}
         itemsLoading={isLoading}
         fieldDefinitions={seasonFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={seasonFieldDefinition

@@ -20,7 +20,6 @@ const HomeStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <CustomTableContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
-        pageNum={1}
         items={items.home}
         itemsLoading={isLoading}
         reloadFun={reloadFun}

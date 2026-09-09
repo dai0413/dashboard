@@ -15,7 +15,6 @@ const StatsLRankPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <CustomTableContainer
-        pageNum={1}
         items={items.rank}
         newItemsPerPage={20}
         itemsLoading={isLoading}

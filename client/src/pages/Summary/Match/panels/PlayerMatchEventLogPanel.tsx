@@ -43,7 +43,6 @@ const PlayerMatchEventLogPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
         fieldDefinitions={playerEventLogFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={playerEventLogFieldDefinition

@@ -30,7 +30,6 @@ import { ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
 
 type TablePage = {
-  pageNum: number;
   totalCount?: number;
   handlePageChange?: (
     page: number,
@@ -87,7 +86,6 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   filterField,
   sortField,
   detailLinkValue,
-  pageNum,
   totalCount,
   handlePageChange,
   handleFilterSort,
@@ -114,11 +112,37 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   const {
     updateTrigger,
     itemsPerPage,
+    pageNum,
     setItemsPerPage,
     setColumnVisibility,
     setViewMode,
     setPageNum,
   } = useListView();
+
+  const paginatedData = useMemo(() => {
+    if (!items) return [];
+    const targetData =
+      pageNation === "client"
+        ? itemsPerPage
+          ? items.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
+          : items
+        : items;
+
+    return targetData;
+  }, [items, itemsPerPage, pageNum]);
+
+  const onPageChange = useCallback(
+    async (
+      page: number,
+      filterConditions: FilterableFieldDefinition[],
+      sortConditions: SortableFieldDefinition[],
+    ) => {
+      setPageNum(page);
+      handlePageChange &&
+        (await handlePageChange(page, filterConditions, sortConditions));
+    },
+    [handlePageChange],
+  );
 
   const handleApplyFilter = useCallback(
     async (
@@ -244,7 +268,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
           reloadFun={reloadFun}
           quickFilterItems={quickFilterItemsParam}
           headers={fieldDefinitions}
-          items={items}
+          items={paginatedData}
         />
       )}
       {itemsLoading || quickFilterLoading ? (
@@ -253,11 +277,11 @@ const TableContainer = <K extends Record<string, unknown>, F>({
             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
           </div>
         </div>
-      ) : items && items.length > 0 ? (
+      ) : paginatedData && paginatedData.length > 0 ? (
         renderView ? (
           <div className="flex justify-center">
             {renderView({
-              items,
+              items: paginatedData,
               totalCount: totalCount || 0,
               isLoading: itemsLoading || false,
             })}
@@ -265,8 +289,8 @@ const TableContainer = <K extends Record<string, unknown>, F>({
         ) : fieldDefinitions ? (
           <ListView<K>
             modelType={modelType ? modelType : undefined}
-            data={items}
-            totalCount={totalCount}
+            data={paginatedData}
+            totalCount={items?.length}
             headers={fieldDefinitions}
             pageNation={pageNation ? pageNation : "client"}
             linkField={linkField}
@@ -274,7 +298,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
             itemsPerPage={itemsPerPage || 10}
             isLoading={itemsLoading}
             currentPage={pageNum}
-            onPageChange={handlePageChange}
+            onPageChange={onPageChange}
             form={form}
             onClick={onClick}
             selectedKey={selectedKey}

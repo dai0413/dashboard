@@ -16,7 +16,6 @@ const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
       <CustomTableContainer
         modelType={ModelType.STATS_L}
         fieldDefinitions={[]}
-        pageNum={1}
         items={items.defRadarData?.datasets || []}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}

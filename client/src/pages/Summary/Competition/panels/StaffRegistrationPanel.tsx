@@ -51,7 +51,6 @@ const StaffRegistrationPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={staffRegistrationFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={staffRegistrationFieldDefinition

@@ -69,7 +69,6 @@ const NoNumber = () => {
         fieldDefinitions={fields}
         reloadFun={reloadFun}
         itemsLoading={items.isLoading}
-        pageNum={1}
         items={items.data}
         filterField={fields
           ?.filter(isFilterable)

@@ -188,7 +188,6 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <CustomTableContainer
         fieldDefinitions={[]}
-        pageNum={1}
         items={items.nationalCallUp}
         filterField={filedDefinitions?.filter(isFilterable)}
         sortField={[]}

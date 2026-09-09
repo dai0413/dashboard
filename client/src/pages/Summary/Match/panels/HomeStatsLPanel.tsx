@@ -24,7 +24,6 @@ const HomeStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={statsLFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={statsLFieldDefinition

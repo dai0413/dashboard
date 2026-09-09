@@ -36,7 +36,6 @@ const CompetitionStagePanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.COMPETITION_STAGE}
         fieldDefinitions={competitionStageFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={competitionStageFieldDefinition

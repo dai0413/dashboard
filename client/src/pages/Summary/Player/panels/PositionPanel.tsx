@@ -16,7 +16,6 @@ const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
       <CustomTableContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
-        pageNum={1}
         items={items}
         itemsLoading={isLoading}
         reloadFun={reloadFun}

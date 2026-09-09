@@ -52,7 +52,6 @@ const PlayerRegistrationPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER_REGISTRATION}
         fieldDefinitions={registrationFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={registrationFieldDefinition

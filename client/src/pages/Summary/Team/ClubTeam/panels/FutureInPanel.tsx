@@ -28,7 +28,6 @@ const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.TRANSFER}
         itemsLoading={isLoading}
         fieldDefinitions={futureInFieldDefinition}
-        pageNum={1}
         items={items}
         reloadFun={reloadFun}
         filterField={futureInFieldDefinition
