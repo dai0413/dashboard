@@ -4,6 +4,7 @@ import RenderCell from "./RenderCell";
 import { ColumnType, TableData, TableHeader } from "../../types/table";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 import { LinkField, RowSpacing } from "../../types/types";
+import { hasKey } from "../../utils/data/getIdKey";
 
 // type TableProps<T> = {
 //   data: T[];
@@ -25,10 +26,6 @@ import { LinkField, RowSpacing } from "../../types/types";
 //   form?: boolean;
 //   edit?: boolean;
 // };
-
-const hasKey = (row: any): row is { key: string } => {
-  return row && typeof row === "object" && "key" in row;
-};
 
 export type NewTableProps<T> = {
   datas: TableData<T>;

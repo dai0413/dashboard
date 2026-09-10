@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import RenderCell from "./RenderCell";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 import { NewTableProps } from "./Table";
+import { getIdKey, hasKey } from "../../utils/data/getIdKey";
 
 export const Tile = <T,>({
   datas,
@@ -13,7 +14,6 @@ export const Tile = <T,>({
   form,
   selectedKey = [],
   // selectedKeys,
-  // isLoading,
   edit,
   renderFieldCell,
   onActionClick,
@@ -35,23 +35,9 @@ export const Tile = <T,>({
     );
   };
 
-  const hasId = (row: any): row is { _id: string } => {
-    return row && typeof row === "object" && "_id" in row;
-  };
-
-  const hasKey = (row: any): row is { key: string } => {
-    return row && typeof row === "object" && "key" in row;
-  };
-
-  const getKey = (row: T): string => {
-    if (hasKey(row)) return row.key;
-    if (hasId(row)) return row._id;
-    return "";
-  };
-
   useEffect(() => {
     if (rowSpacing === "wide") {
-      setOpenKeys(datas.map((row) => getKey(row.item)));
+      setOpenKeys(datas.map((row) => getIdKey(row.item)));
     } else {
       setOpenKeys([]);
     }
@@ -60,12 +46,12 @@ export const Tile = <T,>({
   return (
     <div className="grid grid-cols-2 gap-4">
       {datas.map((data, index) => {
-        const isSelected = selectedKey.includes(getKey(data.item));
-        const isOpen = openKeys.includes(getKey(data.item));
+        const isSelected = selectedKey.includes(getIdKey(data.item));
+        const isOpen = openKeys.includes(getIdKey(data.item));
 
         return (
           <div
-            key={getKey(data.item) ?? index}
+            key={getIdKey(data.item) ?? index}
             className={`relative border rounded-md p-3 shadow-sm
               ${
                 isSelected ? "bg-blue-100 border-5 border-blue-300" : "bg-white"
@@ -112,15 +98,19 @@ export const Tile = <T,>({
               <div className="flex justify-start gap-3">
                 {/* actions */}
                 {onDetailClick && !form && (
-                  <div className="flex justify-start gap-3 text-sm">
-                    {hasId(data.item) && data.item._id && (
-                      <button
-                        className="underline hover:text-blue-600 cursor-pointer"
-                        onClick={() => onDetailClick(data.item)}
-                      >
-                        詳細
-                      </button>
-                    )}
+                  <div
+                    className={`flex justify-start gap-3 text-sm ${
+                      hasKey(data.item) && selectedKey.includes(data.item.key)
+                        ? "bg-blue-100"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="underline hover:text-blue-600 cursor-pointer"
+                      onClick={() => onDetailClick(data.item)}
+                    >
+                      詳細
+                    </button>
                   </div>
                 )}
 
@@ -129,7 +119,7 @@ export const Tile = <T,>({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleOpen(getKey(data.item));
+                      toggleOpen(getIdKey(data.item));
                     }}
                     className="text-gray-500 hover:text-gray-700"
                   >
