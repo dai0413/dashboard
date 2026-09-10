@@ -1,7 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { ViewMode } from "../types/types";
-
-type RowSpacing = "wide" | "narrow";
+import { RowSpacing, ViewMode } from "../types/types";
 
 type ListViewContextType = {
   viewMode: ViewMode;
@@ -28,7 +26,7 @@ const ListViewContext = createContext<ListViewContextType | null>(null);
 const ListViewProvider = ({ children }: { children: ReactNode }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TABLE);
-  const [rowSpacing, setRowSpacing] = useState<RowSpacing>("narrow");
+  const [rowSpacing, setRowSpacing] = useState<RowSpacing>(RowSpacing.NARROW);
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
   const [itemsPerPage, setItemsPerPage] = useState<number | null>(null);
   const [columnVisibility, setColumnVisibility] = useState<

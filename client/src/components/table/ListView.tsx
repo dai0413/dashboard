@@ -49,7 +49,6 @@ const ListView = <T,>({
   onClick = () => {},
   selectedKey = [],
   selectedKeys,
-  itemsPerPage,
   isLoading,
   currentPage,
   onPageChange,
@@ -57,7 +56,15 @@ const ListView = <T,>({
   renderFieldCell,
   deleteOnClick,
 }: TableProps<T>) => {
-  const { viewMode, pageNum, setPageNum } = useListView();
+  const {
+    itemsPerPage,
+    viewMode,
+    pageNum,
+    setPageNum,
+    rowSpacing,
+    columnVisibility,
+  } = useListView();
+
   const { filterConditions } = useFilter();
   const { sortConditions } = useSort();
   const {
@@ -104,22 +111,30 @@ const ListView = <T,>({
     };
   }, [modelType, linkField, open]);
 
+  const visibleHeaders = useMemo(
+    () => headers.filter((h) => columnVisibility[h.key]),
+    [headers, columnVisibility],
+  );
+
   return (
     <div className="max-h-[50rem] overflow-y-auto">
       {viewMode === ViewMode.TABLE && (
         <Table
           data={data}
-          headers={headers}
+          headers={visibleHeaders}
           linkField={linkField}
-          isLoading={isLoading}
+          pageNum={pageNum}
+          itemsPerPage={itemsPerPage}
+          rowSpacing={rowSpacing}
           form={form}
-          onActionClick={onClick}
           selectedKey={selectedKey}
+          selectedKeys={selectedKeys}
+          isLoading={isLoading}
           edit={edit}
           renderFieldCell={renderFieldCell}
-          onDeleteClick={deleteOnClick}
-          selectedKeys={selectedKeys}
+          onActionClick={onClick}
           onDetailClick={onDetailClick}
+          onDeleteClick={deleteOnClick}
         />
       )}
       {viewMode === ViewMode.TILE && (

@@ -73,6 +73,11 @@ export enum ViewMode {
   TILE = "tile",
 }
 
+export enum RowSpacing {
+  WIDE = "wide",
+  NARROW = "narrow",
+}
+
 export enum ModalSize {
   SMALL = "small",
   MEDIUM = "medium",

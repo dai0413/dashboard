@@ -1,12 +1,10 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { IconButton } from "../buttons";
-import { useMemo } from "react";
-import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
 import { ColumnType, TableHeader } from "../../types/table";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
-import { LinkField } from "../../types/types";
+import { LinkField, RowSpacing } from "../../types/types";
 
 // type TableProps<T> = {
 //   data: T[];
@@ -29,11 +27,17 @@ import { LinkField } from "../../types/types";
 //   edit?: boolean;
 // };
 
+const hasKey = (row: any): row is { key: string } => {
+  return row && typeof row === "object" && "key" in row;
+};
+
 type NewTableProps<T> = {
   data: T[];
   headers: TableHeader<T>[];
-  linkField?: LinkField[] | undefined;
-
+  linkField?: LinkField[];
+  pageNum: number;
+  itemsPerPage: number | null;
+  rowSpacing: RowSpacing;
   form?: boolean;
   selectedKey?: string[];
   selectedKeys?: Record<number, string[]>;
@@ -51,9 +55,12 @@ type NewTableProps<T> = {
 };
 
 const Table = <T,>({
-  data = [],
-  headers = [],
+  data,
+  headers,
   linkField,
+  itemsPerPage,
+  pageNum,
+  rowSpacing,
   form,
   selectedKey = [],
   selectedKeys,
@@ -64,17 +71,6 @@ const Table = <T,>({
   onDetailClick,
   onDeleteClick,
 }: NewTableProps<T>) => {
-  const { itemsPerPage, pageNum, rowSpacing, columnVisibility } = useListView();
-
-  const visibleHeaders = useMemo(
-    () => headers.filter((h) => columnVisibility[h.key]),
-    [headers, columnVisibility],
-  );
-
-  const hasKey = (row: any): row is { key: string } => {
-    return row && typeof row === "object" && "key" in row;
-  };
-
   return (
     <table className="w-full table-fixed border">
       <thead className="sticky top-0 bg-gray-200 z-10">
@@ -82,7 +78,7 @@ const Table = <T,>({
           {edit && (
             <th className="bg-gray-200 border" style={{ width: "35px" }}></th>
           )}
-          {visibleHeaders.map((header) => (
+          {headers.map((header) => (
             <th
               scope="col"
               key={`${header.key}-${header.label}`}
@@ -111,7 +107,7 @@ const Table = <T,>({
       {!isLoading && data.length == 0 && (
         <tbody>
           <tr>
-            <td colSpan={visibleHeaders.length}>
+            <td colSpan={headers.length}>
               <div className="flex flex-col items-center justify-center py-10 text-gray-500">
                 <IconButton
                   key=""
@@ -130,7 +126,7 @@ const Table = <T,>({
         <tbody aria-busy={isLoading}>
           {[...Array(itemsPerPage)].map((_, i) => (
             <tr key={i} className="animate-pulse border-t">
-              {visibleHeaders.map((_, j) => (
+              {headers.map((_, j) => (
                 <td key={j} className="px-4 py-1 border">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </td>
@@ -157,19 +153,20 @@ const Table = <T,>({
                 <th
                   className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
                   style={{ width: "35px" }}
-                  onClick={() =>
+                  onClick={() => {
+                    console.log("delete", itemsPerPage, pageNum);
                     onDeleteClick &&
-                    onDeleteClick(
-                      itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
-                    )
-                  }
+                      onDeleteClick(
+                        itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
+                      );
+                  }}
                 >
                   <div className="flex justify-center items-center">
                     <XMarkIcon className="w-6 h-6" />
                   </div>
                 </th>
               )}
-              {visibleHeaders.map((header) => {
+              {headers.map((header) => {
                 const { renderCellValue, title } = toDisplayValue(
                   header,
                   row,
