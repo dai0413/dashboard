@@ -9,8 +9,6 @@ export const Tile = <T,>({
   datas,
   headers,
   linkField,
-  itemsPerPage,
-  pageNum,
   rowSpacing,
   form,
   selectedKey = [],
@@ -167,13 +165,7 @@ export const Tile = <T,>({
                           ? title
                           : edit
                             ? renderFieldCell &&
-                              renderFieldCell(
-                                header,
-                                data.item,
-                                itemsPerPage
-                                  ? (pageNum - 1) * itemsPerPage + index
-                                  : index,
-                              )
+                              renderFieldCell(header, data.item, data.index)
                             : RenderCell({ value: renderCellValue })}
                       </span>
                     </div>

@@ -34,8 +34,6 @@ export type NewTableProps<T> = {
   datas: TableData<T>;
   headers: TableHeader<T>[];
   linkField?: LinkField[];
-  pageNum: number;
-  itemsPerPage: number | null;
   rowSpacing: RowSpacing;
   form?: boolean;
   selectedKey?: string[];
@@ -56,8 +54,6 @@ const Table = <T,>({
   datas,
   headers,
   linkField,
-  itemsPerPage,
-  pageNum,
   rowSpacing,
   form,
   selectedKey = [],
@@ -109,11 +105,7 @@ const Table = <T,>({
                 className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
                 style={{ width: "35px" }}
                 onClick={() => {
-                  console.log("delete", itemsPerPage, pageNum);
-                  onDeleteClick &&
-                    onDeleteClick(
-                      itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
-                    );
+                  onDeleteClick && onDeleteClick(data.index);
                 }}
               >
                 <div className="flex justify-center items-center">
@@ -128,11 +120,8 @@ const Table = <T,>({
                 linkField,
               );
 
-              const dataIndex = itemsPerPage
-                ? (pageNum - 1) * itemsPerPage + i
-                : i;
               const textIsRed =
-                selectedKeys && selectedKeys[dataIndex]?.includes(header.key);
+                selectedKeys && selectedKeys[data.index]?.includes(header.key);
               const bgIsBlue =
                 hasKey(data.item) && selectedKey.includes(data.item.key);
 
@@ -161,7 +150,7 @@ const Table = <T,>({
                     ? title
                     : edit
                       ? renderFieldCell &&
-                        renderFieldCell(header, data.item, dataIndex)
+                        renderFieldCell(header, data.item, data.index)
                       : RenderCell({ value: renderCellValue })}
                 </td>
               );
