@@ -39,12 +39,10 @@ const hasId = (row: any): row is { _id: string } => {
 
 const ListView = <T,>({
   modelType,
-  data = [],
+  datas = [],
   totalCount,
   headers = [],
-  pageNation = "client",
   linkField,
-  detailLink = "",
   form = false,
   onClick = () => {},
   selectedKey = [],
@@ -82,7 +80,7 @@ const ListView = <T,>({
     itemsPerPage && totalCount
       ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
       : itemsPerPage
-        ? Math.ceil(data.length / itemsPerPage)
+        ? Math.ceil(datas.length / itemsPerPage)
         : 1;
 
   const pages = getPageNumbers(pageNum, totalPages);
@@ -120,7 +118,7 @@ const ListView = <T,>({
     <div className="max-h-[50rem] overflow-y-auto">
       {viewMode === ViewMode.TABLE && (
         <Table
-          data={data}
+          datas={datas}
           headers={visibleHeaders}
           linkField={linkField}
           pageNum={pageNum}
@@ -140,23 +138,21 @@ const ListView = <T,>({
       {viewMode === ViewMode.TILE && (
         <div className="mx-5">
           <Tile
-            modelType={modelType}
-            data={data}
-            totalCount={totalCount}
-            headers={headers}
-            pageNation={pageNation}
+            datas={datas}
+            headers={visibleHeaders}
             linkField={linkField}
-            detailLink={detailLink}
-            itemsPerPage={itemsPerPage || 10}
-            isLoading={isLoading}
-            currentPage={pageNum}
-            onPageChange={onPageChange}
+            pageNum={pageNum}
+            itemsPerPage={itemsPerPage}
+            rowSpacing={rowSpacing}
             form={form}
-            onClick={onClick}
             selectedKey={selectedKey}
+            selectedKeys={selectedKeys}
+            isLoading={isLoading}
             edit={edit}
             renderFieldCell={renderFieldCell}
-            deleteOnClick={deleteOnClick}
+            onActionClick={onClick}
+            onDetailClick={onDetailClick}
+            onDeleteClick={deleteOnClick}
           />
         </div>
       )}

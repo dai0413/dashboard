@@ -1,48 +1,33 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
-import { useEffect, useMemo, useState } from "react";
-import { useListView } from "../../context/listView-context";
+import { useEffect, useState } from "react";
 import RenderCell from "./RenderCell";
-import { TableProps } from "../../types/table";
-import { useModal } from "../../context/modal-context";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
-import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
+import { NewTableProps } from "./Table";
 
 export const Tile = <T,>({
-  modelType,
-  data = [],
-  headers = [],
-  pageNation = "client",
+  datas,
+  headers,
   linkField,
-  detailLink = "",
-  form = false,
-  onClick = () => {},
-  selectedKey = [],
   itemsPerPage,
+  pageNum,
+  rowSpacing,
+  form,
+  selectedKey = [],
+  // selectedKeys,
   // isLoading,
-  // currentPage,
   edit,
   renderFieldCell,
-  deleteOnClick,
-}: TableProps<T>) => {
-  const { pageNum, rowSpacing, columnVisibility } = useListView();
-
-  const {
-    detail: { open },
-  } = useModal();
-
-  const visibleHeaders = useMemo(
-    () => headers.filter((h) => columnVisibility[h.key]),
-    [headers, columnVisibility],
-  );
-  const primaryHeaders = visibleHeaders.filter((h) => h.isPrimary);
+  onActionClick,
+  onDetailClick,
+  onDeleteClick,
+}: NewTableProps<T>) => {
+  const primaryHeaders = headers.filter((h) => h.isPrimary);
 
   const fallbackPrimary =
-    primaryHeaders.length > 0 ? primaryHeaders : visibleHeaders.slice(0, 1);
+    primaryHeaders.length > 0 ? primaryHeaders : headers.slice(0, 1);
 
-  const secondaryHeaders = visibleHeaders.filter(
-    (h) => !fallbackPrimary.includes(h),
-  );
+  const secondaryHeaders = headers.filter((h) => !fallbackPrimary.includes(h));
 
   const [openKeys, setOpenKeys] = useState<(string | undefined)[]>([]);
 
@@ -68,32 +53,21 @@ export const Tile = <T,>({
 
   useEffect(() => {
     if (rowSpacing === "wide") {
-      setOpenKeys(data.map((row) => getKey(row)));
+      setOpenKeys(datas.map((row) => getKey(row.item)));
     } else {
       setOpenKeys([]);
     }
-  }, [rowSpacing, data]);
-
-  const paginatedData = useMemo(() => {
-    const targetData =
-      pageNation === "client"
-        ? itemsPerPage
-          ? data.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
-          : data
-        : data;
-
-    return targetData;
-  }, [data, itemsPerPage, pageNum]);
+  }, [rowSpacing, datas]);
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      {paginatedData.map((row, index) => {
-        const isSelected = selectedKey.includes(getKey(row));
-        const isOpen = openKeys.includes(getKey(row));
+      {datas.map((data, index) => {
+        const isSelected = selectedKey.includes(getKey(data.item));
+        const isOpen = openKeys.includes(getKey(data.item));
 
         return (
           <div
-            key={getKey(row) ?? index}
+            key={getKey(data.item) ?? index}
             className={`relative border rounded-md p-3 shadow-sm
               ${
                 isSelected ? "bg-blue-100 border-5 border-blue-300" : "bg-white"
@@ -104,13 +78,13 @@ export const Tile = <T,>({
                   : ""
               }
             `}
-            onClick={form ? () => onClick?.(index, row) : undefined}
+            onClick={form ? () => onActionClick?.(index, data.item) : undefined}
           >
             {/* edit（削除） */}
             {edit && (
               <button
                 className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
-                onClick={() => deleteOnClick?.(index)}
+                onClick={() => onDeleteClick?.(index)}
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
@@ -122,7 +96,7 @@ export const Tile = <T,>({
                 {fallbackPrimary.map((header) => {
                   const { renderCellValue, title } = toDisplayValue(
                     header,
-                    row,
+                    data.item,
                     linkField,
                   );
 
@@ -139,25 +113,12 @@ export const Tile = <T,>({
 
               <div className="flex justify-start gap-3">
                 {/* actions */}
-                {(detailLink || form) && (
+                {onDetailClick && !form && (
                   <div className="flex justify-start gap-3 text-sm">
-                    {hasId(row) && row._id && (
+                    {hasId(data.item) && data.item._id && (
                       <button
                         className="underline hover:text-blue-600 cursor-pointer"
-                        onClick={() => {
-                          modelType &&
-                            open(
-                              modelType,
-                              row._id,
-                              convertToDisplayListData({
-                                data: row,
-                                model: {
-                                  modelType,
-                                  linkField: linkField || [],
-                                },
-                              }),
-                            );
-                        }}
+                        onClick={() => onDetailClick(data.item)}
                       >
                         詳細
                       </button>
@@ -170,7 +131,7 @@ export const Tile = <T,>({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleOpen(getKey(row));
+                      toggleOpen(getKey(data.item));
                     }}
                     className="text-gray-500 hover:text-gray-700"
                   >
@@ -190,7 +151,7 @@ export const Tile = <T,>({
                 {secondaryHeaders.map((header) => {
                   const { renderCellValue, title } = toDisplayValue(
                     header,
-                    row,
+                    data.item,
                     linkField,
                   );
 
@@ -208,7 +169,7 @@ export const Tile = <T,>({
                             ? renderFieldCell &&
                               renderFieldCell(
                                 header,
-                                row,
+                                data.item,
                                 itemsPerPage
                                   ? (pageNum - 1) * itemsPerPage + index
                                   : index,
