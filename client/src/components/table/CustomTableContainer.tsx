@@ -64,6 +64,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     noToolBar?: false;
     viewMode?: ViewMode.TABLE | ViewMode.TILE;
     newItemsPerPage?: number;
+    newPageNum?: number;
     renderView?: (params: {
       items: TableData<T>;
       totalCount: number;
@@ -103,6 +104,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   noToolBar,
   viewMode,
   newItemsPerPage,
+  newPageNum,
   selectedKeys,
   deleteOnClick,
   renderView,
@@ -188,6 +190,10 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   useEffect(() => {
     newItemsPerPage && setItemsPerPage(newItemsPerPage);
   }, [newItemsPerPage]);
+
+  useEffect(() => {
+    newPageNum && setPageNum(newPageNum);
+  }, [newPageNum]);
 
   useEffect(() => {
     const initialVisibility = fieldDefinitions?.reduce(

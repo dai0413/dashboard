@@ -117,12 +117,11 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   const detailLink = ModelRouteMap[props.modelType];
 
   const onPageChange = async (page: number) => {
-    readItems({
+    await readItems({
       page: page,
       filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
       sorts: JSON.stringify(sortConditions),
     });
-    setPage("page", page);
   };
 
   const datas = useMemo(() => {

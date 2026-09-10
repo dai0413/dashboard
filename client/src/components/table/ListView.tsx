@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import Tile from "./Tile";
 import Table from "./Table";
@@ -8,6 +8,8 @@ import { useSort } from "../../context/sort-context";
 import { ViewMode } from "../../types/types";
 import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
 import { useModal } from "../../context/modal-context";
+import { PageButtons } from "./PageButtons";
+import { hasId } from "../../utils/data/getIdKey";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -33,21 +35,16 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
   return pages;
 }
 
-const hasId = (row: any): row is { _id: string } => {
-  return row && typeof row === "object" && "_id" in row;
-};
-
 const ListView = <T,>({
   modelType,
-  datas = [],
+  datas,
   totalCount,
-  headers = [],
+  headers,
   linkField,
   form = false,
-  onClick = () => {},
+  onClick,
   selectedKey = [],
   selectedKeys,
-  currentPage,
   onPageChange,
   edit,
   renderFieldCell,
@@ -68,21 +65,18 @@ const ListView = <T,>({
     detail: { open },
   } = useModal();
 
-  useEffect(() => setPageNum(currentPage ? currentPage : 1), [currentPage]);
+  const pages = useMemo(() => {
+    const totalPages =
+      itemsPerPage && totalCount
+        ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
+        : itemsPerPage
+          ? Math.ceil(datas.length / itemsPerPage)
+          : 1;
 
-  const pageChange = useMemo(
-    () => (onPageChange ? onPageChange : setPageNum),
-    [onPageChange],
-  );
+    const pages = getPageNumbers(pageNum, totalPages);
 
-  const totalPages =
-    itemsPerPage && totalCount
-      ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
-      : itemsPerPage
-        ? Math.ceil(datas.length / itemsPerPage)
-        : 1;
-
-  const pages = getPageNumbers(pageNum, totalPages);
+    return pages;
+  }, [itemsPerPage, totalCount, datas]);
 
   const onDetailClick = useMemo(() => {
     if (!modelType) {
@@ -149,31 +143,16 @@ const ListView = <T,>({
           />
         </div>
       )}
-      {pages.length > 1 ? (
-        <div className="flex justify-center m-4 space-x-2">
-          {pages.map((page, index) =>
-            page === "..." ? (
-              <span key={index} className="px-2">
-                ...
-              </span>
-            ) : (
-              <button
-                key={index}
-                onClick={() => {
-                  pageChange(page, filterConditions, sortConditions);
-                }}
-                className={`px-3 py-1 border rounded ${
-                  pageNum === page ? "bg-blue-500 text-white" : "bg-white"
-                }`}
-              >
-                {page}
-              </button>
-            ),
-          )}
-        </div>
-      ) : (
-        <div className="flex justify-center mb-5 space-x-2"></div>
-      )}
+
+      <PageButtons
+        pages={pages}
+        currentPageNum={pageNum}
+        onClick={(pageNum) => {
+          onPageChange &&
+            onPageChange(pageNum, filterConditions, sortConditions);
+          setPageNum(pageNum);
+        }}
+      />
     </div>
   );
 };
