@@ -1,4 +1,4 @@
-import { BaseField, Label, QueryParams } from "@dai0413/myorg-shared";
+import { BaseField, Label } from "@dai0413/myorg-shared";
 import { ModelType } from "../models";
 import { LinkField } from "../types";
 import { UIFieldDefinition } from "../field";
@@ -49,12 +49,5 @@ type TableFormProps<F> = {
   initialData?: {
     formData?: Partial<F>;
     metaData?: Record<string, any>;
-  };
-};
-
-export type TableFetch<T, F> = TableBase<T, F> & {
-  fetch: {
-    apiRoute: string;
-    params?: QueryParams;
   };
 };

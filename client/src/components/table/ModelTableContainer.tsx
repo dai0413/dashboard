@@ -95,19 +95,12 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => {
-    // if (filterConditions.length === 0) {
-    //   handleSetAlert({
-    //     success: false,
-    //     message: "条件を設定してください",
-    //   });
-    // } else {
     handleSetAlert({ success: true, message: "" });
     await readItems({
       page: 1,
       filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
       sorts: JSON.stringify(sortConditions),
     });
-    // }
 
     setPage("page", 1);
 
