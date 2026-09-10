@@ -4,8 +4,9 @@ import { IconButton } from "../buttons";
 import { useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import RenderCell from "./RenderCell";
-import { ColumnType, TableProps } from "../../types/table";
+import { ColumnType, TableHeader } from "../../types/table";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
+import { LinkField } from "../../types/types";
 
 // type TableProps<T> = {
 //   data: T[];
@@ -28,25 +29,40 @@ import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 //   edit?: boolean;
 // };
 
-type NewTableProps<T> = TableProps<T> & {
-  onDetailClick: (row: T) => void;
+type NewTableProps<T> = {
+  data: T[];
+  headers: TableHeader<T>[];
+  linkField?: LinkField[] | undefined;
+
+  form?: boolean;
+  selectedKey?: string[];
+  selectedKeys?: Record<number, string[]>;
+  isLoading?: boolean;
+  edit?: boolean;
+
+  renderFieldCell?: (
+    header: TableHeader<T>,
+    row: T,
+    rowIndex: number,
+  ) => React.ReactNode;
+  onActionClick?: (index: number, row: T) => void;
+  onDetailClick?: (row: T) => void;
+  onDeleteClick?: (index: number) => void;
 };
 
 const Table = <T,>({
   data = [],
   headers = [],
   linkField,
-  detailLink = "",
-  form = false,
-  onClick = () => {},
+  form,
   selectedKey = [],
   selectedKeys,
   isLoading,
   edit,
   renderFieldCell,
-  deleteOnClick,
-
+  onActionClick,
   onDetailClick,
+  onDeleteClick,
 }: NewTableProps<T>) => {
   const { itemsPerPage, pageNum, rowSpacing, columnVisibility } = useListView();
 
@@ -80,7 +96,7 @@ const Table = <T,>({
               {header.label}
             </th>
           ))}
-          {detailLink && !form && (
+          {onDetailClick && !form && (
             <th className="bg-gray-200 border" style={{ width: "80px" }}>
               詳細
             </th>
@@ -119,7 +135,7 @@ const Table = <T,>({
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                 </td>
               ))}
-              {detailLink && !form && (
+              {onDetailClick && !form && (
                 <td className="px-4 py-1 border">
                   <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
                 </td>
@@ -142,8 +158,8 @@ const Table = <T,>({
                   className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
                   style={{ width: "35px" }}
                   onClick={() =>
-                    deleteOnClick &&
-                    deleteOnClick(
+                    onDeleteClick &&
+                    onDeleteClick(
                       itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
                     )
                   }
@@ -197,7 +213,7 @@ const Table = <T,>({
                   </td>
                 );
               })}
-              {detailLink && !form && (
+              {onDetailClick && !form && (
                 <td
                   className={`px-4 py-1 border overflow-hidden text-ellipsis whitespace-nowrap ${
                     hasKey(row) && selectedKey.includes(row.key)
@@ -225,7 +241,7 @@ const Table = <T,>({
                   <button
                     type="button"
                     className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-                    onClick={() => onClick?.(i, row)}
+                    onClick={() => onActionClick?.(i, row)}
                   >
                     <div className="flex justify-center items-center">
                       {hasKey(row) && selectedKey.includes(row.key) ? (

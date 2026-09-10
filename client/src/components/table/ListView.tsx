@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import Tile from "./Tile";
 import Table from "./Table";
@@ -80,46 +80,44 @@ const ListView = <T,>({
 
   const pages = getPageNumbers(pageNum, totalPages);
 
-  const onDetailClick = useCallback(
-    (row: T) => {
-      modelType &&
-        hasId(row) &&
-        open(
-          modelType,
-          row._id,
-          convertToDisplayListData({
-            data: row,
-            model: {
-              modelType,
-              linkField: linkField || [],
-            },
-          }),
-        );
-    },
-    [modelType, linkField],
-  );
+  const onDetailClick = useMemo(() => {
+    if (!modelType) {
+      return undefined;
+    }
+
+    return (row: T) => {
+      if (!hasId(row)) {
+        return;
+      }
+
+      open(
+        modelType,
+        row._id,
+        convertToDisplayListData({
+          data: row,
+          model: {
+            modelType,
+            linkField: linkField || [],
+          },
+        }),
+      );
+    };
+  }, [modelType, linkField, open]);
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
       {viewMode === ViewMode.TABLE && (
         <Table
-          modelType={modelType}
           data={data}
-          totalCount={totalCount}
           headers={headers}
-          pageNation={pageNation}
           linkField={linkField}
-          detailLink={detailLink}
-          itemsPerPage={itemsPerPage || 10}
           isLoading={isLoading}
-          currentPage={pageNum}
-          onPageChange={onPageChange}
           form={form}
-          onClick={onClick}
+          onActionClick={onClick}
           selectedKey={selectedKey}
           edit={edit}
           renderFieldCell={renderFieldCell}
-          deleteOnClick={deleteOnClick}
+          onDeleteClick={deleteOnClick}
           selectedKeys={selectedKeys}
           onDetailClick={onDetailClick}
         />
