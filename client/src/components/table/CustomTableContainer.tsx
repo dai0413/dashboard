@@ -4,7 +4,6 @@ import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
-import { ModelRouteMap } from "../../types/models";
 import {
   QuickFilterItem,
   QuickFilterType,
@@ -87,7 +86,6 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   itemsLoading,
   filterField,
   sortField,
-  detailLinkValue,
   totalCount,
   handlePageChange,
   handleFilterSort,
@@ -257,12 +255,6 @@ const TableContainer = <K extends Record<string, unknown>, F>({
     return quickFilterSouce ?? [];
   }, [quickFilterSouce, quickFilterItems]);
 
-  const detailLink = detailLinkValue
-    ? detailLinkValue
-    : modelType
-      ? ModelRouteMap[modelType]
-      : "";
-
   const downloadFile = async () => downloadCsv(`${modelType}.csv`, items ?? []);
 
   return (
@@ -306,20 +298,15 @@ const TableContainer = <K extends Record<string, unknown>, F>({
             datas={paginatedData}
             totalCount={items?.length}
             headers={fieldDefinitions}
-            pageNation={pageNation ? pageNation : "client"}
             linkField={linkField}
-            detailLink={detailLink}
-            itemsPerPage={itemsPerPage || 10}
-            isLoading={itemsLoading}
-            currentPage={pageNum}
             onPageChange={onPageChange}
             form={form}
-            onClick={onClick}
+            onActionClick={onClick}
             selectedKey={selectedKey}
             renderFieldCell={renderFieldCell}
             edit={edit}
             selectedKeys={selectedKeys}
-            deleteOnClick={deleteOnClick}
+            onDeleteClick={deleteOnClick}
           />
         ) : null
       ) : (

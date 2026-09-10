@@ -7,7 +7,6 @@ import { Sort, Filter } from "../modals/index";
 import { FormTypeMap, GettedModelDataMap } from "../../types/models";
 
 import { SortProvider, useSort } from "../../context/sort-context";
-import { ModelRouteMap } from "../../types/models";
 import { ModelContext } from "../../types/context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
@@ -40,7 +39,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
-  const { itemsPerPage, setColumnVisibility } = useListView();
+  const { setColumnVisibility } = useListView();
   const {
     main: { handleSetAlert },
   } = useAlert();
@@ -48,7 +47,6 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   const {
     items,
     isLoading,
-    page,
     totalCount,
     readItems,
     uploadFile,
@@ -114,8 +112,6 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
     closeSort();
   };
 
-  const detailLink = ModelRouteMap[props.modelType];
-
   const onPageChange = async (page: number) => {
     await readItems({
       page: page,
@@ -164,12 +160,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
           datas={datas}
           totalCount={totalCount}
           headers={headers}
-          pageNation="server"
           linkField={linkField}
-          detailLink={detailLink}
-          itemsPerPage={itemsPerPage || 10}
-          isLoading={tableIsLoading}
-          currentPage={page}
           onPageChange={onPageChange}
         />
       ) : (

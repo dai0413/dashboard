@@ -2,14 +2,19 @@ import { useMemo } from "react";
 import { useListView } from "../../context/listView-context";
 import Tile from "./Tile";
 import Table from "./Table";
-import { TableProps } from "../../types/table";
+import { TableData, TableHeader } from "../../types/table";
 import { useFilter } from "../../context/filter-context";
 import { useSort } from "../../context/sort-context";
-import { ViewMode } from "../../types/types";
+import { LinkField, ViewMode } from "../../types/types";
 import { convertToDisplayListData } from "../modals/Detail/utils/convertToDisplayListData ";
 import { useModal } from "../../context/modal-context";
 import { PageButtons } from "./PageButtons";
 import { hasId } from "../../utils/data/getIdKey";
+import { ModelType } from "../../types/models";
+import {
+  FilterableFieldDefinition,
+  SortableFieldDefinition,
+} from "@dai0413/myorg-shared";
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
   const pages: (number | "...")[] = [];
@@ -35,21 +40,53 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
   return pages;
 }
 
+export type ListViewProps<T> = {
+  modelType?: ModelType;
+  datas: TableData<T>;
+  headers: TableHeader<T>[];
+  linkField?: LinkField[];
+  form?: boolean;
+  selectedKey?: string[];
+  selectedKeys?: Record<number, string[]>;
+  edit?: boolean;
+
+  totalCount?: number;
+
+  renderFieldCell?: (
+    header: TableHeader<T>,
+    row: T,
+    rowIndex: number,
+  ) => React.ReactNode;
+  onActionClick?: (index: number, row: T) => void;
+  onDeleteClick?: (index: number) => void;
+  onPageChange?:
+    | ((
+        page: number,
+        filterConditions: FilterableFieldDefinition[],
+        sortConditions: SortableFieldDefinition[],
+      ) => Promise<void>)
+    | ((
+        page: number,
+        filterConditions: FilterableFieldDefinition[],
+        sortConditions: SortableFieldDefinition[],
+      ) => void);
+};
+
 const ListView = <T,>({
   modelType,
   datas,
-  totalCount,
   headers,
   linkField,
   form = false,
-  onClick,
   selectedKey = [],
   selectedKeys,
-  onPageChange,
   edit,
+  totalCount,
   renderFieldCell,
-  deleteOnClick,
-}: TableProps<T>) => {
+  onActionClick,
+  onDeleteClick,
+  onPageChange,
+}: ListViewProps<T>) => {
   const {
     itemsPerPage,
     viewMode,
@@ -120,9 +157,9 @@ const ListView = <T,>({
           selectedKeys={selectedKeys}
           edit={edit}
           renderFieldCell={renderFieldCell}
-          onActionClick={onClick}
+          onActionClick={onActionClick}
           onDetailClick={onDetailClick}
-          onDeleteClick={deleteOnClick}
+          onDeleteClick={onDeleteClick}
         />
       )}
       {viewMode === ViewMode.TILE && (
@@ -137,9 +174,9 @@ const ListView = <T,>({
             selectedKeys={selectedKeys}
             edit={edit}
             renderFieldCell={renderFieldCell}
-            onActionClick={onClick}
+            onActionClick={onActionClick}
             onDetailClick={onDetailClick}
-            onDeleteClick={deleteOnClick}
+            onDeleteClick={onDeleteClick}
           />
         </div>
       )}
