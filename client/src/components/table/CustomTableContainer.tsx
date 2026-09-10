@@ -9,6 +9,7 @@ import {
   QuickFilterItem,
   QuickFilterType,
   TableBase,
+  TableData,
   TableEditProps,
   TableOperationFields,
 } from "../../types/table";
@@ -64,7 +65,7 @@ type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
     viewMode?: ViewMode.TABLE | ViewMode.TILE;
     newItemsPerPage?: number;
     renderView?: (params: {
-      items: T[];
+      items: TableData<T>;
       totalCount: number;
       isLoading: boolean;
       filterConditions?: FilterableFieldDefinition[];
@@ -128,7 +129,14 @@ const TableContainer = <K extends Record<string, unknown>, F>({
           : items
         : items;
 
-    return targetData;
+    const datas = targetData.map((d, i) => {
+      return {
+        item: d,
+        index: itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
+      };
+    });
+
+    return datas;
   }, [items, itemsPerPage, pageNum]);
 
   const onPageChange = useCallback(
@@ -289,7 +297,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
         ) : fieldDefinitions ? (
           <ListView<K>
             modelType={modelType ? modelType : undefined}
-            data={paginatedData}
+            datas={paginatedData}
             totalCount={items?.length}
             headers={fieldDefinitions}
             pageNation={pageNation ? pageNation : "client"}

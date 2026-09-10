@@ -30,13 +30,19 @@ import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
 import { useListView } from "../../context/listView-context";
 import { useModal } from "../../context/modal-context";
-import { QuickFilterItem, TableHeader } from "../../types/table";
+import { QuickFilterItem, TableData, TableHeader } from "../../types/table";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
-import { FormMode, From, InputMode, ViewMode } from "../../types/types";
+import {
+  FormMode,
+  From,
+  InputMode,
+  RowSpacing,
+  ViewMode,
+} from "../../types/types";
 import CheckMenuItem from "../ui/CheckMenuItem";
 import { useModelContext } from "../../context/models/model-wrapper";
 
@@ -56,7 +62,7 @@ type TableToolbarProps<Data, Form> = {
   ) => Promise<void>;
   quickFilterItems: QuickFilterItem[];
   headers?: TableHeader<Data>[];
-  items?: Data[];
+  items?: TableData<Data>;
 };
 
 type ToolbarButtonProps = {
@@ -355,12 +361,14 @@ const TableToolbar = <Data, Form>({
 
   const startUpdates = async () => {
     if (modelType && items) {
+      const editItems = items.map((d) => d.item);
+
       const success = await startForm({
         modelType,
         formMode: FormMode.UPDATE,
         inputMode: InputMode.MANY,
         ids: [],
-        editItem: items as GettedModelDataMap[typeof modelType][],
+        editItem: editItems as GettedModelDataMap[typeof modelType][],
         from: From.NORMAL,
       });
       if (success) openForm();
@@ -391,13 +399,13 @@ const TableToolbar = <Data, Form>({
                   text={"広い"}
                   icon={<Bars2Icon className="w-6 h-6" />}
                   isActive={rowSpacing === "wide"}
-                  onClick={() => setRowSpacing("wide")}
+                  onClick={() => setRowSpacing(RowSpacing.WIDE)}
                 />
                 <ToolbarButton
                   text={"狭い"}
                   icon={<Bars3Icon className="w-6 h-6" />}
                   isActive={rowSpacing === "narrow"}
-                  onClick={() => setRowSpacing("narrow")}
+                  onClick={() => setRowSpacing(RowSpacing.NARROW)}
                 />
               </>
             }

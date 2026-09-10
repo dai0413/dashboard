@@ -47,7 +47,6 @@ const ListView = <T,>({
   onClick = () => {},
   selectedKey = [],
   selectedKeys,
-  isLoading,
   currentPage,
   onPageChange,
   edit,
@@ -127,7 +126,6 @@ const ListView = <T,>({
           form={form}
           selectedKey={selectedKey}
           selectedKeys={selectedKeys}
-          isLoading={isLoading}
           edit={edit}
           renderFieldCell={renderFieldCell}
           onActionClick={onClick}
@@ -147,7 +145,6 @@ const ListView = <T,>({
             form={form}
             selectedKey={selectedKey}
             selectedKeys={selectedKeys}
-            isLoading={isLoading}
             edit={edit}
             renderFieldCell={renderFieldCell}
             onActionClick={onClick}

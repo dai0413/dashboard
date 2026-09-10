@@ -1,8 +1,7 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { IconButton } from "../buttons";
 import RenderCell from "./RenderCell";
-import { ColumnType, TableHeader } from "../../types/table";
+import { ColumnType, TableData, TableHeader } from "../../types/table";
 import { toDisplayValue } from "../../utils/displayField/toDisplayValue";
 import { LinkField, RowSpacing } from "../../types/types";
 
@@ -31,8 +30,8 @@ const hasKey = (row: any): row is { key: string } => {
   return row && typeof row === "object" && "key" in row;
 };
 
-type NewTableProps<T> = {
-  data: T[];
+export type NewTableProps<T> = {
+  datas: TableData<T>;
   headers: TableHeader<T>[];
   linkField?: LinkField[];
   pageNum: number;
@@ -41,7 +40,6 @@ type NewTableProps<T> = {
   form?: boolean;
   selectedKey?: string[];
   selectedKeys?: Record<number, string[]>;
-  isLoading?: boolean;
   edit?: boolean;
 
   renderFieldCell?: (
@@ -55,7 +53,7 @@ type NewTableProps<T> = {
 };
 
 const Table = <T,>({
-  data,
+  datas,
   headers,
   linkField,
   itemsPerPage,
@@ -64,7 +62,6 @@ const Table = <T,>({
   form,
   selectedKey = [],
   selectedKeys,
-  isLoading,
   edit,
   renderFieldCell,
   onActionClick,
@@ -104,86 +101,45 @@ const Table = <T,>({
           )}
         </tr>
       </thead>
-      {!isLoading && data.length == 0 && (
-        <tbody>
-          <tr>
-            <td colSpan={headers.length}>
-              <div className="flex flex-col items-center justify-center py-10 text-gray-500">
-                <IconButton
-                  key=""
-                  icon="delete"
-                  text="該当データはありません"
-                  color="gray"
-                  direction="vertical"
-                  className="cursor-not-allowed"
-                />
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      )}
-      {isLoading && (
-        <tbody aria-busy={isLoading}>
-          {[...Array(itemsPerPage)].map((_, i) => (
-            <tr key={i} className="animate-pulse border-t">
-              {headers.map((_, j) => (
-                <td key={j} className="px-4 py-1 border">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                </td>
-              ))}
-              {onDetailClick && !form && (
-                <td className="px-4 py-1 border">
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
-                </td>
-              )}
-              {form && (
-                <td className="px-4 py-1 border">
-                  <div className="h-6 w-6 bg-gray-200 rounded-full mx-auto"></div>
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      )}
-      {!isLoading && data.length > 0 && (
-        <tbody>
-          {data.map((row, i) => (
-            <tr key={i}>
-              {edit && (
-                <th
-                  className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-                  style={{ width: "35px" }}
-                  onClick={() => {
-                    console.log("delete", itemsPerPage, pageNum);
-                    onDeleteClick &&
-                      onDeleteClick(
-                        itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
-                      );
-                  }}
-                >
-                  <div className="flex justify-center items-center">
-                    <XMarkIcon className="w-6 h-6" />
-                  </div>
-                </th>
-              )}
-              {headers.map((header) => {
-                const { renderCellValue, title } = toDisplayValue(
-                  header,
-                  row,
-                  linkField,
-                );
+      <tbody>
+        {datas.map((data, i) => (
+          <tr key={i}>
+            {edit && (
+              <th
+                className="border cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+                style={{ width: "35px" }}
+                onClick={() => {
+                  console.log("delete", itemsPerPage, pageNum);
+                  onDeleteClick &&
+                    onDeleteClick(
+                      itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
+                    );
+                }}
+              >
+                <div className="flex justify-center items-center">
+                  <XMarkIcon className="w-6 h-6" />
+                </div>
+              </th>
+            )}
+            {headers.map((header) => {
+              const { renderCellValue, title } = toDisplayValue(
+                header,
+                data.item,
+                linkField,
+              );
 
-                const dataIndex = itemsPerPage
-                  ? (pageNum - 1) * itemsPerPage + i
-                  : i;
-                const textIsRed =
-                  selectedKeys && selectedKeys[dataIndex]?.includes(header.key);
-                const bgIsBlue = hasKey(row) && selectedKey.includes(row.key);
+              const dataIndex = itemsPerPage
+                ? (pageNum - 1) * itemsPerPage + i
+                : i;
+              const textIsRed =
+                selectedKeys && selectedKeys[dataIndex]?.includes(header.key);
+              const bgIsBlue =
+                hasKey(data.item) && selectedKey.includes(data.item.key);
 
-                return (
-                  <td
-                    key={`${header.key}-${header.label}`}
-                    className={`border px-4 py-1 overflow-hidden text-ellipsis whitespace-nowrap
+              return (
+                <td
+                  key={`${header.key}-${header.label}`}
+                  className={`border px-4 py-1 overflow-hidden text-ellipsis whitespace-nowrap
                       ${rowSpacing === "wide" ? "h-16" : "h-8"} 
                       ${bgIsBlue ? "bg-blue-100" : ""}
                       ${textIsRed ? "text-red-500 font-semibold" : ""}
@@ -196,64 +152,64 @@ const Table = <T,>({
                       }
 
                     `}
-                    title={title}
-                    style={{
-                      width: `${renderFieldCell ? "200px" : "150px"}`,
-                    }}
-                  >
-                    {form
-                      ? title
-                      : edit
-                        ? renderFieldCell &&
-                          renderFieldCell(header, row, dataIndex)
-                        : RenderCell({ value: renderCellValue })}
-                  </td>
-                );
-              })}
-              {onDetailClick && !form && (
-                <td
-                  className={`px-4 py-1 border overflow-hidden text-ellipsis whitespace-nowrap ${
-                    hasKey(row) && selectedKey.includes(row.key)
-                      ? "bg-blue-100"
-                      : ""
-                  }`}
-                  style={{ width: "80px" }}
+                  title={title}
+                  style={{
+                    width: `${renderFieldCell ? "200px" : "150px"}`,
+                  }}
                 >
-                  <button
-                    className="underline hover:text-blue-600 cursor-pointer"
-                    onClick={() => onDetailClick(row)}
-                  >
-                    詳細
-                  </button>
+                  {form
+                    ? title
+                    : edit
+                      ? renderFieldCell &&
+                        renderFieldCell(header, data.item, dataIndex)
+                      : RenderCell({ value: renderCellValue })}
                 </td>
-              )}
-              {form && (
-                <td
-                  className={`px-4 py-1 border ${
-                    hasKey(row) && selectedKey.includes(row.key)
-                      ? "bg-blue-100"
-                      : ""
-                  }`}
+              );
+            })}
+            {onDetailClick && !form && (
+              <td
+                className={`px-4 py-1 border overflow-hidden text-ellipsis whitespace-nowrap ${
+                  hasKey(data.item) && selectedKey.includes(data.item.key)
+                    ? "bg-blue-100"
+                    : ""
+                }`}
+                style={{ width: "80px" }}
+              >
+                <button
+                  className="underline hover:text-blue-600 cursor-pointer"
+                  onClick={() => onDetailClick(data.item)}
                 >
-                  <button
-                    type="button"
-                    className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
-                    onClick={() => onActionClick?.(i, row)}
-                  >
-                    <div className="flex justify-center items-center">
-                      {hasKey(row) && selectedKey.includes(row.key) ? (
-                        <XMarkIcon className="w-6 h-6" />
-                      ) : (
-                        <PlusCircleIcon className="w-6 h-6" />
-                      )}
-                    </div>
-                  </button>
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      )}
+                  詳細
+                </button>
+              </td>
+            )}
+            {form && (
+              <td
+                className={`px-4 py-1 border ${
+                  hasKey(data.item) && selectedKey.includes(data.item.key)
+                    ? "bg-blue-100"
+                    : ""
+                }`}
+              >
+                <button
+                  type="button"
+                  className="cursor-pointer text-gray-500 hover:text-gray-700 text-2xl"
+                  onClick={() => onActionClick?.(i, data.item)}
+                >
+                  <div className="flex justify-center items-center">
+                    {hasKey(data.item) &&
+                    selectedKey.includes(data.item.key) ? (
+                      <XMarkIcon className="w-6 h-6" />
+                    ) : (
+                      <PlusCircleIcon className="w-6 h-6" />
+                    )}
+                  </div>
+                </button>
+              </td>
+            )}
+          </tr>
+        ))}
+      </tbody>
     </table>
   );
 };

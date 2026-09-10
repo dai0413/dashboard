@@ -125,6 +125,15 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
     setPage("page", page);
   };
 
+  const datas = useMemo(() => {
+    return items.map((item, i) => {
+      return {
+        item,
+        index: i,
+      };
+    });
+  }, [items]);
+
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto p-3">
       {props.title && (
@@ -142,7 +151,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
         initialData={props.initialData}
         quickFilterItems={[]}
         headers={headers}
-        items={items}
+        items={datas}
       />
       {tableIsLoading ? (
         <div className="flex items-center justify-center py-16">
@@ -153,7 +162,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
       ) : items && items?.length > 0 && headers ? (
         <ListView<GettedModelDataMap[K]>
           modelType={props.modelType}
-          data={items}
+          datas={datas}
           totalCount={totalCount}
           headers={headers}
           pageNation="server"
