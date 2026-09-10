@@ -44,6 +44,7 @@ const PlayerMatchEventLogPanel = ({
         modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
         fieldDefinitions={playerEventLogFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerEventLogFieldDefinition
           ?.filter(isFilterable)

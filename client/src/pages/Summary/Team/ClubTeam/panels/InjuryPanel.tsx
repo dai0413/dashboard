@@ -29,6 +29,7 @@ const InjuryPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         fieldDefinitions={injuryFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={injuryFieldDefinition
           ?.filter(isFilterable)

@@ -28,6 +28,7 @@ const PlayerPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         modelType={ModelType.PLAYER}
         fieldDefinitions={playerFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerFieldDefinition?.filter(isFilterable)}
         sortField={playerFieldDefinition?.filter(isSortable)}

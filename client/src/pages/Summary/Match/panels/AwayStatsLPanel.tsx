@@ -25,6 +25,7 @@ const AwayStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.STATS_L}
         fieldDefinitions={statsLFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={statsLFieldDefinition
           ?.filter(isFilterable)

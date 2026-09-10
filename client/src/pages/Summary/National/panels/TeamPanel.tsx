@@ -28,6 +28,7 @@ const TeamPanel = ({ summary }: { summary: UseNationalSummary }) => {
         modelType={ModelType.TEAM}
         fieldDefinitions={teamFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={teamFieldDefinition?.filter(isFilterable)}
         sortField={teamFieldDefinition?.filter(isSortable)}

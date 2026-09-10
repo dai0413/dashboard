@@ -32,6 +32,7 @@ const StaffRegistrationPanel = ({
         itemsLoading={isLoading}
         fieldDefinitions={seasonFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={seasonFieldDefinition
           ?.filter(isFilterable)

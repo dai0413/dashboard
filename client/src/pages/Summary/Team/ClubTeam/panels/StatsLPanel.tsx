@@ -22,6 +22,7 @@ const StatsLPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.STATS_L}
         fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={fieldDefinition[ModelType.STATS_L]
           ?.filter(isFilterable)

@@ -48,6 +48,7 @@ const MatchPanel = ({
         modelType={ModelType.MATCH}
         fieldDefinitions={matchFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition?.filter(isFilterable)}
         sortField={matchFieldDefinition?.filter(isSortable)}

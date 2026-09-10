@@ -35,6 +35,7 @@ const NationalCallupPanel = ({
         modelType={ModelType.NATIONAL_CALLUP}
         fieldDefinitions={nationalCallupFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={nationalCallupFieldDefinition
           ?.filter(isFilterable)

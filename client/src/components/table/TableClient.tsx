@@ -47,7 +47,11 @@ const TableClient = <
 
   useEffect(() => {
     if (!props.items) return;
-    setViewOptionData({ ...defalut, data: props.items });
+    setViewOptionData({
+      ...defalut,
+      data: props.items,
+      totalCount: props.totalCount,
+    });
   }, [props.items]);
 
   const reloadFun = useMemo(
@@ -101,13 +105,14 @@ const TableClient = <
     [props.items],
   );
 
+  console.log("viewOptionData", viewOptionData);
+
   return (
     <CustomTableContainer
       {...{
         ...props,
         handleFilterSort: handleFilterSort,
         items: viewOptionData.data,
-        totalCount: viewOptionData.totalCount,
         reloadFun: reloadFun,
         pageNation: "client",
       }}

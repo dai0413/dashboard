@@ -55,6 +55,7 @@ const MatchPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.MATCH}
         fieldDefinitions={matchFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition?.filter(isFilterable)}
         sortField={matchFieldDefinition?.filter(isSortable)}

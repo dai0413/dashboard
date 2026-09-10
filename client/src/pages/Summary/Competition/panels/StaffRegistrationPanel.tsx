@@ -52,6 +52,7 @@ const StaffRegistrationPanel = ({
         modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={staffRegistrationFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={staffRegistrationFieldDefinition
           ?.filter(isFilterable)

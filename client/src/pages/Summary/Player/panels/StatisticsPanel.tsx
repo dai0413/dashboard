@@ -38,6 +38,7 @@ const StatisticsPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         linkField={[
           {

@@ -40,6 +40,7 @@ const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.STAFF_MATCH_EVENT_LOG}
         fieldDefinitions={staffEventLogFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={staffEventLogFieldDefinition
           ?.filter(isFilterable)

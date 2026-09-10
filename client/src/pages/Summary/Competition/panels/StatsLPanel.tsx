@@ -26,6 +26,7 @@ const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         modelType={ModelType.STATS_L}
         fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
         items={items.raw}
+        totalCount={items.raw.length}
         reloadFun={reloadFun}
         filterField={fieldDefinition[ModelType.STATS_L]
           ?.filter(isFilterable)

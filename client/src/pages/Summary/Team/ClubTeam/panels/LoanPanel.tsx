@@ -29,6 +29,7 @@ const LoanPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.TRANSFER}
         fieldDefinitions={onLoanFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={onLoanFieldDefinition
           ?.filter(isFilterable)

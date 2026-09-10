@@ -30,6 +30,7 @@ const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         fieldDefinitions={nationalMatchSeriesFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={nationalMatchSeriesFieldDefinition?.filter(isFilterable)}
         sortField={nationalMatchSeriesFieldDefinition?.filter(isSortable)}

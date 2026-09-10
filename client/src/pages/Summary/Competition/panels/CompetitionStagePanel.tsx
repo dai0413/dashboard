@@ -37,6 +37,7 @@ const CompetitionStagePanel = ({
         modelType={ModelType.COMPETITION_STAGE}
         fieldDefinitions={competitionStageFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={competitionStageFieldDefinition
           ?.filter(isFilterable)

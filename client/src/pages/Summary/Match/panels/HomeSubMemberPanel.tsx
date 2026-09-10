@@ -25,6 +25,7 @@ const HomeSubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerAppearanceFieldDefinition
           ?.filter(isFilterable)

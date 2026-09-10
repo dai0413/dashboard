@@ -29,6 +29,7 @@ const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         fieldDefinitions={futureInFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={futureInFieldDefinition
           ?.filter(isFilterable)

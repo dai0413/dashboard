@@ -64,6 +64,7 @@ const NoCallUp = () => {
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         items={items.data}
+        totalCount={items.data.length}
         filterField={fields?.filter(isFilterable)}
         sortField={fields?.filter(isSortable)}
         linkField={[

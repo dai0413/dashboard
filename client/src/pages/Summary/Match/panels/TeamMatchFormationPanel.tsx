@@ -33,6 +33,7 @@ const TeamMatchFormationPanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.TEAM_MATCH_FORMATION}
         fieldDefinitions={teamMatchFormationFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={teamMatchFormationFieldDefinition
           ?.filter(isFilterable)

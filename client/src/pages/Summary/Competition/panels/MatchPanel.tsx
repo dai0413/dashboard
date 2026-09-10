@@ -48,6 +48,7 @@ const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         itemsLoading={isLoading}
         fieldDefinitions={matchFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition
           ?.filter(isFilterable)

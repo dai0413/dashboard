@@ -70,6 +70,7 @@ const NoNumber = () => {
         reloadFun={reloadFun}
         itemsLoading={items.isLoading}
         items={items.data}
+        totalCount={items.data.length}
         filterField={fields
           ?.filter(isFilterable)
           .filter((file) => file.key !== "number")}

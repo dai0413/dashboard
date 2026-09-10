@@ -37,6 +37,7 @@ const StaffRegistrationPanel = ({ summary }: { summary: UseStaffSummary }) => {
         modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={registrationFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={registrationFieldDefinition
           ?.filter(isFilterable)

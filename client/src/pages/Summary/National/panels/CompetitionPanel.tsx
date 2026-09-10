@@ -29,6 +29,7 @@ const CompetitionPanel = ({ summary }: { summary: UseNationalSummary }) => {
         modelType={ModelType.COMPETITION}
         fieldDefinitions={competitionFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={competitionFieldDefinition
           ?.filter(isFilterable)

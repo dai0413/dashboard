@@ -33,6 +33,7 @@ const RefereeAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.REFEREE_APPEARANCE}
         fieldDefinitions={refereeAppearanceFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={refereeAppearanceFieldDefinition
           ?.filter(isFilterable)

@@ -38,6 +38,7 @@ const TeamCompetitionSeasonPanel = ({
         modelType={ModelType.TEAM_COMPETITION_SEASON}
         fieldDefinitions={teamCompetitionSeasonFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={teamCompetitionSeasonFieldDefinition
           ?.filter(isFilterable)

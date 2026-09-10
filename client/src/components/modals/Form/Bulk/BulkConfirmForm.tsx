@@ -147,6 +147,7 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
           <CustomTableContainer
             pageNation="client"
             items={confirmBulkData || []}
+            totalCount={confirmBulkData.length}
             fieldDefinitions={confirmBulkDataHeaders || []}
             handlePageChange={async (p: number) => setPage("formPage", p)}
             selectedKeys={diffKeysObj}

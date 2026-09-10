@@ -33,6 +33,7 @@ const StaffAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.STAFF_APPEARANCE}
         fieldDefinitions={staffAppearanceFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={staffAppearanceFieldDefinition
           ?.filter(isFilterable)

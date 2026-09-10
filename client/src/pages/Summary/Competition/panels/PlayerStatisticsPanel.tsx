@@ -64,6 +64,7 @@ const PlayerStatisticsPanel = ({
         fieldDefinitions={fieldDefinitions}
         itemsLoading={isLoading}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}
         sortField={fieldDefinitions?.filter(isSortable)}

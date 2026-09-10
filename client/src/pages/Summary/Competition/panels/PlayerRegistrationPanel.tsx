@@ -66,6 +66,7 @@ const PlayerRegistrationPanel = ({
         modelType={ModelType.PLAYER_REGISTRATION}
         fieldDefinitions={playerRegistrationFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerRegistrationFieldDefinition
           ?.filter(isFilterable)

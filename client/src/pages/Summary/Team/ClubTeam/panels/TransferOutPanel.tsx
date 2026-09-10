@@ -29,6 +29,7 @@ const TransferOutPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.TRANSFER}
         fieldDefinitions={transferOutFieldDefinition}
         items={items}
+        totalCount={items.length}
         reloadFun={reloadFun}
         filterField={transferOutFieldDefinition
           ?.filter(isFilterable)
