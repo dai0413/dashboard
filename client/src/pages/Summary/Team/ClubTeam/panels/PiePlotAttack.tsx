@@ -17,6 +17,7 @@ const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.STATS_L}
         fieldDefinitions={[]}
         items={items.offRadarData?.datasets || []}
+        totalCount={items.offRadarData?.datasets.length || 0}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         initialData={{

@@ -21,6 +21,7 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
         items={items.away}
+        totalCount={items.away.length}
         itemsLoading={isLoading}
         reloadFun={reloadFun}
         initialData={{

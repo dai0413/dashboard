@@ -16,6 +16,7 @@ const StatsLActualPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
       <div className="text-gray-600">{text}</div>
       <CustomTableContainer
         items={items.actual}
+        totalCount={items.actual.length}
         newItemsPerPage={20}
         itemsLoading={isLoading}
         fieldDefinitions={statsFields}

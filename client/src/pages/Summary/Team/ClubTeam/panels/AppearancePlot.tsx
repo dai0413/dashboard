@@ -16,6 +16,7 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
       <CustomTableContainer
         fieldDefinitions={[]}
         items={items.playerStatistics}
+        totalCount={items.playerStatistics.length}
         filterField={[]}
         sortField={[]}
         reloadFun={async (filterConditions, sortConditions) =>

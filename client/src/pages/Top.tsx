@@ -112,6 +112,7 @@ const Main = () => {
               <CustomTableContainer
                 pageNation="client"
                 items={transfers}
+                totalCount={transfers.length}
                 fieldDefinitions={[
                   {
                     label: "発表日",
@@ -164,6 +165,7 @@ const Main = () => {
               <CustomTableContainer
                 pageNation="client"
                 items={injuries}
+                totalCount={injuries.length}
                 fieldDefinitions={[
                   {
                     label: "発表日",

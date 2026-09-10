@@ -22,6 +22,8 @@ import {
 import { fieldDefinition } from "../../lib/model-fields";
 import { isFilterable, isSortable } from "../../types/field";
 import { getLinkFields } from "../../lib/model-link-fields";
+import { PageButtons } from "./PageButtons";
+import { getPageNumbers } from "../../utils/data/getPageNumbers";
 
 type ModelBase<K extends keyof GettedModelDataMap> = Omit<
   TableBase<GettedModelDataMap[K], FormTypeMap[K]>,
@@ -39,7 +41,8 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
-  const { setColumnVisibility } = useListView();
+  const { setColumnVisibility, setPageNum, pageNum, itemsPerPage } =
+    useListView();
   const {
     main: { handleSetAlert },
   } = useAlert();
@@ -129,6 +132,19 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
     });
   }, [items]);
 
+  const pages = useMemo(() => {
+    const totalPages =
+      itemsPerPage && totalCount
+        ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
+        : itemsPerPage
+          ? Math.ceil(datas.length / itemsPerPage)
+          : 1;
+
+    const pages = getPageNumbers(pageNum, totalPages);
+
+    return pages;
+  }, [itemsPerPage, totalCount, datas]);
+
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto p-3">
       {props.title && (
@@ -155,14 +171,22 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
           </div>
         </div>
       ) : items && items?.length > 0 && headers ? (
-        <ListView<GettedModelDataMap[K]>
-          modelType={props.modelType}
-          datas={datas}
-          totalCount={totalCount}
-          headers={headers}
-          linkField={linkField}
-          onPageChange={onPageChange}
-        />
+        <>
+          <ListView<GettedModelDataMap[K]>
+            modelType={props.modelType}
+            datas={datas}
+            headers={headers}
+            linkField={linkField}
+          />
+          <PageButtons
+            pages={pages}
+            currentPageNum={pageNum}
+            onClick={(pageNum) => {
+              onPageChange(pageNum);
+              setPageNum(pageNum);
+            }}
+          />
+        </>
       ) : (
         <div className="flex items-center justify-center py-16">
           <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">

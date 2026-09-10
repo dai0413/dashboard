@@ -17,6 +17,7 @@ const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.STATS_L}
         fieldDefinitions={[]}
         items={items.defRadarData?.datasets || []}
+        totalCount={items.defRadarData?.datasets.length || 0}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         renderView={() => (

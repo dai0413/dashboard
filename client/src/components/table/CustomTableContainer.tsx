@@ -28,9 +28,11 @@ import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
 import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
 import { ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
+import { PageButtons } from "./PageButtons";
+import { getPageNumbers } from "../../utils/data/getPageNumbers";
 
 type TablePage = {
-  totalCount?: number;
+  totalCount: number;
   handlePageChange?: (
     page: number,
     filterConditions: FilterableFieldDefinition[],
@@ -257,6 +259,20 @@ const TableContainer = <K extends Record<string, unknown>, F>({
 
   const downloadFile = async () => downloadCsv(`${modelType}.csv`, items ?? []);
 
+  const pages = useMemo(() => {
+    const totalPages =
+      itemsPerPage && totalCount
+        ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
+        : itemsPerPage
+          ? Math.ceil(paginatedData.length / itemsPerPage)
+          : 1;
+
+    const pages = getPageNumbers(pageNum, totalPages);
+
+    console.log("pages", totalCount, pages);
+    return pages;
+  }, [itemsPerPage, totalCount, paginatedData]);
+
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
       {title && (
@@ -293,21 +309,29 @@ const TableContainer = <K extends Record<string, unknown>, F>({
             })}
           </div>
         ) : fieldDefinitions ? (
-          <ListView<K>
-            modelType={modelType ? modelType : undefined}
-            datas={paginatedData}
-            totalCount={items?.length}
-            headers={fieldDefinitions}
-            linkField={linkField}
-            onPageChange={onPageChange}
-            form={form}
-            onActionClick={onClick}
-            selectedKey={selectedKey}
-            renderFieldCell={renderFieldCell}
-            edit={edit}
-            selectedKeys={selectedKeys}
-            onDeleteClick={deleteOnClick}
-          />
+          <div className="max-h-[50rem] overflow-y-auto">
+            <ListView<K>
+              modelType={modelType ? modelType : undefined}
+              datas={paginatedData}
+              headers={fieldDefinitions}
+              linkField={linkField}
+              form={form}
+              onActionClick={onClick}
+              selectedKey={selectedKey}
+              renderFieldCell={renderFieldCell}
+              edit={edit}
+              selectedKeys={selectedKeys}
+              onDeleteClick={deleteOnClick}
+            />
+            <PageButtons
+              pages={pages}
+              currentPageNum={pageNum}
+              onClick={(pageNum) => {
+                onPageChange(pageNum, filterConditions, sortConditions);
+                setPageNum(pageNum);
+              }}
+            />
+          </div>
         ) : null
       ) : (
         <div className="flex items-center justify-center py-16">

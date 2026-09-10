@@ -189,6 +189,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
       <CustomTableContainer
         fieldDefinitions={[]}
         items={items.nationalCallUp}
+        totalCount={items.nationalCallUp.length || 0}
         filterField={filedDefinitions?.filter(isFilterable)}
         sortField={[]}
         reloadFun={async (filterConditions, sortConditions) =>

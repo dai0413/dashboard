@@ -17,6 +17,7 @@ const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
         items={items}
+        totalCount={items.length}
         itemsLoading={isLoading}
         reloadFun={reloadFun}
         initialData={{

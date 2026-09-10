@@ -21,6 +21,7 @@ const HomeStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
         items={items.home}
+        totalCount={items.home.length}
         itemsLoading={isLoading}
         reloadFun={reloadFun}
         initialData={{

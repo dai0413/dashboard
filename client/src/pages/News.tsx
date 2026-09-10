@@ -57,6 +57,7 @@ const News = () => {
       <CustomTableContainer
         key={items.data.length}
         fieldDefinitions={[]}
+        totalCount={items.data.length}
         noToolBar={false}
         items={[{ id: "test", label: "test" }]}
         itemsLoading={items.isLoading}

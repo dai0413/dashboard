@@ -20,6 +20,7 @@ const StatsLDeviationPanel = ({
       <div className="text-gray-600">{text}</div>
       <CustomTableContainer
         items={items.deviation}
+        totalCount={items.deviation.length}
         newItemsPerPage={20}
         itemsLoading={isLoading}
         fieldDefinitions={statsFields}
