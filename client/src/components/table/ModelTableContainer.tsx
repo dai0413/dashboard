@@ -10,7 +10,6 @@ import { SortProvider, useSort } from "../../context/sort-context";
 import { ModelContext } from "../../types/context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
 import { useQuery } from "../../context/query-context";
-import { TableBase } from "../../types/table";
 import { normalizeFiltersForApi } from "../../utils/filter/normalizeFiltersForApi";
 import { ListViewProvider, useListView } from "../../context/listView-context";
 import { useAlert } from "../../context/alert-context";
@@ -19,25 +18,26 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { fieldDefinition } from "../../lib/model-fields";
-import { isFilterable, isSortable } from "../../types/field";
+import {
+  getFields,
+  getFilterableFields,
+  getSortableFields,
+} from "../../lib/model-fields";
 import { getLinkFields } from "../../lib/model-link-fields";
 import { PageButtons } from "./PageButtons";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
 
-type ModelBase<K extends keyof GettedModelDataMap> = Omit<
-  TableBase<GettedModelDataMap[K], FormTypeMap[K]>,
-  "modelType" | "fieldDefinitions" | "linkField"
-> & {
+type TableContainer<K extends keyof GettedModelDataMap> = {
+  title: string;
   modelType: K;
   contextState: ModelContext<K>;
 };
 
-type TableContainerProps<K extends keyof GettedModelDataMap> = ModelBase<K>;
-
-const TableContainer = <K extends keyof GettedModelDataMap>(
-  props: TableContainerProps<K>,
-) => {
+const TableContainer = <K extends keyof GettedModelDataMap>({
+  title,
+  modelType,
+  contextState,
+}: TableContainer<K>) => {
   const { closeSort, sortConditions } = useSort();
   const { closeFilter, filterConditions } = useFilter();
   const { setPage } = useQuery();
@@ -55,32 +55,22 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
     uploadFile,
     downloadFile,
     resetItems,
-  } = props.contextState.metacrud;
+  } = contextState.metacrud;
 
   useEffect(() => {
     resetItems();
   }, []);
 
-  const tableIsLoading = useMemo(() => isLoading, [isLoading]);
-  const headers = useMemo(
-    () => fieldDefinition[props.modelType],
-    [props.modelType],
-  );
+  const headers = useMemo(() => getFields(modelType), [modelType]);
   const filterField = useMemo(
-    () => fieldDefinition[props.modelType]?.filter(isFilterable) || [],
-    [props.modelType],
+    () => getFilterableFields(modelType),
+    [modelType],
   );
-  const sortField = useMemo(
-    () => fieldDefinition[props.modelType]?.filter(isSortable) || [],
-    [props.modelType],
-  );
-  const linkField = useMemo(
-    () => getLinkFields(props.modelType),
-    [props.modelType],
-  );
+  const sortField = useMemo(() => getSortableFields(modelType), [modelType]);
+  const linkField = useMemo(() => getLinkFields(modelType), [modelType]);
 
   useEffect(() => {
-    const initialVisibility = fieldDefinition[props.modelType]?.reduce(
+    const initialVisibility = getFields(modelType)?.reduce(
       (acc, h) => {
         acc[h.key] = h.displayOnTable ?? true;
         return acc;
@@ -89,18 +79,26 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
     );
 
     initialVisibility && setColumnVisibility(initialVisibility);
-  }, [props.modelType]);
+  }, [modelType]);
+
+  const readPage = async (
+    page: number,
+    filters = filterConditions,
+    sorts = sortConditions,
+  ) => {
+    return readItems({
+      page,
+      filters: JSON.stringify(normalizeFiltersForApi(filters)),
+      sorts: JSON.stringify(sorts),
+    });
+  };
 
   const handleApplyFilter = async (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => {
     handleSetAlert({ success: true, message: "" });
-    await readItems({
-      page: 1,
-      filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
-      sorts: JSON.stringify(sortConditions),
-    });
+    await readPage(1, filterConditions, sortConditions);
 
     setPage("page", 1);
 
@@ -109,21 +107,19 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
   };
 
   const onPageChange = async (page: number) => {
-    await readItems({
-      page: page,
-      filters: JSON.stringify(normalizeFiltersForApi(filterConditions)),
-      sorts: JSON.stringify(sortConditions),
-    });
+    await readPage(page);
   };
 
   const datas = useMemo(() => {
     return items.map((item, i) => {
+      const offset = (pageNum - 1) * (itemsPerPage || 1);
+
       return {
         item,
-        index: i,
+        index: offset + i,
       };
     });
-  }, [items]);
+  }, [items, pageNum, itemsPerPage]);
 
   const pages = useMemo(() => {
     const totalPages =
@@ -140,24 +136,19 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
 
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto p-3">
-      {props.title && (
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
-          {props.title}
-        </h2>
-      )}
+      <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
 
       <Filter filterableField={filterField} onApply={handleApplyFilter} />
       <Sort sortableField={sortField} onApply={handleApplyFilter} />
       <TableToolbar<GettedModelDataMap[K], FormTypeMap[K]>
-        modelType={props.modelType}
+        modelType={modelType}
         uploadFile={uploadFile}
         downloadFile={downloadFile}
-        initialData={props.initialData}
         quickFilterItems={[]}
         headers={headers}
         items={datas}
       />
-      {tableIsLoading ? (
+      {isLoading ? (
         <div className="flex items-center justify-center py-16">
           <div className="bg-gray-50 px-8 py-10 text-center">
             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
@@ -166,7 +157,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
       ) : items && items?.length > 0 && headers ? (
         <>
           <ListView<GettedModelDataMap[K]>
-            modelType={props.modelType}
+            modelType={modelType}
             datas={datas}
             headers={headers}
             linkField={linkField}
@@ -199,7 +190,7 @@ const TableContainer = <K extends keyof GettedModelDataMap>(
 };
 
 const ModelTableContainer = <K extends keyof FormTypeMap>(
-  props: TableContainerProps<K>,
+  props: TableContainer<K>,
 ) => {
   return (
     <FilterProvider>
