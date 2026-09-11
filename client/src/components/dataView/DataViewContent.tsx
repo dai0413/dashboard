@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import ListView from "./ListView";
+import DataView from "./DataView";
 import { PageButtons } from "./PageButtons";
 import { TableData, TableHeader } from "../../types/table";
 import { ModelType } from "../../types/models";
@@ -115,7 +115,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
 
   return (
     <div className="max-h-[50rem] overflow-y-auto">
-      <ListView<K>
+      <DataView<K>
         modelType={modelType}
         datas={datas}
         headers={fieldDefinitions}

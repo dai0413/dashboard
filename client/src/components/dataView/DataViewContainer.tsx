@@ -12,7 +12,7 @@ import {
 
 import { SortProvider, useSort } from "../../context/sort-context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
-import { ListViewProvider, useListView } from "../../context/listView-context";
+import { DataViewProvider, useDataView } from "../../context/dataView-context";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -83,7 +83,7 @@ type DataViewContainerProps<T, F> = {
   // ソート
   sortField?: SortableFieldDefinition[];
 
-  // listview新規state
+  // dataview新規state
   viewMode?: ViewMode.TABLE | ViewMode.TILE;
   newItemsPerPage?: number;
   newPageNum?: number;
@@ -143,7 +143,7 @@ const Container = <K extends Record<string, unknown>, F>({
     setColumnVisibility,
     setViewMode,
     setPageNum,
-  } = useListView();
+  } = useDataView();
 
   const datas = useMemo(() => {
     if (!items) return [];
@@ -359,9 +359,9 @@ const DataViewContainer = <
   return (
     <FilterProvider>
       <SortProvider>
-        <ListViewProvider>
+        <DataViewProvider>
           <Container {...props} />
-        </ListViewProvider>
+        </DataViewProvider>
       </SortProvider>
     </FilterProvider>
   );

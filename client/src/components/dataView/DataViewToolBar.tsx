@@ -28,7 +28,7 @@ import { isDev } from "../../utils/env";
 import QuickFilterBar from "./QuickFilterBar";
 import { hasSteps } from "../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
-import { useListView } from "../../context/listView-context";
+import { useDataView } from "../../context/dataView-context";
 import { useModal } from "../../context/modal-context";
 import { QuickFilterItem, TableData, TableHeader } from "../../types/table";
 import {
@@ -143,7 +143,7 @@ const DataViewToolBar = <Data, Form>({
     setItemsPerPage,
     columnVisibility,
     setColumnVisibility,
-  } = useListView();
+  } = useDataView();
 
   const {
     form: { isOpen, open },

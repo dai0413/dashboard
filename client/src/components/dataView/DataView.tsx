@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useListView } from "../../context/listView-context";
+import { useDataView } from "../../context/dataView-context";
 import Tile from "./Tile";
 import Table from "./Table";
 import { TableData, TableHeader } from "../../types/table";
@@ -9,7 +9,7 @@ import { useModal } from "../../context/modal-context";
 import { hasId } from "../../utils/data/getIdKey";
 import { ModelType } from "../../types/models";
 
-type ListViewProps<T> = {
+type DataViewProps<T> = {
   modelType?: ModelType;
   datas: TableData<T>;
   headers: TableHeader<T>[];
@@ -27,7 +27,7 @@ type ListViewProps<T> = {
   onDeleteClick?: (index: number) => void;
 };
 
-const ListView = <T,>({
+const DataView = <T,>({
   modelType,
   datas,
   headers,
@@ -39,8 +39,8 @@ const ListView = <T,>({
   renderFieldCell,
   onActionClick,
   onDeleteClick,
-}: ListViewProps<T>) => {
-  const { viewMode, rowSpacing, columnVisibility } = useListView();
+}: DataViewProps<T>) => {
+  const { viewMode, rowSpacing, columnVisibility } = useDataView();
 
   const {
     detail: { open },
@@ -115,4 +115,4 @@ const ListView = <T,>({
   );
 };
 
-export default ListView;
+export default DataView;

@@ -6,7 +6,7 @@ import { convert as createLabel } from "../../../lib/convert/CreateLabel";
 import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
 import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
-import { useListView } from "../../../context/listView-context";
+import { useDataView } from "../../../context/dataView-context";
 import { QuickFilterItem } from "../../../types/table";
 import { MatchEventType } from "../../../types/models/match-event-type";
 import { ViewMode } from "../../../types/types";
@@ -15,7 +15,7 @@ export const useMatchEventType = (): {
   items: QuickFilterItem[];
   loading: boolean;
 } => {
-  const { setViewMode, setItemsPerPage } = useListView();
+  const { setViewMode, setItemsPerPage } = useDataView();
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);
 

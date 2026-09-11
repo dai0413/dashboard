@@ -11,7 +11,7 @@ import {
 } from "@dai0413/myorg-shared";
 import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
-import { useListView } from "../../../context/listView-context";
+import { useDataView } from "../../../context/dataView-context";
 import { QuickFilterItem } from "../../../types/table";
 import { Season } from "../../../types/models/season";
 import { ViewMode } from "../../../types/types";
@@ -33,7 +33,7 @@ export const useTeam = (): {
   items: QuickFilterItem[];
   loading: boolean;
 } => {
-  const { setViewMode, setItemsPerPage } = useListView();
+  const { setViewMode, setItemsPerPage } = useDataView();
   const [items, setItems] = useState<QuickFilterItem[]>([]);
   const [loading, setLoading] = useState(true);
 

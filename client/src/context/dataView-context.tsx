@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { RowSpacing, ViewMode } from "../types/types";
 
-type ListViewContextType = {
+type DataViewContextType = {
   viewMode: ViewMode;
   setViewMode: (v: ViewMode) => void;
 
@@ -21,9 +21,9 @@ type ListViewContextType = {
   setColumnVisibility: (v: Record<string, boolean>) => void;
 };
 
-const ListViewContext = createContext<ListViewContextType | null>(null);
+const DataViewContext = createContext<DataViewContextType | null>(null);
 
-const ListViewProvider = ({ children }: { children: ReactNode }) => {
+const DataViewProvider = ({ children }: { children: ReactNode }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TABLE);
   const [rowSpacing, setRowSpacing] = useState<RowSpacing>(RowSpacing.NARROW);
@@ -53,18 +53,18 @@ const ListViewProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ListViewContext.Provider value={value}>
+    <DataViewContext.Provider value={value}>
       {children}
-    </ListViewContext.Provider>
+    </DataViewContext.Provider>
   );
 };
 
-const useListView = () => {
-  const context = useContext(ListViewContext);
+const useDataView = () => {
+  const context = useContext(DataViewContext);
   if (!context) {
-    throw new Error("useListView must be used within an ListViewProvider");
+    throw new Error("useDataView must be used within an DataViewProvider");
   }
   return context;
 };
 
-export { ListViewProvider, useListView };
+export { DataViewProvider, useDataView };
