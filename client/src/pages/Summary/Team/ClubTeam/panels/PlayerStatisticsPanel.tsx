@@ -1,4 +1,4 @@
-import TableClient from "../../../../../components/dataView/TableClient";
+import { TableClient } from "../../../../../components/dataView";
 import {
   isFilterable,
   isSortable,

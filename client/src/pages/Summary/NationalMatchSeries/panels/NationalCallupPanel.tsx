@@ -1,6 +1,6 @@
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ModelType } from "../../../../types/models";
-import TableClient from "../../../../components/dataView/TableClient";
+import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";

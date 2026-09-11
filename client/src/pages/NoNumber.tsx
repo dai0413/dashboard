@@ -9,7 +9,7 @@ import { Transfer, TransferGet } from "../types/models/transfer";
 import { readItemsBase } from "../lib/api";
 import { api } from "../context/api-context";
 import { convert } from "../lib/convert/DBtoGetted";
-import TableClient from "../components/dataView/TableClient";
+import { TableClient } from "../components/dataView";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;

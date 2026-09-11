@@ -1,4 +1,4 @@
-import TableClient from "../../../../components/dataView/TableClient";
+import { TableClient } from "../../../../components/dataView";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UsePlayerSummary } from "../types";
 import { playerStatistics } from "../../../../lib/fields/playerStatistics";

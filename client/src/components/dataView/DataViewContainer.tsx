@@ -25,7 +25,7 @@ import { downloadCsv } from "../../utils/data/downloadCsv";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
 import { ModelType } from "../../types/models";
 import { AxiosResponse } from "axios";
-import { DataViewContent } from "./DataViewContent";
+import { DataViewContent } from "./DataViewContent/DataViewContent";
 import { useQuickFilterSource } from "./DataViewToolbar/QuickFIlter/useQuickFilterSource";
 
 type DataViewContainerProps<T, F> = {

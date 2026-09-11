@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { DisplayListItem } from "../../types/detail";
-import RenderCell from "../dataView/RenderCell";
+import RenderCell from "../dataView/DataViewContent/DataView/RenderCell";
 
 type Props = {
   data: DisplayListItem[];
