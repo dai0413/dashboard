@@ -1,20 +1,20 @@
-import { fieldDefinition } from "../../../lib/model-fields";
-import { isFilterable } from "../../../types/field";
-import { TeamCompetitionSeason } from "../../../types/models/team-competition-season";
-import { readItemsBase } from "../../../lib/api";
-import { api } from "../../../context/api-context";
-import { convert } from "../../../lib/convert/DBtoGetted";
 import {
   ageGroup,
   API_PATHS,
   FilterableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
-import { useDataView } from "../../../context/dataView-context";
-import { QuickFilterItem } from "../../../types/table";
-import { Season } from "../../../types/models/season";
-import { ViewMode } from "../../../types/types";
+import { QuickFilterItem } from "../../../../types/table";
+import { useDataView } from "../../../../context/dataView-context";
+import { readItemsBase } from "../../../../lib/api";
+import { Season } from "../../../../types/models/season";
+import { api } from "../../../../context/api-context";
+import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
+import { convert } from "../../../../lib/convert/DBtoGetted";
+import { ModelType } from "../../../../types/models";
+import { fieldDefinition } from "../../../../lib/model-fields";
+import { isFilterable } from "../../../../types/field";
+import { ViewMode } from "../../../../types/types";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;

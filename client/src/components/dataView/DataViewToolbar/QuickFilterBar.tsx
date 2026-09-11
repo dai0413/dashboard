@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { QuickFilterItem } from "../../types/table";
-import { useFilter } from "../../context/filter-context";
+import { QuickFilterItem } from "../../../types/table";
+import { useFilter } from "../../../context/filter-context";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { useSort } from "../../context/sort-context";
-import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
+import { useSort } from "../../../context/sort-context";
+import { toggleQuickFilter } from "../../../utils/quickFilter/toggleQuickFilter";
 
 type QuickFilterBarProps = {
   items: QuickFilterItem[];

@@ -9,11 +9,7 @@ import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/st
 import { MatrixTable } from "../MatrixTable";
 import { MatrixCell } from "../MatrixCell";
 import { createCallUpCircleInfo } from "./utils/createCallUpCircleInfo";
-import {
-  createAppearanceMap,
-  createGroupedPlayers,
-  getTitle,
-} from "../../../table/Matrix/utils";
+import { createAppearanceMap, createGroupedPlayers, getTitle } from "../utils";
 import { displayPositions } from "../context/displayPositions";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { ModelType } from "../../../../types/models";

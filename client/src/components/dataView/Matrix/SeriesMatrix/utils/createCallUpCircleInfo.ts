@@ -2,7 +2,7 @@ import { MatchGet } from "../../../../../types/models/match";
 import { NationalCallup } from "../../../../../types/models/national-callup";
 import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
 import { CircleInfo } from "../../type";
-import { getTitle } from "../../../../table/Matrix/utils/index";
+import { getTitle } from "../../utils";
 
 type CreateCallUpCircleInfoParams = {
   match: MatchGet;

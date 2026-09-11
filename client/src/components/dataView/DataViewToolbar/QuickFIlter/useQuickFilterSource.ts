@@ -1,4 +1,4 @@
-import { QuickFilterType } from "../../../types/table";
+import { QuickFilterType } from "../../../../types/table";
 import { useFormation } from "./useFormation";
 import { useMatchEventType } from "./useMatchEventType";
 import { useMatchFormat } from "./useMatchFormat";

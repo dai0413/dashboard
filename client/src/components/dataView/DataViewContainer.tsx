@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 
-import DataViewToolBar from "./DataViewToolBar";
+import DataViewToolBar from "./DataViewToolbar/DataViewToolBar";
 import { Sort, Filter } from "../modals/index";
 
 import {
@@ -20,13 +20,13 @@ import {
 import { isModelType, UIFieldDefinition } from "../../types/field";
 import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
 import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
-import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
 import { LinkField, ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
 import { ModelType } from "../../types/models";
 import { AxiosResponse } from "axios";
 import { DataViewContent } from "./DataViewContent";
+import { useQuickFilterSource } from "./DataViewToolbar/QuickFIlter/useQuickFilterSource";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;

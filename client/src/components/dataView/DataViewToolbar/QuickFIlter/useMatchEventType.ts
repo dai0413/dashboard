@@ -1,15 +1,14 @@
-import { readItemsBase } from "../../../lib/api";
-import { api } from "../../../context/api-context";
-import { convert } from "../../../lib/convert/DBtoGetted";
-import { convert as createLabel } from "../../../lib/convert/CreateLabel";
-
 import { API_PATHS, FilterableFieldDefinition } from "@dai0413/myorg-shared";
-import { ModelType } from "../../../types/models";
 import { useEffect, useState } from "react";
-import { useDataView } from "../../../context/dataView-context";
-import { QuickFilterItem } from "../../../types/table";
-import { MatchEventType } from "../../../types/models/match-event-type";
-import { ViewMode } from "../../../types/types";
+import { QuickFilterItem } from "../../../../types/table";
+import { useDataView } from "../../../../context/dataView-context";
+import { readItemsBase } from "../../../../lib/api";
+import { api } from "../../../../context/api-context";
+import { convert } from "../../../../lib/convert/DBtoGetted";
+import { ModelType } from "../../../../types/models";
+import { ViewMode } from "../../../../types/types";
+import { convert as createLabel } from "../../../../lib/convert/CreateLabel";
+import { MatchEventType } from "../../../../types/models/match-event-type";
 
 export const useMatchEventType = (): {
   items: QuickFilterItem[];

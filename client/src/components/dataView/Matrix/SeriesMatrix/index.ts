@@ -1,1 +1,1 @@
-export { default as SeriesMatrix } from "../../../table/Matrix/SeriesMatrix/SeriesMatrix";
+export { default as SeriesMatrix } from "./SeriesMatrix";

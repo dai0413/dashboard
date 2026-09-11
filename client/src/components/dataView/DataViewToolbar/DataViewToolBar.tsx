@@ -16,35 +16,35 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid";
 
-import { useFilter } from "../../context/filter-context";
-import { useSort } from "../../context/sort-context";
-import { useForm } from "../../context/form-context";
-import { GettedModelDataMap, ModelType } from "../../types/models";
+import { useFilter } from "../../../context/filter-context";
+import { useSort } from "../../../context/sort-context";
+import { useForm } from "../../../context/form-context";
+import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { useEffect, useRef, useState } from "react";
-import { useAlert } from "../../context/alert-context";
-import { useAuth } from "../../context/auth-context";
-import { DropDownMenu } from "../ui";
-import { isDev } from "../../utils/env";
+import { useAlert } from "../../../context/alert-context";
+import { useAuth } from "../../../context/auth-context";
+import { DropDownMenu } from "../../ui";
+import { isDev } from "../../../utils/env";
 import QuickFilterBar from "./QuickFilterBar";
-import { hasSteps } from "../../lib/form-steps/core/hasSteps";
+import { hasSteps } from "../../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
-import { useDataView } from "../../context/dataView-context";
-import { useModal } from "../../context/modal-context";
-import { QuickFilterItem, TableData, TableHeader } from "../../types/table";
+import { useDataView } from "../../../context/dataView-context";
+import { useModal } from "../../../context/modal-context";
+import { QuickFilterItem, TableData, TableHeader } from "../../../types/table";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { createFormMenuItems } from "../../lib/form-steps/core/createFormMenuItems";
+import { createFormMenuItems } from "../../../lib/form-steps/core/createFormMenuItems";
 import {
   FormMode,
   From,
   InputMode,
   RowSpacing,
   ViewMode,
-} from "../../types/types";
-import CheckMenuItem from "../ui/CheckMenuItem";
-import { useModelContext } from "../../context/models/model-wrapper";
+} from "../../../types/types";
+import CheckMenuItem from "../../ui/CheckMenuItem";
+import { useModelContext } from "../../../context/models/model-wrapper";
 
 type MenuItem = { label: string; onClick: () => void };
 
