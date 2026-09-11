@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../types/models";
 import { UseMatchSummary } from "../types";
-import { CustomTableContainer } from "../../../../components/table";
+import { DataViewContainer } from "../../../../components/table";
 import { Formation } from "../../../../components/formation";
 
 const HomeStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
@@ -17,7 +17,7 @@ const HomeStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <CustomTableContainer
+      <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
         items={items.home}

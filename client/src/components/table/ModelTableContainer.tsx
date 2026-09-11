@@ -14,9 +14,9 @@ import {
   getSortableFields,
 } from "../../lib/model-fields";
 import { getLinkFields } from "../../lib/model-link-fields";
-import CustomTableContainer from "./CustomTableContainer";
+import { DataViewContainer } from ".";
 
-type ModelTableContainer<K extends keyof GettedModelDataMap> = {
+type ModelTableContainerProps<K extends keyof GettedModelDataMap> = {
   title: string;
   modelType: K;
   contextState: ModelContext<K>;
@@ -26,7 +26,7 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
   title,
   modelType,
   contextState,
-}: ModelTableContainer<K>) => {
+}: ModelTableContainerProps<K>) => {
   const { setPage } = useQuery();
   const {
     main: { handleSetAlert },
@@ -66,7 +66,7 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
   };
 
   return (
-    <CustomTableContainer
+    <DataViewContainer
       totalCount={totalCount}
       handlePageChange={readPage}
       handleFilterSort={handleApplyFilter}

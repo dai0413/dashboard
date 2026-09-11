@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { FormTypeMap } from "../../../../types/models";
 import { FormFieldDefinition } from "../../../../types/form";
 import { ColumnType, TableHeader } from "../../../../types/table";
-import { CustomTableContainer } from "../../../table";
+import { DataViewContainer } from "../../../table";
 import { useForm } from "../../../../context/form-context";
 import { useQuery } from "../../../../context/query-context";
 import { getDiffKeys } from "../../../../utils/comparison";
@@ -144,7 +144,7 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
 
           {many?.renderConfirmMes(confirmBulkData)}
 
-          <CustomTableContainer
+          <DataViewContainer
             pageNation="client"
             items={confirmBulkData || []}
             totalCount={confirmBulkData.length}

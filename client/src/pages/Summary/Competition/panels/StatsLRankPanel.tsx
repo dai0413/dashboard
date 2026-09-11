@@ -1,6 +1,6 @@
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
-import { CustomTableContainer } from "../../../../components/table";
+import { DataViewContainer } from "../../../../components/table";
 import { statsFields } from "../constants/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 
@@ -14,7 +14,7 @@ const StatsLRankPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <CustomTableContainer
+      <DataViewContainer
         items={items.rank}
         totalCount={items.rank.length}
         newItemsPerPage={20}

@@ -28,7 +28,7 @@ import { ModelType } from "../../types/models";
 import { AxiosResponse } from "axios";
 import { TableContent } from "./TableContent";
 
-type TableContainer<T, F> = {
+type DataViewContainerProps<T, F> = {
   totalCount: number;
   handlePageChange?: (
     page: number,
@@ -99,7 +99,7 @@ type TableContainer<T, F> = {
   }) => React.ReactNode;
 };
 
-const TableContainer = <K extends Record<string, unknown>, F>({
+const Container = <K extends Record<string, unknown>, F>({
   title,
   fieldDefinitions,
   modelType,
@@ -131,7 +131,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   selectedKeys,
   deleteOnClick,
   renderView,
-}: TableContainer<K, F>) => {
+}: DataViewContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
@@ -350,21 +350,21 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   );
 };
 
-const CustomTableContainer = <
+const DataViewContainer = <
   K extends Record<string, any>,
   F extends Record<string, any>,
 >(
-  props: TableContainer<K, F>,
+  props: DataViewContainerProps<K, F>,
 ) => {
   return (
     <FilterProvider>
       <SortProvider>
         <ListViewProvider>
-          <TableContainer {...props} />
+          <Container {...props} />
         </ListViewProvider>
       </SortProvider>
     </FilterProvider>
   );
 };
 
-export default CustomTableContainer;
+export default DataViewContainer;

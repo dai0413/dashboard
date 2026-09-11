@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import CustomTableContainer from "./CustomTableContainer";
+import { DataViewContainer } from ".";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -56,7 +56,7 @@ type TableClientProps<T, F> = {
   ) => Promise<void>;
 
   title?: string;
-  modelType?: ModelType | null;
+  modelType?: ModelType;
   linkField?: LinkField[];
   pageNation?: "client" | "server";
 
@@ -175,10 +175,8 @@ const TableClient = <
     [props.items],
   );
 
-  console.log("viewOptionData", viewOptionData);
-
   return (
-    <CustomTableContainer
+    <DataViewContainer
       {...{
         ...props,
         handleFilterSort: handleFilterSort,

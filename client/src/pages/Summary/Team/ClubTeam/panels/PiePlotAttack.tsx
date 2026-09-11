@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../../types/models";
 import { UseClubTeamSummary } from "../types";
-import { CustomTableContainer } from "../../../../../components/table";
+import { DataViewContainer } from "../../../../../components/table";
 import { RadarChart } from "../../../../../components/plot/RadarChart/RadarChart";
 
 const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
@@ -13,7 +13,7 @@ const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <CustomTableContainer
+      <DataViewContainer
         modelType={ModelType.STATS_L}
         fieldDefinitions={[]}
         items={items.offRadarData?.datasets || []}

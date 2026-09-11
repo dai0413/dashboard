@@ -1,6 +1,6 @@
 import { FormFieldDefinition } from "../../../../types/form/field";
 import { FormTypeMap } from "../../../../types/models";
-import { CustomTableContainer } from "../../../table";
+import { DataViewContainer } from "../../../table";
 import { RenderField } from "../Field/Field";
 import { useState } from "react";
 import { IconButton, IconTextButton } from "../../../buttons";
@@ -119,7 +119,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
 
   return (
     <>
-      <CustomTableContainer
+      <DataViewContainer
         pageNation="client"
         items={many?.state.length === 0 ? [] : many?.state}
         totalCount={many?.state.length || 0}

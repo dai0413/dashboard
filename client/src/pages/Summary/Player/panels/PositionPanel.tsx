@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../types/models";
 import { UsePlayerSummary } from "../types";
-import { CustomTableContainer } from "../../../../components/table";
+import { DataViewContainer } from "../../../../components/table";
 import { Formation } from "../../../../components/formation";
 
 const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
@@ -13,7 +13,7 @@ const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <CustomTableContainer
+      <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={[]}
         items={items}

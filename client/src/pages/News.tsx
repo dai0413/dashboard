@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { CustomTableContainer } from "../components/table";
+import { DataViewContainer } from "../components/table";
 import { CalendarTable } from "../components/table/Calendar/CalendarTable";
 import { CalendarDataItem } from "../components/table/Calendar/types";
 import { Data } from "../types/types";
@@ -54,7 +54,7 @@ const News = () => {
 
   return (
     <div className="p-6">
-      <CustomTableContainer
+      <DataViewContainer
         key={items.data.length}
         fieldDefinitions={[]}
         totalCount={items.data.length}

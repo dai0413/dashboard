@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { CustomTableContainer } from "../components/table";
+import { DataViewContainer } from "../components/table";
 import { LinkButton } from "../components/buttons";
 import { Arrow, FullScreenLoader } from "../components/ui";
 import { useTopPage } from "../context/top-page-context";
@@ -109,7 +109,7 @@ const Main = () => {
         <div className="flex flex-wrap -mx-4">
           <HomeCard title="移籍情報">
             <div className={`p-2`}>
-              <CustomTableContainer
+              <DataViewContainer
                 pageNation="client"
                 items={transfers}
                 totalCount={transfers.length}
@@ -162,7 +162,7 @@ const Main = () => {
 
           <HomeCard title="怪我情報">
             <div className={`p-2`}>
-              <CustomTableContainer
+              <DataViewContainer
                 pageNation="client"
                 items={injuries}
                 totalCount={injuries.length}

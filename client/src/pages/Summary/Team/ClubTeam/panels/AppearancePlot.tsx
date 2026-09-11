@@ -1,5 +1,5 @@
 import { UseClubTeamSummary } from "../types";
-import { CustomTableContainer } from "../../../../../components/table";
+import { DataViewContainer } from "../../../../../components/table";
 import { MatchMatrix } from "../../../../../components/table/Matrix";
 
 const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
@@ -13,7 +13,7 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <CustomTableContainer
+      <DataViewContainer
         fieldDefinitions={[]}
         items={items.playerStatistics}
         totalCount={items.playerStatistics.length}

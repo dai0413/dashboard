@@ -1,6 +1,6 @@
 import { isFilterable, UIFieldDefinition } from "../../../../../types/field";
 import { UseNationalTeamSummary } from "../types";
-import { CustomTableContainer } from "../../../../../components/table";
+import { DataViewContainer } from "../../../../../components/table";
 import { SeriesMatrix } from "../../../../../components/table/Matrix";
 import { ColumnType, QuickFilterItem } from "../../../../../types/table";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
@@ -186,7 +186,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <CustomTableContainer
+      <DataViewContainer
         fieldDefinitions={[]}
         items={items.nationalCallUp}
         totalCount={items.nationalCallUp.length || 0}

@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { FormTypeMap } from "../../../../../types/models";
-import { CustomTableContainer } from "../../../../table";
+import { DataViewContainer } from "../../../../table";
 import { QuickFilterItem } from "../../../../../types/table";
 import { FormFieldDefinition, UpdateMode } from "../../../../../types/form";
 import { OptionsMap } from "../../../../../utils/createOption/types/base";
@@ -120,7 +120,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
           <X size={16} />
         </button>
       </div>
-      <CustomTableContainer
+      <DataViewContainer
         pageNation="client"
         modelType={optionKey && isModelType(optionKey) ? optionKey : undefined}
         fieldDefinitions={viewOptionData?.fields ? viewOptionData.fields : []}
