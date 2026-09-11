@@ -1,7 +1,4 @@
 import { BaseField, Label } from "@dai0413/myorg-shared";
-import { ModelType } from "../models";
-import { LinkField } from "../types";
-import { UIFieldDefinition } from "../field";
 
 export enum ColumnType {
   FIELD = "field",
@@ -34,20 +31,3 @@ type CustomHeader<T> = BaseField &
   };
 
 export type TableHeader<T> = FieldHeader<T> | CustomHeader<T>;
-
-export type TableBase<T, F> = TableBase1<T> & TableFormProps<F>;
-
-type TableBase1<T> = {
-  title?: string;
-  fieldDefinitions: UIFieldDefinition<T>[];
-  modelType?: ModelType | null;
-  linkField?: LinkField[];
-  pageNation?: "client" | "server";
-};
-
-type TableFormProps<F> = {
-  initialData?: {
-    formData?: Partial<F>;
-    metaData?: Record<string, any>;
-  };
-};
