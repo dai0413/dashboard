@@ -1,23 +1,18 @@
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 
-import ListView from "./ListView";
 import TableToolbar from "./TableToolbar";
 import { Sort, Filter } from "../modals/index";
 
 import {
   QuickFilterItem,
   QuickFilterType,
-  TableBase,
   TableData,
-  TableEditProps,
-  TableOperationFields,
+  TableHeader,
 } from "../../types/table";
 
 import { SortProvider, useSort } from "../../context/sort-context";
 import { FilterProvider, useFilter } from "../../context/filter-context";
 import { ListViewProvider, useListView } from "../../context/listView-context";
-import { AxiosResponse } from "axios";
-import { Loader2 } from "lucide-react";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -26,56 +21,83 @@ import { isModelType, UIFieldDefinition } from "../../types/field";
 import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
 import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
 import { useQuickFilterSource } from "./QuickFIlter/useQuickFilterSource";
-import { ViewMode } from "../../types/types";
+import { LinkField, ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
-import { PageButtons } from "./PageButtons";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
+import { ModelType } from "../../types/models";
+import { AxiosResponse } from "axios";
+import { TableContent } from "./TableContent";
 
-type TablePage = {
+type TableContainer<T, F> = {
   totalCount: number;
   handlePageChange?: (
     page: number,
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
+  title?: string;
+  modelType?: ModelType;
+  linkField?: LinkField[];
+  pageNation?: "client" | "server";
+  fieldDefinitions?: UIFieldDefinition<T>[];
+  items?: T[];
+  itemsLoading?: boolean;
+
+  /** 単一データ編集モード */
+  form?: boolean;
+  onClick?: (index: number, row: T) => void;
+  selectedKey?: string[];
+
+  /** 複数データ編集モード */
+  edit?: boolean;
+  renderFieldCell?: (
+    header: TableHeader<T>,
+    row: T,
+    rowIndex: number,
+  ) => React.ReactNode;
+  deleteOnClick?: (index: number) => void;
+  selectedKeys?: Record<number, string[]>;
+
+  // ツールバー
+  noToolBar?: false;
+  reloadFun?: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
+  uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
+  downloadFile?: () => Promise<boolean>;
+  initialData?: {
+    formData?: Partial<F>;
+    metaData?: Record<string, any>;
+  };
   handleFilterSort?: (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
+
+  // フィルター
+  filterField?: FilterableFieldDefinition[];
+  quickFilterType?: QuickFilterType;
+  quickFilterItems?: QuickFilterItem[];
+
+  // ソート
+  sortField?: SortableFieldDefinition[];
+
+  // listview新規state
+  viewMode?: ViewMode.TABLE | ViewMode.TILE;
+  newItemsPerPage?: number;
+  newPageNum?: number;
+
+  // レンダリング
+  noItemMessage?: ReactNode;
+  renderView?: (params: {
+    items: TableData<T>;
+    totalCount: number;
+    isLoading: boolean;
+    filterConditions?: FilterableFieldDefinition[];
+    sortConditions?: SortableFieldDefinition[];
+  }) => React.ReactNode;
 };
-
-type Original<T, F> = Omit<TableBase<T, F>, "headers"> &
-  TableOperationFields &
-  TablePage &
-  TableEditProps<T> & {
-    fieldDefinitions?: UIFieldDefinition<T>[];
-    items?: T[];
-    itemsLoading?: boolean;
-
-    uploadFile?: (
-      file: File,
-    ) => Promise<AxiosResponse<any, any, {}> | undefined>;
-    reloadFun?: (
-      filterConditions: FilterableFieldDefinition[],
-      sortConditions: SortableFieldDefinition[],
-    ) => Promise<void>;
-    quickFilterType?: QuickFilterType;
-    quickFilterItems?: QuickFilterItem[];
-    noItemMessage?: ReactNode;
-    noToolBar?: false;
-    viewMode?: ViewMode.TABLE | ViewMode.TILE;
-    newItemsPerPage?: number;
-    newPageNum?: number;
-    renderView?: (params: {
-      items: TableData<T>;
-      totalCount: number;
-      isLoading: boolean;
-      filterConditions?: FilterableFieldDefinition[];
-      sortConditions?: SortableFieldDefinition[];
-    }) => React.ReactNode;
-  } & TableEditProps<T>;
-
-export type TableContainerProps<T, F> = Original<T, F>;
 
 const TableContainer = <K extends Record<string, unknown>, F>({
   title,
@@ -91,8 +113,9 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   totalCount,
   handlePageChange,
   handleFilterSort,
-  uploadFile,
   reloadFun,
+  uploadFile,
+  downloadFile,
   form,
   onClick,
   selectedKey,
@@ -108,7 +131,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
   selectedKeys,
   deleteOnClick,
   renderView,
-}: TableContainerProps<K, F>) => {
+}: TableContainer<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
@@ -122,24 +145,24 @@ const TableContainer = <K extends Record<string, unknown>, F>({
     setPageNum,
   } = useListView();
 
-  const paginatedData = useMemo(() => {
+  const datas = useMemo(() => {
     if (!items) return [];
-    const targetData =
-      pageNation === "client"
-        ? itemsPerPage
-          ? items.slice((pageNum - 1) * itemsPerPage, pageNum * itemsPerPage)
-          : items
+
+    const offset =
+      pageNation === "client" && itemsPerPage
+        ? (pageNum - 1) * itemsPerPage
+        : 0;
+
+    const targetItems =
+      pageNation === "client" && itemsPerPage
+        ? items.slice(offset, offset + itemsPerPage)
         : items;
 
-    const datas = targetData.map((d, i) => {
-      return {
-        item: d,
-        index: itemsPerPage ? (pageNum - 1) * itemsPerPage + i : i,
-      };
-    });
-
-    return datas;
-  }, [items, itemsPerPage, pageNum]);
+    return targetItems.map((item, index) => ({
+      item,
+      index: offset + index,
+    }));
+  }, [items, pageNation, itemsPerPage, pageNum]);
 
   const onPageChange = useCallback(
     async (
@@ -151,7 +174,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
       handlePageChange &&
         (await handlePageChange(page, filterConditions, sortConditions));
     },
-    [handlePageChange],
+    [handlePageChange, setPageNum],
   );
 
   const handleApplyFilter = useCallback(
@@ -159,8 +182,6 @@ const TableContainer = <K extends Record<string, unknown>, F>({
       filterConditions: FilterableFieldDefinition[],
       sortConditions: SortableFieldDefinition[],
     ) => {
-      setPageNum(1);
-
       const forceFilterConditions = filterField
         ? filterField.filter((f) => !!f.value)
         : null;
@@ -170,6 +191,7 @@ const TableContainer = <K extends Record<string, unknown>, F>({
           ? forceFilterConditions
           : filterConditions;
 
+      setPageNum(1);
       closeFilter();
 
       if (handleFilterSort) {
@@ -180,7 +202,14 @@ const TableContainer = <K extends Record<string, unknown>, F>({
 
       closeSort();
     },
-    [filterField],
+    [
+      filterField,
+      setPageNum,
+      closeFilter,
+      handleFilterSort,
+      handlePageChange,
+      closeSort,
+    ],
   );
 
   useEffect(() => {
@@ -257,21 +286,22 @@ const TableContainer = <K extends Record<string, unknown>, F>({
     return quickFilterSouce ?? [];
   }, [quickFilterSouce, quickFilterItems]);
 
-  const downloadFile = async () => downloadCsv(`${modelType}.csv`, items ?? []);
+  const newDownloadFile = downloadFile
+    ? downloadFile
+    : async () => downloadCsv(`${modelType}.csv`, items ?? []);
 
   const pages = useMemo(() => {
     const totalPages =
       itemsPerPage && totalCount
         ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
         : itemsPerPage
-          ? Math.ceil(paginatedData.length / itemsPerPage)
+          ? Math.ceil(datas.length / itemsPerPage)
           : 1;
 
     const pages = getPageNumbers(pageNum, totalPages);
 
-    console.log("pages", totalCount, pages);
     return pages;
-  }, [itemsPerPage, totalCount, paginatedData]);
+  }, [itemsPerPage, totalCount, datas]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
@@ -284,65 +314,38 @@ const TableContainer = <K extends Record<string, unknown>, F>({
       {noToolBar !== false && (
         <TableToolbar<K, F>
           modelType={modelType}
+          downloadFile={newDownloadFile}
           uploadFile={uploadFile}
-          downloadFile={downloadFile}
           initialData={initialData}
           reloadFun={reloadFun}
           quickFilterItems={quickFilterItemsParam}
           headers={fieldDefinitions}
-          items={paginatedData}
+          items={datas}
         />
       )}
-      {itemsLoading || quickFilterLoading ? (
-        <div className="flex items-center justify-center py-16">
-          <div className="bg-gray-50 px-8 py-10 text-center">
-            <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
-          </div>
-        </div>
-      ) : paginatedData && paginatedData.length > 0 ? (
-        renderView ? (
-          <div className="flex justify-center">
-            {renderView({
-              items: paginatedData,
-              totalCount: totalCount || 0,
-              isLoading: itemsLoading || false,
-            })}
-          </div>
-        ) : fieldDefinitions ? (
-          <div className="max-h-[50rem] overflow-y-auto">
-            <ListView<K>
-              modelType={modelType ? modelType : undefined}
-              datas={paginatedData}
-              headers={fieldDefinitions}
-              linkField={linkField}
-              form={form}
-              onActionClick={onClick}
-              selectedKey={selectedKey}
-              renderFieldCell={renderFieldCell}
-              edit={edit}
-              selectedKeys={selectedKeys}
-              onDeleteClick={deleteOnClick}
-            />
-            <PageButtons
-              pages={pages}
-              currentPageNum={pageNum}
-              onClick={(pageNum) => {
-                onPageChange(pageNum, filterConditions, sortConditions);
-                setPageNum(pageNum);
-              }}
-            />
-          </div>
-        ) : null
-      ) : (
-        <div className="flex items-center justify-center py-16">
-          <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">
-            <p className="mb-2 text-lg font-semibold text-gray-600">
-              表示するデータがありません
-            </p>
-            {noItemMessage}
-          </div>
-        </div>
-      )}
+
+      <TableContent
+        totalCount={totalCount}
+        modelType={modelType}
+        linkField={linkField}
+        fieldDefinitions={fieldDefinitions}
+        datas={datas}
+        isLoading={itemsLoading || quickFilterLoading}
+        form={form}
+        onActionClick={onClick}
+        selectedKey={selectedKey}
+        edit={edit}
+        renderFieldCell={renderFieldCell}
+        deleteOnClick={deleteOnClick}
+        selectedKeys={selectedKeys}
+        noItemMessage={noItemMessage}
+        renderView={renderView}
+        pages={pages}
+        pageNum={pageNum}
+        onPageChange={(pageNum) => {
+          onPageChange(pageNum, filterConditions, sortConditions);
+        }}
+      />
     </div>
   );
 };
@@ -351,7 +354,7 @@ const CustomTableContainer = <
   K extends Record<string, any>,
   F extends Record<string, any>,
 >(
-  props: TableContainerProps<K, F>,
+  props: TableContainer<K, F>,
 ) => {
   return (
     <FilterProvider>
