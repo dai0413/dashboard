@@ -50,7 +50,7 @@ type Props<T> = {
   onPageChange: (page: number) => void;
 };
 
-export const TableContent = <K extends Record<string, unknown>>({
+export const DataViewContent = <K extends Record<string, unknown>>({
   totalCount,
   modelType,
   linkField,

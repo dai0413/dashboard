@@ -26,7 +26,7 @@ import { downloadCsv } from "../../utils/data/downloadCsv";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
 import { ModelType } from "../../types/models";
 import { AxiosResponse } from "axios";
-import { TableContent } from "./TableContent";
+import { DataViewContent } from "./DataViewContent";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -324,7 +324,7 @@ const Container = <K extends Record<string, unknown>, F>({
         />
       )}
 
-      <TableContent
+      <DataViewContent
         totalCount={totalCount}
         modelType={modelType}
         linkField={linkField}
