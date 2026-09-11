@@ -1,5 +1,5 @@
 import { ModelType } from "../../../../types/models";
-import TableClient from "../../../../components/table/TableClient";
+import TableClient from "../../../../components/dataView/TableClient";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";

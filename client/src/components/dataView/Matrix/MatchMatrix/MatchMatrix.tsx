@@ -11,7 +11,7 @@ import {
 import { displayPositions } from "../context/displayPositions";
 import { createAppearanceMap, createGroupedPlayers, getTitle } from "../utils";
 import { MatrixCell } from "../MatrixCell";
-import { MatrixTable } from "../MatrixTable";
+import { MatrixTable } from "../../../dataView/Matrix/MatrixTable";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { MatchGet } from "../../../../types/models/match";
 import { PlayerRegistrationHistoryGet } from "../../../../types/models/player-registration-history";

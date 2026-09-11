@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { Label } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { APP_ROUTES } from "../../../lib/appRoutes";
-import { DisplayPosition, GroupedPlayers } from "./type";
 import { getAgeLabel } from "./utils";
+import { DisplayPosition, GroupedPlayers } from "./type";
 
 type MatrixTableProps<T extends Label> = {
   groupedPlayers: GroupedPlayers[];

@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useRefereeAppearance } from "../../context/models/referee-appearance";
 import { ModelType } from "../../types/models";
 

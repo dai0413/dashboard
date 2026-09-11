@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { CircleInfo } from "../type";
+import { CircleInfo } from "../../../dataView/Matrix/type";
 import { Circle } from "./Circle";
 
 const MatrixCell = ({ appearances }: { appearances: CircleInfo[] }) => (

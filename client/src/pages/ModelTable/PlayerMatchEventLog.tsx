@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { usePlayerMatchEventLog } from "../../context/models/player-match-event-log";
 import { ModelType } from "../../types/models";
 

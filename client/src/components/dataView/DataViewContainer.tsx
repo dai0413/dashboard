@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 
-import TableToolbar from "./TableToolbar";
+import DataViewToolBar from "./DataViewToolBar";
 import { Sort, Filter } from "../modals/index";
 
 import {
@@ -312,7 +312,7 @@ const Container = <K extends Record<string, unknown>, F>({
       <Filter filterableField={filterField ?? []} onApply={handleApplyFilter} />
       <Sort sortableField={sortField ?? []} onApply={handleApplyFilter} />
       {noToolBar !== false && (
-        <TableToolbar<K, F>
+        <DataViewToolBar<K, F>
           modelType={modelType}
           downloadFile={newDownloadFile}
           uploadFile={uploadFile}

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { DataViewContainer } from "../components/table";
-import { CalendarTable } from "../components/table/Calendar/CalendarTable";
-import { CalendarDataItem } from "../components/table/Calendar/types";
+import { DataViewContainer } from "../components/dataView";
+import { CalendarTable } from "../components/dataView/Calendar/CalendarTable";
+import { CalendarDataItem } from "../components/dataView/Calendar/types";
 import { Data } from "../types/types";
-import { fetchCalendarData } from "../components/table/Calendar/data/fetchCalendarData";
+import { fetchCalendarData } from "../components/dataView/Calendar/data/fetchCalendarData";
 
 const News = () => {
   const [currentDate, setCurrentDate] = useState(new Date());

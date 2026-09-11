@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useTeamMatchFormation } from "../../context/models/team-match-formation";
 import { ModelType } from "../../types/models";
 

@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useTeamCompetitionSeason } from "../../context/models/team-competition-season";
 import { ModelType } from "../../types/models";
 

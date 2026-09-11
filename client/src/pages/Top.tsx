@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { APP_ROUTES } from "../lib/appRoutes";
-import { DataViewContainer } from "../components/table";
+import { DataViewContainer } from "../components/dataView";
 import { LinkButton } from "../components/buttons";
 import { Arrow, FullScreenLoader } from "../components/ui";
 import { useTopPage } from "../context/top-page-context";

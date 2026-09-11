@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useMatchEventType } from "../../context/models/match-event-type";
 import { ModelType } from "../../types/models";
 

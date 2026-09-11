@@ -1,6 +1,6 @@
 import { FormFieldDefinition } from "../../../../types/form/field";
 import { FormTypeMap } from "../../../../types/models";
-import { DataViewContainer } from "../../../table";
+import { DataViewContainer } from "../../../dataView";
 import { RenderField } from "../Field/Field";
 import { useState } from "react";
 import { IconButton, IconTextButton } from "../../../buttons";

@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { usePlayerRegistration } from "../../context/models/player-registration";
 import { ModelType } from "../../types/models";
 

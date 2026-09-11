@@ -1,6 +1,6 @@
 import { UseClubTeamSummary } from "../types";
-import { DataViewContainer } from "../../../../../components/table";
-import { MatchMatrix } from "../../../../../components/table/Matrix";
+import { DataViewContainer } from "../../../../../components/dataView";
+import { MatchMatrix } from "../../../../../components/dataView/Matrix";
 
 const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {

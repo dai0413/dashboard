@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../types/models";
 import { UseMatchSummary } from "../types";
-import { DataViewContainer } from "../../../../components/table";
+import { DataViewContainer } from "../../../../components/dataView";
 import { Formation } from "../../../../components/formation";
 
 const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {

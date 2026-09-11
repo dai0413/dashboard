@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useStatsL } from "../../context/models/stats-l";
 import { ModelType } from "../../types/models";
 

@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { FormTypeMap } from "../../../../../types/models";
-import { DataViewContainer } from "../../../../table";
+import { DataViewContainer } from "../../../../dataView";
 import { QuickFilterItem } from "../../../../../types/table";
 import { FormFieldDefinition, UpdateMode } from "../../../../../types/form";
 import { OptionsMap } from "../../../../../utils/createOption/types/base";

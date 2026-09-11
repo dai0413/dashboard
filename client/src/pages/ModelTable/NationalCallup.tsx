@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useNationalCallup } from "../../context/models/national-callup";
 import { ModelType } from "../../types/models";
 

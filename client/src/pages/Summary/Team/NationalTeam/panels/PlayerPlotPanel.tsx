@@ -1,7 +1,7 @@
 import { isFilterable, UIFieldDefinition } from "../../../../../types/field";
 import { UseNationalTeamSummary } from "../types";
-import { DataViewContainer } from "../../../../../components/table";
-import { SeriesMatrix } from "../../../../../components/table/Matrix";
+import { DataViewContainer } from "../../../../../components/dataView";
+import { SeriesMatrix } from "../../../../../components/dataView/Matrix";
 import { ColumnType, QuickFilterItem } from "../../../../../types/table";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 

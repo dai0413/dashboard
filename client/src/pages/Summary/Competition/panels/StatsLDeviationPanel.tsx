@@ -1,6 +1,6 @@
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
-import { DataViewContainer } from "../../../../components/table";
+import { DataViewContainer } from "../../../../components/dataView";
 import { statsFields } from "../constants/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 

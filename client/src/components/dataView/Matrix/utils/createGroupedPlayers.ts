@@ -1,5 +1,5 @@
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { DisplayPosition, GroupedPlayers } from "../type";
+import { DisplayPosition, GroupedPlayers } from "../../../dataView/Matrix/type";
 import { sortDob } from "./sortDob";
 import { positionBase } from "../../../formation/positionBase";
 

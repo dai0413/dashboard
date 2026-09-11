@@ -1,5 +1,5 @@
 import { positionColorMap } from "../../../../styles/colors";
-import { DisplayPosition } from "../type";
+import { DisplayPosition } from "../../../dataView/Matrix/type";
 
 export const displayPositions: DisplayPosition[] = [
   {

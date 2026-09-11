@@ -3,7 +3,7 @@ import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable, UIFieldDefinition } from "../types/field";
-import TableClient from "../components/table/TableClient";
+import TableClient from "../components/dataView/TableClient";
 import { useEffect, useState } from "react";
 import { Data } from "../types/types";
 import { readItemsBase } from "../lib/api";

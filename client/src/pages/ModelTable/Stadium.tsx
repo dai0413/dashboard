@@ -1,4 +1,4 @@
-import { ModelTableContainer } from "../../components/table";
+import { ModelTableContainer } from "../../components/dataView";
 import { useStadium } from "../../context/models/stadium";
 import { ModelType } from "../../types/models";
 

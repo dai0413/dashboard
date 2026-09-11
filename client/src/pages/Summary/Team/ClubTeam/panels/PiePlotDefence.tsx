@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../../types/models";
 import { UseClubTeamSummary } from "../types";
-import { DataViewContainer } from "../../../../../components/table";
+import { DataViewContainer } from "../../../../../components/dataView";
 import { RadarChart } from "../../../../../components/plot/RadarChart/RadarChart";
 
 const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {

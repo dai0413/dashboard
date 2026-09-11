@@ -1,4 +1,4 @@
-import { CircleInfo } from "../type";
+import { CircleInfo } from "../../../dataView/Matrix/type";
 
 const COLORS = {
   border: "#d1d5db", // gray-300

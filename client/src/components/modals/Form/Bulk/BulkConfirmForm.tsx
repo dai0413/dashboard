@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { FormTypeMap } from "../../../../types/models";
 import { FormFieldDefinition } from "../../../../types/form";
 import { ColumnType, TableHeader } from "../../../../types/table";
-import { DataViewContainer } from "../../../table";
+import { DataViewContainer } from "../../../dataView";
 import { useForm } from "../../../../context/form-context";
 import { useQuery } from "../../../../context/query-context";
 import { getDiffKeys } from "../../../../utils/comparison";

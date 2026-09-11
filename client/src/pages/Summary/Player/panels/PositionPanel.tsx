@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../types/models";
 import { UsePlayerSummary } from "../types";
-import { DataViewContainer } from "../../../../components/table";
+import { DataViewContainer } from "../../../../components/dataView";
 import { Formation } from "../../../../components/formation";
 
 const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
