@@ -1,16 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
-import CustomTableContainer, {
-  TableContainerProps,
-} from "./CustomTableContainer";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import CustomTableContainer from "./CustomTableContainer";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { applyFilterClient } from "../../utils/filter/applyFilterClient";
 import { applySortClient } from "../../utils/sort/applySortClient";
-import { Data } from "../../types/types";
+import { Data, LinkField, ViewMode } from "../../types/types";
+import { UIFieldDefinition } from "../../types/field";
+import {
+  QuickFilterItem,
+  QuickFilterType,
+  TableData,
+  TableHeader,
+} from "../../types/table";
+import { ModelType } from "../../types/models";
 
-export const trimFilterKey = (
+const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
 ): FilterableFieldDefinition[] => {
   return fieldDefinitions.map((field) => ({
@@ -20,7 +26,7 @@ export const trimFilterKey = (
   }));
 };
 
-export const trimSortKey = (
+const trimSortKey = (
   fieldDefinitions: SortableFieldDefinition[],
 ): SortableFieldDefinition[] => {
   return fieldDefinitions.map((field) => ({
@@ -37,11 +43,75 @@ const defalut = {
   isLoading: false,
 };
 
+type TableClientProps<T, F> = {
+  totalCount: number;
+  handlePageChange?: (
+    page: number,
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
+  handleFilterSort?: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
+
+  title?: string;
+  modelType?: ModelType | null;
+  linkField?: LinkField[];
+  pageNation?: "client" | "server";
+
+  initialData?: {
+    formData?: Partial<F>;
+    metaData?: Record<string, any>;
+  };
+
+  /** 単一データ編集モード */
+  form?: boolean;
+  onClick?: (index: number, row: T) => void;
+  selectedKey?: string[];
+
+  /** 複数データ編集モード */
+  edit?: boolean;
+  renderFieldCell?: (
+    header: TableHeader<T>,
+    row: T,
+    rowIndex: number,
+  ) => React.ReactNode;
+  deleteOnClick?: (index: number) => void;
+  selectedKeys?: Record<number, string[]>;
+
+  filterField?: FilterableFieldDefinition[];
+  sortField?: SortableFieldDefinition[];
+
+  fieldDefinitions?: UIFieldDefinition<T>[];
+  items?: T[];
+  itemsLoading?: boolean;
+
+  reloadFun?: (
+    filterConditions: FilterableFieldDefinition[],
+    sortConditions: SortableFieldDefinition[],
+  ) => Promise<void>;
+  quickFilterType?: QuickFilterType;
+  quickFilterItems?: QuickFilterItem[];
+  noItemMessage?: ReactNode;
+  noToolBar?: false;
+  viewMode?: ViewMode.TABLE | ViewMode.TILE;
+  newItemsPerPage?: number;
+  newPageNum?: number;
+  renderView?: (params: {
+    items: TableData<T>;
+    totalCount: number;
+    isLoading: boolean;
+    filterConditions?: FilterableFieldDefinition[];
+    sortConditions?: SortableFieldDefinition[];
+  }) => React.ReactNode;
+};
+
 const TableClient = <
   K extends Record<string, any>,
   F extends Record<string, any>,
 >(
-  props: TableContainerProps<K, F>,
+  props: TableClientProps<K, F>,
 ) => {
   const [viewOptionData, setViewOptionData] = useState<Data<any>>(defalut);
 
