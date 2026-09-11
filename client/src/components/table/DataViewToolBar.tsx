@@ -48,7 +48,7 @@ import { useModelContext } from "../../context/models/model-wrapper";
 
 type MenuItem = { label: string; onClick: () => void };
 
-type TableToolbarProps<Data, Form> = {
+type DataViewToolBarProps<Data, Form> = {
   modelType?: ModelType | null;
   uploadFile?: (file: File) => Promise<AxiosResponse<any, any, {}> | undefined>;
   downloadFile?: () => Promise<boolean>;
@@ -113,7 +113,7 @@ const ToolbarGroup = ({ children }: ToolbarGroupProps) => (
   <div className="flex flex-wrap items-center gap-x-1">{children}</div>
 );
 
-const TableToolbar = <Data, Form>({
+const DataViewToolBar = <Data, Form>({
   modelType,
   uploadFile,
   downloadFile,
@@ -122,7 +122,7 @@ const TableToolbar = <Data, Form>({
   quickFilterItems,
   headers,
   items,
-}: TableToolbarProps<Data, Form>) => {
+}: DataViewToolBarProps<Data, Form>) => {
   const { openFilter, filterConditions } = useFilter();
   const { openSort, sortConditions } = useSort();
   const {
@@ -568,4 +568,4 @@ const TableToolbar = <Data, Form>({
   );
 };
 
-export default TableToolbar;
+export default DataViewToolBar;
