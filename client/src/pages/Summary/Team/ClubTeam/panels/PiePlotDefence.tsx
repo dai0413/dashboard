@@ -2,6 +2,7 @@ import { ModelType } from "../../../../../types/models";
 import { UseClubTeamSummary } from "../types";
 import { DataViewContainer } from "../../../../../components/dataView";
 import { RadarChart } from "../../../../../components/plot/RadarChart/RadarChart";
+import { ViewMode } from "../../../../../types/types";
 
 const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
@@ -26,6 +27,8 @@ const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
             datasets={items.defRadarData?.datasets || []}
           />
         )}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.RADAR_CHART]}
+        defaultViewMode={ViewMode.RADAR_CHART}
       />
     </>
   );

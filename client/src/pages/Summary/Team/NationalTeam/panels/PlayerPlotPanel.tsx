@@ -4,6 +4,7 @@ import { DataViewContainer } from "../../../../../components/dataView";
 import { SeriesMatrix } from "../../../../../components/dataView/DataViewContent/DataView/Matrix";
 import { ColumnType, QuickFilterItem } from "../../../../../types/table";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
+import { ViewMode } from "../../../../../types/types";
 
 const filedDefinitions: UIFieldDefinition<NationalMatchSeriesGet>[] = [
   {
@@ -210,6 +211,8 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         )}
         quickFilterItems={quickFilterItem}
         itemsLoading={isLoading}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.MATRIX]}
+        defaultViewMode={ViewMode.MATRIX}
       />
     </>
   );

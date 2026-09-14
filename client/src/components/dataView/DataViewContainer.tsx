@@ -83,8 +83,9 @@ type DataViewContainerProps<T, F> = {
   // ソート
   sortField?: SortableFieldDefinition[];
 
-  // dataview新規state
-  viewMode?: ViewMode.TABLE | ViewMode.TILE;
+  // dataview
+  defaultViewMode?: ViewMode;
+  viewModes?: ViewMode[];
   newItemsPerPage?: number;
   newPageNum?: number;
 
@@ -101,15 +102,15 @@ type DataViewContainerProps<T, F> = {
 
 const Container = <K extends Record<string, unknown>, F>({
   title,
-  fieldDefinitions,
+  fieldDefinitions = [],
   modelType,
   pageNation,
   initialData,
   linkField,
   items,
   itemsLoading,
-  filterField,
-  sortField,
+  filterField = [],
+  sortField = [],
   totalCount,
   handlePageChange,
   handleFilterSort,
@@ -125,7 +126,8 @@ const Container = <K extends Record<string, unknown>, F>({
   renderFieldCell,
   edit,
   noToolBar,
-  viewMode,
+  defaultViewMode = ViewMode.TABLE,
+  viewModes = [ViewMode.TABLE, ViewMode.TILE],
   newItemsPerPage,
   newPageNum,
   selectedKeys,
@@ -136,7 +138,6 @@ const Container = <K extends Record<string, unknown>, F>({
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
   const {
-    updateTrigger,
     itemsPerPage,
     pageNum,
     setItemsPerPage,
@@ -213,8 +214,10 @@ const Container = <K extends Record<string, unknown>, F>({
   );
 
   useEffect(() => {
-    viewMode && setViewMode(viewMode);
-  }, [viewMode]);
+    defaultViewMode &&
+      viewModes.includes(defaultViewMode) &&
+      setViewMode(defaultViewMode);
+  }, [defaultViewMode]);
 
   useEffect(() => {
     newItemsPerPage && setItemsPerPage(newItemsPerPage);
@@ -256,9 +259,9 @@ const Container = <K extends Record<string, unknown>, F>({
     sortableField && resetSort(sortableField);
   }, [modelType]);
 
-  useEffect(() => {
-    handleApplyFilter(filterConditions, sortConditions);
-  }, [updateTrigger]);
+  // useEffect(() => {
+  //   handleApplyFilter(filterConditions, sortConditions);
+  // }, [updateTrigger]);
 
   useEffect(() => {
     if (!quickFilterItems) return;
@@ -309,8 +312,8 @@ const Container = <K extends Record<string, unknown>, F>({
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
       )}
 
-      <Filter filterableField={filterField ?? []} onApply={handleApplyFilter} />
-      <Sort sortableField={sortField ?? []} onApply={handleApplyFilter} />
+      <Filter filterableField={filterField} onApply={handleApplyFilter} />
+      <Sort sortableField={sortField} onApply={handleApplyFilter} />
       {noToolBar !== false && (
         <DataViewToolBar<K, F>
           modelType={modelType}
@@ -321,6 +324,10 @@ const Container = <K extends Record<string, unknown>, F>({
           quickFilterItems={quickFilterItemsParam}
           headers={fieldDefinitions}
           items={datas}
+          viewModes={viewModes}
+          enableFilter={filterField.length > 0}
+          enableSort={sortField?.length > 0}
+          enableField={fieldDefinitions?.length > 0}
         />
       )}
 

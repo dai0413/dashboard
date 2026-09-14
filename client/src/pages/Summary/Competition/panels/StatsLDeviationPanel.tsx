@@ -3,6 +3,7 @@ import { UseCompetitionSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
 import { statsFields } from "../constants/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { ViewMode } from "../../../../types/types";
 
 const StatsLDeviationPanel = ({
   summary,
@@ -33,6 +34,7 @@ const StatsLDeviationPanel = ({
           },
         ]}
         reloadFun={reloadFun}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
       />
     </>
   );

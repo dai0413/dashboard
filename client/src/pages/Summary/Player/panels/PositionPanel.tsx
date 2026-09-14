@@ -2,6 +2,7 @@ import { ModelType } from "../../../../types/models";
 import { UsePlayerSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
 import { Formation } from "../../../../components/formation";
+import { ViewMode } from "../../../../types/types";
 
 const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
@@ -25,6 +26,8 @@ const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
           metaData: {},
         }}
         renderView={() => <Formation datas={items} />}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.FORMATION]}
+        defaultViewMode={ViewMode.FORMATION}
       />
     </>
   );

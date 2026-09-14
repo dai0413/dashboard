@@ -2,6 +2,7 @@ import { ModelType } from "../../../../types/models";
 import { UseMatchSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
 import { Formation } from "../../../../components/formation";
+import { ViewMode } from "../../../../types/types";
 
 const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {
@@ -38,6 +39,8 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
           },
         }}
         renderView={() => <Formation datas={items.away} />}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.FORMATION]}
+        defaultViewMode={ViewMode.FORMATION}
       />
     </>
   );

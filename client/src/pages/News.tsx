@@ -3,7 +3,7 @@ import { DataViewContainer } from "../components/dataView";
 import { CalendarTable } from "../components/dataView/DataViewContent/DataView/Calendar/CalendarTable";
 import { CalendarDataItem } from "../components/dataView/DataViewContent/DataView/Calendar/types";
 import { fetchCalendarData } from "../components/dataView/DataViewContent/DataView/Calendar/data/fetchCalendarData";
-import { Data } from "../types/types";
+import { Data, ViewMode } from "../types/types";
 
 const News = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -72,6 +72,8 @@ const News = () => {
             onNextMonth={handleNextMonth}
           />
         )}
+        viewModes={[ViewMode.CALENDAR]}
+        defaultViewMode={ViewMode.CALENDAR}
       />
     </div>
   );

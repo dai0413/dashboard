@@ -71,6 +71,10 @@ export enum ViewMode {
   TABLE = "table",
   MATRIX = "matrix",
   TILE = "tile",
+  CALENDAR = "calendar",
+  RADAR_CHART = "radar_chart",
+  LINE_GRAPH = "line_graph",
+  FORMATION = "formation",
 }
 
 export enum RowSpacing {

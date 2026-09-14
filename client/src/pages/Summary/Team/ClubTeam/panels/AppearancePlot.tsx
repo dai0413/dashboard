@@ -1,6 +1,7 @@
 import { UseClubTeamSummary } from "../types";
 import { DataViewContainer } from "../../../../../components/dataView";
 import { MatchMatrix } from "../../../../../components/dataView/DataViewContent/DataView/Matrix";
+import { ViewMode } from "../../../../../types/types";
 
 const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
@@ -36,6 +37,8 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
           />
         )}
         itemsLoading={isLoading}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.MATRIX]}
+        defaultViewMode={ViewMode.MATRIX}
       />
     </>
   );

@@ -20,7 +20,7 @@ import { useFilter } from "../../../context/filter-context";
 import { useSort } from "../../../context/sort-context";
 import { useForm } from "../../../context/form-context";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAlert } from "../../../context/alert-context";
 import { useAuth } from "../../../context/auth-context";
 import { DropDownMenu } from "../../ui";
@@ -63,6 +63,10 @@ type DataViewToolBarProps<Data, Form> = {
   quickFilterItems: QuickFilterItem[];
   headers?: TableHeader<Data>[];
   items?: TableData<Data>;
+  viewModes: ViewMode[];
+  enableFilter?: boolean;
+  enableSort?: boolean;
+  enableField?: boolean;
 };
 
 type ToolbarButtonProps = {
@@ -113,6 +117,37 @@ const ToolbarGroup = ({ children }: ToolbarGroupProps) => (
   <div className="flex flex-wrap items-center gap-x-1">{children}</div>
 );
 
+const viewModeMap: Record<ViewMode, { text: string; icon: React.ReactNode }> = {
+  [ViewMode.TABLE]: {
+    text: "テーブル",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+  [ViewMode.MATRIX]: {
+    text: "マトリックス",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+  [ViewMode.TILE]: {
+    text: "タイル",
+    icon: <Squares2X2Icon className="w-6 h-6" />,
+  },
+  [ViewMode.CALENDAR]: {
+    text: "カレンダー",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+  [ViewMode.RADAR_CHART]: {
+    text: "レーダー",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+  [ViewMode.LINE_GRAPH]: {
+    text: "折れ線",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+  [ViewMode.FORMATION]: {
+    text: "フォメ",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+};
+
 const DataViewToolBar = <Data, Form>({
   modelType,
   uploadFile,
@@ -120,8 +155,12 @@ const DataViewToolBar = <Data, Form>({
   initialData,
   reloadFun,
   quickFilterItems,
-  headers,
+  headers = [],
   items,
+  viewModes,
+  enableFilter,
+  enableSort,
+  enableField,
 }: DataViewToolBarProps<Data, Form>) => {
   const { openFilter, filterConditions } = useFilter();
   const { openSort, sortConditions } = useSort();
@@ -146,7 +185,7 @@ const DataViewToolBar = <Data, Form>({
   } = useDataView();
 
   const {
-    form: { isOpen, open },
+    form: { isOpen: formIsOpen, open },
   } = useModal();
 
   const openForm = () => {
@@ -167,14 +206,10 @@ const DataViewToolBar = <Data, Form>({
   const folderDropdownRef = useRef<HTMLDivElement | null>(null);
   const fieldSelectRef = useRef<HTMLDivElement | null>(null);
 
-  const onClickTable = () => {
-    setViewMode(ViewMode.TABLE);
-    setItemsPerPage(10);
-  };
-
-  const onClickTile = () => {
+  const resetItemsPerPage = (newViewMode: ViewMode) => {
     if (
-      isOpen &&
+      formIsOpen &&
+      newViewMode === ViewMode.TILE &&
       (modelType === ModelType.TEAM_COMPETITION_SEASON ||
         modelType === ModelType.FORMATION)
     ) {
@@ -182,20 +217,17 @@ const DataViewToolBar = <Data, Form>({
     } else {
       setItemsPerPage(10);
     }
+  };
 
-    setViewMode(ViewMode.TILE);
+  const onClickViewMode = (newViewMode: ViewMode) => {
+    resetItemsPerPage(newViewMode);
+
+    setViewMode(newViewMode);
   };
 
   useEffect(() => {
-    if (
-      modelType === ModelType.TEAM_COMPETITION_SEASON ||
-      modelType === ModelType.FORMATION
-    ) {
-      onClickTile();
-    } else {
-      onClickTable();
-    }
-  }, [modelType]);
+    resetItemsPerPage(viewMode);
+  }, [modelType, viewMode]);
 
   // 外側クリックで閉じる
   useEffect(() => {
@@ -392,82 +424,94 @@ const DataViewToolBar = <Data, Form>({
         {/* 左側：フィルター・行間・ソート */}
 
         <div className="flex flex-wrap items-center gap-4">
+          {(viewMode === ViewMode.TILE || viewMode === ViewMode.TABLE) && (
+            <>
+              <ToolbarGroup
+                children={
+                  <>
+                    <ToolbarButton
+                      text={"広い"}
+                      icon={<Bars2Icon className="w-6 h-6" />}
+                      isActive={rowSpacing === "wide"}
+                      onClick={() => setRowSpacing(RowSpacing.WIDE)}
+                    />
+                    <ToolbarButton
+                      text={"狭い"}
+                      icon={<Bars3Icon className="w-6 h-6" />}
+                      isActive={rowSpacing === "narrow"}
+                      onClick={() => setRowSpacing(RowSpacing.NARROW)}
+                    />
+                  </>
+                }
+              />
+
+              <div className="h-6 w-px bg-gray-300" />
+            </>
+          )}
+
+          {viewModes.length > 1 && (
+            <>
+              <ToolbarGroup
+                children={
+                  <>
+                    {viewModes.map((vm) => {
+                      const { text, icon } = viewModeMap[vm];
+                      return (
+                        <ToolbarButton
+                          text={text}
+                          icon={icon}
+                          isActive={vm === viewMode}
+                          onClick={() => onClickViewMode(vm)}
+                        />
+                      );
+                    })}
+                  </>
+                }
+              />
+
+              <div className="h-6 w-px bg-gray-300" />
+            </>
+          )}
+
           <ToolbarGroup
             children={
               <>
-                <ToolbarButton
-                  text={"広い"}
-                  icon={<Bars2Icon className="w-6 h-6" />}
-                  isActive={rowSpacing === "wide"}
-                  onClick={() => setRowSpacing(RowSpacing.WIDE)}
-                />
-                <ToolbarButton
-                  text={"狭い"}
-                  icon={<Bars3Icon className="w-6 h-6" />}
-                  isActive={rowSpacing === "narrow"}
-                  onClick={() => setRowSpacing(RowSpacing.NARROW)}
-                />
-              </>
-            }
-          />
+                {enableField && (
+                  <div className="relative" ref={fieldSelectRef}>
+                    <ToolbarButton
+                      text={"フィールド"}
+                      icon={<ViewColumnsIcon className="w-6 h-6" />}
+                      onClick={() => setIsFieldSelectOpen((prev) => !prev)}
+                    />
 
-          <div className="h-6 w-px bg-gray-300" />
+                    {isFieldSelectOpen && (
+                      <DropDownMenu menuItems={fieldSelectMenuItems} />
+                    )}
+                  </div>
+                )}
 
-          <ToolbarGroup
-            children={
-              <>
-                <ToolbarButton
-                  text={"テーブル"}
-                  icon={<TableCellsIcon className="w-6 h-6" />}
-                  isActive={viewMode === "table"}
-                  onClick={onClickTable}
-                />
-
-                <ToolbarButton
-                  text={"タイル"}
-                  icon={<Squares2X2Icon className="w-6 h-6" />}
-                  isActive={viewMode === "tile"}
-                  onClick={onClickTile}
-                />
-              </>
-            }
-          />
-
-          <div className="h-6 w-px bg-gray-300" />
-
-          <ToolbarGroup
-            children={
-              <>
-                <div className="relative" ref={fieldSelectRef}>
+                {enableSort && (
                   <ToolbarButton
-                    text={"フィールド"}
-                    icon={<ViewColumnsIcon className="w-6 h-6" />}
-                    onClick={() => setIsFieldSelectOpen((prev) => !prev)}
+                    text={"ソート"}
+                    icon={<AdjustmentsVerticalIcon className="w-6 h-6" />}
+                    onClick={() => openSort()}
+                    badge={
+                      sortConditions.filter((c) => typeof c.asc === "boolean")
+                        .length
+                    }
+                    className={"relative"}
                   />
+                )}
 
-                  {isFieldSelectOpen && (
-                    <DropDownMenu menuItems={fieldSelectMenuItems} />
-                  )}
-                </div>
-
-                <ToolbarButton
-                  text={"ソート"}
-                  icon={<AdjustmentsVerticalIcon className="w-6 h-6" />}
-                  onClick={() => openSort()}
-                  badge={
-                    sortConditions.filter((c) => typeof c.asc === "boolean")
-                      .length
-                  }
-                  className={"relative"}
-                />
-
-                <ToolbarButton
-                  text={"フィルター"}
-                  icon={<FunnelIcon className="w-6 h-6" />}
-                  onClick={() => openFilter()}
-                  badge={filterConditions.length}
-                  className={"relative"}
-                />
+                {enableFilter && (
+                  <ToolbarButton
+                    text={"フィルター"}
+                    icon={<FunnelIcon className="w-6 h-6" />}
+                    onClick={() => openFilter()}
+                    badge={filterConditions.length}
+                    className={"relative"}
+                  />
+                )}
               </>
             }
           />
@@ -483,74 +527,78 @@ const DataViewToolBar = <Data, Form>({
             />
           )}
 
-          <div className="h-6 w-px bg-gray-300" />
+          {!formIsOpen && modelType && (staffState.admin || isDev) && (
+            <>
+              <div className="h-6 w-px bg-gray-300" />
 
-          {modelType && (staffState.admin || isDev) && (
-            <ToolbarGroup
-              children={
-                <>
-                  {items && items.length > 0 && (
-                    <>
-                      <ToolbarButton
-                        text={"削除"}
-                        icon={<TrashIcon className="w-6 h-6" />}
-                        onClick={deleteOnClick}
-                        className="text-red-600"
-                      />
-                      <ToolbarButton
-                        text={"修正"}
-                        icon={<PencilSquareIcon className="w-6 h-6" />}
-                        onClick={startUpdates}
-                        className="text-blue-600"
-                      />
-                    </>
-                  )}
-                  {hasFormSteps && (
-                    <div
-                      ref={addDropdownRef}
-                      className="relative inline-block text-left"
-                    >
-                      <ToolbarButton
-                        text={"新規追加"}
-                        icon={<PlusCircleIcon className="w-6 h-6" />}
-                        onClick={addButtonHandleClick}
-                        className="text-blue-600 font-medium"
-                      />
-
-                      {menuItems.length > 1 && isAddDropDownOpen && (
-                        <DropDownMenu
-                          menuItems={menuItems.map((item) => (
-                            <button
-                              key={item.label}
-                              onClick={() => {
-                                item.onClick();
-                                setIsAddDropDownOpen((prev) => !prev);
-                                openForm();
-                              }}
-                              className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            >
-                              {item.label}
-                            </button>
-                          ))}
+              <ToolbarGroup
+                children={
+                  <>
+                    {items && items.length > 0 && (
+                      <>
+                        <ToolbarButton
+                          text={"削除"}
+                          icon={<TrashIcon className="w-6 h-6" />}
+                          onClick={deleteOnClick}
+                          className="text-red-600"
                         />
-                      )}
-                    </div>
-                  )}
-                  {(uploadFile || downloadFile) && (
-                    <div className="relative" ref={folderDropdownRef}>
-                      <ToolbarButton
-                        text={"CSV"}
-                        icon={<FolderPlusIcon className="w-6 h-6" />}
-                        onClick={() => setIsFolderOpen(!isFolderOpen)}
-                        className="text-blue-600"
-                      />
+                        <ToolbarButton
+                          text={"修正"}
+                          icon={<PencilSquareIcon className="w-6 h-6" />}
+                          onClick={startUpdates}
+                          className="text-blue-600"
+                        />
+                      </>
+                    )}
+                    {hasFormSteps && (
+                      <div
+                        ref={addDropdownRef}
+                        className="relative inline-block text-left"
+                      >
+                        <ToolbarButton
+                          text={"新規追加"}
+                          icon={<PlusCircleIcon className="w-6 h-6" />}
+                          onClick={addButtonHandleClick}
+                          className="text-blue-600 font-medium"
+                        />
 
-                      {isFolderOpen && <DropDownMenu menuItems={folderMenu} />}
-                    </div>
-                  )}
-                </>
-              }
-            />
+                        {menuItems.length > 1 && isAddDropDownOpen && (
+                          <DropDownMenu
+                            menuItems={menuItems.map((item) => (
+                              <button
+                                key={item.label}
+                                onClick={() => {
+                                  item.onClick();
+                                  setIsAddDropDownOpen((prev) => !prev);
+                                  openForm();
+                                }}
+                                className="block w-full text-left px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                              >
+                                {item.label}
+                              </button>
+                            ))}
+                          />
+                        )}
+                      </div>
+                    )}
+                    {(uploadFile || downloadFile) && (
+                      <div className="relative" ref={folderDropdownRef}>
+                        <ToolbarButton
+                          text={"CSV"}
+                          icon={<FolderPlusIcon className="w-6 h-6" />}
+                          onClick={() => setIsFolderOpen(!isFolderOpen)}
+                          className="text-blue-600"
+                        />
+
+                        {isFolderOpen && (
+                          <DropDownMenu menuItems={folderMenu} />
+                        )}
+                      </div>
+                    )}
+                  </>
+                }
+              />
+            </>
           )}
         </div>
       </div>

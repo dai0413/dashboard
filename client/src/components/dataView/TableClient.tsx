@@ -105,6 +105,8 @@ type TableClientProps<T, F> = {
     filterConditions?: FilterableFieldDefinition[];
     sortConditions?: SortableFieldDefinition[];
   }) => React.ReactNode;
+  viewModes: ViewMode[];
+  defaultViewMode: ViewMode;
 };
 
 const TableClient = <
