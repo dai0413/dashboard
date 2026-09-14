@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { DataViewContainer } from "../components/dataView";
-import { CalendarTable } from "../components/dataView/DataViewContent/DataView/Calendar/CalendarTable";
-import { CalendarDataItem } from "../components/dataView/DataViewContent/DataView/Calendar/types";
 import { fetchCalendarData } from "../components/dataView/DataViewContent/DataView/Calendar/data/fetchCalendarData";
 import { Data, ViewMode } from "../types/types";
+import { CalendarSourceData } from "../types/table/calendar";
 
 const News = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [items, setItems] = useState<Data<CalendarDataItem>>({
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [items, setItems] = useState<Data<CalendarSourceData>>({
     data: [],
     page: 1,
     totalCount: 0,
@@ -20,11 +19,11 @@ const News = () => {
       isLoading: true,
     }));
 
-    const data = await fetchCalendarData(currentDate);
+    const datas = await fetchCalendarData(currentDate);
 
     setItems({
-      data: data,
-      totalCount: data.length,
+      data: datas,
+      totalCount: datas.length,
       page: 1,
       isLoading: false,
     });
@@ -34,46 +33,22 @@ const News = () => {
     reloadFun();
   }, [currentDate]);
 
-  const handlePreviousMonth = () => {
-    setCurrentDate((current) => {
-      return new Date(current.getFullYear(), current.getMonth() - 1, 1);
-    });
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate((current) => {
-      return new Date(current.getFullYear(), current.getMonth() + 1, 1);
-    });
-  };
-
-  const handleToday = () => {
-    const today = new Date();
-
-    setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
-  };
-
   return (
     <div className="p-6">
       <DataViewContainer
         key={items.data.length}
-        fieldDefinitions={[]}
         totalCount={items.data.length}
-        noToolBar={false}
-        items={[{ id: "test", label: "test" }]}
+        items={items.data}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
-        renderView={() => (
-          <CalendarTable
-            data={items.data}
-            year={currentDate.getFullYear()}
-            month={currentDate.getMonth() + 1}
-            onToday={handleToday}
-            onPreviousMonth={handlePreviousMonth}
-            onNextMonth={handleNextMonth}
-          />
-        )}
         viewModes={[ViewMode.CALENDAR]}
         defaultViewMode={ViewMode.CALENDAR}
+        viewOptions={{
+          calendar: {
+            currentDate,
+            setCurrentDate,
+          },
+        }}
       />
     </div>
   );

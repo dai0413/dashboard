@@ -1,6 +1,5 @@
-import { API_PATHS, registrationType } from "@dai0413/myorg-shared";
-import { CalendarDataItem } from "../types";
-import { createData, getMonthDateRange, mergeCalendarData } from "../utils";
+import { API_PATHS } from "@dai0413/myorg-shared";
+import { getMonthDateRange } from "../utils";
 import { readItemsBase } from "../../../../../../lib/api";
 import { Match } from "../../../../../../types/models/match";
 import { api } from "../../../../../../context/api-context";
@@ -10,22 +9,12 @@ import { NationalMatchSeries } from "../../../../../../types/models/national-mat
 import { Transfer } from "../../../../../../types/models/transfer";
 import { Injury } from "../../../../../../types/models/injury";
 import { ModelType } from "../../../../../../types/models";
-
-type Target = {
-  registration_type: string;
-};
-
-const registrationTypeToLabel = <T extends Target>(t: T): T => {
-  const registration_type =
-    registrationType().find((item) => item.key === t.registration_type)
-      ?.label || "";
-
-  return { ...t, registration_type };
-};
+import { convert } from "../../../../../../lib/convert/CreateLabel";
+import { CalendarSourceData } from "../../../../../../types/table/calendar";
 
 export const fetchCalendarData = async (
   currentDate: Date,
-): Promise<CalendarDataItem[]> => {
+): Promise<CalendarSourceData[]> => {
   const { fromDate, endDate } = getMonthDateRange(currentDate);
 
   const [
@@ -91,58 +80,77 @@ export const fetchCalendarData = async (
     }),
   ]);
 
-  const calendarDataList: CalendarDataItem[][] = [];
+  const datas: CalendarSourceData[] = [];
 
   if (matchRes) {
-    const newCalendarDataList = createData(matchRes.data, ModelType.MATCH);
-    calendarDataList.push(newCalendarDataList);
+    const targets: CalendarSourceData[] = matchRes.data.map((d) => {
+      return {
+        data: d,
+        label: convert(ModelType.MATCH, d),
+        modelType: ModelType.MATCH,
+      };
+    });
+    datas.push(...targets);
   }
 
   if (playerRegistrationRes) {
-    const converted = playerRegistrationRes.data.map((d) =>
-      registrationTypeToLabel(d),
+    const targets: CalendarSourceData[] = playerRegistrationRes.data.map(
+      (d) => {
+        return {
+          data: d,
+          label: convert(ModelType.PLAYER_REGISTRATION, d),
+          modelType: ModelType.PLAYER_REGISTRATION,
+        };
+      },
     );
-    const newCalendarDataList = createData(
-      converted,
-      ModelType.PLAYER_REGISTRATION,
-    );
-    calendarDataList.push(newCalendarDataList);
+    datas.push(...targets);
   }
 
   if (staffRegistrationRes) {
-    const converted = staffRegistrationRes.data.map((d) =>
-      registrationTypeToLabel(d),
-    );
-
-    const newCalendarDataList = createData(
-      converted,
-      ModelType.STAFF_REGISTRATION,
-    );
-    calendarDataList.push(newCalendarDataList);
+    const targets: CalendarSourceData[] = staffRegistrationRes.data.map((d) => {
+      return {
+        data: d,
+        label: convert(ModelType.STAFF_REGISTRATION, d),
+        modelType: ModelType.STAFF_REGISTRATION,
+      };
+    });
+    datas.push(...targets);
   }
 
   if (nationalMatchSeriesRes) {
-    const newCalendarDataList = createData(
-      nationalMatchSeriesRes.data,
-      ModelType.NATIONAL_MATCH_SERIES,
+    const targets: CalendarSourceData[] = nationalMatchSeriesRes.data.map(
+      (d) => {
+        return {
+          data: d,
+          label: convert(ModelType.NATIONAL_MATCH_SERIES, d),
+          modelType: ModelType.NATIONAL_MATCH_SERIES,
+        };
+      },
     );
-    calendarDataList.push(newCalendarDataList);
+    datas.push(...targets);
   }
 
   if (transfersRes) {
-    const newCalendarDataList = createData(
-      transfersRes.data,
-      ModelType.TRANSFER,
-    );
-    calendarDataList.push(newCalendarDataList);
+    const targets: CalendarSourceData[] = transfersRes.data.map((d) => {
+      return {
+        data: d,
+        label: convert(ModelType.TRANSFER, d),
+        modelType: ModelType.TRANSFER,
+      };
+    });
+    datas.push(...targets);
   }
 
   if (injuriesRes) {
-    const newCalendarDataList = createData(injuriesRes.data, ModelType.INJURY);
-    calendarDataList.push(newCalendarDataList);
+    const targets: CalendarSourceData[] = injuriesRes.data.map((d) => {
+      return {
+        data: d,
+        label: convert(ModelType.INJURY, d),
+        modelType: ModelType.INJURY,
+      };
+    });
+    datas.push(...targets);
   }
 
-  const calendarData = mergeCalendarData(...calendarDataList);
-
-  return calendarData;
+  return datas;
 };

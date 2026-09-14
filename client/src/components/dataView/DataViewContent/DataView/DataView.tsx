@@ -8,11 +8,14 @@ import { convertToDisplayListData } from "../../../modals/Detail/utils/convertTo
 import { useModal } from "../../../../context/modal-context";
 import { hasId } from "../../../../utils/data/getIdKey";
 import { ModelType } from "../../../../types/models";
+import { CalendarTable } from "./Calendar/CalendarTable";
+import { convertToCalendarData } from "./Calendar/data/convertToCalendarData";
+import { CalendarSourceData } from "../../../../types/table/calendar";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
   datas: TableData<T>;
-  headers: TableHeader<T>[];
+  headers?: TableHeader<T>[];
   linkField?: LinkField[];
   form?: boolean;
   selectedKey?: string[];
@@ -25,6 +28,12 @@ type DataViewProps<T> = {
   ) => React.ReactNode;
   onActionClick?: (index: number, row: T) => void;
   onDeleteClick?: (index: number) => void;
+  viewOptions?: {
+    calendar?: {
+      currentDate: Date;
+      setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+  };
 };
 
 const DataView = <T,>({
@@ -39,6 +48,7 @@ const DataView = <T,>({
   renderFieldCell,
   onActionClick,
   onDeleteClick,
+  viewOptions,
 }: DataViewProps<T>) => {
   const { viewMode, rowSpacing, columnVisibility } = useDataView();
 
@@ -71,14 +81,33 @@ const DataView = <T,>({
   }, [modelType, linkField, open]);
 
   const visibleHeaders = useMemo(
-    () => headers.filter((h) => columnVisibility[h.key]),
+    () => headers?.filter((h) => columnVisibility[h.key]),
     [headers, columnVisibility],
   );
 
-  return (
-    <>
-      {viewMode === ViewMode.TABLE && (
-        <Table
+  if (viewMode === ViewMode.TABLE && visibleHeaders) {
+    return (
+      <Table
+        datas={datas}
+        headers={visibleHeaders}
+        linkField={linkField}
+        rowSpacing={rowSpacing}
+        form={form}
+        selectedKey={selectedKey}
+        selectedKeys={selectedKeys}
+        edit={edit}
+        renderFieldCell={renderFieldCell}
+        onActionClick={onActionClick}
+        onDetailClick={onDetailClick}
+        onDeleteClick={onDeleteClick}
+      />
+    );
+  }
+
+  if (viewMode === ViewMode.TILE && visibleHeaders) {
+    return (
+      <div className="mx-5">
+        <Tile
           datas={datas}
           headers={visibleHeaders}
           linkField={linkField}
@@ -92,27 +121,24 @@ const DataView = <T,>({
           onDetailClick={onDetailClick}
           onDeleteClick={onDeleteClick}
         />
-      )}
-      {viewMode === ViewMode.TILE && (
-        <div className="mx-5">
-          <Tile
-            datas={datas}
-            headers={visibleHeaders}
-            linkField={linkField}
-            rowSpacing={rowSpacing}
-            form={form}
-            selectedKey={selectedKey}
-            selectedKeys={selectedKeys}
-            edit={edit}
-            renderFieldCell={renderFieldCell}
-            onActionClick={onActionClick}
-            onDetailClick={onDetailClick}
-            onDeleteClick={onDeleteClick}
-          />
-        </div>
-      )}
-    </>
-  );
+      </div>
+    );
+  }
+
+  if (viewMode === ViewMode.CALENDAR && viewOptions?.calendar) {
+    const { currentDate, setCurrentDate } = viewOptions.calendar;
+    const calendarData = convertToCalendarData(
+      datas.map((d) => d.item as CalendarSourceData),
+    );
+
+    return (
+      <CalendarTable
+        data={calendarData}
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
+      />
+    );
+  }
 };
 
 export default DataView;

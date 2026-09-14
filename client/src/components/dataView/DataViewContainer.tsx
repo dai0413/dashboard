@@ -98,19 +98,25 @@ type DataViewContainerProps<T, F> = {
     filterConditions?: FilterableFieldDefinition[];
     sortConditions?: SortableFieldDefinition[];
   }) => React.ReactNode;
+  viewOptions?: {
+    calendar?: {
+      currentDate: Date;
+      setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+  };
 };
 
 const Container = <K extends Record<string, unknown>, F>({
   title,
-  fieldDefinitions = [],
+  fieldDefinitions,
   modelType,
   pageNation,
   initialData,
   linkField,
   items,
   itemsLoading,
-  filterField = [],
-  sortField = [],
+  filterField,
+  sortField,
   totalCount,
   handlePageChange,
   handleFilterSort,
@@ -133,6 +139,7 @@ const Container = <K extends Record<string, unknown>, F>({
   selectedKeys,
   deleteOnClick,
   renderView,
+  viewOptions,
 }: DataViewContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -312,8 +319,8 @@ const Container = <K extends Record<string, unknown>, F>({
         <h2 className="text-xl font-semibold text-gray-700 mb-4">{title}</h2>
       )}
 
-      <Filter filterableField={filterField} onApply={handleApplyFilter} />
-      <Sort sortableField={sortField} onApply={handleApplyFilter} />
+      <Filter filterableField={filterField ?? []} onApply={handleApplyFilter} />
+      <Sort sortableField={sortField ?? []} onApply={handleApplyFilter} />
       {noToolBar !== false && (
         <DataViewToolBar<K, F>
           modelType={modelType}
@@ -325,9 +332,9 @@ const Container = <K extends Record<string, unknown>, F>({
           headers={fieldDefinitions}
           items={datas}
           viewModes={viewModes}
-          enableFilter={filterField.length > 0}
-          enableSort={sortField?.length > 0}
-          enableField={fieldDefinitions?.length > 0}
+          enableFilter={filterField && filterField.length > 0}
+          enableSort={sortField && sortField?.length > 0}
+          enableField={fieldDefinitions && fieldDefinitions?.length > 0}
         />
       )}
 
@@ -352,6 +359,7 @@ const Container = <K extends Record<string, unknown>, F>({
         onPageChange={(pageNum) => {
           onPageChange(pageNum, filterConditions, sortConditions);
         }}
+        viewOptions={viewOptions}
       />
     </div>
   );

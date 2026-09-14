@@ -5,25 +5,40 @@ import { createCalendarDays } from "./utils/index";
 
 type CalendarTableProps = {
   data: CalendarDataItem[];
-  year: number;
-  month: number;
-  onToday: () => void;
-  onPreviousMonth: () => void;
-  onNextMonth: () => void;
+  currentDate: Date;
+  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
 };
 
 export const CalendarTable = ({
   data,
-  year,
-  month,
-  onToday,
-  onPreviousMonth,
-  onNextMonth,
+  currentDate,
+  setCurrentDate,
 }: CalendarTableProps) => {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+
   const days = createCalendarDays(data, year, month);
 
+  const onPreviousMonth = () => {
+    setCurrentDate((current) => {
+      return new Date(current.getFullYear(), current.getMonth() - 1, 1);
+    });
+  };
+
+  const onNextMonth = () => {
+    setCurrentDate((current: Date) => {
+      return new Date(current.getFullYear(), current.getMonth() + 1, 1);
+    });
+  };
+
+  const onToday = () => {
+    const today = new Date();
+
+    setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
+  };
+
   return (
-    <div className="max-h-[80vh] max-w-full overflow-auto rounded-md border border-gray-300">
+    <>
       <Header
         year={year}
         month={month}
@@ -46,6 +61,6 @@ export const CalendarTable = ({
           <DayCell key={day.date.toISOString()} {...day} />
         ))}
       </div>
-    </div>
+    </>
   );
 };

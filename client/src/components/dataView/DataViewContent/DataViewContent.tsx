@@ -3,13 +3,14 @@ import DataView from "./DataView/DataView";
 import { PageButtons } from "../PageButtons";
 import { TableData, TableHeader } from "../../../types/table";
 import { ModelType } from "../../../types/models";
-import { LinkField } from "../../../types/types";
+import { LinkField, ViewMode } from "../../../types/types";
 import { UIFieldDefinition } from "../../../types/field";
 import { ReactNode } from "react";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
+import { useDataView } from "../../../context/dataView-context";
 
 type Props<T> = {
   datas: TableData<T>;
@@ -48,6 +49,12 @@ type Props<T> = {
   pages: (number | "...")[];
   pageNum: number;
   onPageChange: (page: number) => void;
+  viewOptions?: {
+    calendar?: {
+      currentDate: Date;
+      setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+  };
 };
 
 export const DataViewContent = <K extends Record<string, unknown>>({
@@ -73,7 +80,10 @@ export const DataViewContent = <K extends Record<string, unknown>>({
   pages,
   pageNum,
   onPageChange,
+  viewOptions,
 }: Props<K>) => {
+  const { viewMode } = useDataView();
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -109,10 +119,6 @@ export const DataViewContent = <K extends Record<string, unknown>>({
     );
   }
 
-  if (!fieldDefinitions) {
-    return null;
-  }
-
   return (
     <div className="max-h-[50rem] overflow-y-auto">
       <DataView<K>
@@ -127,12 +133,16 @@ export const DataViewContent = <K extends Record<string, unknown>>({
         edit={edit}
         selectedKeys={selectedKeys}
         onDeleteClick={deleteOnClick}
+        viewOptions={viewOptions}
       />
-      <PageButtons
-        pages={pages}
-        currentPageNum={pageNum}
-        onClick={onPageChange}
-      />
+      {viewMode === ViewMode.TABLE ||
+        (viewMode === ViewMode.TILE && (
+          <PageButtons
+            pages={pages}
+            currentPageNum={pageNum}
+            onClick={onPageChange}
+          />
+        ))}
     </div>
   );
 };
