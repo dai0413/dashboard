@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
 import { TeamCompetitionSeasonGet } from "../../../../types/models/team-competition-season";
+import { ViewMode } from "../../../../types/types";
 
 const teamCompetitionSeasonFieldDefinition =
   convertFieldDefinition<TeamCompetitionSeasonGet>(
@@ -52,6 +53,7 @@ const TeamCompetitionSeasonPanel = ({
             competition: id,
           },
         }}
+        defaultViewMode={ViewMode.TILE}
         linkField={[
           {
             field: "team",

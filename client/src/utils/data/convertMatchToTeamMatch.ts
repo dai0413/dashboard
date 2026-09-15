@@ -28,12 +28,29 @@ export const convertMatchToTeamMatch = (
     const against_pk_goal = isHome ? away_pk_goal : home_pk_goal;
 
     let newResult: "勝ち" | "負け" | "分け" | "";
-    if (match.result === "home") {
-      newResult = isHome ? "勝ち" : "負け";
-    } else if (match.result === "away") {
-      newResult = isHome ? "負け" : "勝ち";
-    } else if (match.result === "draw") {
-      newResult = "分け";
+    if (typeof goal === "number" && typeof against_goal === "number") {
+      if (goal > against_goal) {
+        newResult = "勝ち";
+      } else if (goal < against_goal) {
+        newResult = "負け";
+      } else if (goal === against_goal) {
+        newResult = "分け";
+
+        if (
+          typeof pk_goal === "number" &&
+          typeof against_pk_goal === "number"
+        ) {
+          if (pk_goal > against_goal) {
+            newResult = "勝ち";
+          } else if (pk_goal < against_goal) {
+            newResult = "負け";
+          } else {
+            continue;
+          }
+        }
+      } else {
+        continue;
+      }
     } else {
       continue;
     }

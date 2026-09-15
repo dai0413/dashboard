@@ -11,7 +11,6 @@ import { UIFieldDefinition } from "../../types/field";
 import {
   QuickFilterItem,
   QuickFilterType,
-  TableData,
   TableHeader,
 } from "../../types/table";
 import { ModelType } from "../../types/models";
@@ -98,15 +97,8 @@ type TableClientProps<T, F> = {
   viewMode?: ViewMode.TABLE | ViewMode.TILE;
   newItemsPerPage?: number;
   newPageNum?: number;
-  renderView?: (params: {
-    items: TableData<T>;
-    totalCount: number;
-    isLoading: boolean;
-    filterConditions?: FilterableFieldDefinition[];
-    sortConditions?: SortableFieldDefinition[];
-  }) => React.ReactNode;
-  viewModes: ViewMode[];
-  defaultViewMode: ViewMode;
+  viewModes?: ViewMode[];
+  defaultViewMode?: ViewMode;
 };
 
 const TableClient = <

@@ -35,8 +35,8 @@ export const useLinePlotPanel = () => {
 
     setTeamMatchs(teamMatchs);
 
-    const labels = teamMatchs.map((match) =>
-      match.match_week ? `w-${match.match_week}` : "",
+    const labels = teamMatchs.map((match, i) =>
+      match.match_week ? `w-${match.match_week}` : `Game-${i + 1}`,
     );
 
     let total = 0;

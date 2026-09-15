@@ -147,27 +147,36 @@ const Container = <K extends Record<string, unknown>, F>({
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
-  const { setItemsPerPage, setColumnVisibility, setViewMode, setPageNum } =
-    useDataView();
+  const {
+    pageNum,
+    itemsPerPage,
+    setItemsPerPage,
+    setColumnVisibility,
+    setViewMode,
+    setPageNum,
+  } = useDataView();
 
   const datas = useMemo(() => {
     if (!items) return [];
 
+    const nextItemsPerPage = newItemsPerPage || itemsPerPage;
+    const nextPageNum = newPageNum || pageNum;
+
     const offset =
-      pageNation === "client" && newItemsPerPage
-        ? (newPageNum || 1 - 1) * newItemsPerPage
+      pageNation === "client" && nextItemsPerPage
+        ? ((nextPageNum || 1) - 1) * nextItemsPerPage
         : 0;
 
     const targetItems =
-      pageNation === "client" && newItemsPerPage
-        ? items.slice(offset, offset + newItemsPerPage)
+      pageNation === "client" && nextItemsPerPage
+        ? items.slice(offset, offset + nextItemsPerPage)
         : items;
 
     return targetItems.map((item, index) => ({
       item,
       index: offset + index,
     }));
-  }, [items, pageNation, newItemsPerPage, newPageNum]);
+  }, [items, pageNation, itemsPerPage, newItemsPerPage, pageNum, newPageNum]);
 
   const onPageChange = useCallback(
     async (
@@ -298,17 +307,20 @@ const Container = <K extends Record<string, unknown>, F>({
     : async () => downloadCsv(`${modelType}.csv`, items ?? []);
 
   const pages = useMemo(() => {
+    const nextItemsPerPage = newItemsPerPage || itemsPerPage;
+    const nextPageNum = newPageNum || pageNum;
+
     const totalPages =
-      newItemsPerPage && totalCount
-        ? Math.max(Math.ceil(totalCount / newItemsPerPage), 1)
-        : newItemsPerPage
-          ? Math.ceil(datas.length / newItemsPerPage)
+      nextItemsPerPage && totalCount
+        ? Math.max(Math.ceil(totalCount / nextItemsPerPage), 1)
+        : nextItemsPerPage
+          ? Math.ceil(datas.length / nextItemsPerPage)
           : 1;
 
-    const pages = getPageNumbers(newPageNum || 1, totalPages);
+    const pages = getPageNumbers(nextPageNum || 1, totalPages);
 
     return pages;
-  }, [newItemsPerPage, totalCount, datas]);
+  }, [newItemsPerPage, itemsPerPage, newPageNum, pageNum, totalCount, datas]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
@@ -352,7 +364,7 @@ const Container = <K extends Record<string, unknown>, F>({
         noItemMessage={noItemMessage}
         renderView={renderView}
         pages={pages}
-        pageNum={newPageNum || 1}
+        pageNum={newPageNum || pageNum || 1}
         onPageChange={(pageNum) => {
           onPageChange(pageNum, filterConditions, sortConditions);
         }}

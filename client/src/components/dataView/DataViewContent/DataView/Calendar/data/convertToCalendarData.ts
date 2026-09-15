@@ -10,7 +10,7 @@ const isCalendarDataItem = (data: unknown): data is CalendarDataItem => {
 
   const value = data as Record<string, unknown>;
 
-  return "position" in value && "label" in value;
+  return "date" in value && "data" in value;
 };
 
 const isCalendarSourceData = (data: unknown): data is CalendarSourceData => {
@@ -20,7 +20,7 @@ const isCalendarSourceData = (data: unknown): data is CalendarSourceData => {
 
   const value = data as Record<string, unknown>;
 
-  return "position" in value && "number" in value && "player" in value;
+  return "modelType" in value && "label" in value && "data" in value;
 };
 
 export const convertToCalendarData = <T>(datas: T[]): CalendarDataItem[] => {
