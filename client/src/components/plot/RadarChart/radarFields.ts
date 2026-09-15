@@ -1,6 +1,6 @@
 import { RadarField } from "./types";
 
-export const radarFields = [
+export const radarFields: RadarField[] = [
   {
     key: "xgFor",
     label: "得点期待値",
@@ -421,7 +421,7 @@ export const radarFields = [
     higherIsBetter: false,
     default: false,
   },
-] as const satisfies readonly RadarField[];
+];
 
 export const offFields = radarFields.filter((f) => f.category === "attack");
 

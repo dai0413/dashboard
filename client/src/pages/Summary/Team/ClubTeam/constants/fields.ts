@@ -17,7 +17,7 @@ const createField = (field: RadarField): UIFieldDefinition<RadarValues> => {
     filterable: true,
     sortable: true,
     displayOnDetail: true,
-    displayOnTable: true,
+    displayOnTable: field.default,
     getValueType: ColumnType.CUSTOM,
     getData: (d) => {
       if (formattedKey in d) {

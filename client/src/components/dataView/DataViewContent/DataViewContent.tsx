@@ -54,6 +54,9 @@ type Props<T> = {
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
     };
+    piePlot?: {
+      matchCounts?: number;
+    };
   };
 };
 

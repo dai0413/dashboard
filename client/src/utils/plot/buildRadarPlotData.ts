@@ -2,7 +2,7 @@ import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
 import { StatsLGet } from "../../types/models/stats-l";
 import { buildPlotValues } from "./buildPlotValues";
 
-type Values = Record<
+export type RadarValues = Record<
   RadarKey,
   { actual: number; deviation: number; rank: number }
 >;
@@ -12,13 +12,13 @@ export const buildRadarPlotData = <T extends string>(
   plotData: StatsLGet[],
   fields: RadarField[],
   groupBy: (item: StatsLGet) => T,
-): Map<T, Values> => {
+): Map<T, { values: RadarValues; matchCount: number }> => {
   const values = buildPlotValues(baseData, plotData, fields, groupBy);
 
-  const result = new Map<T, Values>();
+  const result = new Map<T, { values: RadarValues; matchCount: number }>();
 
   for (const [group, value] of values) {
-    const radar = {} as Values;
+    const radar = {} as RadarValues;
 
     for (const field of fields) {
       radar[field.key] = {
@@ -28,7 +28,10 @@ export const buildRadarPlotData = <T extends string>(
       };
     }
 
-    result.set(group, radar);
+    result.set(group, {
+      values: radar,
+      matchCount: value.matchCount,
+    });
   }
 
   return result;

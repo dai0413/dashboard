@@ -1,5 +1,4 @@
 import { TeamMatch } from "../../../../types/types";
-import { RadarData } from "../../../../components/plot/RadarChart/types";
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
@@ -8,6 +7,7 @@ import { PlayerAppearanceGet } from "../../../../types/models/player-appearance"
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { MatchGet } from "../../../../types/models/match";
 import { Formation } from "../../../../types/models/formation";
+import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 
 export const CLUB_TEAM_TAB = {
   PLAYER: "player",
@@ -61,8 +61,9 @@ type ClubTeamPanels = {
   }>;
 
   piePlot: PanelSummary<{
-    offRadarData: RadarData | null;
-    defRadarData: RadarData | null;
+    offRadarData?: RadarValues;
+    defRadarData?: RadarValues;
+    matchCounts?: number;
     isLoading: boolean;
   }>;
 

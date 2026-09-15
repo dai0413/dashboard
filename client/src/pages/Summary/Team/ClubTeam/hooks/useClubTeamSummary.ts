@@ -53,8 +53,13 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
   const { staffRegistrations, readStaffRegistrations } =
     useStaffRegistrationPanel();
 
-  const { offRadarData, defRadarData, radarDataIsLoading, readRadarData } =
-    useRadarPanel();
+  const {
+    offRadarData,
+    defRadarData,
+    matchCounts,
+    radarDataIsLoading,
+    readRadarData,
+  } = useRadarPanel();
   const { readPlotData, teamMatchs, plotData } = useLinePlotPanel();
   const {
     selectedteamCompetitionSeason,
@@ -327,7 +332,12 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       piePlot: {
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
-        items: { offRadarData, defRadarData, isLoading: radarDataIsLoading },
+        items: {
+          offRadarData,
+          defRadarData,
+          isLoading: radarDataIsLoading,
+          matchCounts,
+        },
         reloadFun: async () =>
           readRadarData(
             selected,

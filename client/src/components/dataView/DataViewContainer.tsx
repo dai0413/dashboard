@@ -103,6 +103,9 @@ type DataViewContainerProps<T, F> = {
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
     };
+    piePlot?: {
+      matchCounts?: number;
+    };
   };
 };
 

@@ -11,6 +11,7 @@ type PlotValues = {
   actual: Record<RadarKey, number>;
   deviation: Record<RadarKey, number>;
   rank: Record<RadarKey, number>;
+  matchCount: number;
 };
 
 export const buildPlotValues = <T extends string>(
@@ -38,9 +39,17 @@ export const buildPlotValues = <T extends string>(
 
   const result = new Map<T, PlotValues>();
 
+  const matchCounts = new Map<T, number>();
+
+  for (const item of plotData) {
+    const group = groupBy(item);
+    matchCounts.set(group, (matchCounts.get(group) ?? 0) + 1);
+  }
+
   for (const [group, actual] of plotAverages) {
     const deviation = deviations.get(group)!;
     const rank = ranks.get(group)!;
+    const matchCount = matchCounts.get(group) ?? 0;
 
     const roundedActual = {} as Record<RadarKey, number>;
     const roundedDeviation = {} as Record<RadarKey, number>;
@@ -54,6 +63,7 @@ export const buildPlotValues = <T extends string>(
       actual: roundedActual,
       deviation: roundedDeviation,
       rank,
+      matchCount,
     });
   }
   return result;

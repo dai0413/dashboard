@@ -1,8 +1,8 @@
 import { ModelType } from "../../../../../types/models";
 import { UseClubTeamSummary } from "../types";
 import { DataViewContainer } from "../../../../../components/dataView";
-import { RadarChart } from "../../../../../components/plot/RadarChart/RadarChart";
 import { ViewMode } from "../../../../../types/types";
+import { offFieldDefinitions } from "../constants/fields";
 
 const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
@@ -16,23 +16,16 @@ const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
         modelType={ModelType.STATS_L}
-        fieldDefinitions={[]}
-        items={items.offRadarData?.datasets || []}
-        totalCount={items.offRadarData?.datasets.length || 0}
+        fieldDefinitions={offFieldDefinitions}
+        items={items.offRadarData ? [items.offRadarData] : []}
+        totalCount={10}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
-        initialData={{
-          formData: {},
-          metaData: {},
-        }}
-        renderView={() => (
-          <RadarChart
-            labels={items.offRadarData?.labels || []}
-            datasets={items.offRadarData?.datasets || []}
-          />
-        )}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.RADAR_CHART]}
         defaultViewMode={ViewMode.RADAR_CHART}
+        viewOptions={{
+          piePlot: { matchCounts: items.matchCounts },
+        }}
       />
     </>
   );

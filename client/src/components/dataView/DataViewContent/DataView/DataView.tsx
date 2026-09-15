@@ -12,6 +12,10 @@ import { CalendarTable } from "./Calendar/CalendarTable";
 import { convertToCalendarData } from "./Calendar/data/convertToCalendarData";
 import { Formation } from "../../../formation";
 import { convertToFormationItem } from "../../../../utils/data/convertToFormationItem";
+import { RadarChart } from "../../../plot/RadarChart/RadarChart";
+import { convertToRadarData } from "../../../../utils/data/convertToRadarData";
+import { RadarField } from "../../../plot/RadarChart/types";
+import { radarFields } from "../../../plot/RadarChart/radarFields";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -33,6 +37,9 @@ type DataViewProps<T> = {
     calendar?: {
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+    piePlot?: {
+      matchCounts?: number;
     };
   };
 };
@@ -123,6 +130,33 @@ const DataView = <T,>({
           onDeleteClick={onDeleteClick}
         />
       </div>
+    );
+  }
+
+  if (viewMode === ViewMode.RADAR_CHART && viewOptions?.piePlot) {
+    const { matchCounts } = viewOptions.piePlot;
+
+    const radarDataFields = visibleHeaders
+      ? visibleHeaders
+          ?.map((header) =>
+            radarFields.find((field) => field.key === header.key),
+          )
+          .filter((field): field is RadarField => field !== undefined)
+      : [];
+
+    const radarChartDatas = convertToRadarData(
+      datas.map((d) => d.item),
+      radarDataFields,
+      matchCounts,
+    );
+
+    if (!radarChartDatas) return <></>;
+
+    return (
+      <RadarChart
+        labels={radarChartDatas.labels}
+        datasets={radarChartDatas.datasets}
+      />
     );
   }
 
