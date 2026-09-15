@@ -4,21 +4,21 @@ import { ModelType } from "../../../../types/models";
 import { readItemsBase } from "../../../../lib/api";
 import { convert } from "../../../../lib/convert/DBtoGetted";
 import { api } from "../../../../context/api-context";
-import { FormationItem } from "../../../../types/formation";
-import { PlayerAppearance } from "../../../../types/models/player-appearance";
-import { positionBase } from "../../../../components/formation/positionBase";
-import { APP_ROUTES } from "../../../../lib/appRoutes";
+import {
+  PlayerAppearance,
+  PlayerAppearanceGet,
+} from "../../../../types/models/player-appearance";
 
 export const useStartingMemberPanel = () => {
-  const [homePlayers, setHomePlayers] = useState<FormationItem[]>([]);
+  const [homePlayers, setHomePlayers] = useState<PlayerAppearanceGet[]>([]);
   const [homeIsLoading, setHomeIsLoading] = useState<boolean>(false);
-  const [awayPlayers, setAwayPlayers] = useState<FormationItem[]>([]);
+  const [awayPlayers, setAwayPlayers] = useState<PlayerAppearanceGet[]>([]);
   const [awayIsLoading, setAwayIsLoading] = useState<boolean>(false);
 
   const fetchData = async (
     matchId: string,
     setIsLoading: (val: boolean) => void,
-    setData: (data: FormationItem[]) => void,
+    setData: (data: PlayerAppearanceGet[]) => void,
     teamId?: string,
   ) => {
     setIsLoading(true);
@@ -27,6 +27,7 @@ export const useStartingMemberPanel = () => {
       getAll: true,
       match: matchId,
       team: teamId,
+      play_status: "start",
     };
 
     const obj = await readItemsBase<PlayerAppearance[]>({
@@ -38,20 +39,7 @@ export const useStartingMemberPanel = () => {
     if (obj?.data) {
       const converted = convert(ModelType.PLAYER_APPEARANCE, obj.data);
 
-      const items: FormationItem[] = converted.map((p) => ({
-        position: p.position as keyof typeof positionBase,
-        centerText: p.number,
-        label: p.player?.label,
-        link: p.player.id
-          ? `${APP_ROUTES.PLAYER_SUMMARY}/${p.player.id}`
-          : undefined,
-        tooltip: [
-          { text: p.player?.label ?? "", bold: true },
-          { text: `背番号 ${p.number}` },
-        ],
-      }));
-
-      setData(items);
+      setData(converted);
     }
 
     setIsLoading(false);

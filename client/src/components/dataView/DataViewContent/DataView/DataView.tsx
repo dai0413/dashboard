@@ -10,7 +10,8 @@ import { hasId } from "../../../../utils/data/getIdKey";
 import { ModelType } from "../../../../types/models";
 import { CalendarTable } from "./Calendar/CalendarTable";
 import { convertToCalendarData } from "./Calendar/data/convertToCalendarData";
-import { CalendarSourceData } from "../../../../types/table/calendar";
+import { Formation } from "../../../formation";
+import { convertToFormationItem } from "../../../../utils/data/convertToFormationItem";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -125,11 +126,19 @@ const DataView = <T,>({
     );
   }
 
+  if (viewMode === ViewMode.FORMATION) {
+    const formationDatas = convertToFormationItem(datas.map((d) => d.item));
+
+    return (
+      <div className="mx-5 flex justify-center">
+        <Formation datas={formationDatas} />
+      </div>
+    );
+  }
+
   if (viewMode === ViewMode.CALENDAR && viewOptions?.calendar) {
     const { currentDate, setCurrentDate } = viewOptions.calendar;
-    const calendarData = convertToCalendarData(
-      datas.map((d) => d.item as CalendarSourceData),
-    );
+    const calendarData = convertToCalendarData(datas.map((d) => d.item));
 
     return (
       <CalendarTable

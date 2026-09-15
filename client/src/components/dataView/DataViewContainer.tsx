@@ -144,33 +144,27 @@ const Container = <K extends Record<string, unknown>, F>({
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
 
-  const {
-    itemsPerPage,
-    pageNum,
-    setItemsPerPage,
-    setColumnVisibility,
-    setViewMode,
-    setPageNum,
-  } = useDataView();
+  const { setItemsPerPage, setColumnVisibility, setViewMode, setPageNum } =
+    useDataView();
 
   const datas = useMemo(() => {
     if (!items) return [];
 
     const offset =
-      pageNation === "client" && itemsPerPage
-        ? (pageNum - 1) * itemsPerPage
+      pageNation === "client" && newItemsPerPage
+        ? (newPageNum || 1 - 1) * newItemsPerPage
         : 0;
 
     const targetItems =
-      pageNation === "client" && itemsPerPage
-        ? items.slice(offset, offset + itemsPerPage)
+      pageNation === "client" && newItemsPerPage
+        ? items.slice(offset, offset + newItemsPerPage)
         : items;
 
     return targetItems.map((item, index) => ({
       item,
       index: offset + index,
     }));
-  }, [items, pageNation, itemsPerPage, pageNum]);
+  }, [items, pageNation, newItemsPerPage, newPageNum]);
 
   const onPageChange = useCallback(
     async (
@@ -302,16 +296,16 @@ const Container = <K extends Record<string, unknown>, F>({
 
   const pages = useMemo(() => {
     const totalPages =
-      itemsPerPage && totalCount
-        ? Math.max(Math.ceil(totalCount / itemsPerPage), 1)
-        : itemsPerPage
-          ? Math.ceil(datas.length / itemsPerPage)
+      newItemsPerPage && totalCount
+        ? Math.max(Math.ceil(totalCount / newItemsPerPage), 1)
+        : newItemsPerPage
+          ? Math.ceil(datas.length / newItemsPerPage)
           : 1;
 
-    const pages = getPageNumbers(pageNum, totalPages);
+    const pages = getPageNumbers(newPageNum || 1, totalPages);
 
     return pages;
-  }, [itemsPerPage, totalCount, datas]);
+  }, [newItemsPerPage, totalCount, datas]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
@@ -355,7 +349,7 @@ const Container = <K extends Record<string, unknown>, F>({
         noItemMessage={noItemMessage}
         renderView={renderView}
         pages={pages}
-        pageNum={pageNum}
+        pageNum={newPageNum || 1}
         onPageChange={(pageNum) => {
           onPageChange(pageNum, filterConditions, sortConditions);
         }}

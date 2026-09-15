@@ -3,15 +3,43 @@ import { CalendarSourceData } from "../../../../../../types/table/calendar";
 import { CalendarDataItem } from "../types";
 import { createData, mergeCalendarData } from "../utils";
 
-export const convertToCalendarData = (
-  datas: CalendarSourceData[],
-): CalendarDataItem[] => {
+const isCalendarDataItem = (data: unknown): data is CalendarDataItem => {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+
+  const value = data as Record<string, unknown>;
+
+  return "position" in value && "label" in value;
+};
+
+const isCalendarSourceData = (data: unknown): data is CalendarSourceData => {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+
+  const value = data as Record<string, unknown>;
+
+  return "position" in value && "number" in value && "player" in value;
+};
+
+export const convertToCalendarData = <T>(datas: T[]): CalendarDataItem[] => {
+  if (datas.every(isCalendarDataItem)) {
+    return datas as CalendarDataItem[];
+  }
+
+  if (!datas.every(isCalendarSourceData)) {
+    throw new Error("CalendarDataItem[] or CalendarSourceData[] is required.");
+  }
+
+  const calendarSourceDatas = datas.map((d) => d as CalendarSourceData);
+
   const calendarDataList: CalendarDataItem[][] = [];
 
   // modelType ごとにまとめる
   const grouped = new Map<ModelType, CalendarSourceData[]>();
 
-  for (const data of datas) {
+  for (const data of calendarSourceDatas) {
     const existing = grouped.get(data.modelType);
 
     if (existing) {

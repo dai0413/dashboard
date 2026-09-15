@@ -1,4 +1,3 @@
-import { FormationItem } from "../../../types/formation";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { PanelSummary, UseSummary } from "../types";
 
@@ -20,8 +19,8 @@ export type MatchTab = (typeof MATCH_TAB)[keyof typeof MATCH_TAB];
 
 type MatchPanels = {
   startingMember: PanelSummary<{
-    home: FormationItem[];
-    away: FormationItem[];
+    home: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+    away: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
   }>;
   homeSubMember: PanelSummary<
     GettedModelDataMap[ModelType.PLAYER_APPEARANCE][]

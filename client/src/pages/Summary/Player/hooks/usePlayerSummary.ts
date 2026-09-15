@@ -34,29 +34,36 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
   const { statistics, readStatistics } = useStatisticsPanel();
 
   const positions: FormationItem[] = useMemo(() => {
-    const result: FormationItem[] = [];
+    const positionMap = new Map<FormationItem["position"], FormationItem>();
 
     statistics.data.forEach((statistic) => {
       for (const [key, value] of Object.entries(statistic.positionCounts)) {
-        const point = positionBase[key as keyof typeof positionBase];
+        const position = key as FormationItem["position"];
+        const point = positionBase[position];
 
-        result.push({
-          position: key as FormationItem["position"],
-          centerText: value,
-          label: key,
-          size: 24 + ((value || 0) / statistic.appearances) * 28,
-          color: point.color,
-          tooltip: [
-            { text: key, bold: true },
-            {
-              text: `${value}試合`,
-            },
-          ],
-        });
+        const existing = positionMap.get(position);
+
+        if (existing) {
+          existing.centerText = Number(existing.centerText) + (value || 0);
+        } else {
+          positionMap.set(position, {
+            position,
+            centerText: value,
+            label: key,
+            size: 24 + ((value || 0) / statistic.appearances) * 28,
+            color: point.color,
+            tooltip: [
+              { text: key, bold: true },
+              {
+                text: `${value}試合`,
+              },
+            ],
+          });
+        }
       }
     });
 
-    return result;
+    return Array.from(positionMap.values());
   }, [statistics]);
 
   const readDatas = async (playerId: string) => {

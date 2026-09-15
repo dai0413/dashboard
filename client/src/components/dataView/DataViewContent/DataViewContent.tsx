@@ -135,14 +135,13 @@ export const DataViewContent = <K extends Record<string, unknown>>({
         onDeleteClick={deleteOnClick}
         viewOptions={viewOptions}
       />
-      {viewMode === ViewMode.TABLE ||
-        (viewMode === ViewMode.TILE && (
-          <PageButtons
-            pages={pages}
-            currentPageNum={pageNum}
-            onClick={onPageChange}
-          />
-        ))}
+      {(viewMode === ViewMode.TABLE || viewMode === ViewMode.TILE) && (
+        <PageButtons
+          pages={pages}
+          currentPageNum={pageNum}
+          onClick={onPageChange}
+        />
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import { ModelType } from "../../../../types/models";
 import { UseMatchSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
-import { Formation } from "../../../../components/formation";
 import { ViewMode } from "../../../../types/types";
+import { playerAppearanceFieldDefinition } from "../constants/field";
 
 const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {
@@ -20,9 +20,10 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
-        fieldDefinitions={[]}
+        fieldDefinitions={playerAppearanceFieldDefinition}
         items={items.away}
         totalCount={items.away.length}
+        newItemsPerPage={11}
         itemsLoading={isLoading}
         reloadFun={reloadFun}
         initialData={{
@@ -38,7 +39,6 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
             competition_stage: selected.competition_stage.id,
           },
         }}
-        renderView={() => <Formation datas={items.away} />}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.FORMATION]}
         defaultViewMode={ViewMode.FORMATION}
       />
