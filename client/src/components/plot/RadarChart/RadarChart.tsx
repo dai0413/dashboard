@@ -53,6 +53,8 @@ export const RadarChart = ({
                 legendItem.datasetIndex
               ] as RadarDataset;
 
+              if (!dataset.label) return false;
+
               return !dataset.guide;
             },
           },

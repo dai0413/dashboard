@@ -422,3 +422,7 @@ export const radarFields = [
     default: false,
   },
 ] as const satisfies readonly RadarField[];
+
+export const offFields = radarFields.filter((f) => f.category === "attack");
+
+export const defFields = radarFields.filter((f) => f.category === "defense");

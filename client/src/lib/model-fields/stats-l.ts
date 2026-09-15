@@ -2,13 +2,15 @@ import { numberFields } from "@dai0413/myorg-shared";
 import { UIFieldDefinition } from "../../types/field";
 import { StatsLGet } from "../../types/models/stats-l";
 import { ColumnType } from "../../types/table";
+import { radarFields } from "../../components/plot/RadarChart/radarFields";
 
 const createField = (key: string): UIFieldDefinition<StatsLGet> => {
+  const label = radarFields.find((field) => field.key === key)?.label || key;
   return {
     key,
     field: key as keyof StatsLGet,
     filterKey: key,
-    label: key,
+    label: label,
     type: "number",
     filterable: false,
     sortable: false,
