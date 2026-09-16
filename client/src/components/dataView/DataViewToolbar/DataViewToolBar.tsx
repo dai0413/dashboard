@@ -291,7 +291,7 @@ const DataViewToolBar = <Data, Form>({
       `${modelType}:${items.length}件のデータを本当に削除しますか？`,
     );
     if (confirmDelete) {
-      const result = await deleteItems(items);
+      const result = await deleteItems(items.map((item) => item.item));
 
       if (result && reloadFun) reloadFun(filterConditions, sortConditions);
     }
