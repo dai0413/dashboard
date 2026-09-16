@@ -29,7 +29,8 @@ export const convertToCalendarData = <T>(datas: T[]): CalendarDataItem[] => {
   }
 
   if (!datas.every(isCalendarSourceData)) {
-    throw new Error("CalendarDataItem[] or CalendarSourceData[] is required.");
+    console.error("CalendarDataItem[] or CalendarSourceData[] is required.");
+    return [];
   }
 
   const calendarSourceDatas = datas.map((d) => d as CalendarSourceData);

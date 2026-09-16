@@ -29,7 +29,8 @@ export const convertToFormationItem = <T>(datas: T[]): FormationItem[] => {
   }
 
   if (!datas.every(isPlayerAppearanceGet)) {
-    throw new Error("PlayerAppearanceGet[] or FormationItem[] is required.");
+    console.error("PlayerAppearanceGet[] or FormationItem[] is required.");
+    return [];
   }
 
   const formationDatas = datas.map((d) => d as PlayerAppearanceGet);
