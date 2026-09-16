@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
-import { From } from "../../../../../types/types";
+import { FormMode, From } from "../../../../../types/types";
 import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getDraftData } from "../getDraftData";
@@ -11,7 +11,7 @@ import { ReadDraftDataParams } from "../../../utils/getDraftData/types";
 
 type BaseModel = ModelType.PLAYER_APPEARANCE;
 const baseModel = ModelType.PLAYER_APPEARANCE;
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, true);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel, true);
 
 export const playerAppearance: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -56,6 +56,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     modelType: baseModel,
     stepLabel: "SN_M, PLAYER_APPEARANCEモデルデータを取得します",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
       const getDataUrl: string = metaData.getDataUrl;

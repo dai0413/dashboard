@@ -4,12 +4,14 @@ import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam
 import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { dataToFormData } from "../utils/dataToFormData";
+import { FormMode } from "../../../../../types/types";
 
 export const multiModel: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
   {
     modelType: ModelType.TEAM_MATCH_FORMATION,
     stepLabel: "フォーメーションを入力開始",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {

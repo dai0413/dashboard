@@ -5,11 +5,11 @@ import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../sn_m/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
-import { From } from "../../../../../types/types";
+import { FormMode, From } from "../../../../../types/types";
 
 type BaseModel = ModelType.REFEREE_APPEARANCE;
 const baseModel = ModelType.REFEREE_APPEARANCE;
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, true);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel, true);
 
 export const refereeAppearance: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -51,6 +51,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     modelType: baseModel,
     stepLabel: "SN_M, REFEREE_APPEARANCEモデルデータを取得します",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {

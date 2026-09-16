@@ -9,7 +9,7 @@ import { FormMode, From } from "../../../../../types/types";
 
 type BaseModel = ModelType.STAFF_MATCH_EVENT_LOG;
 const baseModel = ModelType.STAFF_MATCH_EVENT_LOG;
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, true);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel, true);
 
 export const staffMatchEventLog: FormStep<BaseModel>[] = [
   ...matchSelectSteps,

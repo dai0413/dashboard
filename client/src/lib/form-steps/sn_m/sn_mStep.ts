@@ -7,7 +7,7 @@ import { multiModel as staffAppearance } from "../models/staff-appearance/forms/
 import { multiModel as staffMatchEventLog } from "../models/staff-match-event-log/forms/sn_m";
 import { multiModel as refereeAppearance } from "../models/referee-appearance/forms/sn_m";
 import { multiModel as teamMatchFormation } from "../models/team-match-formation/forms/sn_m";
-import { preStep } from "./preStep";
+import { createPreStep } from "./preStep";
 
 type Steps = {
   [ModelType.MATCH]: FormStep<ModelType.MATCH>[];
@@ -29,13 +29,18 @@ const steps: Steps = {
   [ModelType.TEAM_MATCH_FORMATION]: teamMatchFormation,
 };
 
-export const sn_mStep: {
+export const sn_mStep = <F extends ModelType>(
+  updateAndCreate: boolean,
+): {
   label: string;
   steps: FormStep<any>[];
-} = {
-  label: "sn_mStep",
-  steps: [
-    ...preStep,
+} => {
+  const label = updateAndCreate
+    ? "sn_mStep 試合更新 + 試合関連新規追加"
+    : "sn_mStep 全新規追加";
+
+  const retSteps = [
+    ...createPreStep(updateAndCreate),
     ...steps[ModelType.MATCH],
     ...steps[ModelType.PLAYER_APPEARANCE],
     ...steps[ModelType.PLAYER_MATCH_EVENT_LOG],
@@ -43,5 +48,10 @@ export const sn_mStep: {
     ...steps[ModelType.STAFF_MATCH_EVENT_LOG],
     ...steps[ModelType.REFEREE_APPEARANCE],
     ...steps[ModelType.TEAM_MATCH_FORMATION],
-  ],
+  ] as FormStep<F>[];
+
+  return {
+    label,
+    steps: retSteps,
+  };
 };

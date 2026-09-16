@@ -1,7 +1,7 @@
 import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { setMatchTeam } from "../../../utils/createFilterConditions/setMatchTeam";
-import { From } from "../../../../../types/types";
+import { FormMode, From } from "../../../../../types/types";
 import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getDraftData } from "../getDraftData";
@@ -9,7 +9,7 @@ import { getPreMatchSelect } from "../../../sn_m/preMatchSelectStep";
 
 type BaseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
 const baseModel = ModelType.PLAYER_MATCH_EVENT_LOG;
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel, true);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel, true);
 
 export const playerMatchEventLog: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
@@ -51,6 +51,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     modelType: baseModel,
     stepLabel: "SN_M, PLAYER_MATCH_EVENT_LOGモデルデータを取得します",
     type: StepType.FORM,
+    nextFormMode: FormMode.CREATE,
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {

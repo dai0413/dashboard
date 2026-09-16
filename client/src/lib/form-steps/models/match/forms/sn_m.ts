@@ -11,7 +11,7 @@ import { getPreMatchSelect } from "../../../sn_m/preMatchSelectStep";
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
 
-const matchSelectSteps = getPreMatchSelect<BaseModel>(baseModel);
+const matchSelectSteps = getPreMatchSelect<BaseModel>(false, baseModel);
 
 export const match: FormStep<BaseModel>[] = [
   ...matchSelectSteps,
