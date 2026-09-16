@@ -286,9 +286,7 @@ export const FormProvider = <T extends ModelType>({
     let newFormData: FormTypeMap[T] = {};
     let newFormDatas = [newFormData];
     let newMetaData: Record<string, any> =
-      args.formMode === FormMode.CREATE &&
-      args.initialData &&
-      args.initialData.metaData
+      args.initialData && args.initialData.metaData
         ? args.initialData.metaData
         : {};
     let newOriginalData: UpdateData<FormTypeMap[T]> | null = null;
@@ -418,17 +416,38 @@ export const FormProvider = <T extends ModelType>({
         options: {},
       });
     } else if (args.formMode === FormMode.UPDATE) {
-      newSteps = newSteps.filter((step) => {
-        if (step.many) return step;
-        if (!step.dataSource) return step;
-      });
-      newNextStepIndex = newSteps.length - 1;
-      applyState({
-        values: updatingValues,
-        filterConditionsObj: {},
-        quickFilterItemsObj: {},
-        options: {},
-      });
+      if (args.initialData) {
+        const { index, result } = await advanceStep(
+          api,
+          newSteps,
+          updatingValues,
+          {
+            options,
+            filterConditionsObj,
+            quickFilterItemsObj,
+          },
+        );
+        newNextStepIndex = index;
+
+        applyState(result);
+      } else {
+        newSteps = newSteps.filter((step) => {
+          if (step.many) return step;
+          if (!step.dataSource) return step;
+        });
+
+        const modelTypes = newSteps.map((step) => step.modelType);
+        if (modelTypes.length === 1) {
+          newNextStepIndex = newSteps.length - 1;
+        }
+
+        applyState({
+          values: updatingValues,
+          filterConditionsObj: {},
+          quickFilterItemsObj: {},
+          options: {},
+        });
+      }
     }
 
     setCurrentStep(newNextStepIndex);
@@ -442,10 +461,6 @@ export const FormProvider = <T extends ModelType>({
     setIsProcessing(false);
     return true;
   };
-
-  useEffect(() => {
-    console.log("formData", formData, "metaData", metaData);
-  }, [formData, metaData]);
 
   const nextData = () => {
     resetFormData();
@@ -566,13 +581,15 @@ export const FormProvider = <T extends ModelType>({
             const updated: Record<string, any> & { _id: string } = {
               _id: originalData._id,
             };
-            difKeys.forEach((key) => {
-              if (key in formData) {
-                updated[key] = formData[key as keyof typeof formData];
-              } else {
-                updated[key] = null;
-              }
-            });
+            difKeys
+              .filter((key) => key !== "_id")
+              .forEach((key) => {
+                if (key in formData) {
+                  updated[key] = formData[key as keyof typeof formData];
+                } else {
+                  updated[key] = null;
+                }
+              });
 
             const updatedData: UpdateData<FormTypeMap[T]> = updated;
 

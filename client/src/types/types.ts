@@ -126,6 +126,9 @@ type UpdateDataStartFormArgs<T extends ModelType> = ReplaceInputMode<
   formMode: FormMode.UPDATE;
   id: string;
   editItem: GettedModelDataMap[T];
+  initialData?: {
+    metaData?: Record<string, any>;
+  };
 };
 
 type UpdateDatasStartFormArgs<T extends ModelType> = ReplaceInputMode<
@@ -135,6 +138,9 @@ type UpdateDatasStartFormArgs<T extends ModelType> = ReplaceInputMode<
   formMode: FormMode.UPDATE;
   ids: string[];
   editItem: GettedModelDataMap[T][];
+  initialData?: {
+    metaData?: Record<string, any>;
+  };
 };
 
 type UpdateStartFormArgs<T extends ModelType> =
