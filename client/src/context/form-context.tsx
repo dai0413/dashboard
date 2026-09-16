@@ -257,11 +257,7 @@ export const FormProvider = <T extends ModelType>({
     setQuickFilterIteemsObj(quickFilterItemsObj);
   };
 
-  type StartForm<T extends ModelType> = StartFormArgs<T> & {
-    steps?: FormStep<T>[];
-  };
-
-  const startForm = async (args: StartForm<T>): Promise<boolean> => {
+  const startForm = async (args: StartFormArgs<T>): Promise<boolean> => {
     setIsProcessing(true);
 
     const failed = () => {
@@ -271,7 +267,7 @@ export const FormProvider = <T extends ModelType>({
 
     let newSteps: FormStep<T>[];
     if (args.steps) {
-      newSteps = args.steps;
+      newSteps = args.steps as FormStep<T>[];
     } else {
       if (!args.modelType) {
         console.error("error in startForm : modelType");
@@ -447,6 +443,10 @@ export const FormProvider = <T extends ModelType>({
     return true;
   };
 
+  useEffect(() => {
+    console.log("formData", formData, "metaData", metaData);
+  }, [formData, metaData]);
+
   const nextData = () => {
     resetFormData();
     resetFormDatas();
@@ -468,7 +468,6 @@ export const FormProvider = <T extends ModelType>({
         initialData: initialFormData
           ? { formData: initialFormData, metaData: undefined }
           : undefined,
-        relatedAll: false,
         steps: formSteps,
       });
     }

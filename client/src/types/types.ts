@@ -1,3 +1,4 @@
+import { FormStep } from "./form";
 import { FormTypeMap, GettedModelDataMap, ModelType } from "./models";
 import { MatchGet } from "./models/match";
 
@@ -90,17 +91,17 @@ export enum ModalSize {
 
 type GetStepsBaseArgs<T extends ModelType> = {
   modelType: T;
-  relatedAll?: boolean;
+  steps?: FormStep<any>[];
 };
 
 export type GetStepsArgs<T extends ModelType> =
   | (GetStepsBaseArgs<T> & {
       inputMode: InputMode;
-      from: Exclude<From, From.D_ML>;
+      from: Exclude<From, From.D_ML | From.SN_M>;
     })
   | (GetStepsBaseArgs<T> & {
       inputMode: InputMode;
-      from: From.D_ML;
+      from: From.D_ML | From.SN_M;
       updateAndCreate: boolean;
     });
 
