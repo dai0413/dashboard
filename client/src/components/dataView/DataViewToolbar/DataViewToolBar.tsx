@@ -454,10 +454,11 @@ const DataViewToolBar = <Data, Form>({
               <ToolbarGroup
                 children={
                   <>
-                    {viewModes.map((vm) => {
+                    {viewModes.map((vm, i) => {
                       const { text, icon } = viewModeMap[vm];
                       return (
                         <ToolbarButton
+                          key={`${text}-${i}`}
                           text={text}
                           icon={icon}
                           isActive={vm === viewMode}

@@ -173,6 +173,30 @@ const quickFilterItem: QuickFilterItem[] = [
         operator: "lte",
       },
     ],
+  },
+  {
+    key: "usa-spa",
+    label: "2026-2030",
+    filterCondition: [
+      {
+        key: "joined_at",
+        label: "活動開始日",
+        type: "Date",
+        filterable: true,
+        value: ["2026/6/1"],
+        valueLabel: ["2026/6/1"],
+        operator: "gte",
+      },
+      {
+        key: "left_at",
+        label: "解散日",
+        type: "Date",
+        filterable: true,
+        value: ["2030/8/30"],
+        valueLabel: ["2030/8/30"],
+        operator: "lte",
+      },
+    ],
     defaultSelect: true,
   },
 ];
