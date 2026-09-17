@@ -101,7 +101,8 @@ export const useMatchSummary = (id: string): UseMatchSummary => {
     panels: {
       startingMember: {
         key: `${selectedTab}`,
-        items: startingMembers,
+        isLoading: startingMembers.isLoading,
+        items: { home: startingMembers.home, away: startingMembers.away },
         reloadFun: async () =>
           readStartingMembers(
             id,
@@ -112,54 +113,63 @@ export const useMatchSummary = (id: string): UseMatchSummary => {
 
       homeSubMember: {
         key: `${selectedTab}`,
+        isLoading: homeSubMembers.isLoading,
         items: homeSubMembers.data,
         reloadFun: async () => readHomeSubMembers(id, selected?.home_team.id),
       },
 
       awaySubMember: {
         key: `${selectedTab}`,
+        isLoading: awaySubMembers.isLoading,
         items: awaySubMembers.data,
         reloadFun: async () => readAwaySubMembers(id, selected?.away_team.id),
       },
 
       staffAppearance: {
         key: `${selectedTab}`,
+        isLoading: staffAppearances.isLoading,
         items: staffAppearances.data,
         reloadFun: async () => readStaffAppearances(id),
       },
 
       playerMatchEventLog: {
         key: `${selectedTab}`,
+        isLoading: playerMatchEventLogs.isLoading,
         items: playerMatchEventLogs.data,
         reloadFun: async () => readPlayerMatchEventLogs(id),
       },
 
       staffMatchEventLog: {
         key: `${selectedTab}`,
+        isLoading: staffMatchEventLogs.isLoading,
         items: staffMatchEventLogs.data,
         reloadFun: async () => readStaffMatchEventLogs(id),
       },
 
       teamMatchFormation: {
         key: `${selectedTab}`,
+        isLoading: teamMatchFormations.isLoading,
         items: teamMatchFormations.data,
         reloadFun: async () => readTeamMatchFormations(id),
       },
 
       homeStatsL: {
         key: `${selectedTab}`,
+        isLoading: homeStatsL.isLoading,
         items: homeStatsL.data,
-        reloadFun: async () => readHomeStatsL(id),
+        reloadFun: async () => readHomeStatsL(id, selected?.home_team.id),
       },
 
       awayStatsL: {
         key: `${selectedTab}`,
+        isLoading: awayStatsL.isLoading,
         items: awayStatsL.data,
-        reloadFun: async () => readAwayStatsL(id),
+        reloadFun: async () => readAwayStatsL(id, selected?.away_team.id),
       },
 
       refereeAppearance: {
         key: `${selectedTab}`,
+        isLoading: refereeAppearances.isLoading,
         items: refereeAppearances.data,
         reloadFun: async () => readRefereeAppearances(id),
       },

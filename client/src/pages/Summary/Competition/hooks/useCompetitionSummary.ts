@@ -121,12 +121,14 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
     panels: {
       competitionStage: {
         key: `${selectedTab}-${selectedSeason?._id}`,
+        isLoading: competitionStages.isLoading,
         items: competitionStages.data,
         reloadFun: async () => readCompetitionStages(id, selectedSeason?._id),
       },
 
       teamCompetitionSeason: {
         key: `${selectedTab}-${selectedSeason?._id}`,
+        isLoading: teamCompetitionSeasons.isLoading,
         items: teamCompetitionSeasons.data,
         reloadFun: async () =>
           readTeamCompetitionSeasons(id, selectedSeason?._id),
@@ -134,26 +136,31 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
 
       match: {
         key: `${selectedTab}-${selectedSeason?._id}`,
+        isLoading: matches.isLoading,
         items: matches.data,
         reloadFun: async () => readMatches(selectedSeason?._id),
       },
 
       playerRegistration: {
         key: `${selectedTab}-${selectedSeason?._id}`,
+        isLoading: playerRegistrations.isLoading,
         items: playerRegistrations.data,
         reloadFun: async () => readPlayerRegistrations(selectedSeason?._id),
       },
 
       staffRegistration: {
         key: `${selectedTab}-${selectedSeason?._id}`,
+        isLoading: staffRegistrations.isLoading,
         items: staffRegistrations.data,
         reloadFun: async () => readStaffRegistrations(selectedSeason?._id),
       },
 
       season: {
         key: `${selectedTab}-${id}`,
+        isLoading: season.isLoading,
         items: season.data,
         reloadFun: async () => {
+          console.log("reading", id);
           readSeason(id);
         },
       },

@@ -72,12 +72,14 @@ export const useNationalMatchSeriesSummary = (
     panels: {
       nationalCallup: {
         key: `${selectedTab}`,
+        isLoading: nationalCallups.isLoading,
         items: nationalCallups.data,
         reloadFun: async () => readNationalCallups(id),
       },
 
       match: {
         key: `${selectedTab}`,
+        isLoading: matches.isLoading,
         items: matches.data,
         reloadFun: async () => readMatches(matchIds),
       },

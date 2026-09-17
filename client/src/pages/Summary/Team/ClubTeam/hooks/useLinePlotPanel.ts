@@ -14,6 +14,7 @@ export const useLinePlotPanel = () => {
     label: string[];
     value: number[];
   }>({ label: [], value: [] });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function readMatchs(id: string, seasonId: string): Promise<MatchGet[]> {
     const obj = await readItemsBase<Match[]>({
@@ -30,6 +31,7 @@ export const useLinePlotPanel = () => {
   }
 
   const readPlotData = async (id: string, seasonId: string) => {
+    setIsLoading(false);
     const matches = await readMatchs(id, seasonId);
     const teamMatchs = convertMatchToTeamMatch(matches, id);
 
@@ -47,11 +49,13 @@ export const useLinePlotPanel = () => {
     });
 
     setPlotData({ label: labels, value: cumulativePoints });
+    setIsLoading(true);
   };
 
   return {
     readPlotData,
     teamMatchs,
     plotData,
+    isLoading,
   };
 };

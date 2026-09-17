@@ -42,7 +42,7 @@ export const useSeasonPanel = () => {
       data: newData,
       page: obj.page,
       totalCount: obj.totalCount,
-      isLoading: true,
+      isLoading: false,
     });
 
     return newData;

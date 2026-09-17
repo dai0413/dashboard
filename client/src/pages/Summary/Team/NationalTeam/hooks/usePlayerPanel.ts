@@ -18,6 +18,7 @@ export const usePlayerPanel = () => {
   });
 
   const readPlayers = async (teamId: string) => {
+    setPlayers({ data: [], page: 1, totalCount: 0, isLoading: true });
     const nationalCallups = await readItemsBase<NationalCallup[]>({
       apiInstance: api,
       backendRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
@@ -38,9 +39,18 @@ export const usePlayerPanel = () => {
       },
     });
 
-    if (!nationalMatchSeries?.data || nationalMatchSeries?.data.length === 0)
-      return;
-    if (!nationalCallups?.data || nationalCallups?.data.length === 0) return;
+    if (
+      !nationalMatchSeries?.data ||
+      nationalMatchSeries?.data.length === 0 ||
+      !nationalCallups?.data ||
+      nationalCallups?.data.length === 0
+    )
+      return setPlayers({
+        data: [],
+        page: 1,
+        totalCount: 1,
+        isLoading: false,
+      });
 
     const uniqueDatas = nationalCallups.data
       .filter(

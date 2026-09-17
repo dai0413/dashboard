@@ -21,6 +21,8 @@ export const useMatchPanel = () => {
   });
 
   const readMatches = async (matchIds: string[]) => {
+    if (matchIds.length === 0) return;
+
     const obj = await readItemsBase<ModelDataMap[ModelType.MATCH][]>({
       apiInstance: api,
       backendRoute: API_PATHS.MATCH.ROOT,

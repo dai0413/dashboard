@@ -58,12 +58,14 @@ export const useNationalSummary = (id: string): UseNationalSummary => {
     panels: {
       competition: {
         key: `${selectedTab}`,
+        isLoading: competitions.isLoading,
         items: competitions.data,
         reloadFun: async () => readCompetitions(id),
       },
 
       team: {
         key: `${selectedTab}`,
+        isLoading: teams.isLoading,
         items: teams.data,
         reloadFun: async () => readTeams(id),
       },

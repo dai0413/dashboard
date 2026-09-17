@@ -67,6 +67,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
     panels: {
       player: {
         text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
+        isLoading: players.isLoading,
         key: `${selectedTab}`,
         items: players.data,
         reloadFun: async () => readPlayers(id),
@@ -74,6 +75,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
 
       match: {
         text: `${selected?.normalized_name || selected?.abbr}の試合`,
+        isLoading: matches.isLoading,
         key: `${selectedTab}`,
         items: matches.data,
         reloadFun: async () => readMatches(id),
@@ -81,6 +83,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
 
       series: {
         text: `${selected?.normalized_name || selected?.abbr}の試合シリーズ`,
+        isLoading: series.isLoading,
         key: `${selectedTab}`,
         items: series.data,
         reloadFun: async () => readSeries(id),

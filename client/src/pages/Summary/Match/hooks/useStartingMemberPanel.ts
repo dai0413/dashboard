@@ -11,18 +11,15 @@ import {
 
 export const useStartingMemberPanel = () => {
   const [homePlayers, setHomePlayers] = useState<PlayerAppearanceGet[]>([]);
-  const [homeIsLoading, setHomeIsLoading] = useState<boolean>(false);
   const [awayPlayers, setAwayPlayers] = useState<PlayerAppearanceGet[]>([]);
-  const [awayIsLoading, setAwayIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchData = async (
     matchId: string,
-    setIsLoading: (val: boolean) => void,
     setData: (data: PlayerAppearanceGet[]) => void,
     teamId?: string,
   ) => {
-    setIsLoading(true);
-    if (!matchId || !teamId) return setIsLoading(false);
+    if (!matchId || !teamId) return;
     const readParams: Record<string, any> = {
       getAll: true,
       match: matchId,
@@ -41,8 +38,6 @@ export const useStartingMemberPanel = () => {
 
       setData(converted);
     }
-
-    setIsLoading(false);
   };
 
   const readStartingMembers = async (
@@ -50,15 +45,17 @@ export const useStartingMemberPanel = () => {
     homeTeamId?: string,
     awayTeamId?: string,
   ) => {
-    fetchData(matchId, setHomeIsLoading, setHomePlayers, homeTeamId);
-    fetchData(matchId, setAwayIsLoading, setAwayPlayers, awayTeamId);
+    setIsLoading(true);
+    await fetchData(matchId, setHomePlayers, homeTeamId);
+    await fetchData(matchId, setAwayPlayers, awayTeamId);
+    setIsLoading(false);
   };
 
   return {
     startingMembers: {
       home: homePlayers,
       away: awayPlayers,
-      isLoadin: homeIsLoading && awayIsLoading,
+      isLoading: isLoading,
     },
     readStartingMembers,
   };

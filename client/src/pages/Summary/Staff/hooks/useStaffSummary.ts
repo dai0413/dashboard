@@ -58,6 +58,7 @@ export const useStaffSummary = (id: string): UseStaffSummary => {
     panels: {
       staffRegistration: {
         key: `${selectedTab}`,
+        isLoading: staffRegistrations.isLoading,
         items: staffRegistrations.data,
         reloadFun: async () => readStaffRegistrations(id),
       },

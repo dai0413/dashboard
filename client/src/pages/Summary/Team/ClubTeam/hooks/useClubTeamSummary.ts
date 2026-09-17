@@ -60,7 +60,12 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     radarDataIsLoading,
     readRadarData,
   } = useRadarPanel();
-  const { readPlotData, teamMatchs, plotData } = useLinePlotPanel();
+  const {
+    readPlotData,
+    teamMatchs,
+    plotData,
+    isLoading: linePlotIsLoading,
+  } = useLinePlotPanel();
   const {
     selectedteamCompetitionSeason,
     setSelectedTeamCompetitionSeason,
@@ -232,6 +237,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       player: {
         text: `${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`,
         key: `${selectedTab}-${seasonDates.transferWindow.endDate}`,
+        isLoading: players.isLoading,
         items: players.data,
         reloadFun: async () =>
           readPlayers(id, seasonDates.transferWindow.seasonRange),
@@ -240,6 +246,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       future_in: {
         text: `${seasonDates.future.startDate}~~~${seasonDates.future.endDate}に日本国内育成年代チームから加入予定の選手`,
         key: `${selectedTab}-${seasonDates.future.startDate}`,
+        isLoading: futurein.isLoading,
         items: futurein.data,
         reloadFun: async () =>
           readFutureins(id, seasonDates.future.seasonRange),
@@ -248,6 +255,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       transfer_in: {
         text: `${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に加入した選手`,
         key: `${selectedTab}-${seasonDates.transferWindow.startDate}`,
+        isLoading: transferIns.isLoading,
         items: transferIns.data,
         reloadFun: async () =>
           readTransferIns(id, seasonDates.transferWindow.seasonRange),
@@ -256,6 +264,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       transfer_out: {
         text: `${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に退団した選手`,
         key: `${selectedTab}-${seasonDates.transferWindow.startDate}`,
+        isLoading: transferOuts.isLoading,
         items: transferOuts.data,
         reloadFun: async () =>
           readTransferOuts(id, seasonDates.transferWindow.seasonRange),
@@ -264,6 +273,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       loan: {
         text: `${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に期限付き移籍した選手`,
         key: `${selectedTab}-${seasonDates.transferWindow.startDate}`,
+        isLoading: loans.isLoading,
         items: loans.data,
         reloadFun: async () =>
           readLoans(id, seasonDates.transferWindow.seasonRange),
@@ -272,6 +282,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       injury: {
         text: `${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に発表された負傷者`,
         key: `${selectedTab}-${seasonDates.normalSeason.startDate}`,
+        isLoading: injuries.isLoading,
         items: injuries.data,
         reloadFun: async () =>
           readInjuries(id, seasonDates.normalSeason.seasonRange),
@@ -280,6 +291,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       match: {
         text: `${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に開催された試合`,
         key: `${selectedTab}-${seasonDates.normalSeason.startDate}`,
+        isLoading: matches.isLoading,
         items: matches.data,
         reloadFun: async () =>
           readMatches(id, seasonDates.normalSeason.seasonRange),
@@ -288,6 +300,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       playerRegistration: {
         text: `${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に出場登録された選手`,
         key: `${selectedTab}-${seasonDates.normalSeason.startDate}`,
+        isLoading: playerRegistrations.isLoading,
         items: playerRegistrations.data,
         reloadFun: async () =>
           readPlayerRegistrations(
@@ -299,6 +312,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       staffRegistration: {
         text: `${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}に出場登録されたスタッフ`,
         key: `${selectedTab}-${seasonDates.normalSeason.startDate}`,
+        isLoading: staffRegistrations.isLoading,
         items: staffRegistrations.data,
         reloadFun: async () =>
           readStaffRegistrations(id, selectedteamCompetitionSeason?.season._id),
@@ -307,6 +321,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       teamCompetitionSeason: {
         text: `歴代の所属カテゴリ`,
         key: `${selectedTab}`,
+        isLoading: teamCompetitionSeason.isLoading,
         items: teamCompetitionSeason.data,
         reloadFun: async () => {
           readTeamCompetitionSeason(id);
@@ -318,6 +333,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       statsL: {
         text: `${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}のスタッツ`,
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        isLoading: statsL.isLoading,
         items: statsL.data,
         reloadFun: async () =>
           readStatsL(id, selectedteamCompetitionSeason?.season._id),
@@ -325,12 +341,14 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
 
       linePlot: {
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        isLoading: linePlotIsLoading,
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} の勝点推移`,
         items: { teamMatchs, plotData },
       },
 
       piePlot: {
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        isLoading: radarDataIsLoading,
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
         items: {
           offRadarData,

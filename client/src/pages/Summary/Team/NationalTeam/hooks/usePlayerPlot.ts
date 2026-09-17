@@ -45,7 +45,7 @@ export const usePlayerPlotPanel = () => {
     const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
     const left_atObj = filterConditions?.find((f) => f.key === "left_at");
 
-    if (!joined_atObj || !left_atObj) return;
+    if (!joined_atObj || !left_atObj) return setPlayerPlotIsLoading(false);
 
     if (filterConditions && filterConditions.length > 0) {
       readParams.filters = JSON.stringify(
