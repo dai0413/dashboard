@@ -94,10 +94,10 @@ export const FormPresenter = <T extends keyof FormTypeMap>(
   }, [modelType, formMode]);
 
   const currentAction = useMemo(() => {
-    if (!actions || !action.actionIndex) return;
+    if (!actions || typeof action.actionIndex === "undefined") return;
 
     return actions[action.actionIndex];
-  }, [actions, action.actionIndex]);
+  }, [actions, action, action.actionIndex]);
 
   return (
     <>
