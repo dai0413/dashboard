@@ -22,6 +22,7 @@ import {
   getSortableFields,
 } from "../../../../../lib/model-fields";
 import { useForm } from "../../../../../context/form-context";
+import { ViewMode } from "../../../../../types/types";
 
 type TableFieldRendererProps<T extends keyof FormTypeMap> = {
   value: FormTypeMap[T][keyof FormTypeMap[T]];
@@ -184,6 +185,10 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
             フィルターから条件を追加してください
           </p>
         }
+        viewData={{
+          [ViewMode.TABLE]: viewOptionData.data,
+          [ViewMode.TILE]: viewOptionData.data,
+        }}
       />
     </>
   );

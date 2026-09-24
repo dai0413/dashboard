@@ -9,6 +9,7 @@ import { useQuery } from "../../../../context/query-context";
 import { getDiffKeys } from "../../../../utils/comparison";
 import { isEmptyObject } from "../../../../utils/data";
 import { useAlert } from "../../../../context/alert-context";
+import { ViewMode } from "../../../../types/types";
 
 const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
   const {
@@ -151,6 +152,10 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
             fieldDefinitions={confirmBulkDataHeaders || []}
             handlePageChange={async (p: number) => setPage("formPage", p)}
             selectedKeys={diffKeysObj}
+            viewData={{
+              [ViewMode.TABLE]: confirmBulkData,
+              [ViewMode.TILE]: confirmBulkData,
+            }}
           />
         </div>
       )}

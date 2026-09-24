@@ -11,6 +11,10 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { useDataView } from "../../../context/dataView-context";
+import { RadarField } from "../../plot/RadarChart/types";
+import { FormationItem } from "../../../types/formation";
+import { CalendarDataItem } from "./DataView/Calendar/types";
+import { RadarValues } from "../../../utils/plot/buildRadarPlotData";
 
 type Props<T> = {
   datas: TableData<T>;
@@ -49,13 +53,19 @@ type Props<T> = {
   pages: (number | "...")[];
   pageNum: number;
   onPageChange: (page: number) => void;
-  viewOptions?: {
-    calendar?: {
+  viewData: {
+    [ViewMode.TABLE]?: TableData<T>;
+    [ViewMode.TILE]?: TableData<T>;
+    [ViewMode.RADAR_CHART]?: {
+      data: RadarValues;
+      fields: RadarField[];
+      label: string;
+    };
+    [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.CALENDAR]?: {
+      data: CalendarDataItem[];
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
-    };
-    piePlot?: {
-      matchCounts?: number;
     };
   };
 };
@@ -83,7 +93,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
   pages,
   pageNum,
   onPageChange,
-  viewOptions,
+  viewData,
 }: Props<K>) => {
   const { viewMode } = useDataView();
 
@@ -126,7 +136,6 @@ export const DataViewContent = <K extends Record<string, unknown>>({
     <div className="max-h-[50rem] overflow-y-auto">
       <DataView<K>
         modelType={modelType}
-        datas={datas}
         headers={fieldDefinitions}
         linkField={linkField}
         form={form}
@@ -136,7 +145,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
         edit={edit}
         selectedKeys={selectedKeys}
         onDeleteClick={deleteOnClick}
-        viewOptions={viewOptions}
+        viewData={viewData}
       />
       {(viewMode === ViewMode.TABLE || viewMode === ViewMode.TILE) && (
         <PageButtons

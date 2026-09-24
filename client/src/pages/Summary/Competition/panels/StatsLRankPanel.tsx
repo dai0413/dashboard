@@ -31,6 +31,10 @@ const StatsLRankPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         ]}
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items.rank,
+          [ViewMode.TILE]: items.rank,
+        }}
       />
     </>
   );

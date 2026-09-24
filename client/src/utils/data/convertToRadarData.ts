@@ -27,22 +27,24 @@ const guideLine = (
 });
 
 export const convertToRadarData = <T>(
-  datas: T[],
+  datas: T,
   fields: RadarField[],
-  matchCounts?: number,
+  label?: string,
 ): RadarData | null => {
-  const radarValues = datas[0] as RadarValues;
+  const radarValues = datas as RadarValues;
 
   if (!radarValues) return null;
 
   const labels = fields.map((f) => f.label);
   const fieldCountr = fields.length;
 
+  const datasetsFields = fields.filter((f) => !!radarValues[f.key]);
+
   const datasets = [
     {
-      label: `${matchCounts}試合`,
-      data: fields.map((f) => radarValues[f.key].deviation),
-      tooltipData: fields.map((f) => radarValues[f.key]),
+      label: label,
+      data: datasetsFields.map((f) => radarValues[f.key].deviation),
+      tooltipData: datasetsFields.map((f) => radarValues[f.key]),
       borderColor: "#2563eb",
       backgroundColor: "rgba(37,99,235,0.2)",
     },

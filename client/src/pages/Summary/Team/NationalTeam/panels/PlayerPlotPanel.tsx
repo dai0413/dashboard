@@ -235,8 +235,9 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         )}
         quickFilterItems={quickFilterItem}
         itemsLoading={isLoading}
-        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.MATRIX]}
+        viewModes={[ViewMode.MATRIX]}
         defaultViewMode={ViewMode.MATRIX}
+        viewData={{}}
       />
     </>
   );

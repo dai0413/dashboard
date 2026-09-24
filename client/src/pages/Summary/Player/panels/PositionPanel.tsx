@@ -5,6 +5,7 @@ import { ViewMode } from "../../../../types/types";
 import { UIFieldDefinition } from "../../../../types/field";
 import { FormationItem } from "../../../../types/formation";
 import { ColumnType } from "../../../../types/table";
+import { convertToFormationItem } from "../../../../utils/data/convertToFormationItem";
 
 const fieldDefinitions: UIFieldDefinition<FormationItem>[] = [
   {
@@ -83,6 +84,11 @@ const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.FORMATION]}
         defaultViewMode={ViewMode.FORMATION}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+          [ViewMode.FORMATION]: convertToFormationItem(items),
+        }}
       />
     </>
   );

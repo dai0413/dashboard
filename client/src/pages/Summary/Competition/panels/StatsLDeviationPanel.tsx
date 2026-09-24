@@ -35,6 +35,10 @@ const StatsLDeviationPanel = ({
         ]}
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items.actual,
+          [ViewMode.TILE]: items.actual,
+        }}
       />
     </>
   );

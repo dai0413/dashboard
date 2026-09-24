@@ -7,6 +7,7 @@ import { useTopPage } from "../context/top-page-context";
 import { ColumnType } from "../types/table";
 import { Link } from "react-router-dom";
 import { TeamGet } from "../types/models/team";
+import { ViewMode } from "../types/types";
 
 type TeamTipsProps = {
   competitionId: string;
@@ -149,6 +150,9 @@ const Main = () => {
                 ]}
                 itemsLoading={isLoading}
                 noToolBar={false}
+                viewData={{
+                  [ViewMode.TABLE]: transfers,
+                }}
               />
               <div className={`p-2`}></div>
               <LinkButton to={APP_ROUTES.TRANSFER} color={"green"}>
@@ -194,6 +198,9 @@ const Main = () => {
                 ]}
                 itemsLoading={isLoading}
                 noToolBar={false}
+                viewData={{
+                  [ViewMode.TABLE]: injuries,
+                }}
               />
 
               <div className={`p-2`}></div>

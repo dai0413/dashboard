@@ -15,6 +15,7 @@ import {
 } from "../../lib/model-fields";
 import { getLinkFields } from "../../lib/model-link-fields";
 import { DataViewContainer } from ".";
+import { ViewMode } from "../../types/types";
 
 type ModelTableContainerProps<K extends keyof GettedModelDataMap> = {
   title: string;
@@ -82,6 +83,10 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
       reloadFun={handleApplyFilter}
       uploadFile={uploadFile}
       downloadFile={downloadFile}
+      viewData={{
+        [ViewMode.TABLE]: items,
+        [ViewMode.TILE]: items,
+      }}
     />
   );
 };

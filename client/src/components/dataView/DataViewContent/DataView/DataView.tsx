@@ -9,17 +9,16 @@ import { useModal } from "../../../../context/modal-context";
 import { hasId } from "../../../../utils/data/getIdKey";
 import { ModelType } from "../../../../types/models";
 import { CalendarTable } from "./Calendar/CalendarTable";
-import { convertToCalendarData } from "./Calendar/data/convertToCalendarData";
 import { Formation } from "../../../formation";
-import { convertToFormationItem } from "../../../../utils/data/convertToFormationItem";
 import { RadarChart } from "../../../plot/RadarChart/RadarChart";
 import { convertToRadarData } from "../../../../utils/data/convertToRadarData";
 import { RadarField } from "../../../plot/RadarChart/types";
-import { radarFields } from "../../../plot/RadarChart/radarFields";
+import { FormationItem } from "../../../../types/formation";
+import { CalendarDataItem } from "./Calendar/types";
+import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
-  datas: TableData<T>;
   headers?: TableHeader<T>[];
   linkField?: LinkField[];
   form?: boolean;
@@ -33,20 +32,25 @@ type DataViewProps<T> = {
   ) => React.ReactNode;
   onActionClick?: (index: number, row: T) => void;
   onDeleteClick?: (index: number) => void;
-  viewOptions?: {
-    calendar?: {
+  viewData: {
+    [ViewMode.TABLE]?: TableData<T>;
+    [ViewMode.TILE]?: TableData<T>;
+    [ViewMode.RADAR_CHART]?: {
+      data: RadarValues;
+      fields: RadarField[];
+      label: string;
+    };
+    [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.CALENDAR]?: {
+      data: CalendarDataItem[];
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
-    };
-    piePlot?: {
-      matchCounts?: number;
     };
   };
 };
 
 const DataView = <T,>({
   modelType,
-  datas,
   headers,
   linkField,
   form = false,
@@ -56,7 +60,7 @@ const DataView = <T,>({
   renderFieldCell,
   onActionClick,
   onDeleteClick,
-  viewOptions,
+  viewData,
 }: DataViewProps<T>) => {
   const { viewMode, rowSpacing, columnVisibility } = useDataView();
 
@@ -93,10 +97,14 @@ const DataView = <T,>({
     [headers, columnVisibility],
   );
 
-  if (viewMode === ViewMode.TABLE && visibleHeaders) {
+  if (
+    viewMode === ViewMode.TABLE &&
+    visibleHeaders &&
+    viewData[ViewMode.TABLE]
+  ) {
     return (
       <Table
-        datas={datas}
+        datas={viewData[ViewMode.TABLE]}
         headers={visibleHeaders}
         linkField={linkField}
         rowSpacing={rowSpacing}
@@ -112,11 +120,11 @@ const DataView = <T,>({
     );
   }
 
-  if (viewMode === ViewMode.TILE && visibleHeaders) {
+  if (viewMode === ViewMode.TILE && visibleHeaders && viewData[ViewMode.TILE]) {
     return (
       <div className="mx-5">
         <Tile
-          datas={datas}
+          datas={viewData[ViewMode.TILE]}
           headers={visibleHeaders}
           linkField={linkField}
           rowSpacing={rowSpacing}
@@ -133,22 +141,16 @@ const DataView = <T,>({
     );
   }
 
-  if (viewMode === ViewMode.RADAR_CHART && viewOptions?.piePlot) {
-    const { matchCounts } = viewOptions.piePlot;
+  if (viewMode === ViewMode.RADAR_CHART && viewData[ViewMode.RADAR_CHART]) {
+    const { label, fields, data } = viewData[ViewMode.RADAR_CHART];
 
     const radarDataFields = visibleHeaders
       ? visibleHeaders
-          ?.map((header) =>
-            radarFields.find((field) => field.key === header.key),
-          )
+          ?.map((header) => fields.find((field) => field.key === header.key))
           .filter((field): field is RadarField => field !== undefined)
       : [];
 
-    const radarChartDatas = convertToRadarData(
-      datas.map((d) => d.item),
-      radarDataFields,
-      matchCounts,
-    );
+    const radarChartDatas = convertToRadarData(data, radarDataFields, label);
 
     if (!radarChartDatas) return <></>;
 
@@ -160,25 +162,20 @@ const DataView = <T,>({
     );
   }
 
-  if (viewMode === ViewMode.FORMATION) {
-    const formationDatas = convertToFormationItem(datas.map((d) => d.item));
-
+  if (viewMode === ViewMode.FORMATION && viewData[ViewMode.FORMATION]) {
     return (
       <div className="mx-5 flex justify-center">
-        <Formation datas={formationDatas} />
+        <Formation datas={viewData[ViewMode.FORMATION]} />
       </div>
     );
   }
 
-  if (viewMode === ViewMode.CALENDAR && viewOptions?.calendar) {
-    const { currentDate, setCurrentDate } = viewOptions.calendar;
-    const calendarData = convertToCalendarData(datas.map((d) => d.item));
-
+  if (viewMode === ViewMode.CALENDAR && viewData[ViewMode.CALENDAR]) {
     return (
       <CalendarTable
-        data={calendarData}
-        currentDate={currentDate}
-        setCurrentDate={setCurrentDate}
+        data={viewData[ViewMode.CALENDAR].data}
+        currentDate={viewData[ViewMode.CALENDAR].currentDate}
+        setCurrentDate={viewData[ViewMode.CALENDAR].setCurrentDate}
       />
     );
   }

@@ -3,6 +3,7 @@ import { UseClubTeamSummary } from "../types";
 import { DataViewContainer } from "../../../../../components/dataView";
 import { ViewMode } from "../../../../../types/types";
 import { defFieldDefinitions } from "../constants/fields";
+import { radarFields } from "../../../../../components/plot/RadarChart/radarFields";
 
 const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
@@ -23,8 +24,14 @@ const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.RADAR_CHART]}
         defaultViewMode={ViewMode.RADAR_CHART}
-        viewOptions={{
-          piePlot: { matchCounts: items.matchCounts },
+        viewData={{
+          [ViewMode.RADAR_CHART]: items.defRadarData
+            ? {
+                data: items.defRadarData,
+                fields: radarFields,
+                label: `${items.matchCounts || 0}試合`,
+              }
+            : undefined,
         }}
       />
     </>

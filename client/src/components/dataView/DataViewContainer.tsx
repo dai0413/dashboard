@@ -27,6 +27,10 @@ import { ModelType } from "../../types/models";
 import { AxiosResponse } from "axios";
 import { DataViewContent } from "./DataViewContent/DataViewContent";
 import { useQuickFilterSource } from "./DataViewToolbar/QuickFIlter/useQuickFilterSource";
+import { RadarField } from "../plot/RadarChart/types";
+import { FormationItem } from "../../types/formation";
+import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
+import { RadarValues } from "../../utils/plot/buildRadarPlotData";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -98,13 +102,19 @@ type DataViewContainerProps<T, F> = {
     filterConditions?: FilterableFieldDefinition[];
     sortConditions?: SortableFieldDefinition[];
   }) => React.ReactNode;
-  viewOptions?: {
-    calendar?: {
+  viewData: {
+    [ViewMode.TABLE]?: T[];
+    [ViewMode.TILE]?: T[];
+    [ViewMode.RADAR_CHART]?: {
+      data: RadarValues;
+      fields: RadarField[];
+      label: string;
+    };
+    [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.CALENDAR]?: {
+      data: CalendarDataItem[];
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
-    };
-    piePlot?: {
-      matchCounts?: number;
     };
   };
 };
@@ -142,7 +152,7 @@ const Container = <K extends Record<string, unknown>, F>({
   selectedKeys,
   deleteOnClick,
   renderView,
-  viewOptions,
+  viewData,
 }: DataViewContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
   const { filterConditions, closeFilter, setFilterConditions } = useFilter();
@@ -368,7 +378,11 @@ const Container = <K extends Record<string, unknown>, F>({
         onPageChange={(pageNum) => {
           onPageChange(pageNum, filterConditions, sortConditions);
         }}
-        viewOptions={viewOptions}
+        viewData={{
+          ...viewData,
+          [ViewMode.TILE]: datas,
+          [ViewMode.TABLE]: datas,
+        }}
       />
     </div>
   );

@@ -8,6 +8,7 @@ import { useQuery } from "../../../../context/query-context";
 import { useForm } from "../../../../context/form-context";
 import { ColumnType, TableHeader } from "../../../../types/table";
 import { HandleFormData } from "../../../../types/form/handleFormData";
+import { ViewMode } from "../../../../types/types";
 
 type RenderFieldProps = {
   isTableOpen: boolean;
@@ -179,6 +180,10 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
         edit={true}
         deleteOnClick={many?.deleteFormDatas}
         selectedKey={requiredField}
+        viewData={{
+          [ViewMode.TABLE]: many?.state.length === 0 ? [] : many?.state,
+          [ViewMode.TILE]: many?.state.length === 0 ? [] : many?.state,
+        }}
       />
 
       <div className="flex gap-x-2 pt-10">

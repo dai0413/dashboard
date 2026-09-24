@@ -3,6 +3,7 @@ import { UseMatchSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
 import { ViewMode } from "../../../../types/types";
 import { playerAppearanceFieldDefinition } from "../constants/field";
+import { convertToFormationItem } from "../../../../utils/data/convertToFormationItem";
 
 const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {
@@ -41,6 +42,11 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
         }}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.FORMATION]}
         defaultViewMode={ViewMode.FORMATION}
+        viewData={{
+          [ViewMode.TABLE]: items.away,
+          [ViewMode.TILE]: items.away,
+          [ViewMode.FORMATION]: convertToFormationItem(items.away),
+        }}
       />
     </>
   );

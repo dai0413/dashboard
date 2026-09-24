@@ -3,6 +3,7 @@ import { DataViewContainer } from "../components/dataView";
 import { fetchCalendarData } from "../components/dataView/DataViewContent/DataView/Calendar/data/fetchCalendarData";
 import { Data, ViewMode } from "../types/types";
 import { CalendarSourceData } from "../types/table/calendar";
+import { convertToCalendarData } from "../components/dataView/DataViewContent/DataView/Calendar/data/convertToCalendarData";
 
 const News = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -43,8 +44,9 @@ const News = () => {
         reloadFun={reloadFun}
         viewModes={[ViewMode.CALENDAR]}
         defaultViewMode={ViewMode.CALENDAR}
-        viewOptions={{
-          calendar: {
+        viewData={{
+          [ViewMode.CALENDAR]: {
+            data: convertToCalendarData(items.data),
             currentDate,
             setCurrentDate,
           },

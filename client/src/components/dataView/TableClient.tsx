@@ -11,9 +11,13 @@ import { UIFieldDefinition } from "../../types/field";
 import {
   QuickFilterItem,
   QuickFilterType,
+  TableData,
   TableHeader,
 } from "../../types/table";
 import { ModelType } from "../../types/models";
+import { RadarData } from "../plot/RadarChart/types";
+import { FormationItem } from "../../types/formation";
+import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
 
 const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
@@ -98,6 +102,17 @@ type TableClientProps<T, F> = {
   newItemsPerPage?: number;
   newPageNum?: number;
   viewModes?: ViewMode[];
+  viewData: {
+    [ViewMode.TABLE]?: T[];
+    [ViewMode.TILE]?: T[];
+    [ViewMode.RADAR_CHART]?: RadarData;
+    [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.CALENDAR]?: {
+      data: CalendarDataItem[];
+      currentDate: Date;
+      setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+  };
   defaultViewMode?: ViewMode;
 };
 
