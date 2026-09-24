@@ -15,6 +15,13 @@ import { RadarField } from "../../plot/RadarChart/types";
 import { FormationItem } from "../../../types/formation";
 import { CalendarDataItem } from "./DataView/Calendar/types";
 import { RadarValues } from "../../../utils/plot/buildRadarPlotData";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerRegistrationHistoryGet } from "../../../types/models/player-registration-history";
+import { MatchGet } from "../../../types/models/match";
+import { PlayerAppearanceGet } from "../../../types/models/player-appearance";
+import { FormationCounts } from "../../../pages/Summary/Team/ClubTeam/types";
+import { NationalCallup } from "../../../types/models/national-callup";
+import { NationalMatchSeries } from "../../../types/models/national-match-series";
 
 type Props<T> = {
   datas: TableData<T>;
@@ -66,6 +73,22 @@ type Props<T> = {
       data: CalendarDataItem[];
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+    [ViewMode.MATCH_MATRIX]?: {
+      teamId: string;
+      playerStatistics: PlayerStatistic[];
+      playerRegistrations: PlayerRegistrationHistoryGet[];
+      matches: MatchGet[];
+      playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
+    };
+    [ViewMode.SERIES_MATRIX]?: {
+      playerStatistics: PlayerStatistic[];
+      nationalCallUp: NationalCallup[];
+      nationalMatchSeries: NationalMatchSeries[];
+      playerAppearance: PlayerAppearanceGet[];
+      startBaseDate?: Date;
+      endBaseDate?: Date;
     };
   };
 };

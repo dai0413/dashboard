@@ -31,6 +31,13 @@ import { RadarField } from "../plot/RadarChart/types";
 import { FormationItem } from "../../types/formation";
 import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
 import { RadarValues } from "../../utils/plot/buildRadarPlotData";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerRegistrationHistoryGet } from "../../types/models/player-registration-history";
+import { MatchGet } from "../../types/models/match";
+import { PlayerAppearanceGet } from "../../types/models/player-appearance";
+import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";
+import { NationalCallup } from "../../types/models/national-callup";
+import { NationalMatchSeries } from "../../types/models/national-match-series";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -116,6 +123,20 @@ type DataViewContainerProps<T, F> = {
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
     };
+    [ViewMode.MATCH_MATRIX]?: {
+      teamId: string;
+      playerStatistics: PlayerStatistic[];
+      playerRegistrations: PlayerRegistrationHistoryGet[];
+      matches: MatchGet[];
+      playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
+    };
+    [ViewMode.SERIES_MATRIX]?: {
+      playerStatistics: PlayerStatistic[];
+      nationalCallUp: NationalCallup[];
+      nationalMatchSeries: NationalMatchSeries[];
+      playerAppearance: PlayerAppearanceGet[];
+    };
   };
 };
 
@@ -187,6 +208,34 @@ const Container = <K extends Record<string, unknown>, F>({
       index: offset + index,
     }));
   }, [items, pageNation, itemsPerPage, newItemsPerPage, pageNum, newPageNum]);
+
+  const { startBaseDate, endBaseDate } = useMemo(() => {
+    let startBaseDate: Date | undefined;
+    let endBaseDate: Date | undefined;
+
+    filterConditions?.forEach((filterCondition) => {
+      if (filterCondition.key === "joined_at" && filterCondition.value) {
+        const value = filterCondition.value[0];
+
+        if (typeof value !== "boolean") {
+          startBaseDate = new Date(value);
+        }
+      }
+
+      if (filterCondition.key === "left_at" && filterCondition.value) {
+        const value = filterCondition.value[0];
+
+        if (typeof value !== "boolean") {
+          endBaseDate = new Date(value);
+        }
+      }
+    });
+
+    return {
+      startBaseDate,
+      endBaseDate,
+    };
+  }, [filterConditions]);
 
   const onPageChange = useCallback(
     async (
@@ -382,6 +431,14 @@ const Container = <K extends Record<string, unknown>, F>({
           ...viewData,
           [ViewMode.TILE]: datas,
           [ViewMode.TABLE]: datas,
+          [ViewMode.SERIES_MATRIX]:
+            viewData && viewData[ViewMode.SERIES_MATRIX]
+              ? {
+                  ...viewData[ViewMode.SERIES_MATRIX],
+                  startBaseDate,
+                  endBaseDate,
+                }
+              : undefined,
         }}
       />
     </div>

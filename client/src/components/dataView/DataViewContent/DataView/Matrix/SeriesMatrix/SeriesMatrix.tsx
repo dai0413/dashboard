@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
-import {
-  FilterableFieldDefinition,
-  Label,
-  SortableFieldDefinition,
-} from "@dai0413/myorg-shared";
+import { Label } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { MatrixTable } from "../MatrixTable";
 import { createCallUpCircleInfo } from "./utils/createCallUpCircleInfo";
@@ -23,8 +19,8 @@ type SeriesMatrixParams = {
   nationalCallUp: NationalCallup[];
   nationalMatchSeries: NationalMatchSeries[];
   playerAppearance: PlayerAppearanceGet[];
-  filterConditions?: FilterableFieldDefinition[];
-  sortConditions?: SortableFieldDefinition[];
+  startBaseDate?: Date;
+  endBaseDate?: Date;
 };
 
 type SeriesColumn = Label & {
@@ -32,40 +28,13 @@ type SeriesColumn = Label & {
 };
 
 const SeriesMatrix = ({
-  filterConditions,
+  startBaseDate,
+  endBaseDate,
   playerStatistics,
   nationalCallUp,
   nationalMatchSeries,
   playerAppearance,
 }: SeriesMatrixParams) => {
-  const { startBaseDate, endBaseDate } = useMemo(() => {
-    let startBaseDate: Date | undefined;
-    let endBaseDate: Date | undefined;
-
-    filterConditions?.forEach((filterCondition) => {
-      if (filterCondition.key === "joined_at" && filterCondition.value) {
-        const value = filterCondition.value[0];
-
-        if (typeof value !== "boolean") {
-          startBaseDate = new Date(value);
-        }
-      }
-
-      if (filterCondition.key === "left_at" && filterCondition.value) {
-        const value = filterCondition.value[0];
-
-        if (typeof value !== "boolean") {
-          endBaseDate = new Date(value);
-        }
-      }
-    });
-
-    return {
-      startBaseDate,
-      endBaseDate,
-    };
-  }, [filterConditions]);
-
   const groupedPlayers = useMemo(
     () => createGroupedPlayers(playerStatistics, displayPositions),
     [playerStatistics],

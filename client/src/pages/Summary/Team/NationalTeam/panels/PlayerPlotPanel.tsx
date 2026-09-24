@@ -1,7 +1,6 @@
 import { isFilterable, UIFieldDefinition } from "../../../../../types/field";
 import { UseNationalTeamSummary } from "../types";
 import { DataViewContainer } from "../../../../../components/dataView";
-import { SeriesMatrix } from "../../../../../components/dataView/DataViewContent/DataView/Matrix";
 import { ColumnType, QuickFilterItem } from "../../../../../types/table";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 import { ViewMode } from "../../../../../types/types";
@@ -212,7 +211,6 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        fieldDefinitions={[]}
         items={items.nationalCallUp}
         totalCount={items.nationalCallUp.length || 0}
         filterField={filedDefinitions?.filter(isFilterable)}
@@ -223,21 +221,18 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         handleFilterSort={async (filterConditions, sortConditions) => {
           await reloadFun(filterConditions, sortConditions);
         }}
-        renderView={({ filterConditions, sortConditions }) => (
-          <SeriesMatrix
-            filterConditions={filterConditions}
-            sortConditions={sortConditions}
-            playerStatistics={items.playerStatistics}
-            nationalCallUp={items.nationalCallUp}
-            nationalMatchSeries={items.nationalMatchSeries}
-            playerAppearance={items.playerAppearance}
-          />
-        )}
         quickFilterItems={quickFilterItem}
         itemsLoading={isLoading}
-        viewModes={[ViewMode.MATRIX]}
-        defaultViewMode={ViewMode.MATRIX}
-        viewData={{}}
+        viewModes={[ViewMode.SERIES_MATRIX]}
+        defaultViewMode={ViewMode.SERIES_MATRIX}
+        viewData={{
+          [ViewMode.SERIES_MATRIX]: {
+            playerStatistics: items.playerStatistics,
+            nationalCallUp: items.nationalCallUp,
+            nationalMatchSeries: items.nationalMatchSeries,
+            playerAppearance: items.playerAppearance,
+          },
+        }}
       />
     </>
   );

@@ -16,6 +16,14 @@ import { RadarField } from "../../../plot/RadarChart/types";
 import { FormationItem } from "../../../../types/formation";
 import { CalendarDataItem } from "./Calendar/types";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerRegistrationHistoryGet } from "../../../../types/models/player-registration-history";
+import { MatchGet } from "../../../../types/models/match";
+import { FormationCounts } from "../../../../pages/Summary/Team/ClubTeam/types";
+import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
+import { MatchMatrix, SeriesMatrix } from "./Matrix";
+import { NationalCallup } from "../../../../types/models/national-callup";
+import { NationalMatchSeries } from "../../../../types/models/national-match-series";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -45,6 +53,22 @@ type DataViewProps<T> = {
       data: CalendarDataItem[];
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+    [ViewMode.MATCH_MATRIX]?: {
+      teamId: string;
+      playerStatistics: PlayerStatistic[];
+      playerRegistrations: PlayerRegistrationHistoryGet[];
+      matches: MatchGet[];
+      playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
+    };
+    [ViewMode.SERIES_MATRIX]?: {
+      playerStatistics: PlayerStatistic[];
+      nationalCallUp: NationalCallup[];
+      nationalMatchSeries: NationalMatchSeries[];
+      playerAppearance: PlayerAppearanceGet[];
+      startBaseDate?: Date;
+      endBaseDate?: Date;
     };
   };
 };
@@ -176,6 +200,48 @@ const DataView = <T,>({
         data={viewData[ViewMode.CALENDAR].data}
         currentDate={viewData[ViewMode.CALENDAR].currentDate}
         setCurrentDate={viewData[ViewMode.CALENDAR].setCurrentDate}
+      />
+    );
+  }
+
+  if (viewMode === ViewMode.MATCH_MATRIX && viewData[ViewMode.MATCH_MATRIX]) {
+    const {
+      teamId,
+      playerStatistics,
+      playerAppearance,
+      playerRegistrations,
+      matches,
+      formationCounts,
+    } = viewData[ViewMode.MATCH_MATRIX];
+    return (
+      <MatchMatrix
+        teamId={teamId}
+        playerStatistics={playerStatistics}
+        playerAppearance={playerAppearance}
+        playerRegistrations={playerRegistrations}
+        matches={matches}
+        formationCounts={formationCounts}
+      />
+    );
+  }
+
+  if (viewMode === ViewMode.SERIES_MATRIX && viewData[ViewMode.SERIES_MATRIX]) {
+    const {
+      startBaseDate,
+      endBaseDate,
+      playerStatistics,
+      nationalCallUp,
+      nationalMatchSeries,
+      playerAppearance,
+    } = viewData[ViewMode.SERIES_MATRIX];
+    return (
+      <SeriesMatrix
+        startBaseDate={startBaseDate}
+        endBaseDate={endBaseDate}
+        playerStatistics={playerStatistics}
+        nationalCallUp={nationalCallUp}
+        nationalMatchSeries={nationalMatchSeries}
+        playerAppearance={playerAppearance}
       />
     );
   }

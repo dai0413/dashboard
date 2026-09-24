@@ -70,12 +70,13 @@ export enum FormMode {
 
 export enum ViewMode {
   TABLE = "table",
-  MATRIX = "matrix",
   TILE = "tile",
   CALENDAR = "calendar",
   RADAR_CHART = "radar_chart",
   LINE_GRAPH = "line_graph",
   FORMATION = "formation",
+  MATCH_MATRIX = "match_matrix",
+  SERIES_MATRIX = "series_matrix",
 }
 
 export enum RowSpacing {
