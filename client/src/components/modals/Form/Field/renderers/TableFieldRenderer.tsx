@@ -125,7 +125,6 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         pageNation="client"
         modelType={optionKey && isModelType(optionKey) ? optionKey : undefined}
         fieldDefinitions={viewOptionData?.fields ? viewOptionData.fields : []}
-        items={viewOptionData ? viewOptionData.data : undefined}
         filterField={filterField}
         sortField={sortField}
         itemsLoading={optionIsLoading}
@@ -185,6 +184,7 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
             フィルターから条件を追加してください
           </p>
         }
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{
           [ViewMode.TABLE]: viewOptionData.data,
           [ViewMode.TILE]: viewOptionData.data,

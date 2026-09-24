@@ -39,7 +39,6 @@ const News = () => {
       <DataViewContainer
         key={items.data.length}
         totalCount={items.data.length}
-        items={items.data}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         viewModes={[ViewMode.CALENDAR]}

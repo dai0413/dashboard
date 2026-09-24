@@ -5,7 +5,7 @@ import { fieldDefinition } from "../lib/model-fields";
 import { isFilterable, isSortable, UIFieldDefinition } from "../types/field";
 import { TableClient } from "../components/dataView";
 import { useEffect, useState } from "react";
-import { Data } from "../types/types";
+import { Data, ViewMode } from "../types/types";
 import { readItemsBase } from "../lib/api";
 import { api } from "../context/api-context";
 import { convert } from "../lib/convert/DBtoGetted";
@@ -63,7 +63,11 @@ const NoCallUp = () => {
         fieldDefinitions={fields}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
-        items={items.data}
+        viewModes={[ViewMode.TABLE]}
+        viewData={{
+          [ViewMode.TABLE]: items.data,
+          [ViewMode.TILE]: items.data,
+        }}
         totalCount={items.data.length}
         filterField={fields?.filter(isFilterable)}
         sortField={fields?.filter(isSortable)}

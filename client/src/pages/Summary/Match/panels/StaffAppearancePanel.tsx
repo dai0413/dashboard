@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { StaffAppearanceGet } from "../../../../types/models/staff-appearance";
+import { ViewMode } from "../../../../types/types";
 
 const staffAppearanceFieldDefinition =
   convertFieldDefinition<StaffAppearanceGet>(
@@ -32,7 +33,8 @@ const StaffAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_APPEARANCE}
         fieldDefinitions={staffAppearanceFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={staffAppearanceFieldDefinition

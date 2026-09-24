@@ -16,7 +16,6 @@ const StatsLRankPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        items={items.rank}
         totalCount={items.rank.length}
         newItemsPerPage={20}
         itemsLoading={isLoading}

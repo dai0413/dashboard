@@ -11,13 +11,20 @@ import { UIFieldDefinition } from "../../types/field";
 import {
   QuickFilterItem,
   QuickFilterType,
-  TableData,
   TableHeader,
 } from "../../types/table";
 import { ModelType } from "../../types/models";
-import { RadarData } from "../plot/RadarChart/types";
+import { RadarField } from "../plot/RadarChart/types";
 import { FormationItem } from "../../types/formation";
 import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
+import { RadarValues } from "../../utils/plot/buildRadarPlotData";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerRegistrationHistoryGet } from "../../types/models/player-registration-history";
+import { MatchGet } from "../../types/models/match";
+import { PlayerAppearanceGet } from "../../types/models/player-appearance";
+import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";
+import { NationalCallup } from "../../types/models/national-callup";
+import { NationalMatchSeries } from "../../types/models/national-match-series";
 
 const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
@@ -101,16 +108,34 @@ type TableClientProps<T, F> = {
   viewMode?: ViewMode.TABLE | ViewMode.TILE;
   newItemsPerPage?: number;
   newPageNum?: number;
-  viewModes?: ViewMode[];
+  viewModes: ViewMode[];
   viewData: {
     [ViewMode.TABLE]?: T[];
     [ViewMode.TILE]?: T[];
-    [ViewMode.RADAR_CHART]?: RadarData;
+    [ViewMode.RADAR_CHART]?: {
+      data: RadarValues;
+      fields: RadarField[];
+      label: string;
+    };
     [ViewMode.FORMATION]?: FormationItem[];
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;
       setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+    };
+    [ViewMode.MATCH_MATRIX]?: {
+      teamId: string;
+      playerStatistics: PlayerStatistic[];
+      playerRegistrations: PlayerRegistrationHistoryGet[];
+      matches: MatchGet[];
+      playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
+    };
+    [ViewMode.SERIES_MATRIX]?: {
+      playerStatistics: PlayerStatistic[];
+      nationalCallUp: NationalCallup[];
+      nationalMatchSeries: NationalMatchSeries[];
+      playerAppearance: PlayerAppearanceGet[];
     };
   };
   defaultViewMode?: ViewMode;

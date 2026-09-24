@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { CompetitionGet } from "../../../../types/models/competition";
+import { ViewMode } from "../../../../types/types";
 
 const competitionFieldDefinition = convertFieldDefinition<CompetitionGet>(
   ["name", "competition_type", "category", "age_group"],
@@ -28,7 +29,8 @@ const CompetitionPanel = ({ summary }: { summary: UseNationalSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.COMPETITION}
         fieldDefinitions={competitionFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={competitionFieldDefinition

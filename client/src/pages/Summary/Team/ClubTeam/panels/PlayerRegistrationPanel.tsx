@@ -11,6 +11,7 @@ import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { ColumnType } from "../../../../../types/table";
 import { UseClubTeamSummary } from "../types";
 import { PlayerRegistrationGet } from "../../../../../types/models/player-registration";
+import { ViewMode } from "../../../../../types/types";
 
 const registrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.PLAYER_REGISTRATION]
@@ -52,7 +53,8 @@ const PlayerRegistrationPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER_REGISTRATION}
         fieldDefinitions={registrationFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={registrationFieldDefinition

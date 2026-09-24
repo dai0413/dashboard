@@ -8,6 +8,7 @@ import { UseClubTeamSummary } from "../types";
 
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { TeamCompetitionSeasonGet } from "../../../../../types/models/team-competition-season";
+import { ViewMode } from "../../../../../types/types";
 
 const teamCompetitionSeasonFieldDefinition =
   convertFieldDefinition<TeamCompetitionSeasonGet>(
@@ -36,7 +37,8 @@ const TeamCompetitionSeasonPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.TEAM_COMPETITION_SEASON}
         fieldDefinitions={teamCompetitionSeasonFieldDefinition}
-        items={converted}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: converted, [ViewMode.TILE]: converted }}
         totalCount={converted.length}
         reloadFun={reloadFun}
         filterField={teamCompetitionSeasonFieldDefinition

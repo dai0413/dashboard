@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { TeamGet } from "../../../../types/models/team";
+import { ViewMode } from "../../../../types/types";
 
 const teamFieldDefinition = convertFieldDefinition<TeamGet>(
   ["normalized_name", "abbr", "enTeam", "country", "age_group"],
@@ -27,7 +28,8 @@ const TeamPanel = ({ summary }: { summary: UseNationalSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TEAM}
         fieldDefinitions={teamFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={teamFieldDefinition?.filter(isFilterable)}

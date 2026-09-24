@@ -11,6 +11,7 @@ import { ColumnType } from "../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { UseCompetitionSummary } from "../types";
+import { ViewMode } from "../../../../types/types";
 
 const keys = playerStatistics.map((ps) => ps.key);
 const secondKeys = keys.filter((d) => d !== "player" && d !== "mainPosition");
@@ -63,7 +64,11 @@ const PlayerStatisticsPanel = ({
         key={key}
         fieldDefinitions={fieldDefinitions}
         itemsLoading={isLoading}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}

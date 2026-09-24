@@ -4,6 +4,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { statsLFieldDefinition } from "../constants/field";
+import { ViewMode } from "../../../../types/types";
 
 const AwayStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {
@@ -24,7 +25,11 @@ const AwayStatsLPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={statsLFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={statsLFieldDefinition

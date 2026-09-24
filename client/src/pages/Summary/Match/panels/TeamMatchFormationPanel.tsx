@@ -6,6 +6,7 @@ import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
 import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
+import { ViewMode } from "../../../../types/types";
 
 const teamMatchFormationFieldDefinition =
   convertFieldDefinition<TeamMatchFormationGet>(
@@ -32,7 +33,8 @@ const TeamMatchFormationPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TEAM_MATCH_FORMATION}
         fieldDefinitions={teamMatchFormationFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={teamMatchFormationFieldDefinition

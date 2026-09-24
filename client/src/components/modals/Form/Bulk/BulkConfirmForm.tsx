@@ -147,11 +147,11 @@ const BulkConfirmForm = <T extends keyof FormTypeMap>() => {
 
           <DataViewContainer
             pageNation="client"
-            items={confirmBulkData || []}
             totalCount={confirmBulkData.length}
             fieldDefinitions={confirmBulkDataHeaders || []}
             handlePageChange={async (p: number) => setPage("formPage", p)}
             selectedKeys={diffKeysObj}
+            viewModes={[ViewMode.TABLE, ViewMode.TILE]}
             viewData={{
               [ViewMode.TABLE]: confirmBulkData,
               [ViewMode.TILE]: confirmBulkData,

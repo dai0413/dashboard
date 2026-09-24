@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { TransferGet } from "../../../../../types/models/transfer";
+import { ViewMode } from "../../../../../types/types";
 
 const onLoanFieldDefinition = convertFieldDefinition<TransferGet>(
   ["from_date", "player", "to_team", "form"],
@@ -28,7 +29,8 @@ const LoanPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.TRANSFER}
         fieldDefinitions={onLoanFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={onLoanFieldDefinition

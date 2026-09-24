@@ -6,11 +6,6 @@ import { ModelType } from "../../../types/models";
 import { LinkField, ViewMode } from "../../../types/types";
 import { UIFieldDefinition } from "../../../types/field";
 import { ReactNode } from "react";
-import {
-  FilterableFieldDefinition,
-  SortableFieldDefinition,
-} from "@dai0413/myorg-shared";
-import { useDataView } from "../../../context/dataView-context";
 import { RadarField } from "../../plot/RadarChart/types";
 import { FormationItem } from "../../../types/formation";
 import { CalendarDataItem } from "./DataView/Calendar/types";
@@ -24,10 +19,9 @@ import { NationalCallup } from "../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../types/models/national-match-series";
 
 type Props<T> = {
-  datas: TableData<T>;
+  noItem?: boolean;
   isLoading?: boolean;
 
-  totalCount: number;
   modelType?: ModelType;
   linkField?: LinkField[];
   fieldDefinitions?: UIFieldDefinition<T>[];
@@ -49,14 +43,8 @@ type Props<T> = {
 
   // レンダリング
   noItemMessage?: ReactNode;
-  renderView?: (params: {
-    items: TableData<T>;
-    totalCount: number;
-    isLoading: boolean;
-    filterConditions?: FilterableFieldDefinition[];
-    sortConditions?: SortableFieldDefinition[];
-  }) => React.ReactNode;
 
+  pageButton?: boolean;
   pages: (number | "...")[];
   pageNum: number;
   onPageChange: (page: number) => void;
@@ -94,12 +82,10 @@ type Props<T> = {
 };
 
 export const DataViewContent = <K extends Record<string, unknown>>({
-  totalCount,
   modelType,
   linkField,
   fieldDefinitions,
   isLoading,
-  datas,
 
   form,
   onActionClick,
@@ -110,16 +96,14 @@ export const DataViewContent = <K extends Record<string, unknown>>({
   deleteOnClick,
   selectedKeys,
 
+  noItem,
   noItemMessage,
-  renderView,
-
+  pageButton,
   pages,
   pageNum,
   onPageChange,
   viewData,
 }: Props<K>) => {
-  const { viewMode } = useDataView();
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -130,7 +114,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
     );
   }
 
-  if (datas.length === 0) {
+  if (noItem) {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">
@@ -139,18 +123,6 @@ export const DataViewContent = <K extends Record<string, unknown>>({
           </p>
           {noItemMessage}
         </div>
-      </div>
-    );
-  }
-
-  if (renderView) {
-    return (
-      <div className="flex justify-center">
-        {renderView({
-          items: datas,
-          totalCount: totalCount,
-          isLoading: isLoading || false,
-        })}
       </div>
     );
   }
@@ -170,7 +142,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
         onDeleteClick={deleteOnClick}
         viewData={viewData}
       />
-      {(viewMode === ViewMode.TABLE || viewMode === ViewMode.TILE) && (
+      {pageButton && (
         <PageButtons
           pages={pages}
           currentPageNum={pageNum}

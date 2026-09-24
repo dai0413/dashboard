@@ -112,7 +112,6 @@ const Main = () => {
             <div className={`p-2`}>
               <DataViewContainer
                 pageNation="client"
-                items={transfers}
                 totalCount={transfers.length}
                 fieldDefinitions={[
                   {
@@ -150,6 +149,7 @@ const Main = () => {
                 ]}
                 itemsLoading={isLoading}
                 noToolBar={false}
+                viewModes={[ViewMode.TABLE]}
                 viewData={{
                   [ViewMode.TABLE]: transfers,
                 }}
@@ -168,7 +168,6 @@ const Main = () => {
             <div className={`p-2`}>
               <DataViewContainer
                 pageNation="client"
-                items={injuries}
                 totalCount={injuries.length}
                 fieldDefinitions={[
                   {
@@ -198,6 +197,7 @@ const Main = () => {
                 ]}
                 itemsLoading={isLoading}
                 noToolBar={false}
+                viewModes={[ViewMode.TABLE]}
                 viewData={{
                   [ViewMode.TABLE]: injuries,
                 }}

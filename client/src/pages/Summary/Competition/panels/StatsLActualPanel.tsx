@@ -16,7 +16,6 @@ const StatsLActualPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        items={items.actual}
         totalCount={items.actual.length}
         newItemsPerPage={20}
         itemsLoading={isLoading}

@@ -10,6 +10,7 @@ import {
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseStaffSummary } from "../types";
 import { StaffRegistrationGet } from "../../../../types/models/staff-registration";
+import { ViewMode } from "../../../../types/types";
 
 const registrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.STAFF_REGISTRATION]
@@ -36,7 +37,8 @@ const StaffRegistrationPanel = ({ summary }: { summary: UseStaffSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={registrationFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={registrationFieldDefinition

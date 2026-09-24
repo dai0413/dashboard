@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
+import { ViewMode } from "../../../../../types/types";
 
 const nationalMatchSeriesFieldDefinition =
   convertFieldDefinition<NationalMatchSeriesGet>(
@@ -29,7 +30,8 @@ const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         fieldDefinitions={nationalMatchSeriesFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={nationalMatchSeriesFieldDefinition?.filter(isFilterable)}

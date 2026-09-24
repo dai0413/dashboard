@@ -14,7 +14,6 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        items={items.playerStatistics}
         totalCount={items.playerStatistics.length}
         reloadFun={async (filterConditions, sortConditions) =>
           await reloadFun(filterConditions, sortConditions)

@@ -10,6 +10,7 @@ import {
 import { UseNationalMatchSeriesSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { MatchGet } from "../../../../types/models/match";
+import { ViewMode } from "../../../../types/types";
 
 const matchFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.MATCH]
@@ -47,7 +48,8 @@ const MatchPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.MATCH}
         fieldDefinitions={matchFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition?.filter(isFilterable)}

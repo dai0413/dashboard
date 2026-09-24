@@ -78,11 +78,11 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
       filterField={filterField}
       sortField={sortField}
       fieldDefinitions={headers}
-      items={items}
       itemsLoading={isLoading}
       reloadFun={handleApplyFilter}
       uploadFile={uploadFile}
       downloadFile={downloadFile}
+      viewModes={[ViewMode.TABLE, ViewMode.TILE]}
       viewData={{
         [ViewMode.TABLE]: items,
         [ViewMode.TILE]: items,

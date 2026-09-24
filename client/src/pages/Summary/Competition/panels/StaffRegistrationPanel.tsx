@@ -11,6 +11,7 @@ import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
 import { ColumnType } from "../../../../types/table";
 import { StaffRegistrationGet } from "../../../../types/models/staff-registration";
+import { ViewMode } from "../../../../types/types";
 
 const staffRegistrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.STAFF_REGISTRATION]
@@ -51,7 +52,11 @@ const StaffRegistrationPanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_REGISTRATION}
         fieldDefinitions={staffRegistrationFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={staffRegistrationFieldDefinition

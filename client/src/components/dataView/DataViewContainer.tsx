@@ -6,7 +6,6 @@ import { Sort, Filter } from "../modals/index";
 import {
   QuickFilterItem,
   QuickFilterType,
-  TableData,
   TableHeader,
 } from "../../types/table";
 
@@ -51,7 +50,6 @@ type DataViewContainerProps<T, F> = {
   linkField?: LinkField[];
   pageNation?: "client" | "server";
   fieldDefinitions?: UIFieldDefinition<T>[];
-  items?: T[];
   itemsLoading?: boolean;
 
   /** 単一データ編集モード */
@@ -96,19 +94,13 @@ type DataViewContainerProps<T, F> = {
 
   // dataview
   defaultViewMode?: ViewMode;
-  viewModes?: ViewMode[];
+  viewModes: ViewMode[];
   newItemsPerPage?: number;
   newPageNum?: number;
 
   // レンダリング
   noItemMessage?: ReactNode;
-  renderView?: (params: {
-    items: TableData<T>;
-    totalCount: number;
-    isLoading: boolean;
-    filterConditions?: FilterableFieldDefinition[];
-    sortConditions?: SortableFieldDefinition[];
-  }) => React.ReactNode;
+
   viewData: {
     [ViewMode.TABLE]?: T[];
     [ViewMode.TILE]?: T[];
@@ -147,7 +139,6 @@ const Container = <K extends Record<string, unknown>, F>({
   pageNation,
   initialData,
   linkField,
-  items,
   itemsLoading,
   filterField,
   sortField,
@@ -172,7 +163,6 @@ const Container = <K extends Record<string, unknown>, F>({
   newPageNum,
   selectedKeys,
   deleteOnClick,
-  renderView,
   viewData,
 }: DataViewContainerProps<K, F>) => {
   const { sortConditions, closeSort, resetSort } = useSort();
@@ -181,6 +171,7 @@ const Container = <K extends Record<string, unknown>, F>({
   const {
     pageNum,
     itemsPerPage,
+    viewMode,
     setItemsPerPage,
     setColumnVisibility,
     setViewMode,
@@ -188,7 +179,8 @@ const Container = <K extends Record<string, unknown>, F>({
   } = useDataView();
 
   const datas = useMemo(() => {
-    if (!items) return [];
+    const original = viewData[ViewMode.TILE] || viewData[ViewMode.TABLE];
+    if (!original) return [];
 
     const nextItemsPerPage = newItemsPerPage || itemsPerPage;
     const nextPageNum = newPageNum || pageNum;
@@ -200,14 +192,21 @@ const Container = <K extends Record<string, unknown>, F>({
 
     const targetItems =
       pageNation === "client" && nextItemsPerPage
-        ? items.slice(offset, offset + nextItemsPerPage)
-        : items;
+        ? original.slice(offset, offset + nextItemsPerPage)
+        : original;
 
     return targetItems.map((item, index) => ({
       item,
       index: offset + index,
     }));
-  }, [items, pageNation, itemsPerPage, newItemsPerPage, pageNum, newPageNum]);
+  }, [
+    viewData,
+    pageNation,
+    itemsPerPage,
+    newItemsPerPage,
+    pageNum,
+    newPageNum,
+  ]);
 
   const { startBaseDate, endBaseDate } = useMemo(() => {
     let startBaseDate: Date | undefined;
@@ -363,7 +362,11 @@ const Container = <K extends Record<string, unknown>, F>({
 
   const newDownloadFile = downloadFile
     ? downloadFile
-    : async () => downloadCsv(`${modelType}.csv`, items ?? []);
+    : async () =>
+        downloadCsv(
+          `${modelType}.csv`,
+          (viewData[ViewMode.TABLE] || viewData[ViewMode.TILE]) ?? [],
+        );
 
   const pages = useMemo(() => {
     const nextItemsPerPage = newItemsPerPage || itemsPerPage;
@@ -380,6 +383,23 @@ const Container = <K extends Record<string, unknown>, F>({
 
     return pages;
   }, [newItemsPerPage, itemsPerPage, newPageNum, pageNum, totalCount, datas]);
+
+  const noItem = useMemo(() => {
+    const nextViewMode = defaultViewMode || viewMode;
+
+    const returnVal =
+      (nextViewMode === ViewMode.TABLE && !viewData[ViewMode.TABLE]) ||
+      viewData[ViewMode.TABLE]?.length === 0 ||
+      (nextViewMode === ViewMode.TILE && !viewData[ViewMode.TILE]) ||
+      viewData[ViewMode.TILE]?.length === 0;
+
+    return returnVal;
+  }, [viewMode, viewData]);
+
+  const pageButton = useMemo(() => {
+    const nextViewMode = defaultViewMode || viewMode;
+    return nextViewMode === ViewMode.TABLE || nextViewMode === ViewMode.TILE;
+  }, [viewMode]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg w-full mx-auto">
@@ -407,11 +427,10 @@ const Container = <K extends Record<string, unknown>, F>({
       )}
 
       <DataViewContent
-        totalCount={totalCount}
         modelType={modelType}
         linkField={linkField}
         fieldDefinitions={fieldDefinitions}
-        datas={datas}
+        noItem={noItem}
         isLoading={itemsLoading || quickFilterLoading}
         form={form}
         onActionClick={onClick}
@@ -421,7 +440,7 @@ const Container = <K extends Record<string, unknown>, F>({
         deleteOnClick={deleteOnClick}
         selectedKeys={selectedKeys}
         noItemMessage={noItemMessage}
-        renderView={renderView}
+        pageButton={pageButton}
         pages={pages}
         pageNum={newPageNum || pageNum || 1}
         onPageChange={(pageNum) => {

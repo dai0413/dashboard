@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { NationalCallupGet } from "../../../../types/models/national-callup";
+import { ViewMode } from "../../../../types/types";
 
 const nationalCallupFieldDefinition = convertFieldDefinition<NationalCallupGet>(
   ["series", "status", "number", "joined_at"],
@@ -28,7 +29,8 @@ const NationalCallupPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_CALLUP}
         fieldDefinitions={nationalCallupFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={nationalCallupFieldDefinition

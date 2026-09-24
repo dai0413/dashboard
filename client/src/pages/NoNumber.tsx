@@ -4,7 +4,7 @@ import { isFilterable, isSortable, UIFieldDefinition } from "../types/field";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { useEffect, useState } from "react";
-import { Data } from "../types/types";
+import { Data, ViewMode } from "../types/types";
 import { Transfer, TransferGet } from "../types/models/transfer";
 import { readItemsBase } from "../lib/api";
 import { api } from "../context/api-context";
@@ -69,7 +69,11 @@ const NoNumber = () => {
         fieldDefinitions={fields}
         reloadFun={reloadFun}
         itemsLoading={items.isLoading}
-        items={items.data}
+        viewModes={[ViewMode.TABLE]}
+        viewData={{
+          [ViewMode.TABLE]: items.data,
+          [ViewMode.TILE]: items.data,
+        }}
         totalCount={items.data.length}
         filterField={fields
           ?.filter(isFilterable)

@@ -122,7 +122,6 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
     <>
       <DataViewContainer
         pageNation="client"
-        items={many?.state.length === 0 ? [] : many?.state}
         totalCount={many?.state.length || 0}
         fieldDefinitions={headers}
         renderFieldCell={(
@@ -180,6 +179,7 @@ const BulkEditForm = <T extends keyof FormTypeMap>({
         edit={true}
         deleteOnClick={many?.deleteFormDatas}
         selectedKey={requiredField}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{
           [ViewMode.TABLE]: many?.state.length === 0 ? [] : many?.state,
           [ViewMode.TILE]: many?.state.length === 0 ? [] : many?.state,

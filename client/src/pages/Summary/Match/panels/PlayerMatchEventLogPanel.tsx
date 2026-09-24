@@ -6,6 +6,7 @@ import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
 import { PlayerMatchEventLogGet } from "../../../../types/models/player-match-event-log";
+import { ViewMode } from "../../../../types/types";
 
 const playerEventLogFieldDefinition =
   convertFieldDefinition<PlayerMatchEventLogGet>(
@@ -42,8 +43,9 @@ const PlayerMatchEventLogPanel = ({
         key={key}
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER_MATCH_EVENT_LOG}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         fieldDefinitions={playerEventLogFieldDefinition}
-        items={items}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerEventLogFieldDefinition

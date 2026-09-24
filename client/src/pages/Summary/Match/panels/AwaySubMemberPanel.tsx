@@ -4,6 +4,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { playerAppearanceFieldDefinition } from "../constants/field";
+import { ViewMode } from "../../../../types/types";
 
 const AwaySubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {
@@ -24,7 +25,11 @@ const AwaySubMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerAppearanceFieldDefinition

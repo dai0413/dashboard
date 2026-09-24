@@ -22,7 +22,6 @@ const AwayStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
-        items={items.away}
         totalCount={items.away.length}
         newItemsPerPage={11}
         itemsLoading={isLoading}

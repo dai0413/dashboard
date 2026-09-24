@@ -11,6 +11,7 @@ import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
 import { MatchGet } from "../../../../../types/models/match";
 import { ColumnType } from "../../../../../types/table";
+import { ViewMode } from "../../../../../types/types";
 
 const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
@@ -56,7 +57,8 @@ const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.MATCH}
         fieldDefinitions={matchFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition?.filter(isFilterable)}

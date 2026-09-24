@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
 import { PlayerGet } from "../../../../../types/models/player";
+import { ViewMode } from "../../../../../types/types";
 
 const playerFieldDefinition = convertFieldDefinition<PlayerGet>(
   ["name", "dob"],
@@ -27,7 +28,8 @@ const PlayerPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.PLAYER}
         fieldDefinitions={playerFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={playerFieldDefinition?.filter(isFilterable)}

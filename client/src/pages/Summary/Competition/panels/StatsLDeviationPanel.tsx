@@ -20,7 +20,6 @@ const StatsLDeviationPanel = ({
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        items={items.deviation}
         totalCount={items.deviation.length}
         newItemsPerPage={20}
         itemsLoading={isLoading}

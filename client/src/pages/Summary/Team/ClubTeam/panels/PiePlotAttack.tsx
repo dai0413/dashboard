@@ -18,13 +18,18 @@ const PiePlotAttack = ({ summary }: { summary: UseClubTeamSummary }) => {
       <DataViewContainer
         modelType={ModelType.STATS_L}
         fieldDefinitions={offFieldDefinitions}
-        items={items.offRadarData ? [items.offRadarData] : []}
         totalCount={10}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.RADAR_CHART]}
         defaultViewMode={ViewMode.RADAR_CHART}
         viewData={{
+          [ViewMode.TABLE]: items.offRadarData
+            ? [items.offRadarData]
+            : undefined,
+          [ViewMode.TILE]: items.offRadarData
+            ? [items.offRadarData]
+            : undefined,
           [ViewMode.RADAR_CHART]: items.offRadarData
             ? {
                 data: items.offRadarData,

@@ -6,6 +6,7 @@ import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { fieldDefinition } from "../../../../lib/model-fields";
 import { StaffMatchEventLogGet } from "../../../../types/models/staff-match-event-log";
+import { ViewMode } from "../../../../types/types";
 
 const staffEventLogFieldDefinition =
   convertFieldDefinition<StaffMatchEventLogGet>(
@@ -39,7 +40,8 @@ const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STAFF_MATCH_EVENT_LOG}
         fieldDefinitions={staffEventLogFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={staffEventLogFieldDefinition

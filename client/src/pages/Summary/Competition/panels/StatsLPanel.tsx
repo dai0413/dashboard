@@ -4,6 +4,7 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
+import { ViewMode } from "../../../../types/types";
 
 const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
@@ -25,7 +26,11 @@ const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
         fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
-        items={items.raw}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items.raw,
+          [ViewMode.TILE]: items.raw,
+        }}
         totalCount={items.raw.length}
         reloadFun={reloadFun}
         filterField={fieldDefinition[ModelType.STATS_L]

@@ -10,6 +10,7 @@ import {
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
 import { MatchGet } from "../../../../types/models/match";
+import { ViewMode } from "../../../../types/types";
 
 const matchFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.MATCH]
@@ -47,7 +48,11 @@ const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         modelType={ModelType.MATCH}
         itemsLoading={isLoading}
         fieldDefinitions={matchFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={matchFieldDefinition

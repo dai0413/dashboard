@@ -11,6 +11,7 @@ import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/st
 import { ColumnType } from "../../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
+import { ViewMode } from "../../../../../types/types";
 
 const keys = playerStatistics
   .map((ps) => ps.key)
@@ -67,7 +68,8 @@ const PlayerStatisticsPanel = ({
         key={key}
         itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}

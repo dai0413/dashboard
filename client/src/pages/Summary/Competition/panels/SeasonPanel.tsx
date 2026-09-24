@@ -5,6 +5,7 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
 import { SeasonGet } from "../../../../types/models/season";
+import { ViewMode } from "../../../../types/types";
 
 const seasonFieldDefinition = convertFieldDefinition<SeasonGet>(
   ["name", "start_date", "end_date", "current", "note"],
@@ -31,7 +32,11 @@ const StaffRegistrationPanel = ({
         modelType={ModelType.SEASON}
         itemsLoading={isLoading}
         fieldDefinitions={seasonFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={seasonFieldDefinition

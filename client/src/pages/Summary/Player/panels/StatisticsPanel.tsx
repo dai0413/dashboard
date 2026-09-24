@@ -5,6 +5,7 @@ import { playerStatistics } from "../../../../lib/fields/playerStatistics";
 import { UIFieldDefinition } from "../../../../types/field";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
+import { ViewMode } from "../../../../types/types";
 
 const secondKeys = playerStatistics
   .map((ps) => ps.key)
@@ -37,7 +38,8 @@ const StatisticsPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         key={key}
         itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         linkField={[

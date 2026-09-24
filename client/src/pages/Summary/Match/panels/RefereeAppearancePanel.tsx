@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { RefereeAppearanceGet } from "../../../../types/models/referee-appearance";
+import { ViewMode } from "../../../../types/types";
 
 const refereeAppearanceFieldDefinition =
   convertFieldDefinition<RefereeAppearanceGet>(
@@ -32,7 +33,8 @@ const RefereeAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.REFEREE_APPEARANCE}
         fieldDefinitions={refereeAppearanceFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={refereeAppearanceFieldDefinition

@@ -122,8 +122,12 @@ const viewModeMap: Record<ViewMode, { text: string; icon: React.ReactNode }> = {
     text: "テーブル",
     icon: <TableCellsIcon className="w-6 h-6" />,
   },
-  [ViewMode.MATRIX]: {
-    text: "マトリックス",
+  [ViewMode.MATCH_MATRIX]: {
+    text: "試合マトリックス",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
+  [ViewMode.SERIES_MATRIX]: {
+    text: "シリーズマトリックス",
     icon: <TableCellsIcon className="w-6 h-6" />,
   },
   [ViewMode.TILE]: {

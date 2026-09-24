@@ -78,7 +78,6 @@ const PositionPanel = ({ summary }: { summary: UsePlayerSummary }) => {
       <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={fieldDefinitions}
-        items={items}
         totalCount={items.length}
         itemsLoading={isLoading}
         reloadFun={reloadFun}

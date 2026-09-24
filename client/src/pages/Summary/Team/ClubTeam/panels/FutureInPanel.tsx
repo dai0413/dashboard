@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { TransferGet } from "../../../../../types/models/transfer";
+import { ViewMode } from "../../../../../types/types";
 
 const futureInFieldDefinition = convertFieldDefinition<TransferGet>(
   ["from_date", "player", "from_team", "position"],
@@ -28,7 +29,8 @@ const FurureInPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         modelType={ModelType.TRANSFER}
         itemsLoading={isLoading}
         fieldDefinitions={futureInFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={futureInFieldDefinition

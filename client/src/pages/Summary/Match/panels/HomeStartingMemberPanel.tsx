@@ -22,7 +22,6 @@ const HomeStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
       <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}
-        items={items.home}
         totalCount={items.home.length}
         newItemsPerPage={11}
         itemsLoading={isLoading}

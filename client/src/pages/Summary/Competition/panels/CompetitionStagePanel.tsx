@@ -5,6 +5,7 @@ import { fieldDefinition } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
 import { CompetitionStageGet } from "../../../../types/models/competition-stage";
+import { ViewMode } from "../../../../types/types";
 
 const competitionStageFieldDefinition =
   convertFieldDefinition<CompetitionStageGet>(
@@ -36,7 +37,11 @@ const CompetitionStagePanel = ({
         itemsLoading={isLoading}
         modelType={ModelType.COMPETITION_STAGE}
         fieldDefinitions={competitionStageFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={competitionStageFieldDefinition

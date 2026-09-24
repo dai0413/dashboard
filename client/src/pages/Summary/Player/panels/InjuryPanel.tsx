@@ -6,6 +6,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { InjuryGet } from "../../../../types/models/injury";
+import { ViewMode } from "../../../../types/types";
 
 const injuryFieldDefinition = convertFieldDefinition<InjuryGet>(
   ["doa", "team", "injured_part", "ttp"],
@@ -28,7 +29,8 @@ const InjuryPanel = ({ summary }: { summary: UsePlayerSummary }) => {
         itemsLoading={isLoading}
         modelType={ModelType.INJURY}
         fieldDefinitions={injuryFieldDefinition}
-        items={items}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={injuryFieldDefinition

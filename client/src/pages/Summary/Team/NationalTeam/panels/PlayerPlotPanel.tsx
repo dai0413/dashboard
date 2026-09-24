@@ -211,7 +211,6 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        items={items.nationalCallUp}
         totalCount={items.nationalCallUp.length || 0}
         filterField={filedDefinitions?.filter(isFilterable)}
         sortField={[]}
