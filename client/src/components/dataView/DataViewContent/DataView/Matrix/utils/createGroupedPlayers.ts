@@ -70,13 +70,32 @@ const getGroupedPosition = (
     return candidates[0][0];
   }
 
-  // 3. groupedPositions に直接該当しない場合は、
-  //    positionBase 上で最も近い grouped position に寄せる
   const playerPositions = [
     player.mainPosition,
     ...Object.keys(player.positionCounts),
   ].filter((p) => typeof p === "string");
 
+  // 3. R/L付きのポジションを、R/Lなしのポジションに寄せる
+  for (const position of playerPositions) {
+    const basePosition = position.replace(/^[RL]/, "");
+
+    if (allPositions.includes(basePosition)) {
+      return basePosition;
+    }
+  }
+
+  // 4. R/L を付けて一致する position を探す
+  for (const position of playerPositions) {
+    if (allPositions.includes(`${"R"}${position}`)) {
+      return `${"R"}${position}`;
+    }
+
+    if (allPositions.includes(`${"L"}${position}`)) {
+      return `${"L"}${position}`;
+    }
+  }
+
+  // 5. それでも該当しなければ、位置的に最も近い grouped position
   return getNearestPosition(playerPositions, allPositions);
 };
 

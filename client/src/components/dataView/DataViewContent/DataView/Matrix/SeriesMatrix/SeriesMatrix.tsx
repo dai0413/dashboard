@@ -4,8 +4,7 @@ import { Label } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { MatrixTable } from "../MatrixTable";
 import { createCallUpCircleInfo } from "./utils/createCallUpCircleInfo";
-import { createAppearanceMap, createGroupedPlayers, getTitle } from "../utils";
-import { displayPositions } from "../context/displayPositions";
+import { createAppearanceMap, getTitle } from "../utils";
 import { APP_ROUTES } from "../../../../../../lib/appRoutes";
 import { ModelType } from "../../../../../../types/models";
 import { convert } from "../../../../../../lib/convert/DBtoGetted";
@@ -13,12 +12,14 @@ import { NationalCallup } from "../../../../../../types/models/national-callup";
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
 import { NationalMatchSeries } from "../../../../../../types/models/national-match-series";
 import MatrixCell from "../MatrixCell/MarixCell";
+import { FormationCounts } from "../../../../../../pages/Summary/Team/ClubTeam/types";
 
 type SeriesMatrixParams = {
   playerStatistics: PlayerStatistic[];
   nationalCallUp: NationalCallup[];
   nationalMatchSeries: NationalMatchSeries[];
   playerAppearance: PlayerAppearanceGet[];
+  formationCounts: FormationCounts[];
   startBaseDate?: Date;
   endBaseDate?: Date;
 };
@@ -34,12 +35,8 @@ const SeriesMatrix = ({
   nationalCallUp,
   nationalMatchSeries,
   playerAppearance,
+  formationCounts,
 }: SeriesMatrixParams) => {
-  const groupedPlayers = useMemo(
-    () => createGroupedPlayers(playerStatistics, displayPositions),
-    [playerStatistics],
-  );
-
   const appearanceMap = useMemo(
     () => createAppearanceMap(playerAppearance),
     [playerAppearance],
@@ -82,9 +79,9 @@ const SeriesMatrix = ({
 
   return (
     <MatrixTable
-      groupedPlayers={groupedPlayers}
+      formationCounts={formationCounts}
+      playerStatistics={playerStatistics}
       columns={columns}
-      positionOptions={displayPositions}
       renderHeader={(column) => (
         <Link
           to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${column.series._id}`}

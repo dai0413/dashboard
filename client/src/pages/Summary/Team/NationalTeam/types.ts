@@ -3,6 +3,7 @@ import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
+import { FormationCounts } from "../ClubTeam/types";
 
 export const NATIONAL_TEAM_TAB = {
   SERIES: "series",
@@ -24,6 +25,7 @@ type NationalTeamPanels = {
     nationalCallUp: NationalCallup[];
     nationalMatchSeries: NationalMatchSeries[];
     playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+    formationCounts: FormationCounts[];
   }>;
 };
 

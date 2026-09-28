@@ -3,13 +3,11 @@ import { useMemo } from "react";
 import { Label } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import {
-  getGroupedPositions,
   isRegisteredAtMatch,
   createRegistrationMap,
   createMatchLabel,
 } from "./utils";
-import { displayPositions } from "../context/displayPositions";
-import { createAppearanceMap, createGroupedPlayers, getTitle } from "../utils";
+import { createAppearanceMap, getTitle } from "../utils";
 import { MatrixTable } from "../MatrixTable";
 import { APP_ROUTES } from "../../../../../../lib/appRoutes";
 import { MatchGet } from "../../../../../../types/models/match";
@@ -39,19 +37,6 @@ const MatchMatrix = ({
   playerAppearance,
   formationCounts,
 }: MatchMatrixParams) => {
-  const positionOptions = useMemo(() => {
-    return getGroupedPositions(
-      formationCounts && formationCounts.length > 0
-        ? formationCounts[0].formation.position_formation
-        : displayPositions.map((d) => d.key),
-    );
-  }, [formationCounts]);
-
-  const groupedPlayers = useMemo(
-    () => createGroupedPlayers(playerStatistics, positionOptions),
-    [playerStatistics, positionOptions],
-  );
-
   const appearanceMap = useMemo(
     () => createAppearanceMap(playerAppearance),
     [playerAppearance],
@@ -82,9 +67,9 @@ const MatchMatrix = ({
 
   return (
     <MatrixTable
-      groupedPlayers={groupedPlayers}
       columns={columns}
-      positionOptions={positionOptions}
+      playerStatistics={playerStatistics}
+      formationCounts={formationCounts}
       renderHeader={(column) => (
         <Link
           to={`${APP_ROUTES.MATCH_SUMMARY}/${column.id}`}

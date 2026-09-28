@@ -14,9 +14,8 @@ import {
   PlayerRegistration,
   PlayerRegistrationGet,
 } from "../../../../../types/models/player-registration";
-import { TeamMatchFormation } from "../../../../../types/models/team-match-formation";
 import { FormationCounts } from "../types";
-import { Formation } from "../../../../../types/models/formation";
+import { getFormationCounts } from "../../../../../utils/data";
 
 export const useAppearancePlotPanel = () => {
   const [appearancePlotIsLoading, setAppearancePlotIsLoading] =
@@ -70,36 +69,8 @@ export const useAppearancePlotPanel = () => {
         ]),
       ];
 
-      const teamMatchFormationRes = await readItemsBase<TeamMatchFormation[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,
-        params: { getAll: true, team: teamId, match: matchIds },
-      });
-
-      if (teamMatchFormationRes?.data) {
-        const formationCounts = Array.from(
-          teamMatchFormationRes.data
-            .reduce((map, item) => {
-              const formationId = item.formation._id;
-
-              if (!formationId) {
-                return map;
-              }
-
-              const current = map.get(formationId);
-
-              map.set(formationId, {
-                formation: item.formation,
-                count: (current?.count ?? 0) + 1,
-              });
-
-              return map;
-            }, new Map<string, { formation: Formation; count: number }>())
-            .values(),
-        ).sort((a, b) => b.count - a.count);
-
-        setFormationCounts(formationCounts);
-      }
+      const formationCounts = await getFormationCounts(teamId, matchIds);
+      formationCounts && setFormationCounts(formationCounts);
     }
 
     const playerRegistration = await readItemsBase<PlayerRegistration[]>({

@@ -16,6 +16,8 @@ import {
 } from "../../../../../types/models/player-appearance";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { normalizeFiltersForApi } from "../../../../../utils/filter/normalizeFiltersForApi";
+import { FormationCounts } from "../../ClubTeam/types";
+import { getFormationCounts } from "../../../../../utils/data";
 
 export const usePlayerPlotPanel = () => {
   const [nationalCallUp, setNationalCallUp] = useState<NationalCallup[]>([]);
@@ -30,6 +32,7 @@ export const usePlayerPlotPanel = () => {
   const [playerStatistics, setPlayerStatistics] = useState<PlayerStatistic[]>(
     [],
   );
+  const [formationCounts, setFormationCounts] = useState<FormationCounts[]>([]);
 
   const readPlayerPlot = async (
     teamId: string,
@@ -98,6 +101,9 @@ export const usePlayerPlotPanel = () => {
 
     if (!matchIds) return setPlayerPlotIsLoading(false);
 
+    const formationCounts = await getFormationCounts(teamId, matchIds);
+    formationCounts && setFormationCounts(formationCounts);
+
     const playerAppearanceRes = await readItemsBase<PlayerAppearance[]>({
       apiInstance: api,
       backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
@@ -121,6 +127,7 @@ export const usePlayerPlotPanel = () => {
     playerAppearance,
     playerStatistics,
     playerPlotIsLoading,
+    formationCounts,
     readPlayerPlot,
   };
 };

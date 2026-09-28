@@ -230,6 +230,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
             nationalCallUp: items.nationalCallUp,
             nationalMatchSeries: items.nationalMatchSeries,
             playerAppearance: items.playerAppearance,
+            formationCounts: items.formationCounts,
           },
         }}
       />

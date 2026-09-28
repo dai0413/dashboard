@@ -75,6 +75,7 @@ type Props<T> = {
       nationalCallUp: NationalCallup[];
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
       startBaseDate?: Date;
       endBaseDate?: Date;
     };

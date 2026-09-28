@@ -609,13 +609,11 @@ const DataViewToolBar = <Data, Form>({
       </div>
 
       {quickFilterItems.length > 0 && (
-        <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
-          <QuickFilterBar
-            items={quickFilterItems}
-            loading={false}
-            reloadFun={reloadFun}
-          />
-        </div>
+        <QuickFilterBar
+          items={quickFilterItems}
+          loading={false}
+          reloadFun={reloadFun}
+        />
       )}
     </div>
   );

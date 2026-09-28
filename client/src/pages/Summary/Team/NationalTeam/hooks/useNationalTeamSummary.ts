@@ -37,6 +37,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
     playerStatistics,
     readPlayerPlot,
     playerPlotIsLoading,
+    formationCounts,
   } = usePlayerPlotPanel();
 
   useEffect(() => {
@@ -98,6 +99,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
           nationalCallUp,
           nationalMatchSeries,
           playerAppearance,
+          formationCounts,
         },
         reloadFun: async (filterConditions, sortConditions) =>
           readPlayerPlot(id, filterConditions, sortConditions),

@@ -10,7 +10,7 @@ import { toggleQuickFilter } from "../../../utils/quickFilter/toggleQuickFilter"
 
 type QuickFilterBarProps = {
   items: QuickFilterItem[];
-  loading: boolean;
+  loading?: boolean;
   reloadFun?: (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
@@ -29,7 +29,10 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
     const defaultItem = items.find((i) => i.defaultSelect);
     if (!defaultItem) return;
 
-    setSelectTab(defaultItem.key);
+    setSelectTab((current) =>
+      current === defaultItem.key ? null : defaultItem.key,
+    );
+
     defaultItem.filterCondition && handleOnClick?.(defaultItem.filterCondition);
     defaultItem.onClick?.();
   }, [items, loading]);
@@ -50,29 +53,34 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
   };
 
   return (
-    <div className="flex items-center gap-x-1">
-      {items.map((tab) => {
-        return (
-          <button
-            key={tab.key}
-            onClick={async () => {
-              if (selectTab !== tab.key) {
-                setSelectTab(tab.key);
-                tab.onClick && (await tab.onClick());
-                tab.filterCondition &&
-                  handleOnClick(tab.filterCondition, tab.removeKey);
-              }
-            }}
-            className={`cursor-pointer flex items-center p-1 border rounded-md ${
-              tab.key === selectTab
-                ? "bg-blue-500 text-white"
-                : "border-gray-400 text-gray-700"
-            }`}
-          >
-            <span>{tab.label.toUpperCase()}</span>
-          </button>
-        );
-      })}
+    <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
+      <div className="flex items-center gap-x-1">
+        {items.map((tab) => {
+          return (
+            <button
+              key={tab.key}
+              onClick={async () => {
+                setSelectTab((current) =>
+                  current === tab.key ? null : tab.key,
+                );
+
+                if (selectTab !== tab.key) {
+                  tab.onClick && (await tab.onClick());
+                  tab.filterCondition &&
+                    handleOnClick(tab.filterCondition, tab.removeKey);
+                }
+              }}
+              className={`cursor-pointer flex items-center p-1 border rounded-md ${
+                tab.key === selectTab
+                  ? "bg-blue-500 text-white"
+                  : "border-gray-400 text-gray-700"
+              }`}
+            >
+              <span>{tab.label.toUpperCase()}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

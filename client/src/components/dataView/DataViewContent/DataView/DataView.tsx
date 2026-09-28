@@ -67,6 +67,7 @@ type DataViewProps<T> = {
       nationalCallUp: NationalCallup[];
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
       startBaseDate?: Date;
       endBaseDate?: Date;
     };
@@ -233,11 +234,13 @@ const DataView = <T,>({
       nationalCallUp,
       nationalMatchSeries,
       playerAppearance,
+      formationCounts,
     } = viewData[ViewMode.SERIES_MATRIX];
     return (
       <SeriesMatrix
         startBaseDate={startBaseDate}
         endBaseDate={endBaseDate}
+        formationCounts={formationCounts}
         playerStatistics={playerStatistics}
         nationalCallUp={nationalCallUp}
         nationalMatchSeries={nationalMatchSeries}

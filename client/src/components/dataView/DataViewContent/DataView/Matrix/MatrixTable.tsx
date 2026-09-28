@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Label } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
-import { getAgeLabel } from "./utils";
-import { DisplayPosition, GroupedPlayers } from "./type";
+import { createGroupedPlayers, getAgeLabel } from "./utils";
+import { FormationCounts } from "../../../../../pages/Summary/Team/ClubTeam/types";
+import { getGroupedPositions } from "./MatchMatrix/utils";
+import { displayPositions } from "./context/displayPositions";
 
 type MatrixTableProps<T extends Label> = {
-  groupedPlayers: GroupedPlayers[];
+  formationCounts: FormationCounts[];
+  playerStatistics: PlayerStatistic[];
+
   columns: T[];
-  positionOptions: DisplayPosition[];
 
   renderHeader: (column: T) => React.ReactNode;
 
@@ -24,17 +27,32 @@ type MatrixTableProps<T extends Label> = {
 };
 
 export const MatrixTable = <T extends Label>({
-  groupedPlayers,
+  formationCounts,
+  playerStatistics,
   columns,
-  positionOptions,
   renderHeader,
   renderCell,
   startBaseDate,
   endBaseDate,
 }: MatrixTableProps<T>) => {
+  const [selectedFormation, setSelectedFormation] =
+    useState<FormationCounts | null>(formationCounts[0]);
+
   const [openPositions, setOpenPositions] = useState<Set<string>>(
-    new Set([...positionOptions.map((p) => p.key), "no-pos"]),
+    new Set([...formationCounts[0].position_formation.map((p) => p), "no-pos"]),
   );
+
+  const positionOptions = useMemo(() => {
+    return getGroupedPositions(
+      selectedFormation
+        ? selectedFormation.position_formation
+        : displayPositions.map((d) => d.key),
+    );
+  }, [selectedFormation]);
+
+  const groupedPlayers = useMemo(() => {
+    return createGroupedPlayers(playerStatistics, positionOptions);
+  }, [selectedFormation, playerStatistics, positionOptions]);
 
   useEffect(() => {
     setOpenPositions(new Set([...positionOptions.map((p) => p.key), "no-pos"]));
@@ -54,46 +72,85 @@ export const MatrixTable = <T extends Label>({
     });
   };
 
+  const quickFilterItems = useMemo(() => {
+    const items = formationCounts.map((formationCount) => {
+      return {
+        item: formationCount,
+        key: formationCount.key,
+        label: `${formationCount.name}  (${formationCount.count})`,
+        onclick: setSelectedFormation,
+      };
+    });
+
+    return items;
+  }, [formationCounts]);
+
   return (
-    <div className="max-h-[80vh] max-w-full overflow-auto rounded-md border border-gray-300">
-      <table className="border-collapse">
-        <thead>
-          <tr>
-            <th
-              className="
+    <>
+      <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
+        <div className="flex items-center gap-x-1">
+          {quickFilterItems.map((quickFilterItem) => {
+            return (
+              <button
+                key={quickFilterItem.key}
+                onClick={async () => {
+                  setSelectedFormation((current) =>
+                    current === quickFilterItem.item
+                      ? null
+                      : quickFilterItem.item,
+                  );
+                }}
+                className={`cursor-pointer flex items-center p-1 border rounded-md ${
+                  quickFilterItem.key === selectedFormation?.key
+                    ? "bg-blue-500 text-white"
+                    : "border-gray-400 text-gray-700"
+                }`}
+              >
+                <span>{quickFilterItem.label.toUpperCase()}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="max-h-[80vh] max-w-full overflow-auto rounded-md border border-gray-300">
+        <table className="border-collapse">
+          <thead>
+            <tr>
+              <th
+                className="
                 sticky top-0 left-0 z-40
                 min-w-[180px] whitespace-nowrap
                 border border-gray-300
                 bg-white
                 px-3 py-1
               "
-            >
-              <div>選手</div>
-            </th>
+              >
+                <div>選手</div>
+              </th>
 
-            {columns.map((column, i) => (
-              <th
-                key={column.id || i}
-                className="
+              {columns.map((column, i) => (
+                <th
+                  key={column.id || i}
+                  className="
                   sticky top-0 z-30
                   min-w-[80px]
                   border border-gray-300
                   bg-white
                   p-1
                 "
-              >
-                {renderHeader(column)}
-              </th>
-            ))}
-          </tr>
-        </thead>
+                >
+                  {renderHeader(column)}
+                </th>
+              ))}
+            </tr>
+          </thead>
 
-        <tbody>
-          {groupedPlayers.map((group) => (
-            <React.Fragment key={group.key}>
-              <tr>
-                <td
-                  className="
+          <tbody>
+            {groupedPlayers.map((group) => (
+              <React.Fragment key={group.key}>
+                <tr>
+                  <td
+                    className="
                     sticky left-0 z-20
                     min-w-[140px]
                     border border-gray-300
@@ -103,27 +160,27 @@ export const MatrixTable = <T extends Label>({
                     whitespace-nowrap
                     hover:cursor-pointer
                   "
-                  onClick={() => onTogglePosition(group.key)}
-                >
-                  <span className="mr-2">
-                    {openPositions.has(group.key) ? "▼" : "▶"}
-                  </span>
-                  {group.label} ({group.players.length})
-                </td>
+                    onClick={() => onTogglePosition(group.key)}
+                  >
+                    <span className="mr-2">
+                      {openPositions.has(group.key) ? "▼" : "▶"}
+                    </span>
+                    {group.label} ({group.players.length})
+                  </td>
 
-                {columns.map((column, i) => (
-                  <td
-                    key={column.id || i}
-                    className="border-y border-gray-300 bg-gray-100"
-                  />
-                ))}
-              </tr>
-
-              {openPositions.has(group.key) &&
-                group.players.map((player, index) => (
-                  <tr key={player.player._id}>
+                  {columns.map((column, i) => (
                     <td
-                      className={`
+                      key={column.id || i}
+                      className="border-y border-gray-300 bg-gray-100"
+                    />
+                  ))}
+                </tr>
+
+                {openPositions.has(group.key) &&
+                  group.players.map((player, index) => (
+                    <tr key={player.player._id}>
+                      <td
+                        className={`
                         sticky left-0 z-10
                         min-w-[140px] whitespace-nowrap
                         border border-gray-300
@@ -131,41 +188,42 @@ export const MatrixTable = <T extends Label>({
                         font-semibold
                         ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                       `}
-                    >
-                      <Link
-                        to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
-                        className="underline hover:text-blue-600"
                       >
-                        {player.player.name}
-                      </Link>
+                        <Link
+                          to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
+                          className="underline hover:text-blue-600"
+                        >
+                          {player.player.name}
+                        </Link>
 
-                      <span className="ml-1 text-sm text-gray-500">
-                        {player.player.dob &&
-                          getAgeLabel(
-                            new Date(player.player.dob),
-                            startBaseDate,
-                            endBaseDate,
-                          )}
-                      </span>
-                    </td>
+                        <span className="ml-1 text-sm text-gray-500">
+                          {player.player.dob &&
+                            getAgeLabel(
+                              new Date(player.player.dob),
+                              startBaseDate,
+                              endBaseDate,
+                            )}
+                        </span>
+                      </td>
 
-                    {columns.map((column, i) => (
-                      <td
-                        key={column.id || i}
-                        className={`
+                      {columns.map((column, i) => (
+                        <td
+                          key={column.id || i}
+                          className={`
                           border border-gray-300
                           ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                         `}
-                      >
-                        {renderCell(player, column, index)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                        >
+                          {renderCell(player, column, index)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };

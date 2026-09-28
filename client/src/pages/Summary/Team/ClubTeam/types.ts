@@ -6,7 +6,7 @@ import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/st
 import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { MatchGet } from "../../../../types/models/match";
-import { Formation } from "../../../../types/models/formation";
+import { FormationGet } from "../../../../types/models/formation";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 
 export const CLUB_TEAM_TAB = {
@@ -30,8 +30,7 @@ export const CLUB_TEAM_TAB = {
 
 export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
 
-export type FormationCounts = {
-  formation: Formation;
+export type FormationCounts = FormationGet & {
   count: number;
 };
 
