@@ -133,13 +133,17 @@ const SeriesMatrix = ({
           );
         }
 
-        const appearances = matches.map((match) => {
-          return createCallUpCircleInfo({
-            match,
-            appearance: appearanceMap.get(`${player.player._id}-${match._id}`),
-            nationalCallup: callUp,
+        const appearances = matches
+          .sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0))
+          .map((match) => {
+            return createCallUpCircleInfo({
+              match,
+              appearance: appearanceMap.get(
+                `${player.player._id}-${match._id}`,
+              ),
+              nationalCallup: callUp,
+            });
           });
-        });
 
         return <MatrixCell appearances={appearances} />;
       }}

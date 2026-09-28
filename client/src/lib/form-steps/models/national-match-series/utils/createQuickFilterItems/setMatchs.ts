@@ -6,15 +6,31 @@ import { QuickFilterItem } from "../../../../../../types/table";
 import { convert } from "../../../../../convert/CreateLabel";
 import { Match } from "../../../../../../types/models/match";
 
+const toDate = (value: string | Date): Date => {
+  if (value instanceof Date) return new Date(value);
+
+  const [year, month, day] = value.split("-").map(Number);
+
+  return new Date(year, month - 1, day);
+};
+
 export const setMatchs = async (
   data?: FormTypeMap[ModelType.NATIONAL_MATCH_SERIES],
   api?: AxiosInstance | undefined,
 ) => {
-  if (!api || !data || !data.team) return null;
+  if (!api || !data || !data.team || !data.joined_at || !data.left_at)
+    return null;
 
   const date: string[] = [];
-  if (data.joined_at) date.push(`>=${data.joined_at}`);
-  if (data.left_at) date.push(`<=${data.left_at}`);
+
+  const joinedAt = toDate(data.joined_at);
+  joinedAt.setDate(joinedAt.getDate() - 1);
+
+  const leftAt = toDate(data.left_at);
+  leftAt.setDate(leftAt.getDate() + 2);
+
+  date.push(`>=${joinedAt}`);
+  date.push(`<=${leftAt}`);
 
   const matches = await readItemsBase<Match[]>({
     apiInstance: api,

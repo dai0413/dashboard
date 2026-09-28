@@ -22,11 +22,21 @@ export const createCallUpCircleInfo = ({
 
     const joined =
       !nationalCallup?.joined_at ||
-      matchDate >= new Date(nationalCallup?.joined_at).getTime();
+      matchDate >=
+        new Date(
+          new Date(nationalCallup.joined_at).setDate(
+            new Date(nationalCallup.joined_at).getDate() - 1,
+          ),
+        ).getTime();
 
     const left =
       !nationalCallup?.left_at ||
-      matchDate <= new Date(nationalCallup?.left_at).getTime();
+      matchDate <=
+        new Date(
+          new Date(nationalCallup.left_at).setDate(
+            new Date(nationalCallup.left_at).getDate() + 2,
+          ),
+        ).getTime();
 
     calledUp = joined && left;
   }
