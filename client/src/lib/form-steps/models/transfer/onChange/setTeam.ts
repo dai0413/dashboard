@@ -5,9 +5,10 @@ import { OnChange } from "../../../../../types/form/onChange";
 export const setTeam: OnChange<TransferForm, false> = async ({
   formData,
   formLabel,
+  metaData,
   api,
 }) => {
-  if (!api) return { formData, formLabel };
+  if (!api) return { formData, formLabel, metaData };
   const { from_team, from_team_name, to_team, to_team_name, position } =
     await currentTransfer({
       formData,
@@ -81,5 +82,5 @@ export const setTeam: OnChange<TransferForm, false> = async ({
     returnFormLabel["position"] = position;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

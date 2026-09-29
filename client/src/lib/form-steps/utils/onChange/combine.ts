@@ -3,11 +3,13 @@ import { OnChange, OnChangeReturn } from "../../../../types/form/onChange";
 type Single<FORM extends object> = {
   formData: FORM;
   formLabel: Record<string, any>;
+  metaData: Record<string, any>;
 };
 
 type Bulk<FORM extends object> = {
   formDatas: FORM[];
   formLabels: Record<string, any>[];
+  metaData: Record<string, any>;
 };
 
 const isSingleArgs = <FORM extends object>(
@@ -45,6 +47,11 @@ export const combineOnChanges = <FORM extends object, T extends boolean>(
             ...prevArgs.formLabel,
             ...result.formLabel,
           },
+
+          metaData: {
+            ...prevArgs.metaData,
+            ...result.metaData,
+          },
         };
       } else if (isBulkArgs(result) && isBulkArgs(prevArgs)) {
         currentArgs = {
@@ -60,6 +67,11 @@ export const combineOnChanges = <FORM extends object, T extends boolean>(
             ...label,
             ...result.formLabels[i],
           })),
+
+          metaData: {
+            ...prevArgs.metaData,
+            ...result.metaData,
+          },
         };
       }
     }

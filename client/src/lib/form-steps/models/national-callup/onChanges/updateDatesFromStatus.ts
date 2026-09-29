@@ -4,7 +4,7 @@ import { OnChange } from "../../../../../types/form/onChange";
 export const updateDatesFromStatus: OnChange<
   NationalCallupForm,
   false
-> = async ({ formData }) => {
+> = async ({ formData, metaData }) => {
   let newFormData: Partial<NationalCallupForm> = {};
   let newFormLabel: Partial<Record<string, any>> = {};
 
@@ -24,5 +24,5 @@ export const updateDatesFromStatus: OnChange<
     }
   }
 
-  return { formData: newFormData, formLabel: newFormLabel };
+  return { formData: newFormData, formLabel: newFormLabel, metaData };
 };

@@ -5,8 +5,8 @@ import { OnChange } from "../../../../../types/form/onChange";
 export const updateTeamFromTransfer: OnChange<
   NationalCallupForm,
   false
-> = async ({ formData, formLabel, api }) => {
-  if (!api) return { formData, formLabel };
+> = async ({ formData, formLabel, metaData, api }) => {
+  if (!api) return { formData, formLabel, metaData };
   const { to_team, to_team_name } = await currentTransfer({
     formData,
     api,
@@ -25,5 +25,5 @@ export const updateTeamFromTransfer: OnChange<
     returnFormLabel["team"] = to_team.label;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

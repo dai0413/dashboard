@@ -20,6 +20,7 @@ export const prepareNextFun = async <T extends keyof FormTypeMap>(
     bulkCommonLabel,
     formDatas,
     formLabels,
+    metaData,
   } = values;
 
   if (currentStep.many) {
@@ -27,6 +28,7 @@ export const prepareNextFun = async <T extends keyof FormTypeMap>(
 
     formDatas = result.formDatas;
     formLabels = result.formLabels;
+    metaData = result.metaData;
   } else {
     const result = await prepareNextSingleFun(api, currentStep, values);
 
@@ -34,6 +36,7 @@ export const prepareNextFun = async <T extends keyof FormTypeMap>(
     formLabel = result.formLabel;
     bulkCommonData = result.bulkCommonData;
     bulkCommonLabel = result.bulkCommonLabel;
+    metaData = result.metaData;
   }
 
   return {
@@ -44,6 +47,7 @@ export const prepareNextFun = async <T extends keyof FormTypeMap>(
     bulkCommonLabel,
     formDatas,
     formLabels,
+    metaData,
   };
 };
 
@@ -56,6 +60,7 @@ const prepareNextSingleFun = async <T extends keyof FormTypeMap>(
     values;
   let newFormData = formData;
   let newFormLabel = formLabel;
+  let newMetaData = metaData;
 
   let newBulkCommonData = bulkCommonData;
   let newBulkCommonLabel = bulkCommonLabel;
@@ -67,6 +72,7 @@ const prepareNextSingleFun = async <T extends keyof FormTypeMap>(
       const {
         formData: preparedBulkCommonData,
         formLabel: preparedBulkCommonLabel,
+        metaData: preparedMetaData,
       } = await prepareNext({
         formData: bulkCommonData,
         formLabel: bulkCommonLabel,
@@ -81,12 +87,17 @@ const prepareNextSingleFun = async <T extends keyof FormTypeMap>(
         ...newBulkCommonLabel,
         ...preparedBulkCommonLabel,
       };
+      newMetaData = preparedMetaData;
     } else {
       // formData更新
-      const { formData: preparedFormData, formLabel: preparedFormLabel } =
-        await prepareNext({ formData, formLabel, metaData, api });
+      const {
+        formData: preparedFormData,
+        formLabel: preparedFormLabel,
+        metaData: preparedMetaData,
+      } = await prepareNext({ formData, formLabel, metaData, api });
       newFormData = { ...newFormData, ...preparedFormData };
       newFormLabel = { ...newFormLabel, ...preparedFormLabel };
+      newMetaData = { ...newMetaData, ...preparedMetaData };
     }
   }
 
@@ -95,6 +106,7 @@ const prepareNextSingleFun = async <T extends keyof FormTypeMap>(
     formLabel: newFormLabel,
     bulkCommonData: newBulkCommonData,
     bulkCommonLabel: newBulkCommonLabel,
+    metaData: newMetaData,
   };
 };
 
@@ -106,16 +118,20 @@ const prepareNextBulkFun = async <T extends keyof FormTypeMap>(
   const { formDatas, formLabels, metaData } = values;
   let newFormDatas = values.formDatas;
   let newFormLabels = values.formLabels;
+  let newMetaData = values.metaData;
 
   if (currentStep.prepareNext) {
     const prepareNext = currentStep.prepareNext;
-    const { formDatas: preparedFormDatas, formLabels: preparedFormLabels } =
-      await prepareNext({
-        formDatas,
-        formLabels,
-        metaData,
-        api,
-      });
+    const {
+      formDatas: preparedFormDatas,
+      formLabels: preparedFormLabels,
+      metaData: preparedMetaData,
+    } = await prepareNext({
+      formDatas,
+      formLabels,
+      metaData,
+      api,
+    });
 
     newFormDatas = formDatas.map((formData, index) => ({
       ...formData,
@@ -126,10 +142,13 @@ const prepareNextBulkFun = async <T extends keyof FormTypeMap>(
       ...formLabel,
       ...preparedFormLabels[index],
     }));
+
+    newMetaData = preparedMetaData;
   }
 
   return {
     formDatas: newFormDatas,
     formLabels: newFormLabels,
+    metaData: newMetaData,
   };
 };

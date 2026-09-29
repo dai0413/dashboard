@@ -4,6 +4,7 @@ import { OnChange } from "../../../../../types/form/onChange";
 
 export const setFromDate: OnChange<TransferForm, false> = async ({
   formData,
+  metaData,
 }) => {
   let returnValue: Partial<TransferForm> = {};
   let returnFormLabel: Record<string, any> = {};
@@ -27,5 +28,5 @@ export const setFromDate: OnChange<TransferForm, false> = async ({
     returnFormLabel["from_date"] = nextSeasonStart;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

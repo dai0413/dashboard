@@ -5,9 +5,10 @@ import { InjuryForm } from "../../../../../types/models/injury";
 export const updateTeam: OnChange<InjuryForm, false> = async ({
   formData,
   formLabel,
+  metaData,
   api,
 }) => {
-  if (!api) return { formData, formLabel };
+  if (!api) return { formData, formLabel, metaData };
   const { to_team } = await currentTransfer({
     formData,
     api,
@@ -21,5 +22,9 @@ export const updateTeam: OnChange<InjuryForm, false> = async ({
     returnFormLabel["team"] = to_team.label;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return {
+    formData: returnValue,
+    formLabel: returnFormLabel,
+    metaData,
+  };
 };

@@ -24,6 +24,7 @@ export const toManyOnChange = <K extends object>(
         ...formLabel,
         ...applied[i].formLabel,
       })),
+      metaData,
     };
   };
 };

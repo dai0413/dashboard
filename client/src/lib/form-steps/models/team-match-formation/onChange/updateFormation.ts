@@ -46,26 +46,27 @@ const fetchFormationByKey = async (
 export const updateFormationFromLineup: OnChange<
   TeamMatchFormationForm,
   false
-> = async ({ formData, formLabel, api }) => {
+> = async ({ formData, formLabel, metaData, api }) => {
   const matchId = formData.match;
   const teamId = formData.team;
 
-  if (matchId == null || teamId == null || !api) return { formData, formLabel };
+  if (matchId == null || teamId == null || !api)
+    return { formData, formLabel, metaData };
 
   const playerAppearance = await fetchPlayerAppearances(api, matchId, teamId);
 
-  if (!playerAppearance) return { formData, formLabel };
+  if (!playerAppearance) return { formData, formLabel, metaData };
 
   const positions = extractPositions(playerAppearance);
 
   const formation = await fetchFormationByKey(api, key(positions));
 
-  if (!formation) return { formData, formLabel };
+  if (!formation) return { formData, formLabel, metaData };
 
   let returnValue: Partial<TeamMatchFormationForm> = {};
   let returnFormLabel: Record<string, any> = {};
   returnValue["formation"] = formation.id;
   returnFormLabel["formation"] = formation.label;
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

@@ -9,18 +9,19 @@ import { Player } from "../../../../../types/models/player";
 export const updateName: OnChange<PlayerRegistrationForm, false> = async ({
   formData,
   formLabel,
+  metaData,
   api,
 }) => {
   const playerId = formData.player;
 
-  if (!playerId || !api) return { formData, formLabel };
+  if (!playerId || !api) return { formData, formLabel, metaData };
 
   const item = await readItemBase<Player>({
     apiInstance: api,
     backendRoute: API_PATHS.PLAYER.DETAIL(playerId),
   });
 
-  if (!item) return { formData, formLabel };
+  if (!item) return { formData, formLabel, metaData };
 
   const { name, en_name } = convert(ModelType.PLAYER, item);
 
@@ -36,5 +37,5 @@ export const updateName: OnChange<PlayerRegistrationForm, false> = async ({
     returnFormLabel["en_name"] = en_name;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

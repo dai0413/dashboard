@@ -9,18 +9,18 @@ import { StaffMatchEventLogForm } from "../../../../types/models/staff-match-eve
 export const updatePeriodLabelFromMatch: OnChange<
   StaffMatchEventLogForm | PlayerMatchEventLogForm,
   false
-> = async ({ formData, formLabel, api }) => {
+> = async ({ formData, formLabel, metaData, api }) => {
   if (formData.time == null || formData.match == null || !api)
-    return { formData, formLabel };
+    return { formData, formLabel, metaData };
   const time = formData.time;
-  if (time == null) return { formData, formLabel };
+  if (time == null) return { formData, formLabel, metaData };
 
   const resData = await readItemBase<Match>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.DETAIL(formData.match),
   });
 
-  if (!resData?.match_format) return { formData, formLabel };
+  if (!resData?.match_format) return { formData, formLabel, metaData };
 
   const periods = resData.match_format.period;
   const period_label = calcPeriodLabel(formData, periods);
@@ -34,5 +34,5 @@ export const updatePeriodLabelFromMatch: OnChange<
     returnFormLabel["period_label"] = period_label;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

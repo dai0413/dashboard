@@ -5,8 +5,8 @@ import { StaffMatchEventLogForm } from "../../../../types/models/staff-match-eve
 export const updateTimeName: OnChange<
   StaffMatchEventLogForm | PlayerMatchEventLogForm,
   false
-> = async ({ formData, formLabel }) => {
-  if (formData.time == null) return { formData, formLabel };
+> = async ({ formData, formLabel, metaData }) => {
+  if (formData.time == null) return { formData, formLabel, metaData };
 
   let returnValue: Partial<StaffMatchEventLogForm | PlayerMatchEventLogForm> =
     {};
@@ -19,5 +19,5 @@ export const updateTimeName: OnChange<
   returnValue["time_name"] = time_name;
   returnFormLabel["time_name"] = time_name;
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

@@ -9,18 +9,19 @@ import { Staff } from "../../../../../types/models/staff";
 export const updateName: OnChange<StaffRegistrationForm, false> = async ({
   formData,
   formLabel,
+  metaData,
   api,
 }) => {
   const staffId = formData.staff;
 
-  if (!staffId || !api) return { formData, formLabel };
+  if (!staffId || !api) return { formData, formLabel, metaData };
 
   const staff = await readItemBase<Staff>({
     apiInstance: api,
     backendRoute: API_PATHS.STAFF.DETAIL(staffId),
   });
 
-  if (!staff) return { formData, formLabel };
+  if (!staff) return { formData, formLabel, metaData };
 
   const { name, en_name } = convert(ModelType.STAFF, staff);
 
@@ -36,5 +37,5 @@ export const updateName: OnChange<StaffRegistrationForm, false> = async ({
     returnFormLabel["en_name"] = en_name;
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

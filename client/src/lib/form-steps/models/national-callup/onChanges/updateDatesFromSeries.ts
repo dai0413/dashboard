@@ -12,22 +12,22 @@ import { OnChange } from "../../../../../types/form/onChange";
 export const updateDatesFromSeries: OnChange<
   NationalCallupForm,
   false
-> = async ({ formData, formLabel, api }) => {
-  if (!formData.series || !api) return { formData, formLabel };
+> = async ({ formData, formLabel, metaData, api }) => {
+  if (!formData.series || !api) return { formData, formLabel, metaData };
 
   const item = await readItemBase<NationalMatchSeries>({
     apiInstance: api,
     backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.DETAIL(formData.series),
   });
 
-  if (!item) return { formData, formLabel };
+  if (!item) return { formData, formLabel, metaData };
 
   const data: NationalMatchSeriesGet = convert(
     ModelType.NATIONAL_MATCH_SERIES,
     item,
   );
 
-  if (!data) return { formData, formLabel };
+  if (!data) return { formData, formLabel, metaData };
 
   const { joined_at, left_at } = data;
 
@@ -41,5 +41,5 @@ export const updateDatesFromSeries: OnChange<
     left_at,
   };
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

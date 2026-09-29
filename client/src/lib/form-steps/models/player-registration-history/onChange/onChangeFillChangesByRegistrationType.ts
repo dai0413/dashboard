@@ -13,8 +13,8 @@ import { Player } from "../../../../../types/models/player";
 export const onChangeFillChangesByRegistrationType: OnChange<
   PlayerRegistrationHistoryForm,
   false
-> = async ({ formData, formLabel, api }) => {
-  if (!formData.player || !api) return { formData, formLabel };
+> = async ({ formData, formLabel, metaData, api }) => {
+  if (!formData.player || !api) return { formData, formLabel, metaData };
 
   let returnValue: Partial<PlayerRegistrationHistoryForm> = {};
   let returnFormLabel: Record<string, any> = {};
@@ -26,7 +26,7 @@ export const onChangeFillChangesByRegistrationType: OnChange<
       backendRoute: API_PATHS.PLAYER.DETAIL(formData.player),
     });
 
-    if (!item) return { formData, formLabel };
+    if (!item) return { formData, formLabel, metaData };
 
     returnValue = { changes: { ...formData.changes } };
     returnFormLabel = { changes: { ...formLabel.changes } };
@@ -45,7 +45,8 @@ export const onChangeFillChangesByRegistrationType: OnChange<
   }
 
   if (formData.registration_type === "deregister") {
-    if (!formData.season || !formData.team) return { formData, formLabel };
+    if (!formData.season || !formData.team)
+      return { formData, formLabel, metaData };
     const obj = await readItemsBase<PlayerRegistrationHistory[]>({
       apiInstance: api,
       backendRoute: API_PATHS.PLAYER_REGISTRATION_HISTORY.ROOT,
@@ -59,7 +60,7 @@ export const onChangeFillChangesByRegistrationType: OnChange<
       },
     });
 
-    if (!obj) return { formData, formLabel };
+    if (!obj) return { formData, formLabel, metaData };
 
     const { changes } = convert(
       ModelType.PLAYER_REGISTRATION_HISTORY,
@@ -84,5 +85,5 @@ export const onChangeFillChangesByRegistrationType: OnChange<
     }
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };

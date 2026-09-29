@@ -13,8 +13,8 @@ import { Staff } from "../../../../../types/models/staff";
 export const onChangeFillChangesByRegistrationType: OnChange<
   StaffRegistrationHistoryForm,
   false
-> = async ({ formData, formLabel, api }) => {
-  if (!formData.staff || !api) return { formData, formLabel };
+> = async ({ formData, formLabel, metaData, api }) => {
+  if (!formData.staff || !api) return { formData, formLabel, metaData };
 
   let returnValue: Partial<StaffRegistrationHistoryForm> = {};
   let returnFormLabel: Record<string, any> = {};
@@ -26,7 +26,7 @@ export const onChangeFillChangesByRegistrationType: OnChange<
       backendRoute: API_PATHS.STAFF.DETAIL(formData.staff),
     });
 
-    if (!item) return { formData, formLabel };
+    if (!item) return { formData, formLabel, metaData };
     const { name, en_name } = convert(ModelType.STAFF, item);
 
     returnValue = { changes: { ...formData.changes } };
@@ -44,7 +44,8 @@ export const onChangeFillChangesByRegistrationType: OnChange<
   }
 
   if (formData.registration_type === "deregister") {
-    if (!formData.season || !formData.team) return { formData, formLabel };
+    if (!formData.season || !formData.team)
+      return { formData, formLabel, metaData };
     const obj = await readItemsBase<StaffRegistrationHistory[]>({
       apiInstance: api,
       backendRoute: API_PATHS.STAFF_REGISTRATION_HISTORY.ROOT,
@@ -58,8 +59,8 @@ export const onChangeFillChangesByRegistrationType: OnChange<
       },
     });
 
-    if (!obj) return { formData, formLabel };
-    if (obj.data.length === 0) return { formData, formLabel };
+    if (!obj) return { formData, formLabel, metaData };
+    if (obj.data.length === 0) return { formData, formLabel, metaData };
 
     const { changes } = convert(
       ModelType.STAFF_REGISTRATION_HISTORY,
@@ -84,5 +85,5 @@ export const onChangeFillChangesByRegistrationType: OnChange<
     }
   }
 
-  return { formData: returnValue, formLabel: returnFormLabel };
+  return { formData: returnValue, formLabel: returnFormLabel, metaData };
 };
