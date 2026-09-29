@@ -89,9 +89,15 @@ const MatchMatrix = ({
           `${player.player._id}-${match.competition.id}`,
         );
 
-        const onRegister = isRegisteredAtMatch(registrations, match);
+        const hasRegister = registrations && registrations?.length > 0;
 
-        const title = getTitle(appearance, onRegister, true);
+        const onRegister = isRegisteredAtMatch(teamId, registrations, match);
+
+        const title = getTitle(
+          appearance,
+          hasRegister ? onRegister : true,
+          hasRegister ? onRegister : true,
+        );
 
         return (
           <MatrixCell
@@ -99,7 +105,7 @@ const MatchMatrix = ({
               {
                 match: column.match,
                 playerAppearance: appearance,
-                calledUp: true,
+                calledUp: onRegister,
                 is_backup: false,
                 is_training_partner: false,
                 toolTipTitle: title,

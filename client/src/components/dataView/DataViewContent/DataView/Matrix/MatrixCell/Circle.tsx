@@ -26,45 +26,6 @@ export const Circle = ({
   match,
   playerAppearance,
 }: CircleInfo) => {
-  // 招集外
-  if (!calledUp) {
-    return (
-      <div
-        style={{
-          width: SIZE.circle,
-          height: SIZE.circle,
-        }}
-      />
-    );
-  }
-
-  // バックアップ
-  if (is_backup) {
-    return (
-      <div
-        style={{
-          ...circleStyle,
-          transform: "rotate(45deg)",
-          background: "white",
-        }}
-      />
-    );
-  }
-
-  // トレーニングパートナー
-  if (is_training_partner) {
-    return (
-      <div
-        style={{
-          width: SIZE.square,
-          height: SIZE.square,
-          border: `2px solid ${COLORS.border}`,
-          background: "white",
-        }}
-      />
-    );
-  }
-
   // 招集のみ（試合登録なし）
   if (!playerAppearance || !match) {
     return (
@@ -107,4 +68,43 @@ export const Circle = ({
       }}
     />
   );
+
+  // 招集外
+  if (!calledUp) {
+    return (
+      <div
+        style={{
+          width: SIZE.circle,
+          height: SIZE.circle,
+        }}
+      />
+    );
+  }
+
+  // バックアップ
+  if (is_backup) {
+    return (
+      <div
+        style={{
+          ...circleStyle,
+          transform: "rotate(45deg)",
+          background: "white",
+        }}
+      />
+    );
+  }
+
+  // トレーニングパートナー
+  if (is_training_partner) {
+    return (
+      <div
+        style={{
+          width: SIZE.square,
+          height: SIZE.square,
+          border: `2px solid ${COLORS.border}`,
+          background: "white",
+        }}
+      />
+    );
+  }
 };

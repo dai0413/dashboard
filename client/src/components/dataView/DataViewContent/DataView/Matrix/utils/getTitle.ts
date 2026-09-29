@@ -32,6 +32,10 @@ export const getTitle = (
     convertedTitle = "招集外";
   }
 
+  if (!onRegister && !calledUp) {
+    convertedTitle = "登録外";
+  }
+
   if (convertedTitle === "" && calledUp) {
     convertedTitle = "招集";
   }

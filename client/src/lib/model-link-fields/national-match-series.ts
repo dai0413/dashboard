@@ -7,7 +7,7 @@ export const nationalMatchSeries: LinkField[] = [
     to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
   },
   {
-    field: "country",
-    to: APP_ROUTES.NATIONAL_SUMMARY,
+    field: "team",
+    to: APP_ROUTES.TEAM_SUMMARY,
   },
 ];
