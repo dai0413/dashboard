@@ -6,62 +6,57 @@ import { useModal } from "../../../../context/modal-context";
 import { getLinkFields } from "../../../../lib/model-link-fields";
 import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
 import { matchRelatedItems } from "../../../AdminDashboard/data";
-import { useForm } from "../../../../context/form-context";
-import {
-  FormMode,
-  From,
-  InputMode,
-  StartFormArgs,
-} from "../../../../types/types";
-import { FormStep } from "../../../../types/form";
-import { useAuth } from "../../../../context/auth-context";
-import { isDev } from "../../../../utils/env";
+import { FormMode, InputMode, StartFormArgs } from "../../../../types/types";
+import { ActionButtonList } from "../../../../components/buttons/ActionButtonList";
+import { useMemo } from "react";
 
 const linkField = getLinkFields(ModelType.MATCH);
-
-const items = matchRelatedItems.filter(
-  (i) =>
-    "updateAndCreate" in i.startFormArgs && i.startFormArgs.updateAndCreate,
-);
 
 const Info = ({ summary }: { summary: UseMatchSummary }) => {
   const {
     detail: { open },
-    form: { open: formOpen },
   } = useModal();
   const { isLoading, selected } = summary;
-  const { staffState } = useAuth();
-  const {
-    formOperator: { startForm },
-  } = useForm();
 
-  const handleClick = (steps?: FormStep<any>[]) => {
-    if (!selected || !("_id" in selected)) return;
+  const actionButtonItems = useMemo(() => {
+    return matchRelatedItems
+      .filter(
+        (i) =>
+          "updateAndCreate" in i.startFormArgs &&
+          i.startFormArgs.updateAndCreate,
+      )
+      .map((item) => {
+        if (!selected || !("_id" in selected)) return;
 
-    const startFormArgs: StartFormArgs<ModelType.MATCH> = {
-      steps: steps,
-      modelType: ModelType.MATCH,
-      from: From.SN_M,
-      updateAndCreate: true,
-      formMode: FormMode.UPDATE,
-      inputMode: InputMode.MANY,
-      editItem: [selected],
-      ids: [selected._id],
-      initialData: {
-        metaData: {
-          card_ids: selected?._id,
-          match: selected?._id,
-          competition: selected?.competition.id,
-          season: selected?.season.id,
-          competition_stage: selected?.competition_stage.id,
-          match_week: selected?.match_week,
-        },
-      },
-    };
+        const startFormArgs: StartFormArgs<ModelType.MATCH> = {
+          ...item.startFormArgs,
+          modelType: ModelType.MATCH,
+          formMode: FormMode.UPDATE,
+          inputMode: InputMode.MANY,
+          editItem: [selected],
+          ids: [selected._id],
+          initialData: {
+            metaData: {
+              // card_ids: [selected?._id],
+              match: selected?._id,
+              competition: selected?.competition.id,
+              home_team: selected?.home_team.id,
+              away_team: selected?.away_team.id,
+              season: selected?.season.id,
+              competition_stage: selected?.competition_stage.id,
+              match_week: selected?.match_week,
+            },
+          },
+        };
 
-    startForm(startFormArgs);
-    formOpen(ModelType.MATCH);
-  };
+        return {
+          ...item,
+          startFormArgs,
+          formModelType: ModelType.MATCH,
+        };
+      })
+      .filter((item) => item !== undefined);
+  }, [matchRelatedItems, selected]);
 
   return (
     <>
@@ -98,26 +93,7 @@ const Info = ({ summary }: { summary: UseMatchSummary }) => {
               </div>
             </div>
 
-            {(staffState.admin || isDev) && (
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 text-sm">
-                <span className="font-medium">データ取得</span>
-
-                <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <button
-                      key={item.desc}
-                      type="button"
-                      className="px-2 py-1 border border-gray-300 rounded-md
-                   hover:bg-gray-100 hover:border-gray-400
-                   cursor-pointer"
-                      onClick={() => handleClick(item.startFormArgs.steps)}
-                    >
-                      {item.startFormArgs.from}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ActionButtonList items={actionButtonItems} />
           </div>
         </div>
       ) : (

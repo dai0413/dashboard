@@ -1,66 +1,59 @@
+import { useMemo } from "react";
+import { ActionButtonList } from "../../../../components/buttons/ActionButtonList";
 import { SelectField } from "../../../../components/field";
 import { convertToDisplayListData } from "../../../../components/modals/Detail/utils/convertToDisplayListData ";
 import { FullScreenLoader } from "../../../../components/ui";
-import { useAuth } from "../../../../context/auth-context";
-import { useForm } from "../../../../context/form-context";
 import { useModal } from "../../../../context/modal-context";
 import { getLinkFields } from "../../../../lib/model-link-fields";
-import { FormStep } from "../../../../types/form";
 import { ModelType } from "../../../../types/models";
-import {
-  FormMode,
-  From,
-  InputMode,
-  StartFormArgs,
-} from "../../../../types/types";
-import { isDev } from "../../../../utils/env";
+import { FormMode, InputMode, StartFormArgs } from "../../../../types/types";
 import { matchRelatedItems } from "../../../AdminDashboard/data";
 import { UseCompetitionSummary } from "../types";
 
 const linkField = getLinkFields(ModelType.COMPETITION);
 
-const items = matchRelatedItems.filter(
-  (i) =>
-    !("updateAndCreate" in i.startFormArgs) ||
-    ("updateAndCreate" in i.startFormArgs && !i.startFormArgs.updateAndCreate),
-);
-
 const Info = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
     detail: { open },
-    form: { open: formOpen },
   } = useModal();
   const { isLoading, selected } = summary;
-  const { staffState } = useAuth();
-  const {
-    formOperator: { startForm },
-  } = useForm();
 
   if (!summary.select) return;
 
   const { selectedOption, options, handleSelect } = summary.select;
 
-  const handleClick = (steps?: FormStep<any>[]) => {
-    if (!selected || !("_id" in selected)) return;
+  const actionButtonItems = useMemo(() => {
+    return matchRelatedItems
+      .filter(
+        (i) =>
+          !("updateAndCreate" in i.startFormArgs) ||
+          ("updateAndCreate" in i.startFormArgs &&
+            !i.startFormArgs.updateAndCreate),
+      )
+      .map((item) => {
+        if (!selected || !("_id" in selected)) return;
 
-    const startFormArgs: StartFormArgs<ModelType.MATCH> = {
-      steps: steps,
-      modelType: ModelType.MATCH,
-      from: From.SN_M,
-      updateAndCreate: true,
-      formMode: FormMode.CREATE,
-      inputMode: InputMode.MANY,
-      initialData: {
-        metaData: {
-          competition: selected?._id,
-          season: selectedOption?._id,
-        },
-      },
-    };
+        const startFormArgs: StartFormArgs<ModelType.MATCH> = {
+          ...item.startFormArgs,
+          modelType: ModelType.MATCH,
+          formMode: FormMode.CREATE,
+          inputMode: InputMode.MANY,
+          initialData: {
+            metaData: {
+              competition: selected?._id,
+              season: selectedOption?._id,
+            },
+          },
+        };
 
-    startForm(startFormArgs);
-    formOpen(ModelType.MATCH);
-  };
+        return {
+          ...item,
+          startFormArgs,
+          formModelType: ModelType.MATCH,
+        };
+      })
+      .filter((item) => item !== undefined);
+  }, [matchRelatedItems, selected]);
 
   return (
     <>
@@ -112,26 +105,7 @@ const Info = ({ summary }: { summary: UseCompetitionSummary }) => {
               ) : undefined}
             </div>
 
-            {(staffState.admin || isDev) && (
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 text-sm">
-                <span className="font-medium">データ取得</span>
-
-                <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <button
-                      key={item.desc}
-                      type="button"
-                      className="px-2 py-1 border border-gray-300 rounded-md
-                             hover:bg-gray-100 hover:border-gray-400
-                             cursor-pointer"
-                      onClick={() => handleClick(item.startFormArgs.steps)}
-                    >
-                      {item.startFormArgs.from}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ActionButtonList items={actionButtonItems} />
           </div>
         </div>
       ) : (
