@@ -91,8 +91,14 @@ export const bulkBase: FormStep<BaseModel>[] = [
     actions: [
       {
         label: "L_Mからposition計算",
-        onClick: async ({ formDatas, formLabels, api }) => {
-          return applyPositions(api, formDatas, formLabels, readL_MPosition);
+        onClick: async ({ formDatas, formLabels, metaData, api }) => {
+          return applyPositions(
+            api,
+            formDatas,
+            formLabels,
+            metaData,
+            readL_MPosition,
+          );
         },
       },
       {
@@ -107,13 +113,14 @@ export const bulkBase: FormStep<BaseModel>[] = [
         ],
         onClick: async ({ metaData, formDatas, formLabels, api }) => {
           if (!metaData.getPositionUrl) {
-            return { formDatas, formLabels };
+            return { formDatas, formLabels, metaData };
           }
 
           return applyPositions(
             api,
             formDatas,
             formLabels,
+            metaData,
             readSN_MPosition(metaData.getPositionUrl),
           );
         },

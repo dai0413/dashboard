@@ -126,8 +126,8 @@ export const bulk: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
     actions: [
       {
         label: "Player-Appearanceから計算",
-        onClick: async ({ formDatas, formLabels, api }) => {
-          if (!api) return { formDatas, formLabels };
+        onClick: async ({ formDatas, formLabels, metaData, api }) => {
+          if (!api) return { formDatas, formLabels, metaData };
 
           const matchIds: string[] = formDatas
             .map((d) => d.match)
@@ -150,6 +150,7 @@ export const bulk: FormStep<ModelType.TEAM_MATCH_FORMATION>[] = [
           return {
             formDatas: returnFormDatas,
             formLabels: returnFormLabels,
+            metaData,
           };
         },
       },

@@ -136,6 +136,7 @@ type TableClientProps<T, F> = {
       nationalCallUp: NationalCallup[];
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
+      formationCounts: FormationCounts[];
     };
   };
   defaultViewMode?: ViewMode;

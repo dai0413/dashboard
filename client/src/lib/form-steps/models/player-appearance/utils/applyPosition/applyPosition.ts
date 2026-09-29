@@ -8,10 +8,12 @@ export const applyPositions = async (
   api: AxiosInstance,
   formDatas: PlayerAppearanceForm[],
   formLabels: Record<string, any>[],
+  metaData: Record<string, any>,
   readPosition: ReadPosition,
 ): Promise<{
   formDatas: PlayerAppearanceForm[];
   formLabels: Record<string, any>[];
+  metaData: Record<string, any>;
 }> => {
   const matchCache = new Map<string, Promise<Match | undefined>>();
   const scrapedCache = new Map<string, Promise<Scraped | undefined>>();
@@ -43,5 +45,6 @@ export const applyPositions = async (
   return {
     formDatas: applied.map(({ formData }) => formData),
     formLabels: applied.map(({ formLabel }) => formLabel),
+    metaData,
   };
 };
