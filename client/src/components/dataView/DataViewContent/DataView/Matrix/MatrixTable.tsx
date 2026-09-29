@@ -7,6 +7,7 @@ import { createGroupedPlayers, getAgeLabel } from "./utils";
 import { FormationCounts } from "../../../../../pages/Summary/Team/ClubTeam/types";
 import { getGroupedPositions } from "./MatchMatrix/utils";
 import { displayPositions } from "./context/displayPositions";
+import QuickFilterTabs from "../../../DataViewToolbar/QuickFilterTabs";
 
 type MatrixTableProps<T extends Label> = {
   formationCounts: FormationCounts[];
@@ -75,8 +76,8 @@ export const MatrixTable = <T extends Label>({
   const quickFilterItems = useMemo(() => {
     const items = formationCounts.map((formationCount) => {
       return {
-        item: formationCount,
         key: formationCount.key,
+        value: formationCount,
         label: `${formationCount.name}  (${formationCount.count})`,
         onclick: setSelectedFormation,
       };
@@ -87,31 +88,19 @@ export const MatrixTable = <T extends Label>({
 
   return (
     <>
-      <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
-        <div className="flex items-center gap-x-1">
-          {quickFilterItems.map((quickFilterItem) => {
-            return (
-              <button
-                key={quickFilterItem.key}
-                onClick={async () => {
-                  setSelectedFormation((current) =>
-                    current === quickFilterItem.item
-                      ? null
-                      : quickFilterItem.item,
-                  );
-                }}
-                className={`cursor-pointer flex items-center p-1 border rounded-md ${
-                  quickFilterItem.key === selectedFormation?.key
-                    ? "bg-blue-500 text-white"
-                    : "border-gray-400 text-gray-700"
-                }`}
-              >
-                <span>{quickFilterItem.label.toUpperCase()}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <QuickFilterTabs
+        items={quickFilterItems}
+        selectedKey={selectedFormation?.key}
+        onSelect={(item) => {
+          const nextItem = quickFilterItems.find(
+            (quickFilterItem) => quickFilterItem.key === item.key,
+          )?.value;
+          if (!nextItem) return;
+          setSelectedFormation((current) =>
+            current === nextItem ? null : nextItem,
+          );
+        }}
+      />
       <div className="max-h-[80vh] max-w-full overflow-auto rounded-md border border-gray-300">
         <table className="border-collapse">
           <thead>

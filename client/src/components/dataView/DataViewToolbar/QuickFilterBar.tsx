@@ -7,6 +7,7 @@ import {
 } from "@dai0413/myorg-shared";
 import { useSort } from "../../../context/sort-context";
 import { toggleQuickFilter } from "../../../utils/quickFilter/toggleQuickFilter";
+import QuickFilterTabs from "./QuickFilterTabs";
 
 type QuickFilterBarProps = {
   items: QuickFilterItem[];
@@ -53,35 +54,24 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
   };
 
   return (
-    <div className="flex justify-between items-center bg-gray-200 border border-gray-200 p-2 rounded-md my-2">
-      <div className="flex items-center gap-x-1">
-        {items.map((tab) => {
-          return (
-            <button
-              key={tab.key}
-              onClick={async () => {
-                setSelectTab((current) =>
-                  current === tab.key ? null : tab.key,
-                );
+    <QuickFilterTabs
+      items={items.map((item) => ({
+        ...item,
+        value: item.key,
+      }))}
+      selectedKey={selectTab ?? undefined}
+      onSelect={async (item) => {
+        setSelectTab((current) => (current === item.key ? null : item.key));
 
-                if (selectTab !== tab.key) {
-                  tab.onClick && (await tab.onClick());
-                  tab.filterCondition &&
-                    handleOnClick(tab.filterCondition, tab.removeKey);
-                }
-              }}
-              className={`cursor-pointer flex items-center p-1 border rounded-md ${
-                tab.key === selectTab
-                  ? "bg-blue-500 text-white"
-                  : "border-gray-400 text-gray-700"
-              }`}
-            >
-              <span>{tab.label.toUpperCase()}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
+        if (selectTab !== item.key) {
+          await item.onClick?.();
+
+          if (item.filterCondition) {
+            handleOnClick(item.filterCondition, item.removeKey);
+          }
+        }
+      }}
+    />
   );
 };
 
