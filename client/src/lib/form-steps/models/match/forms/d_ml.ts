@@ -8,6 +8,7 @@ import { Label } from "@dai0413/myorg-shared";
 import { FormMode, From } from "../../../../../types/types";
 import { addPostedDraftData } from "../addPostedDraftData";
 import { prepareUpdateData } from "../utils/prepareUpdateData";
+import { MetaData } from "../../../d_ml/types";
 
 type BaseModel = ModelType.MATCH;
 const baseModel = ModelType.MATCH;
@@ -70,22 +71,22 @@ export const multiModel = (updateAndCreate: boolean): FormStep<BaseModel>[] => {
     type: StepType.FORM,
     many: true,
     getDraftData: async ({ api, draftData, metaData, formLabel }) => {
-      const cardIds: string[] = metaData.card_ids;
       const competition_stage: Label = {
         id: metaData.competition_stage,
         label: formLabel.competition_stage,
       };
+      const { identifiers, data } = metaData as MetaData;
 
       const newValue = await getDraftData({
         readDraftDataParams: {
           api,
           draftData,
-          identifiers: cardIds,
+          identifiers,
           requests: [
             {
               draftDataKey: "match",
               from: From.D_M,
-              params: { cardId: cardIds },
+              params: data,
             },
           ],
         },
@@ -118,7 +119,7 @@ export const multiModel = (updateAndCreate: boolean): FormStep<BaseModel>[] => {
         const result = addPostedDraftData({
           postedDraftData,
           res,
-          identifiers: metaData.card_ids,
+          identifiers: metaData.identifiers,
         });
 
         return result;

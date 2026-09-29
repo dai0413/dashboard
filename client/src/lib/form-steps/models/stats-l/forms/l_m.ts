@@ -13,6 +13,7 @@ import { getDraftData } from "../getDraftData";
 import { Team } from "../../../../../types/models/team";
 import { getPreMatchSelect } from "../../../l_m/preMatchSelectStep";
 import { FormMode } from "../../../../../types/types";
+import { MetaData } from "../../../d_ml/types";
 
 type BaseModel = ModelType.STATS_L;
 const baseModel = ModelType.STATS_L;
@@ -123,11 +124,12 @@ export const multiModel: FormStep<BaseModel>[] = [
     nextFormMode: FormMode.CREATE,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds: string[] = metaData.card_ids;
+      const { identifiers } = metaData as MetaData;
+
       const params = (
         await Promise.all(
-          cardIds.map(async (cardId) => {
-            const value = postedDraftData[cardId];
+          identifiers.map(async (identify) => {
+            const value = postedDraftData[identify];
             if (!value.match) return;
 
             const { date, home_team } = value.match;
@@ -144,7 +146,7 @@ export const multiModel: FormStep<BaseModel>[] = [
             return {
               date: date,
               alph: team.labalph,
-              matchId: cardId,
+              matchId: identify,
             };
           }),
         )
@@ -170,7 +172,7 @@ export const multiModel: FormStep<BaseModel>[] = [
         readDraftDataParams: {
           api,
           draftData: newDraftData,
-          identifiers: cardIds,
+          identifiers: identifiers,
           requests: [],
         },
         postedDraftData,

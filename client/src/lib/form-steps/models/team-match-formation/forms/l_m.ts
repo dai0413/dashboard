@@ -4,6 +4,7 @@ import { bulkBase } from "../fields";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { dataToFormData } from "../utils/dataToFormData";
 import { FormMode } from "../../../../../types/types";
+import { MetaData } from "../../../d_ml/types";
 
 type BaseModel = ModelType.TEAM_MATCH_FORMATION;
 const baseModel = ModelType.TEAM_MATCH_FORMATION;
@@ -16,7 +17,7 @@ export const multiModel: FormStep<BaseModel>[] = [
     nextFormMode: FormMode.CREATE,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds: string[] = metaData.card_ids;
+      const { identifiers } = metaData as MetaData;
 
       if (!metaData || !postedDraftData || !draftData || !api)
         return { value: [], label: [] };
@@ -25,7 +26,7 @@ export const multiModel: FormStep<BaseModel>[] = [
         api,
         draftData,
         postedDraftData,
-        cardIds,
+        identifiers,
       );
 
       return { value, label };

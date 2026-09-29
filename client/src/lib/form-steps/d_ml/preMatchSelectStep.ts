@@ -5,6 +5,7 @@ import {
   CreateFilterConditions,
   DataSource,
   FormStep,
+  RecordDataFormStep,
   StepType,
 } from "../../../types/form";
 import { FormTypeMap, ModelType } from "../../../types/models";
@@ -90,7 +91,7 @@ const readCompetitionItems: ReadCompetitionItems[] = [
 
 const getCardIdSelectStep = <K extends keyof FormTypeMap>(
   modelType: keyof FormTypeMap,
-): FormStep<K>[] => {
+): RecordDataFormStep<K>[] => {
   return [
     {
       modelType: modelType,
@@ -155,6 +156,16 @@ const getCardIdSelectStep = <K extends keyof FormTypeMap>(
         },
       ],
       skip: (_data, mataData) => mataData.card_ids,
+      prepareNext: async ({ formData, formLabel, metaData }) => {
+        const cardIds: string[] = metaData?.card_ids;
+
+        const identifiers = cardIds;
+        const data = { cardId: cardIds };
+
+        const newMetaData = { ...metaData, data, identifiers };
+
+        return { formData, formLabel, metaData: newMetaData };
+      },
     },
   ];
 };
@@ -185,6 +196,18 @@ const getMatchSelectStep = <K extends keyof FormTypeMap>(
           multi: true,
         },
       ],
+      prepareNext: async ({ formData, formLabel, metaData }) => {
+        const url: string = metaData?.matchUrl;
+
+        const identifiers = [url];
+        const data = { url: [url] };
+
+        const newMetaData = { ...metaData, data, identifiers };
+
+        console.log("updated 2", newMetaData);
+
+        return { formData, formLabel, metaData: newMetaData };
+      },
     },
   ];
 };

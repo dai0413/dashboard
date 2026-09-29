@@ -13,6 +13,7 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { Match } from "../../../../../types/models/match";
 import { Team } from "../../../../../types/models/team";
 import { readL_MMap } from "../../../utils/getDraftData/readMap/readL_M";
+import { MetaData } from "../../../d_ml/types";
 
 type BaseModel = ModelType.PLAYER_APPEARANCE;
 const baseModel = ModelType.PLAYER_APPEARANCE;
@@ -102,11 +103,12 @@ export const multiModel: FormStep<BaseModel>[] = [
     nextFormMode: FormMode.CREATE,
     many: true,
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds: string[] = metaData.card_ids;
+      const { identifiers, data } = metaData as MetaData;
+
       const params = (
         await Promise.all(
-          cardIds.map(async (cardId) => {
-            const value = postedDraftData[cardId];
+          identifiers.map(async (identify) => {
+            const value = postedDraftData[identify];
             if (!value.match) return;
 
             const { date, home_team } = value.match;
@@ -123,7 +125,7 @@ export const multiModel: FormStep<BaseModel>[] = [
             return {
               date: date,
               alph: team.labalph,
-              matchId: cardId,
+              matchId: identify,
             };
           }),
         )
@@ -149,12 +151,12 @@ export const multiModel: FormStep<BaseModel>[] = [
         readDraftDataParams: {
           api,
           draftData: newDraftData,
-          identifiers: cardIds,
+          identifiers,
           requests: [
             {
               draftDataKey: "playerAppearance",
               from: From.D_M,
-              params: { cardId: cardIds },
+              params: data,
             },
           ],
         },
@@ -172,7 +174,7 @@ export const multiModel: FormStep<BaseModel>[] = [
       addPostedDraftData({
         postedDraftData,
         res,
-        identifiers: metaData.card_ids,
+        identifiers: metaData.identifiers,
       }),
   },
 ];

@@ -15,7 +15,7 @@ export const createPreStep = (
   const matchSelectSteps = getPreMatchSelect<BaseModel>(
     updateAndCreate,
     baseModel,
-    "cardId",
+    updateAndCreate ? "id" : "cardId",
   );
 
   const stepLabel = updateAndCreate
@@ -28,14 +28,12 @@ export const createPreStep = (
     type: StepType.FORM,
     many: true,
     addDraftData: async ({ metaData, api }) => {
-      const cardId: string[] = metaData?.card_ids;
-
-      if (!api || !cardId) return {};
+      if (!api || !metaData.data) return {};
 
       const res = await createItemBase<DraftData>({
         apiInstance: api,
         backendRoute: API_PATHS.GET_NEW_DATA.D_M.VALUES,
-        data: { cardId },
+        data: metaData.data,
         returnResponse: true,
       });
 

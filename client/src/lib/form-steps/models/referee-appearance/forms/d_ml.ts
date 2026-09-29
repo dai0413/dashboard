@@ -6,6 +6,7 @@ import { createConfirmationStep } from "../../../confirmationStep";
 import { getPreMatchSelect } from "../../../d_ml/preMatchSelectStep";
 import { getDraftData } from "../getDraftData";
 import { FormMode, From } from "../../../../../types/types";
+import { MetaData } from "../../../d_ml/types";
 
 type BaseModel = ModelType.REFEREE_APPEARANCE;
 const baseModel = ModelType.REFEREE_APPEARANCE;
@@ -53,18 +54,18 @@ export const multiModel: FormStep<BaseModel>[] = [
     many: true,
     createFilterConditions: async (args) => setMatchTeam(args.data, args.api),
     getDraftData: async ({ api, draftData, postedDraftData, metaData }) => {
-      const cardIds: string[] = metaData.card_ids;
+      const { identifiers, data } = metaData as MetaData;
 
       return getDraftData({
         readDraftDataParams: {
           api,
           draftData,
-          identifiers: cardIds,
+          identifiers,
           requests: [
             {
               draftDataKey: "refereeAppearance",
               from: From.D_M,
-              params: { cardId: cardIds },
+              params: data,
             },
           ],
         },
