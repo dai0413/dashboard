@@ -9,7 +9,7 @@ export const getGroupedPositions = (positions: string[]) => {
     if (!displayPosition) {
       return {
         key: position,
-        label: position,
+        position: position,
         color: undefined,
         positions: [position],
       };
@@ -17,7 +17,7 @@ export const getGroupedPositions = (positions: string[]) => {
 
     return {
       key: position,
-      label: position,
+      position: position,
       color: displayPosition.color,
       positions: [position],
     };

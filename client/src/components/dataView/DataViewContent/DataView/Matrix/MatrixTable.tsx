@@ -161,7 +161,7 @@ export const MatrixTable = <T extends Label>({
                     <span className="mr-2">
                       {openPositions.has(group.key) ? "▼" : "▶"}
                     </span>
-                    {group.label} ({group.players.length})
+                    {group.position} ({group.players.length})
                   </td>
 
                   {columns.map((column, i) => (

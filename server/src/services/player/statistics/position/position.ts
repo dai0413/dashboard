@@ -29,7 +29,7 @@ type TransferPositionAggregate = {
 type PlayerPosition = {
   groupId?: Types.ObjectId;
   mainPosition?: string;
-  positionCounts: Partial<Record<string, number>>;
+  positionCounts?: Partial<Record<string, number>>;
 };
 
 type ResolvePlayerPositionsParams = {
@@ -280,6 +280,7 @@ type PositionMap = Map<string, PlayerPosition>;
 const applyAppearancePositions = (
   positionMap: PositionMap,
   appearanceStats: AppearancePositionAggregate[],
+  includePositionCounts: boolean,
 ) => {
   for (const appearance of appearanceStats) {
     const positionCounts = createPositionCounts(appearance.positions);
@@ -290,11 +291,19 @@ const applyAppearancePositions = (
       continue;
     }
 
-    positionMap.set(createStatisticsKey(appearance._id, appearance.groupId), {
+    const result: PlayerPosition = {
       groupId: appearance.groupId,
       mainPosition,
-      positionCounts,
-    });
+    };
+
+    if (includePositionCounts) {
+      result.positionCounts = positionCounts;
+    }
+
+    positionMap.set(
+      createStatisticsKey(appearance._id, appearance.groupId),
+      result,
+    );
   }
 };
 
@@ -306,18 +315,21 @@ const resolveAppearanceStage = async (
     teamId?: Types.ObjectId;
     groupBy?: PlayerStatisticsGroupBy;
     matchGroupMap: Map<string, MatchGroupInfo>;
+    includePositionCounts?: boolean;
   },
 ) => {
   if (targets.length === 0) {
     return;
   }
 
+  const { includePositionCounts = false, ...appearanceParams } = params;
+
   const appearanceStats = await getAppearancePositions({
     targets,
-    ...params,
+    ...appearanceParams,
   });
 
-  applyAppearancePositions(positionMap, appearanceStats);
+  applyAppearancePositions(positionMap, appearanceStats, includePositionCounts);
 };
 
 const resolveTransferStage = async (
@@ -424,6 +436,7 @@ export const resolvePlayerPositions = async ({
       teamId,
       groupBy,
       matchGroupMap,
+      includePositionCounts: true,
     });
   }
 

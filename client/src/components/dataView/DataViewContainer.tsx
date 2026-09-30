@@ -110,6 +110,10 @@ type DataViewContainerProps<T, F> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.POSITION_LIST]?: {
+      playerStatistics: PlayerStatistic[];
+      formationCounts: FormationCounts[];
+    };
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;

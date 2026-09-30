@@ -130,7 +130,7 @@ export const createGroupedPlayers = (
   const noPositionPlayers: GroupedPlayers[] = [
     {
       key: "no-pos",
-      label: "データなし",
+      position: "データなし",
       players: uniquePlayerStatistics
         .filter((player) => !playerPositionMap.get(player.player._id))
         .sort(sortDob),

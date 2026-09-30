@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { positionBase } from "../../components/formation/positionBase";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 
 type TooltipLine = {
   text: string;
@@ -18,4 +19,9 @@ export type FormationItem = {
   size?: number;
   color?: string;
   textColor?: string;
+};
+
+export type PositionListItem = {
+  position: string;
+  players: PlayerStatistic[];
 };

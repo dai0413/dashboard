@@ -8,12 +8,14 @@ type FormationParams = {
 
 export const Formation = ({ datas }: FormationParams) => {
   return (
-    <div className="relative h-[550px] w-[550px]">
-      <Pitch />
+    <div className="flex w-full flex-col items-center">
+      <div className="relative h-[550px] w-[550px]">
+        <Pitch />
 
-      {datas.map((data, i) => {
-        return <PlayerMarker key={i} {...data} />;
-      })}
+        {datas.map((data, i) => {
+          return <PlayerMarker key={i} {...data} />;
+        })}
+      </div>
     </div>
   );
 };

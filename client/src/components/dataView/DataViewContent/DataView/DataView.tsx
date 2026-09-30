@@ -25,6 +25,7 @@ import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
 import { getAgeLabel } from "./Matrix/utils";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
+import { PositionPlayers } from "../../../formation/PositionPlayers";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -50,6 +51,10 @@ type DataViewProps<T> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.POSITION_LIST]?: {
+      playerStatistics: PlayerStatistic[];
+      formationCounts: FormationCounts[];
+    };
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;
@@ -276,10 +281,15 @@ const DataView = <T,>({
   }
 
   if (viewMode === ViewMode.FORMATION && viewData[ViewMode.FORMATION]) {
+    return <Formation datas={viewData[ViewMode.FORMATION]} />;
+  }
+
+  if (viewMode === ViewMode.POSITION_LIST && viewData[ViewMode.POSITION_LIST]) {
     return (
-      <div className="mx-5 flex justify-center">
-        <Formation datas={viewData[ViewMode.FORMATION]} />
-      </div>
+      <PositionPlayers
+        playerStatistics={viewData[ViewMode.POSITION_LIST].playerStatistics}
+        formationCounts={viewData[ViewMode.POSITION_LIST].formationCounts}
+      />
     );
   }
 

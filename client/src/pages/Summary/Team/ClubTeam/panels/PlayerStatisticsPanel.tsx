@@ -58,6 +58,9 @@ const PlayerStatisticsPanel = ({
     id,
     panels: {
       playerStatistics: { isLoading, text, key, items, reloadFun },
+      appearancePlot: {
+        items: { formationCounts },
+      },
     },
   } = summary;
 
@@ -68,8 +71,15 @@ const PlayerStatisticsPanel = ({
         key={key}
         itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
-        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
-        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.POSITION_LIST]}
+        viewData={{
+          [ViewMode.TABLE]: items,
+          [ViewMode.TILE]: items,
+          [ViewMode.POSITION_LIST]: {
+            playerStatistics: items,
+            formationCounts,
+          },
+        }}
         totalCount={items.length}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}

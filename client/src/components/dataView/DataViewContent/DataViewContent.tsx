@@ -17,6 +17,7 @@ import { FormationCounts } from "../../../pages/Summary/Team/ClubTeam/types";
 import { NationalCallup } from "../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../../types/models/player-registration";
+import { useDataView } from "../../../context/dataView-context";
 
 type Props<T> = {
   noItem?: boolean;
@@ -57,6 +58,10 @@ type Props<T> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
+    [ViewMode.POSITION_LIST]?: {
+      playerStatistics: PlayerStatistic[];
+      formationCounts: FormationCounts[];
+    };
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;
@@ -105,6 +110,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
   onPageChange,
   viewData,
 }: Props<K>) => {
+  const { viewMode } = useDataView();
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -129,7 +135,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
   }
 
   return (
-    <div className="max-h-[50rem] overflow-y-auto">
+    <div className="overflow-x-auto">
       <DataView<K>
         modelType={modelType}
         headers={fieldDefinitions}
@@ -143,13 +149,15 @@ export const DataViewContent = <K extends Record<string, unknown>>({
         onDeleteClick={deleteOnClick}
         viewData={viewData}
       />
-      {pageButton && (
-        <PageButtons
-          pages={pages}
-          currentPageNum={pageNum}
-          onClick={onPageChange}
-        />
-      )}
+
+      {(viewMode === ViewMode.TABLE || viewMode === ViewMode.TILE) &&
+        pageButton && (
+          <PageButtons
+            pages={pages}
+            currentPageNum={pageNum}
+            onClick={onPageChange}
+          />
+        )}
     </div>
   );
 };

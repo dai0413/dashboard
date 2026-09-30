@@ -150,6 +150,10 @@ const viewModeMap: Record<ViewMode, { text: string; icon: React.ReactNode }> = {
     text: "フォメ",
     icon: <TableCellsIcon className="w-6 h-6" />,
   },
+  [ViewMode.POSITION_LIST]: {
+    text: "ポジション",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
 };
 
 const DataViewToolBar = <Data, Form>({

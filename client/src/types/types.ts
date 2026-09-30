@@ -75,6 +75,7 @@ export enum ViewMode {
   RADAR_CHART = "radar_chart",
   LINE_GRAPH = "line_graph",
   FORMATION = "formation",
+  POSITION_LIST = "position_list",
   MATCH_MATRIX = "match_matrix",
   SERIES_MATRIX = "series_matrix",
 }

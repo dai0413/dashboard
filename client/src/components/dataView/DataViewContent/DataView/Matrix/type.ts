@@ -15,7 +15,7 @@ export type CircleInfo = {
 
 export type DisplayPosition = {
   key: string;
-  label: string;
+  position: string;
   color?: string;
   positions: string[];
 };

@@ -97,6 +97,7 @@ export const useAppearancePlotPanel = () => {
     const params: QueryParams = {
       player: playerIds,
       team: teamId,
+      match: matchIds,
     };
 
     if (matchIds.length > 0) {
