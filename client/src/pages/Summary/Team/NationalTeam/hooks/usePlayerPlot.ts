@@ -76,10 +76,19 @@ export const usePlayerPlotPanel = () => {
     const nationalCallupRes = await readItemsBase<NationalCallup[]>({
       apiInstance: api,
       backendRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
-      params: { getAll: true, series: seriesIds },
+      params: {
+        getAll: true,
+        series: seriesIds,
+      },
     });
 
     if (nationalCallupRes?.data) setNationalCallUp(nationalCallupRes.data);
+
+    const matchIds = [
+      ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
+    ];
+
+    if (!matchIds) return setPlayerPlotIsLoading(false);
 
     const playerIds: string[] = [
       ...new Set((nationalCallupRes?.data ?? []).map((d) => d.player._id)),
@@ -88,18 +97,16 @@ export const usePlayerPlotPanel = () => {
     const playerStatistic = await createItemBase<PlayerStatistic[]>({
       apiInstance: api,
       backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
-      data: { player: playerIds },
+      data: {
+        player: playerIds,
+        match: matchIds,
+        team: teamId,
+      },
     });
 
     if (playerStatistic?.success) {
       setPlayerStatistics(playerStatistic.data);
     }
-
-    const matchIds = [
-      ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
-    ];
-
-    if (!matchIds) return setPlayerPlotIsLoading(false);
 
     const formationCounts = await getFormationCounts(teamId, matchIds);
     formationCounts && setFormationCounts(formationCounts);

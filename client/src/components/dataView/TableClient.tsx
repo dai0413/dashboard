@@ -19,12 +19,12 @@ import { FormationItem } from "../../types/formation";
 import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
 import { RadarValues } from "../../utils/plot/buildRadarPlotData";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { PlayerRegistrationHistoryGet } from "../../types/models/player-registration-history";
 import { MatchGet } from "../../types/models/match";
 import { PlayerAppearanceGet } from "../../types/models/player-appearance";
 import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";
 import { NationalCallup } from "../../types/models/national-callup";
 import { NationalMatchSeries } from "../../types/models/national-match-series";
+import { PlayerRegistrationGet } from "../../types/models/player-registration";
 
 const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
@@ -126,7 +126,7 @@ type TableClientProps<T, F> = {
     [ViewMode.MATCH_MATRIX]?: {
       teamId: string;
       playerStatistics: PlayerStatistic[];
-      playerRegistrations: PlayerRegistrationHistoryGet[];
+      playerRegistrations: PlayerRegistrationGet[];
       matches: MatchGet[];
       playerAppearance: PlayerAppearanceGet[];
       formationCounts: FormationCounts[];

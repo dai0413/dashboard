@@ -25,49 +25,68 @@ export const Circle = ({
   calledUp,
   match,
   playerAppearance,
+  withdrawn,
+  declined,
 }: CircleInfo) => {
-  // 招集のみ（試合登録なし）
-  if (!playerAppearance || !match) {
+  if (withdrawn) {
     return (
       <div
         style={{
           ...circleStyle,
+          transform: "rotate(45deg)",
           background: "white",
+          border: `2px solid ${COLORS.substitute}`,
         }}
       />
     );
   }
 
-  // ベンチ
-  if (playerAppearance.play_status === "ベンチ") {
+  if (declined) {
     return (
       <div
         style={{
           ...circleStyle,
-          background: `${COLORS.bench}`,
+          transform: "rotate(45deg)",
+          background: "white",
+          border: `2px solid ${COLORS.substitute}`,
         }}
       />
     );
   }
 
-  // 出場
-  const { time, play_status } = playerAppearance;
-  const { play_time } = match;
+  // 試合出場
+  if (playerAppearance && match) {
+    // ベンチ
+    if (playerAppearance.play_status === "ベンチ") {
+      return (
+        <div
+          style={{
+            ...circleStyle,
+            background: `${COLORS.bench}`,
+          }}
+        />
+      );
+    }
 
-  const ratio = time ? Math.min(time / (play_time ?? 90), 1) : 0;
-  const color = play_status === "サブ" ? COLORS.substitute : COLORS.starter;
+    // 出場
+    const { time, play_status } = playerAppearance;
+    const { play_time } = match;
 
-  return (
-    <div
-      style={{
-        ...circleStyle,
-        background: `conic-gradient(
+    const ratio = time ? Math.min(time / (play_time ?? 90), 1) : 0;
+    const color = play_status === "サブ" ? COLORS.substitute : COLORS.starter;
+
+    return (
+      <div
+        style={{
+          ...circleStyle,
+          background: `conic-gradient(
       ${color} ${ratio * 360}deg,
       white 0deg
     )`,
-      }}
-    />
-  );
+        }}
+      />
+    );
+  }
 
   // 招集外
   if (!calledUp) {
@@ -102,6 +121,18 @@ export const Circle = ({
           width: SIZE.square,
           height: SIZE.square,
           border: `2px solid ${COLORS.border}`,
+          background: "white",
+        }}
+      />
+    );
+  }
+
+  // 招集のみ（試合登録なし）
+  if (!playerAppearance || !match) {
+    return (
+      <div
+        style={{
+          ...circleStyle,
           background: "white",
         }}
       />

@@ -6,7 +6,7 @@ import { getTitle } from "../../utils";
 
 type CreateCallUpCircleInfoParams = {
   match: MatchGet;
-  appearance: PlayerAppearanceGet | undefined;
+  appearance?: PlayerAppearanceGet;
   nationalCallup?: NationalCallup;
 };
 
@@ -17,35 +17,37 @@ export const createCallUpCircleInfo = ({
 }: CreateCallUpCircleInfoParams): CircleInfo => {
   let calledUp = false;
 
-  if (match.date) {
+  if (match.date && nationalCallup?.joined_at && nationalCallup.left_at) {
     const matchDate = new Date(match.date).getTime();
+    const DAY = 24 * 60 * 60 * 1000;
 
-    const joined =
-      !nationalCallup?.joined_at ||
-      matchDate >=
-        new Date(
-          new Date(nationalCallup.joined_at).setDate(
-            new Date(nationalCallup.joined_at).getDate() - 1,
-          ),
-        ).getTime();
+    const joinedAtDate = new Date(nationalCallup.joined_at).getTime() - DAY;
 
-    const left =
-      !nationalCallup?.left_at ||
-      matchDate <=
-        new Date(
-          new Date(nationalCallup.left_at).setDate(
-            new Date(nationalCallup.left_at).getDate() + 2,
-          ),
-        ).getTime();
+    const leftAtDate = new Date(nationalCallup.left_at).getTime() + DAY * 2;
+
+    const joined = matchDate >= joinedAtDate;
+    const left = matchDate <= leftAtDate;
+
+    calledUp = joined && left;
 
     calledUp = joined && left;
   }
 
-  const title = nationalCallup?.is_backup
-    ? getTitle(undefined, false, true, "バックアップ")
-    : nationalCallup?.is_training_partner
-      ? getTitle(undefined, false, true, "トレーニングパートナー")
-      : getTitle(appearance, false, true);
+  let title = getTitle(appearance, false, true);
+
+  if (nationalCallup?.is_backup) {
+    title = getTitle(undefined, false, true, "バックアップ");
+  }
+
+  if (nationalCallup?.is_training_partner) {
+    title = getTitle(undefined, false, true, "トレーニングパートナー");
+  }
+
+  if (nationalCallup?.status === "withdrawn") {
+    title = "離脱";
+  } else if (nationalCallup?.status === "declined") {
+    title = "辞退";
+  }
 
   return {
     is_backup: nationalCallup?.is_backup,
@@ -53,6 +55,8 @@ export const createCallUpCircleInfo = ({
     match,
     toolTipTitle: title,
     calledUp,
+    withdrawn: nationalCallup?.status === "withdrawn",
+    declined: nationalCallup?.status === "declined",
     playerAppearance: appearance,
   };
 };
