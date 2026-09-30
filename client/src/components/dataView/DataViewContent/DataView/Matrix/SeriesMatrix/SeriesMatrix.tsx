@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import { Label } from "@dai0413/myorg-shared";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { MatrixTable } from "../MatrixTable";
 import { createCallUpCircleInfo } from "./utils/createCallUpCircleInfo";
 import { createAppearanceMap, getTitle } from "../utils";
@@ -13,15 +12,15 @@ import { PlayerAppearanceGet } from "../../../../../../types/models/player-appea
 import { NationalMatchSeries } from "../../../../../../types/models/national-match-series";
 import MatrixCell from "../MatrixCell/MarixCell";
 import { FormationCounts } from "../../../../../../pages/Summary/Team/ClubTeam/types";
+import { MatrixPlayer } from "../type";
 
 type SeriesMatrixParams = {
-  playerStatistics: PlayerStatistic[];
+  matrixPlayers: MatrixPlayer[];
   nationalCallUp: NationalCallup[];
   nationalMatchSeries: NationalMatchSeries[];
   playerAppearance: PlayerAppearanceGet[];
   formationCounts: FormationCounts[];
-  startBaseDate?: Date;
-  endBaseDate?: Date;
+  topHeaderText?: string;
 };
 
 type SeriesColumn = Label & {
@@ -29,13 +28,12 @@ type SeriesColumn = Label & {
 };
 
 const SeriesMatrix = ({
-  startBaseDate,
-  endBaseDate,
-  playerStatistics,
+  matrixPlayers,
   nationalCallUp,
   nationalMatchSeries,
   playerAppearance,
   formationCounts,
+  topHeaderText,
 }: SeriesMatrixParams) => {
   const appearanceMap = useMemo(
     () => createAppearanceMap(playerAppearance),
@@ -80,8 +78,9 @@ const SeriesMatrix = ({
   return (
     <MatrixTable
       formationCounts={formationCounts}
-      playerStatistics={playerStatistics}
+      matrixPlayers={matrixPlayers}
       columns={columns}
+      topHeaderText={topHeaderText}
       renderHeader={(column) => (
         <Link
           to={`${APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY}/${column.series._id}`}
@@ -90,8 +89,6 @@ const SeriesMatrix = ({
           {column.series.name}
         </Link>
       )}
-      startBaseDate={startBaseDate}
-      endBaseDate={endBaseDate}
       renderCell={(player, column) => {
         const series = column.series;
 

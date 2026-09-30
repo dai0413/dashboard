@@ -320,7 +320,7 @@ const Container = <K extends Record<string, unknown>, F>({
     filterConditions &&
       filterConditions?.length > 0 &&
       handleApplyFilter(filterConditions, sortConditions);
-  }, [filterField]);
+  }, []);
 
   useEffect(() => {
     if (!modelType || !isModelType(modelType)) return;
@@ -330,10 +330,6 @@ const Container = <K extends Record<string, unknown>, F>({
     const sortableField = getSortableFields(modelType);
     sortableField && resetSort(sortableField);
   }, [modelType]);
-
-  // useEffect(() => {
-  //   handleApplyFilter(filterConditions, sortConditions);
-  // }, [updateTrigger]);
 
   useEffect(() => {
     if (!quickFilterItems) return;
@@ -350,7 +346,7 @@ const Container = <K extends Record<string, unknown>, F>({
     (async () => {
       await defaultItem.onClick?.();
     })();
-  }, [quickFilterType, quickFilterItems]);
+  }, []);
 
   const { items: quickFilterSouce, loading: quickFilterLoading } =
     useQuickFilterSource(quickFilterType);

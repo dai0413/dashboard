@@ -1,5 +1,5 @@
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { DisplayPosition, GroupedPlayers } from "../type";
+import { DisplayPosition, GroupedPlayers, MatrixPlayer } from "../type";
 import { sortDob } from "./sortDob";
 import { positionBase } from "../../../../../formation/positionBase";
 
@@ -100,7 +100,7 @@ const getGroupedPosition = (
 };
 
 export const createGroupedPlayers = (
-  playerStatistics: PlayerStatistic[],
+  playerStatistics: MatrixPlayer[],
   groupedPositions: DisplayPosition[],
 ): GroupedPlayers[] => {
   const uniquePlayerStatistics = Array.from(

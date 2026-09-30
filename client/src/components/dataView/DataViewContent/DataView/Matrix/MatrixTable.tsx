@@ -1,24 +1,26 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Label } from "@dai0413/myorg-shared";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
-import { createGroupedPlayers, getAgeLabel } from "./utils";
+import { createGroupedPlayers } from "./utils";
 import { FormationCounts } from "../../../../../pages/Summary/Team/ClubTeam/types";
 import { getGroupedPositions } from "./MatchMatrix/utils";
 import { displayPositions } from "./context/displayPositions";
 import QuickFilterTabs from "../../../DataViewToolbar/QuickFilterTabs";
+import { MatrixPlayer } from "./type";
 
 type MatrixTableProps<T extends Label> = {
   formationCounts: FormationCounts[];
-  playerStatistics: PlayerStatistic[];
+  matrixPlayers: MatrixPlayer[];
 
   columns: T[];
+
+  topHeaderText?: string;
 
   renderHeader: (column: T) => React.ReactNode;
 
   renderCell: (
-    player: PlayerStatistic,
+    player: MatrixPlayer,
     column: T,
     index: number,
   ) => React.ReactNode;
@@ -29,12 +31,11 @@ type MatrixTableProps<T extends Label> = {
 
 export const MatrixTable = <T extends Label>({
   formationCounts,
-  playerStatistics,
+  matrixPlayers,
+  topHeaderText,
   columns,
   renderHeader,
   renderCell,
-  startBaseDate,
-  endBaseDate,
 }: MatrixTableProps<T>) => {
   const [selectedFormation, setSelectedFormation] =
     useState<FormationCounts | null>(formationCounts[0]);
@@ -52,8 +53,8 @@ export const MatrixTable = <T extends Label>({
   }, [selectedFormation]);
 
   const groupedPlayers = useMemo(() => {
-    return createGroupedPlayers(playerStatistics, positionOptions);
-  }, [selectedFormation, playerStatistics, positionOptions]);
+    return createGroupedPlayers(matrixPlayers, positionOptions);
+  }, [selectedFormation, matrixPlayers, positionOptions]);
 
   useEffect(() => {
     setOpenPositions(new Set([...positionOptions.map((p) => p.key), "no-pos"]));
@@ -115,6 +116,12 @@ export const MatrixTable = <T extends Label>({
               "
               >
                 <div>選手</div>
+
+                {topHeaderText && (
+                  <span className="ml-1 text-sm text-gray-500">
+                    {topHeaderText}
+                  </span>
+                )}
               </th>
 
               {columns.map((column, i) => (
@@ -186,12 +193,11 @@ export const MatrixTable = <T extends Label>({
                         </Link>
 
                         <span className="ml-1 text-sm text-gray-500">
-                          {player.player.dob &&
-                            getAgeLabel(
-                              new Date(player.player.dob),
-                              startBaseDate,
-                              endBaseDate,
-                            )}
+                          {player.ageLabel}
+                        </span>
+
+                        <span className="ml-1 text-sm text-gray-500">
+                          {player.note}
                         </span>
                       </td>
 

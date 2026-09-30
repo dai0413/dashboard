@@ -17,13 +17,14 @@ import { FormationItem } from "../../../../types/formation";
 import { CalendarDataItem } from "./Calendar/types";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { PlayerRegistrationHistoryGet } from "../../../../types/models/player-registration-history";
 import { MatchGet } from "../../../../types/models/match";
 import { FormationCounts } from "../../../../pages/Summary/Team/ClubTeam/types";
 import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
 import { MatchMatrix, SeriesMatrix } from "./Matrix";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
+import { getAgeLabel } from "./Matrix/utils";
+import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -57,7 +58,7 @@ type DataViewProps<T> = {
     [ViewMode.MATCH_MATRIX]?: {
       teamId: string;
       playerStatistics: PlayerStatistic[];
-      playerRegistrations: PlayerRegistrationHistoryGet[];
+      playerRegistrations: PlayerRegistrationGet[];
       matches: MatchGet[];
       playerAppearance: PlayerAppearanceGet[];
       formationCounts: FormationCounts[];
@@ -214,10 +215,51 @@ const DataView = <T,>({
       matches,
       formationCounts,
     } = viewData[ViewMode.MATCH_MATRIX];
+
+    const { matrixPlayers, topHeaderText } = useMemo(() => {
+      const dates = matches
+        .map((match) => match.date)
+        .filter((date): date is Date => date !== undefined);
+
+      const startBaseDate =
+        dates.length > 0
+          ? new Date(Math.min(...dates.map((d) => d.getTime())))
+          : undefined;
+
+      const players = playerStatistics.map((playerStatistic) => {
+        const targetRegister = playerRegistrations.find(
+          (p) => p.player.id === playerStatistic.player._id,
+        );
+
+        let note: string | undefined;
+
+        if (targetRegister?.isTypeTwo) note = "2種";
+        if (targetRegister?.isSpecialDesignation) note = "特指";
+
+        return {
+          ...playerStatistic,
+          ageLabel: playerStatistic.player.dob
+            ? getAgeLabel(
+                new Date(playerStatistic.player.dob),
+                startBaseDate,
+                undefined,
+              )
+            : undefined,
+          note,
+        };
+      });
+
+      return {
+        matrixPlayers: players,
+        topHeaderText: `${startBaseDate?.toLocaleDateString()}時点`,
+      };
+    }, [matches]);
+
     return (
       <MatchMatrix
         teamId={teamId}
-        playerStatistics={playerStatistics}
+        topHeaderText={topHeaderText}
+        matrixPlayers={matrixPlayers}
         playerAppearance={playerAppearance}
         playerRegistrations={playerRegistrations}
         matches={matches}
@@ -236,12 +278,32 @@ const DataView = <T,>({
       playerAppearance,
       formationCounts,
     } = viewData[ViewMode.SERIES_MATRIX];
+
+    const { matrixPlayers, topHeaderText } = useMemo(() => {
+      const players = playerStatistics.map((playerStatistic) => {
+        return {
+          ...playerStatistic,
+          ageLabel: playerStatistic.player.dob
+            ? getAgeLabel(
+                new Date(playerStatistic.player.dob),
+                startBaseDate,
+                endBaseDate,
+              )
+            : undefined,
+        };
+      });
+
+      return {
+        matrixPlayers: players,
+        topHeaderText: `${startBaseDate?.toLocaleDateString()} → ${endBaseDate?.toLocaleDateString()}`,
+      };
+    }, []);
+
     return (
       <SeriesMatrix
-        startBaseDate={startBaseDate}
-        endBaseDate={endBaseDate}
+        topHeaderText={topHeaderText}
         formationCounts={formationCounts}
-        playerStatistics={playerStatistics}
+        matrixPlayers={matrixPlayers}
         nationalCallUp={nationalCallUp}
         nationalMatchSeries={nationalMatchSeries}
         playerAppearance={playerAppearance}

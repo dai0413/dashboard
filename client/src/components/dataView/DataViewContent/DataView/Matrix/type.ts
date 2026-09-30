@@ -9,6 +9,8 @@ export type CircleInfo = {
   toolTipTitle: string;
   match?: MatchGet;
   playerAppearance?: PlayerAppearanceGet;
+  withdrawn?: boolean;
+  declined?: boolean;
 };
 
 export type DisplayPosition = {
@@ -19,5 +21,10 @@ export type DisplayPosition = {
 };
 
 export type GroupedPlayers = DisplayPosition & {
-  players: PlayerStatistic[];
+  players: MatrixPlayer[];
+};
+
+export type MatrixPlayer = PlayerStatistic & {
+  ageLabel?: string;
+  note?: string;
 };

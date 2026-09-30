@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import { Label } from "@dai0413/myorg-shared";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import {
   isRegisteredAtMatch,
   createRegistrationMap,
@@ -15,6 +14,7 @@ import { PlayerRegistrationHistoryGet } from "../../../../../../types/models/pla
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
 import { FormationCounts } from "../../../../../../pages/Summary/Team/ClubTeam/types";
 import MatrixCell from "../MatrixCell/MarixCell";
+import { MatrixPlayer } from "../type";
 
 type MatchColumn = Label & {
   match: MatchGet;
@@ -22,7 +22,8 @@ type MatchColumn = Label & {
 
 type MatchMatrixParams = {
   teamId: string;
-  playerStatistics: PlayerStatistic[];
+  topHeaderText?: string;
+  matrixPlayers: MatrixPlayer[];
   playerRegistrations: PlayerRegistrationHistoryGet[];
   matches: MatchGet[];
   playerAppearance: PlayerAppearanceGet[];
@@ -31,7 +32,8 @@ type MatchMatrixParams = {
 
 const MatchMatrix = ({
   teamId,
-  playerStatistics,
+  matrixPlayers,
+  topHeaderText,
   playerRegistrations,
   matches,
   playerAppearance,
@@ -68,7 +70,8 @@ const MatchMatrix = ({
   return (
     <MatrixTable
       columns={columns}
-      playerStatistics={playerStatistics}
+      topHeaderText={topHeaderText}
+      matrixPlayers={matrixPlayers}
       formationCounts={formationCounts}
       renderHeader={(column) => (
         <Link
