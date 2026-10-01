@@ -4,14 +4,14 @@ import {
   isSortable,
   UIFieldDefinition,
 } from "../../../../../types/field";
-import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { playerStatistics } from "../../../../../lib/fields/playerStatistics";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { ColumnType } from "../../../../../types/table";
+import { ColumnType, QuickFilterItem } from "../../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 import { ViewMode } from "../../../../../types/types";
+import { useMemo } from "react";
 
 const keys = playerStatistics
   .map((ps) => ps.key)
@@ -49,17 +49,34 @@ const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
   ),
 ];
 
-const PlayerStatisticsPanel = ({
-  summary,
-}: {
-  summary: UseClubTeamSummary;
-}) => {
+const FormationPlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     id,
     panels: {
-      playerStatistics: { isLoading, text, key, items, reloadFun },
+      formationPlot: { text, key, items, isLoading, reloadFun },
     },
   } = summary;
+
+  const quickFilterItems: QuickFilterItem[] = useMemo(() => {
+    return items.formationCounts.map((formation, index) => {
+      return {
+        key: formation.name,
+        label: `${formation.name} (${formation.count})`,
+        defaultSelect: index === 0,
+        filterCondition: [
+          {
+            key: "formation",
+            label: "フォーメーション",
+            type: "select",
+            filterable: true,
+            value: [formation.name],
+            valueLabel: [`${formation.name} (${formation.count})`],
+            operator: "equals",
+          },
+        ],
+      };
+    });
+  }, [items.formationCounts]);
 
   return (
     <>
@@ -68,25 +85,20 @@ const PlayerStatisticsPanel = ({
         key={key}
         itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
-        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        defaultViewMode={ViewMode.POSITION_LIST}
+        viewModes={[ViewMode.POSITION_LIST]}
         viewData={{
-          [ViewMode.TABLE]: items,
-          [ViewMode.TILE]: items,
+          [ViewMode.POSITION_LIST]: items.groupedPlayers,
         }}
-        totalCount={items.length}
+        totalCount={items.groupedPlayers.length}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}
         sortField={fieldDefinitions?.filter(isSortable)}
         initialData={{ formData: { team: id } }}
-        linkField={[
-          {
-            field: "player",
-            to: APP_ROUTES.PLAYER_SUMMARY,
-          },
-        ]}
+        quickFilterItems={quickFilterItems}
       />
     </>
   );
 };
 
-export default PlayerStatisticsPanel;
+export default FormationPlotPanel;

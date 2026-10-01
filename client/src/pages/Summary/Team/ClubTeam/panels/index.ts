@@ -14,3 +14,4 @@ export { default as TransferInPanel } from "./TransferInPanel";
 export { default as TransferOutPanel } from "./TransferOutPanel";
 export { default as AppearancePlot } from "./AppearancePlot";
 export { default as PlayerStatisticsPanel } from "./PlayerStatisticsPanel";
+export { default as FormationPlotPanel } from "./FormationPlotPanel";

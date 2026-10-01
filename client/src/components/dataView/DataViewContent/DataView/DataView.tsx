@@ -26,6 +26,7 @@ import { NationalMatchSeries } from "../../../../types/models/national-match-ser
 import { getAgeLabel } from "./Matrix/utils";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { PositionPlayers } from "../../../formation/PositionPlayers";
+import { GroupedPlayers } from "./Matrix/type";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -51,10 +52,7 @@ type DataViewProps<T> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
-    [ViewMode.POSITION_LIST]?: {
-      playerStatistics: PlayerStatistic[];
-      formationCounts: FormationCounts[];
-    };
+    [ViewMode.POSITION_LIST]?: GroupedPlayers[];
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;
@@ -286,10 +284,7 @@ const DataView = <T,>({
 
   if (viewMode === ViewMode.POSITION_LIST && viewData[ViewMode.POSITION_LIST]) {
     return (
-      <PositionPlayers
-        playerStatistics={viewData[ViewMode.POSITION_LIST].playerStatistics}
-        formationCounts={viewData[ViewMode.POSITION_LIST].formationCounts}
-      />
+      <PositionPlayers groupedPlayers={viewData[ViewMode.POSITION_LIST]} />
     );
   }
 

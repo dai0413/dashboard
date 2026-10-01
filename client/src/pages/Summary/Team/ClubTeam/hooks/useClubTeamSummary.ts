@@ -22,6 +22,7 @@ import {
   useStatsLPanel,
   useStaffRegistrationPanel,
   useAppearancePlotPanel,
+  useFormationPlotPanel,
 } from "./index";
 import { CLUB_TEAM_TAB, ClubTeamTab, UseClubTeamSummary } from "../types";
 
@@ -85,6 +86,8 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     readAppearancePlot,
   } = useAppearancePlotPanel();
 
+  const formationPlotPanel = useFormationPlotPanel();
+
   // id変更, season変更両方で読み込む
   const readDatas = async (
     teamId: string,
@@ -112,7 +115,13 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       readPlayerRegistrations(teamId, seasonId),
       readStatsL(teamId, seasonId),
       readStaffRegistrations(teamId, seasonId),
-      readAppearancePlot(teamId, seasonDates.normalSeason.seasonRange),
+      readAppearancePlot([], [], teamId, seasonDates.normalSeason.seasonRange),
+      formationPlotPanel.readFormationPlot(
+        [],
+        [],
+        teamId,
+        seasonDates.normalSeason.seasonRange,
+      ),
     ]);
   };
 
@@ -324,7 +333,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         isLoading: teamCompetitionSeason.isLoading,
         items: teamCompetitionSeason.data,
         reloadFun: async () => {
-          readTeamCompetitionSeason(id);
+          await readTeamCompetitionSeason(id);
 
           return;
         },
@@ -375,8 +384,13 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
           formationCounts,
         },
         isLoading: appearancePlotIsLoading,
-        reloadFun: async () =>
-          readAppearancePlot(id, seasonDates.normalSeason.seasonRange),
+        reloadFun: async (filterConditions, sortConditions) =>
+          readAppearancePlot(
+            filterConditions,
+            sortConditions,
+            id,
+            seasonDates.normalSeason.seasonRange,
+          ),
       },
 
       playerStatistics: {
@@ -384,8 +398,28 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
         items: playerStatistics,
         isLoading: appearancePlotIsLoading,
-        reloadFun: async () =>
-          readAppearancePlot(id, seasonDates.normalSeason.seasonRange),
+        reloadFun: async (filterConditions, sortConditions) => {
+          readAppearancePlot(
+            filterConditions,
+            sortConditions,
+            id,
+            seasonDates.normalSeason.seasonRange,
+          );
+        },
+      },
+
+      formationPlot: {
+        key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
+        items: formationPlotPanel.items,
+        isLoading: formationPlotPanel.formationPlotIsLoading,
+        reloadFun: async (filterConditions, sortConditions) =>
+          formationPlotPanel.readFormationPlot(
+            filterConditions,
+            sortConditions,
+            id,
+            seasonDates.normalSeason.seasonRange,
+          ),
       },
     },
   };

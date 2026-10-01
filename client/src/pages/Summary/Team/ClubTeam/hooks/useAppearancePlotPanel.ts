@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { API_PATHS, QueryParams, sortByPosition } from "@dai0413/myorg-shared";
+import {
+  API_PATHS,
+  FilterableFieldDefinition,
+  QueryParams,
+  SortableFieldDefinition,
+  sortByPosition,
+} from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
@@ -32,7 +38,12 @@ export const useAppearancePlotPanel = () => {
   );
   const [formationCounts, setFormationCounts] = useState<FormationCounts[]>([]);
 
-  const readAppearancePlot = async (teamId: string, date: string[]) => {
+  const readAppearancePlot = async (
+    _filterConditions: FilterableFieldDefinition[],
+    _sortConditions: SortableFieldDefinition[],
+    teamId: string,
+    date: string[],
+  ) => {
     setAppearancePlotIsLoading(true);
 
     let playerIds: string[] = [];

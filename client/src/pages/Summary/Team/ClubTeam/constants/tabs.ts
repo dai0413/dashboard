@@ -82,4 +82,9 @@ export const tabItems: SummaryTabItems[] = [
     key: CLUB_TEAM_TAB.PLAYER_STATISTICS,
     text: "選手スタッツ",
   },
+  {
+    icon: "pie-plot_1",
+    key: CLUB_TEAM_TAB.FORMATION_PLOT,
+    text: "フォーメーション",
+  },
 ];

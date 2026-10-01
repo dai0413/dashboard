@@ -18,6 +18,7 @@ import { NationalCallup } from "../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../../types/models/player-registration";
 import { useDataView } from "../../../context/dataView-context";
+import { GroupedPlayers } from "./DataView/Matrix/type";
 
 type Props<T> = {
   noItem?: boolean;
@@ -58,10 +59,7 @@ type Props<T> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
-    [ViewMode.POSITION_LIST]?: {
-      playerStatistics: PlayerStatistic[];
-      formationCounts: FormationCounts[];
-    };
+    [ViewMode.POSITION_LIST]?: GroupedPlayers[];
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;

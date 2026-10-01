@@ -8,6 +8,7 @@ import { PlayerRegistrationGet } from "../../../../types/models/player-registrat
 import { MatchGet } from "../../../../types/models/match";
 import { FormationGet } from "../../../../types/models/formation";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
+import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 
 export const CLUB_TEAM_TAB = {
   PLAYER: "player",
@@ -26,6 +27,7 @@ export const CLUB_TEAM_TAB = {
   PIE_PLOT_DEFENCE: "piePlot_defence",
   APPEARANCE_PLOT: "appearancePlot",
   PLAYER_STATISTICS: "playerStatistics",
+  FORMATION_PLOT: "formationPlot",
 } as const;
 
 export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
@@ -74,7 +76,12 @@ type ClubTeamPanels = {
     formationCounts: FormationCounts[];
   }>;
 
-  playerStatistics: PanelSummary<PlayerStatistic[]>;
+  playerStatistics: ServerDepPanelSummary<PlayerStatistic[]>;
+
+  formationPlot: ServerDepPanelSummary<{
+    groupedPlayers: GroupedPlayers[];
+    formationCounts: FormationCounts[];
+  }>;
 };
 
 export type UseClubTeamSummary = UseSummary<
