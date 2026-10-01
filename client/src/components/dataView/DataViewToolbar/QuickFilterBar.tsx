@@ -22,7 +22,9 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
   const { filterConditions, setFilterConditions } = useFilter();
   const { sortConditions } = useSort();
 
-  const [selectTab, setSelectTab] = useState<string | null>(null);
+  const [selectTab, setSelectTab] = useState<string | null>(
+    items.find((i) => i.defaultSelect)?.key || null,
+  );
 
   useEffect(() => {
     if (loading) return;
@@ -40,17 +42,17 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
 
   if (loading) return null;
 
-  const handleOnClick = (
+  const handleOnClick = async (
     newFilterCondition: FilterableFieldDefinition[],
     removeKey?: string[],
-  ): void => {
+  ): Promise<void> => {
     const newFilterConditions = toggleQuickFilter(
       newFilterCondition,
       filterConditions,
       removeKey,
     );
     setFilterConditions(newFilterConditions);
-    reloadFun && reloadFun(newFilterConditions, sortConditions);
+    reloadFun && (await reloadFun(newFilterConditions, sortConditions));
   };
 
   return (
@@ -67,7 +69,7 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
           await item.onClick?.();
 
           if (item.filterCondition) {
-            handleOnClick(item.filterCondition, item.removeKey);
+            await handleOnClick(item.filterCondition, item.removeKey);
           }
         }
       }}

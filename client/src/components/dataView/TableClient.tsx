@@ -25,6 +25,7 @@ import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";
 import { NationalCallup } from "../../types/models/national-callup";
 import { NationalMatchSeries } from "../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { GroupedPlayers } from "./DataViewContent/DataView/Matrix/type";
 
 const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
@@ -118,10 +119,7 @@ type TableClientProps<T, F> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
-    [ViewMode.POSITION_LIST]?: {
-      playerStatistics: PlayerStatistic[];
-      formationCounts: FormationCounts[];
-    };
+    [ViewMode.POSITION_LIST]?: GroupedPlayers[];
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;
@@ -166,17 +164,21 @@ const TableClient = <
   const reloadFun = useMemo(
     () =>
       async (
-        _filterConditions: FilterableFieldDefinition[],
-        _sortConditions: SortableFieldDefinition[],
+        filterConditions: FilterableFieldDefinition[],
+        sortConditions: SortableFieldDefinition[],
       ) => {
         const newFilterConditions = props.filterField
           ? props.filterField.filter((f) => !!f.value)
           : null;
 
-        if (!props.reloadFun || !newFilterConditions) return;
-        props.reloadFun(newFilterConditions, []);
+        if (!props.reloadFun) return;
+        if (newFilterConditions && newFilterConditions?.length > 0) {
+          props.reloadFun(newFilterConditions, sortConditions);
+        } else {
+          props.reloadFun(filterConditions, sortConditions);
+        }
       },
-    [props.reloadFun],
+    [],
   );
 
   const handleFilterSort = useMemo(

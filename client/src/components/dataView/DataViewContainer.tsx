@@ -37,6 +37,7 @@ import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";
 import { NationalCallup } from "../../types/models/national-callup";
 import { NationalMatchSeries } from "../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
+import { GroupedPlayers } from "./DataViewContent/DataView/Matrix/type";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -110,10 +111,7 @@ type DataViewContainerProps<T, F> = {
       label: string;
     };
     [ViewMode.FORMATION]?: FormationItem[];
-    [ViewMode.POSITION_LIST]?: {
-      playerStatistics: PlayerStatistic[];
-      formationCounts: FormationCounts[];
-    };
+    [ViewMode.POSITION_LIST]?: GroupedPlayers[];
     [ViewMode.CALENDAR]?: {
       data: CalendarDataItem[];
       currentDate: Date;
@@ -346,10 +344,6 @@ const Container = <K extends Record<string, unknown>, F>({
       toggleQuickFilter(defaultItem.filterCondition, filterConditions);
     if (!newFilterConditions) return;
     setFilterConditions(newFilterConditions);
-    reloadFun && reloadFun(newFilterConditions, sortConditions);
-    (async () => {
-      await defaultItem.onClick?.();
-    })();
   }, []);
 
   const { items: quickFilterSouce, loading: quickFilterLoading } =
