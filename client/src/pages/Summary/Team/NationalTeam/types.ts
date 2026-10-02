@@ -5,6 +5,7 @@ import { NationalMatchSeries } from "../../../../types/models/national-match-ser
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
 import { FormationCounts } from "../ClubTeam/types";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
+import { QuickFilterData } from "../../../../types/table";
 
 export const NATIONAL_TEAM_TAB = {
   SERIES: "series",
@@ -32,7 +33,7 @@ type NationalTeamPanels = {
 
   formationPlot: ServerDepPanelSummary<{
     groupedPlayers: GroupedPlayers[];
-    formationCounts: FormationCounts[];
+    quickFilterDatas: QuickFilterData[];
   }>;
 };
 

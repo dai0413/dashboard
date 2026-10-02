@@ -1,4 +1,4 @@
-import { TableClient } from "../../../../../components/dataView";
+import { DataViewContainer } from "../../../../../components/dataView";
 import {
   isFilterable,
   isSortable,
@@ -6,15 +6,9 @@ import {
 } from "../../../../../types/field";
 import { UseNationalTeamSummary } from "../types";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import {
-  ColumnType,
-  QuickFilterData,
-  QuickFilterItem,
-} from "../../../../../types/table";
+import { ColumnType } from "../../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ViewMode } from "../../../../../types/types";
-import { useMemo } from "react";
-import { quickFilterItems } from "../constants/quickFilterItems";
 
 const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
   {
@@ -46,35 +40,10 @@ const FormationPlotPanel = ({
     },
   } = summary;
 
-  const formationQuickFilterItems: QuickFilterData = useMemo(() => {
-    const quickFilterItems: QuickFilterItem[] = items.formationCounts.map(
-      (formation, index) => {
-        return {
-          key: formation.name,
-          label: `${formation.name} (${formation.count})`,
-          defaultSelect: index === 0,
-          filterCondition: [
-            {
-              key: "formation",
-              label: "フォーメーション",
-              type: "select",
-              filterable: true,
-              value: [formation.name],
-              valueLabel: [`${formation.name} (${formation.count})`],
-              operator: "equals",
-            },
-          ],
-        };
-      },
-    );
-
-    return { name: "formation", items: quickFilterItems };
-  }, [items.formationCounts]);
-
   return (
     <>
       <div className="text-gray-600">{text}</div>
-      <TableClient
+      <DataViewContainer
         key={key}
         itemsLoading={isLoading}
         fieldDefinitions={fieldDefinitions}
@@ -88,7 +57,7 @@ const FormationPlotPanel = ({
         filterField={fieldDefinitions?.filter(isFilterable)}
         sortField={fieldDefinitions?.filter(isSortable)}
         initialData={{ formData: { team: id } }}
-        quickFilterItems={[quickFilterItems, formationQuickFilterItems]}
+        quickFilterItems={items.quickFilterDatas}
       />
     </>
   );

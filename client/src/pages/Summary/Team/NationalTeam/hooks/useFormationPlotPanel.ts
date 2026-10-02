@@ -14,19 +14,71 @@ import { createGroupedPlayers } from "../../../../../components/dataView/DataVie
 import { getGroupedPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/MatchMatrix/utils";
 import { displayPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/context/displayPositions";
 import { getFormationCounts } from "../../../../../utils/data";
-import { FormationCounts } from "../../ClubTeam/types";
 import { NationalMatchSeries } from "../../../../../types/models/national-match-series";
 import { NationalCallup } from "../../../../../types/models/national-callup";
 import { normalizeFiltersForApi } from "../../../../../utils/filter/normalizeFiltersForApi";
+import { TeamMatchFormation } from "../../../../../types/models/team-match-formation";
+import { quickFilterItems } from "../constants/quickFilterItems";
+import { QuickFilterData } from "../../../../../types/table";
 
 export const useFormationPlotPanel = () => {
   const [formationPlotIsLoading, setFormationPlotIsLoading] =
     useState<boolean>(false);
 
   const [groupedPlayers, setGroupedPlayers] = useState<GroupedPlayers[]>([]);
-  const [formationCounts, setFormationCounts] = useState<FormationCounts[]>([]);
+  const [quickFilterDatas, setQuickFilterDatas] = useState<QuickFilterData[]>([
+    quickFilterItems,
+  ]);
 
-  const readFormationPlot = async (
+  const handleReset = () => {
+    setGroupedPlayers([]);
+    setQuickFilterDatas([quickFilterItems]);
+  };
+
+  const readFormationPlot = async (teamId: string) => {
+    const readParams: Record<string, any> = {
+      getAll: true,
+      team: teamId,
+    };
+    const filterConditions = quickFilterItems.items.find(
+      (v) => v.defaultSelect,
+    )?.filterCondition;
+    const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
+    const left_atObj = filterConditions?.find((f) => f.key === "left_at");
+
+    if (!joined_atObj || !left_atObj) return handleReset();
+
+    if (filterConditions && filterConditions.length > 0) {
+      readParams.filters = JSON.stringify(
+        normalizeFiltersForApi(filterConditions),
+      );
+    }
+
+    const obj = await readItemsBase<NationalMatchSeries[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
+      params: readParams,
+    });
+
+    const seriesIds = obj?.data.map((d) => d._id);
+
+    if (!seriesIds || seriesIds.length === 0) return handleReset();
+
+    const matchIds = [
+      ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
+    ];
+    if (matchIds.length === 0) return handleReset();
+
+    // 対象試合のフォメ集計
+
+    const newFormationCounts = await getFormationCounts(teamId, matchIds);
+
+    if (!newFormationCounts) return handleReset();
+
+    setQuickFilterDatas([quickFilterItems]);
+  };
+
+  const reloadFun = async (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
     teamId: string,
@@ -34,19 +86,23 @@ export const useFormationPlotPanel = () => {
     setFormationPlotIsLoading(true);
 
     try {
+      // 期間内のフォメ集計
+
+      // 日付から対象試合, 対象選手
       const readParams: Record<string, any> = {
         getAll: true,
         team: teamId,
       };
-
       const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
       const left_atObj = filterConditions?.find((f) => f.key === "left_at");
 
-      if (!joined_atObj || !left_atObj) return;
+      if (!joined_atObj || !left_atObj) return handleReset();
 
       if (filterConditions && filterConditions.length > 0) {
         readParams.filters = JSON.stringify(
-          normalizeFiltersForApi(filterConditions),
+          normalizeFiltersForApi(
+            filterConditions.filter((f) => f.key !== "formation"),
+          ),
         );
       }
 
@@ -62,7 +118,7 @@ export const useFormationPlotPanel = () => {
 
       const seriesIds = obj?.data.map((d) => d._id);
 
-      if (!seriesIds || seriesIds.length === 0) return;
+      if (!seriesIds || seriesIds.length === 0) return handleReset();
 
       const nationalCallupRes = await readItemsBase<NationalCallup[]>({
         apiInstance: api,
@@ -76,25 +132,18 @@ export const useFormationPlotPanel = () => {
       const matchIds = [
         ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
       ];
-      if (!matchIds) return;
+
+      if (matchIds.length === 0) return handleReset();
+
+      const newFormationCounts = await getFormationCounts(teamId, matchIds);
+
+      if (!newFormationCounts) return handleReset();
 
       const playerIds: string[] = [
         ...new Set((nationalCallupRes?.data ?? []).map((d) => d.player._id)),
       ];
 
-      const playerStatistic = await createItemBase<PlayerStatistic[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
-        data: {
-          player: playerIds,
-          match: matchIds,
-          team: teamId,
-        },
-      });
-
-      const formationCounts = await getFormationCounts(teamId, matchIds);
-      formationCounts && setFormationCounts(formationCounts);
-
+      // 選択中のフォメ
       let formation: string | undefined;
 
       filterConditions?.forEach((filterCondition) => {
@@ -112,8 +161,6 @@ export const useFormationPlotPanel = () => {
 
         if (!newFormationCounts) return;
 
-        setFormationCounts(newFormationCounts);
-
         formation = newFormationCounts[0].name;
       }
 
@@ -123,29 +170,84 @@ export const useFormationPlotPanel = () => {
         params: { name: formation },
       });
 
-      if (!formationRes?.data || formationRes.data.length !== 1) return;
+      if (!formationRes?.data || formationRes.data.length !== 1)
+        return handleReset();
 
       const selectedFormation = formationRes.data[0];
 
-      if (playerStatistic?.success) {
-        const playerStatistics = sortByPosition(
-          playerStatistic.data,
-          "mainPosition",
-        );
+      const teamMatchFormationsRes = await readItemsBase<TeamMatchFormation[]>({
+        apiInstance: api,
+        backendRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,
+        params: {
+          formation: selectedFormation._id,
+          match: matchIds,
+          team: teamId,
+        },
+      });
 
-        const positionOptions = getGroupedPositions(
-          selectedFormation
-            ? selectedFormation.position_formation
-            : displayPositions.map((d) => d.key),
-        );
+      if (
+        !teamMatchFormationsRes?.data ||
+        teamMatchFormationsRes.data.length <= 0
+      )
+        return handleReset();
 
-        const newGroupedPlayers = createGroupedPlayers(
-          playerStatistics,
-          positionOptions,
-        );
+      const targetMatchIds = teamMatchFormationsRes.data.map(
+        (teamMatchFormation) => teamMatchFormation.match._id,
+      );
 
-        setGroupedPlayers(newGroupedPlayers);
-      }
+      const playerStatistic = await createItemBase<PlayerStatistic[]>({
+        apiInstance: api,
+        backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
+        data: {
+          player: playerIds,
+          match: targetMatchIds,
+          team: teamId,
+        },
+      });
+
+      if (!playerStatistic?.success) return handleReset();
+
+      const playerStatistics = sortByPosition(
+        playerStatistic.data,
+        "mainPosition",
+      );
+
+      const positionOptions = getGroupedPositions(
+        selectedFormation
+          ? selectedFormation.position_formation
+          : displayPositions.map((d) => d.key),
+      );
+
+      const newGroupedPlayers = createGroupedPlayers(
+        playerStatistics,
+        positionOptions,
+      );
+
+      setGroupedPlayers(newGroupedPlayers);
+
+      const formationQuickFilterItems: QuickFilterData = {
+        name: "formation",
+        items: newFormationCounts.map((formation, index) => {
+          return {
+            key: formation.name,
+            label: `${formation.name} (${formation.count})`,
+            defaultSelect: index === 0,
+            filterCondition: [
+              {
+                key: "formation",
+                label: "フォーメーション",
+                type: "select",
+                filterable: true,
+                value: [formation.name],
+                valueLabel: [`${formation.name} (${formation.count})`],
+                operator: "equals",
+              },
+            ],
+          };
+        }),
+      };
+
+      setQuickFilterDatas([quickFilterItems, formationQuickFilterItems]);
     } finally {
       setFormationPlotIsLoading(false);
     }
@@ -153,7 +255,8 @@ export const useFormationPlotPanel = () => {
 
   return {
     formationPlotIsLoading,
-    items: { groupedPlayers, formationCounts },
+    items: { groupedPlayers, quickFilterDatas },
     readFormationPlot,
+    reloadFun,
   };
 };

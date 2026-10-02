@@ -51,6 +51,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
           readSeries(id),
           readPlayers(id),
           readPlayerPlot(id),
+          formationPlotPanel.readFormationPlot(id),
         ]);
       }
     })();
@@ -113,11 +114,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
         isLoading: formationPlotPanel.formationPlotIsLoading,
         items: formationPlotPanel.items,
         reloadFun: async (filterConditions, sortConditions) =>
-          formationPlotPanel.readFormationPlot(
-            filterConditions,
-            sortConditions,
-            id,
-          ),
+          formationPlotPanel.reloadFun(filterConditions, sortConditions, id),
       },
     },
   };
