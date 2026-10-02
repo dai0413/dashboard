@@ -59,7 +59,7 @@ PlayerAppearanceSchema.index(
 );
 
 PlayerAppearanceSchema.index(
-  { match: 1, team: 1, player_name: 1 },
+  { match: 1, team: 1, player_name: 1, number: 1 },
   {
     unique: true,
     partialFilterExpression: {
