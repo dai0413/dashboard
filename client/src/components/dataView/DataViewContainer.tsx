@@ -4,7 +4,7 @@ import DataViewToolBar from "./DataViewToolbar/DataViewToolBar";
 import { Sort, Filter } from "../modals/index";
 
 import {
-  QuickFilterItem,
+  QuickFilterData,
   QuickFilterType,
   TableHeader,
 } from "../../types/table";
@@ -88,7 +88,7 @@ type DataViewContainerProps<T, F> = {
   // フィルター
   filterField?: FilterableFieldDefinition[];
   quickFilterType?: QuickFilterType;
-  quickFilterItems?: QuickFilterItem[];
+  quickFilterItems?: QuickFilterData[];
 
   // ソート
   sortField?: SortableFieldDefinition[];
@@ -336,23 +336,26 @@ const Container = <K extends Record<string, unknown>, F>({
   useEffect(() => {
     if (!quickFilterItems) return;
 
-    const defaultItem = quickFilterItems.find((i) => i.defaultSelect);
-    if (!defaultItem) return;
+    for (const quickFilterItem of quickFilterItems) {
+      const defaultItem = quickFilterItem.items.find((i) => i.defaultSelect);
+      if (!defaultItem) return;
 
-    const newFilterConditions =
-      defaultItem.filterCondition &&
-      toggleQuickFilter(defaultItem.filterCondition, filterConditions);
-    if (!newFilterConditions) return;
-    setFilterConditions(newFilterConditions);
+      const newFilterConditions =
+        defaultItem.filterCondition &&
+        toggleQuickFilter(defaultItem.filterCondition, filterConditions);
+      if (!newFilterConditions) return;
+      setFilterConditions(newFilterConditions);
+    }
   }, []);
 
-  const { items: quickFilterSouce, loading: quickFilterLoading } =
-    useQuickFilterSource(quickFilterType);
+  const quickFilterSouce = useQuickFilterSource(quickFilterType);
 
-  const quickFilterItemsParam = useMemo(() => {
+  const quickFilterItemsParam: QuickFilterData[] = useMemo(() => {
     if (quickFilterItems && quickFilterItems.length > 0)
       return quickFilterItems;
-    return quickFilterSouce ?? [];
+
+    const { loading, ...rest } = quickFilterSouce;
+    return [rest];
   }, [quickFilterSouce, quickFilterItems]);
 
   const newDownloadFile = downloadFile
@@ -411,7 +414,7 @@ const Container = <K extends Record<string, unknown>, F>({
           uploadFile={uploadFile}
           initialData={initialData}
           reloadFun={reloadFun}
-          quickFilterItems={quickFilterItemsParam}
+          quickFilterDatas={quickFilterItemsParam}
           headers={fieldDefinitions}
           items={datas}
           viewModes={viewModes}
@@ -426,7 +429,7 @@ const Container = <K extends Record<string, unknown>, F>({
         linkField={linkField}
         fieldDefinitions={fieldDefinitions}
         noItem={noItem}
-        isLoading={itemsLoading || quickFilterLoading}
+        isLoading={itemsLoading || quickFilterSouce.loading}
         form={form}
         onActionClick={onClick}
         selectedKey={selectedKey}

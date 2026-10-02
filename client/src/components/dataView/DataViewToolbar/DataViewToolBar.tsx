@@ -30,7 +30,7 @@ import { hasSteps } from "../../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
 import { useDataView } from "../../../context/dataView-context";
 import { useModal } from "../../../context/modal-context";
-import { QuickFilterItem, TableData, TableHeader } from "../../../types/table";
+import { QuickFilterData, TableData, TableHeader } from "../../../types/table";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -60,7 +60,7 @@ type DataViewToolBarProps<Data, Form> = {
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
-  quickFilterItems: QuickFilterItem[];
+  quickFilterDatas: QuickFilterData[];
   headers?: TableHeader<Data>[];
   items?: TableData<Data>;
   viewModes: ViewMode[];
@@ -162,7 +162,7 @@ const DataViewToolBar = <Data, Form>({
   downloadFile,
   initialData,
   reloadFun,
-  quickFilterItems,
+  quickFilterDatas,
   headers = [],
   items,
   viewModes,
@@ -612,13 +612,16 @@ const DataViewToolBar = <Data, Form>({
         </div>
       </div>
 
-      {quickFilterItems.length > 0 && (
-        <QuickFilterBar
-          items={quickFilterItems}
-          loading={false}
-          reloadFun={reloadFun}
-        />
-      )}
+      {quickFilterDatas.map((quickFilterData) => {
+        return (
+          <QuickFilterBar
+            key={quickFilterData.name}
+            items={quickFilterData.items}
+            loading={false}
+            reloadFun={reloadFun}
+          />
+        );
+      })}
     </div>
   );
 };

@@ -9,7 +9,7 @@ import { applySortClient } from "../../utils/sort/applySortClient";
 import { Data, LinkField, ViewMode } from "../../types/types";
 import { UIFieldDefinition } from "../../types/field";
 import {
-  QuickFilterItem,
+  QuickFilterData,
   QuickFilterType,
   TableHeader,
 } from "../../types/table";
@@ -103,7 +103,7 @@ type TableClientProps<T, F> = {
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
   quickFilterType?: QuickFilterType;
-  quickFilterItems?: QuickFilterItem[];
+  quickFilterItems?: QuickFilterData[];
   noItemMessage?: ReactNode;
   noToolBar?: false;
   viewMode?: ViewMode.TABLE | ViewMode.TILE;

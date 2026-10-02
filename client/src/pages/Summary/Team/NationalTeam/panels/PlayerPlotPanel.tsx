@@ -49,7 +49,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         handleFilterSort={async (filterConditions, sortConditions) => {
           await reloadFun(filterConditions, sortConditions);
         }}
-        quickFilterItems={quickFilterItems}
+        quickFilterItems={[quickFilterItems]}
         itemsLoading={isLoading}
         viewModes={[ViewMode.SERIES_MATRIX]}
         defaultViewMode={ViewMode.SERIES_MATRIX}

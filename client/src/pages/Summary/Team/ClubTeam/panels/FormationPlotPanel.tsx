@@ -7,7 +7,11 @@ import {
 import { UseClubTeamSummary } from "../types";
 import { playerStatistics } from "../../../../../lib/fields/playerStatistics";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { ColumnType, QuickFilterItem } from "../../../../../types/table";
+import {
+  ColumnType,
+  QuickFilterData,
+  QuickFilterItem,
+} from "../../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 import { ViewMode } from "../../../../../types/types";
@@ -57,25 +61,29 @@ const FormationPlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
     },
   } = summary;
 
-  const quickFilterItems: QuickFilterItem[] = useMemo(() => {
-    return items.formationCounts.map((formation, index) => {
-      return {
-        key: formation.name,
-        label: `${formation.name} (${formation.count})`,
-        defaultSelect: index === 0,
-        filterCondition: [
-          {
-            key: "formation",
-            label: "フォーメーション",
-            type: "select",
-            filterable: true,
-            value: [formation.name],
-            valueLabel: [`${formation.name} (${formation.count})`],
-            operator: "equals",
-          },
-        ],
-      };
-    });
+  const quickFilterItems: QuickFilterData = useMemo(() => {
+    const quickFilterItems: QuickFilterItem[] = items.formationCounts.map(
+      (formation, index) => {
+        return {
+          key: formation.name,
+          label: `${formation.name} (${formation.count})`,
+          defaultSelect: index === 0,
+          filterCondition: [
+            {
+              key: "formation",
+              label: "フォーメーション",
+              type: "select",
+              filterable: true,
+              value: [formation.name],
+              valueLabel: [`${formation.name} (${formation.count})`],
+              operator: "equals",
+            },
+          ],
+        };
+      },
+    );
+
+    return { name: "formation", items: quickFilterItems };
   }, [items.formationCounts]);
 
   return (
@@ -95,7 +103,7 @@ const FormationPlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         filterField={fieldDefinitions?.filter(isFilterable)}
         sortField={fieldDefinitions?.filter(isSortable)}
         initialData={{ formData: { team: id } }}
-        quickFilterItems={quickFilterItems}
+        quickFilterItems={[quickFilterItems]}
       />
     </>
   );

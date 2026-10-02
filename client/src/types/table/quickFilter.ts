@@ -8,6 +8,12 @@ export type QuickFilterItem = {
   defaultSelect?: boolean;
   removeKey?: string[];
 };
+
+export type QuickFilterData = {
+  name: string;
+  items: QuickFilterItem[];
+};
+
 export enum QuickFilterType {
   TEAM = "team",
   PLAYER_FOR_MATCH = "player-for-match",

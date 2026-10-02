@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { FormTypeMap } from "../../../../../types/models";
 import { DataViewContainer } from "../../../../dataView";
-import { QuickFilterItem } from "../../../../../types/table";
+import { QuickFilterData } from "../../../../../types/table";
 import { FormFieldDefinition, UpdateMode } from "../../../../../types/form";
 import { OptionsMap } from "../../../../../utils/createOption/types/base";
 import { OptionObj, OptionSource } from "../../../../../types/form/option";
@@ -90,11 +90,13 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
     }
   }, [optionKey]);
 
-  const quickFilterItems: QuickFilterItem[] = useMemo(() => {
+  const quickFilterItems: QuickFilterData[] = useMemo(() => {
     const valid = isModelType(optionKey) || isOptionType(optionKey);
 
-    if (!quickFilterItemsObj || !valid) return [];
-    return quickFilterItemsObj[optionKey] || [];
+    if (!quickFilterItemsObj || !valid || !quickFilterItemsObj[optionKey])
+      return [];
+
+    return [{ name: optionKey, items: quickFilterItemsObj[optionKey] }];
   }, [optionKey, quickFilterItemsObj]);
 
   return (
