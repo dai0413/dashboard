@@ -22,4 +22,9 @@ export const tabItems: SummaryTabItems[] = [
     key: NATIONAL_TEAM_TAB.PLAYER_PLOT,
     text: "選手推移",
   },
+  {
+    icon: "line-plot",
+    key: NATIONAL_TEAM_TAB.FORMATION_PLOT,
+    text: "フォーメーション",
+  },
 ];

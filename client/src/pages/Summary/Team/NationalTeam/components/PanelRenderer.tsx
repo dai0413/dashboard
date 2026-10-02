@@ -1,4 +1,5 @@
 import {
+  FormationPlotPanel,
   MatchPanel,
   PlayerPanel,
   PlayerPlotPanel,
@@ -23,6 +24,9 @@ const PanelRenderer = ({ summary }: { summary: UseNationalTeamSummary }) => {
 
     case NATIONAL_TEAM_TAB.PLAYER_PLOT:
       return <PlayerPlotPanel summary={summary} />;
+
+    case NATIONAL_TEAM_TAB.FORMATION_PLOT:
+      return <FormationPlotPanel summary={summary} />;
 
     default:
       return null;

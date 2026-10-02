@@ -5,6 +5,7 @@ import {
   usePlayerPanel,
   useSeriesPanel,
   usePlayerPlotPanel,
+  useFormationPlotPanel,
 } from "./index";
 import {
   NATIONAL_TEAM_TAB,
@@ -39,6 +40,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
     playerPlotIsLoading,
     formationCounts,
   } = usePlayerPlotPanel();
+  const formationPlotPanel = useFormationPlotPanel();
 
   useEffect(() => {
     (async () => {
@@ -103,6 +105,19 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
         },
         reloadFun: async (filterConditions, sortConditions) =>
           readPlayerPlot(id, filterConditions, sortConditions),
+      },
+
+      formationPlot: {
+        key: `${selectedTab}`,
+        text: `${selected?.normalized_name || selected?.abbr}に招集された選手`,
+        isLoading: formationPlotPanel.formationPlotIsLoading,
+        items: formationPlotPanel.items,
+        reloadFun: async (filterConditions, sortConditions) =>
+          formationPlotPanel.readFormationPlot(
+            filterConditions,
+            sortConditions,
+            id,
+          ),
       },
     },
   };
