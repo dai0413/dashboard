@@ -38,7 +38,7 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
 
     defaultItem.filterCondition && handleOnClick?.(defaultItem.filterCondition);
     defaultItem.onClick?.();
-  }, [items, loading]);
+  }, []);
 
   if (loading) return null;
 
