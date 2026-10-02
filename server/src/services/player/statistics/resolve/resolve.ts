@@ -7,6 +7,7 @@ type Params = {
   player?: string | string[];
   team?: string;
   season?: string;
+  match?: string | string[];
   filterCondition: Record<string, any>;
 };
 
@@ -22,12 +23,15 @@ export const resolve = async ({
   player,
   team,
   season,
+  match,
   filterCondition,
 }: Params): Promise<Ids> => {
-  let { playerObjectIds, seasonObjectIds } = await resolvePlayerTargets({
-    player,
-    season,
-  });
+  let { playerObjectIds, seasonObjectIds, matchObjectIds } =
+    await resolvePlayerTargets({
+      player,
+      match,
+      season,
+    });
 
   let teamObjectId: undefined | Types.ObjectId;
 
@@ -37,6 +41,7 @@ export const resolve = async ({
 
   const { matchIds, matchGroupMap, matchSeasonIds } =
     await resolvePlayerMatches({
+      matchObjectIds,
       teamObjectId,
       filterCondition,
       playerObjectIds,

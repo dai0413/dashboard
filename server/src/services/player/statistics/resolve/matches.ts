@@ -4,6 +4,7 @@ import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
 import { PlayerRegistrationModel } from "../../../../models/player-registration.js";
 
 type Params = {
+  matchObjectIds?: Types.ObjectId[];
   teamObjectId: Types.ObjectId | undefined;
   filterCondition: Record<string, any>;
   playerObjectIds: Types.ObjectId[];
@@ -55,15 +56,23 @@ export const resolvePlayerMatches = async ({
   teamObjectId,
   filterCondition,
   playerObjectIds,
+  matchObjectIds,
 }: Params) => {
-  const playerMatchIds = await getPlayerMatchIds({
-    playerIds: playerObjectIds,
-    teamId: teamObjectId,
-  });
+  let targetMatchIds: Types.ObjectId[] = [];
+  if (!matchObjectIds || matchObjectIds?.length <= 0) {
+    const playerMatchIds = await getPlayerMatchIds({
+      playerIds: playerObjectIds,
+      teamId: teamObjectId,
+    });
+
+    targetMatchIds = playerMatchIds;
+  } else {
+    targetMatchIds = matchObjectIds;
+  }
 
   const matches = await MatchModel.find({
     ...filterCondition,
-    _id: { $in: playerMatchIds },
+    _id: { $in: targetMatchIds },
   })
     .select("_id season competition")
     .lean();

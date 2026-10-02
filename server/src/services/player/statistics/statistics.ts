@@ -48,7 +48,7 @@ const matchQueryConfig = [
 export const getPlayerStatistics = async (
   req: Request,
 ): Promise<CreateItemsResponse<PlayerStatistic[]>> => {
-  const { player, team, season, groupBy } = req.body;
+  const { player, team, match, season, groupBy } = req.body;
 
   if (groupBy && !player) {
     throw new BadRequestError(
@@ -64,7 +64,7 @@ export const getPlayerStatistics = async (
     seasonObjectIds,
     matchGroupMap,
     matchIds,
-  } = await resolve({ player, team, season, filterCondition });
+  } = await resolve({ player, team, match, season, filterCondition });
 
   if (playerObjectIds.length === 0) {
     return {
