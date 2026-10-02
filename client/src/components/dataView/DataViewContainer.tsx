@@ -317,12 +317,12 @@ const Container = <K extends Record<string, unknown>, F>({
     const filterConditions = filterField
       ? filterField.filter((f) => !!f.value)
       : null;
-    filterConditions && setFilterConditions(filterConditions);
 
-    filterConditions &&
-      filterConditions?.length > 0 &&
+    if (filterConditions && filterConditions?.length) {
+      setFilterConditions(filterConditions);
       handleApplyFilter(filterConditions, sortConditions);
-  }, []);
+    }
+  }, [filterField]);
 
   useEffect(() => {
     if (!modelType || !isModelType(modelType)) return;
