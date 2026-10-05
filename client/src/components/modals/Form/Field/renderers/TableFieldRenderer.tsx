@@ -130,7 +130,11 @@ export const TableFieldRenderer = <T extends keyof FormTypeMap>({
         filterField={filterField}
         sortField={sortField}
         itemsLoading={optionIsLoading}
-        totalCount={viewOptionData ? viewOptionData.totalCount || 0 : 0}
+        totalCount={
+          viewOptionData
+            ? viewOptionData.totalCount || viewOptionData.data.length
+            : 0
+        }
         form={true}
         onClick={(_index, row: OptionObj<any>["data"][number]) => {
           if (onRowSelect) {
