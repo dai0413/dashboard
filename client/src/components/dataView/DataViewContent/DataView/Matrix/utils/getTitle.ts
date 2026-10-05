@@ -1,11 +1,18 @@
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
 
-export const getTitle = (
-  appearance: PlayerAppearanceGet | undefined,
-  onRegister: boolean,
-  calledUp: boolean,
-  title?: string,
-): string => {
+type Params = {
+  appearance?: PlayerAppearanceGet | undefined;
+  onRegister?: boolean;
+  calledUp?: boolean;
+  title?: string;
+};
+
+export const getTitle = ({
+  appearance,
+  onRegister,
+  calledUp,
+  title,
+}: Params): string => {
   let convertedTitle = title || "";
 
   if (appearance) {
@@ -24,20 +31,24 @@ export const getTitle = (
     }
   }
 
-  if (convertedTitle === "" && onRegister) {
-    convertedTitle = "登録中";
+  if (typeof onRegister === "boolean") {
+    if (convertedTitle === "" && onRegister) {
+      convertedTitle = "登録中";
+    }
+
+    if (convertedTitle === "" && !onRegister) {
+      convertedTitle = "登録外";
+    }
   }
 
-  if (convertedTitle === "" && !calledUp) {
-    convertedTitle = "招集外";
-  }
+  if (typeof calledUp === "boolean") {
+    if (convertedTitle === "" && calledUp) {
+      convertedTitle = "招集";
+    }
 
-  if (!onRegister && !calledUp) {
-    convertedTitle = "登録外";
-  }
-
-  if (convertedTitle === "" && calledUp) {
-    convertedTitle = "招集";
+    if (convertedTitle === "" && !calledUp) {
+      convertedTitle = "招集外";
+    }
   }
 
   return convertedTitle;

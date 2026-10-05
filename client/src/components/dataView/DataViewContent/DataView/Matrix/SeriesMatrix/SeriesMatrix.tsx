@@ -106,11 +106,14 @@ const SeriesMatrix = ({
           let title = "招集";
 
           if (callUp.is_backup) {
-            title = getTitle(undefined, false, true, "バックアップ");
+            title = getTitle({ calledUp: true, title: "バックアップ" });
           }
 
           if (callUp.is_training_partner) {
-            title = getTitle(undefined, false, true, "トレーニングパートナー");
+            title = getTitle({
+              calledUp: true,
+              title: "トレーニングパートナー",
+            });
           }
 
           return (

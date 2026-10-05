@@ -92,15 +92,12 @@ const MatchMatrix = ({
           `${player.player._id}-${match.competition.id}`,
         );
 
-        const hasRegister = registrations && registrations?.length > 0;
-
         const onRegister = isRegisteredAtMatch(teamId, registrations, match);
 
-        const title = getTitle(
-          appearance,
-          hasRegister ? onRegister : true,
-          hasRegister ? onRegister : true,
-        );
+        const title = getTitle({
+          appearance: appearance,
+          onRegister: onRegister,
+        });
 
         return (
           <MatrixCell

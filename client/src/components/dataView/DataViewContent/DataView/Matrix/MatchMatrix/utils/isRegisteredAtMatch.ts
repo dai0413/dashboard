@@ -16,7 +16,7 @@ export const isRegisteredAtMatch = (
     )
     .sort((a, b) => a.date!.getTime() - b.date!.getTime());
 
-  return teamRegistrations.some((registration, index) => {
+  const returnVal = teamRegistrations.some((registration, index) => {
     if (registration.registration_type !== "登録") {
       return false;
     }
@@ -36,4 +36,6 @@ export const isRegisteredAtMatch = (
         match.date!.getTime() <= cancellationDate)
     );
   });
+
+  return returnVal;
 };
