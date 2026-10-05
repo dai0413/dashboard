@@ -5,6 +5,7 @@ const COLORS = {
   bench: "#9ca3af",
   starter: "#2563eb", // blue-600
   substitute: "#f472b6", // pink-500
+  withdrawn: "#dc2626", // red-600
 };
 
 const SIZE = {
@@ -19,6 +20,25 @@ const circleStyle = {
   border: `2px solid ${COLORS.border}`,
 };
 
+const injuryStyle = {
+  ...circleStyle,
+  border: `2px solid ${COLORS.withdrawn}`,
+  position: "relative" as const,
+  background: "white",
+};
+
+const injuryMarkStyle = {
+  position: "absolute" as const,
+  inset: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: COLORS.withdrawn,
+  fontSize: 14,
+  fontWeight: "bold",
+  lineHeight: 1,
+};
+
 export const Circle = ({
   is_backup,
   is_training_partner,
@@ -27,7 +47,16 @@ export const Circle = ({
   playerAppearance,
   withdrawn,
   declined,
+  injured,
 }: CircleInfo) => {
+  if (injured) {
+    return (
+      <div style={injuryStyle}>
+        <span style={injuryMarkStyle}>✚</span>
+      </div>
+    );
+  }
+
   if (withdrawn) {
     return (
       <div
@@ -35,7 +64,7 @@ export const Circle = ({
           ...circleStyle,
           transform: "rotate(45deg)",
           background: "white",
-          border: `2px solid ${COLORS.substitute}`,
+          border: `2px solid ${COLORS.withdrawn}`,
         }}
       />
     );
@@ -48,7 +77,7 @@ export const Circle = ({
           ...circleStyle,
           transform: "rotate(45deg)",
           background: "white",
-          border: `2px solid ${COLORS.substitute}`,
+          border: `2px solid ${COLORS.withdrawn}`,
         }}
       />
     );

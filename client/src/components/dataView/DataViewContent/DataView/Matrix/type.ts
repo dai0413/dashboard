@@ -11,6 +11,7 @@ export type CircleInfo = {
   playerAppearance?: PlayerAppearanceGet;
   withdrawn?: boolean;
   declined?: boolean;
+  injured?: boolean;
 };
 
 export type DisplayPosition = {

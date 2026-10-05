@@ -17,6 +17,7 @@ const MatrixCell = ({ appearances }: { appearances: CircleInfo[] }) => {
               toolTipTitle={appearance.toolTipTitle}
               withdrawn={appearance.withdrawn}
               declined={appearance.declined}
+              injured={appearance.injured}
             />
           </span>
         </Tooltip>
