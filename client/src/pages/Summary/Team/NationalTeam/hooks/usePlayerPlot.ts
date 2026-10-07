@@ -34,6 +34,29 @@ export const usePlayerPlotPanel = () => {
   );
   const [formationCounts, setFormationCounts] = useState<FormationCounts[]>([]);
 
+  type ResetParams = {
+    nationalCallUp?: boolean;
+    nationalMatchSeries?: boolean;
+    playerAppearance?: boolean;
+    playerStatistics?: boolean;
+    formationCounts?: boolean;
+  };
+
+  const handleReset = ({
+    nationalCallUp,
+    nationalMatchSeries,
+    playerAppearance,
+    playerStatistics,
+    formationCounts,
+  }: ResetParams) => {
+    setPlayerPlotIsLoading(false);
+    nationalCallUp && setNationalCallUp([]);
+    nationalMatchSeries && setNationalMatchSeries([]);
+    playerAppearance && setPlayerAppearance([]);
+    playerStatistics && setPlayerStatistics([]);
+    formationCounts && setFormationCounts([]);
+  };
+
   const readPlayerPlot = async (
     teamId: string,
     filterConditions?: FilterableFieldDefinition[],
@@ -48,7 +71,14 @@ export const usePlayerPlotPanel = () => {
     const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
     const left_atObj = filterConditions?.find((f) => f.key === "left_at");
 
-    if (!joined_atObj || !left_atObj) return setPlayerPlotIsLoading(false);
+    if (!joined_atObj || !left_atObj)
+      return handleReset({
+        nationalCallUp: true,
+        nationalMatchSeries: true,
+        playerAppearance: true,
+        playerStatistics: true,
+        formationCounts: true,
+      });
 
     if (filterConditions && filterConditions.length > 0) {
       readParams.filters = JSON.stringify(
@@ -71,7 +101,12 @@ export const usePlayerPlotPanel = () => {
     const seriesIds = obj?.data.map((d) => d._id);
 
     if (!seriesIds || seriesIds.length === 0)
-      return setPlayerPlotIsLoading(false);
+      return handleReset({
+        nationalCallUp: true,
+        playerAppearance: true,
+        playerStatistics: true,
+        formationCounts: true,
+      });
 
     const nationalCallupRes = await readItemsBase<NationalCallup[]>({
       apiInstance: api,
@@ -88,7 +123,17 @@ export const usePlayerPlotPanel = () => {
       ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m._id)) ?? []),
     ];
 
-    if (!matchIds) return setPlayerPlotIsLoading(false);
+    if (matchIds.length === 0) {
+      setFormationCounts([]);
+    } else {
+      const formationCounts = await getFormationCounts(teamId, matchIds);
+
+      if (formationCounts) {
+        setFormationCounts(formationCounts);
+      } else {
+        setFormationCounts([]);
+      }
+    }
 
     const playerIds: string[] = [
       ...new Set((nationalCallupRes?.data ?? []).map((d) => d.player._id)),
@@ -106,10 +151,9 @@ export const usePlayerPlotPanel = () => {
 
     if (playerStatistic?.success) {
       setPlayerStatistics(playerStatistic.data);
+    } else {
+      setPlayerStatistics([]);
     }
-
-    const formationCounts = await getFormationCounts(teamId, matchIds);
-    formationCounts && setFormationCounts(formationCounts);
 
     const playerAppearanceRes = await readItemsBase<PlayerAppearance[]>({
       apiInstance: api,
@@ -123,6 +167,8 @@ export const usePlayerPlotPanel = () => {
         playerAppearanceRes.data,
       );
       setPlayerAppearance(newPlayerAppearance);
+    } else {
+      setPlayerAppearance([]);
     }
 
     setPlayerPlotIsLoading(false);
