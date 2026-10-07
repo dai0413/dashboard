@@ -335,17 +335,23 @@ const Container = <K extends Record<string, unknown>, F>({
 
   useEffect(() => {
     if (!quickFilterItems) return;
+    let newFilterConditions: FilterableFieldDefinition[] = [];
 
     for (const quickFilterItem of quickFilterItems) {
       const defaultItem = quickFilterItem.items.find((i) => i.defaultSelect);
-      if (!defaultItem) return;
+      if (!defaultItem) continue;
 
-      const newFilterConditions =
+      const filterCondition =
         defaultItem.filterCondition &&
         toggleQuickFilter(defaultItem.filterCondition, filterConditions);
-      if (!newFilterConditions) return;
-      setFilterConditions(newFilterConditions);
+
+      if (!filterCondition) continue;
+
+      newFilterConditions = [...newFilterConditions, ...filterCondition];
     }
+
+    if (newFilterConditions.length === 0) return;
+    setFilterConditions(newFilterConditions);
   }, []);
 
   const quickFilterSouce = useQuickFilterSource(quickFilterType);
