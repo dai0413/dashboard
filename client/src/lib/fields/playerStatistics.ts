@@ -159,7 +159,7 @@ export const playerStatistics: UIFieldDefinition<PlayerStatistic>[] = [
     sortable: true,
     getValueType: ColumnType.CUSTOM,
     getData: (d) => {
-      if ("group" in d && d.group && d.group.by === "season") {
+      if ("group" in d && d.group && d.group.by === "season" && d.group.data) {
         return {
           id: d.group.data.competition._id,
           label: convert(ModelType.COMPETITION, d.group.data.competition),
