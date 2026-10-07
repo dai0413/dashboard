@@ -41,7 +41,11 @@ export const MatrixTable = <T extends Label>({
     useState<FormationCounts | null>(formationCounts[0]);
 
   const [openPositions, setOpenPositions] = useState<Set<string>>(
-    new Set([...formationCounts[0].position_formation.map((p) => p), "no-pos"]),
+    new Set(
+      formationCounts.length > 0
+        ? [...formationCounts[0].position_formation.map((p) => p), "no-pos"]
+        : displayPositions.map((d) => d.key),
+    ),
   );
 
   const positionOptions = useMemo(() => {
@@ -124,6 +128,30 @@ export const MatrixTable = <T extends Label>({
                 )}
               </th>
 
+              <th
+                className="
+                  sticky top-0 z-30
+                  min-w-[80px]
+                  border border-gray-300
+                  bg-white
+                  p-1
+                "
+              >
+                スタメン/途中
+              </th>
+
+              <th
+                className="
+                  sticky top-0 z-30
+                  min-w-[80px]
+                  border border-gray-300
+                  bg-white
+                  p-1
+                "
+              >
+                時間
+              </th>
+
               {columns.map((column, i) => (
                 <th
                   key={column.id || i}
@@ -199,6 +227,34 @@ export const MatrixTable = <T extends Label>({
                         <span className="ml-1 text-sm text-gray-500">
                           {player.note}
                         </span>
+                      </td>
+
+                      <td
+                        className={`
+                        whitespace-nowrap
+                        border border-gray-300
+                        px-5 py-0.5
+                        font-semibold
+                          ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                        `}
+                      >
+                        {`${player.starts}`}
+                        <span className="text-sm text-gray-500">/</span>
+                        {`${player.subs}`}
+                      </td>
+
+                      <td
+                        className={`                        
+                        whitespace-nowrap
+                        border border-gray-300
+                        px-5 py-0.5
+                        font-semibold
+                          ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
+                        `}
+                      >
+                        {`${player.minutes}`}
+
+                        <span className="text-sm text-gray-500">分</span>
                       </td>
 
                       {columns.map((column, i) => (
