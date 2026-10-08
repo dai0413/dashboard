@@ -613,14 +613,17 @@ const DataViewToolBar = <Data, Form>({
       </div>
 
       {quickFilterDatas.map((quickFilterData) => {
-        return (
-          <QuickFilterBar
-            key={quickFilterData.name}
-            items={quickFilterData.items}
-            loading={false}
-            reloadFun={reloadFun}
-          />
-        );
+        if (quickFilterData.items.length > 0) {
+          return (
+            <QuickFilterBar
+              key={quickFilterData.name}
+              items={quickFilterData.items}
+              loading={false}
+              reloadFun={reloadFun}
+              multi={quickFilterData.multi}
+            />
+          );
+        }
       })}
     </div>
   );
