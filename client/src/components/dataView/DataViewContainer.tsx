@@ -18,7 +18,6 @@ import {
 } from "@dai0413/myorg-shared";
 import { isModelType, UIFieldDefinition } from "../../types/field";
 import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
-import { toggleQuickFilter } from "../../utils/quickFilter/toggleQuickFilter";
 import { LinkField, ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
@@ -332,27 +331,6 @@ const Container = <K extends Record<string, unknown>, F>({
     const sortableField = getSortableFields(modelType);
     sortableField && resetSort(sortableField);
   }, [modelType]);
-
-  useEffect(() => {
-    if (!quickFilterItems) return;
-    let newFilterConditions: FilterableFieldDefinition[] = [];
-
-    for (const quickFilterItem of quickFilterItems) {
-      const defaultItem = quickFilterItem.items.find((i) => i.defaultSelect);
-      if (!defaultItem) continue;
-
-      const filterCondition =
-        defaultItem.filterCondition &&
-        toggleQuickFilter(defaultItem.filterCondition, filterConditions);
-
-      if (!filterCondition) continue;
-
-      newFilterConditions = [...newFilterConditions, ...filterCondition];
-    }
-
-    if (newFilterConditions.length === 0) return;
-    setFilterConditions(newFilterConditions);
-  }, []);
 
   const quickFilterSouce = useQuickFilterSource(quickFilterType);
 

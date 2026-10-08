@@ -55,7 +55,6 @@ export const useMatchEventType = (): {
             setViewMode(ViewMode.TILE);
           },
           filterCondition: await read(),
-          defaultSelect: true,
         },
       ];
 

@@ -43,7 +43,6 @@ export const setTeam = async (
           operator: "equals",
         },
       ],
-      defaultSelect: true,
     },
   ];
 

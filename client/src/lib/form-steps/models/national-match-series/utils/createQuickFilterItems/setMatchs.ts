@@ -65,7 +65,6 @@ export const setMatchs = async (
           operator: "equals",
         },
       ],
-      defaultSelect: true,
     },
   ];
 

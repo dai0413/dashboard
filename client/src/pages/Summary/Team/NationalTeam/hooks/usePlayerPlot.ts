@@ -335,11 +335,11 @@ export const usePlayerPlotPanel = () => {
     const competitionFilter = {
       name: "competitions",
       multi: true,
+      selectedKeys: selectedCompetitions,
       items: competitions.map((competition) => {
         return {
           key: competition._id,
           label: competition.name,
-          defaultSelect: selectedCompetitions.includes(competition._id),
           onClick: async () => {
             let competitionIds: string[] = selectedCompetitions;
 

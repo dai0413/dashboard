@@ -54,7 +54,6 @@ export const useFormation = (): {
             setViewMode(ViewMode.TILE);
           },
           filterCondition: await read(),
-          defaultSelect: true,
         },
       ];
 

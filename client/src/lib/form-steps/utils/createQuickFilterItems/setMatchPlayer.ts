@@ -153,7 +153,6 @@ export const setPlayerQuickFilter = async (
       key: "register",
       label: "登録中",
       filterCondition: onRegisterFilterCondition,
-      defaultSelect: true,
     });
   }
 

@@ -170,7 +170,6 @@ export const quickFilterItems: QuickFilterData = {
           operator: "lte",
         },
       ],
-      defaultSelect: true,
     },
   ],
 };

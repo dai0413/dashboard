@@ -35,14 +35,15 @@ export const useFormationPlotPanel = () => {
     setQuickFilterDatas([quickFilterItems]);
   };
 
-  const readFormationPlot = async (teamId: string) => {
+  const readFormationPlot = async (
+    teamId: string,
+    filterConditions?: FilterableFieldDefinition[],
+    _sortConditions?: SortableFieldDefinition[],
+  ) => {
     const readParams: Record<string, any> = {
       getAll: true,
       team: teamId,
     };
-    const filterConditions = quickFilterItems.items.find(
-      (v) => v.defaultSelect,
-    )?.filterCondition;
     const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
     const left_atObj = filterConditions?.find((f) => f.key === "left_at");
 
@@ -227,11 +228,10 @@ export const useFormationPlotPanel = () => {
 
       const formationQuickFilterItems: QuickFilterData = {
         name: "formation",
-        items: newFormationCounts.map((formation, index) => {
+        items: newFormationCounts.map((formation) => {
           return {
             key: formation.name,
             label: `${formation.name} (${formation.count})`,
-            defaultSelect: index === 0,
             filterCondition: [
               {
                 key: "formation",

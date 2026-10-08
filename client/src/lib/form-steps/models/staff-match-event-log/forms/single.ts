@@ -101,7 +101,6 @@ const readMatchEventType = async (
     key: "card",
     label: "カード",
     filterCondition: matchEventTypes,
-    defaultSelect: true,
   };
 
   const matchEventObj: QuickFilterItemsByKey | null = quickFilterItem

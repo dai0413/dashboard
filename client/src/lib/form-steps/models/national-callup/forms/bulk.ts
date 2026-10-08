@@ -72,7 +72,6 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
                 operator: "equals",
               },
             ],
-            defaultSelect: true,
           },
         ],
       };

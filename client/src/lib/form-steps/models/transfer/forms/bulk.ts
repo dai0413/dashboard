@@ -99,7 +99,6 @@ export const bulk: FormStep<ModelType.TRANSFER>[] = [
             key: "this-year",
             label: "今季",
             filterCondition: thisYear,
-            defaultSelect: true,
           },
           {
             key: "last-year",
