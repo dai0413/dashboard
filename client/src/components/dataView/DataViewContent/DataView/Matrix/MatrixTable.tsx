@@ -192,6 +192,8 @@ export const MatrixTable = <T extends Label>({
                     {group.position} ({group.players.length})
                   </td>
 
+                  <td className="border-y border-gray-300 bg-gray-100" />
+                  <td className="border-y border-gray-300 bg-gray-100" />
                   {columns.map((column, i) => (
                     <td
                       key={column.id || i}
