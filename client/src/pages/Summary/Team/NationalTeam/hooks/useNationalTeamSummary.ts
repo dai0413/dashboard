@@ -39,6 +39,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
     readPlayerPlot,
     playerPlotIsLoading,
     formationCounts,
+    quickFilterDatas,
   } = usePlayerPlotPanel();
   const formationPlotPanel = useFormationPlotPanel();
 
@@ -103,6 +104,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
           nationalMatchSeries,
           playerAppearance,
           formationCounts,
+          quickFilterDatas,
         },
         reloadFun: async (filterConditions, sortConditions) =>
           readPlayerPlot(id, filterConditions, sortConditions),

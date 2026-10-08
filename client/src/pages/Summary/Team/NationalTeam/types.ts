@@ -29,6 +29,7 @@ type NationalTeamPanels = {
     nationalMatchSeries: NationalMatchSeries[];
     playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
     formationCounts: FormationCounts[];
+    quickFilterDatas: QuickFilterData[];
   }>;
 
   formationPlot: ServerDepPanelSummary<{

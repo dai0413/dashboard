@@ -4,7 +4,6 @@ import { DataViewContainer } from "../../../../../components/dataView";
 import { ColumnType } from "../../../../../types/table";
 import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 import { ViewMode } from "../../../../../types/types";
-import { quickFilterItems } from "../constants/quickFilterItems";
 
 const filedDefinitions: UIFieldDefinition<NationalMatchSeriesGet>[] = [
   {
@@ -49,7 +48,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         handleFilterSort={async (filterConditions, sortConditions) => {
           await reloadFun(filterConditions, sortConditions);
         }}
-        quickFilterItems={[quickFilterItems]}
+        quickFilterItems={items.quickFilterDatas}
         itemsLoading={isLoading}
         viewModes={[ViewMode.SERIES_MATRIX]}
         defaultViewMode={ViewMode.SERIES_MATRIX}
