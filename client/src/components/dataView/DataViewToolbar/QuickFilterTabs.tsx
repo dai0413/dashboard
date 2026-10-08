@@ -11,7 +11,7 @@ type QuickFilterTab<T = string> = {
 
 type QuickFilterTabsProps<T> = {
   items: QuickFilterTab<T>[];
-  selectedKey?: string;
+  selectedKey?: string | string[];
   onSelect: (item: QuickFilterTab<T>) => void;
   disabled?: boolean;
 };
@@ -32,12 +32,13 @@ const QuickFilterTabs = <T,>({
             key={item.key}
             onClick={() => onSelect(item)}
             className={`cursor-pointer flex items-center p-1 border rounded-md ${
+              (Array.isArray(selectedKey) && selectedKey.includes(item.key)) ||
               item.key === selectedKey
                 ? "bg-blue-500 text-white"
                 : "border-gray-400 text-gray-700"
             }`}
           >
-            <span>{item.label.toUpperCase()}</span>
+            <span>{item.label ? item.label.toUpperCase() : ""}</span>
           </button>
         ))}
       </div>

@@ -12,35 +12,31 @@ import QuickFilterTabs from "./QuickFilterTabs";
 type QuickFilterBarProps = {
   items: QuickFilterItem[];
   loading?: boolean;
+  multi?: boolean;
   reloadFun?: (
     filterConditions: FilterableFieldDefinition[],
     sortConditions: SortableFieldDefinition[],
   ) => Promise<void>;
 };
 
-const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
+const QuickFilterBar = ({
+  items,
+  loading,
+  multi = false,
+  reloadFun,
+}: QuickFilterBarProps) => {
   const { filterConditions, setFilterConditions } = useFilter();
   const { sortConditions } = useSort();
 
-  const [selectTab, setSelectTab] = useState<string | null>(
-    items.find((i) => i.defaultSelect)?.key || null,
-  );
+  const [selectTab, setSelectTab] = useState<string[]>([]);
 
   useEffect(() => {
-    if (loading) return;
+    const defaultSelected = items
+      .filter((i) => i.defaultSelect)
+      .map((i) => i.key);
 
-    const defaultItem = items.find((i) => i.defaultSelect);
-    if (!defaultItem) return;
-
-    setSelectTab((current) =>
-      current === defaultItem.key ? null : defaultItem.key,
-    );
-
-    defaultItem.filterCondition && handleOnClick?.(defaultItem.filterCondition);
-    defaultItem.onClick?.();
-  }, []);
-
-  if (loading) return null;
+    setSelectTab(defaultSelected);
+  }, [items]);
 
   const handleOnClick = async (
     newFilterCondition: FilterableFieldDefinition[],
@@ -52,8 +48,29 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
       removeKey,
     );
     setFilterConditions(newFilterConditions);
-    reloadFun && (await reloadFun(newFilterConditions, sortConditions));
+    await reloadFun?.(newFilterConditions, sortConditions);
   };
+
+  useEffect(() => {
+    if (loading) return;
+
+    const defaultItems = items.filter((i) => i.defaultSelect);
+    if (defaultItems.length === 0) return;
+
+    const initialize = async () => {
+      for (const item of multi ? defaultItems : defaultItems.slice(0, 1)) {
+        if (item.filterCondition) {
+          await handleOnClick(item.filterCondition, item.removeKey);
+        }
+
+        await item.onClick?.();
+      }
+    };
+
+    void initialize();
+  }, []);
+
+  if (loading) return null;
 
   return (
     <QuickFilterTabs
@@ -61,11 +78,31 @@ const QuickFilterBar = ({ items, loading, reloadFun }: QuickFilterBarProps) => {
         ...item,
         value: item.key,
       }))}
-      selectedKey={selectTab ?? undefined}
+      selectedKey={multi ? selectTab : selectTab[0]}
       onSelect={async (item) => {
-        setSelectTab((current) => (current === item.key ? null : item.key));
+        const isSelected = selectTab.includes(item.key);
 
-        if (selectTab !== item.key) {
+        if (multi) {
+          // 複数選択
+          setSelectTab((current) =>
+            isSelected
+              ? current.filter((key) => key !== item.key)
+              : [...current, item.key],
+          );
+
+          await item.onClick?.();
+
+          if (item.filterCondition) {
+            await handleOnClick(item.filterCondition, item.removeKey);
+          }
+
+          return;
+        }
+
+        // 単一選択
+        setSelectTab(isSelected ? [] : [item.key]);
+
+        if (!isSelected) {
           await item.onClick?.();
 
           if (item.filterCondition) {

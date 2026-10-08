@@ -11,6 +11,7 @@ export type QuickFilterItem = {
 
 export type QuickFilterData = {
   name: string;
+  multi?: boolean;
   items: QuickFilterItem[];
 };
 
