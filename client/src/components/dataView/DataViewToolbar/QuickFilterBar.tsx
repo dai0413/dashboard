@@ -11,6 +11,7 @@ import QuickFilterTabs from "./QuickFilterTabs";
 
 type QuickFilterBarProps = {
   items: QuickFilterItem[];
+  selectedKeys?: string[];
   loading?: boolean;
   multi?: boolean;
   reloadFun?: (
@@ -21,6 +22,7 @@ type QuickFilterBarProps = {
 
 const QuickFilterBar = ({
   items,
+  selectedKeys,
   loading,
   multi = false,
   reloadFun,
@@ -31,12 +33,10 @@ const QuickFilterBar = ({
   const [selectTab, setSelectTab] = useState<string[]>([]);
 
   useEffect(() => {
-    const defaultSelected = items
-      .filter((i) => i.defaultSelect)
-      .map((i) => i.key);
-
-    setSelectTab(defaultSelected);
-  }, [items]);
+    if (selectedKeys) {
+      setSelectTab(selectedKeys);
+    }
+  }, [selectedKeys]);
 
   const handleOnClick = async (
     newFilterCondition: FilterableFieldDefinition[],
@@ -54,20 +54,11 @@ const QuickFilterBar = ({
   useEffect(() => {
     if (loading) return;
 
-    const defaultItems = items.filter((i) => i.defaultSelect);
-    if (defaultItems.length === 0) return;
+    const defaultItems = selectedKeys?.flatMap((selectedKey) => {
+      return items.filter((i) => i.key === selectedKey);
+    });
 
-    const initialize = async () => {
-      for (const item of multi ? defaultItems : defaultItems.slice(0, 1)) {
-        if (item.filterCondition) {
-          await handleOnClick(item.filterCondition, item.removeKey);
-        }
-
-        await item.onClick?.();
-      }
-    };
-
-    void initialize();
+    if (!defaultItems || defaultItems.length === 0) return;
   }, []);
 
   if (loading) return null;

@@ -620,6 +620,7 @@ const DataViewToolBar = <Data, Form>({
               items={quickFilterData.items}
               loading={false}
               reloadFun={reloadFun}
+              selectedKeys={quickFilterData.selectedKeys}
               multi={quickFilterData.multi}
             />
           );

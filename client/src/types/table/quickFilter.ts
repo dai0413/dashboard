@@ -5,7 +5,6 @@ export type QuickFilterItem = {
   label: string;
   filterCondition?: FilterableFieldDefinition[];
   onClick?: (() => void) | (() => Promise<void>);
-  defaultSelect?: boolean;
   removeKey?: string[];
 };
 
@@ -13,6 +12,7 @@ export type QuickFilterData = {
   name: string;
   multi?: boolean;
   items: QuickFilterItem[];
+  selectedKeys?: string[];
 };
 
 export enum QuickFilterType {
