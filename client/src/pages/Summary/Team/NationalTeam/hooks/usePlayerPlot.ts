@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   API_PATHS,
   FilterableFieldDefinition,
@@ -454,38 +454,21 @@ export const usePlayerPlotPanel = () => {
     return [dateQuickFilterItems, competitionFilter, formationFilter];
   }, [competitions, selectedCompetitions, formationCounts, selectedFormation]);
 
-  // console.log("quickFilterDatas", quickFilterDatas);
-
   const { groupedPlayers, defaultOpenPositions, topHeaderText } =
     useMemo(() => {
       const positionByFormation = formationCounts.find(
         (f) => f.key === selectedFormation,
       )?.position_formation;
 
-      // console.log("positionByFormation", selectedFormation, positionByFormation);
-
       const positions =
         positionByFormation || displayPositions.map((d) => d.key);
 
-      // console.log("positions", positions);
-
       const positionOptions = getGroupedPositions(positions);
-
-      // console.log("formationCounts", formationCounts);
-
-      // console.log("selectedFormation", selectedFormation);
-
-      // console.log("positionByFormation", positionByFormation);
-
-      // console.log("positions", positions);
-
-      // console.log("positionOptions", positionOptions);
 
       const groupedPlayers = createGroupedPlayers(
         playerStatistics,
         positionOptions,
       );
-      // console.log("groupedPlayers", groupedPlayers);
 
       return {
         groupedPlayers: groupedPlayers,
@@ -500,10 +483,6 @@ export const usePlayerPlotPanel = () => {
       startBaseDate,
       endBaseDate,
     ]);
-
-  useEffect(() => {
-    console.log("selectedFormation", selectedFormation);
-  }, [selectedFormation]);
 
   return {
     nationalCallUp,

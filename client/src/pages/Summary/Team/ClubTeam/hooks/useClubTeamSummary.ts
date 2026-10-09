@@ -81,10 +81,13 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     playerStatistics,
     matches: appearancePlotMatches,
     playerRegistrations: appearancePlotRegistrations,
-    formationCounts,
     appearancePlotIsLoading,
     readAppearancePlot,
-  } = useAppearancePlotPanel();
+    groupedPlayers,
+    defaultOpenPositions,
+    topHeaderText,
+    quickFilterDatas,
+  } = useAppearancePlotPanel(id, seasonDates.normalSeason.seasonRange);
 
   const formationPlotPanel = useFormationPlotPanel();
 
@@ -379,9 +382,11 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         items: {
           playerAppearance,
           playerRegistrations: appearancePlotRegistrations,
-          playerStatistics,
           matches: appearancePlotMatches,
-          formationCounts,
+          groupedPlayers,
+          defaultOpenPositions,
+          topHeaderText,
+          quickFilterDatas,
         },
         isLoading: appearancePlotIsLoading,
         reloadFun: async (filterConditions, sortConditions) =>
