@@ -51,14 +51,14 @@ export const createCallUpCircleInfo = ({
 
     if (new Date(match.date).getTime() > leftAt.getTime()) {
       if (nationalCallup?.status === "withdrawn") {
-        title = `${nationalCallup.left_reason} 離脱`;
+        title = `${nationalCallup.left_reason || ""} 離脱`;
         withdrawn = true;
       }
     }
   }
 
   if (nationalCallup?.status === "declined" && !appearance) {
-    title = `${nationalCallup.left_reason} 辞退`;
+    title = `${nationalCallup.left_reason || ""} 辞退`;
     declined = true;
   }
 
