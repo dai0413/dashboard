@@ -27,12 +27,7 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         viewData={{
           [ViewMode.MATCH_MATRIX]: {
             teamId: id,
-            playerAppearance: items.playerAppearance,
-            playerRegistrations: items.playerRegistrations,
-            matches: items.matches,
-            groupedPlayers: items.groupedPlayers,
-            defaultOpenPositions: items.defaultOpenPositions,
-            topHeaderText: items.topHeaderText,
+            ...items,
           },
         }}
         quickFilterItems={items.quickFilterDatas}
