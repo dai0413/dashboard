@@ -130,6 +130,9 @@ type DataViewContainerProps<T, F> = {
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
       formationCounts: FormationCounts[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
   };
 };

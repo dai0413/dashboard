@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import {
   API_PATHS,
   FilterableFieldDefinition,
@@ -24,6 +24,13 @@ import {
 } from "../../../../../types/models/competition";
 import { QuickFilterData } from "../../../../../types/table";
 import { quickFilterItems as dateQuickFilterItems } from "../constants/quickFilterItems";
+import { getGroupedPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/MatchMatrix/utils";
+import { displayPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/context/displayPositions";
+import {
+  createGroupedPlayers,
+  getAgeLabel,
+} from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
+import { MatrixPlayer } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 
 type SeriesWithCompetition = NationalMatchSeries & {
   competitionIds: string[];
@@ -39,14 +46,20 @@ export const usePlayerPlotPanel = () => {
   >([]);
   const [playerPlotIsLoading, setPlayerPlotIsLoading] =
     useState<boolean>(false);
-  const [playerStatistics, setPlayerStatistics] = useState<PlayerStatistic[]>(
-    [],
-  );
+  const [playerStatistics, setPlayerStatistics] = useState<MatrixPlayer[]>([]);
   const [formationCounts, setFormationCounts] = useState<FormationCounts[]>([]);
   const [competitions, setCompetitions] = useState<CompetitionGet[]>([]);
+
+  const [startBaseDate, setStartBaseDate] = useState<Date | undefined>(
+    undefined,
+  );
+  const [endBaseDate, setEndBaseDate] = useState<Date | undefined>(undefined);
   const [selectedCompetitions, setSelectedCompetitions] = useState<string[]>(
     [],
   );
+  const [selectedFormation, setSelectedFormation] = useState<
+    string | undefined
+  >(undefined);
 
   const [filteredNationalMatchSeries, setfilteredNationalMatchSeries] =
     useState<NationalMatchSeries[]>([]);
@@ -95,10 +108,28 @@ export const usePlayerPlotPanel = () => {
         team: teamId,
       };
 
-      const joined_atObj = filterConditions?.find((f) => f.key === "joined_at");
-      const left_atObj = filterConditions?.find((f) => f.key === "left_at");
+      let startBaseDate: Date | undefined;
+      let endBaseDate: Date | undefined;
 
-      if (!joined_atObj || !left_atObj)
+      filterConditions?.forEach((filterCondition) => {
+        if (filterCondition.key === "joined_at" && filterCondition.value) {
+          const value = filterCondition.value[0];
+
+          if (typeof value !== "boolean") {
+            startBaseDate = new Date(value);
+          }
+        }
+
+        if (filterCondition.key === "left_at" && filterCondition.value) {
+          const value = filterCondition.value[0];
+
+          if (typeof value !== "boolean") {
+            endBaseDate = new Date(value);
+          }
+        }
+      });
+
+      if (!startBaseDate || !endBaseDate)
         return handleReset({
           nationalCallUp: true,
           nationalMatchSeries: true,
@@ -109,6 +140,9 @@ export const usePlayerPlotPanel = () => {
           selectedCompetitions: true,
           filteredNationalMatchSeries: true,
         });
+
+      setStartBaseDate(startBaseDate);
+      setEndBaseDate(endBaseDate);
 
       if (filterConditions && filterConditions.length > 0) {
         readParams.filters = JSON.stringify(
@@ -235,7 +269,20 @@ export const usePlayerPlotPanel = () => {
       });
 
       if (playerStatistic?.success) {
-        setPlayerStatistics(playerStatistic.data);
+        const players = playerStatistic.data.map((playerStatistic) => {
+          return {
+            ...playerStatistic,
+            ageLabel: playerStatistic.player.dob
+              ? getAgeLabel(
+                  new Date(playerStatistic.player.dob),
+                  startBaseDate,
+                  endBaseDate,
+                )
+              : undefined,
+          };
+        });
+
+        setPlayerStatistics(players);
       } else {
         setPlayerStatistics([]);
       }
@@ -307,7 +354,20 @@ export const usePlayerPlotPanel = () => {
     });
 
     if (playerStatistic?.success) {
-      setPlayerStatistics(playerStatistic.data);
+      const players = playerStatistic.data.map((playerStatistic) => {
+        return {
+          ...playerStatistic,
+          ageLabel: playerStatistic.player.dob
+            ? getAgeLabel(
+                new Date(playerStatistic.player.dob),
+                startBaseDate,
+                endBaseDate,
+              )
+            : undefined,
+        };
+      });
+
+      setPlayerStatistics(players);
     } else {
       setPlayerStatistics([]);
     }
@@ -332,7 +392,7 @@ export const usePlayerPlotPanel = () => {
   };
 
   const quickFilterDatas: QuickFilterData[] = useMemo(() => {
-    const competitionFilter = {
+    const competitionFilter: QuickFilterData = {
       name: "competitions",
       multi: true,
       selectedKeys: selectedCompetitions,
@@ -377,8 +437,73 @@ export const usePlayerPlotPanel = () => {
       }),
     };
 
-    return [dateQuickFilterItems, competitionFilter];
-  }, [competitions, selectedCompetitions]);
+    const formationFilter: QuickFilterData = {
+      name: "formations",
+      selectedKeys: selectedFormation ? [selectedFormation] : undefined,
+      items: formationCounts.map((formationCount) => {
+        return {
+          key: formationCount.key,
+          label: `${formationCount.name}  (${formationCount.count})`,
+          onClick: () => {
+            setSelectedFormation(formationCount.key);
+          },
+        };
+      }),
+    };
+
+    return [dateQuickFilterItems, competitionFilter, formationFilter];
+  }, [competitions, selectedCompetitions, formationCounts, selectedFormation]);
+
+  // console.log("quickFilterDatas", quickFilterDatas);
+
+  const { groupedPlayers, defaultOpenPositions, topHeaderText } =
+    useMemo(() => {
+      const positionByFormation = formationCounts.find(
+        (f) => f.key === selectedFormation,
+      )?.position_formation;
+
+      // console.log("positionByFormation", selectedFormation, positionByFormation);
+
+      const positions =
+        positionByFormation || displayPositions.map((d) => d.key);
+
+      // console.log("positions", positions);
+
+      const positionOptions = getGroupedPositions(positions);
+
+      // console.log("formationCounts", formationCounts);
+
+      // console.log("selectedFormation", selectedFormation);
+
+      // console.log("positionByFormation", positionByFormation);
+
+      // console.log("positions", positions);
+
+      // console.log("positionOptions", positionOptions);
+
+      const groupedPlayers = createGroupedPlayers(
+        playerStatistics,
+        positionOptions,
+      );
+      // console.log("groupedPlayers", groupedPlayers);
+
+      return {
+        groupedPlayers: groupedPlayers,
+        defaultOpenPositions: new Set([...positions]),
+        topHeaderText: `${startBaseDate?.toLocaleDateString()} → ${endBaseDate?.toLocaleDateString()}`,
+      };
+    }, [
+      playerStatistics,
+      formationCounts,
+      selectedFormation,
+      displayPositions,
+      startBaseDate,
+      endBaseDate,
+    ]);
+
+  useEffect(() => {
+    console.log("selectedFormation", selectedFormation);
+  }, [selectedFormation]);
 
   return {
     nationalCallUp,
@@ -389,5 +514,8 @@ export const usePlayerPlotPanel = () => {
     formationCounts,
     quickFilterDatas,
     readPlayerPlot,
+    groupedPlayers,
+    defaultOpenPositions,
+    topHeaderText,
   };
 };

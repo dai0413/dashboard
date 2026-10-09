@@ -11,15 +11,14 @@ import { NationalCallup } from "../../../../../../types/models/national-callup";
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
 import { NationalMatchSeries } from "../../../../../../types/models/national-match-series";
 import MatrixCell from "../MatrixCell/MarixCell";
-import { FormationCounts } from "../../../../../../pages/Summary/Team/ClubTeam/types";
-import { MatrixPlayer } from "../type";
+import { GroupedPlayers } from "../type";
 
 type SeriesMatrixParams = {
-  matrixPlayers: MatrixPlayer[];
+  groupedPlayers: GroupedPlayers[];
   nationalCallUp: NationalCallup[];
   nationalMatchSeries: NationalMatchSeries[];
   playerAppearance: PlayerAppearanceGet[];
-  formationCounts: FormationCounts[];
+  defaultOpenPositions: Set<string>;
   topHeaderText?: string;
 };
 
@@ -28,11 +27,11 @@ type SeriesColumn = Label & {
 };
 
 const SeriesMatrix = ({
-  matrixPlayers,
+  groupedPlayers,
   nationalCallUp,
   nationalMatchSeries,
   playerAppearance,
-  formationCounts,
+  defaultOpenPositions,
   topHeaderText,
 }: SeriesMatrixParams) => {
   const appearanceMap = useMemo(
@@ -77,8 +76,8 @@ const SeriesMatrix = ({
 
   return (
     <MatrixTable
-      formationCounts={formationCounts}
-      matrixPlayers={matrixPlayers}
+      defaultOpenPositions={defaultOpenPositions}
+      groupedPlayers={groupedPlayers}
       columns={columns}
       topHeaderText={topHeaderText}
       renderHeader={(column) => (

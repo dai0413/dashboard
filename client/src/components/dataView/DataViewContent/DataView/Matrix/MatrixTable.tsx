@@ -1,17 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Label } from "@dai0413/myorg-shared";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
-import { createGroupedPlayers } from "./utils";
-import { FormationCounts } from "../../../../../pages/Summary/Team/ClubTeam/types";
-import { getGroupedPositions } from "./MatchMatrix/utils";
-import { displayPositions } from "./context/displayPositions";
-import QuickFilterTabs from "../../../DataViewToolbar/QuickFilterTabs";
-import { MatrixPlayer } from "./type";
+import { GroupedPlayers, MatrixPlayer } from "./type";
 
 type MatrixTableProps<T extends Label> = {
-  formationCounts: FormationCounts[];
-  matrixPlayers: MatrixPlayer[];
+  defaultOpenPositions: Set<string>;
+  groupedPlayers: GroupedPlayers[];
 
   columns: T[];
 
@@ -30,39 +25,20 @@ type MatrixTableProps<T extends Label> = {
 };
 
 export const MatrixTable = <T extends Label>({
-  formationCounts,
-  matrixPlayers,
+  defaultOpenPositions,
+  groupedPlayers,
   topHeaderText,
   columns,
   renderHeader,
   renderCell,
 }: MatrixTableProps<T>) => {
-  const [selectedFormation, setSelectedFormation] =
-    useState<FormationCounts | null>(formationCounts[0]);
-
   const [openPositions, setOpenPositions] = useState<Set<string>>(
-    new Set(
-      formationCounts.length > 0
-        ? [...formationCounts[0].position_formation.map((p) => p), "no-pos"]
-        : displayPositions.map((d) => d.key),
-    ),
+    new Set(defaultOpenPositions),
   );
 
-  const positionOptions = useMemo(() => {
-    return getGroupedPositions(
-      selectedFormation
-        ? selectedFormation.position_formation
-        : displayPositions.map((d) => d.key),
-    );
-  }, [selectedFormation]);
-
-  const groupedPlayers = useMemo(() => {
-    return createGroupedPlayers(matrixPlayers, positionOptions);
-  }, [selectedFormation, matrixPlayers, positionOptions]);
-
   useEffect(() => {
-    setOpenPositions(new Set([...positionOptions.map((p) => p.key), "no-pos"]));
-  }, [positionOptions]);
+    setOpenPositions(new Set([...defaultOpenPositions, "no-pos"]));
+  }, [defaultOpenPositions]);
 
   const onTogglePosition = (key: string) => {
     setOpenPositions((prev) => {
@@ -78,34 +54,8 @@ export const MatrixTable = <T extends Label>({
     });
   };
 
-  const quickFilterItems = useMemo(() => {
-    const items = formationCounts.map((formationCount) => {
-      return {
-        key: formationCount.key,
-        value: formationCount,
-        label: `${formationCount.name}  (${formationCount.count})`,
-        onclick: setSelectedFormation,
-      };
-    });
-
-    return items;
-  }, [formationCounts]);
-
   return (
     <>
-      <QuickFilterTabs
-        items={quickFilterItems}
-        selectedKey={selectedFormation?.key}
-        onSelect={(item) => {
-          const nextItem = quickFilterItems.find(
-            (quickFilterItem) => quickFilterItem.key === item.key,
-          )?.value;
-          if (!nextItem) return;
-          setSelectedFormation((current) =>
-            current === nextItem ? null : nextItem,
-          );
-        }}
-      />
       <div className="max-h-[80vh] max-w-full overflow-auto rounded-md border border-gray-300">
         <table className="border-collapse">
           <thead>

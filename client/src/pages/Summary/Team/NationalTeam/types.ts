@@ -30,6 +30,9 @@ type NationalTeamPanels = {
     playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
     formationCounts: FormationCounts[];
     quickFilterDatas: QuickFilterData[];
+    groupedPlayers: GroupedPlayers[];
+    defaultOpenPositions: Set<string>;
+    topHeaderText: string;
   }>;
 
   formationPlot: ServerDepPanelSummary<{

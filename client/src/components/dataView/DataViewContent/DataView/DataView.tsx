@@ -74,6 +74,9 @@ type DataViewProps<T> = {
       formationCounts: FormationCounts[];
       startBaseDate?: Date;
       endBaseDate?: Date;
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
   };
 };
@@ -178,40 +181,6 @@ const DataView = <T,>({
       topHeaderText: `${startBaseDate?.toLocaleDateString()}時点`,
     };
   }, [matchMatrixData]);
-
-  const seriesMatrixData = viewData[ViewMode.SERIES_MATRIX];
-
-  const {
-    matrixPlayers: seriesMatrixPlayers,
-    topHeaderText: seriesTopHeaderText,
-  } = useMemo(() => {
-    if (!seriesMatrixData) {
-      return {
-        matrixPlayers: [],
-        topHeaderText: undefined,
-      };
-    }
-
-    const { startBaseDate, endBaseDate, playerStatistics } = seriesMatrixData;
-
-    const players = playerStatistics.map((playerStatistic) => {
-      return {
-        ...playerStatistic,
-        ageLabel: playerStatistic.player.dob
-          ? getAgeLabel(
-              new Date(playerStatistic.player.dob),
-              startBaseDate,
-              endBaseDate,
-            )
-          : undefined,
-      };
-    });
-
-    return {
-      matrixPlayers: players,
-      topHeaderText: `${startBaseDate?.toLocaleDateString()} → ${endBaseDate?.toLocaleDateString()}`,
-    };
-  }, [seriesMatrixData]);
 
   if (
     viewMode === ViewMode.TABLE &&
@@ -322,17 +291,19 @@ const DataView = <T,>({
 
   if (viewMode === ViewMode.SERIES_MATRIX && viewData[ViewMode.SERIES_MATRIX]) {
     const {
+      defaultOpenPositions,
+      groupedPlayers,
       nationalCallUp,
       nationalMatchSeries,
       playerAppearance,
-      formationCounts,
+      topHeaderText,
     } = viewData[ViewMode.SERIES_MATRIX];
 
     return (
       <SeriesMatrix
-        topHeaderText={seriesTopHeaderText}
-        formationCounts={formationCounts}
-        matrixPlayers={seriesMatrixPlayers}
+        topHeaderText={topHeaderText}
+        defaultOpenPositions={defaultOpenPositions}
+        groupedPlayers={groupedPlayers}
         nationalCallUp={nationalCallUp}
         nationalMatchSeries={nationalMatchSeries}
         playerAppearance={playerAppearance}

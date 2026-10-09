@@ -81,6 +81,9 @@ type Props<T> = {
       formationCounts: FormationCounts[];
       startBaseDate?: Date;
       endBaseDate?: Date;
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
   };
 };

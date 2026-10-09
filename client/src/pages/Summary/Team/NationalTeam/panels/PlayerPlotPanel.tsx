@@ -59,6 +59,9 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
             nationalMatchSeries: items.nationalMatchSeries,
             playerAppearance: items.playerAppearance,
             formationCounts: items.formationCounts,
+            groupedPlayers: items.groupedPlayers,
+            defaultOpenPositions: items.defaultOpenPositions,
+            topHeaderText: items.topHeaderText,
           },
         }}
       />
