@@ -93,12 +93,10 @@ const QuickFilterBar = ({
         // 単一選択
         setSelectTab(isSelected ? [] : [item.key]);
 
-        if (!isSelected) {
-          await item.onClick?.();
+        await item.onClick?.();
 
-          if (item.filterCondition) {
-            await handleOnClick(item.filterCondition, item.removeKey);
-          }
+        if (item.filterCondition) {
+          await handleOnClick(item.filterCondition, item.removeKey);
         }
       }}
     />
