@@ -12,9 +12,8 @@ import { APP_ROUTES } from "../../../../../../lib/appRoutes";
 import { MatchGet } from "../../../../../../types/models/match";
 import { PlayerRegistrationHistoryGet } from "../../../../../../types/models/player-registration-history";
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
-import { FormationCounts } from "../../../../../../pages/Summary/Team/ClubTeam/types";
 import MatrixCell from "../MatrixCell/MarixCell";
-import { MatrixPlayer } from "../type";
+import { GroupedPlayers } from "../type";
 
 type MatchColumn = Label & {
   match: MatchGet;
@@ -23,21 +22,21 @@ type MatchColumn = Label & {
 type MatchMatrixParams = {
   teamId: string;
   topHeaderText?: string;
-  matrixPlayers: MatrixPlayer[];
   playerRegistrations: PlayerRegistrationHistoryGet[];
   matches: MatchGet[];
   playerAppearance: PlayerAppearanceGet[];
-  formationCounts: FormationCounts[];
+  defaultOpenPositions: Set<string>;
+  groupedPlayers: GroupedPlayers[];
 };
 
 const MatchMatrix = ({
   teamId,
-  matrixPlayers,
   topHeaderText,
   playerRegistrations,
   matches,
   playerAppearance,
-  formationCounts,
+  defaultOpenPositions,
+  groupedPlayers,
 }: MatchMatrixParams) => {
   const appearanceMap = useMemo(
     () => createAppearanceMap(playerAppearance),
@@ -71,8 +70,8 @@ const MatchMatrix = ({
     <MatrixTable
       columns={columns}
       topHeaderText={topHeaderText}
-      matrixPlayers={matrixPlayers}
-      formationCounts={formationCounts}
+      defaultOpenPositions={defaultOpenPositions}
+      groupedPlayers={groupedPlayers}
       renderHeader={(column) => (
         <Link
           to={`${APP_ROUTES.MATCH_SUMMARY}/${column.id}`}

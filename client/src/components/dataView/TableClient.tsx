@@ -127,11 +127,12 @@ type TableClientProps<T, F> = {
     };
     [ViewMode.MATCH_MATRIX]?: {
       teamId: string;
-      playerStatistics: PlayerStatistic[];
       playerRegistrations: PlayerRegistrationGet[];
       matches: MatchGet[];
       playerAppearance: PlayerAppearanceGet[];
-      formationCounts: FormationCounts[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];
@@ -139,6 +140,9 @@ type TableClientProps<T, F> = {
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
       formationCounts: FormationCounts[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
   };
   defaultViewMode?: ViewMode;

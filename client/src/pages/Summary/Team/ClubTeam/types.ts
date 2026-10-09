@@ -9,6 +9,7 @@ import { MatchGet } from "../../../../types/models/match";
 import { FormationGet } from "../../../../types/models/formation";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
+import { QuickFilterData } from "../../../../types/table";
 
 export const CLUB_TEAM_TAB = {
   PLAYER: "player",
@@ -69,11 +70,13 @@ type ClubTeamPanels = {
   }>;
 
   appearancePlot: ServerDepPanelSummary<{
-    playerStatistics: PlayerStatistic[];
     playerAppearance: PlayerAppearanceGet[];
     playerRegistrations: PlayerRegistrationGet[];
     matches: MatchGet[];
-    formationCounts: FormationCounts[];
+    groupedPlayers: GroupedPlayers[];
+    defaultOpenPositions: Set<string>;
+    topHeaderText: string;
+    quickFilterDatas: QuickFilterData[];
   }>;
 
   playerStatistics: ServerDepPanelSummary<PlayerStatistic[]>;

@@ -67,11 +67,12 @@ type Props<T> = {
     };
     [ViewMode.MATCH_MATRIX]?: {
       teamId: string;
-      playerStatistics: PlayerStatistic[];
       playerRegistrations: PlayerRegistrationGet[];
       matches: MatchGet[];
       playerAppearance: PlayerAppearanceGet[];
-      formationCounts: FormationCounts[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];
@@ -79,8 +80,6 @@ type Props<T> = {
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
       formationCounts: FormationCounts[];
-      startBaseDate?: Date;
-      endBaseDate?: Date;
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;

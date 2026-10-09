@@ -23,7 +23,6 @@ import { PlayerAppearanceGet } from "../../../../types/models/player-appearance"
 import { MatchMatrix, SeriesMatrix } from "./Matrix";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
-import { getAgeLabel } from "./Matrix/utils";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { PositionPlayers } from "../../../formation/PositionPlayers";
 import { GroupedPlayers } from "./Matrix/type";
@@ -60,11 +59,12 @@ type DataViewProps<T> = {
     };
     [ViewMode.MATCH_MATRIX]?: {
       teamId: string;
-      playerStatistics: PlayerStatistic[];
       playerRegistrations: PlayerRegistrationGet[];
       matches: MatchGet[];
       playerAppearance: PlayerAppearanceGet[];
-      formationCounts: FormationCounts[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];
@@ -72,8 +72,6 @@ type DataViewProps<T> = {
       nationalMatchSeries: NationalMatchSeries[];
       playerAppearance: PlayerAppearanceGet[];
       formationCounts: FormationCounts[];
-      startBaseDate?: Date;
-      endBaseDate?: Date;
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
@@ -128,59 +126,6 @@ const DataView = <T,>({
     () => headers?.filter((h) => columnVisibility[h.key]),
     [headers, columnVisibility],
   );
-
-  const matchMatrixData = viewData[ViewMode.MATCH_MATRIX];
-
-  const {
-    matrixPlayers: matchMatrixPlayers,
-    topHeaderText: matchTopHeaderText,
-  } = useMemo(() => {
-    if (!matchMatrixData) {
-      return {
-        matrixPlayers: [],
-        topHeaderText: undefined,
-      };
-    }
-
-    const { matches, playerStatistics, playerRegistrations } = matchMatrixData;
-
-    const dates = matches
-      .map((match) => match.date)
-      .filter((date): date is Date => date !== undefined);
-
-    const startBaseDate =
-      dates.length > 0
-        ? new Date(Math.min(...dates.map((d) => d.getTime())))
-        : undefined;
-
-    const players = playerStatistics.map((playerStatistic) => {
-      const targetRegister = playerRegistrations.find(
-        (p) => p.player.id === playerStatistic.player._id,
-      );
-
-      let note: string | undefined;
-
-      if (targetRegister?.isTypeTwo) note = "2種";
-      if (targetRegister?.isSpecialDesignation) note = "特指";
-
-      return {
-        ...playerStatistic,
-        ageLabel: playerStatistic.player.dob
-          ? getAgeLabel(
-              new Date(playerStatistic.player.dob),
-              startBaseDate,
-              undefined,
-            )
-          : undefined,
-        note,
-      };
-    });
-
-    return {
-      matrixPlayers: players,
-      topHeaderText: `${startBaseDate?.toLocaleDateString()}時点`,
-    };
-  }, [matchMatrixData]);
 
   if (
     viewMode === ViewMode.TABLE &&
@@ -273,18 +218,20 @@ const DataView = <T,>({
       playerAppearance,
       playerRegistrations,
       matches,
-      formationCounts,
+      defaultOpenPositions,
+      groupedPlayers,
+      topHeaderText,
     } = viewData[ViewMode.MATCH_MATRIX];
 
     return (
       <MatchMatrix
         teamId={teamId}
-        topHeaderText={matchTopHeaderText}
-        matrixPlayers={matchMatrixPlayers}
+        topHeaderText={topHeaderText}
         playerAppearance={playerAppearance}
         playerRegistrations={playerRegistrations}
         matches={matches}
-        formationCounts={formationCounts}
+        defaultOpenPositions={defaultOpenPositions}
+        groupedPlayers={groupedPlayers}
       />
     );
   }

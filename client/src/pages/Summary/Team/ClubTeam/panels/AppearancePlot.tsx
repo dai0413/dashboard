@@ -14,7 +14,7 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
     <>
       <div className="text-gray-600">{text}</div>
       <DataViewContainer
-        totalCount={items.playerStatistics.length}
+        totalCount={items.groupedPlayers.length}
         reloadFun={async (filterConditions, sortConditions) =>
           await reloadFun(filterConditions, sortConditions)
         }
@@ -27,13 +27,15 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         viewData={{
           [ViewMode.MATCH_MATRIX]: {
             teamId: id,
-            playerStatistics: items.playerStatistics,
             playerAppearance: items.playerAppearance,
             playerRegistrations: items.playerRegistrations,
             matches: items.matches,
-            formationCounts: items.formationCounts,
+            groupedPlayers: items.groupedPlayers,
+            defaultOpenPositions: items.defaultOpenPositions,
+            topHeaderText: items.topHeaderText,
           },
         }}
+        quickFilterItems={items.quickFilterDatas}
       />
     </>
   );

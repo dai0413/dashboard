@@ -118,11 +118,12 @@ type DataViewContainerProps<T, F> = {
     };
     [ViewMode.MATCH_MATRIX]?: {
       teamId: string;
-      playerStatistics: PlayerStatistic[];
       playerRegistrations: PlayerRegistrationGet[];
       matches: MatchGet[];
       playerAppearance: PlayerAppearanceGet[];
-      formationCounts: FormationCounts[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];
@@ -212,34 +213,6 @@ const Container = <K extends Record<string, unknown>, F>({
     pageNum,
     newPageNum,
   ]);
-
-  const { startBaseDate, endBaseDate } = useMemo(() => {
-    let startBaseDate: Date | undefined;
-    let endBaseDate: Date | undefined;
-
-    filterConditions?.forEach((filterCondition) => {
-      if (filterCondition.key === "joined_at" && filterCondition.value) {
-        const value = filterCondition.value[0];
-
-        if (typeof value !== "boolean") {
-          startBaseDate = new Date(value);
-        }
-      }
-
-      if (filterCondition.key === "left_at" && filterCondition.value) {
-        const value = filterCondition.value[0];
-
-        if (typeof value !== "boolean") {
-          endBaseDate = new Date(value);
-        }
-      }
-    });
-
-    return {
-      startBaseDate,
-      endBaseDate,
-    };
-  }, [filterConditions]);
 
   const onPageChange = useCallback(
     async (
@@ -435,14 +408,6 @@ const Container = <K extends Record<string, unknown>, F>({
           ...viewData,
           [ViewMode.TILE]: datas,
           [ViewMode.TABLE]: datas,
-          [ViewMode.SERIES_MATRIX]:
-            viewData && viewData[ViewMode.SERIES_MATRIX]
-              ? {
-                  ...viewData[ViewMode.SERIES_MATRIX],
-                  startBaseDate,
-                  endBaseDate,
-                }
-              : undefined,
         }}
       />
     </div>
