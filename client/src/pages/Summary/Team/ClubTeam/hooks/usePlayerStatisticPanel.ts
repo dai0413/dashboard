@@ -1,30 +1,18 @@
 import { useCallback, useMemo, useState } from "react";
 import {
-  API_PATHS,
   FilterableFieldDefinition,
   SortableFieldDefinition,
-  sortByPosition,
 } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import { api } from "../../../../../context/api-context";
-import { ModelType } from "../../../../../types/models";
-import { createItemBase, readItemsBase } from "../../../../../lib/api";
-import {
-  PlayerAppearance,
-  PlayerAppearanceGet,
-} from "../../../../../types/models/player-appearance";
-import { convert } from "../../../../../lib/convert/DBtoGetted";
-import { Match, MatchGet } from "../../../../../types/models/match";
-import { PlayerRegistration } from "../../../../../types/models/player-registration";
+import { MatchGet } from "../../../../../types/models/match";
 import { FormationCounts } from "../types";
-import { getFormationCounts } from "../../../../../utils/data";
 import { QuickFilterData } from "../../../../../types/table";
 import {
-  convertPlayerStatistics,
-  createPlayerStatisticsParams,
   filterMatchesByCompetitions,
   toggleCompetition,
 } from "../utils/appearancePlotPanelUtils";
+import { loadPlayerStatistics } from "../utils/loadPlayerStatistics";
+import { loadTeamMatches } from "../utils/loadTeamMatches";
 
 type UsePlayerStatisticPanel = {
   reloadFun: (
@@ -58,68 +46,6 @@ export const usePlayerStatisticPanel = (
     [],
   );
 
-  const loadPlayerStatistics = useCallback(
-    async (teamId: string, date: string[], matchIds: string[]) => {
-      // フォーメーション集計
-      const formationCounts = await getFormationCounts(teamId, matchIds);
-      setFormationCounts(formationCounts ?? []);
-
-      // 出場記録
-      let newPlayerAppearance: PlayerAppearanceGet[] = [];
-
-      if (matchIds.length > 0) {
-        const playerAppearanceRes = await readItemsBase<PlayerAppearance[]>({
-          apiInstance: api,
-          backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
-          params: { getAll: true, team: teamId, match: matchIds },
-        });
-
-        if (playerAppearanceRes?.data) {
-          newPlayerAppearance = convert(
-            ModelType.PLAYER_APPEARANCE,
-            playerAppearanceRes.data,
-          );
-        }
-      }
-
-      // 登録情報
-      const playerRegistrationRes = await readItemsBase<PlayerRegistration[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.PLAYER_REGISTRATION.ROOT,
-        params: { getAll: true, team: teamId, date },
-      });
-
-      const newPlayerRegistrations = playerRegistrationRes?.data
-        ? convert(ModelType.PLAYER_REGISTRATION, playerRegistrationRes.data)
-        : [];
-
-      const params = createPlayerStatisticsParams(
-        newPlayerAppearance,
-        newPlayerRegistrations,
-        teamId,
-        matchIds,
-      );
-
-      // 選手統計
-      const playerStatistic = await createItemBase<PlayerStatistic[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
-        data: params,
-      });
-
-      if (!playerStatistic?.success) return;
-
-      const players = convertPlayerStatistics(
-        playerStatistic.data,
-        newPlayerRegistrations,
-        date,
-      );
-
-      setPlayerStatistics(sortByPosition(players, "mainPosition"));
-    },
-    [teamId, date],
-  );
-
   const reloadFun = useCallback(
     async (
       _filterConditions: FilterableFieldDefinition[],
@@ -130,35 +56,21 @@ export const usePlayerStatisticPanel = (
       setIsLoading(true);
 
       try {
-        const matchRes = await readItemsBase<Match[]>({
-          apiInstance: api,
-          backendRoute: API_PATHS.MATCH.ROOT,
-          params: { getAll: true, team: teamId, date },
-        });
-
-        const rawMatches = matchRes?.data ?? [];
-        const newMatches = convert(ModelType.MATCH, rawMatches);
-
-        setMatches(newMatches);
-
-        const competitions = new Map(
-          rawMatches.map((match) => {
-            const competition = convert(
-              ModelType.COMPETITION,
-              match.competition,
-            );
-
-            return [competition._id, competition];
-          }),
+        const { matches, competitionIds, matchIds } = await loadTeamMatches(
+          teamId,
+          date,
         );
 
-        const newCompetitions = [...competitions.values()];
+        setMatches(matches);
+        setSelectedCompetitions(competitionIds);
 
-        setSelectedCompetitions(newCompetitions.map((c) => c._id));
-
-        const matchIds = [...new Set(rawMatches.map((m) => m._id))];
-
-        await loadPlayerStatistics(teamId, date, matchIds);
+        await loadPlayerStatistics({
+          teamId,
+          date,
+          matchIds,
+          setFormationCounts,
+          setPlayerStatistics,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -182,11 +94,13 @@ export const usePlayerStatisticPanel = (
       setIsLoading(true);
 
       try {
-        await loadPlayerStatistics(
+        await loadPlayerStatistics({
           teamId,
           date,
-          filtered.map((match) => match._id),
-        );
+          matchIds: filtered.map((match) => match._id),
+          setFormationCounts,
+          setPlayerStatistics,
+        });
       } finally {
         setIsLoading(false);
       }
