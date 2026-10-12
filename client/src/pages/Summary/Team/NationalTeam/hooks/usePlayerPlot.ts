@@ -463,12 +463,12 @@ export const usePlayerPlotPanel = () => {
       const positions =
         positionByFormation || displayPositions.map((d) => d.key);
 
-      const positionOptions = getGroupedPositions(positions);
+      const groupedPositions = getGroupedPositions(positions);
 
-      const groupedPlayers = createGroupedPlayers(
+      const groupedPlayers = createGroupedPlayers({
         playerStatistics,
-        positionOptions,
-      );
+        groupedPositions,
+      });
 
       return {
         groupedPlayers: groupedPlayers,

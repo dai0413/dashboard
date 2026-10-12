@@ -189,10 +189,13 @@ export const useAppearancePlotPanel = (
       const positions =
         positionByFormation ?? displayPositions.map((position) => position.key);
 
-      const positionOptions = getGroupedPositions(positions);
+      const groupedPositions = getGroupedPositions(positions);
 
       return {
-        groupedPlayers: createGroupedPlayers(playerStatistics, positionOptions),
+        groupedPlayers: createGroupedPlayers({
+          playerStatistics,
+          groupedPositions,
+        }),
         defaultOpenPositions: new Set(positions),
         topHeaderText: createTopHeaderText(date),
       };

@@ -99,10 +99,64 @@ const getGroupedPosition = (
   return getNearestPosition(playerPositions, allPositions);
 };
 
-export const createGroupedPlayers = (
-  playerStatistics: MatrixPlayer[],
-  groupedPositions: DisplayPosition[],
-): GroupedPlayers[] => {
+const getGroupedPositions = (
+  player: PlayerStatistic,
+  allPositions: string[],
+): string[] => {
+  const playerPositions = [
+    player.mainPosition,
+    ...Object.keys(player.positionCounts),
+  ].filter((p): p is string => typeof p === "string");
+
+  // 重複を除去
+  const uniquePositions = [...new Set(playerPositions)];
+
+  // 1. groupedPositions に直接一致するポジションをすべて取得
+  const matchedPositions = uniquePositions.filter((position) =>
+    allPositions.includes(position),
+  );
+
+  if (matchedPositions.length > 0) {
+    return matchedPositions;
+  }
+
+  // 2. R/Lなしのポジションに寄せる
+  for (const position of uniquePositions) {
+    const basePosition = position.replace(/^[RL]/, "");
+
+    if (allPositions.includes(basePosition)) {
+      return [basePosition];
+    }
+  }
+
+  // 3. R/Lを付けたポジションを探す
+  for (const position of uniquePositions) {
+    if (allPositions.includes(`R${position}`)) {
+      return [`R${position}`];
+    }
+
+    if (allPositions.includes(`L${position}`)) {
+      return [`L${position}`];
+    }
+  }
+
+  // 4. 最も近いポジションを1つだけ返す
+  const nearestPosition = getNearestPosition(uniquePositions, allPositions);
+
+  return nearestPosition ? [nearestPosition] : [];
+};
+
+type CreateGroupedPlayersParams = {
+  playerStatistics: MatrixPlayer[];
+  groupedPositions: DisplayPosition[];
+  multiPosition?: boolean;
+};
+
+export const createGroupedPlayers = ({
+  playerStatistics,
+  groupedPositions,
+  multiPosition = false,
+}: CreateGroupedPlayersParams): GroupedPlayers[] => {
   const uniquePlayerStatistics = Array.from(
     new Map(playerStatistics.map((v) => [v.player._id, v])).values(),
   );
@@ -112,7 +166,11 @@ export const createGroupedPlayers = (
   const playerPositionMap = new Map(
     uniquePlayerStatistics.map((player) => [
       player.player._id,
-      getGroupedPosition(player, allPositions),
+      multiPosition
+        ? getGroupedPositions(player, allPositions)
+        : [getGroupedPosition(player, allPositions)].filter(
+            (position): position is string => !!position,
+          ),
     ]),
   );
 
@@ -120,8 +178,8 @@ export const createGroupedPlayers = (
     ...group,
     players: uniquePlayerStatistics
       .filter((player) =>
-        group.positions.includes(
-          playerPositionMap.get(player.player._id) ?? "",
+        group.positions.some((position) =>
+          playerPositionMap.get(player.player._id)?.includes(position),
         ),
       )
       .sort(sortDob),
@@ -132,7 +190,7 @@ export const createGroupedPlayers = (
       key: "no-pos",
       position: "データなし",
       players: uniquePlayerStatistics
-        .filter((player) => !playerPositionMap.get(player.player._id))
+        .filter((player) => !playerPositionMap.get(player.player._id)?.length)
         .sort(sortDob),
       positions: [],
     },

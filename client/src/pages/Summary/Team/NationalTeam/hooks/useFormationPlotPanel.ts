@@ -213,16 +213,16 @@ export const useFormationPlotPanel = () => {
         "mainPosition",
       );
 
-      const positionOptions = getGroupedPositions(
+      const groupedPositions = getGroupedPositions(
         selectedFormation
           ? selectedFormation.position_formation
           : displayPositions.map((d) => d.key),
       );
 
-      const newGroupedPlayers = createGroupedPlayers(
+      const newGroupedPlayers = createGroupedPlayers({
         playerStatistics,
-        positionOptions,
-      );
+        groupedPositions,
+      });
 
       setGroupedPlayers(newGroupedPlayers);
 
