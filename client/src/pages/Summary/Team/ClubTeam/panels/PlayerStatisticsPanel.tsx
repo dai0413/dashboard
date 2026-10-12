@@ -70,14 +70,15 @@ const PlayerStatisticsPanel = ({
         fieldDefinitions={fieldDefinitions}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{
-          [ViewMode.TABLE]: items,
-          [ViewMode.TILE]: items,
+          [ViewMode.TABLE]: items.playerStatistics,
+          [ViewMode.TILE]: items.playerStatistics,
         }}
-        totalCount={items.length}
+        totalCount={items.playerStatistics.length}
         reloadFun={reloadFun}
         filterField={fieldDefinitions?.filter(isFilterable)}
         sortField={fieldDefinitions?.filter(isSortable)}
         initialData={{ formData: { team: id } }}
+        quickFilterItems={items.quickFilterDatas}
         linkField={[
           {
             field: "player",

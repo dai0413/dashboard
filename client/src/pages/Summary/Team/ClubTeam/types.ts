@@ -79,7 +79,10 @@ type ClubTeamPanels = {
     quickFilterDatas: QuickFilterData[];
   }>;
 
-  playerStatistics: ServerDepPanelSummary<PlayerStatistic[]>;
+  playerStatistics: ServerDepPanelSummary<{
+    playerStatistics: PlayerStatistic[];
+    quickFilterDatas: QuickFilterData[];
+  }>;
 
   formationPlot: ServerDepPanelSummary<{
     groupedPlayers: GroupedPlayers[];

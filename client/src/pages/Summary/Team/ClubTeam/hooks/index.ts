@@ -14,3 +14,4 @@ export { useTeamCompetitionSeasonPanel } from "./useTeamCompetitionSeason";
 export { useStatsLPanel } from "./useStatsLPanel";
 export { useAppearancePlotPanel } from "./useAppearancePlotPanel";
 export { useFormationPlotPanel } from "./useFormationPlotPanel";
+export { usePlayerStatisticPanel } from "./usePlayerStatisticPanel";

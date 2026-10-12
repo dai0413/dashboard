@@ -23,6 +23,7 @@ import {
   useStaffRegistrationPanel,
   useAppearancePlotPanel,
   useFormationPlotPanel,
+  usePlayerStatisticPanel,
 } from "./index";
 import { CLUB_TEAM_TAB, ClubTeamTab, UseClubTeamSummary } from "../types";
 
@@ -76,20 +77,15 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
   const { teamCompetitionSeason, readTeamCompetitionSeason, seasonOptions } =
     useTeamCompetitionSeasonPanel();
 
-  const {
-    playerAppearance,
-    playerStatistics,
-    matches: appearancePlotMatches,
-    playerRegistrations: appearancePlotRegistrations,
-    appearancePlotIsLoading,
-    readAppearancePlot,
-    groupedPlayers,
-    defaultOpenPositions,
-    topHeaderText,
-    quickFilterDatas,
-  } = useAppearancePlotPanel(id, seasonDates.normalSeason.seasonRange);
-
+  const appearancePlotPanel = useAppearancePlotPanel(
+    id,
+    seasonDates.normalSeason.seasonRange,
+  );
   const formationPlotPanel = useFormationPlotPanel();
+  const playerStatisticPanel = usePlayerStatisticPanel(
+    id,
+    seasonDates.normalSeason.seasonRange,
+  );
 
   // id変更, season変更両方で読み込む
   const readDatas = async (
@@ -118,8 +114,19 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       readPlayerRegistrations(teamId, seasonId),
       readStatsL(teamId, seasonId),
       readStaffRegistrations(teamId, seasonId),
-      readAppearancePlot([], [], teamId, seasonDates.normalSeason.seasonRange),
+      appearancePlotPanel.reloadFun(
+        [],
+        [],
+        teamId,
+        seasonDates.normalSeason.seasonRange,
+      ),
       formationPlotPanel.readFormationPlot(
+        [],
+        [],
+        teamId,
+        seasonDates.normalSeason.seasonRange,
+      ),
+      playerStatisticPanel.reloadFun(
         [],
         [],
         teamId,
@@ -379,18 +386,10 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       appearancePlot: {
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
-        items: {
-          playerAppearance,
-          playerRegistrations: appearancePlotRegistrations,
-          matches: appearancePlotMatches,
-          groupedPlayers,
-          defaultOpenPositions,
-          topHeaderText,
-          quickFilterDatas,
-        },
-        isLoading: appearancePlotIsLoading,
+        items: appearancePlotPanel.items,
+        isLoading: appearancePlotPanel.isLoading,
         reloadFun: async (filterConditions, sortConditions) =>
-          readAppearancePlot(
+          appearancePlotPanel.reloadFun(
             filterConditions,
             sortConditions,
             id,
@@ -401,10 +400,10 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       playerStatistics: {
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
-        items: playerStatistics,
-        isLoading: appearancePlotIsLoading,
+        items: playerStatisticPanel.items,
+        isLoading: playerStatisticPanel.isLoading,
         reloadFun: async (filterConditions, sortConditions) => {
-          readAppearancePlot(
+          playerStatisticPanel.reloadFun(
             filterConditions,
             sortConditions,
             id,
