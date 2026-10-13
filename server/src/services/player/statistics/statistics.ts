@@ -18,6 +18,7 @@ import {
   resolveStatisticsGroup,
   resolveStatisticsGroupIds,
 } from "./resolve/index.js";
+import { Types } from "mongoose";
 
 const matchQueryConfig = [
   {
@@ -65,6 +66,16 @@ export const getPlayerStatistics = async (
     matchGroupMap,
     matchIds,
   } = await resolve({ player, team, match, season, filterCondition });
+
+  const seasonIds = new Map<string, Types.ObjectId>();
+
+  for (const matchId of matchIds) {
+    const season = matchGroupMap.get(matchId.toString())?.season;
+
+    if (season) {
+      seasonIds.set(season.toString(), season);
+    }
+  }
 
   if (playerObjectIds.length === 0) {
     return {
@@ -139,6 +150,9 @@ export const getPlayerStatistics = async (
     teamObjectId,
     matchGroupMap,
   });
+
+  console.log("groupBy", groupBy);
+  console.log("groupIds", groupIds);
 
   const groupMap = await resolveStatisticsGroup({
     groupBy,

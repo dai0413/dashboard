@@ -448,6 +448,7 @@ export const resolvePlayerPositions = async ({
       teamId,
       groupBy,
       matchGroupMap,
+      includePositionCounts: !(matchIds.length > 0 && teamId),
     });
   }
 
@@ -458,6 +459,7 @@ export const resolvePlayerPositions = async ({
     await resolveAppearanceStage(positionMap, remainingTargets, {
       groupBy,
       matchGroupMap,
+      includePositionCounts: !(matchIds.length > 0 && teamId),
     });
   }
 

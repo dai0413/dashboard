@@ -69,5 +69,7 @@ export const resolveStatisticsGroup = async ({
     ...getNest(false, POPULATE_PATHS),
   ]);
 
+  console.log("seasons", seasons);
+
   return new Map(seasons.map((season) => [season._id.toString(), season]));
 };
