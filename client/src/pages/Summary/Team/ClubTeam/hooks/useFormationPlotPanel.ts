@@ -1,18 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 import {
-  API_PATHS,
   FilterableFieldDefinition,
-  QueryParams,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { api } from "../../../../../context/api-context";
-import { readItemsBase } from "../../../../../lib/api";
 import { MatchGet } from "../../../../../types/models/match";
-import {
-  TeamMatchFormation,
-  TeamMatchFormationGet,
-} from "../../../../../types/models/team-match-formation";
-import { Formation, FormationGet } from "../../../../../types/models/formation";
+import { TeamMatchFormationGet } from "../../../../../types/models/team-match-formation";
+import { FormationGet } from "../../../../../types/models/formation";
 import { FormationCounts } from "../types";
 import { getFormationCounts } from "../../../../../utils/data";
 import { QuickFilterData } from "../../../../../types/table";
@@ -23,6 +16,19 @@ import { displayPositions } from "../../../../../components/dataView/DataViewCon
 import { getGroupedPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/MatchMatrix/utils";
 import { createGroupedPlayers } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import {
+  loadFormationByName,
+  loadFormationData,
+} from "../utils/formationPlotPanelUtils";
+
+type LoadFormationPlayerStatisticsParams = {
+  teamId: string;
+  date: string[];
+  matchIds: string[];
+  formationId?: string;
+  competitions?: string[];
+  selectedPositions?: string[];
+};
 
 export const useFormationPlotPanel = (teamId: string, date: string[]) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,6 +47,73 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
   const [teamMatchFormations, setTeamMatchFormations] = useState<
     TeamMatchFormationGet[]
   >([]);
+
+  const loadFormationPlayerStatistics = async ({
+    teamId,
+    date,
+    matchIds,
+    formationId,
+    competitions,
+    selectedPositions,
+  }: LoadFormationPlayerStatisticsParams) => {
+    const targetMatchIds = await loadFormationData({
+      teamId,
+      matchIds,
+      formation: formationId,
+      competitions,
+    });
+
+    await loadPlayerStatistics({
+      teamId,
+      date,
+      matchIds: targetMatchIds,
+      selectedPositions,
+      setPlayerStatistics,
+    });
+  };
+
+  const loadFormationCounts = async (
+    teamId: string,
+    matchIds: string[],
+  ): Promise<FormationCounts[] | undefined> => {
+    const newFormationCounts = await getFormationCounts(
+      teamId,
+      matchIds,
+      setTeamMatchFormations,
+    );
+
+    if (!newFormationCounts) return undefined;
+
+    setFormationCounts(newFormationCounts);
+
+    return newFormationCounts;
+  };
+
+  const loadSelectedFormationPlayerStatistics = async ({
+    teamId,
+    date,
+    matchIds,
+    formationCount,
+  }: {
+    teamId: string;
+    date: string[];
+    matchIds: string[];
+    formationCount: FormationCounts;
+  }) => {
+    setSelectedFormation(formationCount);
+
+    const formation = await loadFormationByName(formationCount.name);
+
+    if (!formation) return;
+
+    await loadFormationPlayerStatistics({
+      teamId,
+      date,
+      matchIds,
+      formationId: formation._id,
+      selectedPositions: formationCount.position_formation,
+    });
+  };
 
   // matches, playerStatistics , formationCounts , teamMatchFormations読み込み
   const reloadFun = async (
@@ -73,55 +146,32 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
       });
 
       if (!formation) {
-        const newFormationCounts = await getFormationCounts(
+        const newFormationCounts = await loadFormationCounts(teamId, matchIds);
+
+        if (!newFormationCounts?.length) return;
+
+        const firstFormation = newFormationCounts[0];
+
+        await loadSelectedFormationPlayerStatistics({
           teamId,
+          date,
           matchIds,
-          setTeamMatchFormations,
-        );
+          formationCount: firstFormation,
+        });
 
-        if (newFormationCounts) {
-          setFormationCounts(newFormationCounts);
-          formation = newFormationCounts[0].name;
-          setSelectedFormation(newFormationCounts[0]);
-        }
-      }
-      if (!formation) return;
-
-      const formationRes = await readItemsBase<Formation[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.FORMATION.ROOT,
-        params: { name: formation },
-      });
-
-      if (!formationRes?.data || formationRes.data.length !== 1) return;
-
-      const selectedFormation = formationRes.data[0];
-      const formationId = selectedFormation._id;
-
-      const teamMatchFormations = await readItemsBase<TeamMatchFormation[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,
-        params: {
-          getAll: true,
-          team: teamId,
-          match: matchIds,
-          formation: formationId,
-        },
-      });
-
-      if (!teamMatchFormations?.data || teamMatchFormations.data.length <= 0)
         return;
+      }
 
-      const targetMatchIds = teamMatchFormations.data.map(
-        (teamMatchFormation) => teamMatchFormation.match._id,
-      );
+      const selectedFormation = await loadFormationByName(formation);
 
-      await loadPlayerStatistics({
+      if (!selectedFormation) return;
+
+      await loadFormationPlayerStatistics({
         teamId,
         date,
-        matchIds: targetMatchIds,
+        matchIds,
+        formationId: selectedFormation._id,
         selectedPositions: selectedFormation.position_formation,
-        setPlayerStatistics,
       });
     } finally {
       setIsLoading(false);
@@ -141,75 +191,42 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
           competitionId,
         );
 
-        const { matchIds, competitionIds } = await loadTeamMatches(
+        const { matchIds } = await loadTeamMatches(
           teamId,
           date,
           newCompetitionIds,
         );
 
-        setSelectedCompetitions(competitionIds);
-
-        if (competitionIds.length === 0) {
+        if (newCompetitionIds.length === 0) {
           setFormationCounts([]);
           setSelectedFormation(undefined);
           setPlayerStatistics([]);
+          setSelectedCompetitions(newCompetitionIds);
 
           return;
         }
 
-        //// formationのフィルタリング
-        const newFormationCounts = await getFormationCounts(
-          teamId,
-          matchIds,
-          setTeamMatchFormations,
-        );
+        setSelectedCompetitions(newCompetitionIds);
 
-        if (!newFormationCounts) return;
+        const newFormationCounts = await loadFormationCounts(teamId, matchIds);
 
-        setFormationCounts(newFormationCounts);
-        setSelectedFormation(newFormationCounts[0]);
-
-        const formationRes = await readItemsBase<Formation[]>({
-          apiInstance: api,
-          backendRoute: API_PATHS.FORMATION.ROOT,
-          params: { name: formationCounts[0].name },
-        });
-
-        if (!formationRes?.data || formationRes.data.length !== 1) return;
-
-        const selectedFormation = formationRes.data[0];
-        const formationId = selectedFormation._id;
-
-        const teamMatchFormations = await readItemsBase<TeamMatchFormation[]>({
-          apiInstance: api,
-          backendRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,
-          params: {
-            getAll: true,
-            team: teamId,
-            match: matchIds,
-            formation: formationId,
-          },
-        });
-
-        if (!teamMatchFormations?.data || teamMatchFormations.data.length <= 0)
+        if (!newFormationCounts?.length) {
+          setSelectedFormation(undefined);
+          setPlayerStatistics([]);
           return;
+        }
 
-        const targetMatchIds = teamMatchFormations.data.map(
-          (teamMatchFormation) => teamMatchFormation.match._id,
-        );
-
-        await loadPlayerStatistics({
+        await loadSelectedFormationPlayerStatistics({
           teamId,
           date,
-          matchIds: targetMatchIds,
-          selectedPositions: newFormationCounts[0].position_formation,
-          setPlayerStatistics,
+          matchIds,
+          formationCount: newFormationCounts[0],
         });
       } finally {
         setIsLoading(false);
       }
     },
-    [selectedCompetitions, matches],
+    [selectedCompetitions, teamId, date],
   );
 
   // formationの変更　→　playerStatisticsの更新
@@ -228,51 +245,37 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
           )
           .map((match) => match._id);
 
-        const params: QueryParams = {
-          getAll: true,
-          team: teamId,
-          match: matchIds,
-          competition: selectedCompetitions.map((c) => c),
-        };
-
-        if (isChanged) params["formation"] = formation._id;
-
-        const teamMatchFormations = await readItemsBase<TeamMatchFormation[]>({
-          apiInstance: api,
-          backendRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,
-          params,
-        });
-
-        if (!teamMatchFormations?.data || teamMatchFormations.data.length <= 0)
-          return;
-
-        const targetMatchIds = teamMatchFormations.data.map(
-          (teamMatchFormation) => teamMatchFormation.match._id,
-        );
-
-        console.log("targetMatchIds", targetMatchIds);
-
-        await loadPlayerStatistics({
-          teamId,
-          date,
-          matchIds: targetMatchIds,
-          selectedPositions: formationCounts.find(
-            (f) => f.key === formation.key,
-          )?.position_formation,
-          setPlayerStatistics,
-        });
-
         if (isChanged) {
-          console.log("last isChanged", isChanged);
           setSelectedFormation(formation);
+
+          await loadFormationPlayerStatistics({
+            teamId,
+            date,
+            matchIds,
+            formationId: formation._id,
+            competitions: selectedCompetitions.map((c) => c),
+            selectedPositions: formationCounts.find(
+              (f) => f.key === formation.key,
+            )?.position_formation,
+          });
         } else {
+          await loadFormationPlayerStatistics({
+            teamId,
+            date,
+            matchIds,
+            competitions: selectedCompetitions.map((c) => c),
+            selectedPositions: formationCounts.find(
+              (f) => f.key === formation.key,
+            )?.position_formation,
+          });
+
           setSelectedFormation(undefined);
         }
       } finally {
         setIsLoading(false);
       }
     },
-    [selectedCompetitions, matches, selectedFormation],
+    [selectedCompetitions, matches, selectedFormation, formationCounts],
   );
 
   const competitions = useMemo(() => {
