@@ -356,6 +356,9 @@ const Container = <K extends Record<string, unknown>, F>({
 
   const pageButton = useMemo(() => {
     const nextViewMode = defaultViewMode || viewMode;
+    if (viewMode) {
+      return viewMode === ViewMode.TABLE || viewMode === ViewMode.TILE;
+    }
     return nextViewMode === ViewMode.TABLE || nextViewMode === ViewMode.TILE;
   }, [viewMode]);
 
