@@ -81,7 +81,10 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     id,
     seasonDates.normalSeason.seasonRange,
   );
-  const formationPlotPanel = useFormationPlotPanel();
+  const formationPlotPanel = useFormationPlotPanel(
+    id,
+    seasonDates.normalSeason.seasonRange,
+  );
   const playerStatisticPanel = usePlayerStatisticPanel(
     id,
     seasonDates.normalSeason.seasonRange,
@@ -120,7 +123,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         teamId,
         seasonDates.normalSeason.seasonRange,
       ),
-      formationPlotPanel.readFormationPlot(
+      formationPlotPanel.reloadFun(
         [],
         [],
         teamId,
@@ -416,9 +419,9 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
         text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
         items: formationPlotPanel.items,
-        isLoading: formationPlotPanel.formationPlotIsLoading,
+        isLoading: formationPlotPanel.isLoading,
         reloadFun: async (filterConditions, sortConditions) =>
-          formationPlotPanel.readFormationPlot(
+          formationPlotPanel.reloadFun(
             filterConditions,
             sortConditions,
             id,

@@ -1,109 +1,37 @@
 import { TableClient } from "../../../../../components/dataView";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../../types/field";
 import { UseClubTeamSummary } from "../types";
-import { playerStatistics } from "../../../../../lib/fields/playerStatistics";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
-import {
-  ColumnType,
-  QuickFilterData,
-  QuickFilterItem,
-} from "../../../../../types/table";
-import { toDateKey } from "@dai0413/myorg-shared/normalizer";
-import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
 import { ViewMode } from "../../../../../types/types";
-import { useMemo } from "react";
+import { ModelType } from "../../../../../types/models";
+import { fieldDefinition } from "../../../../../lib/model-fields";
 
-const keys = playerStatistics
-  .map((ps) => ps.key)
-  .filter(
-    (d) =>
-      d !== "group.season" &&
-      d !== "group.season.competition" &&
-      d !== "teams" &&
-      d !== "appearances",
-  );
-const secondKeys = keys.filter((d) => d !== "player" && d !== "mainPosition");
-
-const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
-  ...convertFieldDefinition(
-    ["mainPosition", "player"],
-    playerStatistics,
-  ).filter((k) => k.key === "mainPosition" || k.key === "player"),
-  {
-    key: "dob",
-    filterKey: "player.name",
-    label: "生年月日",
-    type: "string",
-    filterable: true,
-    sortable: true,
-    displayOnDetail: true,
-    displayOnTable: true,
-    getValueType: ColumnType.CUSTOM,
-    getData: (d) => ({
-      label: toDateKey(d.player.dob) || "",
-    }),
-    width: "80px",
-  },
-  ...convertFieldDefinition(secondKeys, playerStatistics).filter(
-    (d) => d.key !== "mainPosition" && d.key !== "player",
-  ),
-];
+const formationPlotFieldDefinition =
+  fieldDefinition[ModelType.TEAM_MATCH_FORMATION];
 
 const FormationPlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
-    id,
     panels: {
-      formationPlot: { text, key, items, isLoading, reloadFun },
+      formationPlot: { text, items, isLoading, reloadFun },
     },
   } = summary;
-
-  const quickFilterItems: QuickFilterData = useMemo(() => {
-    const quickFilterItems: QuickFilterItem[] = items.formationCounts.map(
-      (formation, index) => {
-        return {
-          key: formation.name,
-          label: `${formation.name} (${formation.count})`,
-          defaultSelect: index === 0,
-          filterCondition: [
-            {
-              key: "formation",
-              label: "フォーメーション",
-              type: "select",
-              filterable: true,
-              value: [formation.name],
-              valueLabel: [`${formation.name} (${formation.count})`],
-              operator: "equals",
-            },
-          ],
-        };
-      },
-    );
-
-    return { name: "formation", items: quickFilterItems };
-  }, [items.formationCounts]);
 
   return (
     <>
       <div className="text-gray-600">{text}</div>
       <TableClient
-        key={key}
+        totalCount={items.teamMatchFormations.length}
+        reloadFun={async (filterConditions, sortConditions) =>
+          await reloadFun(filterConditions, sortConditions)
+        }
         itemsLoading={isLoading}
-        fieldDefinitions={fieldDefinitions}
+        fieldDefinitions={formationPlotFieldDefinition}
+        viewModes={[ViewMode.POSITION_LIST, ViewMode.TABLE, ViewMode.TILE]}
         defaultViewMode={ViewMode.POSITION_LIST}
-        viewModes={[ViewMode.POSITION_LIST]}
         viewData={{
+          [ViewMode.TABLE]: items.teamMatchFormations,
+          [ViewMode.TILE]: items.teamMatchFormations,
           [ViewMode.POSITION_LIST]: items.groupedPlayers,
         }}
-        totalCount={items.groupedPlayers.length}
-        reloadFun={reloadFun}
-        filterField={fieldDefinitions?.filter(isFilterable)}
-        sortField={fieldDefinitions?.filter(isSortable)}
-        initialData={{ formData: { team: id } }}
-        quickFilterItems={[quickFilterItems]}
+        quickFilterItems={items.quickFilterDatas}
       />
     </>
   );

@@ -10,6 +10,7 @@ import { FormationGet } from "../../../../types/models/formation";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 import { QuickFilterData } from "../../../../types/table";
+import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
 
 export const CLUB_TEAM_TAB = {
   PLAYER: "player",
@@ -85,8 +86,9 @@ type ClubTeamPanels = {
   }>;
 
   formationPlot: ServerDepPanelSummary<{
+    teamMatchFormations: TeamMatchFormationGet[];
     groupedPlayers: GroupedPlayers[];
-    formationCounts: FormationCounts[];
+    quickFilterDatas: QuickFilterData[];
   }>;
 };
 
