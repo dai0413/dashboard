@@ -34,6 +34,7 @@ export function teamMatchFormation<TModel = any>(
     getAllConfig: {
       query: [
         { field: "match", type: "ObjectId" },
+        { field: "match.competition", type: "ObjectId", populateAfter: true },
         { field: "team", type: "ObjectId" },
         { field: "formation", type: "ObjectId" },
       ],
