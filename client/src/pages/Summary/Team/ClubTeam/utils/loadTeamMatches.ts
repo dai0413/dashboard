@@ -1,4 +1,4 @@
-import { API_PATHS } from "@dai0413/myorg-shared";
+import { API_PATHS, QueryParams } from "@dai0413/myorg-shared";
 import { api } from "../../../../../context/api-context";
 import { readItemsBase } from "../../../../../lib/api";
 import { Match, MatchGet } from "../../../../../types/models/match";
@@ -8,15 +8,18 @@ import { ModelType } from "../../../../../types/models";
 export const loadTeamMatches = async (
   teamId: string,
   date: string[],
+  competitionIds?: string[],
 ): Promise<{
   matches: MatchGet[];
   competitionIds: string[];
   matchIds: string[];
 }> => {
+  const params: QueryParams = { getAll: true, team: teamId, date };
+  if (competitionIds) params["competition"] = competitionIds;
   const matchRes = await readItemsBase<Match[]>({
     apiInstance: api,
     backendRoute: API_PATHS.MATCH.ROOT,
-    params: { getAll: true, team: teamId, date },
+    params,
   });
 
   const rawMatches = matchRes?.data ?? [];

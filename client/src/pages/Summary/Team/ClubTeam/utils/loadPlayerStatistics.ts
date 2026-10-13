@@ -20,14 +20,15 @@ type LoadPlayerStatisticsParams = {
   teamId: string;
   date: string[];
   matchIds: string[];
+  selectedPositions?: string[];
   setPlayerAppearance?: React.Dispatch<
     React.SetStateAction<PlayerAppearanceGet[]>
   >;
   setPlayerRegistrations?: React.Dispatch<
     React.SetStateAction<PlayerRegistrationGet[]>
   >;
-  setPlayerStatistics: React.Dispatch<React.SetStateAction<PlayerStatistic[]>>;
-  setFormationCounts: React.Dispatch<React.SetStateAction<FormationCounts[]>>;
+  setPlayerStatistics?: React.Dispatch<React.SetStateAction<PlayerStatistic[]>>;
+  setFormationCounts?: React.Dispatch<React.SetStateAction<FormationCounts[]>>;
 };
 
 const convertPlayerStatistics = (
@@ -99,28 +100,34 @@ export const loadPlayerStatistics = async ({
   setFormationCounts,
 }: LoadPlayerStatisticsParams): Promise<void> => {
   // フォーメーション集計
-  const formationCounts = await getFormationCounts(teamId, matchIds);
-  setFormationCounts && setFormationCounts(formationCounts ?? []);
-
-  // 出場記録
-  let newPlayerAppearance: PlayerAppearanceGet[] = [];
-
-  if (matchIds.length > 0) {
-    const playerAppearanceRes = await readItemsBase<PlayerAppearance[]>({
-      apiInstance: api,
-      backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
-      params: { getAll: true, team: teamId, match: matchIds },
-    });
-
-    if (playerAppearanceRes?.data) {
-      newPlayerAppearance = convert(
-        ModelType.PLAYER_APPEARANCE,
-        playerAppearanceRes.data,
-      );
-    }
+  if (setFormationCounts) {
+    const formationCounts = await getFormationCounts(teamId, matchIds);
+    setFormationCounts(formationCounts ?? []);
   }
 
-  setPlayerAppearance && setPlayerAppearance(newPlayerAppearance);
+  let newPlayerAppearance: PlayerAppearanceGet[] = [];
+
+  // 出場記録
+  if (setPlayerAppearance) {
+    if (matchIds.length > 0) {
+      const playerAppearanceRes = await readItemsBase<PlayerAppearance[]>({
+        apiInstance: api,
+        backendRoute: API_PATHS.PLAYER_APPEARANCE.ROOT,
+        params: { getAll: true, team: teamId, match: matchIds },
+      });
+
+      if (playerAppearanceRes?.data) {
+        newPlayerAppearance = convert(
+          ModelType.PLAYER_APPEARANCE,
+          playerAppearanceRes.data,
+        );
+      }
+    }
+
+    setPlayerAppearance(newPlayerAppearance);
+  }
+
+  if (!setPlayerRegistrations && !setPlayerStatistics) return;
 
   // 登録情報
   const playerRegistrationRes = await readItemsBase<PlayerRegistration[]>({
@@ -157,6 +164,7 @@ export const loadPlayerStatistics = async ({
     date,
   );
 
-  setPlayerStatistics &&
-    setPlayerStatistics(sortByPosition(players, "mainPosition"));
+  const newPlayerStatistics = sortByPosition(players, "mainPosition");
+
+  setPlayerStatistics && setPlayerStatistics(newPlayerStatistics);
 };
