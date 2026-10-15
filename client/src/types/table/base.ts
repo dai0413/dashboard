@@ -31,3 +31,19 @@ type CustomHeader<T> = BaseField &
   };
 
 export type TableHeader<T> = FieldHeader<T> | CustomHeader<T>;
+
+export type StatisticsDatas = {
+  value: RenderCellValue;
+  align?: "left" | "center" | "right";
+  className?: string;
+};
+
+export type StatisticsColumn<
+  T extends Record<string, StatisticsDatas>,
+  F extends Record<string, StatisticsDatas>,
+> = {
+  key: keyof T & keyof F;
+  label: string;
+  align?: "left" | "center" | "right";
+  className?: string;
+};
