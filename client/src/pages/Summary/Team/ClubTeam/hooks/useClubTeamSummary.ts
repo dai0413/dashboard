@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTeam } from "../../../../../context/models/team";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { getWindowDates } from "../../../../../utils/date/getWindowDates";
@@ -26,6 +26,7 @@ import {
   usePlayerStatisticPanel,
 } from "./index";
 import { CLUB_TEAM_TAB, ClubTeamTab, UseClubTeamSummary } from "../types";
+import { createTopPanelItems } from "../utils/createTopPanelItems";
 
 export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
   const {
@@ -33,7 +34,7 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
   } = useTeam();
 
   const [selectedTab, setSelectedTab] = useState<ClubTeamTab>(
-    CLUB_TEAM_TAB.PLAYER,
+    CLUB_TEAM_TAB.TOP,
   );
 
   const handleSelectedTab = (
@@ -239,6 +240,11 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     })();
   }, [selected]);
 
+  const topItems = useMemo(
+    () => createTopPanelItems(id, matches.data),
+    [matches],
+  );
+
   return {
     id,
     isLoading,
@@ -256,6 +262,15 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     },
 
     panels: {
+      top: {
+        text: `${seasonDates.normalSeason.startDate}~~~${seasonDates.normalSeason.endDate}成績`,
+        key: `${selectedTab}-${seasonDates.normalSeason.startDate}`,
+        isLoading: matches.isLoading,
+        items: topItems,
+        reloadFun: async () =>
+          readMatches(id, seasonDates.normalSeason.seasonRange),
+      },
+
       player: {
         text: `${seasonDates.transferWindow.startDate}~~~${seasonDates.transferWindow.endDate}に所属した選手`,
         key: `${selectedTab}-${seasonDates.transferWindow.endDate}`,

@@ -16,6 +16,7 @@ import {
   AppearancePlot,
   PlayerStatisticsPanel,
   FormationPlotPanel,
+  TopPanel,
 } from "../panels/index";
 import { CLUB_TEAM_TAB, UseClubTeamSummary } from "../types";
 
@@ -25,6 +26,9 @@ const PanelRenderer = ({ summary }: { summary: UseClubTeamSummary }) => {
   } = summary;
 
   switch (selectedTab) {
+    case CLUB_TEAM_TAB.TOP:
+      return <TopPanel summary={summary} />;
+
     case CLUB_TEAM_TAB.PLAYER:
       return <PlayerPanel summary={summary} />;
 

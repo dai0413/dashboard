@@ -3,6 +3,10 @@ import { CLUB_TEAM_TAB } from "../types";
 
 export const tabItems: SummaryTabItems[] = [
   {
+    key: CLUB_TEAM_TAB.TOP,
+    text: "トップ",
+  },
+  {
     icon: "player",
     key: CLUB_TEAM_TAB.PLAYER,
     text: "選手",

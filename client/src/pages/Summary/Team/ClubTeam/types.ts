@@ -9,10 +9,11 @@ import { MatchGet } from "../../../../types/models/match";
 import { FormationGet } from "../../../../types/models/formation";
 import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
-import { QuickFilterData } from "../../../../types/table";
+import { QuickFilterData, StatisticsDatas } from "../../../../types/table";
 import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
 
 export const CLUB_TEAM_TAB = {
+  TOP: "top",
   PLAYER: "player",
   FUTURE_IN: "future_in",
   TRANSFER_IN: "transfer_in",
@@ -38,7 +39,29 @@ export type FormationCounts = FormationGet & {
   count: number;
 };
 
+export type TopPanelRows = {
+  competition: StatisticsDatas;
+  total: StatisticsDatas;
+  win: StatisticsDatas;
+  draw: StatisticsDatas;
+  lose: StatisticsDatas;
+  winRate: StatisticsDatas;
+};
+
+export type TopPanelItems = {
+  doughnut: {
+    win: number;
+    draw: number;
+    lose: number;
+  };
+  table: {
+    rows: TopPanelRows[];
+    footerRows: TopPanelRows[];
+  };
+};
+
 type ClubTeamPanels = {
+  top: PanelSummary<TopPanelItems>;
   player: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
   future_in: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
   transfer_in: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
