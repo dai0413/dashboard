@@ -12,7 +12,7 @@ type CompetitionRecord = Pick<
 > & {
   season: Label;
   competition: Label;
-  team: Label;
+  teams: Label[];
   starts: number;
   subs: number;
   bench: number;
@@ -28,11 +28,9 @@ const createCompetitionRecords = (
 ): CompetitionRecord[] => {
   const records: CompetitionRecord[] = statistics
     .map((statistic) => {
-      if (statistic.teams?.length !== 1 || statistic.group?.by !== "season")
-        return;
+      if (statistic.group?.by !== "season") return;
 
       const originalCompetition = statistic.group.data.competition;
-      const originalTeam = statistic.teams[0];
       const originalSeason = statistic.group.data;
 
       const season = {
@@ -44,17 +42,21 @@ const createCompetitionRecords = (
         id: originalCompetition._id,
       };
 
-      const team = {
-        label: convert(ModelType.TEAM, originalTeam),
-        id: originalTeam._id,
-      };
+      const teams: Label[] = statistic.teams
+        ? statistic.teams
+            .map((team) => ({
+              label: convert(ModelType.TEAM, team),
+              id: team._id,
+            }))
+            .filter((t) => typeof t !== "undefined")
+        : [];
 
       const { starts, subs, bench, goals, assists } = statistic;
 
       return {
         season,
         competition,
-        team,
+        teams,
         starts,
         subs,
         bench,
@@ -90,7 +92,14 @@ const createRows = (items: CompetitionRecord[]) => {
       i > 0 && items[i - 1].season.label === item.season.label;
 
     const isTeamBlank =
-      isSeasonBlank && i > 0 && items[i - 1].team.label === item.team.label;
+      isSeasonBlank && i > 0 && items[i - 1].teams.length === 0;
+
+    const teams = isTeamBlank
+      ? []
+      : item.teams.map((team) => ({
+          to: `${APP_ROUTES.TEAM_SUMMARY}/${team.id}`,
+          label: isTeamBlank ? "" : team.label,
+        }));
 
     return {
       season: {
@@ -104,11 +113,8 @@ const createRows = (items: CompetitionRecord[]) => {
           label: item.competition.label,
         },
       },
-      team: {
-        value: {
-          to: `${APP_ROUTES.TEAM_SUMMARY}/${item.team.id}`,
-          label: isTeamBlank ? "" : item.team.label,
-        },
+      teams: {
+        value: teams,
       },
       starts: {
         value: {
@@ -158,9 +164,9 @@ const createFooterRows = (sum: CompetitionRecord): TopPanelRows[] => {
         ...sum.season,
       },
     },
-    team: {
+    teams: {
       value: {
-        ...sum.team,
+        ...sum.teams,
       },
     },
     starts: {
@@ -203,7 +209,7 @@ const createGroupedStatistics = (
   const total: CompetitionRecord = {
     competition: { label: "総計" },
     season: { label: "" },
-    team: { label: "" },
+    teams: [{ label: "" }],
     starts: 0,
     subs: 0,
     bench: 0,

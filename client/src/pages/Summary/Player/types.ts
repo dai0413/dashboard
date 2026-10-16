@@ -19,7 +19,7 @@ export type PlayerTab = (typeof PLAYER_TAB)[keyof typeof PLAYER_TAB];
 export type TopPanelRows = {
   season: StatisticsDatas;
   competition: StatisticsDatas;
-  team: StatisticsDatas;
+  teams: StatisticsDatas;
   starts: StatisticsDatas;
   subs: StatisticsDatas;
   bench: StatisticsDatas;

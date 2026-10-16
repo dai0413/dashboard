@@ -1,14 +1,17 @@
 import { StatisticsTable } from "../../../../components/dataView/DataViewContent/DataView/StatisticsTable";
 import { Formation } from "../../../../components/formation";
+import { FullScreenLoader } from "../../../../components/ui";
 import { columns } from "../constants/topPanelColumns";
 import { UsePlayerSummary } from "../types";
 
 const TopPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {
     panels: {
-      top: { items },
+      top: { isLoading, items },
     },
   } = summary;
+
+  if (isLoading) return <FullScreenLoader />;
 
   return (
     <div className="space-y-4">

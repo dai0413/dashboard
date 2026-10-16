@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
-import { StatisticsColumn, StatisticsDatas } from "../../../../types/table";
+import {
+  RenderCellValue,
+  StatisticsColumn,
+  StatisticsDatas,
+} from "../../../../types/table";
+import React from "react";
 
 type StatisticsTableProps<
   T extends Record<string, StatisticsDatas>,
@@ -26,6 +31,31 @@ export const StatisticsTable = <
 }: StatisticsTableProps<T, F>) => {
   type CommonKey = keyof T & keyof F;
 
+  const renderValue = (value: RenderCellValue) => {
+    return value.to ? (
+      <Link
+        to={value.to}
+        className="text-gray-800 hover:text-blue-600 hover:underline"
+      >
+        {value.label}
+      </Link>
+    ) : (
+      value.label
+    );
+  };
+
+  const renderValues = (value: RenderCellValue | RenderCellValue[]) => {
+    const values = Array.isArray(value) ? value : [value];
+
+    return (
+      <div className="flex flex-wrap gap-2">
+        {values.map((v, index) => (
+          <React.Fragment key={index}>{renderValue(v)}</React.Fragment>
+        ))}
+      </div>
+    );
+  };
+
   const renderCells = (data: T | F) =>
     columns.map((column) => {
       const { value, className, align } = data[column.key as CommonKey];
@@ -39,16 +69,7 @@ export const StatisticsTable = <
             alignClass[textAlign]
           } ${className ?? column.className ?? ""}`}
         >
-          {value.to ? (
-            <Link
-              to={value.to}
-              className="text-gray-800 hover:text-blue-600 hover:underline"
-            >
-              {value.label}
-            </Link>
-          ) : (
-            value.label
-          )}
+          {renderValues(value)}
         </td>
       );
     });

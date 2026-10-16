@@ -9,7 +9,7 @@ export const columns: StatisticsColumn<TopPanelRows, TopPanelRows>[] = [
     className: "tabular-nums font-medium",
   },
   {
-    key: "team",
+    key: "teams",
     label: "チーム",
     align: "right",
     className: "tabular-nums font-medium",

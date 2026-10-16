@@ -8,7 +8,6 @@ import {
 } from "./index";
 import { PLAYER_TAB, PlayerTab, UsePlayerSummary } from "../types";
 import { usePlayer } from "../../../../context/models/player";
-import { FormationItem } from "../../../../types/formation";
 import { createTopPanelItems } from "../utils/createTopPanelItems";
 import { createFormationItems } from "../utils/createFormationItems";
 
@@ -31,6 +30,16 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
     usePlayerRegistrationPanel();
   const { transfers, readTransfers } = useTransferPanel();
   const { statistics, readStatistics } = useStatisticsPanel();
+
+  const positions = useMemo(
+    () => createFormationItems(statistics.data),
+    [statistics],
+  );
+
+  const topItems = useMemo(
+    () => createTopPanelItems(statistics.data),
+    [statistics],
+  );
 
   const readDatas = async (playerId: string) => {
     await Promise.all([
@@ -61,16 +70,6 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
       }
     })();
   }, [selected]);
-
-  const positions: FormationItem[] = useMemo(
-    () => createFormationItems(statistics.data),
-    [statistics],
-  );
-
-  const topItems = useMemo(
-    () => createTopPanelItems(statistics.data),
-    [statistics],
-  );
 
   return {
     id,

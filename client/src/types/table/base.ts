@@ -33,7 +33,7 @@ type CustomHeader<T> = BaseField &
 export type TableHeader<T> = FieldHeader<T> | CustomHeader<T>;
 
 export type StatisticsDatas = {
-  value: RenderCellValue;
+  value: RenderCellValue | RenderCellValue[];
   align?: "left" | "center" | "right";
   className?: string;
 };
