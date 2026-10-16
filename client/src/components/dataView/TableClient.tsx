@@ -154,16 +154,30 @@ const TableClient = <
 >(
   props: TableClientProps<K, F>,
 ) => {
-  const [viewOptionData, setViewOptionData] = useState<Data<any>>(defalut);
+  const [viewOptionData, setViewOptionData] = useState<Data<any>>({
+    data: props.viewData[ViewMode.TILE] || props.viewData[ViewMode.TABLE] || [],
+    page: 1,
+    totalCount:
+      props.viewData[ViewMode.TILE]?.length ||
+      props.viewData[ViewMode.TABLE]?.length ||
+      0,
+    isLoading: false,
+  });
+
+  const originalData = useMemo(
+    () => props.viewData[ViewMode.TILE] || props.viewData[ViewMode.TABLE],
+    [props.viewData[ViewMode.TILE], props.viewData[ViewMode.TABLE]],
+  );
 
   useEffect(() => {
-    if (!props.items) return;
+    if (!originalData) return;
+
     setViewOptionData({
       ...defalut,
-      data: props.items,
+      data: originalData,
       totalCount: props.totalCount,
     });
-  }, [props.items]);
+  }, []);
 
   const reloadFun = useMemo(
     () =>
@@ -191,11 +205,11 @@ const TableClient = <
         filterConditions?: FilterableFieldDefinition[],
         sortConditions?: SortableFieldDefinition[],
       ): Promise<void> => {
-        if (!props.items) return;
+        if (!originalData) return;
 
         setViewOptionData({ ...defalut, isLoading: true });
 
-        let processed = [...props.items];
+        let processed = [...originalData];
 
         processed = applyFilterClient(
           processed,
@@ -217,7 +231,7 @@ const TableClient = <
 
         setViewOptionData(nextViewOptionData);
       },
-    [props.items],
+    [originalData],
   );
 
   return (
@@ -225,7 +239,12 @@ const TableClient = <
       {...{
         ...props,
         handleFilterSort: handleFilterSort,
-        items: viewOptionData.data,
+        viewData: {
+          ...props.viewData,
+          [ViewMode.TILE]: viewOptionData.data,
+          [ViewMode.TABLE]: viewOptionData.data,
+        },
+        totalCount: viewOptionData.totalCount,
         reloadFun: reloadFun,
         pageNation: "client",
       }}
