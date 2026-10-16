@@ -80,7 +80,7 @@ const MatchMatrix = ({
           {column.label}
         </Link>
       )}
-      renderCell={(player, column) => {
+      renderCell={(position, player, column) => {
         const match = column.match;
 
         const appearance = appearanceMap.get(
@@ -102,6 +102,7 @@ const MatchMatrix = ({
           <MatrixCell
             appearances={[
               {
+                bgYellow: appearance?.position === position,
                 match: column.match,
                 playerAppearance: appearance,
                 calledUp: onRegister,

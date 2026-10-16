@@ -8,12 +8,14 @@ type CreateCallUpCircleInfoParams = {
   match: MatchGet;
   appearance?: PlayerAppearanceGet;
   nationalCallup?: NationalCallup;
+  position: string;
 };
 
 export const createCallUpCircleInfo = ({
   match,
   appearance,
   nationalCallup,
+  position,
 }: CreateCallUpCircleInfoParams): CircleInfo => {
   let calledUp = false;
 
@@ -63,6 +65,7 @@ export const createCallUpCircleInfo = ({
   }
 
   return {
+    bgYellow: appearance?.position === position,
     is_backup: nationalCallup?.is_backup,
     is_training_partner: nationalCallup?.is_training_partner,
     match,

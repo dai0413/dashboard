@@ -88,7 +88,7 @@ const SeriesMatrix = ({
           {column.series.name}
         </Link>
       )}
-      renderCell={(player, column) => {
+      renderCell={(position, player, column) => {
         const series = column.series;
 
         const callUp = callUpMap.get(`${player.player._id}-${series._id}`);
@@ -132,13 +132,16 @@ const SeriesMatrix = ({
         const appearances = matches
           .sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0))
           .map((match) => {
-            return createCallUpCircleInfo({
+            const base = createCallUpCircleInfo({
               match,
               appearance: appearanceMap.get(
                 `${player.player._id}-${match._id}`,
               ),
               nationalCallup: callUp,
+              position,
             });
+
+            return { ...base };
           });
 
         return <MatrixCell appearances={appearances} />;

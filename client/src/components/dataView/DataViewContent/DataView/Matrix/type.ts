@@ -12,6 +12,7 @@ export type CircleInfo = {
   withdrawn?: boolean;
   declined?: boolean;
   injured?: boolean;
+  bgYellow?: boolean;
 };
 
 export type DisplayPosition = {

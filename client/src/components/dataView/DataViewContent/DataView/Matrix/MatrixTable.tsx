@@ -15,6 +15,7 @@ type MatrixTableProps<T extends Label> = {
   renderHeader: (column: T) => React.ReactNode;
 
   renderCell: (
+    positionKey: string,
     player: MatrixPlayer,
     column: T,
     index: number,
@@ -209,17 +210,19 @@ export const MatrixTable = <T extends Label>({
                         <span className="text-sm text-gray-500">分</span>
                       </td>
 
-                      {columns.map((column, i) => (
-                        <td
-                          key={column.id || i}
-                          className={`
+                      {columns.map((column, i) => {
+                        return (
+                          <td
+                            key={column.id || i}
+                            className={`
                           border border-gray-300
                           ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}
                         `}
-                        >
-                          {renderCell(player, column, index)}
-                        </td>
-                      ))}
+                          >
+                            {renderCell(group.key, player, column, index)}
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
               </React.Fragment>
