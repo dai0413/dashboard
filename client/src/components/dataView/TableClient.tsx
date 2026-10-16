@@ -177,7 +177,7 @@ const TableClient = <
       data: originalData,
       totalCount: props.totalCount,
     });
-  }, []);
+  }, [originalData]);
 
   const reloadFun = useMemo(
     () =>
