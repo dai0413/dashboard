@@ -3,9 +3,8 @@ import { PLAYER_TAB } from "../types";
 
 export const tabItems: SummaryTabItems[] = [
   {
-    icon: "setting",
-    key: PLAYER_TAB.POSITION,
-    text: "ポジション",
+    key: PLAYER_TAB.TOP,
+    text: "トップ",
   },
   {
     icon: "transfer",
@@ -16,6 +15,11 @@ export const tabItems: SummaryTabItems[] = [
     icon: "injury",
     key: PLAYER_TAB.INJURY,
     text: "怪我",
+  },
+  {
+    icon: "setting",
+    key: PLAYER_TAB.POSITION,
+    text: "ポジション",
   },
   {
     icon: "nationality",

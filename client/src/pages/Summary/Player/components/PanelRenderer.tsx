@@ -4,6 +4,7 @@ import {
   PlayerRegistrationPanel,
   PositionPanel,
   StatisticsPanel,
+  TopPanel,
   TransferPanel,
 } from "../panels/index";
 import { PLAYER_TAB, UsePlayerSummary } from "../types";
@@ -14,6 +15,9 @@ const PanelRenderer = ({ summary }: { summary: UsePlayerSummary }) => {
   } = summary;
 
   switch (selectedTab) {
+    case PLAYER_TAB.TOP:
+      return <TopPanel summary={summary} />;
+
     case PLAYER_TAB.INJURY:
       return <InjuryPanel summary={summary} />;
 

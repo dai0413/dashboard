@@ -9,16 +9,15 @@ import {
 import { PLAYER_TAB, PlayerTab, UsePlayerSummary } from "../types";
 import { usePlayer } from "../../../../context/models/player";
 import { FormationItem } from "../../../../types/formation";
-import { positionBase } from "../../../../components/formation/positionBase";
+import { createTopPanelItems } from "../utils/createTopPanelItems";
+import { createFormationItems } from "../utils/createFormationItems";
 
 export const usePlayerSummary = (id: string): UsePlayerSummary => {
   const {
     metacrud: { selected, readItem, isLoading },
   } = usePlayer();
 
-  const [selectedTab, setSelectedTab] = useState<PlayerTab>(
-    PLAYER_TAB.TRANSFER,
-  );
+  const [selectedTab, setSelectedTab] = useState<PlayerTab>(PLAYER_TAB.TOP);
 
   const handleSelectedTab = (
     value: string | number | Date | undefined,
@@ -32,39 +31,6 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
     usePlayerRegistrationPanel();
   const { transfers, readTransfers } = useTransferPanel();
   const { statistics, readStatistics } = useStatisticsPanel();
-
-  const positions: FormationItem[] = useMemo(() => {
-    const positionMap = new Map<FormationItem["position"], FormationItem>();
-
-    statistics.data.forEach((statistic) => {
-      for (const [key, value] of Object.entries(statistic.positionCounts)) {
-        const position = key as FormationItem["position"];
-        const point = positionBase[position];
-
-        const existing = positionMap.get(position);
-
-        if (existing) {
-          existing.centerText = Number(existing.centerText) + (value || 0);
-        } else {
-          positionMap.set(position, {
-            position,
-            centerText: value,
-            label: key,
-            size: 24 + ((value || 0) / statistic.appearances) * 28,
-            color: point.color,
-            tooltip: [
-              { text: key, bold: true },
-              {
-                text: `${value}試合`,
-              },
-            ],
-          });
-        }
-      }
-    });
-
-    return Array.from(positionMap.values());
-  }, [statistics]);
 
   const readDatas = async (playerId: string) => {
     await Promise.all([
@@ -96,6 +62,16 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
     })();
   }, [selected]);
 
+  const positions: FormationItem[] = useMemo(
+    () => createFormationItems(statistics.data),
+    [statistics],
+  );
+
+  const topItems = useMemo(
+    () => createTopPanelItems(statistics.data),
+    [statistics],
+  );
+
   return {
     id,
     isLoading,
@@ -107,6 +83,14 @@ export const usePlayerSummary = (id: string): UsePlayerSummary => {
     },
 
     panels: {
+      top: {
+        key: `${selectedTab}`,
+        text: "シーズン別成績",
+        items: topItems,
+        isLoading: statistics.isLoading,
+        reloadFun: async () => readStatistics(id),
+      },
+
       nationalCallup: {
         key: `${selectedTab}`,
         items: nationalCallups.data,

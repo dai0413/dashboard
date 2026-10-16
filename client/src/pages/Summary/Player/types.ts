@@ -2,8 +2,10 @@ import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/st
 import { FormationItem } from "../../../types/formation";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { PanelSummary, UseSummary } from "../types";
+import { StatisticsDatas } from "../../../types/table";
 
 export const PLAYER_TAB = {
+  TOP: "top",
   POSITION: "position",
   TRANSFER: "transfer",
   INJURY: "injury",
@@ -14,7 +16,32 @@ export const PLAYER_TAB = {
 
 export type PlayerTab = (typeof PLAYER_TAB)[keyof typeof PLAYER_TAB];
 
+export type TopPanelRows = {
+  season: StatisticsDatas;
+  competition: StatisticsDatas;
+  team: StatisticsDatas;
+  starts: StatisticsDatas;
+  subs: StatisticsDatas;
+  bench: StatisticsDatas;
+  goals: StatisticsDatas;
+  assists: StatisticsDatas;
+};
+
+export type TopPanelItems = {
+  doughnut: {
+    start: number;
+    sub: number;
+    bench: number;
+  };
+  table: {
+    rows: TopPanelRows[];
+    footerRows: TopPanelRows[];
+  };
+  positions: FormationItem[];
+};
+
 type PlayerPanels = {
+  top: PanelSummary<TopPanelItems>;
   position: PanelSummary<FormationItem[]>;
   transfer: PanelSummary<GettedModelDataMap[ModelType.TRANSFER][]>;
   injury: PanelSummary<GettedModelDataMap[ModelType.INJURY][]>;
