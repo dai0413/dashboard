@@ -32,7 +32,7 @@ export function competitionStage<TModel = any>(
     ],
     getAllConfig: {
       query: [{ field: "season", type: "ObjectId" }],
-      sort: { _id: 1 },
+      sort: { order: 1, _id: 1 },
       buildCustomMatch: customMatchFn,
     },
     bulk: true,
