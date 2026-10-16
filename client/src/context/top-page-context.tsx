@@ -8,7 +8,7 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { readItemsBase } from "../lib/api";
 import { api } from "./api-context";
 import { TeamGet } from "../types/models/team";
-import { Season } from "../types/models/season";
+import { Season, SeasonGet } from "../types/models/season";
 import { TeamCompetitionSeason } from "../types/models/team-competition-season";
 import { Competition } from "../types/models/competition";
 
@@ -19,6 +19,7 @@ type TopPageStage = {
   j1Teams: GettedModelDataMap[ModelType.TEAM][];
   j2Teams: GettedModelDataMap[ModelType.TEAM][];
   j3Teams: GettedModelDataMap[ModelType.TEAM][];
+  currentCompetitions: GettedModelDataMap[ModelType.SEASON][];
   readItems: (limit?: number) => Promise<void>;
 };
 const defaultValue: TopPageStage = {
@@ -28,6 +29,7 @@ const defaultValue: TopPageStage = {
   j1Teams: [],
   j2Teams: [],
   j3Teams: [],
+  currentCompetitions: [],
   readItems: async () => {},
 };
 
@@ -86,6 +88,10 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
   const [j2Teams, setJ2Teams] = useState<TeamGet[]>([]);
   const [j3Teams, setJ3Teams] = useState<TeamGet[]>([]);
 
+  const [currentCompetitions, setCurrentCompetitions] = useState<SeasonGet[]>(
+    [],
+  );
+
   const handleLoading = (time: "start" | "end"): void => {
     time === "start" ? setIsLoading(true) : setIsLoading(false);
   };
@@ -119,6 +125,17 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
     setJ2Teams(j2Teams);
     setJ3Teams(j3Teams);
 
+    const seasonObj = await readItemsBase<Season[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.SEASON.ROOT,
+      params: { current: true },
+    });
+
+    if (seasonObj?.data) {
+      const converted = convert(ModelType.SEASON, seasonObj?.data);
+      setCurrentCompetitions(converted);
+    }
+
     handleLoading("end");
   };
 
@@ -129,6 +146,7 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
     j1Teams,
     j2Teams,
     j3Teams,
+    currentCompetitions,
     readItems,
   };
 
