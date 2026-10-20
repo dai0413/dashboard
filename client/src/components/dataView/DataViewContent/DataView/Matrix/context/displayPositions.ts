@@ -27,16 +27,10 @@ export const displayPositions: DisplayPosition[] = [
     positions: ["RCM", "LCM", "DM"],
   },
   {
-    key: "WB",
-    position: "ウイングバック",
-    color: positionColorMap.WB,
-    positions: ["RWB", "LWB"],
-  },
-  {
     key: "SB",
     position: "サイドバック",
     color: positionColorMap.SB,
-    positions: ["RSB", "LSB"],
+    positions: ["RSB", "LSB", "RWB", "LWB"],
   },
   {
     key: "CB",
