@@ -64,9 +64,9 @@ export const useAppearancePlotPanel = (
   const [selectedCompetitions, setSelectedCompetitions] = useState<string[]>(
     [],
   );
-  const [selectedFormation, setSelectedFormation] = useState<
-    string | undefined
-  >(undefined);
+  const [selectedFormation, setSelectedFormation] = useState<string | "BASE">(
+    "BASE",
+  );
 
   const reloadFun = useCallback(
     async (
@@ -159,16 +159,27 @@ export const useAppearancePlotPanel = (
       })),
     };
 
+    const formationFIlterItems = formationCounts.map((formationCount) => ({
+      key: formationCount.key,
+      label: `${formationCount.name} (${formationCount.count})`,
+      onClick: () => {
+        setSelectedFormation(formationCount.key);
+      },
+    }));
+
     const formationFilter: QuickFilterData = {
       name: "formations",
-      selectedKeys: selectedFormation ? [selectedFormation] : undefined,
-      items: formationCounts.map((formationCount) => ({
-        key: formationCount.key,
-        label: `${formationCount.name} (${formationCount.count})`,
-        onClick: () => {
-          setSelectedFormation(formationCount.key);
+      selectedKeys: [selectedFormation],
+      items: [
+        {
+          key: "BASE",
+          label: "BASE",
+          onClick: () => {
+            setSelectedFormation("BASE");
+          },
         },
-      })),
+        ...formationFIlterItems,
+      ],
     };
 
     return [competitionFilter, formationFilter];
@@ -187,15 +198,19 @@ export const useAppearancePlotPanel = (
       )?.position_formation;
 
       const positions =
-        positionByFormation ?? displayPositions.map((position) => position.key);
+        positionByFormation && positionByFormation?.length > 0
+          ? positionByFormation
+          : displayPositions.map((position) => position.key);
 
       const groupedPositions = getGroupedPositions(positions);
 
+      const groupedPlayers = createGroupedPlayers({
+        playerStatistics,
+        groupedPositions,
+      });
+
       return {
-        groupedPlayers: createGroupedPlayers({
-          playerStatistics,
-          groupedPositions,
-        }),
+        groupedPlayers: groupedPlayers,
         defaultOpenPositions: new Set(positions),
         topHeaderText: createTopHeaderText(date),
       };

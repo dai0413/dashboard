@@ -57,9 +57,9 @@ export const usePlayerPlotPanel = () => {
   const [selectedCompetitions, setSelectedCompetitions] = useState<string[]>(
     [],
   );
-  const [selectedFormation, setSelectedFormation] = useState<
-    string | undefined
-  >(undefined);
+  const [selectedFormation, setSelectedFormation] = useState<string | "BASE">(
+    "BASE",
+  );
 
   const [filteredNationalMatchSeries, setfilteredNationalMatchSeries] =
     useState<NationalMatchSeries[]>([]);
@@ -437,18 +437,29 @@ export const usePlayerPlotPanel = () => {
       }),
     };
 
+    const formationFIlterItems = formationCounts.map((formationCount) => {
+      return {
+        key: formationCount.key,
+        label: `${formationCount.name}  (${formationCount.count})`,
+        onClick: () => {
+          setSelectedFormation(formationCount.key);
+        },
+      };
+    });
+
     const formationFilter: QuickFilterData = {
       name: "formations",
-      selectedKeys: selectedFormation ? [selectedFormation] : undefined,
-      items: formationCounts.map((formationCount) => {
-        return {
-          key: formationCount.key,
-          label: `${formationCount.name}  (${formationCount.count})`,
+      selectedKeys: [selectedFormation],
+      items: [
+        {
+          key: "BASE",
+          label: "BASE",
           onClick: () => {
-            setSelectedFormation(formationCount.key);
+            setSelectedFormation("BASE");
           },
-        };
-      }),
+        },
+        ...formationFIlterItems,
+      ],
     };
 
     return [dateQuickFilterItems, competitionFilter, formationFilter];
