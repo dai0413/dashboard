@@ -25,6 +25,12 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     fieldType: "input",
     valueType: "text",
   },
+  order: {
+    key: "order",
+    label: "並び順",
+    fieldType: "input",
+    valueType: "number",
+  },
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);

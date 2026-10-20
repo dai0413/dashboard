@@ -41,6 +41,17 @@ export const teamCompetitionSeason: UIFieldDefinition<TeamCompetitionSeasonGet>[
       getValueType: ColumnType.FIELD,
     },
     {
+      key: "order",
+      field: "order",
+      label: "並び順",
+      type: "number",
+      filterable: true,
+      sortable: true,
+      displayOnDetail: true,
+      displayOnTable: true,
+      getValueType: ColumnType.FIELD,
+    },
+    {
       key: "note",
       field: "note",
       label: "メモ",

@@ -36,6 +36,7 @@ const TeamCompetitionSeasonSchema: Schema<ITeamCompetitionSeason> = new Schema<
       required: true,
     },
     note: { type: String },
+    order: { type: Number },
   },
   { timestamps: true },
 );

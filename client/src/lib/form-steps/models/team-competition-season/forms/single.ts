@@ -23,7 +23,7 @@ export const single: FormStep<ModelType.TEAM_COMPETITION_SEASON>[] = [
     stepLabel: "メモを入力",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["note"]),
+    fields: getFields(["order", "note"]),
   },
   createConfirmationStep<BaseModel>(baseModel),
 ];

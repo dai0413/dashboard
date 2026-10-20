@@ -18,7 +18,7 @@ export const bulk: FormStep<ModelType.TEAM_COMPETITION_SEASON>[] = [
     stepLabel: "チームを選択",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["team"]),
+    fields: getFields(["team", "order", "note"]),
     many: true,
   },
   createConfirmationStep<BaseModel>(baseModel),
