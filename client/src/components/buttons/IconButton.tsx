@@ -42,6 +42,7 @@ type IconButtonProps = {
   to?: string;
   direction?: "horizontal" | "vertical";
   className?: string;
+  style?: React.CSSProperties;
 };
 
 const IconButton: React.FC<IconButtonProps> = ({
@@ -52,6 +53,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   to,
   direction = "horizontal",
   className = "",
+  style,
 }) => {
   const navigate = useNavigate();
   const buttonColor = color ? colorMap[color].base : "primary";
@@ -148,6 +150,7 @@ const IconButton: React.FC<IconButtonProps> = ({
         to && navigate(to);
       }}
       className={finalClassName}
+      style={style}
       disabled={className?.includes("cursor-not-allowed")}
     >
       {IconComponent}

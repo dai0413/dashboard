@@ -11,7 +11,7 @@ const TopPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   } = summary;
 
   return (
-    <section className="space-y-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <>
       <h2 className="text-base font-semibold text-gray-800">{text}</h2>
 
       <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-4">
@@ -44,7 +44,7 @@ const TopPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
           />
         </div>
       </div>
-    </section>
+    </>
   );
 };
 

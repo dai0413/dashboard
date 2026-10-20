@@ -10,7 +10,7 @@ const LinePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
 
   return (
     <>
-      <div className="text-gray-600">{text}</div>
+      <h2 className="text-base font-semibold text-gray-800">{text}</h2>
       <PointLine teamMatchs={items.teamMatchs} plotData={items.plotData} />
     </>
   );

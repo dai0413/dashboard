@@ -18,7 +18,7 @@ const HomeStartingMemberPanel = ({ summary }: { summary: UseMatchSummary }) => {
 
   return (
     <>
-      <div className="text-gray-600">{text}</div>
+      <h2 className="text-base font-semibold text-gray-800">{text}</h2>
       <DataViewContainer
         modelType={ModelType.PLAYER_APPEARANCE}
         fieldDefinitions={playerAppearanceFieldDefinition}

@@ -9,14 +9,26 @@ const ClubTeam = () => {
 
   if (!id) return;
   const summary = useClubTeamSummary(id);
+  const primaryColor = summary.selected?.primaryColor;
 
   return (
     <div className="p-6">
       <Info summary={summary} />
 
-      <SummaryTabMenu items={tabItems} tab={summary.tab} />
+      <SummaryTabMenu
+        items={tabItems}
+        tab={summary.tab}
+        accentColor={primaryColor}
+      />
 
-      <PanelRenderer summary={summary} />
+      <section
+        className="space-y-4 rounded-xl border border-gray-200 border-l-4 bg-white p-4 shadow-sm"
+        style={{
+          borderLeftColor: primaryColor || "#E5E7EB",
+        }}
+      >
+        <PanelRenderer summary={summary} />
+      </section>
     </div>
   );
 };
