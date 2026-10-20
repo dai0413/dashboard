@@ -8,13 +8,18 @@ export const PositionPlayerList = ({ position, players }: PositionListItem) => {
 
   if (!point) return;
 
-  const sorted = players.sort((a, b) => {
-    if (!a.positionCounts[position] && !b.positionCounts[position]) return 0;
-    if (!a.positionCounts[position]) return 1;
-    if (!b.positionCounts[position]) return -1;
+  const sorted = [...players].sort((a, b) => {
+    const aCount = a.positionCounts[position] ?? 0;
+    const bCount = b.positionCounts[position] ?? 0;
 
-    return b.positionCounts[position] - a.positionCounts[position];
+    return bCount - aCount;
   });
+
+  const positionStyle = point.color
+    ? {
+        backgroundColor: `color-mix(in srgb, ${point.color} 30%, white)`,
+      }
+    : {};
 
   return (
     <div
@@ -24,8 +29,11 @@ export const PositionPlayerList = ({ position, players }: PositionListItem) => {
         top: `${point.y}%`,
       }}
     >
-      <div className="overflow-hidden rounded-md bg-black/60 text-sm text-white shadow-lg">
-        <div className="border-b border-white/20 px-3 py-1 text-center font-bold">
+      <div className="w-[160px] overflow-hidden rounded-md border border-gray-600 bg-white text-sm shadow-lg">
+        <div
+          className="border-gray-600 px-3 py-1 text-center font-bold"
+          style={positionStyle}
+        >
           {position}
         </div>
 
@@ -35,7 +43,10 @@ export const PositionPlayerList = ({ position, players }: PositionListItem) => {
           }
         >
           {sorted.map(({ player, positionCounts }) => (
-            <div key={player._id} className="flex items-center gap-4 px-3 py-1">
+            <div
+              key={player._id}
+              className="flex items-center gap-2 px-2 py-1 text-sm text-gray-500"
+            >
               <div className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">
                 {player._id ? (
                   <Link

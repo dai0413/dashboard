@@ -10,7 +10,14 @@ export const PositionPlayers = ({ groupedPlayers }: PositionPlayersProps) => {
   return (
     <div className="flex w-full flex-col items-center">
       <div className="relative h-[800px] w-[800px] rounded-md border border-gray-300">
-        <Pitch />
+        <Pitch
+          options={{
+            centerCircle: false,
+            penaltyArc: false,
+            penaltyArea: false,
+            goalArea: false,
+          }}
+        />
 
         {groupedPlayers.map(({ key, ...data }) => (
           <PositionPlayerList key={key} {...data} />
