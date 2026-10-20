@@ -19,6 +19,7 @@ import { NationalMatchSeries } from "../../../types/models/national-match-series
 import { PlayerRegistrationGet } from "../../../types/models/player-registration";
 import { useDataView } from "../../../context/dataView-context";
 import { GroupedPlayers } from "./DataView/Matrix/type";
+import { TransferGet } from "../../../types/models/transfer";
 
 type Props<T> = {
   noItem?: boolean;
@@ -83,6 +84,18 @@ type Props<T> = {
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
+    };
+    [ViewMode.BIRTH_YEAR_POSITION_MATRIX]?: {
+      teamId: string;
+      playerRegistrations: PlayerRegistrationGet[];
+      matches: MatchGet[];
+      playerAppearance: PlayerAppearanceGet[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
+      transferIns: TransferGet[];
+      transferOuts: TransferGet[];
+      baseDate?: Date;
     };
   };
 };

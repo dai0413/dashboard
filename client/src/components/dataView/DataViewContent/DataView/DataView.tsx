@@ -20,12 +20,13 @@ import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/st
 import { MatchGet } from "../../../../types/models/match";
 import { FormationCounts } from "../../../../pages/Summary/Team/ClubTeam/types";
 import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
-import { MatchMatrix, SeriesMatrix } from "./Matrix";
+import { MatchMatrix, SeriesMatrix, BirthYearPositionMatrix } from "./Matrix";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { PositionPlayers } from "../../../formation/PositionPlayers";
 import { GroupedPlayers } from "./Matrix/type";
+import { TransferGet } from "../../../../types/models/transfer";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -75,6 +76,18 @@ type DataViewProps<T> = {
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
+    };
+    [ViewMode.BIRTH_YEAR_POSITION_MATRIX]?: {
+      teamId: string;
+      playerRegistrations: PlayerRegistrationGet[];
+      matches: MatchGet[];
+      playerAppearance: PlayerAppearanceGet[];
+      groupedPlayers: GroupedPlayers[];
+      defaultOpenPositions: Set<string>;
+      topHeaderText: string;
+      transferIns: TransferGet[];
+      transferOuts: TransferGet[];
+      baseDate?: Date;
     };
   };
 };
@@ -254,6 +267,39 @@ const DataView = <T,>({
         nationalCallUp={nationalCallUp}
         nationalMatchSeries={nationalMatchSeries}
         playerAppearance={playerAppearance}
+      />
+    );
+  }
+
+  if (
+    viewMode === ViewMode.BIRTH_YEAR_POSITION_MATRIX &&
+    viewData[ViewMode.BIRTH_YEAR_POSITION_MATRIX]
+  ) {
+    const {
+      teamId,
+      playerAppearance,
+      playerRegistrations,
+      matches,
+      defaultOpenPositions,
+      groupedPlayers,
+      topHeaderText,
+      transferOuts,
+      transferIns,
+      baseDate,
+    } = viewData[ViewMode.BIRTH_YEAR_POSITION_MATRIX];
+
+    return (
+      <BirthYearPositionMatrix
+        teamId={teamId}
+        topHeaderText={topHeaderText}
+        playerAppearance={playerAppearance}
+        playerRegistrations={playerRegistrations}
+        matches={matches}
+        defaultOpenPositions={defaultOpenPositions}
+        groupedPlayers={groupedPlayers}
+        transferIns={transferIns}
+        transferOuts={transferOuts}
+        baseDate={baseDate}
       />
     );
   }
