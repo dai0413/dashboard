@@ -7,7 +7,7 @@ import { LinkField, ViewMode } from "../../../../types/types";
 import { convertToDisplayListData } from "../../../modals/Detail/utils/convertToDisplayListData ";
 import { useModal } from "../../../../context/modal-context";
 import { hasId } from "../../../../utils/data/getIdKey";
-import { ModelType } from "../../../../types/models";
+import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { CalendarTable } from "./Calendar/CalendarTable";
 import { Formation } from "../../../formation";
 import { RadarChart } from "../../../plot/RadarChart/RadarChart";
@@ -121,17 +121,15 @@ const DataView = <T,>({
         return;
       }
 
-      open(
-        modelType,
-        row._id,
-        convertToDisplayListData({
-          data: row,
-          model: {
-            modelType,
-            linkField: linkField || [],
-          },
-        }),
-      );
+      const data = convertToDisplayListData({
+        data: row as unknown as GettedModelDataMap[typeof modelType],
+        model: {
+          modelType,
+          linkField: linkField || [],
+        },
+      });
+
+      open(modelType, row._id, data);
     };
   }, [modelType, linkField, open]);
 
