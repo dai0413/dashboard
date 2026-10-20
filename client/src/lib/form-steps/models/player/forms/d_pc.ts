@@ -6,6 +6,7 @@ import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
 import { PlayerForm } from "../../../../../types/models/player";
+import { setCitizenship } from "../createQuickFilterItems/setCitizenship";
 
 type BaseModel = ModelType.PLAYER;
 const baseModel = ModelType.PLAYER;
@@ -27,6 +28,7 @@ export const d_pc: FormStep<ModelType.PLAYER>[] = [
       return obj.data;
     },
     many: true,
+    createQuickFilterItems: (args) => setCitizenship(args.api),
   },
   {
     stepLabel: "取得したデータを編集してください",

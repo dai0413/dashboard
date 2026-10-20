@@ -2,6 +2,7 @@ import { FormStep, StepType } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
+import { setCitizenship } from "../createQuickFilterItems/setCitizenship";
 
 type BaseModel = ModelType.PLAYER;
 const baseModel = ModelType.PLAYER;
@@ -18,6 +19,7 @@ export const single: FormStep<ModelType.PLAYER>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["dob", "pob"]),
+    createQuickFilterItems: (args) => setCitizenship(args.api),
   },
   {
     stepLabel: "国籍",
