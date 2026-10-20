@@ -78,6 +78,10 @@ const FieldRow = ({
           {filterCondition.operator !== "is-empty" &&
           filterCondition.operator !== "is-not-empty" ? (
             <FilterFields
+              color={
+                filterCondition.key.includes("Color") ||
+                filterCondition.key.includes("color")
+              }
               type={filterCondition.type}
               value={f ?? ""}
               onChange={handleFieldValue}

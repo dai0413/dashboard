@@ -7,6 +7,7 @@ export const MultiInput = ({
   values,
   supportButton,
   onChangeItem,
+  color,
 }: Omit<MultiInputProps, "multi">) => {
   return (
     <ArrayFieldWrapper
@@ -19,6 +20,7 @@ export const MultiInput = ({
             onChange={(value) => onChangeItem(index, value)}
             placeholder=""
             supportButton={supportButton}
+            color={color}
           />
         </div>
       )}

@@ -6,6 +6,7 @@ export const SingleInput = ({
   value,
   onChange,
   supportButton,
+  color,
 }: SingleInputProps) => {
   return (
     <InputField
@@ -14,6 +15,7 @@ export const SingleInput = ({
       onChange={onChange}
       placeholder=""
       supportButton={supportButton}
+      color={color}
     />
   );
 };

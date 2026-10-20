@@ -8,6 +8,7 @@ type FilterFieldsProps = {
   onChange: (value: string | number | Date | boolean | undefined) => void;
   onChangeObj?: (value: Record<string, any> | undefined) => void;
   options: OptionArray;
+  color: boolean;
 };
 
 const FilterFields = ({
@@ -16,11 +17,17 @@ const FilterFields = ({
   onChange,
   onChangeObj,
   options,
+  color,
 }: FilterFieldsProps) => {
   switch (type) {
     case "string":
       return (
-        <InputField type="text" value={value as string} onChange={onChange} />
+        <InputField
+          type="text"
+          value={value as string}
+          onChange={onChange}
+          color={color}
+        />
       );
     case "checkbox":
       return (

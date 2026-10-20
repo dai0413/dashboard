@@ -7,6 +7,7 @@ export type SingleInputProps = Base & {
   multi?: false;
   value: string | number | Date;
   onChange: (value: string | number | boolean | Date | undefined) => void;
+  color: boolean;
 };
 
 export type MultiInputProps = Base & {
@@ -16,4 +17,5 @@ export type MultiInputProps = Base & {
     index: number,
     item: string | number | boolean | Date | undefined,
   ) => void;
+  color: boolean;
 };

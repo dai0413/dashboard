@@ -8,6 +8,7 @@ type InputFieldProps = {
   onChange: (value: string | number | Date | boolean | undefined) => void;
   placeholder?: string;
   supportButton?: boolean;
+  color?: boolean;
 };
 
 type InternalValue = string | number | boolean | "";
@@ -73,6 +74,7 @@ const InputField = ({
   onChange,
   placeholder,
   supportButton,
+  color = false,
 }: InputFieldProps) => {
   const [internalValue, setInternalValue] = useState<InternalValue>(() => {
     if (type === "boolean" || typeof value === "boolean") return Boolean(value);
@@ -148,6 +150,25 @@ const InputField = ({
       className={`flex flex-col gap-2 ${displaySupportButton ? "" : "w-full"}`}
     >
       <div className="flex items-center gap-x-2">
+        {/* カラーピッカー */}
+        {color && (
+          <input
+            type="color"
+            value={
+              typeof internalValue === "string" &&
+              /^#[0-9A-Fa-f]{6}$/.test(internalValue)
+                ? internalValue
+                : "#000000"
+            }
+            onChange={(e) => {
+              handleChange(e);
+            }}
+            className="h-10 w-10 shrink-0 cursor-pointer rounded border border-gray-300 p-1"
+            title="色を選択"
+          />
+        )}
+
+        {/* テキスト入力 */}
         <input
           type={type === "boolean" ? "checkbox" : type}
           className="w-full border border-gray-300 rounded px-3 py-2"
@@ -157,6 +178,7 @@ const InputField = ({
           placeholder={placeholder}
           onChange={handleChange}
         />
+
         {/* クリアボタン */}
         <button
           type="button"

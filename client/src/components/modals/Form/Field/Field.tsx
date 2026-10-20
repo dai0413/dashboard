@@ -273,6 +273,10 @@ const RenderFieldBase = <T extends keyof FormTypeMap>({
 
       return (
         <InputFieldRenderer
+          color={
+            String(formDataKey).includes("color") ||
+            String(formDataKey).includes("Color")
+          }
           multi={multi}
           supportButton={supportButton}
           type={valueType}
