@@ -6,6 +6,7 @@ import { Data } from "../../../../../types/types";
 import { readItemsBase } from "../../../../../lib/api";
 import { NationalCallup } from "../../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../../types/models/national-match-series";
+import { convert } from "../../../../../lib/convert/DBtoGetted";
 
 export const usePlayerPanel = () => {
   const [players, setPlayers] = useState<
@@ -68,7 +69,9 @@ export const usePlayerPanel = () => {
         );
       });
 
-    const players = uniqueDatas.map((data) => data.player);
+    const players = uniqueDatas.map((data) =>
+      convert(ModelType.PLAYER, data.player),
+    );
 
     return setPlayers({
       data: players,

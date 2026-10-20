@@ -11,7 +11,7 @@ export const bulk: FormStep<ModelType.PLAYER>[] = [
     stepLabel: "名前・生年月日・出身地を入力",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["name", "en_name", "dob", "pob"]),
+    fields: getFields(["name", "en_name", "dob", "pob", "citizenship"]),
     many: true,
   },
   createConfirmationStep<BaseModel>(baseModel),

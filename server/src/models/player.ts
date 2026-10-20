@@ -19,6 +19,10 @@ const PlayerMongooseSchema: Schema<IPlayer> = new Schema(
     pob: { type: String },
     old_id: { type: String },
     normalized_en_name: { type: String },
+    citizenship: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Country",
+    },
   },
   { timestamps: true },
 );

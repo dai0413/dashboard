@@ -19,5 +19,11 @@ export const single: FormStep<ModelType.PLAYER>[] = [
     modelType: baseModel,
     fields: getFields(["dob", "pob"]),
   },
+  {
+    stepLabel: "国籍",
+    type: StepType.FORM,
+    modelType: baseModel,
+    fields: getFields(["citizenship"]),
+  },
   createConfirmationStep<BaseModel>(baseModel),
 ];

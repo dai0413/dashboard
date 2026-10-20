@@ -200,6 +200,9 @@
 | transferurl     | 文字列            | transfer      |         |         |
 | sofaurl         | 文字列            | sofa          |         |         |
 | normalized_name | 文字列            | チーム名      |         |         |
+| primaryColor    | 文字色            | 第1色         |         |         |
+| secondaryColor  | 文字色            | 第2色         |         |         |
+| tertiaryColor   | 文字色            | 第3色         |         |         |
 
 ### ENUM
 
@@ -225,13 +228,14 @@
 
 ### フィールド一覧
 
-| フィールド         | 型     | 日本語     | require | default |
-| ------------------ | ------ | ---------- | ------- | ------- |
-| name               | 文字列 | 名前       | true    |         |
-| en_name            | 文字列 | 英語名     |         |         |
-| normalized_en_name | 文字列 | 正規済英名 |         |         |
-| dob                | 日付   | 生年月日   |         |         |
-| pob                | 文字列 | 出身地     |         |         |
+| フィールド         | 型                  | 日本語     | require | default |
+| ------------------ | ------------------- | ---------- | ------- | ------- |
+| name               | 文字列              | 名前       | true    |         |
+| en_name            | 文字列              | 英語名     |         |         |
+| normalized_en_name | 文字列              | 正規済英名 |         |         |
+| dob                | 日付                | 生年月日   |         |         |
+| pob                | 文字列              | 出身地     |         |         |
+| citizenship        | [外部キー(Country)] | 国籍       |         |         |
 
 ### 自動入力(server)
 
@@ -573,6 +577,7 @@
 | season      | 外部キー(Season)      | シーズン | true    |         |
 | competition | 外部キー(Competition) | 大会     | true    |         |
 | note        | 文字列                | 備考     |         |         |
+| order       | 数字                  | 並び順   |         |         |
 
 ### 組み合わせ (Mongoose)
 

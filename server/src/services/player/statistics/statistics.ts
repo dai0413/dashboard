@@ -19,6 +19,8 @@ import {
   resolveStatisticsGroupIds,
 } from "./resolve/index.js";
 import { Types } from "mongoose";
+import { player } from "@dai0413/myorg-shared/models-config";
+import z from "zod";
 
 const matchQueryConfig = [
   {
@@ -38,6 +40,13 @@ const matchQueryConfig = [
     type: "ObjectId",
   },
 ];
+
+const {
+  POPULATE_PATHS,
+  SCHEMA: { RESPONSE },
+} = player();
+
+type Response = z.infer<typeof RESPONSE>;
 
 // playerなし season必須
 // → seasonから対象playerを決定
@@ -90,14 +99,25 @@ export const getPlayerStatistics = async (
   }
 
   const [players, eventTypes] = await Promise.all([
-    PlayerModel.find({ _id: { $in: playerObjectIds } }).lean(),
+    PlayerModel.find({ _id: { $in: playerObjectIds } })
+      .populate(POPULATE_PATHS)
+      .lean<Response[]>()
+      .exec(),
     MatchEventTypeModel.find({
       name: { $in: ["得点", "アシスト"] },
     }).lean(),
   ]);
 
   // _id(string) -> player のMapを作成
-  const playerMap = new Map(players.map((p) => [p._id.toString(), p]));
+  const playerMap: Map<string, Response> = new Map(
+    players.map((p) => [
+      p._id.toString(),
+      {
+        ...p,
+        _id: p._id.toString(),
+      },
+    ]),
+  );
 
   const goalId = eventTypes.find((e) => e.name === "得点")?._id;
   const assistId = eventTypes.find((e) => e.name === "アシスト")?._id;

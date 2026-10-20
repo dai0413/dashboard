@@ -1,17 +1,22 @@
-export type Player = {
-  _id: string;
-  name?: string;
-  en_name?: string;
-  dob?: Date;
-  pob?: string;
-  old_id?: string;
-  normalized_en_name?: string;
+import { PlayerFormSchema, PlayerPopulatedSchema } from "@dai0413/myorg-shared";
+import { Label } from "../types";
+import { Country } from "./country";
+import z from "zod";
+
+export type Player = Omit<
+  z.infer<typeof PlayerPopulatedSchema>,
+  "citizenship"
+> & {
+  citizenship?: Country[];
 };
 
-type PlayerPost = Omit<Player, "_id" | "dob"> & {
-  dob: string;
+export type PlayerForm = Partial<
+  Omit<z.infer<typeof PlayerFormSchema>, "citizenship" | "dob"> & {
+    citizenship: Country["_id"][];
+    dob: string;
+  }
+>;
+
+export type PlayerGet = Omit<Player, "citizenship"> & {
+  citizenship?: Label[];
 };
-
-export type PlayerForm = Partial<PlayerPost>;
-
-export type PlayerGet = Player;

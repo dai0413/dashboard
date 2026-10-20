@@ -59,6 +59,19 @@ export const player: UIFieldDefinition<PlayerGet>[] = [
     getValueType: ColumnType.FIELD,
   },
   {
+    key: "citizenship",
+    label: "国籍",
+    type: "select",
+    filterable: true,
+    sortable: true,
+    displayOnDetail: true,
+    displayOnTable: true,
+    getValueType: ColumnType.CUSTOM,
+    getData: (data: PlayerGet) => {
+      return data.citizenship?.map((c) => c) || [];
+    },
+  },
+  {
     key: "old_id",
     field: "old_id",
     label: "旧ID",

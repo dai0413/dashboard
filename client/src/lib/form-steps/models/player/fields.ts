@@ -31,6 +31,13 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     fieldType: "input",
     valueType: "text",
   },
+  citizenship: {
+    key: "citizenship",
+    label: "国籍",
+    fieldType: "table",
+    valueType: "option",
+    multi: true,
+  },
 };
 
 export const { getFields } = createFieldHelpers<BaseModel, Key>(fieldMap);

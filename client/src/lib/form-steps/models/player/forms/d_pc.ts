@@ -32,7 +32,7 @@ export const d_pc: FormStep<ModelType.PLAYER>[] = [
     stepLabel: "取得したデータを編集してください",
     type: StepType.FORM,
     modelType: baseModel,
-    fields: getFields(["name", "en_name", "dob", "pob"]),
+    fields: getFields(["name", "en_name", "dob", "pob", "citizenship"]),
     many: true,
   },
   createConfirmationStep<BaseModel>(baseModel),
