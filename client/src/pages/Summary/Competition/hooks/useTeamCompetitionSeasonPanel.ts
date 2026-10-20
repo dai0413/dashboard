@@ -47,7 +47,9 @@ export const useTeamCompetitionSeasonPanel = () => {
       let processed = convert(ModelType.TEAM_COMPETITION_SEASON, obj.data);
 
       setTeamCompetitionSeasons({
-        data: processed,
+        data: processed.sort((a, b) =>
+          a.order && b.order ? a.order - b.order : -1,
+        ),
         totalCount: obj.totalCount ? obj.totalCount : 0,
         page: obj.page ? obj.page : 1,
         isLoading: false,

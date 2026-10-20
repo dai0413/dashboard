@@ -26,7 +26,9 @@ export const getSeasons = async (
 
   if (!obj) return [];
 
-  const seasonIds = obj.data.map((t) => t.season._id);
+  const seasonIds = obj.data
+    .sort((a, b) => (a.order && b.order ? a.order - b.order : -1))
+    .map((t) => t.season._id);
 
   return seasonIds;
 };

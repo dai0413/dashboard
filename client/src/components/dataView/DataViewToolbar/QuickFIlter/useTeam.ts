@@ -65,7 +65,7 @@ export const useTeam = (): {
     const teamCompetitionSeason = convert(
       ModelType.TEAM_COMPETITION_SEASON,
       teamCompetitionSeasonObj.data,
-    );
+    ).sort((a, b) => (a.order && b.order ? a.order - b.order : -1));
 
     const teams = teamCompetitionSeason.map((t) => t.team);
     const filterCondition: FilterableFieldDefinition[] = [

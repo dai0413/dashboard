@@ -52,7 +52,9 @@ export const setTeamByCompetition: CreateFilterConditions<
 
   if (!obj || !obj.data) return null;
 
-  const teamCompetitionSeasons: TeamCompetitionSeason[] = obj.data;
+  const teamCompetitionSeasons: TeamCompetitionSeason[] = obj.data.sort(
+    (a, b) => (a.order && b.order ? a.order - b.order : -1),
+  );
 
   if (teamCompetitionSeasons.length === 0) return null;
 

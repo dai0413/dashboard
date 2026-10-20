@@ -65,11 +65,11 @@ const readTeams = async (competitionName: string): Promise<TeamGet[]> => {
 
   if (!teamCompetitionSeasonRes || !teamCompetitionSeasonRes.data) return [];
 
-  const teams = teamCompetitionSeasonRes?.data.map((d) => d.team);
+  const teams = teamCompetitionSeasonRes?.data
+    .sort((a, b) => (a.order && b.order ? a.order - b.order : -1))
+    .map((d) => d.team);
 
-  const teamGets = convert(ModelType.TEAM, teams).sort((a, b) =>
-    (a.enTeam ?? "").localeCompare(b.enTeam ?? ""),
-  );
+  const teamGets = convert(ModelType.TEAM, teams);
   return teamGets;
 };
 
