@@ -8,6 +8,8 @@ import {
 import mongoose, { Types, Schema, Document, Model } from "mongoose";
 import z from "zod";
 
+const hexColorPattern = /^#[0-9A-Fa-f]{6}$/;
+
 type TeamType = z.infer<typeof TeamZodSchema>;
 
 export interface ITeam extends Omit<TeamType, "_id" | "country">, Document {
@@ -32,6 +34,20 @@ const TeamSchema: Schema<ITeam> = new Schema<ITeam, any, ITeam>(
     transferurl: { type: String },
     sofaurl: { type: String },
     normalized_name: { type: String },
+
+    primaryColor: {
+      type: String,
+      match: hexColorPattern,
+    },
+    secondaryColor: {
+      type: String,
+      match: hexColorPattern,
+    },
+    tertiaryColor: {
+      type: String,
+      match: hexColorPattern,
+    },
+
     old_id: { type: String },
   },
   { timestamps: true },

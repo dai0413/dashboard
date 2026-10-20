@@ -31,6 +31,24 @@ export const fieldMap: Record<Key, FormFieldDefinition<BaseModel>> = {
     fieldType: "table",
     valueType: "option",
   },
+  primaryColor: {
+    key: "primaryColor",
+    label: "第1色",
+    fieldType: "input",
+    valueType: "text",
+  },
+  secondaryColor: {
+    key: "secondaryColor",
+    label: "第2色",
+    fieldType: "input",
+    valueType: "text",
+  },
+  tertiaryColor: {
+    key: "tertiaryColor",
+    label: "第3色",
+    fieldType: "input",
+    valueType: "text",
+  },
   genre: {
     key: "genre",
     label: "ジャンル",
