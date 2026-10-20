@@ -154,6 +154,10 @@ const viewModeMap: Record<ViewMode, { text: string; icon: React.ReactNode }> = {
     text: "ポジション",
     icon: <TableCellsIcon className="w-6 h-6" />,
   },
+  [ViewMode.BIRTH_YEAR_POSITION_MATRIX]: {
+    text: "生年＊ポジ",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
 };
 
 const DataViewToolBar = <Data, Form>({
