@@ -17,6 +17,7 @@ import {
   PlayerStatisticsPanel,
   FormationPlotPanel,
   TopPanel,
+  BirthYearPositionPanel,
 } from "../panels/index";
 import { CLUB_TEAM_TAB, UseClubTeamSummary } from "../types";
 
@@ -79,6 +80,9 @@ const PanelRenderer = ({ summary }: { summary: UseClubTeamSummary }) => {
 
     case CLUB_TEAM_TAB.FORMATION_PLOT:
       return <FormationPlotPanel summary={summary} />;
+
+    case CLUB_TEAM_TAB.BIRTH_YEAR_POSITION_MATRIX:
+      return <BirthYearPositionPanel summary={summary} />;
 
     default:
       return null;

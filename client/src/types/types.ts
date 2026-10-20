@@ -78,6 +78,7 @@ export enum ViewMode {
   POSITION_LIST = "position_list",
   MATCH_MATRIX = "match_matrix",
   SERIES_MATRIX = "series_matrix",
+  BIRTH_YEAR_POSITION_MATRIX = "birth_year_position_matrix",
 }
 
 export enum RowSpacing {

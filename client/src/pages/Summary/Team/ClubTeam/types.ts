@@ -31,6 +31,7 @@ export const CLUB_TEAM_TAB = {
   APPEARANCE_PLOT: "appearancePlot",
   PLAYER_STATISTICS: "playerStatistics",
   FORMATION_PLOT: "formationPlot",
+  BIRTH_YEAR_POSITION_MATRIX: "birthYearPositionMatrix",
 } as const;
 
 export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
@@ -112,6 +113,20 @@ type ClubTeamPanels = {
     teamMatchFormations: TeamMatchFormationGet[];
     groupedPlayers: GroupedPlayers[];
     quickFilterDatas: QuickFilterData[];
+  }>;
+
+  birthYearPositionMatrix: ServerDepPanelSummary<{
+    playerAppearance: PlayerAppearanceGet[];
+    playerStatistics: PlayerStatistic[];
+    playerRegistrations: PlayerRegistrationGet[];
+    matches: MatchGet[];
+    groupedPlayers: GroupedPlayers[];
+    defaultOpenPositions: Set<string>;
+    topHeaderText: string;
+    quickFilterDatas: QuickFilterData[];
+    transferOuts: GettedModelDataMap[ModelType.TRANSFER][];
+    transferIns: GettedModelDataMap[ModelType.TRANSFER][];
+    baseDate?: Date;
   }>;
 };
 

@@ -91,4 +91,9 @@ export const tabItems: SummaryTabItems[] = [
     key: CLUB_TEAM_TAB.FORMATION_PLOT,
     text: "フォーメーション",
   },
+  {
+    icon: "pie-plot_1",
+    key: CLUB_TEAM_TAB.BIRTH_YEAR_POSITION_MATRIX,
+    text: "年齢＊ポジ",
+  },
 ];

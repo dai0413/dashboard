@@ -16,3 +16,4 @@ export { default as AppearancePlot } from "./AppearancePlot";
 export { default as PlayerStatisticsPanel } from "./PlayerStatisticsPanel";
 export { default as FormationPlotPanel } from "./FormationPlotPanel";
 export { default as TopPanel } from "./TopPanel";
+export { default as BirthYearPositionPanel } from "./BirthYearPositionPanel";

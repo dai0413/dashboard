@@ -82,6 +82,10 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
     id,
     seasonDates.normalSeason.seasonRange,
   );
+  const birthYearPositionMatrixPanel = useAppearancePlotPanel(
+    id,
+    seasonDates.normalSeason.seasonRange,
+  );
   const formationPlotPanel = useFormationPlotPanel(
     id,
     seasonDates.normalSeason.seasonRange,
@@ -118,7 +122,13 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
       readPlayerRegistrations(teamId, seasonId),
       readStatsL(teamId, seasonId),
       readStaffRegistrations(teamId, seasonId),
-      appearancePlotPanel.reloadFun(
+      birthYearPositionMatrixPanel.reloadFun(
+        [],
+        [],
+        teamId,
+        seasonDates.normalSeason.seasonRange,
+      ),
+      birthYearPositionMatrixPanel.reloadFun(
         [],
         [],
         teamId,
@@ -437,6 +447,30 @@ export const useClubTeamSummary = (id: string): UseClubTeamSummary => {
         isLoading: formationPlotPanel.isLoading,
         reloadFun: async (filterConditions, sortConditions) =>
           formationPlotPanel.reloadFun(
+            filterConditions,
+            sortConditions,
+            id,
+            seasonDates.normalSeason.seasonRange,
+          ),
+      },
+
+      birthYearPositionMatrix: {
+        key: `${selectedTab}-${selectedteamCompetitionSeason?.season._id}`,
+        text: `${selectedteamCompetitionSeason?.season.name} ${selected?.abbr || selected?.team} のスタッツ`,
+        items: {
+          ...birthYearPositionMatrixPanel.items,
+          groupedPlayers: [
+            ...birthYearPositionMatrixPanel.items.groupedPlayers,
+          ].reverse(),
+          transferOuts: transferOuts.data,
+          transferIns: transferIns.data,
+          baseDate: seasonDates.normalSeason.startDate
+            ? new Date(seasonDates.normalSeason.startDate)
+            : undefined,
+        },
+        isLoading: birthYearPositionMatrixPanel.isLoading,
+        reloadFun: async (filterConditions, sortConditions) =>
+          birthYearPositionMatrixPanel.reloadFun(
             filterConditions,
             sortConditions,
             id,
