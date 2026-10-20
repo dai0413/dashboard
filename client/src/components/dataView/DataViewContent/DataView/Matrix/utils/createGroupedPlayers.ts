@@ -51,137 +51,62 @@ const getNearestPosition = (
   return nearestPosition;
 };
 
-const getGroupedPosition = (
-  player: PlayerStatistic,
-  allPositions: string[],
-): string | undefined => {
-  const playerPositions = [
-    ...Object.keys(player.positionCounts),
-    player.mainPosition,
-  ].filter((p) => typeof p === "string");
-  const uniquePositions = [...new Set(playerPositions)];
-
-  // 1. 関連ポジション群を相互に補完する
-  // 重複を除去
-  const positionGroups = [
-    { primary: ["RWG", "LWG", "WG"], related: ["RSH", "LSH", "SH"] },
-    { primary: ["RSH", "LSH", "SH"], related: ["RWG", "LWG", "WG"] },
-    { primary: ["RSB", "LSB", "SB"], related: ["RWB", "LWB", "WB"] },
-    { primary: ["RWB", "LWB", "WB"], related: ["RSB", "LSB", "SB"] },
-  ];
-
-  for (const { primary, related } of positionGroups) {
-    const hasPrimary = primary.some((p) => allPositions.includes(p));
-    const hasRelated = related.some((p) => allPositions.includes(p));
-
-    if (hasPrimary && !hasRelated) {
-      const matchedPosition = uniquePositions.find((position) =>
-        related.includes(position),
-      );
-
-      if (matchedPosition) {
-        // 対応するポジションが allPositions に存在すればそれを返す
-        const targetPosition = primary.find((p) => allPositions.includes(p));
-
-        if (targetPosition) {
-          return targetPosition;
-        }
-      }
-    }
-  }
-
-  // 1. groupedPositions に存在する position があれば、
-  //    positionCounts の多い順に採用
-  const candidates = Object.entries(player.positionCounts)
-    .filter(([position]) => allPositions.includes(position))
-    .sort(([, countA], [, countB]) => (countB ?? 0) - (countA ?? 0));
-
-  if (candidates[0]) {
-    return candidates[0][0];
-  }
-
-  // 2. mainPosition が groupedPositions に存在するなら優先
-  if (player.mainPosition && allPositions.includes(player.mainPosition)) {
-    return player.mainPosition;
-  }
-
-  // 3. R/L付きのポジションを、R/Lなしのポジションに寄せる
-  for (const position of uniquePositions) {
-    const basePosition = position.replace(/^[RL]/, "");
-
-    if (allPositions.includes(basePosition)) {
-      return basePosition;
-    }
-  }
-
-  // 4. R/L を付けて一致する position を探す
-  for (const position of uniquePositions) {
-    if (allPositions.includes(`R${position}`)) {
-      return `R${position}`;
-    }
-
-    if (allPositions.includes(`L${position}`)) {
-      return `L${position}`;
-    }
-  }
-
-  // 5. それでも該当しなければ、位置的に最も近い grouped position
-  const nearestPosition = getNearestPosition(uniquePositions, allPositions);
-
-  return nearestPosition;
-};
+const POSITION_GROUPS = [
+  { primary: ["RWG", "LWG", "WG"], related: ["RSH", "LSH", "SH"] },
+  { primary: ["RSH", "LSH", "SH"], related: ["RWG", "LWG", "WG"] },
+  { primary: ["RSB", "LSB", "SB"], related: ["RWB", "LWB", "WB"] },
+  { primary: ["RWB", "LWB", "WB"], related: ["RSB", "LSB", "SB"] },
+];
 
 const getGroupedPositions = (
   player: PlayerStatistic,
   allPositions: string[],
+  multiPosition = false,
 ): string[] => {
-  const playerPositions = [
-    ...Object.keys(player.positionCounts),
-    player.mainPosition,
-  ].filter((p): p is string => typeof p === "string");
-
-  // 重複を除去
-  const uniquePositions = [...new Set(playerPositions)];
-
-  // 1. 関連ポジション群を相互に補完する
-  // 重複を除去
-  const positionGroups = [
-    { primary: ["RWG", "LWG", "WG"], related: ["RSH", "LSH", "SH"] },
-    { primary: ["RSH", "LSH", "SH"], related: ["RWG", "LWG", "WG"] },
-    { primary: ["RSB", "LSB", "SB"], related: ["RWB", "LWB", "WB"] },
-    { primary: ["RWB", "LWB", "WB"], related: ["RSB", "LSB", "SB"] },
+  const uniquePositions = [
+    ...new Set(
+      [...Object.keys(player.positionCounts), player.mainPosition].filter(
+        (p): p is string => typeof p === "string",
+      ),
+    ),
   ];
 
-  for (const { primary, related } of positionGroups) {
+  // 1. 関連ポジションを相互に補完
+  for (const { primary, related } of POSITION_GROUPS) {
     const hasPrimary = primary.some((p) => allPositions.includes(p));
     const hasRelated = related.some((p) => allPositions.includes(p));
 
     if (hasPrimary && !hasRelated) {
-      const matchedPosition = uniquePositions.find((position) =>
-        related.includes(position),
+      const hasRelatedPosition = uniquePositions.some((p) =>
+        related.includes(p),
       );
 
-      if (matchedPosition) {
-        // 対応するポジションが allPositions に存在すればそれを返す
-        const targetPosition = primary.find((p) => allPositions.includes(p));
+      if (hasRelatedPosition) {
+        const target = primary.find((p) => allPositions.includes(p));
 
-        if (targetPosition) {
-          return [targetPosition];
-        }
+        if (target) return [target];
       }
     }
   }
 
-  // 1. groupedPositions に直接一致するポジションをすべて取得
-  const matchedPositions = uniquePositions.filter((position) =>
-    allPositions.includes(position),
-  );
+  // 2. allPositions に直接一致するポジション
+  if (multiPosition) {
+    const matched = uniquePositions.filter((p) => allPositions.includes(p));
 
-  if (matchedPositions.length > 0) {
-    return matchedPositions;
+    if (matched.length > 0) return matched;
+  } else {
+    const matched = Object.entries(player.positionCounts)
+      .filter(([p]) => allPositions.includes(p))
+      .sort(([, a], [, b]) => (b ?? 0) - (a ?? 0));
+
+    if (matched[0]) return [matched[0][0]];
+
+    if (player.mainPosition && allPositions.includes(player.mainPosition)) {
+      return [player.mainPosition];
+    }
   }
 
-  // 2. R/Lなしのポジションに寄せる
+  // 3. R/L付きポジションを、R/Lなしのポジションに寄せる
   for (const position of uniquePositions) {
     const basePosition = position.replace(/^[RL]/, "");
 
@@ -190,7 +115,7 @@ const getGroupedPositions = (
     }
   }
 
-  // 3. R/Lを付けたポジションを探す
+  // 4. R/Lを付けて一致するポジションを探す
   for (const position of uniquePositions) {
     if (allPositions.includes(`R${position}`)) {
       return [`R${position}`];
@@ -201,7 +126,7 @@ const getGroupedPositions = (
     }
   }
 
-  // 5. 最も近いポジションを1つだけ返す
+  // 5. 最も近いポジションを取得
   const nearestPosition = getNearestPosition(uniquePositions, allPositions);
 
   return nearestPosition ? [nearestPosition] : [];
@@ -225,18 +150,10 @@ export const createGroupedPlayers = ({
   const allPositions = groupedPositions.flatMap((group) => group.positions);
 
   const playerPositionMap = new Map(
-    uniquePlayerStatistics.map((player) => {
-      const positions = multiPosition
-        ? getGroupedPositions(player, allPositions)
-        : [getGroupedPosition(player, allPositions)];
-
-      return [
-        player.player._id,
-        multiPosition
-          ? positions
-          : positions.filter((position): position is string => !!position),
-      ];
-    }),
+    uniquePlayerStatistics.map((player) => [
+      player.player._id,
+      getGroupedPositions(player, allPositions, multiPosition),
+    ]),
   );
 
   const hasPositionPlayers = groupedPositions.map((group) => ({
