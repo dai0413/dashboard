@@ -30,7 +30,7 @@ import { hasSteps } from "../../../lib/form-steps/core/hasSteps";
 import { AxiosResponse } from "axios";
 import { useDataView } from "../../../context/dataView-context";
 import { useModal } from "../../../context/modal-context";
-import { QuickFilterData, TableData, TableHeader } from "../../../types/table";
+import { QuickFilterData, TableHeader } from "../../../types/table";
 import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
@@ -62,7 +62,7 @@ type DataViewToolBarProps<Data, Form> = {
   ) => Promise<void>;
   quickFilterDatas: QuickFilterData[];
   headers?: TableHeader<Data>[];
-  items?: TableData<Data>;
+  crudDatas?: Data[];
   viewModes: ViewMode[];
   enableFilter?: boolean;
   enableSort?: boolean;
@@ -168,7 +168,7 @@ const DataViewToolBar = <Data, Form>({
   reloadFun,
   quickFilterDatas,
   headers = [],
-  items,
+  crudDatas,
   viewModes,
   enableFilter,
   enableSort,
@@ -296,14 +296,14 @@ const DataViewToolBar = <Data, Form>({
   const modelContext = modelType && useModelContext(modelType);
 
   const deleteOnClick = async () => {
-    if (!modelContext || !items) return;
+    if (!modelContext || !crudDatas) return;
     const { deleteItems } = modelContext;
 
     const confirmDelete = window.confirm(
-      `${modelType}:${items.length}件のデータを本当に削除しますか？`,
+      `${modelType}:${crudDatas.length}件のデータを本当に削除しますか？`,
     );
     if (confirmDelete) {
-      const result = await deleteItems(items.map((item) => item.item));
+      const result = await deleteItems(crudDatas);
 
       if (result && reloadFun) reloadFun(filterConditions, sortConditions);
     }
@@ -404,8 +404,8 @@ const DataViewToolBar = <Data, Form>({
   const hasFormSteps: boolean = modelType ? hasSteps(modelType) : false;
 
   const startUpdates = async () => {
-    if (modelType && items) {
-      const editItems = items.map((d) => d.item);
+    if (modelType && crudDatas) {
+      const editItems = crudDatas;
 
       const success = await startForm({
         modelType,
@@ -547,7 +547,7 @@ const DataViewToolBar = <Data, Form>({
               <ToolbarGroup
                 children={
                   <>
-                    {items && items.length > 0 && (
+                    {crudDatas && crudDatas.length > 0 && (
                       <>
                         <ToolbarButton
                           text={"削除"}

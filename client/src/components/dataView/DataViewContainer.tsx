@@ -197,9 +197,9 @@ const Container = <K extends Record<string, unknown>, F>({
     setPageNum,
   } = useDataView();
 
-  const datas = useMemo(() => {
+  const { datas, crudDatas } = useMemo(() => {
     const original = viewData[ViewMode.TILE] || viewData[ViewMode.TABLE];
-    if (!original) return [];
+    if (!original) return { datas: [], crudDatas: [] };
 
     const nextItemsPerPage = newItemsPerPage || itemsPerPage;
     const nextPageNum = newPageNum || pageNum;
@@ -214,10 +214,12 @@ const Container = <K extends Record<string, unknown>, F>({
         ? original.slice(offset, offset + nextItemsPerPage)
         : original;
 
-    return targetItems.map((item, index) => ({
+    const datas = targetItems.map((item, index) => ({
       item,
       index: offset + index,
     }));
+
+    return { datas, crudDatas: original };
   }, [
     viewData,
     pageNation,
@@ -392,7 +394,7 @@ const Container = <K extends Record<string, unknown>, F>({
           reloadFun={reloadFun}
           quickFilterDatas={quickFilterItemsParam}
           headers={fieldDefinitions}
-          items={datas}
+          crudDatas={crudDatas}
           viewModes={viewModes}
           enableFilter={filterField && filterField.length > 0}
           enableSort={sortField && sortField?.length > 0}
