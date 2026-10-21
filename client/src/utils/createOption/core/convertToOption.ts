@@ -17,6 +17,7 @@ import {
   formation,
   nationalCallup,
   transfer,
+  teamCompetitionSeason,
 } from "../model";
 
 type Converter<T extends ModelOptionKey> = (
@@ -41,6 +42,7 @@ const convertMap: Partial<{
   [ModelType.COMPETITION]: (data) => competition(data),
   [ModelType.FORMATION]: (data) => formation(data),
   [ModelType.TRANSFER]: (data) => transfer(data),
+  [ModelType.TEAM_COMPETITION_SEASON]: (data) => teamCompetitionSeason(data),
 };
 
 export function convertToOption<T extends ModelOptionKey>(
