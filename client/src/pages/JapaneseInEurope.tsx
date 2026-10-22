@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useJapaneseInEuropePage } from "../context/japaneseInEurope-context";
 import { FullScreenLoader } from "../components/ui";
 import { APP_ROUTES } from "../lib/appRoutes";
@@ -8,6 +8,18 @@ import { GroupedSummaryItems, SummaryItem } from "../types/summaryItem";
 import { SummaryCard } from "../components/summary/SummaryCard";
 import { convert } from "../lib/convert/CreateLabel";
 import { ModelType } from "../types/models";
+
+const countryOrder = [
+  "イングランド",
+  "スペイン",
+  "ドイツ",
+  "フランス",
+  "イタリア",
+  "ポルトガル",
+  "オランダ",
+  "ベルギー",
+  "スコットランド",
+];
 
 const convertGroupedSummaryItems = (
   data: NationalitySquadResult[],
@@ -77,29 +89,74 @@ const convertGroupedSummaryItems = (
     });
   }
 
-  return [...grouped.values()].map((group) => ({
-    title: group.title,
-    summaryItems: group.datas
-      .sort((a, b) => {
-        const getLevelNumber = (level?: string) => {
-          const match = level?.match(/\d+/);
-          return match ? Number(match[0]) : Infinity;
-        };
+  // countryOrder にある国を優先し、必ずグループを生成する
+  const result = countryOrder.map((countryName) => {
+    const group = [...grouped.values()].find(
+      (group) => group.title.label === countryName,
+    );
 
-        return getLevelNumber(a.level) - getLevelNumber(b.level);
-      })
-      .map(({ data }) => data),
-  }));
+    if (group) {
+      return {
+        title: group.title,
+        summaryItems: group.datas
+          .sort((a, b) => {
+            const getLevelNumber = (level?: string) => {
+              const match = level?.match(/\d+/);
+              return match ? Number(match[0]) : Infinity;
+            };
+
+            return getLevelNumber(a.level) - getLevelNumber(b.level);
+          })
+          .map(({ data }) => data),
+      };
+    }
+
+    // データが存在しない国も空グループとして生成
+    return {
+      title: {
+        label: countryName,
+      },
+      summaryItems: [],
+    };
+  });
+
+  // countryOrder にない国も末尾に追加
+  const rankedCountryNames = new Set(countryOrder);
+
+  const unrankedGroups = [...grouped.values()]
+    .filter((group) => !rankedCountryNames.has(group.title.label))
+    .sort((a, b) => a.title.label.localeCompare(b.title.label, "ja"))
+    .map((group) => ({
+      title: group.title,
+      summaryItems: group.datas
+        .sort((a, b) => {
+          const getLevelNumber = (level?: string) => {
+            const match = level?.match(/\d+/);
+            return match ? Number(match[0]) : Infinity;
+          };
+
+          // 1. level順
+          const levelDiff = getLevelNumber(a.level) - getLevelNumber(b.level);
+
+          if (levelDiff !== 0) return levelDiff;
+
+          // 2. subText.label順（undefinedは最後）
+          const aLabel = a.data.subText?.label;
+          const bLabel = b.data.subText?.label;
+
+          if (aLabel == null) return bLabel == null ? 0 : 1;
+          if (bLabel == null) return -1;
+
+          return aLabel.localeCompare(bLabel, "ja", { numeric: true });
+        })
+        .map(({ data }) => data),
+    }));
+
+  return [...result, ...unrankedGroups];
 };
 
 const JapaneseInEurope = () => {
-  const { isLoading, datas, readItems } = useJapaneseInEuropePage();
-
-  useEffect(() => {
-    if (datas.length === 0) {
-      readItems();
-    }
-  }, []);
+  const { isLoading, datas } = useJapaneseInEuropePage();
 
   const groupedSummaryItems: GroupedSummaryItems[] = useMemo(() => {
     if (datas.length === 0) return [];
