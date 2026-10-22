@@ -1,35 +1,62 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 
-function isObjectIdLike(value: any): value is Types.ObjectId {
+function isObjectIdLike(value: unknown): value is Types.ObjectId {
+  if (value instanceof Types.ObjectId) {
+    return true;
+  }
+
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const candidate = value as {
+    _bsontype?: string;
+    toHexString?: () => string;
+  };
+
   return (
-    value instanceof Types.ObjectId ||
-    (value &&
-      typeof value === "object" &&
-      typeof value.toString === "function" &&
-      /^[a-f0-9]{24}$/i.test(value.toString()))
+    candidate._bsontype === "ObjectId" &&
+    typeof candidate.toHexString === "function"
   );
 }
 
-export function convertObjectIdToString(obj: any): any {
-  if (Array.isArray(obj)) {
-    return obj.map(convertObjectIdToString);
+export function convertObjectIdToString(value: any): any {
+  if (value == null) {
+    return value;
   }
 
-  if (obj instanceof Date) {
-    return obj;
+  // ObjectId を文字列に変換
+  if (isObjectIdLike(value)) {
+    return value.toHexString();
   }
 
-  if (obj && typeof obj === "object") {
-    if (isObjectIdLike(obj)) {
-      return obj.toString();
-    }
-
-    const newObj: any = {};
-    for (const [key, value] of Object.entries(obj)) {
-      newObj[key] = convertObjectIdToString(value);
-    }
-    return newObj;
+  // Date はそのまま保持
+  if (value instanceof Date) {
+    return value;
   }
 
-  return obj;
+  // 配列を再帰処理
+  if (Array.isArray(value)) {
+    return value.map(convertObjectIdToString);
+  }
+
+  // Mongoose Document をプレーンオブジェクトに変換
+  if (
+    value instanceof mongoose.Document ||
+    (value.$__ && typeof value.toObject === "function")
+  ) {
+    return convertObjectIdToString(value.toObject());
+  }
+
+  // 通常のオブジェクトを再帰処理
+  if (typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, child]) => [
+        key,
+        convertObjectIdToString(child),
+      ]),
+    );
+  }
+
+  return value;
 }

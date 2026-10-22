@@ -2,7 +2,7 @@ import { getCurrentPlayersByTeamService } from "./Current.js";
 import { getCurrentLoanPlayersByTeamService } from "./CurrentLoan.js";
 import { getNoNumberService } from "./NoNumber.js";
 import { getNoCallUpService } from "./NoCallup.js";
-import { getPlayerStatistics } from "./player/index.js";
+import { getPlayerStatistics, getNationalitySquad } from "./player/index.js";
 
 export {
   getCurrentPlayersByTeamService,
@@ -10,4 +10,5 @@ export {
   getNoNumberService,
   getNoCallUpService,
   getPlayerStatistics,
+  getNationalitySquad,
 };

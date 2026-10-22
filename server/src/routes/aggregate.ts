@@ -7,6 +7,7 @@ import {
   getNoNumberByCountry,
   getNoCallUp,
   getPlayerStatistics,
+  getNationalitySquad,
 } from "../controllers/aggregate/index.js";
 import { API_PATHS } from "@dai0413/myorg-shared";
 
@@ -21,5 +22,7 @@ router
   .route(API_PATHS.AGGREGATE.NATIONAL_CALLUP.SERIES_COUNT(":countryId"))
   .get(getNoCallUp);
 router.route(API_PATHS.AGGREGATE.PLAYER.STATISTICS).post(getPlayerStatistics);
-
+router
+  .route(API_PATHS.AGGREGATE.PLAYER.NATIONALITY_SQUAD)
+  .get(getNationalitySquad);
 export default router;
