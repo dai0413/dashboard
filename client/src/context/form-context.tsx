@@ -327,7 +327,6 @@ export const FormProvider = <T extends ModelType>({
 
       newOriginalData = {
         _id: args.id,
-        ...getDefault(args.modelType),
         ...convertGettedToForm(args.modelType, args.editItem),
       };
 
@@ -339,7 +338,6 @@ export const FormProvider = <T extends ModelType>({
       newOriginalDatas = args.editItem.flatMap((item, i) => {
         const newData = {
           _id: args.ids[i],
-          ...getDefault(args.modelType),
           ...convertGettedToForm(args.modelType, item),
         };
         return newData;
@@ -596,7 +594,6 @@ export const FormProvider = <T extends ModelType>({
             return [
               {
                 ...updatedData,
-                ...getDefault(modelType),
               },
             ];
           },
