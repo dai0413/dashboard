@@ -1,16 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { APP_ROUTES } from "../../lib/appRoutes";
 import { DataViewContainer } from "../../components/dataView";
 import { FullScreenLoader } from "../../components/ui";
 import { useTopPage } from "../../context/top-page-context";
 import { ViewMode } from "../../types/types";
-import { HomeCard } from "./components";
+import { HomeCard } from "../../components/summary";
 import { competition, injury, transfer } from "./constants/fieldDefinitions";
-import { Link } from "react-router-dom";
+import { SummaryCard } from "../../components/summary/SummaryCard";
+import { GroupedSummaryItems } from "../../types/summaryItem";
+import { TeamGet } from "../../types/models/team";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
 const j3 = import.meta.env.VITE_J3_ID;
+
+type LeagueData = {
+  id: string;
+  title: string;
+  teams: TeamGet[];
+};
+
+const createGroupedSummaryItem = (league: LeagueData): GroupedSummaryItems => {
+  const { id, title, teams } = league;
+
+  return {
+    title: { label: title, to: `${APP_ROUTES.COMPETITION_SUMMARY}/${id}` },
+    summaryItems: teams.map((team) => {
+      const colors = [
+        team.primaryColor,
+        team.secondaryColor,
+        team.tertiaryColor,
+      ].filter((color): color is string => !!color);
+
+      const label: string = team.abbr || team.team || team.enTeam || "";
+
+      return {
+        mainText: {
+          label,
+          to: `${APP_ROUTES.TEAM_SUMMARY}/${team._id}`,
+        },
+        colors,
+      };
+    }),
+  };
+};
 
 const Top = () => {
   const {
@@ -34,15 +67,22 @@ const Top = () => {
     }
   }, []);
 
+  const groupedSummaryItems: GroupedSummaryItems[] = useMemo(() => {
+    const leagues = [
+      { id: j1, title: "J1", teams: j1Teams },
+      { id: j2, title: "J2", teams: j2Teams },
+      { id: j3, title: "J3", teams: j3Teams },
+    ];
+
+    const groupedSummaryItems = leagues.map((league) =>
+      createGroupedSummaryItem(league),
+    );
+    return groupedSummaryItems;
+  }, [j1Teams, j2Teams, j3Teams]);
+
   if (isLoading) {
     return <FullScreenLoader />;
   }
-
-  const leagues = [
-    { id: j1, title: "J1", teams: j1Teams },
-    { id: j2, title: "J2", teams: j2Teams },
-    { id: j3, title: "J3", teams: j3Teams },
-  ];
 
   return (
     <section className="body-font bg-gray-50 text-gray-700">
@@ -115,85 +155,11 @@ const Top = () => {
         </div>
 
         {/* リーグ別チーム */}
-        <div className="mt-10">
-          <div className="mb-5">
-            <h2 className="text-xl font-bold text-gray-900">
-              Jリーグチーム一覧
-            </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              各リーグの所属チームを確認できます。
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {leagues.map((league) => (
-              <HomeCard
-                key={league.id}
-                to={`${APP_ROUTES.COMPETITION_SUMMARY}/${league.id}`}
-                title={league.title}
-              >
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {league.teams.map((team) => {
-                    const colors = [
-                      team.primaryColor,
-                      team.secondaryColor,
-                      team.tertiaryColor,
-                    ].filter((color): color is string => !!color);
-
-                    const backgroundImage =
-                      colors.length > 0
-                        ? `linear-gradient(to right, ${colors
-                            .map((color, index) => {
-                              const start = (index / colors.length) * 100;
-                              const end = ((index + 1) / colors.length) * 100;
-                              const lightColor = `color-mix(in srgb, ${color} 30%, white)`;
-
-                              return `${lightColor} ${start}%, ${lightColor} ${end}%`;
-                            })
-                            .join(", ")})`
-                        : undefined;
-
-                    return (
-                      <Link
-                        key={team._id}
-                        to={`${APP_ROUTES.TEAM_SUMMARY}/${team._id}`}
-                        className={`flex min-h-11 min-w-0 items-center justify-center rounded-lg border border-gray-200 px-2 py-2 text-center text-sm font-medium text-gray-700 transition-colors hover:text-gray-900 ${
-                          colors.length === 0
-                            ? "bg-gray-50 hover:bg-green-50"
-                            : ""
-                        }`}
-                        style={
-                          {
-                            backgroundImage,
-                            "--team-primary-color":
-                              team.primaryColor || "#16A34A",
-                          } as React.CSSProperties
-                        }
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.borderColor =
-                            team.primaryColor || "#16A34A";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.borderColor = "";
-                        }}
-                        title={team.team || team.enTeam || team.abbr}
-                      >
-                        <span className="truncate">
-                          {team.abbr || team.team || team.enTeam}
-                        </span>
-                      </Link>
-                    );
-                  })}
-                </div>
-                {league.teams.length === 0 && (
-                  <p className="py-6 text-center text-sm text-gray-400">
-                    チーム情報がありません。
-                  </p>
-                )}
-              </HomeCard>
-            ))}
-          </div>
-        </div>
+        <SummaryCard
+          title="Jリーグチーム一覧"
+          text="各リーグの所属チームを確認できます。"
+          groupedSummaryItems={groupedSummaryItems}
+        />
       </div>
     </section>
   );

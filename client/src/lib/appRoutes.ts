@@ -6,6 +6,7 @@ export const APP_ROUTES = {
   NO_NUMBER: "/transfer/no-number",
   NO_CALLUP: "/national-callup/series-count",
   NEWS: "/news",
+  JAPANESE_IN_EUROPE: "/japanese-in-europe",
 
   // model
   COMPETITION_STAGE: "/competition-stage",
