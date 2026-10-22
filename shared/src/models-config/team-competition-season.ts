@@ -63,7 +63,7 @@ export function teamCompetitionSeason<TModel = any>(
           populateAfter: true,
         },
       ],
-      sort: { "season.start_date": -1, _id: -1 },
+      sort: { "season.start_date": -1, order: -1, _id: -1 },
       buildCustomMatch: customMatchFn,
     },
     bulk: true,

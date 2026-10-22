@@ -26,9 +26,19 @@ export function player<TModel = any>(
       POPULATED: PlayerPopulatedSchema,
     },
     MONGO_MODEL: mongoModel ?? null,
-    POPULATE_PATHS: [],
+    POPULATE_PATHS: [
+      { path: "citizenship", collection: "countries", isArray: true },
+    ],
     getAllConfig: {
-      query: [{ field: "country", type: "ObjectId" }],
+      query: [
+        { field: "citizenship", type: "ObjectId", isArray: true },
+        {
+          field: "citizenship.name",
+          type: "String",
+          isArray: true,
+          populateAfter: true,
+        },
+      ],
       sort: { _id: 1 },
       buildCustomMatch: customMatchFn,
     },

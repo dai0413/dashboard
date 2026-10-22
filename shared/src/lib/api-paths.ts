@@ -197,6 +197,7 @@ export const API_PATHS = {
     PLAYER: {
       ROOT: "/aggregate/player",
       STATISTICS: "/aggregate/player/statistics",
+      NATIONALITY_SQUAD: "/aggregate/player/nationality-squad",
     },
   },
 

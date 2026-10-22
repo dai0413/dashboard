@@ -29,6 +29,14 @@ export function country<TModel = any>(
     POPULATE_PATHS: [],
     getAllConfig: {
       sort: { _id: 1 },
+      query: [
+        { field: "_id", type: "ObjectId" },
+        { field: "name", type: "String" },
+        { field: "en_name", type: "String" },
+        { field: "iso3", type: "String" },
+        { field: "area", type: "String" },
+        { field: "district", type: "String" },
+      ],
       buildCustomMatch: customMatchFn,
     },
     bulk: true,

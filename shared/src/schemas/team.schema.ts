@@ -8,6 +8,8 @@ import { CountryZodSchema } from "./country.schema.js";
 import { getKey } from "../utils/getKey.js";
 import { label } from "./utils/label.js";
 
+const colorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/);
+
 export const TeamZodSchema = z.object({
   _id: objectId,
   team: z
@@ -26,6 +28,11 @@ export const TeamZodSchema = z.object({
   sofaurl: z.string().nonempty().optional(),
   old_id: z.string().optional(),
   normalized_name: z.string().nonempty(),
+
+  primaryColor: colorSchema.optional(),
+  secondaryColor: colorSchema.optional(),
+  tertiaryColor: colorSchema.optional(),
+
   createdAt: dateField,
   updatedAt: dateField,
 });

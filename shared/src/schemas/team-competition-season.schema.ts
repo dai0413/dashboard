@@ -18,6 +18,7 @@ export const TeamCompetitionSeasonZodSchema = z.object({
     message: "competitionは必須です",
   }),
   note: z.string().nonempty().optional(),
+  order: z.number().int().positive().optional(),
   createdAt: dateField,
   updatedAt: dateField,
 });
