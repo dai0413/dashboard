@@ -8,6 +8,7 @@ import { GroupedSummaryItems, SummaryItem } from "../types/summaryItem";
 import { SummaryCard } from "../components/summary/SummaryCard";
 import { convert } from "../lib/convert/CreateLabel";
 import { ModelType } from "../types/models";
+import { getEuropeSeasonRange } from "../utils/date/getEuropeSeasonRange";
 
 const countryOrder = [
   "イングランド",
@@ -20,6 +21,8 @@ const countryOrder = [
   "ベルギー",
   "スコットランド",
 ];
+
+const { seasonStart, seasonEnd } = getEuropeSeasonRange();
 
 const convertGroupedSummaryItems = (
   data: NationalitySquadResult[],
@@ -64,13 +67,17 @@ const convertGroupedSummaryItems = (
 
     const head = item.teamCompetitionSeason?.competition.level ?? "";
 
+    const createTeamText = (data: { abbr?: string; team: string }): string => {
+      return data.abbr || data.team;
+    };
+
     const subText = team._id
       ? {
-          label: `${head} ${head ? ":" : ""} ${team.abbr || team.team}`,
+          label: `${head} ${head ? ":" : ""} ${createTeamText(team)}`,
           to: `${APP_ROUTES.TEAM_SUMMARY}/${team._id}`,
         }
       : {
-          label: `${head} ${head ? ":" : ""} ${team.abbr || team.team}`,
+          label: `${head} ${head ? ":" : ""} ${createTeamText(team)}`,
         };
 
     const colors = [
@@ -79,11 +86,28 @@ const convertGroupedSummaryItems = (
       team.tertiaryColor,
     ].filter((t) => typeof t === "string");
 
+    const rightTop =
+      item.nextTransfer && item.nextTransfer.to_team
+        ? createTeamText(item.nextTransfer.to_team)
+        : undefined;
+
+    const leftTop =
+      item.transfer &&
+      item.transfer.from_team &&
+      item.transfer.from_date &&
+      item.transfer.form !== "更新" &&
+      seasonStart.getTime() <= new Date(item.transfer.from_date).getTime() &&
+      seasonEnd.getTime() >= new Date(item.transfer.from_date).getTime()
+        ? createTeamText(item.transfer.from_team)
+        : undefined;
+
     grouped.get(countryId)!.datas.push({
       data: {
         colors,
         mainText,
         subText,
+        rightTop,
+        leftTop,
       },
       level: item.teamCompetitionSeason?.competition?.level,
     });

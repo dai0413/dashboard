@@ -12,6 +12,7 @@ import { api } from "./api-context";
 import { NationalitySquadResult } from "../types/japaneseInEurope";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { Country } from "../types/models/country";
+import { getEuropeSeasonRange } from "../utils/date/getEuropeSeasonRange";
 const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
 type Context = {
@@ -27,19 +28,7 @@ const defaultValue: Context = {
 
 const JapaneseInEuropeContext = createContext<Context>(defaultValue);
 
-const getSeasonRange = (date = new Date()) => {
-  const year = date.getFullYear();
-
-  // 7月以降なら今年、6月以前なら前年がシーズン開始年
-  const startYear = date.getMonth() >= 6 ? year : year - 1;
-
-  return {
-    seasonStart: new Date(startYear, 6, 1),
-    seasonEnd: new Date(startYear + 1, 5, 30),
-  };
-};
-
-const { seasonStart, seasonEnd } = getSeasonRange();
+const { seasonStart, seasonEnd } = getEuropeSeasonRange();
 
 const JapaneseInEuropePageProvider = ({
   children,

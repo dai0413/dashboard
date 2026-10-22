@@ -30,7 +30,8 @@ export const SummaryCard = ({
           >
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {groupedSummaryItem.summaryItems.map((summaryItem) => {
-                const { colors, mainText, subText } = summaryItem;
+                const { colors, mainText, subText, leftTop, rightTop } =
+                  summaryItem;
 
                 const primaryColor = colors.length > 0 ? colors[0] : "#16A34A";
 
@@ -47,7 +48,7 @@ export const SummaryCard = ({
                         .join(", ")})`
                     : undefined;
 
-                const className = `flex h-14 min-w-0 items-center justify-center rounded-lg border border-gray-200 px-2 py-1 text-center text-sm font-medium text-gray-700 transition-colors ${
+                const className = `relative flex h-14 min-w-0 items-center justify-center rounded-lg border border-gray-200 px-2 py-1 text-center text-sm font-medium text-gray-700 transition-colors ${
                   colors.length === 0 ? "bg-gray-50 hover:bg-green-50" : ""
                 }`;
 
@@ -79,7 +80,7 @@ export const SummaryCard = ({
                     return (
                       <Link
                         to={text.to}
-                        className={`${textClassName} hover:underline`}
+                        className={`${textClassName} relative hover:underline`}
                         title={text.label}
                         {...linkProps}
                       >
@@ -101,6 +102,36 @@ export const SummaryCard = ({
                       {renderText(mainText, "main")}
 
                       {subText?.label && renderText(subText, "sub")}
+
+                      {rightTop && (
+                        <span
+                          className="
+                          absolute -right-1 -top-1
+                          rounded bg-blue-100
+                          px-1 text-[9px] leading-3
+                          font-semibold text-blue-700
+                          no-underline
+                          bg-red-100 text-red-700
+                        "
+                        >
+                          {rightTop}
+                        </span>
+                      )}
+
+                      {/* 左上：加入・退団 */}
+                      {leftTop && (
+                        <span
+                          className={`
+                          absolute -left-1 -top-1
+                          rounded px-1
+                          text-[9px] leading-3
+                          font-semibold no-underline
+                          bg-green-100 text-green-700
+                      `}
+                        >
+                          {leftTop}
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
