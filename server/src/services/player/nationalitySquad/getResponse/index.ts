@@ -1,7 +1,7 @@
 import {
   NationalitySquadResult,
   NationalitySquadResultSchema,
-} from "../types.js";
+} from "@dai0413/myorg-shared/types/aggregate/player";
 import { getCountryResponse } from "./country.js";
 import { getPlayerResponse } from "./player.js";
 import { getTeamCompetitionSeasonResponse } from "./teamCompetitionSeason.js";

@@ -1,4 +1,4 @@
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 
 export const sortDob = (a: PlayerStatistic, b: PlayerStatistic) => {
   if (!a.player.dob && !b.player.dob) return 0;

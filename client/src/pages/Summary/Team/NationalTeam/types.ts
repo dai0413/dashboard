@@ -1,4 +1,4 @@
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";

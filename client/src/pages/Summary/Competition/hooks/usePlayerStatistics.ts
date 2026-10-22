@@ -3,7 +3,7 @@ import { API_PATHS } from "@dai0413/myorg-shared";
 import { Data } from "../../../../types/types";
 import { createItemBase } from "../../../../lib/api";
 import { api } from "../../../../context/api-context";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 
 export const usePlayerStatistics = () => {
   const [playerStatistics, setPlayerStatistics] = useState<

@@ -15,7 +15,7 @@ import { loadTeamMatches } from "../utils/loadTeamMatches";
 import { displayPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/context/displayPositions";
 import { getGroupedPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/MatchMatrix/utils";
 import { createGroupedPlayers } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import {
   loadFormationByName,
   loadFormationData,

@@ -12,7 +12,7 @@ import {
   PlayerRegistration,
   PlayerRegistrationGet,
 } from "../../../../../types/models/player-registration";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { FormationCounts } from "../types";
 import { getAgeLabel } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
 

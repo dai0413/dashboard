@@ -9,7 +9,7 @@ import { getNest } from "../../../../controllers/helpers/getNest.js";
 import {
   PlayerStatistic,
   PlayerStatisticsGroupBy,
-} from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+} from "@dai0413/myorg-shared/types/aggregate/player";
 
 const TEAM_POPULATE_PATHS = modelsConfig().POPULATE_PATHS;
 

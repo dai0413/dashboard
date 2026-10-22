@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { CreateItemsResponse } from "@dai0413/myorg-shared";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import BadRequestError from "../../../errors/bad-request.js";
 import { PlayerModel } from "../../../models/player.js";
 import { MatchEventTypeModel } from "../../../models/match-event-type.js";

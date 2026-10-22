@@ -17,6 +17,7 @@ export const NationalitySquadResultSchema = z.object({
   teamCompetitionSeason: teamCompetitionSeasonSchema.RESPONSE.nullable(),
   player: playerSchema.RESPONSE,
   transfer: transferSchema.RESPONSE,
+  nextTransfer: transferSchema.RESPONSE.nullable(),
 });
 
 export type NationalitySquadResult = z.infer<

@@ -5,7 +5,7 @@ import {
   UIFieldDefinition,
 } from "../../../../../types/field";
 import { UseNationalTeamSummary } from "../types";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { ColumnType } from "../../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ViewMode } from "../../../../../types/types";

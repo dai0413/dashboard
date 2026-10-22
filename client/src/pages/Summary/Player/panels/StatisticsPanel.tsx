@@ -3,7 +3,7 @@ import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UsePlayerSummary } from "../types";
 import { playerStatistics } from "../../../../lib/fields/playerStatistics";
 import { UIFieldDefinition } from "../../../../types/field";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 import { ViewMode } from "../../../../types/types";
 

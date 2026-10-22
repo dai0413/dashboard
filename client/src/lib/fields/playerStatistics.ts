@@ -1,4 +1,4 @@
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { UIFieldDefinition } from "../../types/field";
 import { ColumnType } from "../../types/table";
 import { convert } from "../convert/CreateLabel";

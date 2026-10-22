@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player";
 import { MatchGroupInfo } from "../types.js";
 
 export const resolveStatisticsGroupIds = ({

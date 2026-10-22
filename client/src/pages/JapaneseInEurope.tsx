@@ -3,12 +3,12 @@ import { useJapaneseInEuropePage } from "../context/japaneseInEurope-context";
 import { FullScreenLoader } from "../components/ui";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { RenderCellValue } from "../types/table";
-import { NationalitySquadResult } from "../types/japaneseInEurope";
 import { GroupedSummaryItems, SummaryItem } from "../types/summaryItem";
 import { SummaryCard } from "../components/summary/SummaryCard";
 import { convert } from "../lib/convert/CreateLabel";
 import { ModelType } from "../types/models";
 import { getEuropeSeasonRange } from "../utils/date/getEuropeSeasonRange";
+import { NationalitySquadResult } from "@dai0413/myorg-shared/types/aggregate/player";
 
 const countryOrder = [
   "イングランド",

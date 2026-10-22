@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { PlayerMatchEventLogModel } from "../../../../models/player-match-event-log.js";
 import { MatchGroupInfo } from "../types.js";
-import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player";
 
 type MatchEventLogAggregate = {
   _id: Types.ObjectId;

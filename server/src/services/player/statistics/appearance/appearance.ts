@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { PlayerAppearanceModel } from "../../../../models/player-appearance.js";
 import { MatchGroupInfo } from "../types.js";
-import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player";
 
 type AppearanceAggregate = {
   _id: Types.ObjectId;

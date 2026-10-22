@@ -6,7 +6,7 @@ import {
 } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { playerStatistics } from "../../../../lib/fields/playerStatistics";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { ColumnType } from "../../../../types/table";
 import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";

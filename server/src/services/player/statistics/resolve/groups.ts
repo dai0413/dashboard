@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { competition, team, season } from "@dai0413/myorg-shared/models-config";
-import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player";
 import { getNest } from "../../../../controllers/helpers/getNest.js";
 import { TeamModel } from "../../../../models/team.js";
 import { CompetitionModel } from "../../../../models/competition.js";

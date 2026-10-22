@@ -1,4 +1,4 @@
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { TopPanelItems, TopPanelRows } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convert } from "../../../../lib/convert/CreateLabel";

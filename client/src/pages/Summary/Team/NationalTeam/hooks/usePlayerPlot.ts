@@ -4,7 +4,7 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
 import { createItemBase, readItemsBase } from "../../../../../lib/api";

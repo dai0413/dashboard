@@ -3,7 +3,7 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
 import { MatchGet } from "../../../../../types/models/match";
 import { PlayerRegistrationGet } from "../../../../../types/models/player-registration";

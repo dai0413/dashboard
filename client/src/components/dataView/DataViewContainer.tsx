@@ -29,7 +29,7 @@ import { RadarField } from "../plot/RadarChart/types";
 import { FormationItem } from "../../types/formation";
 import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
 import { RadarValues } from "../../utils/plot/buildRadarPlotData";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { MatchGet } from "../../types/models/match";
 import { PlayerAppearanceGet } from "../../types/models/player-appearance";
 import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";

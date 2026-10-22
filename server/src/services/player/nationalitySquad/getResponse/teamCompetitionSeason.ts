@@ -2,7 +2,7 @@ import { teamCompetitionSeason } from "@dai0413/myorg-shared/models-config";
 import { TeamCompetitionSeasonModel } from "../../../../models/team-competition-season.js";
 import z from "zod";
 import { getResponseData } from "../../../../utils/getResponseData.js";
-import { NationalitySquadResult } from "../types.js";
+import { NationalitySquadResult } from "@dai0413/myorg-shared/types/aggregate/player";
 
 const { SCHEMA, POPULATE_PATHS, convertFun } = teamCompetitionSeason();
 

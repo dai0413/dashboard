@@ -1,4 +1,4 @@
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { FormationItem } from "../../../types/formation";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { PanelSummary, UseSummary } from "../types";

@@ -4,7 +4,7 @@ import { TransferModel } from "../../../../models/transfer.js";
 import { position } from "@dai0413/myorg-shared";
 import { MatchGroupInfo } from "../types.js";
 import { createStatisticsKey } from "../utils/createStatisticsKey.js";
-import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatisticsGroupBy } from "@dai0413/myorg-shared/types/aggregate/player";
 
 type AppearancePositionAggregate = {
   _id: Types.ObjectId;

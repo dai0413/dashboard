@@ -1,6 +1,6 @@
 {
   "name": "@dai0413/myorg-shared",
-  "version": "4.4.4",
+  "version": "4.4.6",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -165,10 +165,10 @@
       "require": "./dist/types/resolver/teamMatchFormation.js",
       "types": "./dist/types/resolver/teamMatchFormation.d.ts"
     },
-    "./types/aggregate/player/statistic": {
-      "import": "./dist/types/aggregate/player/statistic.js",
-      "require": "./dist/types/aggregate/player/statistic.js",
-      "types": "./dist/types/aggregate/player/statistic.d.ts"
+    "./types/aggregate/player": {
+      "import": "./dist/types/aggregate/player/index.js",
+      "require": "./dist/types/aggregate/player/index.js",
+      "types": "./dist/types/aggregate/player/index.d.ts"
     }
   },
   "scripts": {

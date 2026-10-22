@@ -9,10 +9,10 @@ import {
 import { useAlert } from "./alert-context";
 import { readItemsBase } from "../lib/api";
 import { api } from "./api-context";
-import { NationalitySquadResult } from "../types/japaneseInEurope";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { Country } from "../types/models/country";
 import { getEuropeSeasonRange } from "../utils/date/getEuropeSeasonRange";
+import { NationalitySquadResult } from "@dai0413/myorg-shared/types/aggregate/player";
 const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
 type Context = {

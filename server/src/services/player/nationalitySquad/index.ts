@@ -3,7 +3,7 @@ import { ReadItemsResponse } from "@dai0413/myorg-shared";
 import BadRequestError from "../../../errors/bad-request.js";
 import { TransferModel } from "../../../models/transfer.js";
 import { customPipeline } from "./pipeline.js";
-import { NationalitySquadResult } from "./types.js";
+import { NationalitySquadResult } from "@dai0413/myorg-shared/types/aggregate/player";
 import { getResponse } from "./getResponse/index.js";
 
 export const getNationalitySquad = async (

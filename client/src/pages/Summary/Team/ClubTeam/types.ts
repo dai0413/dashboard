@@ -2,7 +2,7 @@ import { TeamMatch } from "../../../../types/types";
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { MatchGet } from "../../../../types/models/match";

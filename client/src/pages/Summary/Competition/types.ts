@@ -1,4 +1,4 @@
-import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player/statistic";
+import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { RadarKey } from "../../../components/plot/RadarChart/types";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../types";
