@@ -88,13 +88,12 @@ const App: React.FC = () => {
                               }
                             />
                             <Route
-                              // path={APP_ROUTES.JAPANESE_IN_EUROPE}
-                              path={"/japanese-in-europe"}
-                              element={
+                              path={APP_ROUTES.JAPANESE_IN_EUROPE}
+                              element={wrapWithPrivateRoute(
                                 <Layout>
                                   <JapaneseInEurope />
-                                </Layout>
-                              }
+                                </Layout>,
+                              )}
                             />
                             <Route
                               path={APP_ROUTES.NO_NUMBER}

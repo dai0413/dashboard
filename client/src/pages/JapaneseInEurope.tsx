@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useJapaneseInEuropePage } from "../context/japaneseInEurope-context";
 import { FullScreenLoader } from "../components/ui";
 import { APP_ROUTES } from "../lib/appRoutes";
@@ -7,7 +7,6 @@ import { GroupedSummaryItems, SummaryItem } from "../types/summaryItem";
 import { SummaryCard } from "../components/summary/SummaryCard";
 import { convert } from "../lib/convert/CreateLabel";
 import { ModelType } from "../types/models";
-import { getEuropeSeasonRange } from "../utils/date/getEuropeSeasonRange";
 import { NationalitySquadResult } from "@dai0413/myorg-shared/types/aggregate/player";
 
 const countryOrder = [
@@ -22,11 +21,17 @@ const countryOrder = [
   "スコットランド",
 ];
 
-const { seasonStart, seasonEnd } = getEuropeSeasonRange();
+type Params = {
+  data: NationalitySquadResult[];
+  seasonStart: Date;
+  seasonEnd: Date;
+};
 
-const convertGroupedSummaryItems = (
-  data: NationalitySquadResult[],
-): GroupedSummaryItems[] => {
+const convertGroupedSummaryItems = ({
+  data,
+  seasonStart,
+  seasonEnd,
+}: Params): GroupedSummaryItems[] => {
   const grouped = new Map<
     string,
     {
@@ -180,12 +185,23 @@ const convertGroupedSummaryItems = (
 };
 
 const JapaneseInEurope = () => {
-  const { isLoading, datas } = useJapaneseInEuropePage();
+  const { isLoading, datas, readItems, seasonStart, seasonEnd } =
+    useJapaneseInEuropePage();
+
+  useEffect(() => {
+    if (datas.length === 0) {
+      readItems();
+    }
+  }, []);
 
   const groupedSummaryItems: GroupedSummaryItems[] = useMemo(() => {
     if (datas.length === 0) return [];
 
-    const groupedSummaryItems = convertGroupedSummaryItems(datas);
+    const groupedSummaryItems = convertGroupedSummaryItems({
+      data: datas,
+      seasonStart,
+      seasonEnd,
+    });
     return groupedSummaryItems;
   }, [datas]);
 

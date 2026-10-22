@@ -3,7 +3,6 @@ import {
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { useAlert } from "./alert-context";
@@ -15,20 +14,24 @@ import { getEuropeSeasonRange } from "../utils/date/getEuropeSeasonRange";
 import { NationalitySquadResult } from "@dai0413/myorg-shared/types/aggregate/player";
 const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
+const { seasonStart, seasonEnd } = getEuropeSeasonRange();
+
 type Context = {
   isLoading: boolean;
   datas: NationalitySquadResult[];
   readItems: () => Promise<void>;
+  seasonStart: Date;
+  seasonEnd: Date;
 };
 const defaultValue: Context = {
   isLoading: false,
   datas: [],
   readItems: async () => {},
+  seasonStart,
+  seasonEnd,
 };
 
 const JapaneseInEuropeContext = createContext<Context>(defaultValue);
-
-const { seasonStart, seasonEnd } = getEuropeSeasonRange();
 
 const JapaneseInEuropePageProvider = ({
   children,
@@ -45,36 +48,32 @@ const JapaneseInEuropePageProvider = ({
     time === "start" ? setIsLoading(true) : setIsLoading(false);
   };
 
-  const [targetCountryIds, setTargetCountryIds] = useState<string[]>([]);
-  const [isCountryLoaded, setIsCountryLoaded] = useState(false);
-
   const [datas, setDatas] = useState<NationalitySquadResult[]>([]);
 
   // 1. ヨーロッパの国を取得
-  useEffect(() => {
-    const readCountries = async () => {
-      const res = await readItemsBase<Country[]>({
-        apiInstance: api,
-        backendRoute: API_PATHS.COUNTRY.ROOT,
-        params: {
-          area: "ヨーロッパ",
-          getAll: true,
-        },
-      });
+  const readCountries = async () => {
+    const res = await readItemsBase<Country[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.COUNTRY.ROOT,
+      params: {
+        area: "ヨーロッパ",
+        getAll: true,
+      },
+    });
 
-      if (res?.data) {
-        setTargetCountryIds(res.data.map((d) => d._id));
-      }
+    if (res?.data) {
+      const targetCountryIds = res.data.map((d) => d._id);
 
-      setIsCountryLoaded(true);
-    };
+      return targetCountryIds;
+    }
 
-    void readCountries();
-  }, []);
+    return [];
+  };
 
-  // 2. 国の取得が完了してから集計 API を呼び出す
   const readItems = useCallback(async () => {
-    if (!isCountryLoaded) return;
+    const targetCountryIds = await readCountries();
+
+    if (targetCountryIds.length === 0) return;
 
     handleLoading("start");
 
@@ -97,19 +96,13 @@ const JapaneseInEuropePageProvider = ({
     } finally {
       handleLoading("end");
     }
-  }, [isCountryLoaded, targetCountryIds]);
-
-  useEffect(() => {
-    if (!isCountryLoaded) return;
-
-    if (targetCountryIds.length === 0) return;
-
-    void readItems();
-  }, [readItems]);
+  }, [readCountries]);
 
   const value = {
     isLoading,
     datas,
+    seasonStart,
+    seasonEnd,
 
     readItems,
   };
