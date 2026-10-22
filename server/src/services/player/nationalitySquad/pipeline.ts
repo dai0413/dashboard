@@ -144,6 +144,76 @@ export const customPipeline = ({
       newRoot: "$doc",
     },
   },
+  // 8-1. 次の Transfer を取得
+  {
+    $lookup: {
+      from: "transfers",
+      let: {
+        playerId: "$player._id",
+        currentToTeam: "$to_team",
+        currentFromDate: "$from_date",
+      },
+      pipeline: [
+        {
+          $match: {
+            form: {
+              $in: ACTIVE_TRANSFER_FORMS,
+            },
+            isCancelled: {
+              $ne: true,
+            },
+            $expr: {
+              $and: [
+                // 同じ選手
+                {
+                  $eq: ["$player", "$$playerId"],
+                },
+                // 現在の Transfer の to_team が次の Transfer の from_team
+                {
+                  $eq: ["$from_team", "$$currentToTeam"],
+                },
+                // 現在の Transfer より後の日付
+                {
+                  $gt: ["$from_date", "$$currentFromDate"],
+                },
+                // 対象シーズンの期間内
+                {
+                  $gte: ["$from_date", seasonStart],
+                },
+                {
+                  $lt: ["$from_date", seasonEnd],
+                },
+              ],
+            },
+          },
+        },
+        {
+          $sort: {
+            from_date: 1,
+            doa: 1,
+            _id: 1,
+          },
+        },
+        {
+          $limit: 1,
+        },
+      ],
+      as: "nextTransfer",
+    },
+  },
+  // 8-2. 配列から単一オブジェクトへ変換
+  {
+    $set: {
+      nextTransfer: {
+        $ifNull: [
+          {
+            $arrayElemAt: ["$nextTransfer", 0],
+          },
+          null,
+        ],
+      },
+    },
+  },
   // 9. TeamCompetitionSeason を取得
   {
     $lookup: {
@@ -240,6 +310,28 @@ export const customPipeline = ({
         createdAt: "$createdAt",
         updatedAt: "$updatedAt",
         __v: "$__v",
+      },
+
+      nextTransfer: {
+        $cond: [
+          { $ne: ["$nextTransfer", null] },
+          {
+            _id: "$nextTransfer._id",
+            from_team: "$nextTransfer.from_team",
+            to_team: "$nextTransfer.to_team",
+            player: "$nextTransfer.player",
+            position: "$nextTransfer.position",
+            form: "$nextTransfer.form",
+            from_date: "$nextTransfer.from_date",
+            doa: "$nextTransfer.doa",
+            URL: "$nextTransfer.URL",
+            isCancelled: "$nextTransfer.isCancelled",
+            createdAt: "$nextTransfer.createdAt",
+            updatedAt: "$nextTransfer.updatedAt",
+            __v: "$nextTransfer.__v",
+          },
+          null,
+        ],
       },
     },
   },

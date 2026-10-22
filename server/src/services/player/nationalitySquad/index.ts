@@ -12,11 +12,11 @@ export const getNationalitySquad = async (
   const { targetCountryIds, citizenshipIds, seasonStart, seasonEnd } =
     req.query;
 
-  if (!targetCountryIds || !Array.isArray(targetCountryIds)) {
+  if (!targetCountryIds) {
     throw new BadRequestError("targetCountryIdsを指定してください");
   }
 
-  if (!citizenshipIds || !Array.isArray(citizenshipIds)) {
+  if (!citizenshipIds) {
     throw new BadRequestError("citizenshipIdsを指定してください");
   }
 
@@ -28,12 +28,20 @@ export const getNationalitySquad = async (
     throw new BadRequestError("seasonEnddsを指定してください");
   }
 
+  const targetCountry = Array.isArray(targetCountryIds)
+    ? targetCountryIds
+    : [targetCountryIds];
+
+  const citizenship = Array.isArray(citizenshipIds)
+    ? citizenshipIds
+    : [citizenshipIds];
+
   const result = await TransferModel.aggregate<NationalitySquadResult>(
     customPipeline({
       seasonStart: new Date(seasonStart),
       seasonEnd: new Date(seasonEnd),
-      targetCountryIds: targetCountryIds as string[],
-      citizenshipIds: citizenshipIds as string[],
+      targetCountryIds: targetCountry as string[],
+      citizenshipIds: citizenship as string[],
     }),
   ).allowDiskUse(true);
 

@@ -8,9 +8,11 @@ const { SCHEMA, POPULATE_PATHS, convertFun } = transfer();
 type Response = z.infer<typeof SCHEMA.RESPONSE>;
 type Populated = z.infer<typeof SCHEMA.POPULATED>;
 
-export const getTransferResponse = async (result: NationalitySquadResult[]) => {
+export const getTransferResponse = async (
+  transfers: NationalitySquadResult["transfer"][],
+) => {
   const populated = await TransferModel.populate<Populated>(
-    result.map((item) => item.transfer),
+    transfers,
     POPULATE_PATHS,
   );
 
