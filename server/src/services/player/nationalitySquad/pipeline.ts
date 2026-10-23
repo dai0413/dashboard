@@ -23,9 +23,12 @@ export const customPipeline = ({
   citizenshipIds,
   targetCountryIds,
 }: CustomPipeLine): PipelineStage[] => [
-  // 1. 有効な Transfer 履歴を取得
+  // 1. 対象期間内に加入している可能性のある Transfer 履歴を取得
   {
     $match: {
+      // player: {
+      //   $in: [new Types.ObjectId("68516bd288294f93ffd0c8da")],
+      // },
       form: {
         $in: ACTIVE_TRANSFER_FORMS,
       },
@@ -38,39 +41,99 @@ export const customPipeline = ({
     },
   },
 
-  // 2. 選手ごとに時系列順に並べる
+  // 2. 加入先チームへの退団レコードを検索
   {
-    $setWindowFields: {
-      partitionBy: "$player",
-      sortBy: {
-        from_date: 1,
-        doa: 1,
-        _id: 1,
+    $lookup: {
+      from: "transfers",
+      let: {
+        playerId: "$player",
+        teamId: "$to_team",
+        joinedAt: "$from_date",
       },
-      output: {
-        nextTransferDate: {
-          $shift: {
-            output: "$from_date",
-            by: 1,
-            default: null,
+      pipeline: [
+        {
+          $match: {
+            isCancelled: {
+              $ne: true,
+            },
+            $expr: {
+              $and: [
+                // 同じ選手
+                {
+                  $eq: ["$player", "$$playerId"],
+                },
+                // 加入先チームと退団レコードの所属チームが一致
+                {
+                  $eq: ["$from_team", "$$teamId"],
+                },
+                // 加入日より後のレコード
+                {
+                  $gt: ["$from_date", "$$joinedAt"],
+                },
+              ],
+            },
           },
         },
+
+        // 加入日から最も近い退団レコードを取得
+        {
+          $sort: {
+            from_date: 1,
+            doa: 1,
+            _id: 1,
+          },
+        },
+        {
+          $limit: 1,
+        },
+
+        // 退団日だけを取得
+        {
+          $project: {
+            _id: 0,
+            from_date: 1,
+          },
+        },
+      ],
+      as: "departure",
+    },
+  },
+
+  // 3. 退団日を取り出す
+  {
+    $set: {
+      leftAt: {
+        $ifNull: [
+          {
+            $arrayElemAt: ["$departure.from_date", 0],
+          },
+          null,
+        ],
       },
     },
   },
 
-  // 3. 対象期間と所属期間が重なる Transfer を取得
+  // 4. 対象期間と所属期間が重なる Transfer だけを取得
   {
     $match: {
+      // 加入先チームが存在するレコード
+      to_team: {
+        $exists: true,
+        $ne: null,
+      },
+
+      // 対象期間の終了前に加入
       from_date: {
         $lt: seasonEnd,
       },
       $or: [
+        // 退団レコードが存在しない
         {
-          nextTransferDate: null,
+          leftAt: null,
         },
+        // 対象期間の開始時点ではまだ退団していない
         {
-          nextTransferDate: {
+          leftAt: {
             $gt: seasonStart,
           },
         },
