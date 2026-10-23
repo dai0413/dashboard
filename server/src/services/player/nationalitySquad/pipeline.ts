@@ -374,7 +374,9 @@ export const customPipeline = ({
       transfer: {
         _id: "$_id",
         from_team: "$from_team",
+        from_team_name: "$from_team_name",
         to_team: "$to_team",
+        to_team_name: "$to_team_name",
         player: "$player",
         position: "$position",
         form: "$form",
@@ -393,7 +395,9 @@ export const customPipeline = ({
           {
             _id: "$nextTransfer._id",
             from_team: "$nextTransfer.from_team",
+            from_team_name: "$nextTransfer.from_team_name",
             to_team: "$nextTransfer.to_team",
+            to_team_name: "$nextTransfer.to_team_name",
             player: "$nextTransfer.player",
             position: "$nextTransfer.position",
             form: "$nextTransfer.form",
