@@ -27,6 +27,39 @@ type Params = {
   seasonEnd: Date;
 };
 
+const getLevelNumber = (level?: string) => {
+  const match = level?.match(/\d+/);
+  return match ? Number(match[0]) : Infinity;
+};
+
+const sortSummaryItems = (
+  datas: {
+    data: SummaryItem;
+    level: string | undefined;
+  }[],
+): SummaryItem[] => {
+  return datas
+    .sort((a, b) => {
+      const aLevel = getLevelNumber(a.level);
+      const bLevel = getLevelNumber(b.level);
+
+      if (aLevel !== bLevel) {
+        return aLevel - bLevel;
+      }
+
+      const aLabel = a.data.subText?.label;
+      const bLabel = b.data.subText?.label;
+
+      if (aLabel == null) return bLabel == null ? 0 : 1;
+      if (bLabel == null) return -1;
+
+      return aLabel.localeCompare(bLabel, "ja", {
+        numeric: true,
+      });
+    })
+    .map(({ data }) => data);
+};
+
 const convertGroupedSummaryItems = ({
   data,
   seasonStart,
@@ -76,14 +109,16 @@ const convertGroupedSummaryItems = ({
       return data.abbr || data.team;
     };
 
+    const label = head
+      ? `${head}: ${createTeamText(team)}`
+      : createTeamText(team);
+
     const subText = team._id
       ? {
-          label: `${head} ${head ? ":" : ""} ${createTeamText(team)}`,
+          label,
           to: `${APP_ROUTES.TEAM_SUMMARY}/${team._id}`,
         }
-      : {
-          label: `${head} ${head ? ":" : ""} ${createTeamText(team)}`,
-        };
+      : { label };
 
     const colors = [
       team.primaryColor,
@@ -125,18 +160,11 @@ const convertGroupedSummaryItems = ({
     );
 
     if (group) {
+      const summaryItems = sortSummaryItems(group.datas);
+
       return {
         title: group.title,
-        summaryItems: group.datas
-          .sort((a, b) => {
-            const getLevelNumber = (level?: string) => {
-              const match = level?.match(/\d+/);
-              return match ? Number(match[0]) : Infinity;
-            };
-
-            return getLevelNumber(a.level) - getLevelNumber(b.level);
-          })
-          .map(({ data }) => data),
+        summaryItems: summaryItems,
       };
     }
 
@@ -155,31 +183,14 @@ const convertGroupedSummaryItems = ({
   const unrankedGroups = [...grouped.values()]
     .filter((group) => !rankedCountryNames.has(group.title.label))
     .sort((a, b) => a.title.label.localeCompare(b.title.label, "ja"))
-    .map((group) => ({
-      title: group.title,
-      summaryItems: group.datas
-        .sort((a, b) => {
-          const getLevelNumber = (level?: string) => {
-            const match = level?.match(/\d+/);
-            return match ? Number(match[0]) : Infinity;
-          };
+    .map((group) => {
+      const summaryItems = sortSummaryItems(group.datas);
 
-          // 1. level順
-          const levelDiff = getLevelNumber(a.level) - getLevelNumber(b.level);
-
-          if (levelDiff !== 0) return levelDiff;
-
-          // 2. subText.label順（undefinedは最後）
-          const aLabel = a.data.subText?.label;
-          const bLabel = b.data.subText?.label;
-
-          if (aLabel == null) return bLabel == null ? 0 : 1;
-          if (bLabel == null) return -1;
-
-          return aLabel.localeCompare(bLabel, "ja", { numeric: true });
-        })
-        .map(({ data }) => data),
-    }));
+      return {
+        title: group.title,
+        summaryItems,
+      };
+    });
 
   return [...result, ...unrankedGroups];
 };
