@@ -96,13 +96,21 @@ const convertGroupedSummaryItems = ({
         ? createTeamText(item.nextTransfer.to_team)
         : undefined;
 
+    const toDateString = (date: Date | string) => {
+      const d = new Date(date);
+
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+        d.getDate(),
+      ).padStart(2, "0")}`;
+    };
+
     const leftTop =
       item.transfer &&
       item.transfer.from_team &&
       item.transfer.from_date &&
       item.transfer.form !== "更新" &&
-      seasonStart.getTime() <= new Date(item.transfer.from_date).getTime() &&
-      seasonEnd.getTime() >= new Date(item.transfer.from_date).getTime()
+      toDateString(seasonStart) <= toDateString(item.transfer.from_date) &&
+      toDateString(item.transfer.from_date) <= toDateString(seasonEnd)
         ? createTeamText(item.transfer.from_team)
         : undefined;
 

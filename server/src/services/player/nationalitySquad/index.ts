@@ -36,10 +36,13 @@ export const getNationalitySquad = async (
     ? citizenshipIds
     : [citizenshipIds];
 
+  const start = new Date(seasonStart);
+  const end = new Date(seasonEnd);
+
   const result = await TransferModel.aggregate<NationalitySquadResult>(
     customPipeline({
-      seasonStart: new Date(seasonStart),
-      seasonEnd: new Date(seasonEnd),
+      seasonStart: start,
+      seasonEnd: end,
       targetCountryIds: targetCountry as string[],
       citizenshipIds: citizenship as string[],
     }),

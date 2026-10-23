@@ -26,9 +26,6 @@ export const customPipeline = ({
   // 1. 対象期間内に加入している可能性のある Transfer 履歴を取得
   {
     $match: {
-      // player: {
-      //   $in: [new Types.ObjectId("68516bd288294f93ffd0c8da")],
-      // },
       form: {
         $in: ACTIVE_TRANSFER_FORMS,
       },
@@ -215,6 +212,7 @@ export const customPipeline = ({
         playerId: "$player._id",
         currentToTeam: "$to_team",
         currentFromDate: "$from_date",
+        currentTransferId: "$_id",
       },
       pipeline: [
         {
@@ -237,7 +235,21 @@ export const customPipeline = ({
                 },
                 // 現在の Transfer より後の日付
                 {
-                  $gt: ["$from_date", "$$currentFromDate"],
+                  $or: [
+                    {
+                      $gt: ["$from_date", "$$currentFromDate"],
+                    },
+                    {
+                      $and: [
+                        {
+                          $eq: ["$from_date", "$$currentFromDate"],
+                        },
+                        {
+                          $gt: ["$_id", "$$currentTransferId"],
+                        },
+                      ],
+                    },
+                  ],
                 },
                 // 対象シーズンの期間内
                 {
