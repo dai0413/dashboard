@@ -17,8 +17,6 @@ const getStats = async (
     if (!getParams)
       throw new BadRequestError("getParams(date , alph)を送信してください");
 
-    console.log("getParams", getParams);
-
     const result = await get(getParams);
     if (result.ok) {
       const data: Output = result.data;
