@@ -140,7 +140,7 @@ export const toDisplayValue = <T>(
     };
   }
 
-  if (isLabelObject(value)) {
+  if (isLabelObject(value) && value.id) {
     const renderCellValue: RenderCellValue = {
       label: value.label,
       to: createTo(value, field),
