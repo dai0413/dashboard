@@ -15,19 +15,19 @@ export const team = (data: TeamGet[]): OptionObj<Team> => {
   return {
     fields: [
       {
-        label: "チーム",
-        field: "label",
-        key: "label",
-        width: "200px",
+        label: "略称",
+        field: "abbr",
+        key: "abbr",
+        width: "100px",
         getValueType: ColumnType.FIELD,
         displayOnTable: true,
         type: "string",
       },
       {
-        label: "略称",
-        field: "abbr",
-        key: "abbr",
-        width: "100px",
+        label: "チーム",
+        field: "label",
+        key: "label",
+        width: "200px",
         getValueType: ColumnType.FIELD,
         displayOnTable: true,
         type: "string",

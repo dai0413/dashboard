@@ -19,6 +19,7 @@ import { ViewMode } from "../../../../types/types";
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
 const j3 = import.meta.env.VITE_J3_ID;
+const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
 
 type Competition = "j1" | "j2" | "j3";
 
@@ -87,20 +88,31 @@ export const useTeam = (): {
   ): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = ageGroup().find((a) => a.key === ageGroupKey);
 
-    const defaultFieldObj = fieldDefinition[ModelType.TEAM]
+    const ageGroupDefaultFieldObj = fieldDefinition[ModelType.TEAM]
       ?.filter(isFilterable)
       .find((f) => f.key === "age_group");
 
-    if (!obj || !defaultFieldObj) return undefined;
+    const countryDefaultFieldObj = fieldDefinition[ModelType.TEAM]
+      ?.filter(isFilterable)
+      .find((f) => f.key === "country");
 
-    const filterCondition = [
-      {
-        ...defaultFieldObj,
-        value: [obj.key],
-        valueLabel: [obj.label],
-        operator: "equals",
-      },
-    ];
+    if (!obj || !ageGroupDefaultFieldObj || !countryDefaultFieldObj)
+      return undefined;
+
+    const base = {
+      ...ageGroupDefaultFieldObj,
+      value: [obj.key],
+      valueLabel: [obj.label],
+      operator: "equals",
+    };
+
+    const countryFilter = {
+      ...countryDefaultFieldObj,
+      value: [japan],
+      valueLabel: ["日本"],
+      operator: "equals",
+    };
+    const filterCondition = [base, countryFilter];
 
     return filterCondition;
   };

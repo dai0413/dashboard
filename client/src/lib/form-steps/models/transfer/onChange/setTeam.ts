@@ -20,10 +20,10 @@ export const setTeam: OnChange<TransferForm, false> = async ({
   let returnFormLabel: Record<string, any> = {};
 
   if (formData.form === "更新") {
-    if (to_team_name) {
+    if (to_team_name && !formData.to_team_name) {
       returnValue["to_team_name"] = to_team_name;
       returnFormLabel["to_team_name"] = to_team_name;
-    } else if (to_team) {
+    } else if (to_team && !formData.to_team) {
       returnValue["to_team"] = to_team.key;
       returnFormLabel["to_team"] = to_team.label;
     }
@@ -36,26 +36,26 @@ export const setTeam: OnChange<TransferForm, false> = async ({
     formData.form === "期限付き延長" ||
     formData.form === "育成型期限付き延長"
   ) {
-    if (to_team_name) {
+    if (to_team_name && !formData.to_team_name) {
       returnValue["to_team_name"] = to_team_name;
       returnFormLabel["to_team_name"] = to_team_name;
-    } else if (to_team) {
+    } else if (to_team && !formData.to_team) {
       returnValue["to_team"] = to_team.key;
       returnFormLabel["to_team"] = to_team.label;
     }
 
-    if (from_team_name) {
+    if (from_team_name && !formData.from_team_name) {
       returnValue["from_team_name"] = from_team_name;
       returnFormLabel["from_team_name"] = from_team_name;
-    } else if (from_team) {
+    } else if (from_team && !formData.from_team) {
       returnValue["from_team"] = from_team.key;
       returnFormLabel["from_team"] = from_team.label;
     }
   } else {
-    if (to_team_name) {
+    if (to_team_name && !formData.from_team_name) {
       returnValue["from_team_name"] = to_team_name;
       returnFormLabel["from_team_name"] = to_team_name;
-    } else if (to_team) {
+    } else if (to_team && !formData.from_team) {
       returnValue["from_team"] = to_team.key;
       returnFormLabel["from_team"] = to_team.label;
     }
@@ -68,10 +68,10 @@ export const setTeam: OnChange<TransferForm, false> = async ({
     formData.form === "育成型期限付き解除" ||
     formData.form === "復帰"
   ) {
-    if (from_team_name) {
+    if (from_team_name && !formData.to_team_name) {
       returnValue["to_team_name"] = from_team_name;
       returnFormLabel["to_team_name"] = from_team_name;
-    } else if (from_team) {
+    } else if (from_team && !formData.to_team) {
       returnValue["to_team"] = from_team.key;
       returnFormLabel["to_team"] = from_team.label;
     }

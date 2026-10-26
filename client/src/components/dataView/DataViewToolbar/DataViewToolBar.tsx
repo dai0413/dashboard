@@ -221,8 +221,9 @@ const DataViewToolBar = <Data, Form>({
   const resetItemsPerPage = (newViewMode: ViewMode) => {
     if (
       formIsOpen &&
-      newViewMode === ViewMode.TILE &&
-      (modelType === ModelType.TEAM_COMPETITION_SEASON ||
+      (newViewMode === ViewMode.TILE || newViewMode === ViewMode.TABLE) &&
+      (modelType === ModelType.TEAM ||
+        modelType === ModelType.TEAM_COMPETITION_SEASON ||
         modelType === ModelType.FORMATION)
     ) {
       setItemsPerPage(20);

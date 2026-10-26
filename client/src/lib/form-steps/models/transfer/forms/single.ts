@@ -3,7 +3,6 @@ import { ModelType } from "../../../../../types/models";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { combineOnChanges } from "../../../utils/onChange/combine";
 import { getFields } from "../fields";
-import { setFromDate } from "../onChange/setFromDate";
 import { setTeam } from "../onChange/setTeam";
 import { teamCheck } from "../validate/teamCheck";
 
@@ -16,7 +15,7 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["form", "player"]),
-    prepareNext: combineOnChanges(setTeam, setFromDate),
+    prepareNext: combineOnChanges(setTeam),
   },
   {
     stepLabel: "移籍元を選択",
