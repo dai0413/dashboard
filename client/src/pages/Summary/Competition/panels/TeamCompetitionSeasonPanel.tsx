@@ -44,6 +44,7 @@ const TeamCompetitionSeasonPanel = ({
           [ViewMode.TILE]: items,
         }}
         totalCount={items.length}
+        newItemsPerPage={20}
         reloadFun={reloadFun}
         filterField={teamCompetitionSeasonFieldDefinition
           ?.filter(isFilterable)
