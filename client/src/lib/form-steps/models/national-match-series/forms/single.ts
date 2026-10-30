@@ -8,7 +8,7 @@ import { setTeam } from "../utils/createQuickFilterItems/setTeam";
 type BaseModel = ModelType.NATIONAL_MATCH_SERIES;
 const baseModel = ModelType.NATIONAL_MATCH_SERIES;
 
-export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
+export const single: FormStep<BaseModel>[] = [
   {
     stepLabel: "名称入力",
     type: StepType.FORM,
@@ -37,18 +37,6 @@ export const single: FormStep<ModelType.NATIONAL_MATCH_SERIES>[] = [
     modelType: baseModel,
     fields: getFields(["team"]),
   },
-  // {
-  //   stepLabel: "国を選択",
-  //   type: StepType.FORM,
-  //   modelType: baseModel,
-  //   fields: getFields(["country"]),
-  // },
-  // {
-  //   stepLabel: "年代を選択",
-  //   type: StepType.FORM,
-  //   modelType: baseModel,
-  //   fields: getFields(["age_group"]),
-  // },
   {
     stepLabel: "日付",
     type: StepType.FORM,
