@@ -44,11 +44,20 @@ export const StatisticsTable = <
     );
   };
 
-  const renderValues = (value: RenderCellValue | RenderCellValue[]) => {
+  const renderValues = (
+    value: RenderCellValue | RenderCellValue[],
+    align: "left" | "center" | "right" = "left",
+  ) => {
     const values = Array.isArray(value) ? value : [value];
 
+    const justifyClass = {
+      left: "justify-start",
+      center: "justify-center",
+      right: "justify-end",
+    };
+
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className={`flex flex-wrap ${justifyClass[align]} gap-2`}>
         {values.map((v, index) => (
           <React.Fragment key={index}>{renderValue(v)}</React.Fragment>
         ))}
@@ -69,7 +78,7 @@ export const StatisticsTable = <
             alignClass[textAlign]
           } ${className ?? column.className ?? ""}`}
         >
-          {renderValues(value)}
+          {renderValues(value, textAlign)}
         </td>
       );
     });
