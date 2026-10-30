@@ -8,12 +8,13 @@ export const setTeam: OnChange<TransferForm, false> = async ({
   metaData,
   api,
 }) => {
-  if (!api) return { formData, formLabel, metaData };
+  if (!api || !formData.from_date) return { formData, formLabel, metaData };
   const { from_team, from_team_name, to_team, to_team_name, position } =
     await currentTransfer({
       formData,
       api,
       form: "!満了",
+      from_date: formData.from_date,
     });
 
   let returnValue: Partial<TransferForm> = {};

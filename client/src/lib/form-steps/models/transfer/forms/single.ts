@@ -15,6 +15,12 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
     type: StepType.FORM,
     modelType: baseModel,
     fields: getFields(["form", "player"]),
+  },
+  {
+    stepLabel: "日付を入力",
+    type: StepType.FORM,
+    modelType: baseModel,
+    fields: getFields(["doa", "from_date", "to_date"]),
     prepareNext: combineOnChanges(setTeam),
   },
   {
@@ -41,12 +47,6 @@ export const single: FormStep<ModelType.TRANSFER>[] = [
         formData.form === "退団"
       );
     },
-  },
-  {
-    stepLabel: "日付を入力",
-    type: StepType.FORM,
-    modelType: baseModel,
-    fields: getFields(["doa", "from_date", "to_date"]),
   },
   {
     stepLabel: "背番号・ポジションを入力",
