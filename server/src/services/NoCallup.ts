@@ -23,7 +23,22 @@ export const getNoCallUpService = async (
 
   const countResult = await NationalMatchSeriesModel.aggregate([
     {
-      $match: { country: new mongoose.Types.ObjectId(countryId) },
+      $lookup: {
+        from: "teams",
+        localField: "team",
+        foreignField: "_id",
+        as: "team",
+      },
+    },
+    {
+      $match: {
+        team: {
+          $elemMatch: {
+            country: new mongoose.Types.ObjectId(countryId),
+            genre: "national",
+          },
+        },
+      },
     },
     {
       $lookup: {
@@ -39,41 +54,17 @@ export const getNoCallUpService = async (
       },
     },
     {
-      $match: { players_count: 0 },
+      $match: {
+        players_count: 0,
+      },
     },
-    { $count: "totalCount" },
+    {
+      $count: "totalCount",
+    },
   ]);
 
   const data = await NationalMatchSeriesModel.aggregate([
-    {
-      $match: { country: new mongoose.Types.ObjectId(countryId) },
-    },
-    {
-      $lookup: {
-        from: "nationalcallups",
-        localField: "_id",
-        foreignField: "series",
-        as: "callups",
-      },
-    },
-    {
-      $addFields: {
-        players_count: { $size: "$callups" },
-      },
-    },
-    {
-      $match: { players_count: 0 },
-    },
-
-    // country の情報を取得
-    {
-      $lookup: {
-        from: "countries",
-        localField: "country",
-        foreignField: "_id",
-        as: "country",
-      },
-    },
+    // 1. Team を取得
     {
       $lookup: {
         from: "teams",
@@ -82,10 +73,60 @@ export const getNoCallUpService = async (
         as: "team",
       },
     },
+
+    // 2. team.country と team.genre で絞り込む
+    {
+      $match: {
+        team: {
+          $elemMatch: {
+            country: new mongoose.Types.ObjectId(countryId),
+            genre: "national",
+          },
+        },
+      },
+    },
+
+    // 3. NationalCallUp を取得
+    {
+      $lookup: {
+        from: "nationalcallups",
+        localField: "_id",
+        foreignField: "series",
+        as: "callups",
+      },
+    },
+
+    // 4. 招集人数を集計
+    {
+      $addFields: {
+        players_count: { $size: "$callups" },
+      },
+    },
+
+    // 5. 招集人数が0人のシリーズに絞り込む
+    {
+      $match: {
+        players_count: 0,
+      },
+    },
+
+    // 6. Country の情報を取得
+    {
+      $lookup: {
+        from: "countries",
+        localField: "team.country",
+        foreignField: "_id",
+        as: "country",
+      },
+    },
+
     { $unwind: { path: "$country", preserveNullAndEmptyArrays: true } },
     { $unwind: { path: "$team", preserveNullAndEmptyArrays: true } },
 
+    // 7. 並び替え
     { $sort: { joined_at: -1, _id: -1 } },
+
+    // 8. ページネーション
     ...(getAll ? [] : [{ $skip: skip }, { $limit: limit }]),
   ]);
 
