@@ -3,6 +3,7 @@ import SummaryTabMenu from "../../components/SummaryTabMenu";
 import { useClubTeamSummary } from "./hooks/useClubTeamSummary";
 import { Info, PanelRenderer } from "./components/index";
 import { tabItems } from "./constants/tabs";
+import { AccentSection } from "../../../../components/layout";
 
 const ClubTeam = () => {
   const { id } = useParams();
@@ -21,14 +22,9 @@ const ClubTeam = () => {
         accentColor={primaryColor}
       />
 
-      <section
-        className="space-y-4 rounded-xl border border-gray-200 border-l-4 bg-white p-4 shadow-sm"
-        style={{
-          borderLeftColor: primaryColor || "#E5E7EB",
-        }}
-      >
+      <AccentSection primaryColor={primaryColor}>
         <PanelRenderer summary={summary} />
-      </section>
+      </AccentSection>
     </div>
   );
 };
