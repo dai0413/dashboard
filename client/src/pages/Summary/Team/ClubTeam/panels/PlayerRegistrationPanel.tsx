@@ -1,7 +1,7 @@
 import { GettedModelDataMap, ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../../lib/model-fields";
+import { getFields } from "../../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -18,7 +18,7 @@ const registrationFieldDefinition: UIFieldDefinition<
 >[] = [
   ...convertFieldDefinition<PlayerRegistrationGet>(
     ["season", "number", "player", "registration_status"],
-    fieldDefinition[ModelType.PLAYER_REGISTRATION],
+    getFields(ModelType.PLAYER_REGISTRATION),
   ),
   {
     label: "2種・特別指定",

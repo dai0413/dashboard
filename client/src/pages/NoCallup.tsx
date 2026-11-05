@@ -1,8 +1,11 @@
 import { ModelType } from "../types/models";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
-import { fieldDefinition } from "../lib/model-fields";
-import { isFilterable, isSortable, UIFieldDefinition } from "../types/field";
+import {
+  getFields,
+  getFilterableFields,
+  getSortableFields,
+} from "../lib/model-fields";
 import { TableClient } from "../components/dataView";
 import { useEffect, useState } from "react";
 import { Data, ViewMode } from "../types/types";
@@ -14,9 +17,6 @@ import {
   NationalMatchSeriesGet,
 } from "../types/models/national-match-series";
 const japan = import.meta.env.VITE_JPN_COUNTRY_ID;
-
-const fields: UIFieldDefinition<NationalMatchSeriesGet>[] =
-  fieldDefinition[ModelType.NATIONAL_MATCH_SERIES] || [];
 
 const NoCallUp = () => {
   const [items, setItems] = useState<Data<NationalMatchSeriesGet>>({
@@ -60,7 +60,7 @@ const NoCallUp = () => {
       <TableClient
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         title="登録メンバーなし"
-        fieldDefinitions={fields}
+        fieldDefinitions={getFields(ModelType.NATIONAL_MATCH_SERIES)}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE]}
@@ -69,8 +69,8 @@ const NoCallUp = () => {
           [ViewMode.TILE]: items.data,
         }}
         totalCount={items.data.length}
-        filterField={fields?.filter(isFilterable)}
-        sortField={fields?.filter(isSortable)}
+        filterField={getFilterableFields(ModelType.NATIONAL_MATCH_SERIES)}
+        sortField={getSortableFields(ModelType.NATIONAL_MATCH_SERIES)}
         linkField={[
           {
             field: "name",

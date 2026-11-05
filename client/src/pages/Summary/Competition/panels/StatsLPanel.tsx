@@ -1,7 +1,10 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
-import { fieldDefinition } from "../../../../lib/model-fields";
-import { isFilterable, isSortable } from "../../../../types/field";
+import {
+  getFields,
+  getFilterableFields,
+  getSortableFields,
+} from "../../../../lib/model-fields";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
 import { ViewMode } from "../../../../types/types";
@@ -25,7 +28,7 @@ const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         key={key}
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
-        fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
+        fieldDefinitions={getFields(ModelType.STATS_L)}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{
           [ViewMode.TABLE]: items.raw,
@@ -33,12 +36,12 @@ const StatsLPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         }}
         totalCount={items.raw.length}
         reloadFun={reloadFun}
-        filterField={fieldDefinition[ModelType.STATS_L]
-          ?.filter(isFilterable)
-          .filter((file) => file.key !== "competition")}
-        sortField={fieldDefinition[ModelType.STATS_L]
-          ?.filter(isSortable)
-          .filter((file) => file.key !== "competition")}
+        filterField={getFilterableFields(ModelType.STATS_L).filter(
+          (file) => file.key !== "competition",
+        )}
+        sortField={getSortableFields(ModelType.STATS_L).filter(
+          (file) => file.key !== "competition",
+        )}
         initialData={{
           metaData: {
             season: selectedOption?._id,

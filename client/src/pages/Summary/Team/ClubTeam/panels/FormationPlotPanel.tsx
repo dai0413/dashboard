@@ -2,10 +2,7 @@ import { TableClient } from "../../../../../components/dataView";
 import { UseClubTeamSummary } from "../types";
 import { ViewMode } from "../../../../../types/types";
 import { ModelType } from "../../../../../types/models";
-import { fieldDefinition } from "../../../../../lib/model-fields";
-
-const formationPlotFieldDefinition =
-  fieldDefinition[ModelType.TEAM_MATCH_FORMATION];
+import { getFields } from "../../../../../lib/model-fields";
 
 const FormationPlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
@@ -23,7 +20,7 @@ const FormationPlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
           await reloadFun(filterConditions, sortConditions)
         }
         itemsLoading={isLoading}
-        fieldDefinitions={formationPlotFieldDefinition}
+        fieldDefinitions={getFields(ModelType.TEAM_MATCH_FORMATION)}
         viewModes={[ViewMode.POSITION_LIST, ViewMode.TABLE, ViewMode.TILE]}
         defaultViewMode={ViewMode.POSITION_LIST}
         viewData={{

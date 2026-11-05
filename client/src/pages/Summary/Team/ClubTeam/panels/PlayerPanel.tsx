@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../../lib/model-fields";
+import { getFields } from "../../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
@@ -10,7 +10,7 @@ import { ViewMode } from "../../../../../types/types";
 
 const playerFieldDefinition = convertFieldDefinition<TransferGet>(
   ["position", "player", "from_date", "form"],
-  fieldDefinition[ModelType.TRANSFER],
+  getFields(ModelType.TRANSFER),
 );
 
 const PlayerPanel = ({ summary }: { summary: UseClubTeamSummary }) => {

@@ -1,7 +1,10 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
-import { fieldDefinition } from "../../../../../lib/model-fields";
-import { isFilterable, isSortable } from "../../../../../types/field";
+import {
+  getFields,
+  getFilterableFields,
+  getSortableFields,
+} from "../../../../../lib/model-fields";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { ViewMode } from "../../../../../types/types";
@@ -21,17 +24,17 @@ const StatsLPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         key={key}
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
-        fieldDefinitions={fieldDefinition[ModelType.STATS_L] || []}
+        fieldDefinitions={getFields(ModelType.STATS_L)}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}
         reloadFun={reloadFun}
-        filterField={fieldDefinition[ModelType.STATS_L]
-          ?.filter(isFilterable)
-          .filter((file) => file.key !== "team")}
-        sortField={fieldDefinition[ModelType.STATS_L]
-          ?.filter(isSortable)
-          .filter((file) => file.key !== "team")}
+        filterField={getFilterableFields(ModelType.STATS_L).filter(
+          (file) => file.key !== "team",
+        )}
+        sortField={getSortableFields(ModelType.STATS_L).filter(
+          (file) => file.key !== "team",
+        )}
         initialData={{
           formData: { team: id },
         }}

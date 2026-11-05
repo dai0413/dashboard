@@ -12,8 +12,7 @@ import { api } from "../../../../context/api-context";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { convert } from "../../../../lib/convert/DBtoGetted";
 import { ModelType } from "../../../../types/models";
-import { fieldDefinition } from "../../../../lib/model-fields";
-import { isFilterable } from "../../../../types/field";
+import { getFilterableFields } from "../../../../lib/model-fields";
 import { ViewMode } from "../../../../types/types";
 
 const j1 = import.meta.env.VITE_J1_ID;
@@ -88,13 +87,13 @@ export const useTeam = (): {
   ): Promise<FilterableFieldDefinition[] | undefined> => {
     const obj = ageGroup().find((a) => a.key === ageGroupKey);
 
-    const ageGroupDefaultFieldObj = fieldDefinition[ModelType.TEAM]
-      ?.filter(isFilterable)
-      .find((f) => f.key === "age_group");
+    const ageGroupDefaultFieldObj = getFilterableFields(ModelType.TEAM).find(
+      (f) => f.key === "age_group",
+    );
 
-    const countryDefaultFieldObj = fieldDefinition[ModelType.TEAM]
-      ?.filter(isFilterable)
-      .find((f) => f.key === "country");
+    const countryDefaultFieldObj = getFilterableFields(ModelType.TEAM).find(
+      (f) => f.key === "country",
+    );
 
     if (!obj || !ageGroupDefaultFieldObj || !countryDefaultFieldObj)
       return undefined;

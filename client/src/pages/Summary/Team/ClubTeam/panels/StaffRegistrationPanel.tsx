@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../../lib/model-fields";
+import { getFields } from "../../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -15,7 +15,7 @@ import { ViewMode } from "../../../../../types/types";
 const registrationFieldDefinition: UIFieldDefinition<StaffRegistrationGet>[] = [
   ...convertFieldDefinition<StaffRegistrationGet>(
     ["season", "role", "staff", "registration_status"],
-    fieldDefinition[ModelType.STAFF_REGISTRATION],
+    getFields(ModelType.STAFF_REGISTRATION),
   ),
 ];
 

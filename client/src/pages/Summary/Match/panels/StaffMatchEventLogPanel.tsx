@@ -4,7 +4,7 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../lib/model-fields";
+import { getFields } from "../../../../lib/model-fields";
 import { StaffMatchEventLogGet } from "../../../../types/models/staff-match-event-log";
 import { ViewMode } from "../../../../types/types";
 
@@ -18,7 +18,7 @@ const staffEventLogFieldDefinition =
       "match_event_type",
       "staff",
     ],
-    fieldDefinition[ModelType.STAFF_MATCH_EVENT_LOG],
+    getFields(ModelType.STAFF_MATCH_EVENT_LOG),
   );
 
 const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {

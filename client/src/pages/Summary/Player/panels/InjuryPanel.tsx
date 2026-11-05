@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../lib/model-fields";
+import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
@@ -10,7 +10,7 @@ import { ViewMode } from "../../../../types/types";
 
 const injuryFieldDefinition = convertFieldDefinition<InjuryGet>(
   ["doa", "team", "injured_part", "ttp"],
-  fieldDefinition[ModelType.INJURY],
+  getFields(ModelType.INJURY),
 );
 
 const InjuryPanel = ({ summary }: { summary: UsePlayerSummary }) => {

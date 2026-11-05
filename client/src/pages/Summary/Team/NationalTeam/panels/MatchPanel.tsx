@@ -1,7 +1,7 @@
 import { GettedModelDataMap, ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../../lib/model-fields";
+import { getFields } from "../../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -32,7 +32,7 @@ const MatchPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
         "match_week",
         "result-string",
       ],
-      fieldDefinition[ModelType.MATCH],
+      getFields(ModelType.MATCH),
     ),
     {
       label: "相手",

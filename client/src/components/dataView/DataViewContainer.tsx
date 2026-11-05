@@ -17,7 +17,7 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import { isModelType, UIFieldDefinition } from "../../types/field";
-import { fieldDefinition, getSortableFields } from "../../lib/model-fields";
+import { getFields, getSortableFields } from "../../lib/model-fields";
 import { LinkField, ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
 import { getPageNumbers } from "../../utils/data/getPageNumbers";
@@ -326,7 +326,7 @@ const Container = <K extends Record<string, unknown>, F>({
 
   useEffect(() => {
     if (!modelType || !isModelType(modelType)) return;
-    const defs = fieldDefinition[modelType];
+    const defs = getFields(modelType);
     if (!defs) return;
 
     const sortableField = getSortableFields(modelType);

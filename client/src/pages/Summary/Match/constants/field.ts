@@ -1,4 +1,4 @@
-import { fieldDefinition } from "../../../../lib/model-fields";
+import { getFields } from "../../../../lib/model-fields";
 import { ModelType } from "../../../../types/models";
 import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
 import { StatsLGet } from "../../../../types/models/stats-l";
@@ -6,11 +6,11 @@ import { convertFieldDefinition } from "../../../../utils/displayField/convertFi
 
 export const statsLFieldDefinition = convertFieldDefinition<StatsLGet>(
   ["team", "xgFor", "xgAgainst"],
-  fieldDefinition[ModelType.STATS_L],
+  getFields(ModelType.STATS_L),
 );
 
 export const playerAppearanceFieldDefinition =
   convertFieldDefinition<PlayerAppearanceGet>(
     ["number", "play_status", "player", "time"],
-    fieldDefinition[ModelType.PLAYER_APPEARANCE],
+    getFields(ModelType.PLAYER_APPEARANCE),
   );

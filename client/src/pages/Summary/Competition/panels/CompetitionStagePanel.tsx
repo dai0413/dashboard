@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../lib/model-fields";
+import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
 import { CompetitionStageGet } from "../../../../types/models/competition-stage";
@@ -10,7 +10,7 @@ import { ViewMode } from "../../../../types/types";
 const competitionStageFieldDefinition =
   convertFieldDefinition<CompetitionStageGet>(
     ["name", "stage_type", "left"],
-    fieldDefinition[ModelType.COMPETITION_STAGE],
+    getFields(ModelType.COMPETITION_STAGE),
   );
 
 const CompetitionStagePanel = ({

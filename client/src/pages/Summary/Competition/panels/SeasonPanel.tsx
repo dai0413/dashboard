@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { fieldDefinition } from "../../../../lib/model-fields";
+import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
 import { SeasonGet } from "../../../../types/models/season";
@@ -9,7 +9,7 @@ import { ViewMode } from "../../../../types/types";
 
 const seasonFieldDefinition = convertFieldDefinition<SeasonGet>(
   ["name", "start_date", "end_date", "current", "note"],
-  fieldDefinition[ModelType.SEASON],
+  getFields(ModelType.SEASON),
 );
 
 const StaffRegistrationPanel = ({

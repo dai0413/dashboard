@@ -42,7 +42,7 @@ import {
   CustomOptionType,
 } from "../../utils/createOption/types/custom";
 
-export const fieldDefinition: {
+const fieldDefinition: {
   [K in ModelType]?: UIFieldDefinition<GettedModelDataMap[K]>[];
 } = {
   [ModelType.COMPETITION_STAGE]: competitionStage,

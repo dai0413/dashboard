@@ -1,6 +1,9 @@
 import { ModelType } from "../types/models";
-import { fieldDefinition } from "../lib/model-fields";
-import { isFilterable, isSortable, UIFieldDefinition } from "../types/field";
+import {
+  getFields,
+  getFilterableFields,
+  getSortableFields,
+} from "../lib/model-fields";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { useEffect, useState } from "react";
@@ -16,9 +19,6 @@ const j2 = import.meta.env.VITE_J2_ID;
 const j3 = import.meta.env.VITE_J3_ID;
 
 const competitionParam = [j1, j2, j3].join(",");
-
-const fields: UIFieldDefinition<TransferGet>[] =
-  fieldDefinition[ModelType.TRANSFER] || [];
 
 const NoNumber = () => {
   const [items, setItems] = useState<Data<TransferGet>>({
@@ -66,7 +66,7 @@ const NoNumber = () => {
       <TableClient
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         title="背番号なし"
-        fieldDefinitions={fields}
+        fieldDefinitions={getFields(ModelType.TRANSFER)}
         reloadFun={reloadFun}
         itemsLoading={items.isLoading}
         viewModes={[ViewMode.TABLE]}
@@ -75,12 +75,12 @@ const NoNumber = () => {
           [ViewMode.TILE]: items.data,
         }}
         totalCount={items.data.length}
-        filterField={fields
-          ?.filter(isFilterable)
-          .filter((file) => file.key !== "number")}
-        sortField={fields
-          ?.filter(isSortable)
-          .filter((file) => file.key !== "number")}
+        filterField={getFilterableFields(ModelType.TRANSFER).filter(
+          (file) => file.key !== "number",
+        )}
+        sortField={getSortableFields(ModelType.TRANSFER).filter(
+          (file) => file.key !== "number",
+        )}
         linkField={[
           {
             field: "player",
