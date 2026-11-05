@@ -12,4 +12,9 @@ export const tabItems: SummaryTabItems[] = [
     key: NATIONAL_TAB.TEAM,
     text: "代表チーム",
   },
+  {
+    icon: "series",
+    key: NATIONAL_TAB.NATIONAL_MATCH_SERIES,
+    text: "シリーズ",
+  },
 ];
