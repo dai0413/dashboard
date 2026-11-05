@@ -130,3 +130,12 @@ export function getFields<K extends ModelType>(
 
   return defs;
 }
+
+export const setDisplayOnTable = <T>(
+  fields: UIFieldDefinition<T>[],
+  keys: string[],
+): UIFieldDefinition<T>[] =>
+  fields.map((field) => ({
+    ...field,
+    displayOnTable: keys.includes(field.key),
+  }));
