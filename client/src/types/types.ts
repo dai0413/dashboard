@@ -79,6 +79,7 @@ export enum ViewMode {
   MATCH_MATRIX = "match_matrix",
   SERIES_MATRIX = "series_matrix",
   BIRTH_YEAR_POSITION_MATRIX = "birth_year_position_matrix",
+  MONTHLY_CALENDAR = "monthly_calendar",
 }
 
 export enum RowSpacing {

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { useDataView } from "../../../../context/dataView-context";
 import Tile from "./Tile";
 import Table from "./Table";
@@ -27,6 +27,11 @@ import { PlayerRegistrationGet } from "../../../../types/models/player-registrat
 import { PositionPlayers } from "../../../formation/PositionPlayers";
 import { GroupedPlayers } from "./Matrix/type";
 import { TransferGet } from "../../../../types/models/transfer";
+import { MonthlyCalendarTable } from "./MonthlyCalendar";
+import {
+  MonthlyCalendarGroup,
+  MonthleyCalendarHeaderItem,
+} from "../../../../types/calendar";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -43,9 +48,16 @@ type DataViewProps<T> = {
   ) => React.ReactNode;
   onActionClick?: (index: number, row: T) => void;
   onDeleteClick?: (index: number) => void;
+  noItemMessage?: ReactNode;
   viewData: {
     [ViewMode.TABLE]?: TableData<T>;
     [ViewMode.TILE]?: TableData<T>;
+    [ViewMode.MONTHLY_CALENDAR]?: {
+      groups: MonthlyCalendarGroup[];
+      selectedKey: string;
+      headerItems: MonthleyCalendarHeaderItem[];
+      headerOnChange: (key: string) => void;
+    };
     [ViewMode.RADAR_CHART]?: {
       data: RadarValues;
       fields: RadarField[];
@@ -104,6 +116,7 @@ const DataView = <T,>({
   onActionClick,
   onDeleteClick,
   viewData,
+  noItemMessage,
 }: DataViewProps<T>) => {
   const { viewMode, rowSpacing, columnVisibility } = useDataView();
 
@@ -141,7 +154,8 @@ const DataView = <T,>({
   if (
     viewMode === ViewMode.TABLE &&
     visibleHeaders &&
-    viewData[ViewMode.TABLE]
+    viewData[ViewMode.TABLE] &&
+    viewData[ViewMode.TABLE].length > 0
   ) {
     return (
       <Table
@@ -161,7 +175,12 @@ const DataView = <T,>({
     );
   }
 
-  if (viewMode === ViewMode.TILE && visibleHeaders && viewData[ViewMode.TILE]) {
+  if (
+    viewMode === ViewMode.TILE &&
+    visibleHeaders &&
+    viewData[ViewMode.TILE] &&
+    viewData[ViewMode.TILE].length > 0
+  ) {
     return (
       <div className="mx-5">
         <Tile
@@ -301,6 +320,33 @@ const DataView = <T,>({
       />
     );
   }
+
+  if (
+    viewMode === ViewMode.MONTHLY_CALENDAR &&
+    viewData[ViewMode.MONTHLY_CALENDAR]
+  ) {
+    const { groups, headerItems, selectedKey, headerOnChange } =
+      viewData[ViewMode.MONTHLY_CALENDAR];
+    return (
+      <MonthlyCalendarTable
+        groups={groups}
+        headerItems={headerItems}
+        headerOnChange={headerOnChange}
+        selectedKey={selectedKey}
+      />
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center py-16">
+      <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">
+        <p className="mb-2 text-lg font-semibold text-gray-600">
+          表示するデータがありません
+        </p>
+        {noItemMessage}
+      </div>
+    </div>
+  );
 };
 
 export default DataView;

@@ -26,13 +26,28 @@ const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
     <>
       <h2 className="text-base font-semibold text-gray-800">{text}</h2>
       <TableClient
-        key={key}
+        key={`${key}-monthly`}
+        itemsLoading={isLoading}
+        modelType={ModelType.NATIONAL_MATCH_SERIES}
+        defaultViewMode={ViewMode.MONTHLY_CALENDAR}
+        viewModes={[ViewMode.MONTHLY_CALENDAR]}
+        viewData={{
+          [ViewMode.MONTHLY_CALENDAR]: items.monthlyCalendar,
+        }}
+        totalCount={items.series.length}
+        noToolBar={false}
+      />
+      <TableClient
+        key={`${key}-table`}
         itemsLoading={isLoading}
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         fieldDefinitions={nationalMatchSeriesFieldDefinition}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
-        viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
-        totalCount={items.length}
+        viewData={{
+          [ViewMode.TABLE]: items.series,
+          [ViewMode.TILE]: items.series,
+        }}
+        totalCount={items.series.length}
         reloadFun={reloadFun}
         filterField={nationalMatchSeriesFieldDefinition?.filter(isFilterable)}
         sortField={nationalMatchSeriesFieldDefinition?.filter(isSortable)}

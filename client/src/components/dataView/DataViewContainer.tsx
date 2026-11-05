@@ -38,6 +38,10 @@ import { NationalMatchSeries } from "../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { GroupedPlayers } from "./DataViewContent/DataView/Matrix/type";
 import { TransferGet } from "../../types/models/transfer";
+import {
+  MonthlyCalendarGroup,
+  MonthleyCalendarHeaderItem,
+} from "../../types/calendar";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -105,6 +109,12 @@ type DataViewContainerProps<T, F> = {
   viewData: {
     [ViewMode.TABLE]?: T[];
     [ViewMode.TILE]?: T[];
+    [ViewMode.MONTHLY_CALENDAR]?: {
+      groups: MonthlyCalendarGroup[];
+      headerItems: MonthleyCalendarHeaderItem[];
+      selectedKey: string;
+      headerOnChange: (key: string) => void;
+    };
     [ViewMode.RADAR_CHART]?: {
       data: RadarValues;
       fields: RadarField[];
@@ -357,18 +367,6 @@ const Container = <K extends Record<string, unknown>, F>({
     return pages;
   }, [newItemsPerPage, itemsPerPage, newPageNum, pageNum, totalCount, datas]);
 
-  const noItem = useMemo(() => {
-    const nextViewMode = defaultViewMode || viewMode;
-
-    const returnVal =
-      (nextViewMode === ViewMode.TABLE && !viewData[ViewMode.TABLE]) ||
-      viewData[ViewMode.TABLE]?.length === 0 ||
-      (nextViewMode === ViewMode.TILE && !viewData[ViewMode.TILE]) ||
-      viewData[ViewMode.TILE]?.length === 0;
-
-    return returnVal;
-  }, [viewMode, viewData]);
-
   const pageButton = useMemo(() => {
     const nextViewMode = defaultViewMode || viewMode;
     if (viewMode) {
@@ -406,7 +404,6 @@ const Container = <K extends Record<string, unknown>, F>({
         modelType={modelType}
         linkField={linkField}
         fieldDefinitions={fieldDefinitions}
-        noItem={noItem}
         isLoading={itemsLoading || quickFilterSouce.loading}
         form={form}
         onActionClick={onClick}

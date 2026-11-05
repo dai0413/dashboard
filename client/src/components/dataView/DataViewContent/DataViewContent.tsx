@@ -20,9 +20,12 @@ import { PlayerRegistrationGet } from "../../../types/models/player-registration
 import { useDataView } from "../../../context/dataView-context";
 import { GroupedPlayers } from "./DataView/Matrix/type";
 import { TransferGet } from "../../../types/models/transfer";
+import {
+  MonthlyCalendarGroup,
+  MonthleyCalendarHeaderItem,
+} from "../../../types/calendar";
 
 type Props<T> = {
-  noItem?: boolean;
   isLoading?: boolean;
 
   modelType?: ModelType;
@@ -54,6 +57,12 @@ type Props<T> = {
   viewData: {
     [ViewMode.TABLE]?: TableData<T>;
     [ViewMode.TILE]?: TableData<T>;
+    [ViewMode.MONTHLY_CALENDAR]?: {
+      groups: MonthlyCalendarGroup[];
+      selectedKey: string;
+      headerItems: MonthleyCalendarHeaderItem[];
+      headerOnChange: (key: string) => void;
+    };
     [ViewMode.RADAR_CHART]?: {
       data: RadarValues;
       fields: RadarField[];
@@ -115,7 +124,6 @@ export const DataViewContent = <K extends Record<string, unknown>>({
   deleteOnClick,
   selectedKeys,
 
-  noItem,
   noItemMessage,
   pageButton,
   pages,
@@ -129,19 +137,6 @@ export const DataViewContent = <K extends Record<string, unknown>>({
       <div className="flex items-center justify-center py-16">
         <div className="bg-gray-50 px-8 py-10 text-center">
           <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
-        </div>
-      </div>
-    );
-  }
-
-  if (noItem) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-8 py-10 text-center">
-          <p className="mb-2 text-lg font-semibold text-gray-600">
-            表示するデータがありません
-          </p>
-          {noItemMessage}
         </div>
       </div>
     );
@@ -161,6 +156,7 @@ export const DataViewContent = <K extends Record<string, unknown>>({
         selectedKeys={selectedKeys}
         onDeleteClick={deleteOnClick}
         viewData={viewData}
+        noItemMessage={noItemMessage}
       />
 
       {(viewMode === ViewMode.TABLE || viewMode === ViewMode.TILE) &&

@@ -26,6 +26,10 @@ import { NationalCallup } from "../../types/models/national-callup";
 import { NationalMatchSeries } from "../../types/models/national-match-series";
 import { PlayerRegistrationGet } from "../../types/models/player-registration";
 import { GroupedPlayers } from "./DataViewContent/DataView/Matrix/type";
+import {
+  MonthleyCalendarHeaderItem,
+  MonthlyCalendarGroup,
+} from "../../types/calendar";
 
 const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
@@ -113,6 +117,12 @@ type TableClientProps<T, F> = {
   viewData: {
     [ViewMode.TABLE]?: T[];
     [ViewMode.TILE]?: T[];
+    [ViewMode.MONTHLY_CALENDAR]?: {
+      groups: MonthlyCalendarGroup[];
+      headerItems: MonthleyCalendarHeaderItem[];
+      selectedKey: string;
+      headerOnChange: (key: string) => void;
+    };
     [ViewMode.RADAR_CHART]?: {
       data: RadarValues;
       fields: RadarField[];
