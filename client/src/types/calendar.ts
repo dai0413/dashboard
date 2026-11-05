@@ -17,3 +17,10 @@ export type MonthleyCalendarHeaderItem = {
   label: string;
   default?: true;
 };
+
+export type PositionedCalendarRangeItem = CalendarRangeItem & {
+  row: number;
+  startOffset: number;
+  endOffset: number;
+  showLabel: boolean;
+};

@@ -27,7 +27,7 @@ import { PlayerRegistrationGet } from "../../../../types/models/player-registrat
 import { PositionPlayers } from "../../../formation/PositionPlayers";
 import { GroupedPlayers } from "./Matrix/type";
 import { TransferGet } from "../../../../types/models/transfer";
-import { MonthlyCalendarTable } from "./MonthlyCalendar";
+import { MonthlyCalendarTable } from "./MonthlyCalendar/MonthlyCalendarTable";
 import {
   MonthlyCalendarGroup,
   MonthleyCalendarHeaderItem,
