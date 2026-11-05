@@ -9,6 +9,8 @@ import { competition, injury, transfer } from "./constants/fieldDefinitions";
 import { SummaryCard } from "../../components/summary/SummaryCard";
 import { GroupedSummaryItems } from "../../types/summaryItem";
 import { TeamGet } from "../../types/models/team";
+import { getFields } from "../../lib/model-fields";
+import { ModelType } from "../../types/models";
 
 const j1 = import.meta.env.VITE_J1_ID;
 const j2 = import.meta.env.VITE_J2_ID;
@@ -54,6 +56,7 @@ const Top = () => {
     j2Teams,
     j3Teams,
     currentCompetitions,
+    series,
     readItems,
   } = useTopPage();
 
@@ -121,6 +124,32 @@ const Top = () => {
             </div>
           </HomeCard>
 
+          <HomeCard title="開催中・今後の日本代表">
+            <div className="p-4">
+              <DataViewContainer
+                pageNation="client"
+                totalCount={series.length}
+                fieldDefinitions={getFields(ModelType.NATIONAL_MATCH_SERIES)}
+                itemsLoading={isLoading}
+                noToolBar={false}
+                viewModes={[ViewMode.TABLE]}
+                viewData={{
+                  [ViewMode.TABLE]: series,
+                }}
+                linkField={[
+                  {
+                    field: "name",
+                    to: APP_ROUTES.NATIONAL_MATCH_SERIES_SUMMARY,
+                  },
+                  {
+                    field: "team",
+                    to: APP_ROUTES.TEAM_SUMMARY,
+                  },
+                ]}
+              />
+            </div>
+          </HomeCard>
+
           <HomeCard to={`${APP_ROUTES.TRANSFER}`} title="移籍情報">
             <div className="p-4">
               <DataViewContainer
@@ -133,6 +162,20 @@ const Top = () => {
                 viewData={{
                   [ViewMode.TABLE]: transfers,
                 }}
+                linkField={[
+                  {
+                    field: "from_team",
+                    to: APP_ROUTES.TEAM_SUMMARY,
+                  },
+                  {
+                    field: "to_team",
+                    to: APP_ROUTES.TEAM_SUMMARY,
+                  },
+                  {
+                    field: "player",
+                    to: APP_ROUTES.PLAYER_SUMMARY,
+                  },
+                ]}
               />
             </div>
           </HomeCard>
@@ -149,6 +192,16 @@ const Top = () => {
                 viewData={{
                   [ViewMode.TABLE]: injuries,
                 }}
+                linkField={[
+                  {
+                    field: "team",
+                    to: APP_ROUTES.TEAM_SUMMARY,
+                  },
+                  {
+                    field: "player",
+                    to: APP_ROUTES.PLAYER_SUMMARY,
+                  },
+                ]}
               />
             </div>
           </HomeCard>

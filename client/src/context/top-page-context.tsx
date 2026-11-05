@@ -7,10 +7,15 @@ import { useAlert } from "./alert-context";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { readItemsBase } from "../lib/api";
 import { api } from "./api-context";
-import { TeamGet } from "../types/models/team";
+import { Team, TeamGet } from "../types/models/team";
 import { Season, SeasonGet } from "../types/models/season";
 import { TeamCompetitionSeason } from "../types/models/team-competition-season";
 import { Competition } from "../types/models/competition";
+import {
+  NationalMatchSeries,
+  NationalMatchSeriesGet,
+} from "../types/models/national-match-series";
+import { Country } from "../types/models/country";
 
 type TopPageStage = {
   isLoading: boolean;
@@ -20,6 +25,7 @@ type TopPageStage = {
   j2Teams: GettedModelDataMap[ModelType.TEAM][];
   j3Teams: GettedModelDataMap[ModelType.TEAM][];
   currentCompetitions: GettedModelDataMap[ModelType.SEASON][];
+  series: GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES][];
   readItems: (limit?: number) => Promise<void>;
 };
 const defaultValue: TopPageStage = {
@@ -30,6 +36,7 @@ const defaultValue: TopPageStage = {
   j2Teams: [],
   j3Teams: [],
   currentCompetitions: [],
+  series: [],
   readItems: async () => {},
 };
 
@@ -73,6 +80,64 @@ const readTeams = async (competitionName: string): Promise<TeamGet[]> => {
   return teamGets;
 };
 
+const readSeries = async (): Promise<NationalMatchSeriesGet[]> => {
+  const countryRes = await readItemsBase<Country[]>({
+    apiInstance: api,
+    backendRoute: API_PATHS.COUNTRY.ROOT,
+    params: { en_name: "Japan" },
+  });
+
+  if (!countryRes?.data || countryRes.data.length !== 1) return [];
+
+  const countryId = countryRes.data[0]._id;
+
+  const teamRes = await readItemsBase<Team[]>({
+    apiInstance: api,
+    backendRoute: API_PATHS.TEAM.ROOT,
+    params: {
+      getAll: true,
+      genre: "national",
+      country: countryId,
+      sort: "age_group",
+    },
+  });
+
+  if (!teamRes?.data) return [];
+
+  const teamIds = teamRes.data.map((team) => team._id);
+
+  const toDay = new Date();
+
+  const [futureSeriesRes, pastSeriesRes] = await Promise.all([
+    readItemsBase<NationalMatchSeries[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
+      params: {
+        team: teamIds,
+        joined_at: `>=${toDay}`,
+      },
+    }),
+    readItemsBase<NationalMatchSeries[]>({
+      apiInstance: api,
+      backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
+      params: {
+        team: teamIds,
+        left_at: `>=${toDay}`,
+      },
+    }),
+  ]);
+
+  const seriesDatas = Array.from(
+    new Map(
+      [...(futureSeriesRes?.data ?? []), ...(pastSeriesRes?.data ?? [])].map(
+        (item) => [item._id, item],
+      ),
+    ).values(),
+  );
+
+  return convert(ModelType.NATIONAL_MATCH_SERIES, seriesDatas);
+};
+
 const TopPageContext = createContext<TopPageStage>(defaultValue);
 
 const TopPageProvider = ({ children }: { children: ReactNode }) => {
@@ -92,6 +157,8 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
     [],
   );
 
+  const [series, setSeries] = useState<NationalMatchSeriesGet[]>([]);
+
   const handleLoading = (time: "start" | "end"): void => {
     time === "start" ? setIsLoading(true) : setIsLoading(false);
   };
@@ -99,44 +166,47 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
   const readItems = async (limit?: number) => {
     handleLoading("start");
 
-    const obj = await readItemsBase<{
-      transferData: Transfer[];
-      injuryData: Injury[];
-    }>({
-      apiInstance: api,
-      backendRoute: API_PATHS.TOP_PAGE.GET,
-      params: limit ? { limit } : {},
-      handleSetAlert: handleSetAlert,
-    });
+    try {
+      const obj = await readItemsBase<{
+        transferData: Transfer[];
+        injuryData: Injury[];
+      }>({
+        apiInstance: api,
+        backendRoute: API_PATHS.TOP_PAGE.GET,
+        params: limit ? { limit } : {},
+        handleSetAlert,
+      });
 
-    if (!obj) return handleLoading("end");
+      if (!obj) return;
 
-    const transfers = obj.data.transferData;
-    const injuries = obj.data.injuryData;
+      setTransfers(convert(ModelType.TRANSFER, obj.data.transferData));
+      setInjuries(convert(ModelType.INJURY, obj.data.injuryData));
 
-    setTransfers(convert(ModelType.TRANSFER, transfers));
-    setInjuries(convert(ModelType.INJURY, injuries));
+      const [j1Teams, j2Teams, j3Teams, series, seasonObj] = await Promise.all([
+        readTeams("Ｊ１リーグ"),
+        readTeams("Ｊ２リーグ"),
+        readTeams("Ｊ３リーグ"),
+        readSeries(),
+        readItemsBase<Season[]>({
+          apiInstance: api,
+          backendRoute: API_PATHS.SEASON.ROOT,
+          params: { current: true },
+        }),
+      ]);
 
-    const j1Teams = await readTeams("Ｊ１リーグ");
-    const j2Teams = await readTeams("Ｊ２リーグ");
-    const j3Teams = await readTeams("Ｊ３リーグ");
+      setJ1Teams(j1Teams);
+      setJ2Teams(j2Teams);
+      setJ3Teams(j3Teams);
+      setSeries(series);
 
-    setJ1Teams(j1Teams);
-    setJ2Teams(j2Teams);
-    setJ3Teams(j3Teams);
-
-    const seasonObj = await readItemsBase<Season[]>({
-      apiInstance: api,
-      backendRoute: API_PATHS.SEASON.ROOT,
-      params: { current: true },
-    });
-
-    if (seasonObj?.data) {
-      const converted = convert(ModelType.SEASON, seasonObj?.data);
-      setCurrentCompetitions(converted);
+      if (seasonObj?.data) {
+        setCurrentCompetitions(convert(ModelType.SEASON, seasonObj.data));
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      handleLoading("end");
     }
-
-    handleLoading("end");
   };
 
   const value = {
@@ -147,6 +217,7 @@ const TopPageProvider = ({ children }: { children: ReactNode }) => {
     j2Teams,
     j3Teams,
     currentCompetitions,
+    series,
     readItems,
   };
 
