@@ -3,6 +3,7 @@ import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
 import { useCompetitionSummary } from "./hooks/useCompetitionSummary";
+import { AccentSection } from "../../../components/layout";
 
 const Competition = () => {
   const { id } = useParams();
@@ -17,7 +18,9 @@ const Competition = () => {
 
       <SummaryTabMenu items={tabItems} tab={summary.tab} />
 
-      <PanelRenderer summary={summary} />
+      <AccentSection>
+        <PanelRenderer summary={summary} />
+      </AccentSection>
     </div>
   );
 };

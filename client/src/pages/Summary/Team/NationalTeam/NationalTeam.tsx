@@ -11,7 +11,7 @@ const NationalTeam = () => {
   if (!id) return;
   const summary = useNationalTeamSummary(id);
 
-  const primaryColor = summary.selected?.primaryColor || "black";
+  const primaryColor = summary.selected?.primaryColor;
 
   return (
     <div className="p-6">

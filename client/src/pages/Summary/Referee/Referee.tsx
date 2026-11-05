@@ -3,6 +3,7 @@ import { SummaryTabItems } from "../../../types/menu/IconButton";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { Info, PanelRenderer } from "./components";
 import { useRefereeSummary } from "./hooks/useRefereeSummary";
+import { AccentSection } from "../../../components/layout";
 
 const tabItems: SummaryTabItems[] = [];
 
@@ -21,7 +22,9 @@ const Referee = () => {
 
       <SummaryTabMenu items={tabItems} tab={summary.tab} />
 
-      <PanelRenderer summary={summary} />
+      <AccentSection>
+        <PanelRenderer summary={summary} />
+      </AccentSection>
     </div>
   );
 };
