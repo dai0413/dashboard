@@ -6,6 +6,10 @@ import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
 import { FormationCounts } from "../ClubTeam/types";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 import { QuickFilterData } from "../../../../types/table";
+import {
+  MonthleyCalendarHeaderItem,
+  MonthlyCalendarGroup,
+} from "../../../../types/calendar";
 
 export const NATIONAL_TEAM_TAB = {
   SERIES: "series",
@@ -21,7 +25,15 @@ export type NationalTeamTab =
 type NationalTeamPanels = {
   match: PanelSummary<GettedModelDataMap[ModelType.MATCH][]>;
   player: PanelSummary<GettedModelDataMap[ModelType.PLAYER][]>;
-  series: PanelSummary<GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES][]>;
+  series: ServerDepPanelSummary<{
+    series: GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES][];
+    monthlyCalendar: {
+      groups: MonthlyCalendarGroup[];
+      headerItems: MonthleyCalendarHeaderItem[];
+      selectedKey: string;
+      headerOnChange: (key: string) => void;
+    };
+  }>;
 
   playerPlot: ServerDepPanelSummary<{
     playerStatistics: PlayerStatistic[];

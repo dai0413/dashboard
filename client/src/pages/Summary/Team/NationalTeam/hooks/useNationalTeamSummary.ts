@@ -29,7 +29,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
   };
 
   const { matches, readMatches } = useMatchPanel();
-  const { series, readSeries } = useSeriesPanel();
+  const seriesPanel = useSeriesPanel();
   const { players, readPlayers } = usePlayerPanel();
   const {
     nationalCallUp,
@@ -52,7 +52,7 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
         await Promise.all([
           readItem(id),
           readMatches(id),
-          readSeries(id),
+          seriesPanel.readItems(id),
           readPlayers(id),
           readPlayerPlot(id),
           formationPlotPanel.readFormationPlot(id),
@@ -91,10 +91,10 @@ export const useNationalTeamSummary = (id: string): UseNationalTeamSummary => {
 
       series: {
         text: `${selected?.normalized_name || selected?.abbr}の試合シリーズ`,
-        isLoading: series.isLoading,
+        isLoading: seriesPanel.isLoading,
         key: `${selectedTab}`,
-        items: series.data,
-        reloadFun: async () => readSeries(id),
+        items: seriesPanel.items,
+        reloadFun: async () => seriesPanel.readItems(id),
       },
 
       playerPlot: {
