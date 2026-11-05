@@ -70,21 +70,24 @@ export const MonthlyCalendarTable = ({
         onChange={headerOnChange}
       />
 
-      <div className="min-w-[900px]">
-        <div className="border border-gray-300">
-          <div className="flex border-b border-gray-300">
-            {/* グループラベル用の空白 */}
-            <div className="w-24 shrink-0 border-r border-gray-300" />
+      <div className="border border-gray-300">
+        <div className="relative">
+          {/* 縦線レイヤー */}
+          <div
+            className="pointer-events-none absolute inset-y-0 left-24 right-0 grid"
+            style={{ gridTemplateColumns }}
+          >
+            {months.map((month) => (
+              <div key={month.month} className="border-l border-gray-300" />
+            ))}
+          </div>
 
-            {/* 月ヘッダー */}
+          {/* 月ヘッダー */}
+          <div className="flex border-b border-gray-300">
+            <div className="w-24 shrink-0" />
             <div className="grid flex-1" style={{ gridTemplateColumns }}>
-              {months.map((month, index) => (
-                <div
-                  key={month.month}
-                  className={`bg-white p-2 text-center text-sm ${
-                    index > 0 ? "border-l border-gray-300" : ""
-                  }`}
-                >
+              {months.map((month) => (
+                <div key={month.month} className="p-2 text-center text-sm">
                   {month.label}
                 </div>
               ))}
@@ -94,41 +97,25 @@ export const MonthlyCalendarTable = ({
           {positionedGroups.map((group, groupIndex) => (
             <div
               key={`${group.label}-${groupIndex}`}
-              className="flex border-b border-gray-300"
+              className="flex border-b border-gray-300 last:border-b-0"
             >
               {/* グループ名 */}
-              <div className="w-24 shrink-0 border-r border-gray-300 px-2 py-3 text-sm font-medium">
+              <div className="w-24 shrink-0 px-2 py-3 text-sm font-medium">
                 {group.label}
               </div>
 
               {/* 年間カレンダー */}
               <div
-                className="relative grid flex-1"
-                style={{
-                  gridTemplateColumns,
-                  height: `${Math.max(group.rowCount, 1) * 40}px`,
-                }}
+                className="relative flex-1"
+                style={{ height: `${Math.max(group.rowCount, 1) * 40}px` }}
               >
-                {/* 月の境界線 */}
-                {months.map((month, index) => (
-                  <div
-                    key={month.month}
-                    className={`pointer-events-none ${
-                      index > 0 ? "border-l border-gray-300" : ""
-                    }`}
+                {group.positionedItems.map((item, index) => (
+                  <RangeItem
+                    key={`${item.value.label}-${index}`}
+                    item={item}
+                    totalDays={group.totalDays}
                   />
                 ))}
-
-                {/* 期間データ */}
-                <div className="absolute inset-0">
-                  {group.positionedItems.map((item, index) => (
-                    <RangeItem
-                      key={`${item.value.label}-${index}`}
-                      item={item}
-                      totalDays={group.totalDays}
-                    />
-                  ))}
-                </div>
               </div>
             </div>
           ))}

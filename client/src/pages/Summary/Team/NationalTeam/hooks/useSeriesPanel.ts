@@ -17,6 +17,7 @@ import {
   MonthlyCalendarGroup,
 } from "../../../../../types/calendar";
 import { fullNationalPeriods } from "../../../../../constants/period";
+import { filterDatas } from "../../../../../utils/calendar/filterDatas";
 
 const headerItems: MonthleyCalendarHeaderItem[] = fullNationalPeriods
   .sort((a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime())
@@ -73,21 +74,6 @@ const convertToMonthlyCalendarTableData = (
   }
 
   return groups;
-};
-
-const filterDatas = (
-  data: NationalMatchSeriesGet[],
-  startDate: Date,
-  endDate: Date,
-) => {
-  return data.filter((d) => {
-    if (!d.joined_at) return false;
-
-    const joinedAt = d.joined_at;
-    const leftAt = d.left_at;
-
-    return joinedAt <= endDate && (!leftAt || leftAt >= startDate);
-  });
 };
 
 export const useSeriesPanel = () => {
