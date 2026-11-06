@@ -18,10 +18,10 @@ const secondKeys = playerStatistics
   );
 
 const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
-  ...convertFieldDefinition(
-    ["group.season", "group.season.competition", ...secondKeys],
-    playerStatistics,
-  ).filter((k) => k.key !== "player"),
+  ...convertFieldDefinition({
+    keys: ["group.season", "group.season.competition", ...secondKeys],
+    fieldDefinition: playerStatistics,
+  }).filter((k) => k.key !== "player"),
 ];
 
 const StatisticsPanel = ({ summary }: { summary: UsePlayerSummary }) => {

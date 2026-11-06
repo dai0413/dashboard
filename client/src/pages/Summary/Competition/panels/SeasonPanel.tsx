@@ -1,16 +1,14 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseCompetitionSummary } from "../types";
-import { SeasonGet } from "../../../../types/models/season";
 import { ViewMode } from "../../../../types/types";
 
-const seasonFieldDefinition = convertFieldDefinition<SeasonGet>(
-  ["name", "start_date", "end_date", "current", "note"],
-  getFields(ModelType.SEASON),
-);
+const seasonFieldDefinition = convertFieldDefinition({
+  keys: ["name", "start_date", "end_date", "current", "note"],
+  getFieldsKey: ModelType.SEASON,
+});
 
 const StaffRegistrationPanel = ({
   summary,

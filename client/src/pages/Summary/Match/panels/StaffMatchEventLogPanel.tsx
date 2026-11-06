@@ -4,22 +4,19 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
-import { StaffMatchEventLogGet } from "../../../../types/models/staff-match-event-log";
 import { ViewMode } from "../../../../types/types";
 
-const staffEventLogFieldDefinition =
-  convertFieldDefinition<StaffMatchEventLogGet>(
-    [
-      "period_label",
-      "time_name",
-      "special_time",
-      "team",
-      "match_event_type",
-      "staff",
-    ],
-    getFields(ModelType.STAFF_MATCH_EVENT_LOG),
-  );
+const staffEventLogFieldDefinition = convertFieldDefinition({
+  keys: [
+    "period_label",
+    "time_name",
+    "special_time",
+    "team",
+    "match_event_type",
+    "staff",
+  ],
+  getFieldsKey: ModelType.STAFF_MATCH_EVENT_LOG,
+});
 
 const StaffMatchEventLogPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {

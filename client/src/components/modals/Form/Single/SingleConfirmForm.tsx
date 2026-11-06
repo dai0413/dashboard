@@ -7,6 +7,7 @@ import FieldList from "../../FieldList";
 import { convertToDisplayListData } from "../../Detail/utils/convertToDisplayListData ";
 import { FormMode, InputMode } from "../../../../types/types";
 import { useMemo } from "react";
+import { UIFieldDefinition } from "../../../../types/field";
 
 const SingleConfirmForm = <T extends keyof FormTypeMap>() => {
   const {
@@ -90,7 +91,9 @@ const SingleConfirmForm = <T extends keyof FormTypeMap>() => {
           data={convertToDisplayListData({
             data: fieldListData as GettedModelDataMap[T],
             form: {
-              displayableField: fieldListDisplayableField,
+              displayableField: fieldListDisplayableField as UIFieldDefinition<
+                GettedModelDataMap[T]
+              >[],
               steps: formSteps,
               onEdit: handleStep,
               diffKeys: diffKeys,

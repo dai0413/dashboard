@@ -1,17 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { CompetitionGet } from "../../../../types/models/competition";
 import { ViewMode } from "../../../../types/types";
 
-const competitionFieldDefinition = convertFieldDefinition<CompetitionGet>(
-  ["name", "competition_type", "category", "age_group"],
-  getFields(ModelType.COMPETITION),
-);
+const competitionFieldDefinition = convertFieldDefinition({
+  keys: ["name", "competition_type", "category", "age_group"],
+  getFieldsKey: ModelType.COMPETITION,
+});
 
 const CompetitionPanel = ({ summary }: { summary: UseNationalSummary }) => {
   const {

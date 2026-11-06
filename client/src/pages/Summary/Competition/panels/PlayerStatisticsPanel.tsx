@@ -17,10 +17,10 @@ const keys = playerStatistics.map((ps) => ps.key);
 const secondKeys = keys.filter((d) => d !== "player" && d !== "mainPosition");
 
 const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
-  ...convertFieldDefinition(
-    ["mainPosition", "player"],
-    playerStatistics,
-  ).filter((k) => k.key === "mainPosition" || k.key === "player"),
+  ...convertFieldDefinition({
+    keys: ["mainPosition", "player"],
+    fieldDefinition: playerStatistics,
+  }).filter((k) => k.key === "mainPosition" || k.key === "player"),
   {
     key: "dob",
     filterKey: "player.name",
@@ -36,7 +36,10 @@ const fieldDefinitions: UIFieldDefinition<PlayerStatistic>[] = [
     }),
     width: "80px",
   },
-  ...convertFieldDefinition(secondKeys, playerStatistics).filter(
+  ...convertFieldDefinition({
+    keys: secondKeys,
+    fieldDefinition: playerStatistics,
+  }).filter(
     (d) =>
       d.key !== "mainPosition" &&
       d.key !== "player" &&

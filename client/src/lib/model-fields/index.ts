@@ -84,7 +84,7 @@ export const optionFieldDefinition: {
 
 type CombinedKey = ModelType | CustomOptionType;
 
-type FieldValueMap = { [K in ModelType]: GettedModelDataMap[K] } & {
+export type FieldValueMap = { [K in ModelType]: GettedModelDataMap[K] } & {
   [K in CustomOptionType]: CustomOptionMap[K];
 };
 
@@ -123,9 +123,9 @@ export function getOnDetailFields<K extends ModelType>(
 }
 
 export function getFields<K extends ModelType>(
-  modelType: K,
-): UIFieldDefinition<GettedModelDataMap[K]>[] {
-  const defs = fieldDefinition[modelType];
+  key: K,
+): UIFieldDefinition<FieldValueMap[K]>[] {
+  const defs = combinedFieldDefinition[key];
   if (!defs) return [];
 
   return defs;

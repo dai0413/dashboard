@@ -1,7 +1,6 @@
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -16,10 +15,10 @@ import { ViewMode } from "../../../../types/types";
 const playerRegistrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.PLAYER_REGISTRATION]
 >[] = [
-  ...convertFieldDefinition<PlayerRegistrationGet>(
-    ["date", "team", "position_group", "number", "player"],
-    getFields(ModelType.PLAYER_REGISTRATION),
-  ),
+  ...convertFieldDefinition({
+    keys: ["date", "team", "position_group", "number", "player"],
+    getFieldsKey: ModelType.PLAYER_REGISTRATION,
+  }),
   {
     label: "抹消",
     key: "registration_status",

@@ -1,18 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { RefereeAppearanceGet } from "../../../../types/models/referee-appearance";
 import { ViewMode } from "../../../../types/types";
 
-const refereeAppearanceFieldDefinition =
-  convertFieldDefinition<RefereeAppearanceGet>(
-    ["referee", "role"],
-    getFields(ModelType.REFEREE_APPEARANCE),
-  );
+const refereeAppearanceFieldDefinition = convertFieldDefinition({
+  keys: ["referee", "role"],
+  getFieldsKey: ModelType.REFEREE_APPEARANCE,
+});
 
 const RefereeAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {

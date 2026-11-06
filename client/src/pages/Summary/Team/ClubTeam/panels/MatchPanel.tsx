@@ -1,7 +1,6 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -22,16 +21,16 @@ const MatchPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   } = summary;
 
   const matchFieldDefinition: UIFieldDefinition<MatchGet>[] = [
-    ...convertFieldDefinition<MatchGet>(
-      [
+    ...convertFieldDefinition({
+      keys: [
         "date",
         "competition",
         "competition_stage",
         "match_week",
         "result-string",
       ],
-      getFields(ModelType.MATCH),
-    ),
+      getFieldsKey: ModelType.MATCH,
+    }),
     {
       label: "相手",
       key: "vsTeam",

@@ -16,6 +16,7 @@ import {
 import { getLinkFields } from "../../lib/model-link-fields";
 import { DataViewContainer } from ".";
 import { ViewMode } from "../../types/types";
+import { UIFieldDefinition } from "../../types/field";
 
 type ModelTableContainerProps<K extends keyof GettedModelDataMap> = {
   title: string;
@@ -36,7 +37,10 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
   const { items, isLoading, totalCount, readItems, uploadFile, downloadFile } =
     contextState.metacrud;
 
-  const headers = useMemo(() => getFields(modelType), [modelType]);
+  const headers = useMemo(
+    () => getFields(modelType) as UIFieldDefinition<GettedModelDataMap[K]>[],
+    [modelType],
+  );
   const filterField = useMemo(
     () => getFilterableFields(modelType),
     [modelType],

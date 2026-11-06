@@ -1,18 +1,15 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
-import { NationalMatchSeriesGet } from "../../../../../types/models/national-match-series";
 import { ViewMode } from "../../../../../types/types";
 
-const nationalMatchSeriesFieldDefinition =
-  convertFieldDefinition<NationalMatchSeriesGet>(
-    ["name", "joined_at", "left_at"],
-    getFields(ModelType.NATIONAL_MATCH_SERIES),
-  );
+const nationalMatchSeriesFieldDefinition = convertFieldDefinition({
+  keys: ["name", "joined_at", "left_at"],
+  getFieldsKey: ModelType.NATIONAL_MATCH_SERIES,
+});
 
 const SereisPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {

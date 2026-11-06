@@ -1,7 +1,6 @@
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -9,16 +8,22 @@ import {
 } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseStaffSummary } from "../types";
-import { StaffRegistrationGet } from "../../../../types/models/staff-registration";
 import { ViewMode } from "../../../../types/types";
 
 const registrationFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.STAFF_REGISTRATION]
 >[] = [
-  ...convertFieldDefinition<StaffRegistrationGet>(
-    ["season", "competition", "date", "team", "role", "registration_status"],
-    getFields(ModelType.STAFF_REGISTRATION),
-  ),
+  ...convertFieldDefinition({
+    keys: [
+      "season",
+      "competition",
+      "date",
+      "team",
+      "role",
+      "registration_status",
+    ],
+    getFieldsKey: ModelType.STAFF_REGISTRATION,
+  }),
 ];
 
 const StaffRegistrationPanel = ({ summary }: { summary: UseStaffSummary }) => {

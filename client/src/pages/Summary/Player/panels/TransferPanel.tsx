@@ -1,17 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { TransferGet } from "../../../../types/models/transfer";
 import { ViewMode } from "../../../../types/types";
 
-const transferFieldDefinition = convertFieldDefinition<TransferGet>(
-  ["from_date", "from_team", "to_team", "form"],
-  getFields(ModelType.TRANSFER),
-);
+const transferFieldDefinition = convertFieldDefinition({
+  keys: ["from_date", "from_team", "to_team", "form"],
+  getFieldsKey: ModelType.TRANSFER,
+});
 
 const TransferPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {

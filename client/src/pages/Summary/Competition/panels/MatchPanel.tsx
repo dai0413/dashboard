@@ -1,7 +1,6 @@
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import {
   isFilterable,
   isSortable,
@@ -9,14 +8,13 @@ import {
 } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
-import { MatchGet } from "../../../../types/models/match";
 import { ViewMode } from "../../../../types/types";
 
 const matchFieldDefinition: UIFieldDefinition<
   GettedModelDataMap[ModelType.MATCH]
 >[] = [
-  ...convertFieldDefinition<MatchGet>(
-    [
+  ...convertFieldDefinition({
+    keys: [
       "date",
       "match_week",
       "competition_stage",
@@ -24,8 +22,8 @@ const matchFieldDefinition: UIFieldDefinition<
       "result-string",
       "away_team",
     ],
-    getFields(ModelType.MATCH),
-  ),
+    getFieldsKey: ModelType.MATCH,
+  }),
 ];
 
 const MatchPanel = ({ summary }: { summary: UseCompetitionSummary }) => {

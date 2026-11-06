@@ -1,18 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { UseCompetitionSummary } from "../types";
-import { TeamCompetitionSeasonGet } from "../../../../types/models/team-competition-season";
 import { ViewMode } from "../../../../types/types";
 
-const teamCompetitionSeasonFieldDefinition =
-  convertFieldDefinition<TeamCompetitionSeasonGet>(
-    ["team"],
-    getFields(ModelType.TEAM_COMPETITION_SEASON),
-  );
+const teamCompetitionSeasonFieldDefinition = convertFieldDefinition({
+  keys: ["team"],
+  getFieldsKey: ModelType.TEAM_COMPETITION_SEASON,
+});
 
 const TeamCompetitionSeasonPanel = ({
   summary,

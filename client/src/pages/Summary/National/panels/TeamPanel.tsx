@@ -1,17 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { TeamGet } from "../../../../types/models/team";
 import { ViewMode } from "../../../../types/types";
 
-const teamFieldDefinition = convertFieldDefinition<TeamGet>(
-  ["normalized_name", "abbr", "enTeam", "country", "age_group"],
-  getFields(ModelType.TEAM),
-);
+const teamFieldDefinition = convertFieldDefinition({
+  keys: ["normalized_name", "abbr", "enTeam", "country", "age_group"],
+  getFieldsKey: ModelType.TEAM,
+});
 
 const TeamPanel = ({ summary }: { summary: UseNationalSummary }) => {
   const {

@@ -1,17 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { NationalCallupGet } from "../../../../types/models/national-callup";
 import { ViewMode } from "../../../../types/types";
 
-const nationalCallupFieldDefinition = convertFieldDefinition<NationalCallupGet>(
-  ["series", "status", "number", "joined_at"],
-  getFields(ModelType.NATIONAL_CALLUP),
-);
+const nationalCallupFieldDefinition = convertFieldDefinition({
+  keys: ["series", "status", "number", "joined_at"],
+  getFieldsKey: ModelType.NATIONAL_CALLUP,
+});
 
 const NationalCallupPanel = ({ summary }: { summary: UsePlayerSummary }) => {
   const {

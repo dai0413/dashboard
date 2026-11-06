@@ -4,22 +4,19 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
-import { PlayerMatchEventLogGet } from "../../../../types/models/player-match-event-log";
 import { ViewMode } from "../../../../types/types";
 
-const playerEventLogFieldDefinition =
-  convertFieldDefinition<PlayerMatchEventLogGet>(
-    [
-      "period_label",
-      "time_name",
-      "special_time",
-      "team",
-      "match_event_type",
-      "player",
-    ],
-    getFields(ModelType.PLAYER_MATCH_EVENT_LOG),
-  );
+const playerEventLogFieldDefinition = convertFieldDefinition({
+  keys: [
+    "period_label",
+    "time_name",
+    "special_time",
+    "team",
+    "match_event_type",
+    "player",
+  ],
+  getFieldsKey: ModelType.PLAYER_MATCH_EVENT_LOG,
+});
 
 const PlayerMatchEventLogPanel = ({
   summary,

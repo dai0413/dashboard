@@ -1,18 +1,15 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { StaffAppearanceGet } from "../../../../types/models/staff-appearance";
 import { ViewMode } from "../../../../types/types";
 
-const staffAppearanceFieldDefinition =
-  convertFieldDefinition<StaffAppearanceGet>(
-    ["team", "staff", "role"],
-    getFields(ModelType.STAFF_APPEARANCE),
-  );
+const staffAppearanceFieldDefinition = convertFieldDefinition({
+  keys: ["team", "staff", "role"],
+  getFieldsKey: ModelType.STAFF_APPEARANCE,
+});
 
 const StaffAppearancePanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {

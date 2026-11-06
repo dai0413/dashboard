@@ -2,17 +2,15 @@ import { toDateKey } from "@dai0413/myorg-shared/normalizer";
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../types/field";
 import { UseNationalMatchSeriesSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { NationalCallupGet } from "../../../../types/models/national-callup";
 import { ViewMode } from "../../../../types/types";
 
-const nationalCallupFieldDefinition = convertFieldDefinition<NationalCallupGet>(
-  ["player", "team", "status", "number", "position_group"],
-  getFields(ModelType.NATIONAL_CALLUP),
-);
+const nationalCallupFieldDefinition = convertFieldDefinition({
+  keys: ["player", "team", "status", "number", "position_group"],
+  getFieldsKey: ModelType.NATIONAL_CALLUP,
+});
 
 const NationalCallupPanel = ({
   summary,

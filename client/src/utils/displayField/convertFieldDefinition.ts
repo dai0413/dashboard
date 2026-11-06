@@ -1,10 +1,37 @@
+import { FieldValueMap, getFields } from "../../lib/model-fields";
 import { UIFieldDefinition } from "../../types/field";
+import { ModelType } from "../../types/models";
 
-export const convertFieldDefinition = <T extends Object>(
-  keys: string[],
-  fieldDefinition?: UIFieldDefinition<T>[],
-): UIFieldDefinition<T>[] => {
-  if (!fieldDefinition) return [];
+type ConvertFieldDefinitionParams<T extends object> = {
+  keys: string[];
+  fieldDefinition: UIFieldDefinition<T>[];
+  getFieldsKey?: never;
+};
+
+type ConvertFieldDefinitionByKeyParams<K extends ModelType> = {
+  keys: string[];
+  getFieldsKey: K;
+  fieldDefinition?: never;
+};
+
+export function convertFieldDefinition<K extends ModelType>(
+  params: ConvertFieldDefinitionByKeyParams<K>,
+): UIFieldDefinition<FieldValueMap[K]>[];
+
+export function convertFieldDefinition<T extends object>(
+  params: ConvertFieldDefinitionParams<T>,
+): UIFieldDefinition<T>[];
+
+export function convertFieldDefinition(
+  params:
+    | ConvertFieldDefinitionByKeyParams<ModelType>
+    | ConvertFieldDefinitionParams<object>,
+): UIFieldDefinition<object>[] {
+  const { keys } = params;
+
+  const fieldDefinition: UIFieldDefinition<object>[] =
+    params.fieldDefinition ??
+    (getFields(params.getFieldsKey) as UIFieldDefinition<object>[]);
 
   const orderMap = new Map(keys.map((key, index) => [key, index]));
 
@@ -22,7 +49,6 @@ export const convertFieldDefinition = <T extends Object>(
       }
       if (aOrder !== undefined) return -1;
       if (bOrder !== undefined) return 1;
-
       return 0;
     });
-};
+}

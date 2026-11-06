@@ -4,15 +4,12 @@ import { isFilterable, isSortable } from "../../../../types/field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../lib/model-fields";
-import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
 import { ViewMode } from "../../../../types/types";
 
-const teamMatchFormationFieldDefinition =
-  convertFieldDefinition<TeamMatchFormationGet>(
-    ["team", "formation"],
-    getFields(ModelType.TEAM_MATCH_FORMATION),
-  );
+const teamMatchFormationFieldDefinition = convertFieldDefinition({
+  keys: ["team", "formation"],
+  getFieldsKey: ModelType.TEAM_MATCH_FORMATION,
+});
 
 const TeamMatchFormationPanel = ({ summary }: { summary: UseMatchSummary }) => {
   const {

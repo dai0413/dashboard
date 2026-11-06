@@ -1,17 +1,15 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { getFields } from "../../../../../lib/model-fields";
 import { isFilterable, isSortable } from "../../../../../types/field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
-import { PlayerGet } from "../../../../../types/models/player";
 import { ViewMode } from "../../../../../types/types";
 
-const playerFieldDefinition = convertFieldDefinition<PlayerGet>(
-  ["name", "dob"],
-  getFields(ModelType.PLAYER),
-);
+const playerFieldDefinition = convertFieldDefinition({
+  keys: ["name", "dob"],
+  getFieldsKey: ModelType.PLAYER,
+});
 
 const PlayerPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
   const {
