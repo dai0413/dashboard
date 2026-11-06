@@ -1,9 +1,7 @@
-import { getFields, setDisplayOnTable } from "../../../../lib/model-fields";
 import { ModelType } from "../../../../types/models";
+import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 
-export const transfer = setDisplayOnTable(getFields(ModelType.TRANSFER), [
-  "doa",
-  "from_team",
-  "to_team",
-  "player",
-]);
+export const transfer = convertFieldDefinition({
+  getFieldsKey: ModelType.TRANSFER,
+  keys: ["doa", "from_team", "to_team", "player"],
+});

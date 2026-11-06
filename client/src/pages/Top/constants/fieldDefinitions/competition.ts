@@ -1,9 +1,7 @@
 import { ModelType } from "../../../../types/models";
-import { getFields, setDisplayOnTable } from "../../../../lib/model-fields";
+import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 
-export const competition = setDisplayOnTable(getFields(ModelType.SEASON), [
-  "competition",
-  "name",
-  "start_date",
-  "end_date",
-]);
+export const competition = convertFieldDefinition({
+  getFieldsKey: ModelType.SEASON,
+  keys: ["competition", "name", "start_date", "end_date"],
+});

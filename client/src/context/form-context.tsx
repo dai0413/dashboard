@@ -23,8 +23,8 @@ import { getConfirmMes } from "../lib/confirm-mes.ts";
 import { convertGettedToForm } from "../lib/convert/GettedtoForm";
 import { updateFormValue } from "../utils/form/updateFormValue";
 import { getSteps } from "../lib/form-steps/core/getSteps";
-import { FieldValueMap, getFields } from "../lib/model-fields";
-import { UIFieldDefinition } from "../types/field";
+import { getDataFields } from "../utils/data-field";
+import { FieldValueMap, UIFieldDefinition } from "../types/field";
 import { api } from "./api-context";
 import { getDefault } from "../lib/default-formData";
 import { useModelContext } from "./models/model-wrapper";
@@ -998,7 +998,7 @@ export const FormProvider = <T extends ModelType>({
 
   // 確認画面
   const displayableField: UIFieldDefinition<FieldValueMap[T]>[] = useMemo(
-    () => (modelType ? getFields(modelType) : []),
+    () => (modelType ? getDataFields(modelType) : []),
     [modelType],
   );
 

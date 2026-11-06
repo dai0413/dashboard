@@ -5,7 +5,7 @@ import { Modal } from "../../../ui";
 import Alert from "../../../layout/Alert";
 import { useAlert } from "../../../../context/alert-context";
 import { useForm } from "../../../../context/form-context";
-import { getOnDetailFields } from "../../../../lib/model-fields";
+import { getOnDetailFields } from "../../../../utils/data-field";
 import { useAuth } from "../../../../context/auth-context";
 import { isDev } from "../../../../utils/env";
 import { FormMode, From, InputMode } from "../../../../types/types";

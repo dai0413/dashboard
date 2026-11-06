@@ -1,9 +1,12 @@
 import { BaseField, FilterField, SortField } from "@dai0413/myorg-shared";
-import { ModelType } from "./models";
+import { GettedModelDataMap, ModelType } from "./models";
 import { QuickFilterType, TableHeader } from "./table";
 import { OptionSource } from "./form/option";
 import { OptionType } from "../utils/createOption/types/preset";
-import { CustomOptionType } from "../utils/createOption/types/custom";
+import {
+  CustomOptionMap,
+  CustomOptionType,
+} from "../utils/createOption/types/custom";
 
 // 詳細画面用
 export type DetailField = {
@@ -19,23 +22,11 @@ export type UIFieldDefinition<T> = BaseField &
   Partial<SortField> &
   Partial<DetailField>;
 
-export function isFilterable<T>(
-  f: UIFieldDefinition<T>,
-): f is UIFieldDefinition<T> & FilterField {
-  return f.filterable === true && f.type !== undefined;
-}
+export type CombinedKey = ModelType | CustomOptionType;
 
-export function isSortable<T>(
-  f: UIFieldDefinition<T>,
-): f is UIFieldDefinition<T> & SortField {
-  return typeof f.sortable === "boolean" && f.sortable === true;
-}
-
-export function isDisplayOnDetail<T>(
-  f: UIFieldDefinition<T>,
-): f is UIFieldDefinition<T> & DetailField {
-  return f.displayOnDetail === true;
-}
+export type FieldValueMap = { [K in ModelType]: GettedModelDataMap[K] } & {
+  [K in CustomOptionType]: CustomOptionMap[K];
+};
 
 export function isModelType(value: unknown): value is ModelType {
   return Object.values(ModelType).includes(value as ModelType);

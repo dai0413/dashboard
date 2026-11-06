@@ -1,10 +1,10 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import {
-  getFields,
   getFilterableFields,
   getSortableFields,
-} from "../../../../../lib/model-fields";
+  getDataFields,
+} from "../../../../../utils/data-field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { ViewMode } from "../../../../../types/types";
@@ -24,7 +24,7 @@ const StatsLPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         key={key}
         itemsLoading={isLoading}
         modelType={ModelType.STATS_L}
-        fieldDefinitions={getFields(ModelType.STATS_L)}
+        fieldDefinitions={getDataFields(ModelType.STATS_L)}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{ [ViewMode.TABLE]: items, [ViewMode.TILE]: items }}
         totalCount={items.length}

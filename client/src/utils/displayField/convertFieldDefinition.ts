@@ -1,6 +1,6 @@
-import { FieldValueMap, getFields } from "../../lib/model-fields";
-import { UIFieldDefinition } from "../../types/field";
+import { FieldValueMap, UIFieldDefinition } from "../../types/field";
 import { ModelType } from "../../types/models";
+import { getDataFields } from "../data-field";
 
 type ConvertFieldDefinitionParams<T extends object> = {
   keys: string[];
@@ -31,7 +31,7 @@ export function convertFieldDefinition(
 
   const fieldDefinition: UIFieldDefinition<object>[] =
     params.fieldDefinition ??
-    (getFields(params.getFieldsKey) as UIFieldDefinition<object>[]);
+    (getDataFields(params.getFieldsKey) as UIFieldDefinition<object>[]);
 
   const orderMap = new Map(keys.map((key, index) => [key, index]));
 

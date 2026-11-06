@@ -12,7 +12,7 @@ import { api } from "../../../../context/api-context";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { convert } from "../../../../lib/convert/DBtoGetted";
 import { ModelType } from "../../../../types/models";
-import { getFilterableFields } from "../../../../lib/model-fields";
+import { getFilterableFields } from "../../../../utils/data-field";
 import { ViewMode } from "../../../../types/types";
 
 const j1 = import.meta.env.VITE_J1_ID;

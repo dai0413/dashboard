@@ -1,9 +1,6 @@
 import { TableClient } from "../../../../components/dataView";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../types/field";
+import { UIFieldDefinition } from "../../../../types/field";
+import { isFilterable, isSortable } from "../../../../utils/data-field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { playerStatistics } from "../../../../lib/fields/playerStatistics";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";

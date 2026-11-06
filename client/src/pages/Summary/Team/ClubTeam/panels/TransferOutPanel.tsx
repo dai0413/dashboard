@@ -1,7 +1,7 @@
 import { ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import { isFilterable, isSortable } from "../../../../../types/field";
+import { isFilterable, isSortable } from "../../../../../utils/data-field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { ViewMode } from "../../../../../types/types";

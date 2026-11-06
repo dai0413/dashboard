@@ -1,11 +1,8 @@
 import { GettedModelDataMap, ModelType } from "../../../../../types/models";
 import { TableClient } from "../../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../../utils/displayField/convertFieldDefinition";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../../types/field";
+import { UIFieldDefinition } from "../../../../../types/field";
+import { isFilterable, isSortable } from "../../../../../utils/data-field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseNationalTeamSummary } from "../types";
 import { MatchGet } from "../../../../../types/models/match";

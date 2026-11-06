@@ -1,4 +1,4 @@
-import { isFilterable, isSortable } from "../../../../types/field";
+import { isFilterable, isSortable } from "../../../../utils/data-field";
 import { UseCompetitionSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
 import { statsFields } from "../constants/field";

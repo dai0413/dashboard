@@ -9,7 +9,7 @@ import { competition, injury, transfer } from "./constants/fieldDefinitions";
 import { SummaryCard } from "../../components/summary/SummaryCard";
 import { GroupedSummaryItems } from "../../types/summaryItem";
 import { TeamGet } from "../../types/models/team";
-import { getFields } from "../../lib/model-fields";
+import { getDataFields } from "../../utils/data-field";
 import { ModelType } from "../../types/models";
 
 const j1 = import.meta.env.VITE_J1_ID;
@@ -129,7 +129,9 @@ const Top = () => {
               <DataViewContainer
                 pageNation="client"
                 totalCount={series.length}
-                fieldDefinitions={getFields(ModelType.NATIONAL_MATCH_SERIES)}
+                fieldDefinitions={getDataFields(
+                  ModelType.NATIONAL_MATCH_SERIES,
+                )}
                 itemsLoading={isLoading}
                 noToolBar={false}
                 viewModes={[ViewMode.TABLE]}

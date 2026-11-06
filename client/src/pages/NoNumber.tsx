@@ -1,9 +1,9 @@
 import { ModelType } from "../types/models";
 import {
-  getFields,
+  getDataFields,
   getFilterableFields,
   getSortableFields,
-} from "../lib/model-fields";
+} from "../utils/data-field";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { useEffect, useState } from "react";
@@ -66,7 +66,7 @@ const NoNumber = () => {
       <TableClient
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         title="背番号なし"
-        fieldDefinitions={getFields(ModelType.TRANSFER)}
+        fieldDefinitions={getDataFields(ModelType.TRANSFER)}
         reloadFun={reloadFun}
         itemsLoading={items.isLoading}
         viewModes={[ViewMode.TABLE]}

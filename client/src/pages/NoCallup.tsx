@@ -2,10 +2,10 @@ import { ModelType } from "../types/models";
 import { APP_ROUTES } from "../lib/appRoutes";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import {
-  getFields,
+  getDataFields,
   getFilterableFields,
   getSortableFields,
-} from "../lib/model-fields";
+} from "../utils/data-field";
 import { TableClient } from "../components/dataView";
 import { useEffect, useState } from "react";
 import { Data, ViewMode } from "../types/types";
@@ -60,7 +60,7 @@ const NoCallUp = () => {
       <TableClient
         modelType={ModelType.NATIONAL_MATCH_SERIES}
         title="登録メンバーなし"
-        fieldDefinitions={getFields(ModelType.NATIONAL_MATCH_SERIES)}
+        fieldDefinitions={getDataFields(ModelType.NATIONAL_MATCH_SERIES)}
         itemsLoading={items.isLoading}
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE]}

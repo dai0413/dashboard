@@ -1,9 +1,7 @@
 import { ModelType } from "../../../../types/models";
-import { getFields, setDisplayOnTable } from "../../../../lib/model-fields";
+import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
 
-export const injury = setDisplayOnTable(getFields(ModelType.INJURY), [
-  "doa",
-  "team",
-  "player",
-  "injured_part",
-]);
+export const injury = convertFieldDefinition({
+  getFieldsKey: ModelType.INJURY,
+  keys: ["doa", "team", "player", "injured_part"],
+});

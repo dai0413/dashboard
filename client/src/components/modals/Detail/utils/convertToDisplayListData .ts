@@ -1,5 +1,4 @@
 import { Label } from "@dai0413/myorg-shared";
-import { getOnDetailFields } from "../../../../lib/model-fields";
 import { DisplayListItem } from "../../../../types/detail";
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { ColumnType, RenderCellValue } from "../../../../types/table";
@@ -7,6 +6,7 @@ import { LinkField } from "../../../../types/types";
 import { toDisplayValue } from "../../../../utils/displayField/toDisplayValue";
 import { FormStep } from "../../../../types/form";
 import { UIFieldDefinition } from "../../../../types/field";
+import { getOnDetailFields } from "../../../../utils/data-field";
 
 const createLabel = (
   dataValue: Label[] | Label,
@@ -70,7 +70,9 @@ export const convertToDisplayListData = <T extends ModelType>({
   if (!data) return [];
 
   const displayableField = !!model
-    ? getOnDetailFields(model.modelType)
+    ? (getOnDetailFields(model.modelType) as UIFieldDefinition<
+        GettedModelDataMap[T]
+      >[])
     : form?.displayableField;
 
   if (!displayableField) return [];

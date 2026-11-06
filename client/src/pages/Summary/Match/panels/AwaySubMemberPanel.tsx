@@ -1,6 +1,6 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
-import { isFilterable, isSortable } from "../../../../types/field";
+import { isFilterable, isSortable } from "../../../../utils/data-field";
 import { UseMatchSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { playerAppearanceFieldDefinition } from "../constants/field";

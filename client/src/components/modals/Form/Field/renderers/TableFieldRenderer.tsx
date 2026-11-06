@@ -20,7 +20,7 @@ import {
 import {
   getFilterableFields,
   getSortableFields,
-} from "../../../../../lib/model-fields";
+} from "../../../../../utils/data-field";
 import { useForm } from "../../../../../context/form-context";
 import { ViewMode } from "../../../../../types/types";
 

@@ -14,7 +14,6 @@ import { createFilterFromParent } from "../utils/createFilterConditions/createFi
 import { CompetitionStage } from "../../../types/models/competition-stage";
 import { setTeamByCompetition } from "../utils/createFilterConditions/setTeamByCompetition";
 import { Season } from "../../../types/models/season";
-import { optionFieldDefinition } from "../../model-fields";
 import {
   CardIdOption,
   CustomOptionType,
@@ -24,6 +23,7 @@ import { setCompetition } from "../utils/createQuickFilterItems/setCompetition";
 import { getFields } from "../models/match/fields";
 import { ReadCompetitionItems } from "../types";
 import { FormMode } from "../../../types/types";
+import { getDataFields } from "../../../utils/data-field";
 
 const readCompetitionItems: ReadCompetitionItems[] = [
   {
@@ -130,7 +130,7 @@ const getCardIdSelectStep = <K extends keyof FormTypeMap>(
           })
           .filter((o): o is CardIdOption => o.match_card_id !== undefined);
 
-        const fields = optionFieldDefinition[CustomOptionType.CARD_IDS];
+        const fields = getDataFields(CustomOptionType.CARD_IDS);
 
         const options = {
           card_ids: { data, fields },

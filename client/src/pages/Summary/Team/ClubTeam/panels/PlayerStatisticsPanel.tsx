@@ -1,9 +1,6 @@
 import { TableClient } from "../../../../../components/dataView";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../../types/field";
+import { UIFieldDefinition } from "../../../../../types/field";
+import { isFilterable, isSortable } from "../../../../../utils/data-field";
 import { APP_ROUTES } from "../../../../../lib/appRoutes";
 import { UseClubTeamSummary } from "../types";
 import { playerStatistics } from "../../../../../lib/fields/playerStatistics";

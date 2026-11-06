@@ -1,6 +1,6 @@
 import { TableClient } from "../../../../components/dataView";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
-import { isFilterable, isSortable } from "../../../../types/field";
+import { isFilterable, isSortable } from "../../../../utils/data-field";
 import { ModelType } from "../../../../types/models";
 import { ViewMode } from "../../../../types/types";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";

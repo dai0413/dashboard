@@ -9,10 +9,10 @@ import {
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
 import {
-  getFields,
-  getFilterableFields,
   getSortableFields,
-} from "../../lib/model-fields";
+  getFilterableFields,
+  getDataFields,
+} from "../../utils/data-field";
 import { getLinkFields } from "../../lib/model-link-fields";
 import { DataViewContainer } from ".";
 import { ViewMode } from "../../types/types";
@@ -38,7 +38,8 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
     contextState.metacrud;
 
   const headers = useMemo(
-    () => getFields(modelType) as UIFieldDefinition<GettedModelDataMap[K]>[],
+    () =>
+      getDataFields(modelType) as UIFieldDefinition<GettedModelDataMap[K]>[],
     [modelType],
   );
   const filterField = useMemo(

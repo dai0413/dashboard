@@ -1,9 +1,6 @@
 import { DataViewContainer } from "../../../../../components/dataView";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../../types/field";
+import { UIFieldDefinition } from "../../../../../types/field";
+import { isFilterable, isSortable } from "../../../../../utils/data-field";
 import { UseNationalTeamSummary } from "../types";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { ColumnType } from "../../../../../types/table";

@@ -1,4 +1,5 @@
-import { isFilterable, UIFieldDefinition } from "../../../../../types/field";
+import { UIFieldDefinition } from "../../../../../types/field";
+import { isFilterable } from "../../../../../utils/data-field";
 import { UseNationalTeamSummary } from "../types";
 import { DataViewContainer } from "../../../../../components/dataView";
 import { ColumnType } from "../../../../../types/table";

@@ -1,11 +1,8 @@
 import { ModelType } from "../../../../types/models";
 import { TableClient } from "../../../../components/dataView";
 import { convertFieldDefinition } from "../../../../utils/displayField/convertFieldDefinition";
-import {
-  isFilterable,
-  isSortable,
-  UIFieldDefinition,
-} from "../../../../types/field";
+import { isFilterable, isSortable } from "../../../../utils/data-field";
+import { UIFieldDefinition } from "../../../../types/field";
 import { UsePlayerSummary } from "../types";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
