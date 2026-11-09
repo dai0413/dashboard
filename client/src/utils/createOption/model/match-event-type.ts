@@ -1,12 +1,12 @@
 import { OptionObj } from "../../../types/form/option";
-import { MatchEventTypeGet } from "../../../types/models/match-event-type";
+import { MatchEventType } from "../../../types/models/match-event-type";
 import { ColumnType } from "../../../types/table";
-import { MatchEventType } from "../types/model/match-event-type";
+import { MatchEventTypeOption } from "../types/model/match-event-type";
 
 export const matchEventType = (
-  data: MatchEventTypeGet[],
-): OptionObj<MatchEventType> => {
-  const options: MatchEventType[] = data.map((d) => ({
+  data: MatchEventType[],
+): OptionObj<MatchEventTypeOption> => {
+  const options: MatchEventTypeOption[] = data.map((d) => ({
     label: d.name,
     key: d._id,
     event_type: d.event_type,

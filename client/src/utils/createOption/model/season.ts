@@ -1,13 +1,15 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { SeasonGet } from "../../../types/models/season";
+import { ModelType } from "../../../types/models";
+import { Season } from "../../../types/models/season";
 import { ColumnType } from "../../../types/table";
-import { Season } from "../types/model/season";
+import { SeasonOption } from "../types/model/season";
 
-export const season = (data: SeasonGet[]): OptionObj<Season> => {
-  const options: Season[] = data.map((d) => ({
-    label: `${d.name}-${d.competition.label}`,
+export const season = (data: Season[]): OptionObj<SeasonOption> => {
+  const options: SeasonOption[] = data.map((d) => ({
+    label: convert(ModelType.SEASON, d),
     key: d._id,
-    current: d.current,
+    current: d.current ? "最新" : "",
   }));
 
   return {

@@ -1,4 +1,4 @@
-export type MatchFormat = {
+export type MatchFormatOption = {
   key: string;
   label: string;
 };

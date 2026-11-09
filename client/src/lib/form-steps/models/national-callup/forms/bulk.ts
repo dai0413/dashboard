@@ -7,7 +7,7 @@ import {
 } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { NationalCallupForm } from "../../../../../types/models/national-callup";
-import { NationalCallup } from "../../../../../utils/createOption/types/model/national-callup";
+import { NationalCallupOption } from "../../../../../utils/createOption/types/model/national-callup";
 import { readItemBase, readItemsBase } from "../../../../api";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";
@@ -17,6 +17,7 @@ import { updateTeamFromTransfer } from "../onChanges/updateTeamFromTransfer";
 import { teamCheck } from "../validations/teamCheck";
 import { NationalMatchSeries } from "../../../../../types/models/national-match-series";
 import { convert } from "../../../../convert/CreateLabel";
+import { QuickFilterItem } from "../../../../../types/table";
 
 type BaseModel = ModelType.NATIONAL_CALLUP;
 const baseModel = ModelType.NATIONAL_CALLUP;
@@ -46,37 +47,73 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
           team: item?.team._id,
           joined_at: `<${item.joined_at}`,
           sort: "-joined_at",
-          limit: 1,
+          limit: 3,
         },
       });
 
       if (!res?.data) return {};
 
-      const value = res.data.map((d) => d._id);
-      const valueLabel = convert(ModelType.NATIONAL_MATCH_SERIES, res.data);
-
-      const first: QuickFilterItemsByKey = {
-        "national-callup": [
-          {
-            key: "series",
-            label: "前回",
-            filterCondition: [
-              {
-                key: "series",
-                label: "前回",
-                type: "select",
-                filterKey: "series",
-                filterable: true,
-                value: value,
-                valueLabel: valueLabel,
-                operator: "equals",
-              },
-            ],
-          },
-        ],
+      const getLabel = (index: number): string => {
+        if (index === 0) return "前回";
+        return `${index + 1}回前`;
       };
 
-      return first;
+      const createFilterCondition = (
+        data: NationalMatchSeries,
+        label: string,
+      ): QuickFilterItem => {
+        const value = [data._id];
+        const valueLabel = [convert(ModelType.NATIONAL_MATCH_SERIES, data)];
+
+        return {
+          key: `series-${label}`,
+          label,
+          filterCondition: [
+            {
+              key: "series",
+              label,
+              type: "select",
+              filterKey: "series",
+              filterable: true,
+              value,
+              valueLabel,
+              operator: "equals",
+            },
+          ],
+        };
+      };
+
+      const all = (datas: NationalMatchSeries[]): QuickFilterItem => {
+        const value = datas.map((data) => data._id);
+        const valueLabel = convert(ModelType.NATIONAL_MATCH_SERIES, datas);
+
+        return {
+          key: `series-all`,
+          label: "過去3件",
+          filterCondition: [
+            {
+              key: "series",
+              label: "過去3件",
+              type: "select",
+              filterKey: "series",
+              filterable: true,
+              value,
+              valueLabel,
+              operator: "equals",
+            },
+          ],
+        };
+      };
+
+      const quickFilterItems: QuickFilterItem[] = res.data
+        .slice(0, 3)
+        .map((data, index) => createFilterCondition(data, getLabel(index)));
+
+      const QuickFilterItemsByKey: QuickFilterItemsByKey = {
+        "national-callup": [...quickFilterItems, all(res.data)],
+      };
+
+      return QuickFilterItemsByKey;
     },
   },
   {
@@ -103,7 +140,7 @@ export const bulk: FormStep<ModelType.NATIONAL_CALLUP>[] = [
     fieldCopy: {
       label: "過去データ参照",
       optionKey: "national-callup",
-      onSelect: async (row: NationalCallup) => {
+      onSelect: async (row: NationalCallupOption) => {
         return {
           formData: {
             key: row.key,

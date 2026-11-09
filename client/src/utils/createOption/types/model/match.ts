@@ -1,6 +1,6 @@
 import { Label } from "@dai0413/myorg-shared";
 
-export type Match = {
+export type MatchOption = {
   label: string;
   key: string;
   competition: string;

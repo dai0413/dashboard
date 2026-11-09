@@ -1,10 +1,10 @@
 import { OptionObj } from "../../../types/form/option";
-import { PlayerGet } from "../../../types/models/player";
+import { Player } from "../../../types/models/player";
 import { ColumnType } from "../../../types/table";
-import { Player } from "../types/model/player";
+import { PlayerOption } from "../types/model/player";
 
-export const player = (data: PlayerGet[]): OptionObj<Player> => {
-  const options: Player[] = data.map((d) => ({
+export const player = (data: Player[]): OptionObj<PlayerOption> => {
+  const options: PlayerOption[] = data.map((d) => ({
     label: d.name || d.en_name || "不明",
     key: d._id,
     dob: d.dob,

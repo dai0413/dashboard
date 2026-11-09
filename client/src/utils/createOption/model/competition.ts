@@ -1,13 +1,17 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { CompetitionGet } from "../../../types/models/competition";
+import { ModelType } from "../../../types/models";
+import { Competition } from "../../../types/models/competition";
 import { ColumnType } from "../../../types/table";
-import { Competition } from "../types/model/competition";
+import { CompetitionOption } from "../types/model/competition";
 
-export const competition = (data: CompetitionGet[]): OptionObj<Competition> => {
-  const options: Competition[] = data.map((d) => ({
-    label: d.abbr || d.name || "不明",
+export const competition = (
+  data: Competition[],
+): OptionObj<CompetitionOption> => {
+  const options: CompetitionOption[] = data.map((d) => ({
+    label: convert(ModelType.COMPETITION, d),
     key: d._id,
-    country: d.country?.label,
+    country: d.country ? convert(ModelType.COUNTRY, d.country) : "",
     competition_type: d.competition_type,
     category: d.category,
     age_group: d.age_group,

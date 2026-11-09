@@ -7,7 +7,7 @@ import {
 } from "../../../../../types/form";
 import { ModelType } from "../../../../../types/models";
 import { Transfer, TransferForm } from "../../../../../types/models/transfer";
-import { Transfer as TransferOption } from "../../../../../utils/createOption/types/model/transfer";
+import { TransferOption } from "../../../../../utils/createOption/types/model/transfer";
 import { readItemsBase } from "../../../../api";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { toManyOnChange } from "../../../utils/onChange/toManyOnChange";

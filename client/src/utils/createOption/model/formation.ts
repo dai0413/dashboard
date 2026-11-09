@@ -1,10 +1,10 @@
 import { OptionObj } from "../../../types/form/option";
-import { FormationGet } from "../../../types/models/formation";
+import { Formation } from "../../../types/models/formation";
 import { ColumnType } from "../../../types/table";
-import { Formation } from "../types/model/formation";
+import { FormationOption } from "../types/model/formation";
 
-export const formation = (data: FormationGet[]): OptionObj<Formation> => {
-  const options: Formation[] = data.map((d) => ({
+export const formation = (data: Formation[]): OptionObj<FormationOption> => {
+  const options: FormationOption[] = data.map((d) => ({
     label: d.name,
     key: d._id,
     positions: d.position_formation.map((p) => p).join(","),

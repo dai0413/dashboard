@@ -1,15 +1,17 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { CompetitionStageGet } from "../../../types/models/competition-stage";
+import { ModelType } from "../../../types/models";
+import { CompetitionStage } from "../../../types/models/competition-stage";
 import { ColumnType } from "../../../types/table";
-import { CompetitionStage } from "../types/model/competition-stage";
+import { CompetitionStageOption } from "../types/model/competition-stage";
 
 export const competitionStage = (
-  data: CompetitionStageGet[],
-): OptionObj<CompetitionStage> => {
-  const options: CompetitionStage[] = data.map((d) => ({
-    label: `${d.competition.label} ${d.name ? d.name : ""}`,
+  data: CompetitionStage[],
+): OptionObj<CompetitionStageOption> => {
+  const options: CompetitionStageOption[] = data.map((d) => ({
+    label: convert(ModelType.COMPETITION_STAGE, d),
     key: d._id,
-    season: d.season.label,
+    season: convert(ModelType.SEASON, d.season),
   }));
 
   return {

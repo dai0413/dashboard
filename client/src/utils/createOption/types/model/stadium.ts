@@ -1,4 +1,4 @@
-export type Stadium = {
+export type StadiumOption = {
   label: string;
   key: string;
   country: string;

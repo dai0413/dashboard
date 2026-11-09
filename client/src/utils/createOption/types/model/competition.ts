@@ -8,7 +8,7 @@ type CompetitionType = (typeof CompetitionTypeOptions)[number] | null;
 type Category = (typeof CategoryOptions)[number] | null;
 type AgeGroup = (typeof AgeGroupOptions)[number] | null;
 
-export type Competition = {
+export type CompetitionOption = {
   label: string;
   key: string;
   country?: string;

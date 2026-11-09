@@ -1,13 +1,15 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { StadiumGet } from "../../../types/models/stadium";
+import { ModelType } from "../../../types/models";
+import { Stadium } from "../../../types/models/stadium";
 import { ColumnType } from "../../../types/table";
-import { Stadium } from "../types/model/stadium";
+import { StadiumOption } from "../types/model/stadium";
 
-export const stadium = (data: StadiumGet[]): OptionObj<Stadium> => {
-  const options: Stadium[] = data.map((d) => ({
+export const stadium = (data: Stadium[]): OptionObj<StadiumOption> => {
+  const options: StadiumOption[] = data.map((d) => ({
     label: d.name,
     key: d._id,
-    country: d.country.label,
+    country: convert(ModelType.COUNTRY, d.country),
   }));
 
   return {

@@ -1,18 +1,29 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { TeamCompetitionSeasonGet } from "../../../types/models/team-competition-season";
+import { ModelType } from "../../../types/models";
+import { TeamCompetitionSeason } from "../../../types/models/team-competition-season";
 import { ColumnType } from "../../../types/table";
-import { TeamCompetitionSeason } from "../types/model/team-competition-season";
+import { TeamCompetitionSeasonOption } from "../types/model/team-competition-season";
 
 export const teamCompetitionSeason = (
-  data: TeamCompetitionSeasonGet[],
-): OptionObj<TeamCompetitionSeason> => {
-  const options: TeamCompetitionSeason[] = data.map((d) => ({
-    label: `${d.season.label}-${d.competition.label}-${d.team.label}`,
+  data: TeamCompetitionSeason[],
+): OptionObj<TeamCompetitionSeasonOption> => {
+  const options: TeamCompetitionSeasonOption[] = data.map((d) => ({
+    label: convert(ModelType.TEAM_COMPETITION_SEASON, d),
     key: d._id,
 
-    team: d.team,
-    competition: d.competition,
-    season: d.season,
+    team: {
+      label: convert(ModelType.TEAM, d.team),
+      id: d.team._id,
+    },
+    competition: {
+      label: convert(ModelType.COMPETITION, d.competition),
+      id: d.competition._id,
+    },
+    season: {
+      label: convert(ModelType.SEASON, d.season),
+      id: d.season._id,
+    },
   }));
 
   return {

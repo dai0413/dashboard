@@ -1,4 +1,4 @@
-export type Country = {
+export type CountryOption = {
   key: string;
   label: string;
 };

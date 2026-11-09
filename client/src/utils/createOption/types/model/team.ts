@@ -3,7 +3,7 @@ import { ageGroup, Label } from "@dai0413/myorg-shared";
 const AgeGroupOptions = ageGroup().map((item) => item.key);
 type AgeGroup = (typeof AgeGroupOptions)[number] | null;
 
-export type Team = {
+export type TeamOption = {
   label: string;
   key: string;
   abbr?: string;

@@ -1,6 +1,6 @@
 import { Label } from "@dai0413/myorg-shared";
 
-export type TeamCompetitionSeason = {
+export type TeamCompetitionSeasonOption = {
   label: string;
   key: string;
 

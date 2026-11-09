@@ -1,6 +1,6 @@
 import { OptionObj } from "../../../types/form/option";
 import { ModelDataOption, ModelOptionKey } from "../types/model";
-import { GettedModelDataMap, ModelType } from "../../../types/models";
+import { ModelDataMap, ModelType } from "../../../types/models";
 import {
   competition,
   season,
@@ -21,7 +21,7 @@ import {
 } from "../model";
 
 type Converter<T extends ModelOptionKey> = (
-  data: GettedModelDataMap[T][],
+  data: ModelDataMap[T][],
 ) => OptionObj<ModelDataOption[T]>;
 
 const convertMap: Partial<{
@@ -47,7 +47,7 @@ const convertMap: Partial<{
 
 export function convertToOption<T extends ModelOptionKey>(
   type: T,
-  data: GettedModelDataMap[T][],
+  data: ModelDataMap[T][],
 ): OptionObj<ModelDataOption[T]> {
   if (!(type in convertMap)) return { data: [] };
 

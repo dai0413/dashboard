@@ -11,7 +11,7 @@ import { readItemBase, readItemsBase } from "../../../../api";
 import { createConfirmationStep } from "../../../confirmationStep";
 import { getFields } from "../fields";
 import { convert } from "../../../../convert/CreateLabel";
-import { TeamCompetitionSeason as Option } from "../../../../../utils/createOption/types/model/team-competition-season";
+import { TeamCompetitionSeasonOption } from "../../../../../utils/createOption/types/model/team-competition-season";
 import { Season } from "../../../../../types/models/season";
 
 type BaseModel = ModelType.TEAM_COMPETITION_SEASON;
@@ -84,7 +84,7 @@ export const bulk: FormStep<ModelType.TEAM_COMPETITION_SEASON>[] = [
     fieldCopy: {
       label: "過去データ参照",
       optionKey: "team-competition-season",
-      onSelect: async (row: Option) => {
+      onSelect: async (row: TeamCompetitionSeasonOption) => {
         return {
           formData: {
             key: row.key,

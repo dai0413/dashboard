@@ -1,13 +1,15 @@
-import { ModelDataMap } from "../../../types/models";
+import { ModelDataMap, ModelType } from "../../../types/models";
 import { ReadOptionsParam } from "../types/base";
 import { normalizeFiltersForApi } from "../../filter/normalizeFiltersForApi";
 import { readItemsBase } from "../../../lib/api";
-import { convert } from "../../../lib/convert/DBtoGetted";
 import { optionRouteMap } from "../../../lib/options";
 import { isModelType } from "../../../types/field";
 import { ModelDataOption, ModelOptionKey } from "../types/model";
 import { OptionObj } from "../../../types/form/option";
 import { convertToOption } from "./convertToOption";
+import { positionGroup } from "@dai0413/myorg-shared";
+
+const position_group = positionGroup().map((v) => v.key);
 
 export const readOptions = async <K extends ModelOptionKey>({
   key,
@@ -44,13 +46,28 @@ export const readOptions = async <K extends ModelOptionKey>({
 
   if (!response) return { data: [] };
 
-  const getted = convert(key, response.data);
-  const options = convertToOption(key, getted);
+  let uniqued = response.data;
+
+  if (key === "national-callup") {
+    const datas = response.data as ModelDataMap[ModelType.NATIONAL_CALLUP][];
+
+    const nationalCallups = [
+      ...new Map(datas.map((d) => [d.player._id, d])).values(),
+    ].sort(
+      (a, b) =>
+        position_group.findIndex((v) => v === a.position_group) -
+        position_group.findIndex((v) => v === b.position_group),
+    );
+
+    uniqued = nationalCallups as typeof uniqued;
+  }
+
+  const options = convertToOption(key, uniqued);
 
   return {
     data: options.data,
     fields: options.fields,
     page: page ?? response.page ?? 1,
-    totalCount: response.totalCount ?? 1,
+    totalCount: uniqued.length ?? 1,
   };
 };

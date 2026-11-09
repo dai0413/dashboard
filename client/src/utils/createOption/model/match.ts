@@ -1,23 +1,23 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { MatchGet } from "../../../types/models/match";
+import { ModelType } from "../../../types/models";
+import { Match } from "../../../types/models/match";
 import { ColumnType } from "../../../types/table";
-import { Match } from "../types/model/match";
+import { MatchOption } from "../types/model/match";
 
-export const match = (data: MatchGet[]): OptionObj<Match> => {
-  const options: Match[] = data.map((d) => ({
-    label: `${d.competition.label}-
-            ${d.competition_stage.label}-
-            ${d.season.label}-
-            ${d.match_week}-
-            ${d.home_team.label}-
-            ${d.away_team.label}`,
+export const match = (data: Match[]): OptionObj<MatchOption> => {
+  const options: MatchOption[] = data.map((d) => ({
+    label: convert(ModelType.MATCH, d),
     key: d._id,
-    competition: d.competition.label,
-    competition_stage: d.competition_stage,
-    season: d.season.label,
+    competition: convert(ModelType.COMPETITION, d.competition),
+    competition_stage: {
+      id: d.competition_stage._id,
+      label: convert(ModelType.COMPETITION_STAGE, d.competition_stage),
+    },
+    season: convert(ModelType.SEASON, d.season),
     match_week: d.match_week,
-    home_team: d.home_team.label,
-    away_team: d.away_team.label,
+    home_team: convert(ModelType.TEAM, d.home_team),
+    away_team: convert(ModelType.TEAM, d.away_team),
   }));
 
   return {

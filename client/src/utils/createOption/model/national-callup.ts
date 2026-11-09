@@ -1,19 +1,31 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { NationalCallupGet } from "../../../types/models/national-callup";
+import { ModelType } from "../../../types/models";
+import { NationalCallup } from "../../../types/models/national-callup";
 import { ColumnType } from "../../../types/table";
-import { NationalCallup } from "../types/model/national-callup";
+import { NationalCallupOption } from "../types/model/national-callup";
 
 export const nationalCallup = (
-  data: NationalCallupGet[],
-): OptionObj<NationalCallup> => {
-  const options: NationalCallup[] = data.map((d) => ({
-    label: d.series.label,
+  data: NationalCallup[],
+): OptionObj<NationalCallupOption> => {
+  const options: NationalCallupOption[] = data.map((d) => ({
+    label: convert(ModelType.NATIONAL_CALLUP, d),
     key: d._id,
 
-    series: d.series,
-    player: d.player,
+    series: {
+      label: convert(ModelType.NATIONAL_MATCH_SERIES, d.series),
+      id: d.series._id,
+    },
+    player: {
+      label: convert(ModelType.PLAYER, d.player),
+      id: d.player._id,
+    },
+    dob: d.player.dob,
     number: d.number,
-    team: d.team,
+    team: {
+      label: convert(ModelType.TEAM, d.team),
+      id: d.team._id,
+    },
     team_name: d.team_name,
     position_group: d.position_group,
   }));
@@ -37,6 +49,14 @@ export const nationalCallup = (
         type: "string",
       },
       {
+        label: "生年月日",
+        field: "dob",
+        getValueType: ColumnType.FIELD,
+        key: "dob",
+        displayOnTable: true,
+        type: "Date",
+      },
+      {
         label: "背番号",
         field: "number",
         getValueType: ColumnType.FIELD,
@@ -45,7 +65,7 @@ export const nationalCallup = (
         type: "string",
       },
       {
-        label: "チーム",
+        label: "当時チーム",
         field: "team",
         getValueType: ColumnType.FIELD,
         key: "team",

@@ -1,14 +1,21 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { TeamGet } from "../../../types/models/team";
+import { ModelType } from "../../../types/models";
+import { Team } from "../../../types/models/team";
 import { ColumnType } from "../../../types/table";
-import { Team } from "../types/model/team";
+import { TeamOption } from "../types/model/team";
 
-export const team = (data: TeamGet[]): OptionObj<Team> => {
-  const options: Team[] = data.map((d) => ({
+export const team = (data: Team[]): OptionObj<TeamOption> => {
+  const options: TeamOption[] = data.map((d) => ({
     label: d.team,
     key: d._id,
     abbr: d.abbr,
-    country: d.country,
+    country: d.country
+      ? {
+          label: convert(ModelType.COUNTRY, d.country),
+          id: d.country._id,
+        }
+      : undefined,
     age_group: d.age_group,
   }));
 

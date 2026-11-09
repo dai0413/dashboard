@@ -1,15 +1,17 @@
+import { convert } from "../../../lib/convert/CreateLabel";
 import { OptionObj } from "../../../types/form/option";
-import { NationalMatchSeriesGet } from "../../../types/models/national-match-series";
+import { ModelType } from "../../../types/models";
+import { NationalMatchSeries } from "../../../types/models/national-match-series";
 import { ColumnType } from "../../../types/table";
-import { NationalMatchSeries } from "../types/model/national-match-series";
+import { NationalMatchSeriesOption } from "../types/model/national-match-series";
 
 export const nationalMatchSeries = (
-  data: NationalMatchSeriesGet[],
-): OptionObj<NationalMatchSeries> => {
-  const options: NationalMatchSeries[] = data.map((d) => ({
+  data: NationalMatchSeries[],
+): OptionObj<NationalMatchSeriesOption> => {
+  const options: NationalMatchSeriesOption[] = data.map((d) => ({
     label: d.name,
     key: d._id,
-    team: d.team.label,
+    team: convert(ModelType.TEAM, d.team),
   }));
 
   return {

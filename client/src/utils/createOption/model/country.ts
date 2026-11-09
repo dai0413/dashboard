@@ -1,10 +1,10 @@
 import { OptionObj } from "../../../types/form/option";
-import { CountryGet } from "../../../types/models/country";
+import { Country } from "../../../types/models/country";
 import { ColumnType } from "../../../types/table";
-import { Country } from "../types/model/country";
+import { CountryOption } from "../types/model/country";
 
-export const country = (data: CountryGet[]): OptionObj<Country> => {
-  const options: Country[] = data.map((d) => ({
+export const country = (data: Country[]): OptionObj<CountryOption> => {
+  const options: CountryOption[] = data.map((d) => ({
     key: d._id,
     label: d.name,
   }));
