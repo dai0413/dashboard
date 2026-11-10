@@ -163,6 +163,11 @@ type DataViewContainerProps<T, F> = {
       transferOuts: TransferGet[];
       baseDate?: Date;
     };
+    [ViewMode.SCATTER]?: {
+      filterHeaders: (visibleHeaders: TableHeader<T>[]) => TableHeader<T>[];
+      createLabel: (item: T) => string;
+      createColor: ((item: T) => string | undefined) | undefined;
+    };
   };
 };
 

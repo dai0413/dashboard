@@ -1,6 +1,11 @@
 import type { ChartDataset } from "chart.js";
 
 import { StatsLGet } from "../../../types/models/stats-l";
+import {
+  StatsActual,
+  StatsDeviation,
+  StatsRank,
+} from "../../../pages/Summary/Competition/types";
 
 export type RadarKey = keyof Omit<
   StatsLGet,
@@ -37,16 +42,6 @@ export type RadarChartProps = {
   min?: number;
   max?: number;
   stepSize?: number;
-};
-
-type StatsBase = Omit<StatsLGet, RadarKey | "match">;
-
-type StatsActual = StatsBase;
-type StatsDeviation = StatsBase & {
-  [K in RadarKey]?: number;
-};
-type StatsRank = StatsBase & {
-  [K in RadarKey]?: number;
 };
 
 export type TableData = {

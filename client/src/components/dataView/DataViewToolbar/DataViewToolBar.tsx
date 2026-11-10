@@ -163,6 +163,10 @@ const viewModeMap: Record<ViewMode, { text: string; icon: React.ReactNode }> = {
     text: "月別カレンダー",
     icon: <TableCellsIcon className="w-6 h-6" />,
   },
+  [ViewMode.SCATTER]: {
+    text: "散布図",
+    icon: <TableCellsIcon className="w-6 h-6" />,
+  },
 };
 
 const DataViewToolBar = <Data, Form>({

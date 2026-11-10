@@ -80,6 +80,7 @@ export enum ViewMode {
   SERIES_MATRIX = "series_matrix",
   BIRTH_YEAR_POSITION_MATRIX = "birth_year_position_matrix",
   MONTHLY_CALENDAR = "monthly_calendar",
+  SCATTER = "scatter",
 }
 
 export enum RowSpacing {

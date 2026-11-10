@@ -2,7 +2,7 @@ import { ReactNode, useMemo } from "react";
 import { useDataView } from "../../../../context/dataView-context";
 import Tile from "./Tile";
 import Table from "./Table";
-import { TableData, TableHeader } from "../../../../types/table";
+import { ColumnType, TableData, TableHeader } from "../../../../types/table";
 import { LinkField, ViewMode } from "../../../../types/types";
 import { convertToDisplayListData } from "../../../modals/Detail/utils/convertToDisplayListData ";
 import { useModal } from "../../../../context/modal-context";
@@ -32,6 +32,8 @@ import {
   MonthlyCalendarGroup,
   MonthleyCalendarHeaderItem,
 } from "../../../../types/calendar";
+import { ScatterPlot } from "../../../plot/Scatter";
+import { radarFields } from "../../../plot/RadarChart/radarFields";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -100,6 +102,11 @@ type DataViewProps<T> = {
       transferIns: TransferGet[];
       transferOuts: TransferGet[];
       baseDate?: Date;
+    };
+    [ViewMode.SCATTER]?: {
+      filterHeaders: (visibleHeaders: TableHeader<T>[]) => TableHeader<T>[];
+      createLabel: (item: T) => string;
+      createColor: ((item: T) => string | undefined) | undefined;
     };
   };
 };
@@ -342,6 +349,55 @@ const DataView = <T,>({
         headerItems={headerItems}
         headerOnChange={headerOnChange}
         selectedKey={selectedKey}
+      />
+    );
+  }
+
+  if (viewMode === ViewMode.SCATTER && viewData[ViewMode.SCATTER]) {
+    const { filterHeaders, createLabel, createColor } =
+      viewData[ViewMode.SCATTER];
+
+    const headers = filterHeaders(visibleHeaders);
+    const [column, row] = headers;
+    if (!column || !row) return null;
+
+    const data = viewData[ViewMode.TABLE]?.flatMap((d) => {
+      const x =
+        column.getValueType === ColumnType.FIELD
+          ? d.item[column.field]
+          : column.getData(d.item);
+      const y =
+        row.getValueType === ColumnType.FIELD
+          ? d.item[row.field]
+          : row.getData(d.item);
+
+      if (typeof x !== "number" || typeof y !== "number") {
+        return [];
+      }
+
+      return [
+        {
+          x,
+          y,
+          label: createLabel(d.item),
+          color: createColor ? createColor(d.item) : undefined,
+        },
+      ];
+    });
+
+    const columnHigherIsBetter =
+      radarFields.find((f) => f.key === column.key)?.higherIsBetter ?? true;
+
+    const rowHigherIsBetter =
+      radarFields.find((f) => f.key === row.key)?.higherIsBetter ?? true;
+
+    return (
+      <ScatterPlot
+        xLabel={column.label}
+        yLabel={row.label}
+        xReverse={!columnHigherIsBetter}
+        yReverse={!rowHigherIsBetter}
+        data={data ?? []}
       />
     );
   }
