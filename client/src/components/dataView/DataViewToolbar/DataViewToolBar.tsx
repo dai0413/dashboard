@@ -45,6 +45,7 @@ import {
 } from "../../../types/types";
 import CheckMenuItem from "../../ui/CheckMenuItem";
 import { useModelContext } from "../../../context/models/model-wrapper";
+import { ColumnVisibility } from "../../../types/field";
 
 type MenuItem = { label: string; onClick: () => void };
 
@@ -198,6 +199,7 @@ const DataViewToolBar = <Data, Form>({
     setItemsPerPage,
     columnVisibility,
     setColumnVisibility,
+    setOpenFieldSetting,
   } = useDataView();
 
   const {
@@ -351,20 +353,20 @@ const DataViewToolBar = <Data, Form>({
     : [];
 
   const handleSelectAll = (headers: TableHeader<Data>[]) => {
-    const next: Record<string, boolean> = {};
+    const next: ColumnVisibility = {};
 
-    headers.forEach((h) => {
-      next[h.key] = true;
+    headers.forEach((h, index) => {
+      next[h.key] = { display: true, index };
     });
 
     setColumnVisibility(next);
   };
 
   const handleClearAll = (headers: TableHeader<Data>[]) => {
-    const next: Record<string, boolean> = {};
+    const next: ColumnVisibility = {};
 
-    headers.forEach((h) => {
-      next[h.key] = false;
+    headers.forEach((h, index) => {
+      next[h.key] = { display: false, index };
     });
 
     setColumnVisibility(next);
@@ -394,13 +396,17 @@ const DataViewToolBar = <Data, Form>({
           <CheckMenuItem
             key={h.key}
             label={h.label}
-            checked={columnVisibility[h.key]}
-            onChange={() =>
+            checked={columnVisibility ? columnVisibility[h.key].display : false}
+            onChange={() => {
+              if (!columnVisibility) return;
               setColumnVisibility({
                 ...columnVisibility,
-                [h.key]: !columnVisibility[h.key],
-              })
-            }
+                [h.key]: {
+                  ...columnVisibility[h.key],
+                  display: !columnVisibility[h.key],
+                },
+              });
+            }}
           />
         )),
       ]
@@ -499,7 +505,14 @@ const DataViewToolBar = <Data, Form>({
                     <ToolbarButton
                       text={"フィールド"}
                       icon={<ViewColumnsIcon className="w-6 h-6" />}
-                      onClick={() => setIsFieldSelectOpen((prev) => !prev)}
+                      onClick={() => setOpenFieldSetting(true)}
+                      badge={
+                        !columnVisibility
+                          ? 0
+                          : Object.values(columnVisibility)
+                              .map(({ display }) => display)
+                              .filter((display) => display).length
+                      }
                     />
 
                     {isFieldSelectOpen && (

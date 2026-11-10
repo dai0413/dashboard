@@ -146,10 +146,19 @@ const DataView = <T,>({
     };
   }, [modelType, linkField, open]);
 
-  const visibleHeaders = useMemo(
-    () => headers?.filter((h) => columnVisibility[h.key]),
-    [headers, columnVisibility],
-  );
+  const visibleHeaders = useMemo(() => {
+    if (!columnVisibility) return [];
+    const val =
+      headers
+        ?.filter((h) => columnVisibility[h.key].display)
+        .map((h) => ({ ...h, index: columnVisibility[h.key].index }))
+        .sort((a, b) => {
+          return a.index - b.index;
+        })
+        .map(({ index, ...field }) => field) || [];
+
+    return val;
+  }, [headers, columnVisibility]);
 
   if (
     viewMode === ViewMode.TABLE &&

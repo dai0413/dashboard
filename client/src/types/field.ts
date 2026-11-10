@@ -50,3 +50,18 @@ export function resolveOptionSource(key: unknown): OptionSource | null {
   if (isModelType(key)) return OptionSource.REMOTE;
   return null;
 }
+
+export type DisplayFields = Record<string, any> & {
+  key: string;
+  label: string;
+  selecting: boolean;
+  asc?: boolean | null;
+};
+
+export type ColumnVisibility = Record<
+  string,
+  {
+    display: boolean;
+    index: number;
+  }
+>;

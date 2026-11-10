@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo } from "react";
 
 import DataViewToolBar from "./DataViewToolbar/DataViewToolBar";
-import { Sort, Filter } from "../modals/index";
+import { Sort, Filter, Field } from "../modals/index";
 
 import {
   QuickFilterData,
@@ -16,7 +16,12 @@ import {
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
-import { isModelType, UIFieldDefinition } from "../../types/field";
+import {
+  ColumnVisibility,
+  DisplayFields,
+  isModelType,
+  UIFieldDefinition,
+} from "../../types/field";
 import { getDataFields, getSortableFields } from "../../utils/data-field";
 import { LinkField, ViewMode } from "../../types/types";
 import { downloadCsv } from "../../utils/data/downloadCsv";
@@ -201,10 +206,13 @@ const Container = <K extends Record<string, unknown>, F>({
     pageNum,
     itemsPerPage,
     viewMode,
+    openFieldSetting,
+    columnVisibility,
     setItemsPerPage,
     setColumnVisibility,
     setViewMode,
     setPageNum,
+    setOpenFieldSetting,
   } = useDataView();
 
   const { datas, crudDatas } = useMemo(() => {
@@ -301,17 +309,54 @@ const Container = <K extends Record<string, unknown>, F>({
     newPageNum && setPageNum(newPageNum);
   }, [newPageNum]);
 
-  useEffect(() => {
-    const initialVisibility = fieldDefinitions?.reduce(
-      (acc, h) => {
-        acc[h.key] = h.displayOnTable ?? true;
-        return acc;
-      },
-      {} as Record<string, boolean>,
-    );
+  const fields: DisplayFields[] = useMemo(() => {
+    if (columnVisibility) {
+      return (
+        fieldDefinitions
+          ?.map((f) => {
+            const visibility = columnVisibility[f.key];
 
-    initialVisibility && setColumnVisibility(initialVisibility);
+            return {
+              label: f.label,
+              key: f.key,
+              selecting: visibility.display,
+              index: visibility.index,
+            };
+          })
+          .sort((a, b) => {
+            if (a.selecting && b.selecting) {
+              return a.index - b.index;
+            }
+
+            return 0;
+          }) || []
+      );
+    }
+
+    return (
+      fieldDefinitions?.map((f) => ({
+        label: f.label,
+        key: f.key,
+        selecting: f.displayOnTable,
+      })) || []
+    );
+  }, [columnVisibility, fieldDefinitions]);
+
+  const initialVisibility: ColumnVisibility | undefined = useMemo(() => {
+    const initialVisibility = fieldDefinitions?.reduce((acc, h, i) => {
+      acc[h.key] = {
+        display: h.displayOnTable ?? true,
+        index: i,
+      };
+      return acc;
+    }, {} as ColumnVisibility);
+
+    return initialVisibility;
   }, [fieldDefinitions]);
+
+  useEffect(() => {
+    initialVisibility && setColumnVisibility(initialVisibility);
+  }, [initialVisibility]);
 
   useEffect(() => {
     const filterConditions = filterField
@@ -383,6 +428,25 @@ const Container = <K extends Record<string, unknown>, F>({
 
       <Filter filterableField={filterField ?? []} onApply={handleApplyFilter} />
       <Sort sortableField={sortField ?? []} onApply={handleApplyFilter} />
+      <Field
+        fields={fields}
+        isOpen={openFieldSetting}
+        handleClose={() => setOpenFieldSetting(false)}
+        handleReset={() => {
+          initialVisibility && setColumnVisibility(initialVisibility);
+        }}
+        handleUpdate={(fields: DisplayFields[]) => {
+          const newColumnVisibility: ColumnVisibility = {};
+
+          fields.forEach((field, index) => {
+            const value =
+              typeof field.selecting === "boolean" ? field.selecting : false;
+            newColumnVisibility[field.key] = { display: value, index };
+          });
+
+          setColumnVisibility(newColumnVisibility);
+        }}
+      />
       {noToolBar !== false && (
         <DataViewToolBar<K, F>
           modelType={modelType}

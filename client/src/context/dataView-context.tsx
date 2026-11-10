@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { RowSpacing, ViewMode } from "../types/types";
+import { ColumnVisibility } from "../types/field";
 
 type DataViewContextType = {
   viewMode: ViewMode;
@@ -17,8 +18,11 @@ type DataViewContextType = {
   itemsPerPage: number | null;
   setItemsPerPage: (n: number | null) => void;
 
-  columnVisibility: Record<string, boolean>;
-  setColumnVisibility: (v: Record<string, boolean>) => void;
+  columnVisibility: ColumnVisibility | undefined;
+  setColumnVisibility: (v: ColumnVisibility) => void;
+
+  openFieldSetting: boolean;
+  setOpenFieldSetting: (v: boolean) => void;
 };
 
 const DataViewContext = createContext<DataViewContextType | null>(null);
@@ -30,8 +34,9 @@ const DataViewProvider = ({ children }: { children: ReactNode }) => {
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
   const [itemsPerPage, setItemsPerPage] = useState<number | null>(null);
   const [columnVisibility, setColumnVisibility] = useState<
-    Record<string, boolean>
-  >({});
+    ColumnVisibility | undefined
+  >(undefined);
+  const [openFieldSetting, setOpenFieldSetting] = useState<boolean>(false);
 
   const triggerUpdate = () => {
     setUpdateTrigger((v) => !v);
@@ -50,6 +55,8 @@ const DataViewProvider = ({ children }: { children: ReactNode }) => {
     setItemsPerPage,
     columnVisibility,
     setColumnVisibility,
+    openFieldSetting,
+    setOpenFieldSetting,
   };
 
   return (
