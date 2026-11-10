@@ -1,10 +1,10 @@
 import { RadarKey } from "../../components/plot/RadarChart/types";
-import { StatsLGet } from "../../types/models/stats-l";
+import { StatsL } from "../../types/models/stats-l";
 import { standardDeviation } from "../math/standardDeviation";
 import { valuesOf } from "./valuesOf";
 
 export const aggregateStdDev = (
-  data: StatsLGet[],
+  data: StatsL[],
   fields: RadarKey[],
 ): Record<RadarKey, number> => {
   const result = {} as Record<RadarKey, number>;

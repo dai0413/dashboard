@@ -1,5 +1,5 @@
 import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
-import { StatsLGet } from "../../types/models/stats-l";
+import { StatsL } from "../../types/models/stats-l";
 import { round } from "../math";
 import { aggregateAverage } from "./aggregateAverage";
 import { aggregateAverageByGroup } from "./aggregateAverageByGroup";
@@ -15,10 +15,10 @@ type PlotValues = {
 };
 
 export const buildPlotValues = <T extends string>(
-  baseData: StatsLGet[],
-  plotData: StatsLGet[],
+  baseData: StatsL[],
+  plotData: StatsL[],
   fields: RadarField[],
-  groupBy: (item: StatsLGet) => T,
+  groupBy: (item: StatsL) => T,
 ): Map<T, PlotValues> => {
   const keys = fields.map((f) => f.key);
 

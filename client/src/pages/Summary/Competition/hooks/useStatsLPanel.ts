@@ -37,10 +37,10 @@ export const useStatsLPanel = () => {
     const fields: RadarField[] = radarFields.filter((f) => f.key);
 
     const tableDatas = buildTableData(
-      converted,
-      converted,
+      res.data,
+      res.data,
       fields,
-      (d) => d.team.id || "",
+      (d) => d.team._id || "",
     );
 
     setActual(tableDatas.actual);

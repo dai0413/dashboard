@@ -167,6 +167,7 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
 
       statsL: {
         key: `${selectedTab}-${selectedSeason?._id}`,
+        text: `${selectedSeason?.name}のスタッツ`,
         items: statsL.items,
         reloadFun: async () => readStatsL(selectedSeason?._id),
         isLoading: statsL.isLoading,

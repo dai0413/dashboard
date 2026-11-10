@@ -1,6 +1,9 @@
+import { Label } from "@dai0413/myorg-shared";
 import { RadarField, TableData } from "../../components/plot/RadarChart/types";
-import { StatsLGet } from "../../types/models/stats-l";
+import { ModelType } from "../../types/models";
+import { StatsL } from "../../types/models/stats-l";
 import { buildPlotValues } from "./buildPlotValues";
+import { convert } from "../../lib/convert/CreateLabel";
 
 const groupByToMap = <T, K extends string>(
   data: T[],
@@ -22,10 +25,10 @@ const groupByToMap = <T, K extends string>(
 };
 
 export const buildTableData = <T extends string>(
-  baseData: StatsLGet[],
-  plotData: StatsLGet[],
+  baseData: StatsL[],
+  plotData: StatsL[],
   fields: RadarField[],
-  groupBy: (item: StatsLGet) => T,
+  groupBy: (item: StatsL) => T,
 ): TableData => {
   const values = buildPlotValues(baseData, plotData, fields, groupBy);
 
@@ -38,19 +41,30 @@ export const buildTableData = <T extends string>(
   for (const [group, value] of values) {
     const base = grouped.get(group)![0];
 
+    const team: Label = {
+      label: convert(ModelType.TEAM, base.team),
+      id: base.team._id,
+    };
+
     actual.push({
       ...base,
       ...value.actual,
+      team,
+      teamColor: base.team.primaryColor,
     });
 
     deviation.push({
       ...base,
       ...value.deviation,
+      team,
+      teamColor: base.team.primaryColor,
     });
 
     rank.push({
       ...base,
       ...value.rank,
+      team,
+      teamColor: base.team.primaryColor,
     });
   }
 

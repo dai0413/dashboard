@@ -1,13 +1,13 @@
 import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
-import { StatsLGet } from "../../types/models/stats-l";
+import { StatsL } from "../../types/models/stats-l";
 import { rank } from "../math/rank";
 import { aggregateAverageByGroup } from "./aggregateAverageByGroup";
 
 export const calculateRank = <T extends string>(
-  baseData: StatsLGet[],
-  plotData: StatsLGet[],
+  baseData: StatsL[],
+  plotData: StatsL[],
   fields: RadarField[],
-  groupBy: (item: StatsLGet) => T,
+  groupBy: (item: StatsL) => T,
 ): Map<T, Record<RadarKey, number>> => {
   const baseAverages = aggregateAverageByGroup(
     baseData,

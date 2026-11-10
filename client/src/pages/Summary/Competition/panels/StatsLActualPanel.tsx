@@ -1,9 +1,23 @@
 import { isFilterable, isSortable } from "../../../../utils/data-field";
-import { UseCompetitionSummary } from "../types";
+import { StatsActual, UseCompetitionSummary } from "../types";
 import { DataViewContainer } from "../../../../components/dataView";
 import { statsFields } from "../constants/field";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
 import { ViewMode } from "../../../../types/types";
+import { TableHeader } from "../../../../types/table";
+
+const filterHeaders = (visibleHeaders: TableHeader<StatsActual>[]) => {
+  const headers = visibleHeaders.filter((header) => header.key !== "team");
+  return headers;
+};
+
+const createLabel = (item: StatsActual): string => {
+  return item.team.label;
+};
+
+const createColor = (item: StatsActual): string | undefined => {
+  return item.teamColor;
+};
 
 const StatsLActualPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
   const {
@@ -29,10 +43,15 @@ const StatsLActualPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
           },
         ]}
         reloadFun={reloadFun}
-        viewModes={[ViewMode.TABLE, ViewMode.TILE]}
+        viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.SCATTER]}
         viewData={{
           [ViewMode.TABLE]: items.actual,
           [ViewMode.TILE]: items.actual,
+          [ViewMode.SCATTER]: {
+            filterHeaders,
+            createLabel,
+            createColor,
+          },
         }}
       />
     </>

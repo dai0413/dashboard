@@ -6,9 +6,16 @@ import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../types";
 type StatsBase = Omit<
   GettedModelDataMap[ModelType.STATS_L],
   RadarKey | "match"
->;
+> & {
+  teamColor?: string;
+};
 
-export type StatsActual = Omit<GettedModelDataMap[ModelType.STATS_L], "match">;
+export type StatsActual = Omit<
+  GettedModelDataMap[ModelType.STATS_L],
+  "match"
+> & {
+  teamColor?: string;
+};
 export type StatsDeviation = StatsBase & {
   [K in RadarKey]?: number;
 };
