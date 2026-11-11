@@ -2,6 +2,20 @@ import { RadarField } from "./types";
 
 export const radarFields: RadarField[] = [
   {
+    key: "goal",
+    label: "得点",
+    category: "attack",
+    higherIsBetter: true,
+    default: true,
+  },
+  {
+    key: "against_goal",
+    label: "失点",
+    category: "defense",
+    higherIsBetter: false,
+    default: true,
+  },
+  {
     key: "xgFor",
     label: "得点期待値",
     category: "attack",

@@ -1,13 +1,16 @@
 import { RadarKey } from "../../components/plot/RadarChart/types";
-import { StatsL } from "../../types/models/stats-l";
+import { StatsBaseData } from "../../pages/Summary/Competition/types";
 import { aggregateAverage } from "./aggregateAverage";
 
-export const aggregateAverageByGroup = <T extends string>(
-  data: StatsL[],
+export const aggregateAverageByGroup = <
+  D extends StatsBaseData,
+  T extends string,
+>(
+  data: D[],
   fields: RadarKey[],
-  groupBy: (item: StatsL) => T,
+  groupBy: (item: D) => T,
 ): Map<T, Record<RadarKey, number>> => {
-  const groups = new Map<T, StatsL[]>();
+  const groups = new Map<T, D[]>();
 
   // グループ分け
   for (const item of data) {

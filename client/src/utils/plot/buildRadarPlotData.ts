@@ -1,30 +1,26 @@
-import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
-import { StatsLGet } from "../../types/models/stats-l";
+import { RadarField } from "../../components/plot/RadarChart/types";
+import {
+  StatsActual,
+  StatsBaseData,
+} from "../../pages/Summary/Competition/types";
 import { buildPlotValues } from "./buildPlotValues";
 
-export type RadarValues = Record<
-  RadarKey,
-  { actual: number; deviation: number; rank: number }
->;
-
-export const buildRadarPlotData = <T extends string>(
-  baseData: StatsLGet[],
-  plotData: StatsLGet[],
+export const buildRadarPlotData = <D extends StatsBaseData, T extends string>(
+  baseData: D[],
+  plotData: D[],
   fields: RadarField[],
-  groupBy: (item: StatsLGet) => T,
-): Map<T, { values: RadarValues; matchCount: number }> => {
+  groupBy: (item: D) => T,
+): Map<T, { values: StatsActual; matchCount: number }> => {
   const values = buildPlotValues(baseData, plotData, fields, groupBy);
 
-  const result = new Map<T, { values: RadarValues; matchCount: number }>();
+  const result = new Map<T, { values: StatsActual; matchCount: number }>();
 
   for (const [group, value] of values) {
-    const radar = {} as RadarValues;
+    const radar = {} as StatsActual;
 
     for (const field of fields) {
       radar[field.key] = {
-        actual: value.actual[field.key],
-        deviation: value.deviation[field.key],
-        rank: value.rank[field.key],
+        ...value.value[field.key],
       };
     }
 

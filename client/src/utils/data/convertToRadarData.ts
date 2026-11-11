@@ -3,7 +3,7 @@ import {
   RadarDataset,
   RadarField,
 } from "../../components/plot/RadarChart/types";
-import { RadarValues } from "../plot/buildRadarPlotData";
+import { StatsActual } from "../../pages/Summary/Competition/types";
 
 const guideLine = (
   value: number,
@@ -31,7 +31,7 @@ export const convertToRadarData = <T>(
   fields: RadarField[],
   label?: string,
 ): RadarData | null => {
-  const radarValues = datas as RadarValues;
+  const radarValues = datas as StatsActual;
 
   if (!radarValues) return null;
 
@@ -43,8 +43,14 @@ export const convertToRadarData = <T>(
   const datasets = [
     {
       label: label,
-      data: datasetsFields.map((f) => radarValues[f.key].deviation),
-      tooltipData: datasetsFields.map((f) => radarValues[f.key]),
+      data: datasetsFields.map((f) =>
+        radarValues[f.key]?.deviation
+          ? radarValues[f.key]?.deviation || null
+          : null,
+      ),
+      tooltipData: datasetsFields.map((f) =>
+        radarValues[f.key] ? radarValues[f.key] || {} : {},
+      ),
       borderColor: "#2563eb",
       backgroundColor: "rgba(37,99,235,0.2)",
     },

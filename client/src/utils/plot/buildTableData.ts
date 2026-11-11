@@ -1,9 +1,9 @@
 import { Label } from "@dai0413/myorg-shared";
-import { RadarField, TableData } from "../../components/plot/RadarChart/types";
+import { RadarField } from "../../components/plot/RadarChart/types";
 import { ModelType } from "../../types/models";
-import { StatsL } from "../../types/models/stats-l";
 import { buildPlotValues } from "./buildPlotValues";
 import { convert } from "../../lib/convert/CreateLabel";
+import { StatsActual, StatsValue } from "../../pages/Summary/Competition/types";
 
 const groupByToMap = <T, K extends string>(
   data: T[],
@@ -25,18 +25,16 @@ const groupByToMap = <T, K extends string>(
 };
 
 export const buildTableData = <T extends string>(
-  baseData: StatsL[],
-  plotData: StatsL[],
+  baseData: StatsValue[],
+  plotData: StatsValue[],
   fields: RadarField[],
-  groupBy: (item: StatsL) => T,
-): TableData => {
+  groupBy: (item: StatsValue) => T,
+): StatsActual[] => {
   const values = buildPlotValues(baseData, plotData, fields, groupBy);
 
   const grouped = groupByToMap(plotData, groupBy);
 
-  const actual: TableData["actual"] = [];
-  const deviation: TableData["deviation"] = [];
-  const rank: TableData["rank"] = [];
+  const actual: StatsActual[] = [];
 
   for (const [group, value] of values) {
     const base = grouped.get(group)![0];
@@ -47,30 +45,12 @@ export const buildTableData = <T extends string>(
     };
 
     actual.push({
-      ...base,
-      ...value.actual,
-      team,
-      teamColor: base.team.primaryColor,
-    });
-
-    deviation.push({
-      ...base,
-      ...value.deviation,
-      team,
-      teamColor: base.team.primaryColor,
-    });
-
-    rank.push({
-      ...base,
-      ...value.rank,
+      _id: base._id,
+      ...value.value,
       team,
       teamColor: base.team.primaryColor,
     });
   }
 
-  return {
-    actual,
-    deviation,
-    rank,
-  };
+  return actual;
 };

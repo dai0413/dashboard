@@ -1,16 +1,10 @@
 import type { ChartDataset } from "chart.js";
-
 import { StatsLGet } from "../../../types/models/stats-l";
-import {
-  StatsActual,
-  StatsDeviation,
-  StatsRank,
-} from "../../../pages/Summary/Competition/types";
 
-export type RadarKey = keyof Omit<
-  StatsLGet,
-  "match" | "team" | "updatedAt" | "createdAt" | "_id"
->;
+export type RadarKey =
+  | keyof Omit<StatsLGet, "match" | "team" | "updatedAt" | "createdAt" | "_id">
+  | "goal"
+  | "against_goal";
 
 export type RadarCategory = "attack" | "defense" | "";
 
@@ -22,10 +16,10 @@ export type RadarField = {
   default: boolean;
 };
 
-export type RadarTooltipItem = {
-  actual: number; // 実数値
-  deviation: number; // 偏差値
-  rank: number; // 順位
+type RadarTooltipItem = {
+  actual?: number; // 実数値
+  deviation?: number; // 偏差値
+  rank?: number; // 順位
   unit?: string; // %, 本, 回...
 };
 
@@ -42,10 +36,4 @@ export type RadarChartProps = {
   min?: number;
   max?: number;
   stepSize?: number;
-};
-
-export type TableData = {
-  actual: StatsActual[];
-  deviation: StatsDeviation[];
-  rank: StatsRank[];
 };

@@ -1,5 +1,5 @@
 import { RadarField, RadarKey } from "../../components/plot/RadarChart/types";
-import { StatsL } from "../../types/models/stats-l";
+import { StatsBaseData } from "../../pages/Summary/Competition/types";
 import { round } from "../math";
 import { aggregateAverage } from "./aggregateAverage";
 import { aggregateAverageByGroup } from "./aggregateAverageByGroup";
@@ -8,24 +8,29 @@ import { calculateDeviation } from "./calculateDeviation";
 import { calculateRank } from "./calculateRank";
 
 type PlotValues = {
-  actual: Record<RadarKey, number>;
-  deviation: Record<RadarKey, number>;
-  rank: Record<RadarKey, number>;
+  value: Partial<
+    Record<
+      RadarKey,
+      {
+        actual?: number;
+        deviation?: number;
+        rank?: number;
+      }
+    >
+  >;
   matchCount: number;
 };
 
-export const buildPlotValues = <T extends string>(
-  baseData: StatsL[],
-  plotData: StatsL[],
+export const buildPlotValues = <D extends StatsBaseData, T extends string>(
+  baseData: D[],
+  plotData: D[],
   fields: RadarField[],
-  groupBy: (item: StatsL) => T,
+  groupBy: (item: D) => T,
 ): Map<T, PlotValues> => {
   const keys = fields.map((f) => f.key);
 
   const baseAverage = aggregateAverage(baseData, keys);
-
   const baseStdDev = aggregateStdDev(baseData, keys);
-
   const plotAverages = aggregateAverageByGroup(plotData, keys, groupBy);
 
   const deviations = calculateDeviation(
@@ -38,7 +43,6 @@ export const buildPlotValues = <T extends string>(
   const ranks = calculateRank(baseData, plotData, fields, groupBy);
 
   const result = new Map<T, PlotValues>();
-
   const matchCounts = new Map<T, number>();
 
   for (const item of plotData) {
@@ -51,20 +55,21 @@ export const buildPlotValues = <T extends string>(
     const rank = ranks.get(group)!;
     const matchCount = matchCounts.get(group) ?? 0;
 
-    const roundedActual = {} as Record<RadarKey, number>;
-    const roundedDeviation = {} as Record<RadarKey, number>;
+    const value: PlotValues["value"] = {};
 
     for (const field of fields) {
-      roundedActual[field.key] = round(actual[field.key], 2);
-      roundedDeviation[field.key] = round(deviation[field.key], 2);
+      value[field.key] = {
+        actual: round(actual[field.key], 2),
+        deviation: round(deviation[field.key], 2),
+        rank: rank[field.key],
+      };
     }
 
     result.set(group, {
-      actual: roundedActual,
-      deviation: roundedDeviation,
-      rank,
+      value,
       matchCount,
     });
   }
+
   return result;
 };
