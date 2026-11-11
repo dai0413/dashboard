@@ -30,7 +30,7 @@ const StatsLActualPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
     <>
       <h2 className="text-base font-semibold text-gray-800">{text}</h2>
       <DataViewContainer
-        totalCount={items.actual.length}
+        totalCount={items.values.length}
         newItemsPerPage={20}
         itemsLoading={isLoading}
         fieldDefinitions={statsFields}
@@ -45,8 +45,8 @@ const StatsLActualPanel = ({ summary }: { summary: UseCompetitionSummary }) => {
         reloadFun={reloadFun}
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.SCATTER]}
         viewData={{
-          [ViewMode.TABLE]: items.actual,
-          [ViewMode.TILE]: items.actual,
+          [ViewMode.TABLE]: items.values,
+          [ViewMode.TILE]: items.values,
           [ViewMode.SCATTER]: {
             filterHeaders,
             createLabel,

@@ -1,26 +1,38 @@
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { RadarKey } from "../../../components/plot/RadarChart/types";
-import { GettedModelDataMap, ModelType } from "../../../types/models";
+import {
+  GettedModelDataMap,
+  ModelDataMap,
+  ModelType,
+} from "../../../types/models";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../types";
+import { Label } from "@dai0413/myorg-shared";
 
-type StatsBase = Omit<
-  GettedModelDataMap[ModelType.STATS_L],
+export type StatsBaseData = Record<string, any> & {
+  [K in RadarKey]?: number;
+};
+
+export type StatsValue = Omit<
+  ModelDataMap[ModelType.STATS_L],
   RadarKey | "match"
 > & {
-  teamColor?: string;
+  [K in RadarKey]?: number;
 };
 
 export type StatsActual = Omit<
   GettedModelDataMap[ModelType.STATS_L],
-  "match"
+  RadarKey | "match"
 > & {
   teamColor?: string;
+} & {
+  [K in RadarKey]?: { actual?: number; deviation?: number; rank?: number };
 };
-export type StatsDeviation = StatsBase & {
-  [K in RadarKey]?: number;
-};
-export type StatsRank = StatsBase & {
-  [K in RadarKey]?: number;
+
+export type GoalStats = {
+  team: Label;
+  match: Label;
+  goal?: number;
+  against_goal?: number;
 };
 
 export const COMPETITION_TAB = {
@@ -31,8 +43,6 @@ export const COMPETITION_TAB = {
   STAFF_REGISTRATION: "staffRegistration",
   SEASON: "season",
   STATS_L_ACTUAL: "statsLActual",
-  STATS_L_DEVIATION: "statsLDeviation",
-  STATS_L_RANK: "statsLRank",
   STATS_L: "statsL",
   PLAYER_STATISTICS: "playerStatistics",
 } as const;
@@ -58,9 +68,7 @@ type CompetitionPanels = {
 
   statsL: PanelSummary<{
     raw: GettedModelDataMap[ModelType.STATS_L][];
-    actual: StatsActual[];
-    deviation: StatsDeviation[];
-    rank: StatsRank[];
+    values: StatsActual[];
   }>;
 
   playerStatistics: ServerDepPanelSummary<PlayerStatistic[]>;

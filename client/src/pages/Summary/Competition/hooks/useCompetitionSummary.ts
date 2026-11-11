@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   useSelectOption,
   useTeamCompetitionSeasonPanel,
@@ -13,9 +13,11 @@ import {
 import {
   COMPETITION_TAB,
   CompetitionTab,
+  GoalStats,
   UseCompetitionSummary,
 } from "../types";
 import { useCompetition } from "../../../../context/models/competition";
+import { getGoalStats } from "../../../../utils/data/getGoalStats";
 
 export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
   const {
@@ -42,6 +44,12 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
     usePlayerRegistrationPanel();
   const { staffRegistrations, readStaffRegistrations } =
     useStaffRegistrationPanel();
+
+  const goalStats: GoalStats[] = useMemo(() => {
+    const data = getGoalStats(matches.data);
+    return data;
+  }, [matches.data]);
+
   const { statsL, readStatsL } = useStatsLPanel();
   const { season, readSeason, seasonOptions } = useSeasonPanel();
   const { playerStatistics, readPlayerStatistics } = usePlayerStatistics();
@@ -54,7 +62,6 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
       readMatches(seasonId),
       readPlayerRegistrations(seasonId),
       readStaffRegistrations(seasonId),
-      readStatsL(seasonId),
       readSeason(competitionId),
       readPlayerStatistics(seasonId),
     ]);
@@ -101,6 +108,12 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
       }
     })();
   }, [selected]);
+
+  useEffect(() => {
+    if (!selectedSeason?._id || goalStats.length === 0) return;
+
+    readStatsL(goalStats, selectedSeason._id);
+  }, [goalStats, selectedSeason?._id]);
 
   return {
     id,
@@ -169,7 +182,7 @@ export const useCompetitionSummary = (id: string): UseCompetitionSummary => {
         key: `${selectedTab}-${selectedSeason?._id}`,
         text: `${selectedSeason?.name}のスタッツ`,
         items: statsL.items,
-        reloadFun: async () => readStatsL(selectedSeason?._id),
+        reloadFun: async () => readStatsL(goalStats, selectedSeason?._id),
         isLoading: statsL.isLoading,
       },
 

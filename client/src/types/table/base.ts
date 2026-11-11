@@ -5,14 +5,15 @@ export enum ColumnType {
   CUSTOM = "custom",
 }
 
-type TableHeaderBase = {
+type TableHeaderBase<T> = {
   width?: string;
   isPrimary?: boolean;
   displayOnTable: boolean;
+  getNumData?: (data: T) => number | undefined;
 };
 
 type FieldHeader<T> = BaseField &
-  TableHeaderBase & {
+  TableHeaderBase<T> & {
     getValueType: ColumnType.FIELD;
     field: keyof T;
   };
@@ -25,7 +26,7 @@ export type RenderCellValue = {
 };
 
 type CustomHeader<T> = BaseField &
-  TableHeaderBase & {
+  TableHeaderBase<T> & {
     getValueType: ColumnType.CUSTOM;
     getData: (data: T) => DataValue;
   };
