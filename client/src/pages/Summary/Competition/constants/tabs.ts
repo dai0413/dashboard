@@ -35,22 +35,12 @@ export const tabItems: SummaryTabItems[] = [
   {
     icon: "pie-plot_1",
     key: COMPETITION_TAB.STATS_L_ACTUAL,
-    text: "スタッツ実数値",
-  },
-  {
-    icon: "pie-plot_2",
-    key: COMPETITION_TAB.STATS_L_DEVIATION,
-    text: "スタッツ偏差値",
-  },
-  {
-    icon: "line-plot",
-    key: COMPETITION_TAB.STATS_L_RANK,
-    text: "スタッツ順位",
+    text: "スタッツ集計",
   },
   {
     icon: "setting",
     key: COMPETITION_TAB.STATS_L,
-    text: "スタッツ",
+    text: "スタッツ履歴",
   },
   {
     icon: "setting",

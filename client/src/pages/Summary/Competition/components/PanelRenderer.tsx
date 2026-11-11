@@ -5,9 +5,7 @@ import {
   SeasonPanel,
   StaffRegistrationPanel,
   StatsLActualPanel,
-  StatsLDeviationPanel,
   StatsLPanel,
-  StatsLRankPanel,
   TeamCompetitionSeasonPanel,
   PlayerStatisticsPanel,
 } from "../panels/index";
@@ -36,12 +34,6 @@ const PanelRenderer = ({ summary }: { summary: UseCompetitionSummary }) => {
 
     case COMPETITION_TAB.STATS_L_ACTUAL:
       return <StatsLActualPanel summary={summary} />;
-
-    case COMPETITION_TAB.STATS_L_DEVIATION:
-      return <StatsLDeviationPanel summary={summary} />;
-
-    case COMPETITION_TAB.STATS_L_RANK:
-      return <StatsLRankPanel summary={summary} />;
 
     case COMPETITION_TAB.STATS_L:
       return <StatsLPanel summary={summary} />;

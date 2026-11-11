@@ -4,8 +4,6 @@ export { default as PlayerRegistrationPanel } from "./PlayerRegistrationPanel";
 export { default as SeasonPanel } from "./SeasonPanel";
 export { default as StaffRegistrationPanel } from "./StaffRegistrationPanel";
 export { default as StatsLActualPanel } from "./StatsLActualPanel";
-export { default as StatsLDeviationPanel } from "./StatsLDeviationPanel";
 export { default as StatsLPanel } from "./StatsLPanel";
-export { default as StatsLRankPanel } from "./StatsLRankPanel";
 export { default as TeamCompetitionSeasonPanel } from "./TeamCompetitionSeasonPanel";
 export { default as PlayerStatisticsPanel } from "./PlayerStatisticsPanel";
