@@ -33,7 +33,6 @@ import { useQuickFilterSource } from "./DataViewToolbar/QuickFIlter/useQuickFilt
 import { RadarField } from "../plot/RadarChart/types";
 import { FormationItem } from "../../types/formation";
 import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
-import { RadarValues } from "../../utils/plot/buildRadarPlotData";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { MatchGet } from "../../types/models/match";
 import { PlayerAppearanceGet } from "../../types/models/player-appearance";
@@ -47,6 +46,7 @@ import {
   MonthlyCalendarGroup,
   MonthleyCalendarHeaderItem,
 } from "../../types/calendar";
+import { StatsActual } from "../../pages/Summary/Competition/types";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -121,7 +121,7 @@ type DataViewContainerProps<T, F> = {
       headerOnChange: (key: string) => void;
     };
     [ViewMode.RADAR_CHART]?: {
-      data: RadarValues;
+      data: StatsActual;
       fields: RadarField[];
       label: string;
     };

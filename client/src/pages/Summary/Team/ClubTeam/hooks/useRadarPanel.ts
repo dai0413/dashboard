@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { api } from "../../../../../context/api-context";
-import { ModelType } from "../../../../../types/models";
+import { ModelDataMap, ModelType } from "../../../../../types/models";
 import { readItemsBase } from "../../../../../lib/api";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { StatsL, StatsLGet } from "../../../../../types/models/stats-l";
@@ -11,13 +11,14 @@ import {
   defFields,
   offFields,
 } from "../../../../../components/plot/RadarChart/radarFields";
-import { RadarValues } from "../../../../../utils/plot/buildRadarPlotData";
+import { GoalStats, StatsActual } from "../../../Competition/types";
+import { getGoalStats } from "../../../../../utils/data/getGoalStats";
 
 export const useRadarPanel = () => {
-  const [offRadarData, setOffRadarData] = useState<RadarValues | undefined>(
+  const [offRadarData, setOffRadarData] = useState<StatsActual | undefined>(
     undefined,
   );
-  const [defRadarData, setDefRadarData] = useState<RadarValues | undefined>(
+  const [defRadarData, setDefRadarData] = useState<StatsActual | undefined>(
     undefined,
   );
   const [matchCounts, setMatchCounts] = useState<number | undefined>(undefined);
@@ -49,36 +50,51 @@ export const useRadarPanel = () => {
       return baseDatas;
     };
 
-    // リーグ平均, 標準偏差用データ
-    const readData = async (season: string): Promise<StatsLGet[]> => {
-      const res = await readItemsBase<StatsL[]>({
+    const readMatches = async (seasonId?: string): Promise<GoalStats[]> => {
+      if (!seasonId) return [];
+      const obj = await readItemsBase<ModelDataMap[ModelType.MATCH][]>({
         apiInstance: api,
-        backendRoute: API_PATHS.STATS_L.ROOT,
-        params: {
-          getAll: true,
-          "match.season": season,
-        },
+        backendRoute: API_PATHS.MATCH.ROOT,
+        params: { getAll: true, season: seasonId },
       });
 
-      if (!res?.data) return [];
+      if (obj) {
+        let processed = convert(ModelType.MATCH, obj.data);
+        const data = getGoalStats(processed);
+        return data;
+      }
 
-      const baseDatas = convert(ModelType.STATS_L, res?.data);
-      return baseDatas;
+      return [];
     };
 
     const baseData = await readBaseData(seasonId);
-    const plotData = await readData(seasonId);
+    const goalStats = await readMatches(seasonId);
+
+    const goalStatsMap = new Map(
+      goalStats.map((g) => [`${g.match.id}_${g.team.id}`, g]),
+    );
+
+    const mergedData = baseData.map((d) => {
+      const key = `${d.match.id}_${d.team.id}`;
+      const stats = goalStatsMap.get(key);
+
+      return {
+        ...d,
+        goal: stats?.goal,
+        against_goal: stats?.against_goal,
+      };
+    });
 
     const offRadarData = buildRadarPlotData(
-      baseData,
-      plotData,
+      mergedData,
+      mergedData,
       offFields,
       (d) => d.team.id || "",
     ).get(id);
 
     const defRadarData = buildRadarPlotData(
-      baseData,
-      plotData,
+      mergedData,
+      mergedData,
       defFields,
       (d) => d.team.id || "",
     ).get(id);

@@ -2,7 +2,7 @@ import { ReactNode, useMemo } from "react";
 import { useDataView } from "../../../../context/dataView-context";
 import Tile from "./Tile";
 import Table from "./Table";
-import { ColumnType, TableData, TableHeader } from "../../../../types/table";
+import { TableData, TableHeader } from "../../../../types/table";
 import { LinkField, ViewMode } from "../../../../types/types";
 import { convertToDisplayListData } from "../../../modals/Detail/utils/convertToDisplayListData ";
 import { useModal } from "../../../../context/modal-context";
@@ -15,7 +15,6 @@ import { convertToRadarData } from "../../../../utils/data/convertToRadarData";
 import { RadarField } from "../../../plot/RadarChart/types";
 import { FormationItem } from "../../../../types/formation";
 import { CalendarDataItem } from "./Calendar/types";
-import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { MatchGet } from "../../../../types/models/match";
 import { FormationCounts } from "../../../../pages/Summary/Team/ClubTeam/types";
@@ -34,6 +33,7 @@ import {
 } from "../../../../types/calendar";
 import { ScatterPlot } from "../../../plot/Scatter";
 import { radarFields } from "../../../plot/RadarChart/radarFields";
+import { StatsActual } from "../../../../pages/Summary/Competition/types";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -61,7 +61,7 @@ type DataViewProps<T> = {
       headerOnChange: (key: string) => void;
     };
     [ViewMode.RADAR_CHART]?: {
-      data: RadarValues;
+      data: StatsActual;
       fields: RadarField[];
       label: string;
     };
@@ -358,18 +358,19 @@ const DataView = <T,>({
       viewData[ViewMode.SCATTER];
 
     const headers = filterHeaders(visibleHeaders);
+
     const [column, row] = headers;
     if (!column || !row) return null;
 
+    const columnGetNumData = column.getNumData;
+    const rowGetNumData = row.getNumData;
+
+    if (!columnGetNumData) return null;
+    if (!rowGetNumData) return null;
+
     const data = viewData[ViewMode.TABLE]?.flatMap((d) => {
-      const x =
-        column.getValueType === ColumnType.FIELD
-          ? d.item[column.field]
-          : column.getData(d.item);
-      const y =
-        row.getValueType === ColumnType.FIELD
-          ? d.item[row.field]
-          : row.getData(d.item);
+      const x = columnGetNumData(d.item);
+      const y = rowGetNumData(d.item);
 
       if (typeof x !== "number" || typeof y !== "number") {
         return [];

@@ -7,10 +7,10 @@ import { PlayerAppearanceGet } from "../../../../types/models/player-appearance"
 import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
 import { MatchGet } from "../../../../types/models/match";
 import { FormationGet } from "../../../../types/models/formation";
-import { RadarValues } from "../../../../utils/plot/buildRadarPlotData";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 import { QuickFilterData, StatisticsDatas } from "../../../../types/table";
 import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
+import { StatsActual } from "../../Competition/types";
 
 export const CLUB_TEAM_TAB = {
   TOP: "top",
@@ -88,8 +88,8 @@ type ClubTeamPanels = {
   }>;
 
   piePlot: PanelSummary<{
-    offRadarData?: RadarValues;
-    defRadarData?: RadarValues;
+    offRadarData?: StatsActual;
+    defRadarData?: StatsActual;
     matchCounts?: number;
     isLoading: boolean;
   }>;

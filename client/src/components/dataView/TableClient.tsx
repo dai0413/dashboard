@@ -17,7 +17,7 @@ import { ModelType } from "../../types/models";
 import { RadarField } from "../plot/RadarChart/types";
 import { FormationItem } from "../../types/formation";
 import { CalendarDataItem } from "./DataViewContent/DataView/Calendar/types";
-import { RadarValues } from "../../utils/plot/buildRadarPlotData";
+import { StatsActual } from "../../pages/Summary/Competition/types";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { MatchGet } from "../../types/models/match";
 import { PlayerAppearanceGet } from "../../types/models/player-appearance";
@@ -124,7 +124,7 @@ type TableClientProps<T, F> = {
       headerOnChange: (key: string) => void;
     };
     [ViewMode.RADAR_CHART]?: {
-      data: RadarValues;
+      data: StatsActual;
       fields: RadarField[];
       label: string;
     };
