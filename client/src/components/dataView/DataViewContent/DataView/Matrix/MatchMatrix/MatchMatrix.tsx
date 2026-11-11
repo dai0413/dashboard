@@ -14,6 +14,8 @@ import { PlayerRegistrationHistoryGet } from "../../../../../../types/models/pla
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
 import MatrixCell from "../MatrixCell/MarixCell";
 import { GroupedPlayers } from "../type";
+import { InjuryGet } from "../../../../../../types/models/injury";
+import { createInjuryMap } from "./utils/createInjuryMap";
 
 type MatchColumn = Label & {
   match: MatchGet;
@@ -27,6 +29,7 @@ type MatchMatrixParams = {
   playerAppearance: PlayerAppearanceGet[];
   defaultOpenPositions: Set<string>;
   groupedPlayers: GroupedPlayers[];
+  injuries: InjuryGet[];
 };
 
 const MatchMatrix = ({
@@ -37,6 +40,7 @@ const MatchMatrix = ({
   playerAppearance,
   defaultOpenPositions,
   groupedPlayers,
+  injuries,
 }: MatchMatrixParams) => {
   const appearanceMap = useMemo(
     () => createAppearanceMap(playerAppearance),
@@ -47,6 +51,8 @@ const MatchMatrix = ({
     () => createRegistrationMap(playerRegistrations),
     [playerRegistrations],
   );
+
+  const injuryMap = useMemo(() => createInjuryMap(injuries), [injuries]);
 
   const columns = useMemo<MatchColumn[]>(
     () =>
@@ -83,13 +89,70 @@ const MatchMatrix = ({
       renderCell={(position, player, column) => {
         const match = column.match;
 
-        const appearance = appearanceMap.get(
-          `${player.player._id}-${match._id}`,
-        );
+        const playerAppearances = appearanceMap.get(`${player.player._id}`);
+
+        // 対象試合の出場情報
+        const appearance = playerAppearances?.get(`${match._id}`);
 
         const registrations = registrationMap.get(
           `${player.player._id}-${match.competition.id}`,
         );
+
+        // 選手の負傷情報
+        const injuryDatas = injuryMap.get(`${player.player._id}`);
+
+        if (player.player.name === "安西　幸輝") {
+          console.log("injureyDatas", injuryMap, injuryDatas);
+        }
+
+        // 試合日以前に負傷しており、出場記録がない
+        const injured: boolean = !!injuryDatas?.some((injury) => {
+          const dates = [
+            injury.doa?.getTime(),
+            injury.doi?.getTime(),
+            injury.dos?.getTime(),
+          ].filter((date): date is number => date !== undefined);
+
+          if (!dates.length || !match.date) return false;
+
+          const injuryDateTime = Math.min(...dates);
+          const matchDateTime = match.date.getTime();
+
+          // 負傷開始から1.5年後
+          const limitDate = new Date(injuryDateTime);
+          limitDate.setMonth(limitDate.getMonth() + 18);
+
+          // 負傷終了日（erd または1.5年後）
+          const endDateTime = Math.min(
+            injury.erd?.getTime() ?? Infinity,
+            limitDate.getTime(),
+          );
+
+          // 負傷開始前、または負傷期間終了後
+          if (injuryDateTime > matchDateTime || endDateTime < matchDateTime) {
+            return false;
+          }
+
+          // 負傷後、対象試合より前に出場していれば復帰済み
+          const returned = [...(playerAppearances?.values() ?? [])].some(
+            (a) => {
+              const appearanceDate = matches
+                .find((match) => match._id === a.match.id)
+                ?.date?.getTime();
+
+              return (
+                appearanceDate !== undefined &&
+                appearanceDate > injuryDateTime &&
+                appearanceDate < matchDateTime
+              );
+            },
+          );
+
+          return !returned && !appearance;
+        });
+
+        // これに加えて復帰情報がないか(負傷情報後に出場記録がないか)も確認したい
+        // つまり 負傷情報から次の出場情報またはerdまたは1.5年後の間はinjured : trueとしたい
 
         const onRegister = isRegisteredAtMatch(teamId, registrations, match);
 
@@ -109,6 +172,7 @@ const MatchMatrix = ({
                 is_backup: false,
                 is_training_partner: false,
                 toolTipTitle: title,
+                injured: injured,
               },
             ]}
           />

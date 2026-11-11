@@ -24,6 +24,7 @@ import {
   MonthlyCalendarGroup,
   MonthleyCalendarHeaderItem,
 } from "../../../types/calendar";
+import { InjuryGet } from "../../../types/models/injury";
 
 type Props<T> = {
   isLoading?: boolean;
@@ -83,6 +84,7 @@ type Props<T> = {
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
+      injuries: InjuryGet[];
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];

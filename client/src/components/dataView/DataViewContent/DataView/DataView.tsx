@@ -34,6 +34,7 @@ import {
 import { ScatterPlot } from "../../../plot/Scatter";
 import { radarFields } from "../../../plot/RadarChart/radarFields";
 import { StatsActual } from "../../../../pages/Summary/Competition/types";
+import { InjuryGet } from "../../../../types/models/injury";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -80,6 +81,7 @@ type DataViewProps<T> = {
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
+      injuries: InjuryGet[];
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];
@@ -267,6 +269,7 @@ const DataView = <T,>({
       defaultOpenPositions,
       groupedPlayers,
       topHeaderText,
+      injuries,
     } = viewData[ViewMode.MATCH_MATRIX];
 
     return (
@@ -278,6 +281,7 @@ const DataView = <T,>({
         matches={matches}
         defaultOpenPositions={defaultOpenPositions}
         groupedPlayers={groupedPlayers}
+        injuries={injuries}
       />
     );
   }

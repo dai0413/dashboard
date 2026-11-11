@@ -11,6 +11,7 @@ import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/
 import { QuickFilterData, StatisticsDatas } from "../../../../types/table";
 import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
 import { StatsActual } from "../../Competition/types";
+import { InjuryGet } from "../../../../types/models/injury";
 
 export const CLUB_TEAM_TAB = {
   TOP: "top",
@@ -96,6 +97,7 @@ type ClubTeamPanels = {
 
   appearancePlot: ServerDepPanelSummary<{
     playerAppearance: PlayerAppearanceGet[];
+    injuries: InjuryGet[];
     playerRegistrations: PlayerRegistrationGet[];
     matches: MatchGet[];
     groupedPlayers: GroupedPlayers[];

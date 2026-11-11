@@ -47,6 +47,7 @@ import {
   MonthleyCalendarHeaderItem,
 } from "../../types/calendar";
 import { StatsActual } from "../../pages/Summary/Competition/types";
+import { InjuryGet } from "../../types/models/injury";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -140,6 +141,7 @@ type DataViewContainerProps<T, F> = {
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
+      injuries: InjuryGet[];
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];

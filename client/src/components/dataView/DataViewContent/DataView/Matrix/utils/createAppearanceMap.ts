@@ -1,18 +1,22 @@
 import { PlayerAppearanceGet } from "../../../../../../types/models/player-appearance";
 
-// playerId-matchId -> PlayerAppearance
+// playerId -> matchId -> PlayerAppearance
 export const createAppearanceMap = (
-  playerAppearance: PlayerAppearanceGet[],
-): Map<string, PlayerAppearanceGet> => {
-  const appearanceMap = new Map<string, PlayerAppearanceGet>();
+  playerAppearances: PlayerAppearanceGet[],
+): Map<string, Map<string, PlayerAppearanceGet>> => {
+  const appearanceMap = new Map<string, Map<string, PlayerAppearanceGet>>();
 
-  playerAppearance.forEach((appearance) => {
-    if (!appearance.match.id) return;
+  playerAppearances.forEach((appearance) => {
+    const playerId = appearance.player.id;
+    const matchId = appearance.match.id;
 
-    appearanceMap.set(
-      `${appearance.player.id}-${appearance.match.id}`,
-      appearance,
-    );
+    if (!playerId || !matchId) return;
+
+    const playerMap = appearanceMap.get(playerId) ?? new Map();
+
+    playerMap.set(matchId, appearance);
+
+    appearanceMap.set(playerId, playerMap);
   });
 
   return appearanceMap;

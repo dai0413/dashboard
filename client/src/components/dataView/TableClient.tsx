@@ -30,6 +30,7 @@ import {
   MonthleyCalendarHeaderItem,
   MonthlyCalendarGroup,
 } from "../../types/calendar";
+import { InjuryGet } from "../../types/models/injury";
 
 const trimFilterKey = (
   fieldDefinitions: FilterableFieldDefinition[],
@@ -143,6 +144,7 @@ type TableClientProps<T, F> = {
       groupedPlayers: GroupedPlayers[];
       defaultOpenPositions: Set<string>;
       topHeaderText: string;
+      injuries: InjuryGet[];
     };
     [ViewMode.SERIES_MATRIX]?: {
       playerStatistics: PlayerStatistic[];

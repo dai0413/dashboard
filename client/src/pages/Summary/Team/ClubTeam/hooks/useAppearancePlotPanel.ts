@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import {
+  API_PATHS,
   FilterableFieldDefinition,
   SortableFieldDefinition,
 } from "@dai0413/myorg-shared";
@@ -20,6 +21,11 @@ import {
 } from "../utils/appearancePlotPanelUtils";
 import { loadPlayerStatistics } from "../utils/loadPlayerStatistics";
 import { loadTeamMatches } from "../utils/loadTeamMatches";
+import { Injury, InjuryGet } from "../../../../../types/models/injury";
+import { readItemsBase } from "../../../../../lib/api";
+import { api } from "../../../../../context/api-context";
+import { convert } from "../../../../../lib/convert/DBtoGetted";
+import { ModelType } from "../../../../../types/models";
 
 type UseAppearancePlotPanel = {
   reloadFun: (
@@ -37,11 +43,28 @@ type UseAppearancePlotPanel = {
     defaultOpenPositions: Set<string>;
     groupedPlayers: GroupedPlayers[];
     quickFilterDatas: QuickFilterData[];
+    injuries: InjuryGet[];
 
     playerStatistics: PlayerStatistic[];
   };
 
   isLoading: boolean;
+};
+
+const readInjuries = async (teamId: string, date: string[]) => {
+  const startDate = date[0].replace(
+    /^>=([\d]{4})/,
+    (_, year) => `>=${Number(year) - 1}`,
+  );
+
+  const res = await readItemsBase<Injury[]>({
+    apiInstance: api,
+    backendRoute: API_PATHS.INJURY.ROOT,
+    params: { doa: [startDate, date[1]], getAll: true, team: teamId },
+  });
+  if (!res?.data) return [];
+
+  return convert(ModelType.INJURY, res?.data);
 };
 
 export const useAppearancePlotPanel = (
@@ -55,6 +78,7 @@ export const useAppearancePlotPanel = (
   const [playerRegistrations, setPlayerRegistrations] = useState<
     PlayerRegistrationGet[]
   >([]);
+  const [injuries, setInjuries] = useState<InjuryGet[]>([]);
   const [matches, setMatches] = useState<MatchGet[]>([]);
   const [playerStatistics, setPlayerStatistics] = useState<PlayerStatistic[]>(
     [],
@@ -78,12 +102,14 @@ export const useAppearancePlotPanel = (
       setIsLoading(true);
 
       try {
-        const { matches, competitionIds, matchIds } = await loadTeamMatches(
-          teamId,
-          date,
-        );
+        const [{ matches, competitionIds, matchIds }, injuries] =
+          await Promise.all([
+            loadTeamMatches(teamId, date),
+            readInjuries(teamId, date),
+          ]);
 
         setMatches(matches);
+        setInjuries(injuries);
         setSelectedCompetitions(competitionIds);
 
         await loadPlayerStatistics({
@@ -229,6 +255,7 @@ export const useAppearancePlotPanel = (
       playerRegistrations,
       matches: filteredMatches,
       playerAppearance,
+      injuries,
       defaultOpenPositions,
       groupedPlayers,
       quickFilterDatas,
