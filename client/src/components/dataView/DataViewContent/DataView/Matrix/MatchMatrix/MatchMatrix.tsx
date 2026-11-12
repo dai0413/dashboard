@@ -78,6 +78,12 @@ const MatchMatrix = ({
       topHeaderText={topHeaderText}
       defaultOpenPositions={defaultOpenPositions}
       groupedPlayers={groupedPlayers}
+      renderBeforeBody={(column) => {
+        const date = column.match.date;
+        if (!date) return "";
+
+        return `${date.getFullYear()}\n${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
+      }}
       renderHeader={(column) => (
         <Link
           to={`${APP_ROUTES.MATCH_SUMMARY}/${column.id}`}

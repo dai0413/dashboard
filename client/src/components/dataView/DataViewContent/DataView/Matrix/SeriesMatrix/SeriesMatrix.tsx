@@ -88,6 +88,17 @@ const SeriesMatrix = ({
           {column.series.name}
         </Link>
       )}
+      renderBeforeBody={(column) => {
+        const formatDate = (value?: Date | string | null) => {
+          if (!value) return "-";
+
+          const date = new Date(value);
+
+          return `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
+        };
+
+        return `${formatDate(column.series.joined_at)}　▶　${formatDate(column.series.left_at)}`;
+      }}
       renderCell={(position, player, column) => {
         const series = column.series;
 
