@@ -2,15 +2,27 @@ import { useParams } from "react-router-dom";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
-import { useCompetitionSummary } from "./hooks/useCompetitionSummary";
 import { AccentSection } from "../../../components/layout";
+import { useEffect, useRef } from "react";
+import { useCompetitionSummary } from "./contexts/CompetitionSummaryContext";
 
 const Competition = () => {
   const { id } = useParams();
+  const summary = useCompetitionSummary();
+
+  const activateIdRef = useRef(summary.activateId);
+
+  useEffect(() => {
+    activateIdRef.current = summary.activateId;
+  }, [summary.activateId]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    void activateIdRef.current(id);
+  }, [id]);
 
   if (!id) return;
-
-  const summary = useCompetitionSummary(id);
 
   return (
     <div className="p-6">

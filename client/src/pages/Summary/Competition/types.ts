@@ -7,6 +7,7 @@ import {
 } from "../../../types/models";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../types";
 import { Label } from "@dai0413/myorg-shared";
+import { Data } from "../../../types/types";
 
 export type StatsBaseData = Record<string, any> & {
   [K in RadarKey]?: number;
@@ -80,3 +81,21 @@ export type UseCompetitionSummary = UseSummary<
   CompetitionPanels,
   GettedModelDataMap[ModelType.SEASON]
 >;
+
+export type CompetitionSummaryCache = {
+  selectedSeason: GettedModelDataMap[ModelType.SEASON] | null;
+
+  season: Data<GettedModelDataMap[ModelType.SEASON]>;
+  competitionStage: Data<GettedModelDataMap[ModelType.COMPETITION_STAGE]>;
+  teamCompetitionSeason: Data<
+    GettedModelDataMap[ModelType.TEAM_COMPETITION_SEASON]
+  >;
+  match: Data<GettedModelDataMap[ModelType.MATCH]>;
+  playerRegistration: Data<GettedModelDataMap[ModelType.PLAYER_REGISTRATION]>;
+  staffRegistration: Data<GettedModelDataMap[ModelType.STAFF_REGISTRATION]>;
+  statsL: {
+    raw: GettedModelDataMap[ModelType.STATS_L][];
+    values: StatsActual[];
+  };
+  playerStatistic: Data<PlayerStatistic>;
+};

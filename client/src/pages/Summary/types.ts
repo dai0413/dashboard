@@ -35,7 +35,7 @@ type SelectState<T> = {
 };
 
 export type UseSummary<TItem, TTab, TPanels, TSelect = never> = {
-  id: string;
+  id: string | null;
   isLoading: boolean;
   selected: TItem | null;
 
@@ -44,4 +44,6 @@ export type UseSummary<TItem, TTab, TPanels, TSelect = never> = {
   tab: TabState<TTab>;
 
   panels: TPanels;
+
+  activateId: (id: string) => Promise<void>;
 };
