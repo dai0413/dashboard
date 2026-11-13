@@ -23,8 +23,10 @@ export const useTeamCompetitionSeasonPanel = () => {
   const readTeamCompetitionSeasons = async (
     competitionId: string,
     seasonId?: string,
-  ) => {
-    if (!seasonId) return;
+  ): Promise<Data<
+    GettedModelDataMap[ModelType.TEAM_COMPETITION_SEASON]
+  > | null> => {
+    if (!seasonId) return null;
     const obj = await readItemsBase<
       ModelDataMap[ModelType.TEAM_COMPETITION_SEASON][]
     >({
@@ -43,22 +45,23 @@ export const useTeamCompetitionSeasonPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.TEAM_COMPETITION_SEASON, obj.data);
+    if (!obj) return null;
 
-      setTeamCompetitionSeasons({
-        data: processed.sort((a, b) =>
-          a.order && b.order ? a.order - b.order : -1,
-        ),
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.TEAM_COMPETITION_SEASON, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setTeamCompetitionSeasons(nextItems);
+
+    return nextItems;
   };
 
   return {
     teamCompetitionSeasons,
     readTeamCompetitionSeasons,
+    setTeamCompetitionSeasons,
   };
 };

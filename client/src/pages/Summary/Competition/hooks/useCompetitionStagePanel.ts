@@ -23,8 +23,9 @@ export const useCompetitionStagePanel = () => {
   const readCompetitionStages = async (
     competitionId: string,
     seasonId?: string,
-  ) => {
-    if (!seasonId) return;
+  ): Promise<Data<GettedModelDataMap[ModelType.COMPETITION_STAGE]> | null> => {
+    if (!seasonId) return null;
+
     const obj = await readItemsBase<
       ModelDataMap[ModelType.COMPETITION_STAGE][]
     >({
@@ -43,20 +44,23 @@ export const useCompetitionStagePanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.COMPETITION_STAGE, obj.data);
+    if (!obj) return null;
 
-      setCompetitionStages({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.COMPETITION_STAGE, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setCompetitionStages(nextItems);
+
+    return nextItems;
   };
 
   return {
     competitionStages,
     readCompetitionStages,
+    setCompetitionStages,
   };
 };

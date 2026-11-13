@@ -20,8 +20,11 @@ export const useStaffRegistrationPanel = () => {
     isLoading: false,
   });
 
-  const readStaffRegistrations = async (seasonId?: string) => {
-    if (!seasonId) return;
+  const readStaffRegistrations = async (
+    seasonId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.STAFF_REGISTRATION]> | null> => {
+    if (!seasonId) return null;
+
     const obj = await readItemsBase<
       ModelDataMap[ModelType.STAFF_REGISTRATION][]
     >({
@@ -41,20 +44,23 @@ export const useStaffRegistrationPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.STAFF_REGISTRATION, obj.data);
+    if (!obj) return null;
 
-      setStaffRegistrations({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.STAFF_REGISTRATION, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setStaffRegistrations(nextItems);
+
+    return nextItems;
   };
 
   return {
     staffRegistrations,
     readStaffRegistrations,
+    setStaffRegistrations,
   };
 };

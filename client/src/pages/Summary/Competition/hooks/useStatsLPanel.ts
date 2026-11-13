@@ -11,13 +11,28 @@ import { RadarField } from "../../../../components/plot/RadarChart/types";
 import { radarFields } from "../../../../components/plot/RadarChart/radarFields";
 
 export const useStatsLPanel = () => {
-  const [raw, setRaw] = useState<StatsLGet[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [values, setValues] = useState<StatsActual[]>([]);
 
-  const readStatsL = async (goalStats: GoalStats[], seasonId?: string) => {
-    if (goalStats.length === 0) return;
-    if (!seasonId) return setIsLoading(false);
+  const [statsL, setStatsL] = useState<{
+    raw: StatsLGet[];
+    values: StatsActual[];
+  }>({
+    raw: [],
+    values: [],
+  });
+
+  const readStatsL = async (
+    goalStats: GoalStats[],
+    seasonId?: string,
+  ): Promise<{
+    raw: StatsLGet[];
+    values: StatsActual[];
+  } | null> => {
+    if (goalStats.length === 0) return null;
+    if (!seasonId) {
+      setIsLoading(false);
+      return null;
+    }
     setIsLoading(true);
     const res = await readItemsBase<StatsL[]>({
       apiInstance: api,
@@ -28,10 +43,12 @@ export const useStatsLPanel = () => {
       },
     });
 
-    if (!res?.data) return setIsLoading(false);
+    if (!res?.data) {
+      setIsLoading(false);
+      return null;
+    }
 
     const converted = convert(ModelType.STATS_L, res.data);
-    setRaw(converted);
 
     const fields: RadarField[] = radarFields.filter((f) => f.key);
 
@@ -57,18 +74,18 @@ export const useStatsLPanel = () => {
       (d) => d.team._id || "",
     );
 
-    setValues(tableDatas);
+    setStatsL({ raw: converted, values: tableDatas });
     setIsLoading(false);
+
+    return { raw: converted, values: tableDatas };
   };
   return {
     statsL: {
       isLoading,
 
-      items: {
-        raw,
-        values,
-      },
+      items: statsL,
     },
     readStatsL,
+    setStatsL,
   };
 };

@@ -15,14 +15,17 @@ export const usePlayerStatistics = () => {
     isLoading: false,
   });
 
-  const readPlayerStatistics = async (seasonId?: string) => {
-    if (!seasonId) return;
+  const readPlayerStatistics = async (
+    seasonId?: string,
+  ): Promise<Data<PlayerStatistic> | null> => {
+    if (!seasonId) return null;
+
     setPlayerStatistics((prev) => ({
       ...prev,
       isLoading: true,
     }));
 
-    const statisticsObj = await createItemBase<PlayerStatistic[]>({
+    const obj = await createItemBase<PlayerStatistic[]>({
       apiInstance: api,
       backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
       data: {
@@ -31,18 +34,23 @@ export const usePlayerStatistics = () => {
       },
     });
 
-    if (statisticsObj.success) {
-      setPlayerStatistics({
-        data: statisticsObj.data.sort((a, b) => b.minutes - a.minutes),
-        totalCount: statisticsObj.data.length ? statisticsObj.data.length : 0,
-        page: 1,
-        isLoading: false,
-      });
-    }
+    if (!obj.success) return null;
+
+    const nextItems = {
+      data: obj.data.sort((a, b) => b.minutes - a.minutes),
+      totalCount: obj.data.length ? obj.data.length : 0,
+      page: 1,
+      isLoading: false,
+    };
+
+    setPlayerStatistics(nextItems);
+
+    return nextItems;
   };
 
   return {
     readPlayerStatistics,
     playerStatistics,
+    setPlayerStatistics,
   };
 };
