@@ -28,8 +28,7 @@ import {
 } from "../hooks";
 import { getGoalStats } from "../../../../utils/data/getGoalStats";
 import { SeasonGet } from "../../../../types/models/season";
-
-type CompetitionSummaryCacheMap = Map<string, CompetitionSummaryCache>;
+import { useCompetitionSummaryCache } from "../hooks/useCompetitionSummaryCache";
 
 const CompetitionSummaryContext = createContext<UseCompetitionSummary | null>(
   null,
@@ -52,13 +51,14 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
     null,
   );
 
+  const { getCache, saveCache, isCacheComplete } = useCompetitionSummaryCache();
+
   const handleSelectedTab = (
     value: string | number | Date | undefined,
   ): void => {
     setSelectedTab(value as CompetitionTab);
   };
 
-  const cacheRef = useRef<CompetitionSummaryCacheMap>(new Map());
   const { selectedSeason, setSelectedSeason } = useSelectOption();
   const { competitionStages, readCompetitionStages, setCompetitionStages } =
     useCompetitionStagePanel();
@@ -86,41 +86,96 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
     return data;
   }, [matches.data]);
 
-  // id変更, season変更両方で読み込む
-  const readDatas = async (
-    competitionId: string,
-    selectedSeason: SeasonGet | null,
-  ): Promise<Partial<CompetitionSummaryCache>> => {
-    const [
-      competitionStage,
-      teamCompetitionSeason,
-      playerRegistration,
-      staffRegistration,
-      playerStatistic,
-      match,
-    ] = await Promise.all([
-      readCompetitionStages(competitionId, selectedSeason?._id),
-      readTeamCompetitionSeasons(competitionId, selectedSeason?._id),
-      readPlayerRegistrations(selectedSeason?._id),
-      readStaffRegistrations(selectedSeason?._id),
-      readPlayerStatistics(selectedSeason?._id),
-      readMatches(selectedSeason?._id),
-    ]);
+  const restoreCache = useCallback(
+    (cached: Partial<CompetitionSummaryCache>) => {
+      if (cached.selectedSeason !== undefined) {
+        setSelectedSeason(cached.selectedSeason);
+      }
 
-    const statsL = match
-      ? await readStatsL(getGoalStats(match.data), selectedSeason?._id)
-      : null;
-    return {
-      ...(match && { match }),
-      ...(competitionStage && { competitionStage }),
-      ...(teamCompetitionSeason && { teamCompetitionSeason }),
-      ...(playerRegistration && { playerRegistration }),
-      ...(staffRegistration && { staffRegistration }),
-      ...(playerStatistic && { playerStatistic }),
-      ...(statsL && { statsL }),
-      selectedSeason,
-    };
-  };
+      if (cached.match !== undefined) {
+        setMatches(cached.match);
+      }
+
+      if (cached.season !== undefined) {
+        setSeason(cached.season);
+      }
+
+      if (cached.competitionStage !== undefined) {
+        setCompetitionStages(cached.competitionStage);
+      }
+
+      if (cached.teamCompetitionSeason !== undefined) {
+        setTeamCompetitionSeasons(cached.teamCompetitionSeason);
+      }
+
+      if (cached.playerRegistration !== undefined) {
+        setPlayerRegistrations(cached.playerRegistration);
+      }
+
+      if (cached.staffRegistration !== undefined) {
+        setStaffRegistrations(cached.staffRegistration);
+      }
+
+      if (cached.playerStatistic !== undefined) {
+        setPlayerStatistics(cached.playerStatistic);
+      }
+
+      if (cached.statsL !== undefined) {
+        setStatsL(cached.statsL);
+      }
+    },
+    [
+      setSelectedSeason,
+      setMatches,
+      setSeason,
+      setCompetitionStages,
+      setTeamCompetitionSeasons,
+      setPlayerRegistrations,
+      setStaffRegistrations,
+      setPlayerStatistics,
+      setStatsL,
+    ],
+  );
+
+  // id変更, season変更両方で読み込む
+  const readDatas = useCallback(
+    async (
+      competitionId: string,
+      selectedSeason: SeasonGet | null,
+    ): Promise<Partial<CompetitionSummaryCache>> => {
+      const [
+        competitionStage,
+        teamCompetitionSeason,
+        playerRegistration,
+        staffRegistration,
+        playerStatistic,
+        match,
+      ] = await Promise.all([
+        readCompetitionStages(competitionId, selectedSeason?._id),
+        readTeamCompetitionSeasons(competitionId, selectedSeason?._id),
+        readPlayerRegistrations(selectedSeason?._id),
+        readStaffRegistrations(selectedSeason?._id),
+        readPlayerStatistics(selectedSeason?._id),
+        readMatches(selectedSeason?._id),
+      ]);
+
+      const statsL = match
+        ? await readStatsL(getGoalStats(match.data), selectedSeason?._id)
+        : null;
+
+      return {
+        ...(match && { match }),
+        ...(competitionStage && { competitionStage }),
+        ...(teamCompetitionSeason && { teamCompetitionSeason }),
+        ...(playerRegistration && { playerRegistration }),
+        ...(staffRegistration && { staffRegistration }),
+        ...(playerStatistic && { playerStatistic }),
+        ...(statsL && { statsL }),
+        selectedSeason,
+      };
+    },
+    [selected?._id, readItem, readSeason, saveCache],
+  );
 
   // season選択で読み込む
   const handleSetSelectedSeason = useCallback(
@@ -142,40 +197,8 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
 
       saveCache(id, result);
     },
-    [season.data, loadedCompetitionId],
+    [season.data, loadedCompetitionId, readDatas],
   );
-
-  const restoreCache = (cached: CompetitionSummaryCache) => {
-    setSelectedSeason(cached.selectedSeason);
-    setMatches(cached.match);
-    setSeason(cached.season);
-
-    setCompetitionStages(cached.competitionStage);
-    setTeamCompetitionSeasons(cached.teamCompetitionSeason);
-    setPlayerRegistrations(cached.playerRegistration);
-    setStaffRegistrations(cached.staffRegistration);
-    setPlayerStatistics(cached.playerStatistic);
-    setStatsL(cached.statsL);
-  };
-
-  const saveCache = (
-    id: string,
-    cacheData: Partial<CompetitionSummaryCache>,
-  ) => {
-    const prev = cacheRef.current.get(id);
-
-    if (!prev) {
-      // 初回保存
-      cacheRef.current.set(id, cacheData as CompetitionSummaryCache);
-      return;
-    }
-
-    // 既存キャッシュの部分更新
-    cacheRef.current.set(id, {
-      ...prev,
-      ...cacheData,
-    });
-  };
 
   const latestIdRef = useRef<string | null>(null);
 
@@ -219,9 +242,9 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
         return;
       }
 
-      const cached = cacheRef.current.get(id);
+      const cached = getCache(id);
 
-      if (cached) {
+      if (cached && isCacheComplete(id)) {
         if (selected?._id !== id) {
           await readItem(id);
         }
@@ -238,7 +261,15 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
 
       await fetchCompetitionData(id);
     },
-    [loadedCompetitionId, selected?._id, readItem, readSeason],
+    [
+      loadedCompetitionId,
+      selected?._id,
+      getCache,
+      isCacheComplete,
+      readItem,
+      restoreCache,
+      fetchCompetitionData,
+    ],
   );
 
   const selectedSeasonIdRef = useRef<string | undefined>(undefined);
