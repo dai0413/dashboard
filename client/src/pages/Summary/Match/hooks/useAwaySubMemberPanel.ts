@@ -20,8 +20,11 @@ export const useAwaySubMemberPanel = () => {
     isLoading: false,
   });
 
-  const readAwaySubMembers = async (matchId?: string, awayTeamId?: string) => {
-    if (!matchId || !awayTeamId) return;
+  const readAwaySubMembers = async (
+    matchId?: string,
+    awayTeamId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.PLAYER_APPEARANCE]> | null> => {
+    if (!matchId || !awayTeamId) return null;
 
     const obj = await readItemsBase<
       ModelDataMap[ModelType.PLAYER_APPEARANCE][]
@@ -41,20 +44,23 @@ export const useAwaySubMemberPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.PLAYER_APPEARANCE, obj.data);
+    if (!obj) return null;
 
-      setAwaySubMembers({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.PLAYER_APPEARANCE, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setAwaySubMembers(nextItems);
+
+    return nextItems;
   };
 
   return {
     awaySubMembers,
     readAwaySubMembers,
+    setAwaySubMembers,
   };
 };

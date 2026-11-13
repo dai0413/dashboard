@@ -24,8 +24,10 @@ export const useTeamMatchFormationPanel = () => {
     matchId?: string,
     homeTeamId?: string,
     awayTeamId?: string,
-  ) => {
-    if (!matchId) return;
+  ): Promise<Data<
+    GettedModelDataMap[ModelType.TEAM_MATCH_FORMATION]
+  > | null> => {
+    if (!matchId) return null;
 
     const team = [homeTeamId, awayTeamId].filter((v) => typeof v === "string");
 
@@ -47,20 +49,23 @@ export const useTeamMatchFormationPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.TEAM_MATCH_FORMATION, obj.data);
+    if (!obj) return null;
 
-      setTeamMatchFormations({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.TEAM_MATCH_FORMATION, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setTeamMatchFormations(nextItems);
+
+    return nextItems;
   };
 
   return {
     teamMatchFormations,
     readTeamMatchFormations,
+    setTeamMatchFormations,
   };
 };

@@ -20,8 +20,11 @@ export const useHomeSubMemberPanel = () => {
     isLoading: false,
   });
 
-  const readHomeSubMembers = async (matchId?: string, homeTeamId?: string) => {
-    if (!matchId || !homeTeamId) return;
+  const readHomeSubMembers = async (
+    matchId?: string,
+    homeTeamId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.PLAYER_APPEARANCE]> | null> => {
+    if (!matchId || !homeTeamId) return null;
 
     const obj = await readItemsBase<
       ModelDataMap[ModelType.PLAYER_APPEARANCE][]
@@ -41,20 +44,23 @@ export const useHomeSubMemberPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.PLAYER_APPEARANCE, obj.data);
+    if (!obj) return null;
 
-      setHomeSubMembers({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.PLAYER_APPEARANCE, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setHomeSubMembers(nextItems);
+
+    return nextItems;
   };
 
   return {
     homeSubMembers,
     readHomeSubMembers,
+    setHomeSubMembers,
   };
 };

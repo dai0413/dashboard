@@ -85,12 +85,15 @@ export function createModelContext<T extends ModelType>(
         handleSetAlert,
       });
 
-      if (obj) {
-        setItems(convert(ContextModelString, obj.data));
-        setTotalCount(obj.totalCount);
-        setPage(obj.page);
-        setPageSize(obj.pageSize);
-      }
+      if (!obj) return null;
+
+      const items = convert(ContextModelString, obj.data);
+      setItems(items);
+      setTotalCount(obj.totalCount);
+      setPage(obj.page);
+      setPageSize(obj.pageSize);
+
+      return items;
     };
 
     const readItem = async (id: string) => {
@@ -101,7 +104,13 @@ export function createModelContext<T extends ModelType>(
         handleSetAlert,
       });
 
-      if (item) setSelectedItem(convert(ContextModelString, item));
+      if (item) {
+        const selectedItem = convert(ContextModelString, item);
+        setSelectedItem(selectedItem);
+        return selectedItem;
+      }
+
+      return null;
     };
 
     const deleteItem = async (id: string) => {

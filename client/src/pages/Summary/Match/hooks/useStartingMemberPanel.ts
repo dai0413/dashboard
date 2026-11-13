@@ -10,16 +10,13 @@ import {
 } from "../../../../types/models/player-appearance";
 
 export const useStartingMemberPanel = () => {
-  const [homePlayers, setHomePlayers] = useState<PlayerAppearanceGet[]>([]);
-  const [awayPlayers, setAwayPlayers] = useState<PlayerAppearanceGet[]>([]);
+  const [startingMembers, setStartingMembers] = useState<{
+    home: PlayerAppearanceGet[];
+    away: PlayerAppearanceGet[];
+  }>({ home: [], away: [] });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const fetchData = async (
-    matchId: string,
-    setData: (data: PlayerAppearanceGet[]) => void,
-    teamId?: string,
-  ) => {
-    if (!matchId || !teamId) return;
+  const fetchData = async (matchId: string, teamId: string) => {
     const readParams: Record<string, any> = {
       getAll: true,
       match: matchId,
@@ -36,27 +33,38 @@ export const useStartingMemberPanel = () => {
     if (obj?.data) {
       const converted = convert(ModelType.PLAYER_APPEARANCE, obj.data);
 
-      setData(converted);
+      return converted;
     }
+
+    return [];
   };
 
   const readStartingMembers = async (
     matchId: string,
     homeTeamId?: string,
     awayTeamId?: string,
-  ) => {
+  ): Promise<{
+    home: PlayerAppearanceGet[];
+    away: PlayerAppearanceGet[];
+  } | null> => {
+    if (!homeTeamId && !awayTeamId) return null;
     setIsLoading(true);
-    await fetchData(matchId, setHomePlayers, homeTeamId);
-    await fetchData(matchId, setAwayPlayers, awayTeamId);
+    const home = homeTeamId ? await fetchData(matchId, homeTeamId) : [];
+    const away = awayTeamId ? await fetchData(matchId, awayTeamId) : [];
+
+    setStartingMembers({ home, away });
     setIsLoading(false);
+
+    return { home, away };
   };
 
   return {
     startingMembers: {
-      home: homePlayers,
-      away: awayPlayers,
+      home: startingMembers.home,
+      away: startingMembers.away,
       isLoading: isLoading,
     },
     readStartingMembers,
+    setStartingMembers,
   };
 };

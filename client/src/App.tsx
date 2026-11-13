@@ -26,6 +26,7 @@ import JapaneseInEurope from "./pages/JapaneseInEurope";
 import { Summary } from "./routes";
 import { JapaneseInEuropePageProvider } from "./context/japaneseInEurope-context";
 import { CompetitionSummaryProvider } from "./pages/Summary/Competition/contexts/CompetitionSummaryContext";
+import { MatchSummaryProvider } from "./pages/Summary/Match/contexts/MatchSummaryContext";
 
 const App: React.FC = () => {
   return (
@@ -40,95 +41,97 @@ const App: React.FC = () => {
                     <JapaneseInEuropePageProvider>
                       <TopPageProvider>
                         <CompetitionSummaryProvider>
-                          <div className="App">
-                            <Routes>
-                              {Object.entries(models).map(
-                                ([key, { table: Table }]) => (
-                                  <Route
-                                    path={`/${key}/*`}
-                                    element={wrapWithPrivateRoute(
-                                      <Layout>
-                                        <Table />
-                                      </Layout>,
-                                    )}
-                                  />
-                                ),
-                              )}
-
-                              <Route
-                                path={APP_ROUTES.ADMIN}
-                                element={wrapWithPrivateRoute(
-                                  <Layout>
-                                    <AdminDashboard />
-                                  </Layout>,
+                          <MatchSummaryProvider>
+                            <div className="App">
+                              <Routes>
+                                {Object.entries(models).map(
+                                  ([key, { table: Table }]) => (
+                                    <Route
+                                      path={`/${key}/*`}
+                                      element={wrapWithPrivateRoute(
+                                        <Layout>
+                                          <Table />
+                                        </Layout>,
+                                      )}
+                                    />
+                                  ),
                                 )}
-                              />
-                              <Route
-                                path={APP_ROUTES.HOME}
-                                element={
-                                  <Layout>
-                                    <Top />
-                                  </Layout>
-                                }
-                              />
-                              <Route
-                                path={APP_ROUTES.LOGIN}
-                                element={
-                                  <Layout>
-                                    <Login />
-                                  </Layout>
-                                }
-                              />
-                              <Route
-                                path={APP_ROUTES.ME}
-                                element={
-                                  <PrivateRoute>
+
+                                <Route
+                                  path={APP_ROUTES.ADMIN}
+                                  element={wrapWithPrivateRoute(
                                     <Layout>
-                                      <Me />
+                                      <AdminDashboard />
+                                    </Layout>,
+                                  )}
+                                />
+                                <Route
+                                  path={APP_ROUTES.HOME}
+                                  element={
+                                    <Layout>
+                                      <Top />
                                     </Layout>
-                                  </PrivateRoute>
-                                }
-                              />
-                              <Route
-                                path={APP_ROUTES.JAPANESE_IN_EUROPE}
-                                element={wrapWithPrivateRoute(
-                                  <Layout>
-                                    <JapaneseInEurope />
-                                  </Layout>,
-                                )}
-                              />
-                              <Route
-                                path={APP_ROUTES.NO_NUMBER}
-                                element={wrapWithPrivateRoute(
-                                  <Layout>
-                                    <NoNumber />
-                                  </Layout>,
-                                )}
-                              />
+                                  }
+                                />
+                                <Route
+                                  path={APP_ROUTES.LOGIN}
+                                  element={
+                                    <Layout>
+                                      <Login />
+                                    </Layout>
+                                  }
+                                />
+                                <Route
+                                  path={APP_ROUTES.ME}
+                                  element={
+                                    <PrivateRoute>
+                                      <Layout>
+                                        <Me />
+                                      </Layout>
+                                    </PrivateRoute>
+                                  }
+                                />
+                                <Route
+                                  path={APP_ROUTES.JAPANESE_IN_EUROPE}
+                                  element={wrapWithPrivateRoute(
+                                    <Layout>
+                                      <JapaneseInEurope />
+                                    </Layout>,
+                                  )}
+                                />
+                                <Route
+                                  path={APP_ROUTES.NO_NUMBER}
+                                  element={wrapWithPrivateRoute(
+                                    <Layout>
+                                      <NoNumber />
+                                    </Layout>,
+                                  )}
+                                />
 
-                              <Route
-                                path={APP_ROUTES.NO_CALLUP}
-                                element={wrapWithPrivateRoute(
-                                  <Layout>
-                                    <NoCallUp />
-                                  </Layout>,
-                                )}
-                              />
+                                <Route
+                                  path={APP_ROUTES.NO_CALLUP}
+                                  element={wrapWithPrivateRoute(
+                                    <Layout>
+                                      <NoCallUp />
+                                    </Layout>,
+                                  )}
+                                />
 
-                              <Route
-                                path={`/${APP_ROUTES.NEWS}/*`}
-                                element={wrapWithPrivateRoute(
-                                  <Layout>
-                                    <News />
-                                  </Layout>,
-                                )}
-                              />
+                                <Route
+                                  path={`/${APP_ROUTES.NEWS}/*`}
+                                  element={wrapWithPrivateRoute(
+                                    <Layout>
+                                      <News />
+                                    </Layout>,
+                                  )}
+                                />
 
-                              {Summary}
+                                {Summary}
 
-                              <Route path="*" element={<NotFound />} />
-                            </Routes>
-                          </div>
+                                <Route path="*" element={<NotFound />} />
+                              </Routes>
+                            </div>
+                          </MatchSummaryProvider>
                         </CompetitionSummaryProvider>
                       </TopPageProvider>
                     </JapaneseInEuropePageProvider>

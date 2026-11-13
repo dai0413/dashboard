@@ -24,8 +24,10 @@ export const useStaffMatchEventLogPanel = () => {
     matchId?: string,
     homeTeamId?: string,
     awayTeamId?: string,
-  ) => {
-    if (!matchId) return;
+  ): Promise<Data<
+    GettedModelDataMap[ModelType.STAFF_MATCH_EVENT_LOG]
+  > | null> => {
+    if (!matchId) return null;
 
     const team = [homeTeamId, awayTeamId].filter((v) => typeof v === "string");
 
@@ -48,20 +50,23 @@ export const useStaffMatchEventLogPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.STAFF_MATCH_EVENT_LOG, obj.data);
+    if (!obj) return null;
 
-      setStaffMatchEventLogs({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.STAFF_MATCH_EVENT_LOG, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setStaffMatchEventLogs(nextItems);
+
+    return nextItems;
   };
 
   return {
     staffMatchEventLogs,
     readStaffMatchEventLogs,
+    setStaffMatchEventLogs,
   };
 };

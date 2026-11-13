@@ -24,8 +24,8 @@ export const useStaffAppearancePanel = () => {
     matchId?: string,
     homeTeamId?: string,
     awayTeamId?: string,
-  ) => {
-    if (!matchId) return;
+  ): Promise<Data<GettedModelDataMap[ModelType.STAFF_APPEARANCE]> | null> => {
+    if (!matchId) return null;
 
     const team = [homeTeamId, awayTeamId].filter((v) => typeof v === "string");
 
@@ -47,20 +47,23 @@ export const useStaffAppearancePanel = () => {
       },
     );
 
-    if (obj) {
-      let processed = convert(ModelType.STAFF_APPEARANCE, obj.data);
+    if (!obj) return null;
 
-      setStaffAppearances({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.STAFF_APPEARANCE, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setStaffAppearances(nextItems);
+
+    return nextItems;
   };
 
   return {
     staffAppearances,
     readStaffAppearances,
+    setStaffAppearances,
   };
 };

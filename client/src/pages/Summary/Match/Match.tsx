@@ -2,14 +2,27 @@ import { useParams } from "react-router-dom";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
-import { useMatchSummary } from "./hooks/useMatchSummary";
 import { AccentSection } from "../../../components/layout";
+import { useMatchSummary } from "./contexts/MatchSummaryContext";
+import { useEffect, useRef } from "react";
 
 const Match = () => {
   const { id } = useParams();
-  if (!id) return;
+  const summary = useMatchSummary();
 
-  const summary = useMatchSummary(id);
+  const activateIdRef = useRef(summary.activateId);
+
+  useEffect(() => {
+    activateIdRef.current = summary.activateId;
+  }, [summary.activateId]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    void activateIdRef.current(id);
+  }, [id]);
+
+  if (!id) return;
 
   return (
     <div className="p-6">

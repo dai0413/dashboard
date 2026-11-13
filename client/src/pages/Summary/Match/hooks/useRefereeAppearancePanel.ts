@@ -20,8 +20,10 @@ export const useRefereeAppearancePanel = () => {
     isLoading: false,
   });
 
-  const readRefereeAppearances = async (matchId?: string) => {
-    if (!matchId) return;
+  const readRefereeAppearances = async (
+    matchId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.REFEREE_APPEARANCE]> | null> => {
+    if (!matchId) return null;
     const obj = await readItemsBase<
       ModelDataMap[ModelType.REFEREE_APPEARANCE][]
     >({
@@ -39,20 +41,23 @@ export const useRefereeAppearancePanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.REFEREE_APPEARANCE, obj.data);
+    if (!obj) return null;
 
-      setRefereeAppearances({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.REFEREE_APPEARANCE, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setRefereeAppearances(nextItems);
+
+    return nextItems;
   };
 
   return {
     refereeAppearances,
     readRefereeAppearances,
+    setRefereeAppearances,
   };
 };

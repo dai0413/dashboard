@@ -17,8 +17,8 @@ export type MetaCrudContext<K extends ModelType> = {
   selected: GettedModelDataMap[K] | null;
   setSelected: (id: string) => void;
 
-  readItem: (id: string) => Promise<void>;
-  readItems: (params: QueryParams) => Promise<void>;
+  readItem: (id: string) => Promise<GettedModelDataMap[K] | null>;
+  readItems: (params: QueryParams) => Promise<GettedModelDataMap[K][] | null>;
 
   createItem: (
     formData: FormTypeMap[K],

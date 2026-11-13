@@ -20,8 +20,12 @@ export const useAwayStatsLPanel = () => {
     isLoading: false,
   });
 
-  const readAwayStatsL = async (matchId?: string, teamId?: string) => {
-    if (!matchId || !teamId) return;
+  const readAwayStatsL = async (
+    matchId?: string,
+    teamId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.STATS_L]> | null> => {
+    if (!matchId || !teamId) return null;
+
     const obj = await readItemsBase<ModelDataMap[ModelType.STATS_L][]>({
       apiInstance: api,
       backendRoute: API_PATHS.STATS_L.ROOT,
@@ -38,20 +42,23 @@ export const useAwayStatsLPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.STATS_L, obj.data);
+    if (!obj) return null;
 
-      setAwayStatsL({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.STATS_L, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setAwayStatsL(nextItems);
+
+    return nextItems;
   };
 
   return {
     awayStatsL,
     readAwayStatsL,
+    setAwayStatsL,
   };
 };

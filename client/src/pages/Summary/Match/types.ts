@@ -1,4 +1,5 @@
 import { GettedModelDataMap, ModelType } from "../../../types/models";
+import { Data } from "../../../types/types";
 import { PanelSummary, UseSummary } from "../types";
 
 export const MATCH_TAB = {
@@ -52,3 +53,22 @@ export type UseMatchSummary = UseSummary<
   MatchTab,
   MatchPanels
 >;
+
+export type MatchSummaryCache = {
+  startingMember: {
+    home: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+    away: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+  };
+  homeSubMember: Data<GettedModelDataMap[ModelType.PLAYER_APPEARANCE]>;
+  awaySubMember: Data<GettedModelDataMap[ModelType.PLAYER_APPEARANCE]>;
+
+  staffAppearance: Data<GettedModelDataMap[ModelType.STAFF_APPEARANCE]>;
+  playerMatchEventLog: Data<
+    GettedModelDataMap[ModelType.PLAYER_MATCH_EVENT_LOG]
+  >;
+  staffMatchEventLog: Data<GettedModelDataMap[ModelType.STAFF_MATCH_EVENT_LOG]>;
+  teamMatchFormation: Data<GettedModelDataMap[ModelType.TEAM_MATCH_FORMATION]>;
+  homeStatsL: Data<GettedModelDataMap[ModelType.STATS_L]>;
+  awayStatsL: Data<GettedModelDataMap[ModelType.STATS_L]>;
+  refereeAppearance: Data<GettedModelDataMap[ModelType.REFEREE_APPEARANCE]>;
+};
