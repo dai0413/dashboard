@@ -20,7 +20,11 @@ export const usePlayerRegistrationPanel = () => {
     isLoading: false,
   });
 
-  const readPlayerRegistrations = async (playerId: string) => {
+  const readPlayerRegistrations = async (
+    playerId: string,
+  ): Promise<Data<
+    GettedModelDataMap[ModelType.PLAYER_REGISTRATION]
+  > | null> => {
     const obj = await readItemsBase<
       ModelDataMap[ModelType.PLAYER_REGISTRATION][]
     >({
@@ -39,20 +43,23 @@ export const usePlayerRegistrationPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.PLAYER_REGISTRATION, obj.data);
+    if (!obj) return null;
 
-      setPlayerRegistrations({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.PLAYER_REGISTRATION, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setPlayerRegistrations(nextItems);
+
+    return nextItems;
   };
 
   return {
     playerRegistrations,
     readPlayerRegistrations,
+    setPlayerRegistrations,
   };
 };

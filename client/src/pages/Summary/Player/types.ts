@@ -3,6 +3,7 @@ import { FormationItem } from "../../../types/formation";
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { PanelSummary, UseSummary } from "../types";
 import { StatisticsDatas } from "../../../types/table";
+import { Data } from "../../../types/types";
 
 export const PLAYER_TAB = {
   TOP: "top",
@@ -57,3 +58,11 @@ export type UsePlayerSummary = UseSummary<
   PlayerTab,
   PlayerPanels
 >;
+
+export type PlayerSummaryCache = {
+  transfer: Data<GettedModelDataMap[ModelType.TRANSFER]>;
+  injury: Data<GettedModelDataMap[ModelType.INJURY]>;
+  playerRegistration: Data<GettedModelDataMap[ModelType.PLAYER_REGISTRATION]>;
+  nationalCallup: Data<GettedModelDataMap[ModelType.NATIONAL_CALLUP]>;
+  statistics: Data<PlayerStatistic>;
+};

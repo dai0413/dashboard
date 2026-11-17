@@ -20,7 +20,9 @@ export const useInjuryPanel = () => {
     isLoading: false,
   });
 
-  const readinjuries = async (playerId: string) => {
+  const readinjuries = async (
+    playerId: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.INJURY]> | null> => {
     const obj = await readItemsBase<ModelDataMap[ModelType.INJURY][]>({
       apiInstance: api,
       backendRoute: API_PATHS.INJURY.ROOT,
@@ -33,20 +35,23 @@ export const useInjuryPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.INJURY, obj.data);
+    if (!obj) return null;
 
-      setInjuries({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.INJURY, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setInjuries(nextItems);
+
+    return nextItems;
   };
 
   return {
     injuries,
     readinjuries,
+    setInjuries,
   };
 };

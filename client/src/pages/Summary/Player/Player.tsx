@@ -2,15 +2,27 @@ import { useParams } from "react-router-dom";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
-import { usePlayerSummary } from "./hooks/usePlayerSummary";
 import { AccentSection } from "../../../components/layout";
+import { usePlayerSummary } from "./contexts/NationalMatchSeriesContext";
+import { useEffect, useRef } from "react";
 
 const Player = () => {
   const { id } = useParams();
+  const summary = usePlayerSummary();
+
+  const activateIdRef = useRef(summary.activateId);
+
+  useEffect(() => {
+    activateIdRef.current = summary.activateId;
+  }, [summary.activateId]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    void activateIdRef.current(id);
+  }, [id]);
 
   if (!id) return;
-
-  const summary = usePlayerSummary(id);
 
   return (
     <div className="p-6">

@@ -13,7 +13,9 @@ export const useStatisticsPanel = () => {
     isLoading: false,
   });
 
-  const readStatistics = async (playerId: string) => {
+  const readStatistics = async (
+    playerId: string,
+  ): Promise<Data<PlayerStatistic> | null> => {
     const obj = await createItemBase<PlayerStatistic[]>({
       apiInstance: api,
       backendRoute: API_PATHS.AGGREGATE.PLAYER.STATISTICS,
@@ -30,32 +32,37 @@ export const useStatisticsPanel = () => {
       },
     });
 
-    if (obj.success) {
-      setStatistics({
-        data: obj.data.sort((a, b) => {
-          if (
-            a.group?.by === "season" &&
-            b.group?.by === "season" &&
-            a.group?.data?.start_date &&
-            b.group?.data?.start_date
-          ) {
-            const aDate = a.group?.data?.start_date;
-            const bDate = b.group?.data?.start_date;
+    if (!obj.success) return null;
 
-            return new Date(bDate).getTime() - new Date(aDate).getTime();
-          }
+    const nextItems = {
+      data: obj.data.sort((a, b) => {
+        if (
+          a.group?.by === "season" &&
+          b.group?.by === "season" &&
+          a.group?.data?.start_date &&
+          b.group?.data?.start_date
+        ) {
+          const aDate = a.group?.data?.start_date;
+          const bDate = b.group?.data?.start_date;
 
-          return 0;
-        }),
-        totalCount: obj.data.length ? obj.data.length : 0,
-        page: 1,
-        isLoading: false,
-      });
-    }
+          return new Date(bDate).getTime() - new Date(aDate).getTime();
+        }
+
+        return 0;
+      }),
+      totalCount: obj.data.length ? obj.data.length : 0,
+      page: 1,
+      isLoading: false,
+    };
+
+    setStatistics(nextItems);
+
+    return nextItems;
   };
 
   return {
     statistics,
     readStatistics,
+    setStatistics,
   };
 };
