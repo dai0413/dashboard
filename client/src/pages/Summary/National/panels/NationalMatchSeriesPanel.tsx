@@ -29,9 +29,9 @@ const SereisPanel = ({ summary }: { summary: UseNationalSummary }) => {
         defaultViewMode={ViewMode.MONTHLY_CALENDAR}
         viewModes={[ViewMode.MONTHLY_CALENDAR]}
         viewData={{
-          [ViewMode.MONTHLY_CALENDAR]: items.monthlyCalendar,
+          [ViewMode.MONTHLY_CALENDAR]: items.data.monthlyCalendar,
         }}
-        totalCount={items.data.length}
+        totalCount={items.totalCount}
         noToolBar={false}
       />
       <TableClient
@@ -41,10 +41,10 @@ const SereisPanel = ({ summary }: { summary: UseNationalSummary }) => {
         fieldDefinitions={nationalMatchSeriesFieldDefinition}
         viewModes={[ViewMode.TABLE, ViewMode.TILE]}
         viewData={{
-          [ViewMode.TABLE]: items.data,
-          [ViewMode.TILE]: items.data,
+          [ViewMode.TABLE]: items.data.data,
+          [ViewMode.TILE]: items.data.data,
         }}
-        totalCount={items.data.length}
+        totalCount={items.totalCount}
         reloadFun={reloadFun}
         filterField={nationalMatchSeriesFieldDefinition?.filter(isFilterable)}
         sortField={nationalMatchSeriesFieldDefinition?.filter(isSortable)}

@@ -20,8 +20,10 @@ export const useCompetitionPanel = () => {
     isLoading: false,
   });
 
-  const readCompetitions = async (countryId?: string) => {
-    if (!countryId) return;
+  const readCompetitions = async (
+    countryId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.COMPETITION]> | null> => {
+    if (!countryId) return null;
     const obj = await readItemsBase<ModelDataMap[ModelType.COMPETITION][]>({
       apiInstance: api,
       backendRoute: API_PATHS.COMPETITION.ROOT,
@@ -34,20 +36,23 @@ export const useCompetitionPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.COMPETITION, obj.data);
+    if (!obj) return null;
 
-      setCompetitions({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.COMPETITION, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setCompetitions(nextItems);
+
+    return nextItems;
   };
 
   return {
     competitions,
     readCompetitions,
+    setCompetitions,
   };
 };

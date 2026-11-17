@@ -56,11 +56,13 @@ const ModelTableContainer = <K extends keyof GettedModelDataMap>({
   ) => {
     setPage("page", page);
 
-    return readItems({
+    await readItems({
       page,
       filters: JSON.stringify(normalizeFiltersForApi(filters)),
       sorts: JSON.stringify(sorts),
     });
+
+    return;
   };
 
   const handleApplyFilter = async (

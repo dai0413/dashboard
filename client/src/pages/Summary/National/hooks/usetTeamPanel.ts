@@ -18,8 +18,10 @@ export const useTeamPanel = () => {
     isLoading: false,
   });
 
-  const readTeams = async (countryId?: string) => {
-    if (!countryId) return;
+  const readTeams = async (
+    countryId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.TEAM]> | null> => {
+    if (!countryId) return null;
     const obj = await readItemsBase<ModelDataMap[ModelType.TEAM][]>({
       apiInstance: api,
       backendRoute: API_PATHS.TEAM.ROOT,
@@ -37,20 +39,23 @@ export const useTeamPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.TEAM, obj.data);
+    if (!obj) return null;
 
-      setTeams({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.TEAM, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setTeams(nextItems);
+
+    return nextItems;
   };
 
   return {
     teams,
     readTeams,
+    setTeams,
   };
 };

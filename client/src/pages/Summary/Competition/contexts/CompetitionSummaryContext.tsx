@@ -174,7 +174,7 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
         selectedSeason,
       };
     },
-    [selected?._id, readItem, readSeason, saveCache],
+    [selected?._id, readItem, readSeason],
   );
 
   // season選択で読み込む

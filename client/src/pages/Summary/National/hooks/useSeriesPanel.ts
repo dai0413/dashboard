@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import {
   GettedModelDataMap,
@@ -15,6 +15,7 @@ import {
 } from "../../../../types/calendar";
 import { filterDatas } from "../../../../utils/calendar/filterDatas";
 import { APP_ROUTES } from "../../../../lib/appRoutes";
+import { NationalMatchSeriesCache, SeriesByMonth } from "../types";
 
 const UNDEFINED_YEAR = "undefined";
 const BASE_TEAM_LABEL = "JPN";
@@ -95,77 +96,152 @@ export const useSeriesPanel = () => {
   >({
     data: [],
     page: 1,
-    totalCount: 1,
+    totalCount: 0,
     isLoading: false,
   });
+  const [seriesData, setSeriesData] = useState<SeriesByMonth>({
+    data: {
+      data: [],
+      monthlyCalendar: {
+        groups: [],
+        headerItems: [],
+        selectedKey: "",
+        headerOnChange: () => {},
+      },
+    },
+    page: 1,
+    isLoading: false,
+    totalCount: 0,
+  });
   const [selectedKey, setSelectedKey] = useState<string>("");
+  const selectedKeyRef = useRef(selectedKey);
 
-  const years = useMemo(() => collectYearKeys(series.data), [series.data]);
+  const handleSelectedKey = useCallback((key: string) => {
+    selectedKeyRef.current = key;
+    setSelectedKey(key);
+  }, []);
 
-  const readItems = async (teamIds: string[]) => {
-    const obj = await readItemsBase<
-      ModelDataMap[ModelType.NATIONAL_MATCH_SERIES][]
-    >({
-      apiInstance: api,
-      backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
-      params: { getAll: true, team: teamIds },
-      handleLoading: (time) =>
-        setSeries((prev) => ({ ...prev, isLoading: time === "start" })),
-    });
+  const buildSeriesData = useCallback(
+    (
+      original: Data<GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES]>,
+      key: string,
+    ): SeriesByMonth => {
+      const newYears = collectYearKeys(original.data);
 
-    if (!obj) return;
+      const filteredDatas = key
+        ? filterDatas(
+            original.data,
+            new Date(`${key}/1/1`),
+            new Date(`${key}/12/31`),
+          )
+        : original.data;
 
-    const processed = convert(ModelType.NATIONAL_MATCH_SERIES, obj.data);
-    const currentYear = String(new Date().getFullYear());
+      const groups = key
+        ? toMonthlyCalendarGroups(Number(key), filteredDatas)
+        : [];
 
-    setSelectedKey(
-      collectYearKeys(processed).includes(currentYear) ? currentYear : "",
-    );
-    setSeries({
-      data: processed,
-      totalCount: obj.totalCount ?? 0,
-      page: obj.page ?? 1,
-      isLoading: false,
-    });
-  };
+      const headerItems: MonthleyCalendarHeaderItem[] = newYears.map(
+        (year, index) => ({
+          key: year,
+          label: year === UNDEFINED_YEAR ? "未定義" : `${year}年`,
+          ...(index === newYears.length - 1 ? { default: true } : {}),
+        }),
+      );
 
-  const headerItems = useMemo<MonthleyCalendarHeaderItem[]>(
-    () =>
-      years.map((year, index) => ({
-        key: year,
-        label: year === UNDEFINED_YEAR ? "未定義" : `${year}年`,
-        ...(index === years.length - 1 ? { default: true } : {}),
-      })),
-    [years],
+      return {
+        page: 1,
+        isLoading: false,
+        totalCount: filteredDatas.length,
+        data: {
+          data: filteredDatas,
+          monthlyCalendar: {
+            groups,
+            headerItems,
+            selectedKey: key,
+            headerOnChange: handleSelectedKey,
+          },
+        },
+      };
+    },
+    [],
   );
 
-  const { filteredDatas, groups } = useMemo(() => {
-    if (!years.includes(selectedKey)) {
-      return { filteredDatas: [], groups: [] };
-    }
+  useEffect(() => {
+    setSeriesData(buildSeriesData(series, selectedKey));
+  }, [series, selectedKey, buildSeriesData]);
 
-    const startDate = new Date(`${selectedKey}/1/1`);
-    const endDate = new Date(`${selectedKey}/12/31`);
+  const readSeriesData = useCallback(
+    async (
+      teamIds: string[],
+      nextSelectedKey?: string,
+    ): Promise<NationalMatchSeriesCache | null> => {
+      const obj = await readItemsBase<
+        ModelDataMap[ModelType.NATIONAL_MATCH_SERIES][]
+      >({
+        apiInstance: api,
+        backendRoute: API_PATHS.NATIONAL_MATCH_SERIES.ROOT,
+        params: { getAll: true, team: teamIds },
+        handleLoading: (time) =>
+          setSeries((prev) => ({
+            ...prev,
+            isLoading: time === "start",
+          })),
+      });
 
-    const filteredDatas = filterDatas(series.data, startDate, endDate);
-    const groups = toMonthlyCalendarGroups(Number(selectedKey), filteredDatas);
+      if (!obj) return null;
 
-    return { filteredDatas, groups };
-  }, [series.data, selectedKey, years]);
+      const processed = convert(ModelType.NATIONAL_MATCH_SERIES, obj.data);
 
-  const monthlyCalendar = useMemo(
-    () => ({
-      groups,
-      headerItems,
-      selectedKey,
-      headerOnChange: setSelectedKey,
-    }),
-    [groups, headerItems, selectedKey],
+      const original = {
+        data: processed,
+        page: 1,
+        totalCount: processed.length,
+        isLoading: false,
+      };
+
+      const currentYear = String(new Date().getFullYear());
+      const newSelectedKey =
+        nextSelectedKey !== undefined
+          ? nextSelectedKey
+          : collectYearKeys(processed).includes(currentYear)
+            ? currentYear
+            : "";
+
+      setSeries(original);
+      handleSelectedKey(newSelectedKey);
+
+      return {
+        original,
+        selectedKey: newSelectedKey,
+      };
+    },
+    [selectedKey],
+  );
+
+  const restoreSeries = ({
+    original,
+    selectedKey,
+  }: NationalMatchSeriesCache) => {
+    setSeries(original);
+    handleSelectedKey(selectedKey);
+  };
+
+  const reloadSeries = useCallback(
+    async (teamIds: string[]) => {
+      const currentKey = selectedKeyRef.current;
+
+      const newData = await readSeriesData(teamIds, currentKey);
+
+      return newData;
+    },
+    [readSeriesData],
   );
 
   return {
     isLoading: series.isLoading,
-    items: { data: filteredDatas, monthlyCalendar },
-    readItems,
+    seriesData,
+    readSeriesData,
+    restoreSeries,
+    reloadSeries,
   };
 };

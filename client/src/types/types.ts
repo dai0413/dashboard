@@ -27,6 +27,13 @@ export type Data<D extends Record<string, any>> = {
   isLoading: boolean;
 };
 
+export type ObjectData<D> = {
+  data: D;
+  page: number;
+  totalCount: number;
+  isLoading: boolean;
+};
+
 export type TeamMatch = Omit<
   MatchGet,
   | "home_team"

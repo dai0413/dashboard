@@ -1,10 +1,7 @@
 import { useCallback, useRef } from "react";
 import type { CompetitionSummaryCache } from "../types";
 
-export type CompetitionSummaryCacheMap = Map<
-  string,
-  Partial<CompetitionSummaryCache>
->;
+type CompetitionSummaryCacheMap = Map<string, Partial<CompetitionSummaryCache>>;
 
 export const useCompetitionSummaryCache = () => {
   const cacheRef = useRef<CompetitionSummaryCacheMap>(new Map());

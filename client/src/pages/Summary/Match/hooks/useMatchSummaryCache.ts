@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import type { MatchSummaryCache } from "../types";
 
-export type MatchSummaryCacheMap = Map<string, Partial<MatchSummaryCache>>;
+type MatchSummaryCacheMap = Map<string, Partial<MatchSummaryCache>>;
 
 export const useMatchSummaryCache = () => {
   const cacheRef = useRef<MatchSummaryCacheMap>(new Map());
