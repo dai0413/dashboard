@@ -20,8 +20,10 @@ export const useNationalCallupPanel = () => {
     isLoading: false,
   });
 
-  const readNationalCallups = async (seriesId?: string) => {
-    if (!seriesId) return;
+  const readNationalCallups = async (
+    seriesId?: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.NATIONAL_CALLUP]> | null> => {
+    if (!seriesId) return null;
     const obj = await readItemsBase<ModelDataMap[ModelType.NATIONAL_CALLUP][]>({
       apiInstance: api,
       backendRoute: API_PATHS.NATIONAL_CALLUP.ROOT,
@@ -38,20 +40,23 @@ export const useNationalCallupPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.NATIONAL_CALLUP, obj.data);
+    if (!obj) return null;
 
-      setNationalCallups({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.NATIONAL_CALLUP, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setNationalCallups(nextItems);
+
+    return nextItems;
   };
 
   return {
     nationalCallups,
     readNationalCallups,
+    setNationalCallups,
   };
 };

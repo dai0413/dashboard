@@ -2,15 +2,27 @@ import { useParams } from "react-router-dom";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
-import { useNationalMatchSeriesSummary } from "./hooks/useNationalMatchSeriesSummary";
 import { AccentSection } from "../../../components/layout";
+import { useNationalMatchSeriesSummary } from "./contexts/NationalMatchSeriesContext";
+import { useEffect, useRef } from "react";
 
 const NationalMatchSeries = () => {
   const { id } = useParams();
+  const summary = useNationalMatchSeriesSummary();
+
+  const activateIdRef = useRef(summary.activateId);
+
+  useEffect(() => {
+    activateIdRef.current = summary.activateId;
+  }, [summary.activateId]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    void activateIdRef.current(id);
+  }, [id]);
 
   if (!id) return;
-
-  const summary = useNationalMatchSeriesSummary(id);
 
   return (
     <div className="p-6">

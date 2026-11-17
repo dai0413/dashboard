@@ -1,4 +1,5 @@
 import { GettedModelDataMap, ModelType } from "../../../types/models";
+import { Data } from "../../../types/types";
 import { PanelSummary, UseSummary } from "../types";
 
 export const NATIONAL_MATCH_SERIES_TAB = {
@@ -19,3 +20,8 @@ export type UseNationalMatchSeriesSummary = UseSummary<
   NationalMatchSeriesTab,
   NationalMatchSeriesPanels
 >;
+
+export type NationalMatchSeriesSummaryCache = {
+  match: Data<GettedModelDataMap[ModelType.MATCH]>;
+  nationalCallup: Data<GettedModelDataMap[ModelType.NATIONAL_CALLUP]>;
+};
