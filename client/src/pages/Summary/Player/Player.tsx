@@ -3,7 +3,7 @@ import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
 import { AccentSection } from "../../../components/layout";
-import { usePlayerSummary } from "./contexts/NationalMatchSeriesContext";
+import { usePlayerSummary } from "./contexts/PlayerSummaryContext";
 import { useEffect, useRef } from "react";
 
 const Player = () => {

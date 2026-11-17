@@ -3,7 +3,7 @@ import SummaryTabMenu from "../components/SummaryTabMenu";
 import { tabItems } from "./constants/tabs";
 import { Info, PanelRenderer } from "./components";
 import { AccentSection } from "../../../components/layout";
-import { useNationalMatchSeriesSummary } from "./contexts/NationalMatchSeriesContext";
+import { useNationalMatchSeriesSummary } from "./contexts/NationalMatchSeriesSummaryContext";
 import { useEffect, useRef } from "react";
 
 const NationalMatchSeries = () => {

@@ -43,7 +43,13 @@ export const usePlayerSummaryCache = () => {
 
     if (!cached) return false;
 
-    return cached.transfer !== undefined && cached.nationalCallup !== undefined;
+    return (
+      cached.transfer !== undefined &&
+      cached.injury !== undefined &&
+      cached.playerRegistration !== undefined &&
+      cached.nationalCallup !== undefined &&
+      cached.statistics !== undefined
+    );
   }, []);
 
   /**
