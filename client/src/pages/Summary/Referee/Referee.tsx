@@ -2,17 +2,29 @@ import { useParams } from "react-router-dom";
 import { SummaryTabItems } from "../../../types/menu/IconButton";
 import SummaryTabMenu from "../components/SummaryTabMenu";
 import { Info, PanelRenderer } from "./components";
-import { useRefereeSummary } from "./hooks/useRefereeSummary";
 import { AccentSection } from "../../../components/layout";
+import { useRefereeSummary } from "./contexts/RefereeSummaryContext";
+import { useEffect, useRef } from "react";
 
 const tabItems: SummaryTabItems[] = [];
 
 const Referee = () => {
   const { id } = useParams();
+  const summary = useRefereeSummary();
+
+  const activateIdRef = useRef(summary.activateId);
+
+  useEffect(() => {
+    activateIdRef.current = summary.activateId;
+  }, [summary.activateId]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    void activateIdRef.current(id);
+  }, [id]);
 
   if (!id) return;
-
-  const summary = useRefereeSummary(id);
 
   return (
     <div className="p-6">

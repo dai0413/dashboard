@@ -1,7 +1,9 @@
 import { GettedModelDataMap, ModelType } from "../../../types/models";
 import { UseSummary } from "../types";
 
-export const REFEREE_TAB = {} as const;
+export const REFEREE_TAB = {
+  TOP: "top",
+} as const;
 
 export type RefereeTab = (typeof REFEREE_TAB)[keyof typeof REFEREE_TAB];
 
@@ -12,3 +14,5 @@ export type UseRefereeSummary = UseSummary<
   RefereeTab,
   RefereePanels
 >;
+
+export type RefereeSummaryCache = {};
