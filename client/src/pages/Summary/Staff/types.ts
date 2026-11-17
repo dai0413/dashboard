@@ -1,4 +1,5 @@
 import { GettedModelDataMap, ModelType } from "../../../types/models";
+import { Data } from "../../../types/types";
 import { PanelSummary, UseSummary } from "../types";
 
 export const STAFF_TAB = {
@@ -18,3 +19,7 @@ export type UseStaffSummary = UseSummary<
   StaffTab,
   StaffPanels
 >;
+
+export type StaffSummaryCache = {
+  staffRegistration: Data<GettedModelDataMap[ModelType.STAFF_REGISTRATION]>;
+};
