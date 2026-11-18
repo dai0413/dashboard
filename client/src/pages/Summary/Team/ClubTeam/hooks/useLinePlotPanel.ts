@@ -2,25 +2,28 @@ import { useState } from "react";
 import { API_PATHS } from "@dai0413/myorg-shared";
 import { api } from "../../../../../context/api-context";
 import { ModelType } from "../../../../../types/models";
-import { TeamMatch } from "../../../../../types/types";
 import { readItemsBase } from "../../../../../lib/api";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { convertMatchToTeamMatch } from "../../../../../utils/data";
 import { Match, MatchGet } from "../../../../../types/models/match";
+import { LinePlotData } from "../types";
 
 export const useLinePlotPanel = () => {
-  const [teamMatchs, setTeamMatchs] = useState<TeamMatch[]>([]);
-  const [plotData, setPlotData] = useState<{
-    label: string[];
-    value: number[];
-  }>({ label: [], value: [] });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [linePLotData, setLinePlotData] = useState<LinePlotData>({
+    data: { teamMatchs: [], plotData: { label: [], value: [] } },
+    page: 1,
+    totalCount: 0,
+    isLoading: false,
+  });
 
   async function readMatchs(id: string, seasonId: string): Promise<MatchGet[]> {
     const obj = await readItemsBase<Match[]>({
       apiInstance: api,
       backendRoute: API_PATHS.MATCH.ROOT,
       params: { team: id, season: seasonId, getAll: true, sort: "date" },
+      handleLoading: (time) => {
+        setLinePlotData((prev) => ({ ...prev, isLoading: time === "start" }));
+      },
     });
 
     if (!obj) return [];
@@ -30,12 +33,9 @@ export const useLinePlotPanel = () => {
     return matches;
   }
 
-  const readPlotData = async (id: string, seasonId: string) => {
-    setIsLoading(false);
+  const readLinePlotData = async (id: string, seasonId: string) => {
     const matches = await readMatchs(id, seasonId);
     const teamMatchs = convertMatchToTeamMatch(matches, id);
-
-    setTeamMatchs(teamMatchs);
 
     const labels = teamMatchs.map((match, i) =>
       match.match_week ? `w-${match.match_week}` : `Game-${i + 1}`,
@@ -48,14 +48,24 @@ export const useLinePlotPanel = () => {
       return total;
     });
 
-    setPlotData({ label: labels, value: cumulativePoints });
-    setIsLoading(true);
+    const nextItems: LinePlotData = {
+      data: {
+        teamMatchs,
+        plotData: { label: labels, value: cumulativePoints },
+      },
+      page: 1,
+      totalCount: teamMatchs.length,
+      isLoading: false,
+    };
+
+    setLinePlotData(nextItems);
+
+    return nextItems;
   };
 
   return {
-    readPlotData,
-    teamMatchs,
-    plotData,
-    isLoading,
+    readLinePlotData,
+    linePLotData,
+    setLinePlotData,
   };
 };

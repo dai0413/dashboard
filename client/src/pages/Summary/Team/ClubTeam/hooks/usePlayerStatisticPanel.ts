@@ -5,7 +5,7 @@ import {
 } from "@dai0413/myorg-shared";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { MatchGet } from "../../../../../types/models/match";
-import { FormationCounts } from "../types";
+import { FormationCounts, PlayerStatisticsData } from "../types";
 import { QuickFilterData } from "../../../../../types/table";
 import {
   filterMatchesByCompetitions,
@@ -14,26 +14,7 @@ import {
 import { loadPlayerStatistics } from "../utils/loadPlayerStatistics";
 import { loadTeamMatches } from "../utils/loadTeamMatches";
 
-type UsePlayerStatisticPanel = {
-  reloadFun: (
-    _filterConditions: FilterableFieldDefinition[],
-    _sortConditions: SortableFieldDefinition[],
-    teamId: string,
-    date: string[],
-  ) => Promise<void>;
-
-  items: {
-    quickFilterDatas: QuickFilterData[];
-    playerStatistics: PlayerStatistic[];
-  };
-
-  isLoading: boolean;
-};
-
-export const usePlayerStatisticPanel = (
-  teamId: string,
-  date: string[],
-): UsePlayerStatisticPanel => {
+export const usePlayerStatisticPanel = (teamId: string, date: string[]) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [matches, setMatches] = useState<MatchGet[]>([]);
@@ -52,7 +33,7 @@ export const usePlayerStatisticPanel = (
       _sortConditions: SortableFieldDefinition[],
       teamId: string,
       date: string[],
-    ) => {
+    ): Promise<PlayerStatisticsData | null> => {
       setIsLoading(true);
 
       try {
@@ -64,13 +45,25 @@ export const usePlayerStatisticPanel = (
         setMatches(matches);
         setSelectedCompetitions(competitionIds);
 
-        await loadPlayerStatistics({
+        const values = await loadPlayerStatistics({
           teamId,
           date,
           matchIds,
           setFormationCounts,
           setPlayerStatistics,
         });
+
+        if (!values.formationCounts || !values.playerStatistics) return null;
+
+        const playerStatisticsData: PlayerStatisticsData = {
+          isLoading: false,
+          matches,
+          playerStatistics: values.playerStatistics,
+          formationCounts: values.formationCounts,
+          selectedCompetitions: competitionIds,
+        };
+
+        return playerStatisticsData;
       } finally {
         setIsLoading(false);
       }
@@ -108,15 +101,13 @@ export const usePlayerStatisticPanel = (
     [selectedCompetitions, matches],
   );
 
-  const competitions = useMemo(() => {
+  const quickFilterDatas: QuickFilterData[] = useMemo(() => {
     const competitionMap = new Map(
       matches.map((match) => [match.competition.id, match.competition]),
     );
 
-    return [...competitionMap.values()];
-  }, [matches]);
+    const competitions = [...competitionMap.values()];
 
-  const quickFilterDatas: QuickFilterData[] = useMemo(() => {
     const competitionFilter: QuickFilterData = {
       name: "competitions",
       multi: true,
@@ -129,16 +120,26 @@ export const usePlayerStatisticPanel = (
     };
 
     return [competitionFilter];
-  }, [
-    competitions,
-    selectedCompetitions,
+  }, [matches, selectedCompetitions, formationCounts, handleCompetitionClick]);
+
+  const restore = ({
+    isLoading,
+    matches,
+    playerStatistics,
     formationCounts,
-    handleCompetitionClick,
-  ]);
+    selectedCompetitions,
+  }: PlayerStatisticsData) => {
+    setIsLoading(isLoading);
+    setMatches(matches);
+    setPlayerStatistics(playerStatistics);
+    setFormationCounts(formationCounts);
+    setSelectedCompetitions(selectedCompetitions);
+  };
 
   return {
     reloadFun,
     items: { playerStatistics, quickFilterDatas },
     isLoading,
+    restore,
   };
 };

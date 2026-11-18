@@ -26,7 +26,7 @@ const AppearancePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
         defaultViewMode={ViewMode.MATCH_MATRIX}
         viewData={{
           [ViewMode.MATCH_MATRIX]: {
-            teamId: id,
+            teamId: id!,
             ...items,
           },
         }}

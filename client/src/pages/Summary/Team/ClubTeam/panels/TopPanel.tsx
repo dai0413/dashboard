@@ -2,13 +2,16 @@ import { UseClubTeamSummary } from "../types";
 import { DoughnutPlot } from "../../../../../components/plot/Doughnut";
 import { StatisticsTable } from "../../../../../components/dataView/DataViewContent/DataView/StatisticsTable";
 import { columns } from "../constants/topPanelColumns";
+import { FullScreenLoader } from "../../../../../components/ui";
 
 const TopPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     panels: {
-      top: { text, items },
+      top: { isLoading, text, items },
     },
   } = summary;
+
+  if (isLoading) return <FullScreenLoader />;
 
   return (
     <>

@@ -6,32 +6,27 @@ import { readItemsBase } from "../../../../../lib/api";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { StatsL, StatsLGet } from "../../../../../types/models/stats-l";
 import { buildRadarPlotData } from "../../../../../utils/plot";
-import { TeamGet } from "../../../../../types/models/team";
 import {
   defFields,
   offFields,
 } from "../../../../../components/plot/RadarChart/radarFields";
-import { GoalStats, StatsActual } from "../../../Competition/types";
+import { GoalStats } from "../../../Competition/types";
 import { getGoalStats } from "../../../../../utils/data/getGoalStats";
+import { RadarData } from "../types";
 
 export const useRadarPanel = () => {
-  const [offRadarData, setOffRadarData] = useState<StatsActual | undefined>(
-    undefined,
-  );
-  const [defRadarData, setDefRadarData] = useState<StatsActual | undefined>(
-    undefined,
-  );
-  const [matchCounts, setMatchCounts] = useState<number | undefined>(undefined);
-  const [radarDataIsLoading, setRadarDataIsLoading] = useState<boolean>(false);
+  const [radarData, setRadarData] = useState<RadarData>({
+    data: {},
+    page: 1,
+    totalCount: 0,
+    isLoading: false,
+  });
 
   const readRadarData = async (
-    selected: TeamGet | null,
     id: string,
     seasonId?: string,
-  ) => {
-    setRadarDataIsLoading(true);
-
-    if (!selected || !seasonId) return setRadarDataIsLoading(false);
+  ): Promise<RadarData | null> => {
+    if (!seasonId) return null;
 
     // リーグ平均, 標準偏差用データ
     const readBaseData = async (season: string): Promise<StatsLGet[]> => {
@@ -41,6 +36,9 @@ export const useRadarPanel = () => {
         params: {
           getAll: true,
           "match.season": season,
+        },
+        handleLoading: (time) => {
+          setRadarData((prev) => ({ ...prev, isLoading: time === "start" }));
         },
       });
 
@@ -99,21 +97,27 @@ export const useRadarPanel = () => {
       (d) => d.team.id || "",
     ).get(id);
 
-    setOffRadarData(offRadarData?.values);
-    setDefRadarData(defRadarData?.values);
+    if (offRadarData?.matchCount !== defRadarData?.matchCount) return null;
 
-    if (offRadarData?.matchCount !== defRadarData?.matchCount) return;
+    const newItems: RadarData = {
+      data: {
+        offRadarData: offRadarData?.values,
+        defRadarData: defRadarData?.values,
+        matchCounts: offRadarData?.matchCount,
+      },
+      page: 1,
+      totalCount: offRadarData?.matchCount || 0,
+      isLoading: false,
+    };
 
-    setMatchCounts(offRadarData?.matchCount);
+    setRadarData(newItems);
 
-    setRadarDataIsLoading(false);
+    return newItems;
   };
 
   return {
-    offRadarData,
-    defRadarData,
-    matchCounts,
-    radarDataIsLoading,
+    radarData,
     readRadarData,
+    setRadarData,
   };
 };

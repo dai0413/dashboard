@@ -20,7 +20,10 @@ export const useLoanPanel = () => {
     isLoading: false,
   });
 
-  const readLoans = async (teamId: string, seasonRange: string[]) => {
+  const readLoans = async (
+    teamId: string,
+    seasonRange: string[],
+  ): Promise<Data<GettedModelDataMap[ModelType.TRANSFER]> | null> => {
     const obj = await readItemsBase<ModelDataMap[ModelType.TRANSFER][]>({
       apiInstance: api,
       backendRoute: API_PATHS.TRANSFER.ROOT,
@@ -41,20 +44,23 @@ export const useLoanPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.TRANSFER, obj.data);
+    if (!obj) return null;
 
-      setLoans({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.TRANSFER, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setLoans(nextItems);
+
+    return nextItems;
   };
 
   return {
     loans,
     readLoans,
+    setLoans,
   };
 };

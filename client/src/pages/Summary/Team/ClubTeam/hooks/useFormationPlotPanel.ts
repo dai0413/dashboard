@@ -6,7 +6,7 @@ import {
 import { MatchGet } from "../../../../../types/models/match";
 import { TeamMatchFormationGet } from "../../../../../types/models/team-match-formation";
 import { FormationGet } from "../../../../../types/models/formation";
-import { FormationCounts } from "../types";
+import { FormationCounts, FormationPlotData } from "../types";
 import { getFormationCounts } from "../../../../../utils/data";
 import { QuickFilterData } from "../../../../../types/table";
 import { loadPlayerStatistics } from "../utils/loadPlayerStatistics";
@@ -63,30 +63,38 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
       competitions,
     });
 
-    await loadPlayerStatistics({
+    const returnVal = await loadPlayerStatistics({
       teamId,
       date,
       matchIds: targetMatchIds,
       selectedPositions,
       setPlayerStatistics,
     });
+
+    return returnVal;
   };
 
   const loadFormationCounts = async (
     teamId: string,
     matchIds: string[],
-  ): Promise<FormationCounts[] | undefined> => {
-    const newFormationCounts = await getFormationCounts(
+  ): Promise<
+    | {
+        teamMatchFormation: TeamMatchFormationGet[];
+        formationCounts: FormationCounts[];
+      }
+    | undefined
+  > => {
+    const value = await getFormationCounts(
       teamId,
       matchIds,
       setTeamMatchFormations,
     );
 
-    if (!newFormationCounts) return undefined;
+    if (!value) return undefined;
 
-    setFormationCounts(newFormationCounts);
+    setFormationCounts(value.formationCounts);
 
-    return newFormationCounts;
+    return value;
   };
 
   const loadSelectedFormationPlayerStatistics = async ({
@@ -104,79 +112,116 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
 
     const formation = await loadFormationByName(formationCount.name);
 
-    if (!formation) return;
+    if (!formation) return null;
 
-    await loadFormationPlayerStatistics({
+    const values = await loadFormationPlayerStatistics({
       teamId,
       date,
       matchIds,
       formationId: formation._id,
       selectedPositions: formationCount.position_formation,
     });
+
+    return values;
   };
 
   // matches, playerStatistics , formationCounts , teamMatchFormations読み込み
-  const reloadFun = async (
-    filterConditions: FilterableFieldDefinition[],
-    _sortConditions: SortableFieldDefinition[],
-    teamId: string,
-    date: string[],
-  ) => {
-    setIsLoading(true);
+  const reloadFun = useCallback(
+    async (
+      filterConditions: FilterableFieldDefinition[],
+      _sortConditions: SortableFieldDefinition[],
+      teamId: string,
+      date: string[],
+    ): Promise<FormationPlotData | null> => {
+      setIsLoading(true);
 
-    try {
-      const { matches, matchIds, competitionIds } = await loadTeamMatches(
-        teamId,
-        date,
-      );
+      try {
+        const { matches, matchIds, competitionIds } = await loadTeamMatches(
+          teamId,
+          date,
+        );
 
-      setMatches(matches);
-      setSelectedCompetitions(competitionIds);
+        setMatches(matches);
+        setSelectedCompetitions(competitionIds);
 
-      let formation: string | undefined;
+        let formation: string | undefined;
 
-      filterConditions?.forEach((filterCondition) => {
-        if (filterCondition.key === "formation" && filterCondition.value) {
-          const value = filterCondition.value[0];
+        filterConditions?.forEach((filterCondition) => {
+          if (filterCondition.key === "formation" && filterCondition.value) {
+            const value = filterCondition.value[0];
 
-          if (typeof value === "string") {
-            formation = value;
+            if (typeof value === "string") {
+              formation = value;
+            }
           }
+        });
+
+        if (typeof formation === "undefined") {
+          const formationValue = await loadFormationCounts(teamId, matchIds);
+
+          if (!formationValue) return null;
+
+          const firstFormation = formationValue.formationCounts[0];
+
+          const values = await loadSelectedFormationPlayerStatistics({
+            teamId,
+            date,
+            matchIds,
+            formationCount: firstFormation,
+          });
+
+          if (values?.formationCounts && values.playerStatistics) {
+            const returnVal: FormationPlotData = {
+              isLoading: false,
+
+              matches: matches,
+              selectedCompetitions: competitionIds,
+              selectedFormation: undefined,
+              formationCounts: values.formationCounts,
+              playerStatistics: values.playerStatistics,
+              teamMatchFormations: formationValue.teamMatchFormation,
+            };
+
+            return returnVal;
+          }
+
+          return null;
         }
-      });
 
-      if (!formation) {
-        const newFormationCounts = await loadFormationCounts(teamId, matchIds);
+        const selectedFormation = await loadFormationByName(formation);
 
-        if (!newFormationCounts?.length) return;
+        if (!selectedFormation) return null;
 
-        const firstFormation = newFormationCounts[0];
-
-        await loadSelectedFormationPlayerStatistics({
+        const values = await loadFormationPlayerStatistics({
           teamId,
           date,
           matchIds,
-          formationCount: firstFormation,
+          formationId: selectedFormation._id,
+          selectedPositions: selectedFormation.position_formation,
         });
 
-        return;
+        if (values?.formationCounts && values.playerStatistics) {
+          const returnVal: FormationPlotData = {
+            isLoading: false,
+
+            matches: matches,
+            selectedCompetitions: competitionIds,
+            selectedFormation: undefined,
+            formationCounts: values.formationCounts,
+            playerStatistics: values.playerStatistics,
+            teamMatchFormations: teamMatchFormations,
+          };
+
+          return returnVal;
+        }
+
+        return null;
+      } finally {
+        setIsLoading(false);
       }
-
-      const selectedFormation = await loadFormationByName(formation);
-
-      if (!selectedFormation) return;
-
-      await loadFormationPlayerStatistics({
-        teamId,
-        date,
-        matchIds,
-        formationId: selectedFormation._id,
-        selectedPositions: selectedFormation.position_formation,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [teamMatchFormations],
+  );
 
   // competitionIdsの変更　→　formationCounts, playerStatisticsの更新
   const handleCompetitionClick = useCallback(
@@ -208,9 +253,9 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
 
         setSelectedCompetitions(newCompetitionIds);
 
-        const newFormationCounts = await loadFormationCounts(teamId, matchIds);
+        const value = await loadFormationCounts(teamId, matchIds);
 
-        if (!newFormationCounts?.length) {
+        if (!value) {
           setSelectedFormation(undefined);
           setPlayerStatistics([]);
           return;
@@ -220,7 +265,7 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
           teamId,
           date,
           matchIds,
-          formationCount: newFormationCounts[0],
+          formationCount: value.formationCounts[0],
         });
       } finally {
         setIsLoading(false);
@@ -278,15 +323,13 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
     [selectedCompetitions, matches, selectedFormation, formationCounts],
   );
 
-  const competitions = useMemo(() => {
+  const quickFilterDatas: QuickFilterData[] = useMemo(() => {
     const competitionMap = new Map(
       matches.map((match) => [match.competition.id, match.competition]),
     );
 
-    return [...competitionMap.values()];
-  }, [matches]);
+    const competitions = [...competitionMap.values()];
 
-  const quickFilterDatas: QuickFilterData[] = useMemo(() => {
     const competitionFilter: QuickFilterData = {
       name: "competitions",
       multi: true,
@@ -312,7 +355,7 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
 
     return [competitionFilter, formationFilter];
   }, [
-    competitions,
+    matches,
     selectedCompetitions,
     selectedFormation,
     formationCounts,
@@ -356,6 +399,25 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
     return filtered;
   }, [selectedFormation, teamMatchFormations]);
 
+  const restore = ({
+    isLoading,
+
+    matches,
+    selectedCompetitions,
+    selectedFormation,
+    formationCounts,
+    playerStatistics,
+    teamMatchFormations,
+  }: FormationPlotData) => {
+    setIsLoading(isLoading);
+    setMatches(matches);
+    setSelectedCompetitions(selectedCompetitions);
+    setSelectedFormation(selectedFormation);
+    setFormationCounts(formationCounts);
+    setPlayerStatistics(playerStatistics);
+    setTeamMatchFormations(teamMatchFormations);
+  };
+
   return {
     isLoading,
     items: {
@@ -364,5 +426,6 @@ export const useFormationPlotPanel = (teamId: string, date: string[]) => {
       quickFilterDatas,
     },
     reloadFun,
+    restore,
   };
 };

@@ -11,7 +11,10 @@ const LinePlotPanel = ({ summary }: { summary: UseClubTeamSummary }) => {
   return (
     <>
       <h2 className="text-base font-semibold text-gray-800">{text}</h2>
-      <PointLine teamMatchs={items.teamMatchs} plotData={items.plotData} />
+      <PointLine
+        teamMatchs={items.data.teamMatchs}
+        plotData={items.data.plotData}
+      />
     </>
   );
 };

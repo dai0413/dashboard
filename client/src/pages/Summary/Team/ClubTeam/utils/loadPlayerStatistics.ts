@@ -7,7 +7,7 @@ import {
 } from "../../../../../types/models/player-appearance";
 import { getFormationCounts } from "../../../../../utils/data";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
-import { ModelType } from "../../../../../types/models";
+import { GettedModelDataMap, ModelType } from "../../../../../types/models";
 import {
   PlayerRegistration,
   PlayerRegistrationGet,
@@ -90,6 +90,13 @@ const createPlayerStatisticsParams = (
   return params;
 };
 
+type ReturnVal = {
+  playerAppearance?: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+  formationCounts?: FormationCounts[];
+  playerRegistration?: GettedModelDataMap[ModelType.PLAYER_REGISTRATION][];
+  playerStatistics?: PlayerStatistic[];
+};
+
 export const loadPlayerStatistics = async ({
   teamId,
   date,
@@ -98,11 +105,14 @@ export const loadPlayerStatistics = async ({
   setPlayerRegistrations,
   setPlayerStatistics,
   setFormationCounts,
-}: LoadPlayerStatisticsParams): Promise<void> => {
+}: LoadPlayerStatisticsParams): Promise<ReturnVal> => {
+  let returnVal: ReturnVal = {};
+
   // フォーメーション集計
   if (setFormationCounts) {
     const formationCounts = await getFormationCounts(teamId, matchIds);
     setFormationCounts(formationCounts ?? []);
+    returnVal["formationCounts"] = formationCounts;
   }
 
   let newPlayerAppearance: PlayerAppearanceGet[] = [];
@@ -125,9 +135,11 @@ export const loadPlayerStatistics = async ({
     }
 
     setPlayerAppearance(newPlayerAppearance);
+
+    returnVal["playerAppearance"] = newPlayerAppearance;
   }
 
-  if (!setPlayerRegistrations && !setPlayerStatistics) return;
+  if (!setPlayerRegistrations && !setPlayerStatistics) return returnVal;
 
   // 登録情報
   const playerRegistrationRes = await readItemsBase<PlayerRegistration[]>({
@@ -141,6 +153,7 @@ export const loadPlayerStatistics = async ({
     : [];
 
   setPlayerRegistrations && setPlayerRegistrations(newPlayerRegistrations);
+  returnVal["playerRegistration"] = newPlayerRegistrations;
 
   const params = createPlayerStatisticsParams(
     newPlayerAppearance,
@@ -156,7 +169,7 @@ export const loadPlayerStatistics = async ({
     data: params,
   });
 
-  if (!playerStatistic?.success) return;
+  if (!playerStatistic?.success) return returnVal;
 
   const players = convertPlayerStatistics(
     playerStatistic.data,
@@ -167,4 +180,7 @@ export const loadPlayerStatistics = async ({
   const newPlayerStatistics = sortByPosition(players, "mainPosition");
 
   setPlayerStatistics && setPlayerStatistics(newPlayerStatistics);
+  returnVal["playerStatistics"] = newPlayerStatistics;
+
+  return returnVal;
 };

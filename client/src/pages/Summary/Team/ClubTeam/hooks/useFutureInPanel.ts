@@ -11,7 +11,6 @@ import { readItemsBase } from "../../../../../lib/api";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 
 export const useFutureInPanel = () => {
-  // //future_in
   const [futurein, setFuturein] = useState<
     Data<GettedModelDataMap[ModelType.TRANSFER]>
   >({
@@ -21,7 +20,10 @@ export const useFutureInPanel = () => {
     isLoading: false,
   });
 
-  const readFutureins = async (teamId: string, from_date: string[]) => {
+  const readFutureins = async (
+    teamId: string,
+    from_date: string[],
+  ): Promise<Data<GettedModelDataMap[ModelType.TRANSFER]> | null> => {
     const obj = await readItemsBase<ModelDataMap[ModelType.TRANSFER][]>({
       apiInstance: api,
       backendRoute: API_PATHS.TRANSFER.ROOT,
@@ -39,20 +41,23 @@ export const useFutureInPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.TRANSFER, obj.data);
+    if (!obj) return null;
 
-      setFuturein({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.TRANSFER, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setFuturein(nextItems);
+
+    return nextItems;
   };
 
   return {
     futurein,
     readFutureins,
+    setFuturein,
   };
 };

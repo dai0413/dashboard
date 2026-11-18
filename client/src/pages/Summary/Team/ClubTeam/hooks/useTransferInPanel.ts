@@ -20,7 +20,10 @@ export const useTransferInPanel = () => {
     isLoading: false,
   });
 
-  const readTransferIns = async (teamId: string, seasonRange: string[]) => {
+  const readTransferIns = async (
+    teamId: string,
+    seasonRange: string[],
+  ): Promise<Data<GettedModelDataMap[ModelType.TRANSFER]> | null> => {
     const obj = await readItemsBase<ModelDataMap[ModelType.TRANSFER][]>({
       apiInstance: api,
       backendRoute: API_PATHS.TRANSFER.ROOT,
@@ -36,20 +39,23 @@ export const useTransferInPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.TRANSFER, obj.data);
+    if (!obj) return null;
 
-      setTransferIns({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.TRANSFER, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setTransferIns(nextItems);
+
+    return nextItems;
   };
 
   return {
     transferIns,
     readTransferIns,
+    setTransferIns,
   };
 };

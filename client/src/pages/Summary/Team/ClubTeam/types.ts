@@ -1,17 +1,12 @@
-import { TeamMatch } from "../../../../types/types";
+import { Data, ObjectData, TeamMatch } from "../../../../types/types";
 import { GettedModelDataMap, ModelType } from "../../../../types/models";
 import { TeamCompetitionSeason } from "../../../../types/models/team-competition-season";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
-import { PlayerAppearanceGet } from "../../../../types/models/player-appearance";
-import { PlayerRegistrationGet } from "../../../../types/models/player-registration";
-import { MatchGet } from "../../../../types/models/match";
-import { FormationGet } from "../../../../types/models/formation";
 import { GroupedPlayers } from "../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 import { QuickFilterData, StatisticsDatas } from "../../../../types/table";
-import { TeamMatchFormationGet } from "../../../../types/models/team-match-formation";
 import { StatsActual } from "../../Competition/types";
-import { InjuryGet } from "../../../../types/models/injury";
+import { SeasonDates } from "../../../../types/seasonDates";
 
 export const CLUB_TEAM_TAB = {
   TOP: "top",
@@ -37,7 +32,7 @@ export const CLUB_TEAM_TAB = {
 
 export type ClubTeamTab = (typeof CLUB_TEAM_TAB)[keyof typeof CLUB_TEAM_TAB];
 
-export type FormationCounts = FormationGet & {
+export type FormationCounts = GettedModelDataMap[ModelType.FORMATION] & {
   count: number;
 };
 
@@ -80,26 +75,15 @@ type ClubTeamPanels = {
   teamCompetitionSeason: PanelSummary<TeamCompetitionSeason[]>;
   statsL: PanelSummary<GettedModelDataMap[ModelType.STATS_L][]>;
 
-  linePlot: PanelSummary<{
-    teamMatchs: TeamMatch[];
-    plotData: {
-      label: string[];
-      value: number[];
-    };
-  }>;
+  linePlot: PanelSummary<LinePlotData>;
 
-  piePlot: PanelSummary<{
-    offRadarData?: StatsActual;
-    defRadarData?: StatsActual;
-    matchCounts?: number;
-    isLoading: boolean;
-  }>;
+  radarData: PanelSummary<RadarData>;
 
   appearancePlot: ServerDepPanelSummary<{
-    playerAppearance: PlayerAppearanceGet[];
-    injuries: InjuryGet[];
-    playerRegistrations: PlayerRegistrationGet[];
-    matches: MatchGet[];
+    playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+    injuries: GettedModelDataMap[ModelType.INJURY][];
+    playerRegistrations: GettedModelDataMap[ModelType.PLAYER_REGISTRATION][];
+    matches: GettedModelDataMap[ModelType.MATCH][];
     groupedPlayers: GroupedPlayers[];
     defaultOpenPositions: Set<string>;
     topHeaderText: string;
@@ -112,16 +96,16 @@ type ClubTeamPanels = {
   }>;
 
   formationPlot: ServerDepPanelSummary<{
-    teamMatchFormations: TeamMatchFormationGet[];
+    teamMatchFormations: GettedModelDataMap[ModelType.TEAM_MATCH_FORMATION][];
     groupedPlayers: GroupedPlayers[];
     quickFilterDatas: QuickFilterData[];
   }>;
 
   birthYearPositionMatrix: ServerDepPanelSummary<{
-    playerAppearance: PlayerAppearanceGet[];
+    playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
     playerStatistics: PlayerStatistic[];
-    playerRegistrations: PlayerRegistrationGet[];
-    matches: MatchGet[];
+    playerRegistrations: GettedModelDataMap[ModelType.PLAYER_REGISTRATION][];
+    matches: GettedModelDataMap[ModelType.MATCH][];
     groupedPlayers: GroupedPlayers[];
     defaultOpenPositions: Set<string>;
     topHeaderText: string;
@@ -138,3 +122,79 @@ export type UseClubTeamSummary = UseSummary<
   ClubTeamPanels,
   TeamCompetitionSeason
 >;
+
+export type RadarData = ObjectData<{
+  offRadarData?: StatsActual;
+  defRadarData?: StatsActual;
+  matchCounts?: number;
+}>;
+
+export type LinePlotData = ObjectData<{
+  teamMatchs: TeamMatch[];
+  plotData: {
+    label: string[];
+    value: number[];
+  };
+}>;
+
+export type SeasonDate = {
+  normalSeason: SeasonDates;
+  transferWindow: SeasonDates;
+  future: SeasonDates;
+};
+
+export type AppearancePlotData = {
+  isLoading: boolean;
+
+  matches: GettedModelDataMap[ModelType.MATCH][];
+  selectedCompetitions: string[];
+  selectedFormation: string;
+  formationCounts: FormationCounts[];
+  playerStatistics: PlayerStatistic[];
+  injuries: GettedModelDataMap[ModelType.INJURY][];
+  playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+  playerRegistration: GettedModelDataMap[ModelType.PLAYER_REGISTRATION][];
+};
+
+export type FormationPlotData = {
+  isLoading: boolean;
+
+  matches: GettedModelDataMap[ModelType.MATCH][];
+  selectedCompetitions: string[];
+  selectedFormation: GettedModelDataMap[ModelType.FORMATION] | undefined;
+  formationCounts: FormationCounts[];
+  playerStatistics: PlayerStatistic[];
+  teamMatchFormations: GettedModelDataMap[ModelType.TEAM_MATCH_FORMATION][];
+};
+
+export type PlayerStatisticsData = {
+  isLoading: boolean;
+
+  matches: GettedModelDataMap[ModelType.MATCH][];
+  playerStatistics: PlayerStatistic[];
+  formationCounts: FormationCounts[];
+  selectedCompetitions: string[];
+};
+
+export type ClubTeamSummaryCache = {
+  seasonDate: SeasonDate;
+  selectedteamCompetitionSeason: TeamCompetitionSeason | null;
+
+  player: Data<GettedModelDataMap[ModelType.TRANSFER]>;
+  future_in: Data<GettedModelDataMap[ModelType.TRANSFER]>;
+  transfer_in: Data<GettedModelDataMap[ModelType.TRANSFER]>;
+  transfer_out: Data<GettedModelDataMap[ModelType.TRANSFER]>;
+  loan: Data<GettedModelDataMap[ModelType.TRANSFER]>;
+  injury: Data<GettedModelDataMap[ModelType.INJURY]>;
+  match: Data<GettedModelDataMap[ModelType.MATCH]>;
+  playerRegistration: Data<GettedModelDataMap[ModelType.PLAYER_REGISTRATION]>;
+  statsL: Data<GettedModelDataMap[ModelType.STATS_L]>;
+  staffRegistration: Data<GettedModelDataMap[ModelType.STAFF_REGISTRATION]>;
+  radarData: RadarData;
+  linePlot: LinePlotData;
+  teamCompetitionSeason: Data<TeamCompetitionSeason>;
+  appearancePlot: AppearancePlotData;
+  birthYearPositionMatrix: AppearancePlotData;
+  formationPlot: FormationPlotData;
+  playerStatistics: PlayerStatisticsData;
+};

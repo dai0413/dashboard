@@ -8,7 +8,7 @@ import { radarFields } from "../../../../../components/plot/RadarChart/radarFiel
 const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
   const {
     panels: {
-      piePlot: { text, items, reloadFun },
+      radarData: { text, items, reloadFun },
     },
   } = summary;
 
@@ -24,17 +24,17 @@ const PiePlotDefence = ({ summary }: { summary: UseClubTeamSummary }) => {
         viewModes={[ViewMode.TABLE, ViewMode.TILE, ViewMode.RADAR_CHART]}
         defaultViewMode={ViewMode.RADAR_CHART}
         viewData={{
-          [ViewMode.TABLE]: items.defRadarData
-            ? [items.defRadarData]
+          [ViewMode.TABLE]: items.data.defRadarData
+            ? [items.data.defRadarData]
             : undefined,
-          [ViewMode.TILE]: items.defRadarData
-            ? [items.defRadarData]
+          [ViewMode.TILE]: items.data.defRadarData
+            ? [items.data.defRadarData]
             : undefined,
-          [ViewMode.RADAR_CHART]: items.defRadarData
+          [ViewMode.RADAR_CHART]: items.data.defRadarData
             ? {
-                data: items.defRadarData,
+                data: items.data.defRadarData,
                 fields: radarFields,
-                label: `${items.matchCounts || 0}試合`,
+                label: `${items.data.matchCounts || 0}試合`,
               }
             : undefined,
         }}

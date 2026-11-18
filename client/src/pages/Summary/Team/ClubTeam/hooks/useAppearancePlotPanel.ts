@@ -8,12 +8,11 @@ import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
 import { PlayerAppearanceGet } from "../../../../../types/models/player-appearance";
 import { MatchGet } from "../../../../../types/models/match";
 import { PlayerRegistrationGet } from "../../../../../types/models/player-registration";
-import { FormationCounts } from "../types";
+import { AppearancePlotData, FormationCounts } from "../types";
 import { getGroupedPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/MatchMatrix/utils";
 import { createGroupedPlayers } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
 import { displayPositions } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/context/displayPositions";
 import { QuickFilterData } from "../../../../../types/table";
-import { GroupedPlayers } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 import {
   createTopHeaderText,
   filterMatchesByCompetitions,
@@ -26,30 +25,6 @@ import { readItemsBase } from "../../../../../lib/api";
 import { api } from "../../../../../context/api-context";
 import { convert } from "../../../../../lib/convert/DBtoGetted";
 import { ModelType } from "../../../../../types/models";
-
-type UseAppearancePlotPanel = {
-  reloadFun: (
-    _filterConditions: FilterableFieldDefinition[],
-    _sortConditions: SortableFieldDefinition[],
-    teamId: string,
-    date: string[],
-  ) => Promise<void>;
-
-  items: {
-    topHeaderText: string;
-    playerRegistrations: PlayerRegistrationGet[];
-    matches: MatchGet[];
-    playerAppearance: PlayerAppearanceGet[];
-    defaultOpenPositions: Set<string>;
-    groupedPlayers: GroupedPlayers[];
-    quickFilterDatas: QuickFilterData[];
-    injuries: InjuryGet[];
-
-    playerStatistics: PlayerStatistic[];
-  };
-
-  isLoading: boolean;
-};
 
 const readInjuries = async (teamId: string, date: string[]) => {
   const startDate = date[0].replace(
@@ -67,10 +42,7 @@ const readInjuries = async (teamId: string, date: string[]) => {
   return convert(ModelType.INJURY, res?.data);
 };
 
-export const useAppearancePlotPanel = (
-  teamId: string,
-  date: string[],
-): UseAppearancePlotPanel => {
+export const useAppearancePlotPanel = (teamId: string, date: string[]) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [playerAppearance, setPlayerAppearance] = useState<
     PlayerAppearanceGet[]
@@ -98,7 +70,7 @@ export const useAppearancePlotPanel = (
       _sortConditions: SortableFieldDefinition[],
       teamId: string,
       date: string[],
-    ) => {
+    ): Promise<AppearancePlotData | null> => {
       setIsLoading(true);
 
       try {
@@ -112,7 +84,12 @@ export const useAppearancePlotPanel = (
         setInjuries(injuries);
         setSelectedCompetitions(competitionIds);
 
-        await loadPlayerStatistics({
+        const {
+          formationCounts,
+          playerStatistics,
+          playerAppearance,
+          playerRegistration,
+        } = await loadPlayerStatistics({
           teamId,
           date,
           matchIds,
@@ -121,6 +98,21 @@ export const useAppearancePlotPanel = (
           setPlayerAppearance,
           setPlayerRegistrations,
         });
+
+        const appearancePlotData: AppearancePlotData = {
+          isLoading: false,
+
+          matches,
+          injuries,
+          selectedCompetitions: competitionIds,
+          selectedFormation: "BASE",
+          formationCounts: formationCounts || [],
+          playerStatistics: playerStatistics || [],
+          playerAppearance: playerAppearance || [],
+          playerRegistration: playerRegistration || [],
+        };
+
+        return appearancePlotData;
       } finally {
         setIsLoading(false);
       }
@@ -160,20 +152,18 @@ export const useAppearancePlotPanel = (
     [selectedCompetitions, matches],
   );
 
-  const competitions = useMemo(() => {
-    const competitionMap = new Map(
-      matches.map((match) => [match.competition.id, match.competition]),
-    );
-
-    return [...competitionMap.values()];
-  }, [matches]);
-
   const filteredMatches = useMemo(
     () => filterMatchesByCompetitions(matches, selectedCompetitions),
     [matches, selectedCompetitions],
   );
 
   const quickFilterDatas: QuickFilterData[] = useMemo(() => {
+    const competitionMap = new Map(
+      matches.map((match) => [match.competition.id, match.competition]),
+    );
+
+    const competitions = [...competitionMap.values()];
+
     const competitionFilter: QuickFilterData = {
       name: "competitions",
       multi: true,
@@ -185,13 +175,16 @@ export const useAppearancePlotPanel = (
       })),
     };
 
-    const formationFIlterItems = formationCounts.map((formationCount) => ({
-      key: formationCount.key,
-      label: `${formationCount.name} (${formationCount.count})`,
-      onClick: () => {
-        setSelectedFormation(formationCount.key);
-      },
-    }));
+    const formationFIlterItems =
+      formationCounts.length > 0
+        ? formationCounts.map((formationCount) => ({
+            key: formationCount.key,
+            label: `${formationCount.name} (${formationCount.count})`,
+            onClick: () => {
+              setSelectedFormation(formationCount.key);
+            },
+          }))
+        : [];
 
     const formationFilter: QuickFilterData = {
       name: "formations",
@@ -210,7 +203,7 @@ export const useAppearancePlotPanel = (
 
     return [competitionFilter, formationFilter];
   }, [
-    competitions,
+    matches,
     selectedCompetitions,
     selectedFormation,
     formationCounts,
@@ -219,9 +212,12 @@ export const useAppearancePlotPanel = (
 
   const { groupedPlayers, defaultOpenPositions, topHeaderText } =
     useMemo(() => {
-      const positionByFormation = formationCounts.find(
-        (formation) => formation.key === selectedFormation,
-      )?.position_formation;
+      const positionByFormation =
+        formationCounts.length > 0
+          ? formationCounts.find(
+              (formation) => formation.key === selectedFormation,
+            )?.position_formation
+          : undefined;
 
       const positions =
         positionByFormation && positionByFormation?.length > 0
@@ -248,8 +244,32 @@ export const useAppearancePlotPanel = (
       date,
     ]);
 
+  const restore = ({
+    isLoading,
+
+    matches,
+    selectedCompetitions,
+    selectedFormation,
+    formationCounts,
+    playerStatistics,
+    injuries,
+    playerAppearance,
+    playerRegistration,
+  }: AppearancePlotData) => {
+    setIsLoading(isLoading);
+    setMatches(matches);
+    setSelectedCompetitions(selectedCompetitions);
+    setSelectedFormation(selectedFormation);
+    setFormationCounts(formationCounts);
+    setPlayerStatistics(playerStatistics);
+    setInjuries(injuries);
+    setPlayerAppearance(playerAppearance);
+    setPlayerRegistrations(playerRegistration);
+  };
+
   return {
     reloadFun,
+    restore,
     items: {
       topHeaderText,
       playerRegistrations,

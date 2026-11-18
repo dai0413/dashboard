@@ -4,7 +4,7 @@ import { api } from "../../../../../context/api-context";
 import { Data } from "../../../../../types/types";
 import { readItemsBase } from "../../../../../lib/api";
 import { TeamCompetitionSeason } from "../../../../../types/models/team-competition-season";
-import { ModelType } from "../../../../../types/models";
+import { ModelDataMap, ModelType } from "../../../../../types/models";
 import { convert } from "../../../../../lib/convert/CreateLabel";
 
 export const useTeamCompetitionSeasonPanel = () => {
@@ -30,7 +30,9 @@ export const useTeamCompetitionSeasonPanel = () => {
     [teamCompetitionSeason],
   );
 
-  const readTeamCompetitionSeason = async (teamId: string) => {
+  const readTeamCompetitionSeason = async (
+    teamId: string,
+  ): Promise<Data<ModelDataMap[ModelType.TEAM_COMPETITION_SEASON]> | null> => {
     const obj = await readItemsBase<TeamCompetitionSeason[]>({
       apiInstance: api,
       backendRoute: API_PATHS.TEAM_COMPETITION_SEASON.ROOT,
@@ -48,21 +50,24 @@ export const useTeamCompetitionSeasonPanel = () => {
       },
     });
 
-    if (obj) {
-      setTeamCompetitionSeason({
-        data: obj.data,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
+    if (!obj) return null;
 
-      return obj.data;
-    }
+    const nextItems = {
+      data: obj.data,
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setTeamCompetitionSeason(nextItems);
+
+    return nextItems;
   };
 
   return {
     teamCompetitionSeason,
     readTeamCompetitionSeason,
     seasonOptions,
+    setTeamCompetitionSeason,
   };
 };

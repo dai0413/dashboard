@@ -9,13 +9,18 @@ import { convert } from "../../lib/convert/DBtoGetted";
 import { ModelType } from "../../types/models";
 import { FormationCounts } from "../../pages/Summary/Team/ClubTeam/types";
 
+export type ReturnValue = {
+  teamMatchFormation: TeamMatchFormationGet[];
+  formationCounts: FormationCounts[];
+};
+
 export const getFormationCounts = async (
   teamId: string,
   matchIds: string[],
   setTeamMatchFormations?: React.Dispatch<
     React.SetStateAction<TeamMatchFormationGet[]>
   >,
-): Promise<FormationCounts[] | undefined> => {
+): Promise<ReturnValue | undefined> => {
   const teamMatchFormationRes = await readItemsBase<TeamMatchFormation[]>({
     apiInstance: api,
     backendRoute: API_PATHS.TEAM_MATCH_FORMATION.ROOT,
@@ -23,10 +28,11 @@ export const getFormationCounts = async (
   });
 
   if (teamMatchFormationRes?.data) {
-    setTeamMatchFormations &&
-      setTeamMatchFormations(
-        convert(ModelType.TEAM_MATCH_FORMATION, teamMatchFormationRes.data),
-      );
+    const teamMatchFormation = convert(
+      ModelType.TEAM_MATCH_FORMATION,
+      teamMatchFormationRes.data,
+    );
+    setTeamMatchFormations && setTeamMatchFormations(teamMatchFormation);
 
     const formationCounts = Array.from(
       teamMatchFormationRes.data
@@ -49,6 +55,6 @@ export const getFormationCounts = async (
         .values(),
     ).sort((a, b) => b.count - a.count);
 
-    return formationCounts;
+    return { teamMatchFormation, formationCounts };
   }
 };

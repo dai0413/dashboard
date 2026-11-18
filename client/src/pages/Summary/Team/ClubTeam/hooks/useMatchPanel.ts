@@ -20,7 +20,10 @@ export const useMatchPanel = () => {
     isLoading: false,
   });
 
-  const readMatches = async (teamId: string, seasonRange: string[]) => {
+  const readMatches = async (
+    teamId: string,
+    seasonRange: string[],
+  ): Promise<Data<GettedModelDataMap[ModelType.MATCH]> | null> => {
     const obj = await readItemsBase<ModelDataMap[ModelType.MATCH][]>({
       apiInstance: api,
       backendRoute: API_PATHS.MATCH.ROOT,
@@ -35,20 +38,23 @@ export const useMatchPanel = () => {
       },
     });
 
-    if (obj) {
-      let processed = convert(ModelType.MATCH, obj.data);
+    if (!obj) return null;
 
-      setMatches({
-        data: processed,
-        totalCount: obj.totalCount ? obj.totalCount : 0,
-        page: obj.page ? obj.page : 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.MATCH, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setMatches(nextItems);
+
+    return nextItems;
   };
 
   return {
     matches,
     readMatches,
+    setMatches,
   };
 };

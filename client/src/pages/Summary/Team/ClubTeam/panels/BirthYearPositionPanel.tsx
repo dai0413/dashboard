@@ -30,7 +30,7 @@ const BirthYearPositionPanel = ({
         defaultViewMode={ViewMode.BIRTH_YEAR_POSITION_MATRIX}
         viewData={{
           [ViewMode.BIRTH_YEAR_POSITION_MATRIX]: {
-            teamId: id,
+            teamId: id!,
             ...items,
           },
         }}
