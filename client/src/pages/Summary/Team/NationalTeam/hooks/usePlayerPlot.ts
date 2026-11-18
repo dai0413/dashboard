@@ -31,6 +31,7 @@ import {
   getAgeLabel,
 } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
 import { MatrixPlayer } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/type";
+import { PlayerPlot } from "../types";
 
 type SeriesWithCompetition = NationalMatchSeries & {
   competitionIds: string[];
@@ -44,8 +45,7 @@ export const usePlayerPlotPanel = () => {
   const [playerAppearance, setPlayerAppearance] = useState<
     PlayerAppearanceGet[]
   >([]);
-  const [playerPlotIsLoading, setPlayerPlotIsLoading] =
-    useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [playerStatistics, setPlayerStatistics] = useState<MatrixPlayer[]>([]);
   const [formationCounts, setFormationCounts] = useState<FormationCounts[]>([]);
   const [competitions, setCompetitions] = useState<CompetitionGet[]>([]);
@@ -85,7 +85,7 @@ export const usePlayerPlotPanel = () => {
     selectedCompetitions,
     filteredNationalMatchSeries,
   }: ResetParams) => {
-    setPlayerPlotIsLoading(false);
+    setIsLoading(false);
     nationalCallUp && setNationalCallUp([]);
     nationalMatchSeries && setNationalMatchSeries([]);
     playerAppearance && setPlayerAppearance([]);
@@ -101,8 +101,8 @@ export const usePlayerPlotPanel = () => {
       teamId: string,
       filterConditions?: FilterableFieldDefinition[],
       sortConditions?: SortableFieldDefinition[],
-    ) => {
-      setPlayerPlotIsLoading(true);
+    ): Promise<PlayerPlot | null> => {
+      setIsLoading(true);
       const readParams: Record<string, any> = {
         getAll: true,
         team: teamId,
@@ -129,8 +129,8 @@ export const usePlayerPlotPanel = () => {
         }
       });
 
-      if (!startBaseDate || !endBaseDate)
-        return handleReset({
+      if (!startBaseDate || !endBaseDate) {
+        handleReset({
           nationalCallUp: true,
           nationalMatchSeries: true,
           playerAppearance: true,
@@ -140,6 +140,21 @@ export const usePlayerPlotPanel = () => {
           selectedCompetitions: true,
           filteredNationalMatchSeries: true,
         });
+        const newItems: PlayerPlot = {
+          isLoading: false,
+          competitions: [],
+          selectedCompetitions: [],
+          formationCounts: [],
+          selectedFormation: "",
+          playerStatistics: [],
+          playerAppearance: [],
+          nationalCallUp: [],
+          startBaseDate: undefined,
+          endBaseDate: undefined,
+        };
+
+        return newItems;
+      }
 
       setStartBaseDate(startBaseDate);
       setEndBaseDate(endBaseDate);
@@ -168,7 +183,20 @@ export const usePlayerPlotPanel = () => {
         !seriesIds ||
         seriesIds.length === 0
       ) {
-        return handleReset({
+        const newItems: PlayerPlot = {
+          isLoading: false,
+          competitions: [],
+          selectedCompetitions: [],
+          formationCounts: [],
+          selectedFormation: "",
+          playerStatistics: [],
+          playerAppearance: [],
+          nationalCallUp: [],
+          startBaseDate,
+          endBaseDate,
+        };
+
+        handleReset({
           nationalCallUp: true,
           playerAppearance: true,
           playerStatistics: true,
@@ -177,7 +205,22 @@ export const usePlayerPlotPanel = () => {
           selectedCompetitions: true,
           filteredNationalMatchSeries: true,
         });
+
+        return newItems;
       }
+
+      let newItems: PlayerPlot = {
+        isLoading: false,
+        competitions: [],
+        selectedCompetitions: [],
+        formationCounts: [],
+        selectedFormation: "",
+        playerStatistics: [],
+        playerAppearance: [],
+        nationalCallUp: [],
+        startBaseDate,
+        endBaseDate,
+      };
 
       const seiresWithCompetition: SeriesWithCompetition[] = obj.data.map(
         (d) => {
@@ -204,7 +247,10 @@ export const usePlayerPlotPanel = () => {
         },
       });
 
-      if (nationalCallupRes?.data) setNationalCallUp(nationalCallupRes.data);
+      if (nationalCallupRes?.data) {
+        setNationalCallUp(nationalCallupRes.data);
+        newItems["nationalCallUp"] = nationalCallupRes.data;
+      }
 
       const matches = [
         ...new Set(obj?.data.flatMap((d) => d.matches.map((m) => m)) ?? []),
@@ -219,10 +265,11 @@ export const usePlayerPlotPanel = () => {
           selectedCompetitions: true,
         });
       } else {
-        const formationCounts = await getFormationCounts(teamId, matchIds);
+        const value = await getFormationCounts(teamId, matchIds);
 
-        if (formationCounts) {
-          setFormationCounts(formationCounts);
+        if (value) {
+          setFormationCounts(value.formationCounts);
+          newItems["formationCounts"] = value.formationCounts;
         } else {
           handleReset({
             formationCounts: true,
@@ -251,6 +298,9 @@ export const usePlayerPlotPanel = () => {
 
           setCompetitions(competitions);
           setSelectedCompetitions(competitions.map((c) => c._id));
+
+          newItems["competitions"] = competitions;
+          newItems["selectedCompetitions"] = competitions.map((c) => c._id);
         }
       }
 
@@ -283,6 +333,7 @@ export const usePlayerPlotPanel = () => {
         });
 
         setPlayerStatistics(players);
+        newItems["playerStatistics"] = players;
       } else {
         setPlayerStatistics([]);
       }
@@ -299,11 +350,13 @@ export const usePlayerPlotPanel = () => {
           playerAppearanceRes.data,
         );
         setPlayerAppearance(newPlayerAppearance);
+        newItems["playerAppearance"] = newPlayerAppearance;
       } else {
         setPlayerAppearance([]);
       }
 
-      setPlayerPlotIsLoading(false);
+      setIsLoading(false);
+      return newItems;
     },
     [],
   );
@@ -318,12 +371,12 @@ export const usePlayerPlotPanel = () => {
     matchIds,
     seriesIds,
   }: HandleClickCompetition) => {
-    setPlayerPlotIsLoading(true);
+    setIsLoading(true);
 
-    const formationCounts = await getFormationCounts(teamId, matchIds);
+    const value = await getFormationCounts(teamId, matchIds);
 
-    if (formationCounts) {
-      setFormationCounts(formationCounts);
+    if (value) {
+      setFormationCounts(value.formationCounts);
     } else {
       setFormationCounts([]);
     }
@@ -388,7 +441,7 @@ export const usePlayerPlotPanel = () => {
       setPlayerAppearance([]);
     }
 
-    setPlayerPlotIsLoading(false);
+    setIsLoading(false);
   };
 
   const quickFilterDatas: QuickFilterData[] = useMemo(() => {
@@ -495,17 +548,40 @@ export const usePlayerPlotPanel = () => {
       endBaseDate,
     ]);
 
-  return {
-    nationalCallUp,
-    nationalMatchSeries: filteredNationalMatchSeries,
-    playerAppearance,
-    playerStatistics,
-    playerPlotIsLoading,
+  const restore = ({
+    isLoading,
+    competitions,
+    selectedCompetitions,
     formationCounts,
-    quickFilterDatas,
+    selectedFormation,
+    playerStatistics,
+    startBaseDate,
+    endBaseDate,
+  }: PlayerPlot) => {
+    setIsLoading(isLoading);
+    setCompetitions(competitions);
+    setSelectedCompetitions(selectedCompetitions);
+    setFormationCounts(formationCounts);
+    setSelectedFormation(selectedFormation);
+    setPlayerStatistics(playerStatistics);
+    setStartBaseDate(startBaseDate);
+    setEndBaseDate(endBaseDate);
+  };
+
+  return {
     readPlayerPlot,
-    groupedPlayers,
-    defaultOpenPositions,
-    topHeaderText,
+    restore,
+    isLoading,
+    items: {
+      nationalCallUp,
+      nationalMatchSeries: filteredNationalMatchSeries,
+      playerAppearance,
+      playerStatistics,
+      formationCounts,
+      quickFilterDatas,
+      groupedPlayers,
+      defaultOpenPositions,
+      topHeaderText,
+    },
   };
 };

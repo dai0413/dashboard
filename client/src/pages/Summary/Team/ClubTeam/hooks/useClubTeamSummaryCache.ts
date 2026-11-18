@@ -43,7 +43,27 @@ export const useClubTeamSummaryCache = () => {
 
     if (!cached) return false;
 
-    return cached.staffRegistration !== undefined;
+    return (
+      cached.seasonDate !== undefined &&
+      cached.selectedteamCompetitionSeason !== undefined &&
+      cached.player !== undefined &&
+      cached.future_in !== undefined &&
+      cached.transfer_in !== undefined &&
+      cached.transfer_out !== undefined &&
+      cached.loan !== undefined &&
+      cached.injury !== undefined &&
+      cached.match !== undefined &&
+      cached.playerRegistration !== undefined &&
+      cached.statsL !== undefined &&
+      cached.staffRegistration !== undefined &&
+      cached.radarData !== undefined &&
+      cached.linePlot !== undefined &&
+      cached.teamCompetitionSeason !== undefined &&
+      cached.appearancePlot !== undefined &&
+      cached.birthYearPositionMatrix !== undefined &&
+      cached.formationPlot !== undefined &&
+      cached.playerStatistics !== undefined
+    );
   }, []);
 
   /**

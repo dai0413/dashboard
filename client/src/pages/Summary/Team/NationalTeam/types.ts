@@ -1,5 +1,9 @@
 import { PlayerStatistic } from "@dai0413/myorg-shared/types/aggregate/player";
-import { GettedModelDataMap, ModelType } from "../../../../types/models";
+import {
+  GettedModelDataMap,
+  ModelDataMap,
+  ModelType,
+} from "../../../../types/models";
 import { NationalCallup } from "../../../../types/models/national-callup";
 import { NationalMatchSeries } from "../../../../types/models/national-match-series";
 import { PanelSummary, ServerDepPanelSummary, UseSummary } from "../../types";
@@ -10,6 +14,7 @@ import {
   MonthleyCalendarHeaderItem,
   MonthlyCalendarGroup,
 } from "../../../../types/calendar";
+import { Data } from "../../../../types/types";
 
 export const NATIONAL_TEAM_TAB = {
   SERIES: "series",
@@ -58,3 +63,40 @@ export type UseNationalTeamSummary = UseSummary<
   NationalTeamTab,
   NationalTeamPanels
 >;
+
+export type SeriesData = {
+  isLoading: boolean;
+
+  series: Data<GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES]>;
+  selectedKey: string;
+};
+
+export type PlayerPlot = {
+  isLoading: boolean;
+  competitions: GettedModelDataMap[ModelType.COMPETITION][];
+  selectedCompetitions: string[];
+  formationCounts: FormationCounts[];
+  selectedFormation: string;
+  playerStatistics: PlayerStatistic[];
+  startBaseDate: Date | undefined;
+  endBaseDate: Date | undefined;
+
+  playerAppearance: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
+  nationalCallUp: ModelDataMap[ModelType.NATIONAL_CALLUP][];
+};
+
+export type FormationPlot = {
+  isLoading: boolean;
+
+  groupedPlayers: GroupedPlayers[];
+  quickFilterDatas: QuickFilterData[];
+};
+
+export type NationalTeamSummaryCache = {
+  match: Data<GettedModelDataMap[ModelType.MATCH]>;
+  player: Data<GettedModelDataMap[ModelType.PLAYER]>;
+  series: SeriesData;
+  playerPlot: PlayerPlot;
+
+  formationPlot: FormationPlot;
+};

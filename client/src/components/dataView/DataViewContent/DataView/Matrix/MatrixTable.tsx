@@ -61,7 +61,8 @@ export const MatrixTable = <T extends Label>({
   );
 
   useEffect(() => {
-    setOpenPositions(new Set([...defaultOpenPositions, "no-pos"]));
+    if (defaultOpenPositions)
+      setOpenPositions(new Set([...defaultOpenPositions, "no-pos"]));
   }, [defaultOpenPositions]);
 
   const onTogglePosition = (key: string) => {
@@ -144,78 +145,82 @@ export const MatrixTable = <T extends Label>({
           </thead>
 
           <tbody>
-            {groupedPlayers.map((group) => (
-              <React.Fragment key={group.key}>
-                <tr>
-                  <td
-                    className={`${cell} sticky left-0 z-20 min-w-[180px] bg-gray-100 px-5 py-1.5 font-bold whitespace-nowrap hover:cursor-pointer`}
-                    onClick={() => onTogglePosition(group.key)}
-                  >
-                    <span className="mr-2">
-                      {openPositions.has(group.key) ? "▼" : "▶"}
-                    </span>
-                    {group.position} ({group.players.length})
-                  </td>
-
-                  <td className={`${cell} bg-gray-100`} />
-                  <td className={`${cell} bg-gray-100`} />
-                  {columns.map((column, i) => (
+            {groupedPlayers &&
+              groupedPlayers.map((group) => (
+                <React.Fragment key={group.key}>
+                  <tr>
                     <td
-                      key={column.id || i}
-                      className={`${cell} bg-gray-100`}
-                    />
-                  ))}
-                </tr>
+                      className={`${cell} sticky left-0 z-20 min-w-[180px] bg-gray-100 px-5 py-1.5 font-bold whitespace-nowrap hover:cursor-pointer`}
+                      onClick={() => onTogglePosition(group.key)}
+                    >
+                      <span className="mr-2">
+                        {openPositions.has(group.key) ? "▼" : "▶"}
+                      </span>
+                      {group.position} ({group.players.length})
+                    </td>
 
-                {openPositions.has(group.key) &&
-                  group.players.map((player, index) => (
-                    <tr key={player.player._id}>
+                    <td className={`${cell} bg-gray-100`} />
+                    <td className={`${cell} bg-gray-100`} />
+                    {columns.map((column, i) => (
                       <td
-                        className={`${bodyCell(index)} sticky left-0 z-10 min-w-[180px] whitespace-nowrap px-5 py-0.5 font-semibold`}
-                      >
-                        <Link
-                          to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
-                          className="underline hover:text-blue-600"
+                        key={column.id || i}
+                        className={`${cell} bg-gray-100`}
+                      />
+                    ))}
+                  </tr>
+
+                  {openPositions.has(group.key) &&
+                    group.players.map((player, index) => (
+                      <tr key={player.player._id}>
+                        <td
+                          className={`${bodyCell(index)} sticky left-0 z-10 min-w-[180px] whitespace-nowrap px-5 py-0.5 font-semibold`}
                         >
-                          {player.player.name}
-                        </Link>
+                          <Link
+                            to={`${APP_ROUTES.PLAYER_SUMMARY}/${player.player._id}`}
+                            className="underline hover:text-blue-600"
+                          >
+                            {player.player.name}
+                          </Link>
 
-                        <span className="ml-1 text-sm text-gray-500">
-                          {player.ageLabel}
-                        </span>
+                          <span className="ml-1 text-sm text-gray-500">
+                            {player.ageLabel}
+                          </span>
 
-                        <span className="ml-1 text-sm text-gray-500">
-                          {player.note}
-                        </span>
-                      </td>
+                          <span className="ml-1 text-sm text-gray-500">
+                            {player.note}
+                          </span>
+                        </td>
 
-                      <td
-                        className={`${bodyCell(index)} whitespace-nowrap px-5 py-0.5 font-semibold`}
-                      >
-                        {`${player.starts}`}
-                        <span className="text-sm text-gray-500">/</span>
-                        {`${player.subs}`}
-                      </td>
+                        <td
+                          className={`${bodyCell(index)} whitespace-nowrap px-5 py-0.5 font-semibold`}
+                        >
+                          {`${player.starts}`}
+                          <span className="text-sm text-gray-500">/</span>
+                          {`${player.subs}`}
+                        </td>
 
-                      <td
-                        className={`${bodyCell(index)} whitespace-nowrap px-5 py-0.5 font-semibold`}
-                      >
-                        {`${player.minutes}`}
+                        <td
+                          className={`${bodyCell(index)} whitespace-nowrap px-5 py-0.5 font-semibold`}
+                        >
+                          {`${player.minutes}`}
 
-                        <span className="text-sm text-gray-500">分</span>
-                      </td>
+                          <span className="text-sm text-gray-500">分</span>
+                        </td>
 
-                      {columns.map((column, i) => {
-                        return (
-                          <td key={column.id || i} className={bodyCell(index)}>
-                            {renderCell(group.key, player, column, index)}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-              </React.Fragment>
-            ))}
+                        {columns.map((column, i) => {
+                          return (
+                            <td
+                              key={column.id || i}
+                              className={bodyCell(index)}
+                            >
+                              {renderCell(group.key, player, column, index)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                </React.Fragment>
+              ))}
           </tbody>
         </table>
       </div>

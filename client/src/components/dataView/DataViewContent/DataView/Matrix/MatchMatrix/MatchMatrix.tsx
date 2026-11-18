@@ -107,10 +107,6 @@ const MatchMatrix = ({
         // 選手の負傷情報
         const injuryDatas = injuryMap.get(`${player.player._id}`);
 
-        if (player.player.name === "安西　幸輝") {
-          console.log("injureyDatas", injuryMap, injuryDatas);
-        }
-
         // 試合日以前に負傷しており、出場記録がない
         const injured: boolean = !!injuryDatas?.some((injury) => {
           const dates = [

@@ -27,6 +27,13 @@ import { Summary } from "./routes";
 import { JapaneseInEuropePageProvider } from "./context/japaneseInEurope-context";
 import { CompetitionSummaryProvider } from "./pages/Summary/Competition/contexts/CompetitionSummaryContext";
 import { MatchSummaryProvider } from "./pages/Summary/Match/contexts/MatchSummaryContext";
+import { NationalSummaryProvider } from "./pages/Summary/National/contexts/NationalSummaryContext";
+import { NationalMatchSeriesSummaryProvider } from "./pages/Summary/NationalMatchSeries/contexts/NationalMatchSeriesSummaryContext";
+import { PlayerSummaryProvider } from "./pages/Summary/Player/contexts/PlayerSummaryContext";
+import { RefereeSummaryProvider } from "./pages/Summary/Referee/contexts/RefereeSummaryContext";
+import { StaffSummaryProvider } from "./pages/Summary/Staff/contexts/StaffSummaryContext";
+import { ClubTeamSummaryProvider } from "./pages/Summary/Team/ClubTeam/contexts/ClubTeamSummaryContext";
+import { NationalTeamSummaryProvider } from "./pages/Summary/Team/NationalTeam/contexts/NationalTeamSummaryContext";
 
 const App: React.FC = () => {
   return (
@@ -42,95 +49,114 @@ const App: React.FC = () => {
                       <TopPageProvider>
                         <CompetitionSummaryProvider>
                           <MatchSummaryProvider>
-                            <div className="App">
-                              <Routes>
-                                {Object.entries(models).map(
-                                  ([key, { table: Table }]) => (
-                                    <Route
-                                      path={`/${key}/*`}
-                                      element={wrapWithPrivateRoute(
-                                        <Layout>
-                                          <Table />
-                                        </Layout>,
-                                      )}
-                                    />
-                                  ),
-                                )}
+                            <NationalSummaryProvider>
+                              <NationalMatchSeriesSummaryProvider>
+                                <NationalTeamSummaryProvider>
+                                  <ClubTeamSummaryProvider>
+                                    <PlayerSummaryProvider>
+                                      <StaffSummaryProvider>
+                                        <RefereeSummaryProvider>
+                                          <div className="App">
+                                            <Routes>
+                                              {Object.entries(models).map(
+                                                ([key, { table: Table }]) => (
+                                                  <Route
+                                                    path={`/${key}/*`}
+                                                    element={wrapWithPrivateRoute(
+                                                      <Layout>
+                                                        <Table />
+                                                      </Layout>,
+                                                    )}
+                                                  />
+                                                ),
+                                              )}
 
-                                <Route
-                                  path={APP_ROUTES.ADMIN}
-                                  element={wrapWithPrivateRoute(
-                                    <Layout>
-                                      <AdminDashboard />
-                                    </Layout>,
-                                  )}
-                                />
-                                <Route
-                                  path={APP_ROUTES.HOME}
-                                  element={
-                                    <Layout>
-                                      <Top />
-                                    </Layout>
-                                  }
-                                />
-                                <Route
-                                  path={APP_ROUTES.LOGIN}
-                                  element={
-                                    <Layout>
-                                      <Login />
-                                    </Layout>
-                                  }
-                                />
-                                <Route
-                                  path={APP_ROUTES.ME}
-                                  element={
-                                    <PrivateRoute>
-                                      <Layout>
-                                        <Me />
-                                      </Layout>
-                                    </PrivateRoute>
-                                  }
-                                />
-                                <Route
-                                  path={APP_ROUTES.JAPANESE_IN_EUROPE}
-                                  element={wrapWithPrivateRoute(
-                                    <Layout>
-                                      <JapaneseInEurope />
-                                    </Layout>,
-                                  )}
-                                />
-                                <Route
-                                  path={APP_ROUTES.NO_NUMBER}
-                                  element={wrapWithPrivateRoute(
-                                    <Layout>
-                                      <NoNumber />
-                                    </Layout>,
-                                  )}
-                                />
+                                              <Route
+                                                path={APP_ROUTES.ADMIN}
+                                                element={wrapWithPrivateRoute(
+                                                  <Layout>
+                                                    <AdminDashboard />
+                                                  </Layout>,
+                                                )}
+                                              />
+                                              <Route
+                                                path={APP_ROUTES.HOME}
+                                                element={
+                                                  <Layout>
+                                                    <Top />
+                                                  </Layout>
+                                                }
+                                              />
+                                              <Route
+                                                path={APP_ROUTES.LOGIN}
+                                                element={
+                                                  <Layout>
+                                                    <Login />
+                                                  </Layout>
+                                                }
+                                              />
+                                              <Route
+                                                path={APP_ROUTES.ME}
+                                                element={
+                                                  <PrivateRoute>
+                                                    <Layout>
+                                                      <Me />
+                                                    </Layout>
+                                                  </PrivateRoute>
+                                                }
+                                              />
+                                              <Route
+                                                path={
+                                                  APP_ROUTES.JAPANESE_IN_EUROPE
+                                                }
+                                                element={wrapWithPrivateRoute(
+                                                  <Layout>
+                                                    <JapaneseInEurope />
+                                                  </Layout>,
+                                                )}
+                                              />
+                                              <Route
+                                                path={APP_ROUTES.NO_NUMBER}
+                                                element={wrapWithPrivateRoute(
+                                                  <Layout>
+                                                    <NoNumber />
+                                                  </Layout>,
+                                                )}
+                                              />
 
-                                <Route
-                                  path={APP_ROUTES.NO_CALLUP}
-                                  element={wrapWithPrivateRoute(
-                                    <Layout>
-                                      <NoCallUp />
-                                    </Layout>,
-                                  )}
-                                />
+                                              <Route
+                                                path={APP_ROUTES.NO_CALLUP}
+                                                element={wrapWithPrivateRoute(
+                                                  <Layout>
+                                                    <NoCallUp />
+                                                  </Layout>,
+                                                )}
+                                              />
 
-                                <Route
-                                  path={`/${APP_ROUTES.NEWS}/*`}
-                                  element={wrapWithPrivateRoute(
-                                    <Layout>
-                                      <News />
-                                    </Layout>,
-                                  )}
-                                />
+                                              <Route
+                                                path={`/${APP_ROUTES.NEWS}/*`}
+                                                element={wrapWithPrivateRoute(
+                                                  <Layout>
+                                                    <News />
+                                                  </Layout>,
+                                                )}
+                                              />
 
-                                {Summary}
+                                              {Summary}
 
-                                <Route path="*" element={<NotFound />} />
-                              </Routes>
-                            </div>
+                                              <Route
+                                                path="*"
+                                                element={<NotFound />}
+                                              />
+                                            </Routes>
+                                          </div>
+                                        </RefereeSummaryProvider>
+                                      </StaffSummaryProvider>
+                                    </PlayerSummaryProvider>
+                                  </ClubTeamSummaryProvider>
+                                </NationalTeamSummaryProvider>
+                              </NationalMatchSeriesSummaryProvider>
+                            </NationalSummaryProvider>
                           </MatchSummaryProvider>
                         </CompetitionSummaryProvider>
                       </TopPageProvider>

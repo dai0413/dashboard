@@ -115,7 +115,6 @@ export const NationalSummaryProvider = ({ children }: Props) => {
       latestIdRef.current = id;
 
       if (loadedNationalId === id) {
-        console.log("取得済みのためスキップ", id);
         return;
       }
 
@@ -133,8 +132,6 @@ export const NationalSummaryProvider = ({ children }: Props) => {
         setLoadedNationalId(id);
         return;
       }
-
-      console.log("データ取得開始", id);
 
       await fetchNationalData(id);
     },

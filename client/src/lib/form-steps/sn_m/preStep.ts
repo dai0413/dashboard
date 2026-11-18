@@ -45,8 +45,6 @@ export const createPreStep = (
         requests: requests,
       });
 
-      console.log("updatedDraftData", updatedDraftData);
-
       return updatedDraftData;
     },
   };

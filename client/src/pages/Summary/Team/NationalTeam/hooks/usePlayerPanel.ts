@@ -18,7 +18,9 @@ export const usePlayerPanel = () => {
     isLoading: false,
   });
 
-  const readPlayers = async (teamId: string) => {
+  const readPlayers = async (
+    teamId: string,
+  ): Promise<Data<GettedModelDataMap[ModelType.PLAYER]> | null> => {
     setPlayers({ data: [], page: 1, totalCount: 0, isLoading: true });
     const nationalCallups = await readItemsBase<NationalCallup[]>({
       apiInstance: api,
@@ -45,13 +47,17 @@ export const usePlayerPanel = () => {
       nationalMatchSeries?.data.length === 0 ||
       !nationalCallups?.data ||
       nationalCallups?.data.length === 0
-    )
-      return setPlayers({
+    ) {
+      const nextItems = {
         data: [],
         page: 1,
         totalCount: 1,
         isLoading: false,
-      });
+      };
+
+      setPlayers(nextItems);
+      return nextItems;
+    }
 
     const uniqueDatas = nationalCallups.data
       .filter(
@@ -73,16 +79,20 @@ export const usePlayerPanel = () => {
       convert(ModelType.PLAYER, data.player),
     );
 
-    return setPlayers({
+    const nextItems = {
       data: players,
-      totalCount: players.length,
       page: 1,
+      totalCount: players.length,
       isLoading: false,
-    });
+    };
+
+    setPlayers(nextItems);
+    return nextItems;
   };
 
   return {
     players,
     readPlayers,
+    setPlayers,
   };
 };

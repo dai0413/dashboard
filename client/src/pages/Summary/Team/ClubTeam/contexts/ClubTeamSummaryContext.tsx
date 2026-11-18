@@ -399,12 +399,9 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
         if (isStale()) return;
       }
 
-      console.log("isStale", isStale());
-
       if (isStale()) return;
 
       const result = await readDatas(id);
-      console.log("id", id, result);
 
       // 取得できたデータは正しいのでキャッシュには残す
       saveCache(id, { ...result });
@@ -448,7 +445,6 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
       latestIdRef.current = id;
 
       if (loadedClubTeamId === id) {
-        console.log("取得済みのためスキップ", id);
         return;
       }
 
@@ -466,8 +462,6 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
         setLoadedClubTeamId(id);
         return;
       }
-
-      console.log("データ取得開始", id);
 
       await fetchClubTeamData(id);
     },

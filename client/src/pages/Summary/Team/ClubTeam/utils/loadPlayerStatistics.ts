@@ -110,9 +110,11 @@ export const loadPlayerStatistics = async ({
 
   // フォーメーション集計
   if (setFormationCounts) {
-    const formationCounts = await getFormationCounts(teamId, matchIds);
-    setFormationCounts(formationCounts ?? []);
-    returnVal["formationCounts"] = formationCounts;
+    const values = await getFormationCounts(teamId, matchIds);
+    if (values) {
+      setFormationCounts(values.formationCounts ?? []);
+      returnVal["formationCounts"] = values.formationCounts;
+    }
   }
 
   let newPlayerAppearance: PlayerAppearanceGet[] = [];

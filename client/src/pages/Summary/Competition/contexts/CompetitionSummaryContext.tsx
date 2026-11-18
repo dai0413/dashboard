@@ -238,7 +238,6 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
       latestIdRef.current = id;
 
       if (loadedCompetitionId === id) {
-        console.log("取得済みのためスキップ", id);
         return;
       }
 
@@ -256,8 +255,6 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
         setLoadedCompetitionId(id);
         return;
       }
-
-      console.log("データ取得開始", id);
 
       await fetchCompetitionData(id);
     },

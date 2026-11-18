@@ -6,6 +6,9 @@ export const createAppearanceMap = (
 ): Map<string, Map<string, PlayerAppearanceGet>> => {
   const appearanceMap = new Map<string, Map<string, PlayerAppearanceGet>>();
 
+  if (!playerAppearances || playerAppearances.length === 0)
+    return appearanceMap;
+
   playerAppearances.forEach((appearance) => {
     const playerId = appearance.player.id;
     const matchId = appearance.match.id;

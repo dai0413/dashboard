@@ -119,7 +119,6 @@ export const NationalMatchSeriesSummaryProvider = ({ children }: Props) => {
       latestIdRef.current = id;
 
       if (loadedNationalMatchSeriesId === id) {
-        console.log("取得済みのためスキップ", id);
         return;
       }
 
@@ -137,8 +136,6 @@ export const NationalMatchSeriesSummaryProvider = ({ children }: Props) => {
         setLoadedNationalMatchSeriesId(id);
         return;
       }
-
-      console.log("データ取得開始", id);
 
       await fetchNationalMatchSeriesData(id);
     },

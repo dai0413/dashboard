@@ -1,15 +1,28 @@
 import { useParams } from "react-router-dom";
 import SummaryTabMenu from "../../components/SummaryTabMenu";
-import { useNationalTeamSummary } from "./hooks/useNationalTeamSummary";
 import { Info, PanelRenderer } from "./components";
 import { tabItems } from "./constants/tabs";
 import { AccentSection } from "../../../../components/layout";
+import { useNationalTeamSummary } from "./contexts/NationalTeamSummaryContext";
+import { useEffect, useRef } from "react";
 
 const NationalTeam = () => {
   const { id } = useParams();
+  const summary = useNationalTeamSummary();
+
+  const activateIdRef = useRef(summary.activateId);
+
+  useEffect(() => {
+    activateIdRef.current = summary.activateId;
+  }, [summary.activateId]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    void activateIdRef.current(id);
+  }, [id]);
 
   if (!id) return;
-  const summary = useNationalTeamSummary(id);
 
   const primaryColor = summary.selected?.primaryColor;
 

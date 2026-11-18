@@ -18,6 +18,7 @@ import {
 } from "../../../../../types/calendar";
 import { fullNationalPeriods } from "../../../../../constants/period";
 import { filterDatas } from "../../../../../utils/calendar/filterDatas";
+import { SeriesData } from "../types";
 
 const headerItems: MonthleyCalendarHeaderItem[] = fullNationalPeriods
   .sort((a, b) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime())
@@ -77,6 +78,7 @@ const convertToMonthlyCalendarTableData = (
 };
 
 export const useSeriesPanel = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedKey, setSelectedKey] = useState<string>(defaultKey);
   const [series, setSeries] = useState<
     Data<GettedModelDataMap[ModelType.NATIONAL_MATCH_SERIES]>
@@ -87,7 +89,7 @@ export const useSeriesPanel = () => {
     isLoading: false,
   });
 
-  const readItems = async (teamId: string) => {
+  const readItems = async (teamId: string): Promise<SeriesData | null> => {
     const obj = await readItemsBase<
       ModelDataMap[ModelType.NATIONAL_MATCH_SERIES][]
     >({
@@ -106,16 +108,18 @@ export const useSeriesPanel = () => {
       },
     });
 
-    if (obj) {
-      const processed = convert(ModelType.NATIONAL_MATCH_SERIES, obj.data);
+    if (!obj) return null;
 
-      setSeries({
-        data: processed,
-        totalCount: obj.totalCount ?? 0,
-        page: obj.page ?? 1,
-        isLoading: false,
-      });
-    }
+    const nextItems = {
+      data: convert(ModelType.NATIONAL_MATCH_SERIES, obj.data),
+      totalCount: obj.totalCount ?? 0,
+      page: obj.page ?? 1,
+      isLoading: false,
+    };
+
+    setSeries(nextItems);
+
+    return { isLoading: false, series: nextItems, selectedKey };
   };
 
   const { filteredDatas, groups } = useMemo(() => {
@@ -137,9 +141,16 @@ export const useSeriesPanel = () => {
     return { filteredDatas, groups };
   }, [series.data, selectedKey]);
 
+  const restore = ({ isLoading, series, selectedKey }: SeriesData) => {
+    setIsLoading(isLoading);
+    setSelectedKey(selectedKey);
+    setSeries(series);
+  };
+
   return {
-    isLoading: series.isLoading,
+    isLoading: isLoading,
     readItems,
+    restore,
     items: {
       series: filteredDatas,
       monthlyCalendar: {

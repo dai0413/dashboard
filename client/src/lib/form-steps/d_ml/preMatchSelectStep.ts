@@ -204,8 +204,6 @@ const getMatchSelectStep = <K extends keyof FormTypeMap>(
 
         const newMetaData = { ...metaData, data, identifiers };
 
-        console.log("updated 2", newMetaData);
-
         return { formData, formLabel, metaData: newMetaData };
       },
     },

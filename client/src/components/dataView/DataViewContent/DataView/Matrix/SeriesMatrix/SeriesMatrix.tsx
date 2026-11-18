@@ -42,25 +42,29 @@ const SeriesMatrix = ({
   const callUpMap = useMemo(
     () =>
       new Map(
-        nationalCallUp.map((callUp) => [
-          `${callUp.player._id}-${callUp.series._id}`,
-          callUp,
-        ]),
+        nationalCallUp
+          ? nationalCallUp.map((callUp) => [
+              `${callUp.player._id}-${callUp.series._id}`,
+              callUp,
+            ])
+          : [],
       ),
     [nationalCallUp],
   );
 
   const seriesList = useMemo(
     () =>
-      [...nationalMatchSeries].sort((a, b) => {
-        if (!a.joined_at && !b.joined_at) return 0;
-        if (!a.joined_at) return 1;
-        if (!b.joined_at) return -1;
+      nationalMatchSeries
+        ? [...nationalMatchSeries].sort((a, b) => {
+            if (!a.joined_at && !b.joined_at) return 0;
+            if (!a.joined_at) return 1;
+            if (!b.joined_at) return -1;
 
-        return (
-          new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime()
-        );
-      }),
+            return (
+              new Date(a.joined_at).getTime() - new Date(b.joined_at).getTime()
+            );
+          })
+        : [],
     [nationalMatchSeries],
   );
 

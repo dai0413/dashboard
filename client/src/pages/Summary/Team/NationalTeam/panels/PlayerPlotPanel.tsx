@@ -40,7 +40,7 @@ const PlayerPlotPanel = ({ summary }: { summary: UseNationalTeamSummary }) => {
     <>
       <h2 className="text-base font-semibold text-gray-800">{text}</h2>
       <DataViewContainer
-        totalCount={items.nationalCallUp.length || 0}
+        totalCount={items.nationalCallUp ? items.nationalCallUp.length : 0}
         filterField={filedDefinitions?.filter(isFilterable)}
         sortField={[]}
         reloadFun={async (filterConditions, sortConditions) =>
