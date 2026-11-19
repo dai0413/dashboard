@@ -48,6 +48,7 @@ import {
 } from "../../types/calendar";
 import { StatsActual } from "../../pages/Summary/Competition/types";
 import { InjuryGet } from "../../types/models/injury";
+import { isEmptyObject } from "../../utils/data";
 
 type DataViewContainerProps<T, F> = {
   totalCount: number;
@@ -317,16 +318,17 @@ const Container = <K extends Record<string, unknown>, F>({
   }, [newPageNum]);
 
   const fields: DisplayFields[] = useMemo(() => {
-    if (columnVisibility) {
+    if (columnVisibility && !isEmptyObject(columnVisibility)) {
       return (
         fieldDefinitions
-          ?.map((f) => {
+          ?.filter((f) => columnVisibility[f.key])
+          .map((f) => {
             const visibility = columnVisibility[f.key];
 
             return {
               label: f.label,
               key: f.key,
-              selecting: visibility.display,
+              selecting: !!visibility.display,
               index: visibility.index,
             };
           })

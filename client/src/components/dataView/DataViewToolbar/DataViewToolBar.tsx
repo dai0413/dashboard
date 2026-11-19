@@ -46,6 +46,7 @@ import {
 import CheckMenuItem from "../../ui/CheckMenuItem";
 import { useModelContext } from "../../../context/models/model-wrapper";
 import { ColumnVisibility } from "../../../types/field";
+import { isEmptyObject } from "../../../utils/data";
 
 type MenuItem = { label: string; onClick: () => void };
 
@@ -400,9 +401,16 @@ const DataViewToolBar = <Data, Form>({
           <CheckMenuItem
             key={h.key}
             label={h.label}
-            checked={columnVisibility ? columnVisibility[h.key].display : false}
+            checked={
+              columnVisibility &&
+              !isEmptyObject(columnVisibility) &&
+              columnVisibility[h.key]
+                ? columnVisibility[h.key].display
+                : false
+            }
             onChange={() => {
-              if (!columnVisibility) return;
+              if (!columnVisibility || isEmptyObject(columnVisibility))
+                return [];
               setColumnVisibility({
                 ...columnVisibility,
                 [h.key]: {

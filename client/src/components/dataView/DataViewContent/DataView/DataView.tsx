@@ -35,6 +35,7 @@ import { ScatterPlot } from "../../../plot/Scatter";
 import { radarFields } from "../../../plot/RadarChart/radarFields";
 import { StatsActual } from "../../../../pages/Summary/Competition/types";
 import { InjuryGet } from "../../../../types/models/injury";
+import { isEmptyObject } from "../../../../utils/data";
 
 type DataViewProps<T> = {
   modelType?: ModelType;
@@ -156,7 +157,7 @@ const DataView = <T,>({
   }, [modelType, linkField, open]);
 
   const visibleHeaders = useMemo(() => {
-    if (!columnVisibility) return [];
+    if (!columnVisibility || isEmptyObject(columnVisibility)) return [];
     const val =
       headers
         ?.filter((h) => columnVisibility[h.key].display)
