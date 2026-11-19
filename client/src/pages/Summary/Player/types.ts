@@ -60,6 +60,7 @@ export type UsePlayerSummary = UseSummary<
 >;
 
 export type PlayerSummaryCache = {
+  selectedTab: PlayerTab;
   transfer: Data<GettedModelDataMap[ModelType.TRANSFER]>;
   injury: Data<GettedModelDataMap[ModelType.INJURY]>;
   playerRegistration: Data<GettedModelDataMap[ModelType.PLAYER_REGISTRATION]>;

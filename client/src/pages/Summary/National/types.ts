@@ -42,6 +42,8 @@ export type NationalMatchSeriesCache = {
 };
 
 export type NationalSummaryCache = {
+  selectedTab: NationalTab;
+
   competition: Data<GettedModelDataMap[ModelType.COMPETITION]>;
   team: Data<GettedModelDataMap[ModelType.TEAM]>;
   nationalMatchSeries: NationalMatchSeriesCache;

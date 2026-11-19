@@ -2,6 +2,7 @@ import type { ClubTeamSummaryCache } from "../types";
 import { useSummaryCache } from "../../../../../utils/summary/useSummaryCache";
 
 const CLUB_TEAM_CACHE_KEYS = [
+  "selectedTab",
   "seasonDate",
   "selectedteamCompetitionSeason",
   "player",

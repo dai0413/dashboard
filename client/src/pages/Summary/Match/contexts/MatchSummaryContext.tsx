@@ -46,11 +46,17 @@ export const MatchSummaryProvider = ({ children }: Props) => {
 
   const { getCache, saveCache, isCacheComplete } = useMatchSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as MatchTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as MatchTab;
+      setSelectedTab(tab);
+
+      if (loadedMatchId) {
+        saveCache(loadedMatchId, { selectedTab: tab });
+      }
+    },
+    [loadedMatchId, saveCache],
+  );
 
   const { awayStatsL, readAwayStatsL, setAwayStatsL } = useAwayStatsLPanel();
   const { awaySubMembers, readAwaySubMembers, setAwaySubMembers } =
@@ -206,14 +212,18 @@ export const MatchSummaryProvider = ({ children }: Props) => {
       if (!homeTeamId || !awayTeamId) return;
 
       const result = await readDatas(matchId, homeTeamId, awayTeamId);
+      const selectedTab = getCache(matchId)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(matchId, { ...result });
+      saveCache(matchId, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
+      if (isStale()) return;
       setLoadedMatchId(matchId);
     },
-    [selected, selected?._id, readItem, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   const activateId = useCallback(
@@ -224,6 +234,7 @@ export const MatchSummaryProvider = ({ children }: Props) => {
         return;
       }
 
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
       const cached = getCache(id);
 
       if (cached && isCacheComplete(id)) {
@@ -233,7 +244,6 @@ export const MatchSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
         setLoadedMatchId(id);
         return;

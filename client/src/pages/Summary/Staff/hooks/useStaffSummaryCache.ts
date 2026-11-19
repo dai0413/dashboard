@@ -2,6 +2,7 @@ import type { StaffSummaryCache } from "../types";
 import { useSummaryCache } from "../../../../utils/summary/useSummaryCache";
 
 const STAFF_CACHE_KEYS = [
+  "selectedTab",
   "staffRegistration",
 ] as const satisfies (keyof StaffSummaryCache)[];
 

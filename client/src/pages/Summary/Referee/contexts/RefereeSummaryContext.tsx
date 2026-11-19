@@ -29,15 +29,21 @@ export const RefereeSummaryProvider = ({ children }: Props) => {
 
   const [selectedTab, setSelectedTab] = useState<RefereeTab>(DEFAULT_TAB);
 
-  const [loadedPlaeyrId, setLoadedPlaeyrId] = useState<string | null>(null);
+  const [loadedRefereeId, setLoadedRefereeId] = useState<string | null>(null);
 
   const { getCache, saveCache, isCacheComplete } = useRefereeSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as RefereeTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as RefereeTab;
+      setSelectedTab(tab);
+
+      if (loadedRefereeId) {
+        saveCache(loadedRefereeId, { selectedTab: tab });
+      }
+    },
+    [loadedRefereeId, saveCache],
+  );
 
   const restoreCache = useCallback(
     (_cached: Partial<RefereeSummaryCache>) => {},
@@ -56,9 +62,9 @@ export const RefereeSummaryProvider = ({ children }: Props) => {
 
   const latestIdRef = useRef<string | null>(null);
 
-  const fetchPlaeyrData = useCallback(
+  const fetchRefereeData = useCallback(
     async (id: string) => {
-      setLoadedPlaeyrId(null); // 読み込み中は「未確定」にする
+      setLoadedRefereeId(null); // 読み込み中は「未確定」にする
       const isStale = () => latestIdRef.current !== id;
 
       if (selected?._id !== id) {
@@ -69,24 +75,29 @@ export const RefereeSummaryProvider = ({ children }: Props) => {
       if (isStale()) return;
 
       const result = await readDatas(id);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result });
+      saveCache(id, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
-      setLoadedPlaeyrId(id);
+      if (isStale()) return;
+      setLoadedRefereeId(id);
     },
-    [selected?._id, readItem, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   const activateId = useCallback(
     async (id: string) => {
       latestIdRef.current = id;
 
-      if (loadedPlaeyrId === id) {
+      if (loadedRefereeId === id) {
         return;
       }
 
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
       const cached = getCache(id);
 
       if (cached && isCacheComplete(id)) {
@@ -96,27 +107,26 @@ export const RefereeSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
-        setLoadedPlaeyrId(id);
+        setLoadedRefereeId(id);
         return;
       }
 
-      await fetchPlaeyrData(id);
+      await fetchRefereeData(id);
     },
     [
-      loadedPlaeyrId,
+      loadedRefereeId,
       selected?._id,
       getCache,
       isCacheComplete,
       readItem,
       restoreCache,
-      fetchPlaeyrData,
+      fetchRefereeData,
     ],
   );
 
   const value: UseRefereeSummary = {
-    id: loadedPlaeyrId,
+    id: loadedRefereeId,
     isLoading,
     selected,
     activateId,

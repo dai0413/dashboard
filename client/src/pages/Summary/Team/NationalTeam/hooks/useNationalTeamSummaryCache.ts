@@ -2,6 +2,7 @@ import type { NationalTeamSummaryCache } from "../types";
 import { useSummaryCache } from "../../../../../utils/summary/useSummaryCache";
 
 const NATIONAL_TEAM_CACHE_KEYS = [
+  "selectedTab",
   "match",
   "player",
   "series",

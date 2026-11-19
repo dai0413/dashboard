@@ -30,15 +30,21 @@ export const StaffSummaryProvider = ({ children }: Props) => {
 
   const [selectedTab, setSelectedTab] = useState<StaffTab>(DEFAULT_TAB);
 
-  const [loadedPlaeyrId, setLoadedPlaeyrId] = useState<string | null>(null);
+  const [loadedStaffId, setLoadedStaffId] = useState<string | null>(null);
 
   const { getCache, saveCache, isCacheComplete } = useStaffSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as StaffTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as StaffTab;
+      setSelectedTab(tab);
+
+      if (loadedStaffId) {
+        saveCache(loadedStaffId, { selectedTab: tab });
+      }
+    },
+    [loadedStaffId, saveCache],
+  );
 
   const { staffRegistrations, readStaffRegistrations, setStaffRegistrations } =
     useStaffRegistrationPanel();
@@ -68,9 +74,9 @@ export const StaffSummaryProvider = ({ children }: Props) => {
 
   const latestIdRef = useRef<string | null>(null);
 
-  const fetchPlaeyrData = useCallback(
+  const fetchStaffData = useCallback(
     async (id: string) => {
-      setLoadedPlaeyrId(null); // 読み込み中は「未確定」にする
+      setLoadedStaffId(null); // 読み込み中は「未確定」にする
       const isStale = () => latestIdRef.current !== id;
 
       if (selected?._id !== id) {
@@ -81,24 +87,29 @@ export const StaffSummaryProvider = ({ children }: Props) => {
       if (isStale()) return;
 
       const result = await readDatas(id);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result });
+      saveCache(id, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
-      setLoadedPlaeyrId(id);
+      if (isStale()) return;
+      setLoadedStaffId(id);
     },
-    [selected?._id, readItem, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   const activateId = useCallback(
     async (id: string) => {
       latestIdRef.current = id;
 
-      if (loadedPlaeyrId === id) {
+      if (loadedStaffId === id) {
         return;
       }
 
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
       const cached = getCache(id);
 
       if (cached && isCacheComplete(id)) {
@@ -108,22 +119,21 @@ export const StaffSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
-        setLoadedPlaeyrId(id);
+        setLoadedStaffId(id);
         return;
       }
 
-      await fetchPlaeyrData(id);
+      await fetchStaffData(id);
     },
     [
-      loadedPlaeyrId,
+      loadedStaffId,
       selected?._id,
       getCache,
       isCacheComplete,
       readItem,
       restoreCache,
-      fetchPlaeyrData,
+      fetchStaffData,
     ],
   );
 
@@ -131,7 +141,7 @@ export const StaffSummaryProvider = ({ children }: Props) => {
     key: K,
     read: () => Promise<StaffSummaryCache[K] | null | undefined>,
   ) => {
-    const id = loadedPlaeyrId;
+    const id = loadedStaffId;
     if (!id) return;
 
     const result = await read();
@@ -145,7 +155,7 @@ export const StaffSummaryProvider = ({ children }: Props) => {
   };
 
   const value: UseStaffSummary = {
-    id: loadedPlaeyrId,
+    id: loadedStaffId,
     isLoading,
     selected,
     activateId,
@@ -162,7 +172,7 @@ export const StaffSummaryProvider = ({ children }: Props) => {
         items: staffRegistrations.data,
         reloadFun: () =>
           reloadAndCache("staffRegistration", () =>
-            readStaffRegistrations(loadedPlaeyrId!),
+            readStaffRegistrations(loadedStaffId!),
           ),
       },
     },

@@ -177,6 +177,8 @@ export type PlayerStatisticsData = {
 };
 
 export type ClubTeamSummaryCache = {
+  selectedTab: ClubTeamTab;
+
   seasonDate: SeasonDate;
   selectedteamCompetitionSeason: TeamCompetitionSeason | null;
 

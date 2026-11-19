@@ -39,15 +39,21 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
 
   const [selectedTab, setSelectedTab] = useState<PlayerTab>(DEFAULT_TAB);
 
-  const [loadedPlaeyrId, setLoadedPlaeyrId] = useState<string | null>(null);
+  const [loadedPlayerId, setLoadedPlayerId] = useState<string | null>(null);
 
   const { getCache, saveCache, isCacheComplete } = usePlayerSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as PlayerTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as PlayerTab;
+      setSelectedTab(tab);
+
+      if (loadedPlayerId) {
+        saveCache(loadedPlayerId, { selectedTab: tab });
+      }
+    },
+    [loadedPlayerId, saveCache],
+  );
 
   const { injuries, readinjuries, setInjuries } = useInjuryPanel();
   const { nationalCallups, readNationalCallups, setNationalCallups } =
@@ -91,6 +97,10 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
       if (cached.statistics !== undefined) {
         setStatistics(cached.statistics);
       }
+
+      if (cached.selectedTab !== undefined) {
+        setSelectedTab(cached.selectedTab);
+      }
     },
     [
       setInjuries,
@@ -98,6 +108,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
       setPlayerRegistrations,
       setTransfers,
       setStatistics,
+      setSelectedTab,
     ],
   );
 
@@ -133,9 +144,9 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
 
   const latestIdRef = useRef<string | null>(null);
 
-  const fetchPlaeyrData = useCallback(
+  const fetchPlayerData = useCallback(
     async (id: string) => {
-      setLoadedPlaeyrId(null); // 読み込み中は「未確定」にする
+      setLoadedPlayerId(null); // 読み込み中は「未確定」にする
       const isStale = () => latestIdRef.current !== id;
 
       if (selected?._id !== id) {
@@ -146,23 +157,30 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
       if (isStale()) return;
 
       const result = await readDatas(id);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result });
+      saveCache(id, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
-      setLoadedPlaeyrId(id);
+      if (isStale()) return;
+
+      setLoadedPlayerId(id);
     },
-    [selected?._id, readItem, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   const activateId = useCallback(
     async (id: string) => {
       latestIdRef.current = id;
 
-      if (loadedPlaeyrId === id) {
+      if (loadedPlayerId === id) {
         return;
       }
+
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
 
       const cached = getCache(id);
 
@@ -173,22 +191,21 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
-        setLoadedPlaeyrId(id);
+        setLoadedPlayerId(id);
         return;
       }
 
-      await fetchPlaeyrData(id);
+      await fetchPlayerData(id);
     },
     [
-      loadedPlaeyrId,
+      loadedPlayerId,
       selected?._id,
       getCache,
       isCacheComplete,
       readItem,
       restoreCache,
-      fetchPlaeyrData,
+      fetchPlayerData,
     ],
   );
 
@@ -196,7 +213,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
     key: K,
     read: () => Promise<PlayerSummaryCache[K] | null | undefined>,
   ) => {
-    const id = loadedPlaeyrId;
+    const id = loadedPlayerId;
     if (!id) return;
 
     const result = await read();
@@ -210,7 +227,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
   };
 
   const value: UsePlayerSummary = {
-    id: loadedPlaeyrId,
+    id: loadedPlayerId,
     isLoading,
     selected,
     activateId,
@@ -227,7 +244,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
         items: topItems,
         isLoading: statistics.isLoading,
         reloadFun: () =>
-          reloadAndCache("statistics", () => readStatistics(loadedPlaeyrId!)),
+          reloadAndCache("statistics", () => readStatistics(loadedPlayerId!)),
       },
 
       nationalCallup: {
@@ -236,7 +253,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
         isLoading: nationalCallups.isLoading,
         reloadFun: () =>
           reloadAndCache("nationalCallup", () =>
-            readNationalCallups(loadedPlaeyrId!),
+            readNationalCallups(loadedPlayerId!),
           ),
       },
 
@@ -245,21 +262,21 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
         items: positions,
         isLoading: statistics.isLoading,
         reloadFun: () =>
-          reloadAndCache("statistics", () => readStatistics(loadedPlaeyrId!)),
+          reloadAndCache("statistics", () => readStatistics(loadedPlayerId!)),
       },
       transfer: {
         key: `${selectedTab}`,
         items: transfers.data,
         isLoading: transfers.isLoading,
         reloadFun: () =>
-          reloadAndCache("transfer", () => readTransfers(loadedPlaeyrId!)),
+          reloadAndCache("transfer", () => readTransfers(loadedPlayerId!)),
       },
       injury: {
         key: `${selectedTab}`,
         items: injuries.data,
         isLoading: injuries.isLoading,
         reloadFun: () =>
-          reloadAndCache("injury", () => readinjuries(loadedPlaeyrId!)),
+          reloadAndCache("injury", () => readinjuries(loadedPlayerId!)),
       },
       playerRegistration: {
         key: `${selectedTab}`,
@@ -267,7 +284,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
         isLoading: playerRegistrations.isLoading,
         reloadFun: () =>
           reloadAndCache("playerRegistration", () =>
-            readPlayerRegistrations(loadedPlaeyrId!),
+            readPlayerRegistrations(loadedPlayerId!),
           ),
       },
       statistics: {
@@ -275,7 +292,7 @@ export const PlayerSummaryProvider = ({ children }: Props) => {
         items: statistics.data,
         isLoading: statistics.isLoading,
         reloadFun: () =>
-          reloadAndCache("statistics", () => readStatistics(loadedPlaeyrId!)),
+          reloadAndCache("statistics", () => readStatistics(loadedPlayerId!)),
       },
     },
   };

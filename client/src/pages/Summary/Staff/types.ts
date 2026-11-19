@@ -21,5 +21,7 @@ export type UseStaffSummary = UseSummary<
 >;
 
 export type StaffSummaryCache = {
+  selectedTab: StaffTab;
+
   staffRegistration: Data<GettedModelDataMap[ModelType.STAFF_REGISTRATION]>;
 };

@@ -83,6 +83,7 @@ export type UseCompetitionSummary = UseSummary<
 >;
 
 export type CompetitionSummaryCache = {
+  selectedTab: CompetitionTab;
   selectedSeason: GettedModelDataMap[ModelType.SEASON] | null;
 
   season: Data<GettedModelDataMap[ModelType.SEASON]>;

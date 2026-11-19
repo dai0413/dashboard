@@ -47,11 +47,17 @@ export const NationalMatchSeriesSummaryProvider = ({ children }: Props) => {
   const { getCache, saveCache, isCacheComplete } =
     useNationalMatchSeriesSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as NationalMatchSeriesTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as NationalMatchSeriesTab;
+      setSelectedTab(tab);
+
+      if (loadedNationalMatchSeriesId) {
+        saveCache(loadedNationalMatchSeriesId, { selectedTab: tab });
+      }
+    },
+    [loadedNationalMatchSeriesId, saveCache],
+  );
 
   const { matches, readMatches, setMatches } = useMatchPanel();
   const { nationalCallups, readNationalCallups, setNationalCallups } =
@@ -104,14 +110,18 @@ export const NationalMatchSeriesSummaryProvider = ({ children }: Props) => {
       if (isStale()) return;
 
       const result = await readDatas(matchIds, id);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result });
+      saveCache(id, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
+      if (isStale()) return;
       setLoadedNationalMatchSeriesId(id);
     },
-    [selected?._id, readItem, matchIds, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   const activateId = useCallback(
@@ -122,6 +132,7 @@ export const NationalMatchSeriesSummaryProvider = ({ children }: Props) => {
         return;
       }
 
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
       const cached = getCache(id);
 
       if (cached && isCacheComplete(id)) {
@@ -131,7 +142,6 @@ export const NationalMatchSeriesSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
         setLoadedNationalMatchSeriesId(id);
         return;

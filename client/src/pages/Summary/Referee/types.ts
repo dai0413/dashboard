@@ -15,4 +15,6 @@ export type UseRefereeSummary = UseSummary<
   RefereePanels
 >;
 
-export type RefereeSummaryCache = {};
+export type RefereeSummaryCache = {
+  selectedTab: RefereeTab;
+};

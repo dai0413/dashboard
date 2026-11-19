@@ -53,11 +53,17 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
 
   const { getCache, saveCache, isCacheComplete } = useCompetitionSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as CompetitionTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as CompetitionTab;
+      setSelectedTab(tab);
+
+      if (loadedCompetitionId) {
+        saveCache(loadedCompetitionId, { selectedTab: tab });
+      }
+    },
+    [loadedCompetitionId, saveCache],
+  );
 
   const { selectedSeason, setSelectedSeason } = useSelectOption();
   const { competitionStages, readCompetitionStages, setCompetitionStages } =
@@ -223,11 +229,16 @@ export const CompetitionSummaryProvider = ({ children }: Props) => {
       setSelectedSeason(newSelectedSeason);
 
       const result = await readDatas(id, newSelectedSeason);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        season: newSeasons,
+        selectedTab,
+      };
+      saveCache(id, cache);
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result, season: newSeasons });
+      if (isStale()) return;
 
-      if (isStale()) return; // 状態への反映だけやめる
       setLoadedCompetitionId(id);
     },
     [selected?._id, readItem, readSeason, readDatas, saveCache],

@@ -55,6 +55,8 @@ export type UseMatchSummary = UseSummary<
 >;
 
 export type MatchSummaryCache = {
+  selectedTab: MatchTab;
+
   startingMember: {
     home: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];
     away: GettedModelDataMap[ModelType.PLAYER_APPEARANCE][];

@@ -22,6 +22,8 @@ export type UseNationalMatchSeriesSummary = UseSummary<
 >;
 
 export type NationalMatchSeriesSummaryCache = {
+  selectedTab: NationalMatchSeriesTab;
+
   match: Data<GettedModelDataMap[ModelType.MATCH]>;
   nationalCallup: Data<GettedModelDataMap[ModelType.NATIONAL_CALLUP]>;
 };

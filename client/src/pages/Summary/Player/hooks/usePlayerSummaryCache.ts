@@ -2,6 +2,7 @@ import type { PlayerSummaryCache } from "../types";
 import { useSummaryCache } from "../../../../utils/summary/useSummaryCache";
 
 const PLAYER_CACHE_KEYS = [
+  "selectedTab",
   "transfer",
   "injury",
   "playerRegistration",

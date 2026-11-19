@@ -95,6 +95,8 @@ export type FormationPlot = {
 };
 
 export type NationalTeamSummaryCache = {
+  selectedTab: NationalTeamTab;
+
   match: Data<GettedModelDataMap[ModelType.MATCH]>;
   player: Data<GettedModelDataMap[ModelType.PLAYER]>;
   series: SeriesData;

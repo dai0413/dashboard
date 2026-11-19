@@ -45,11 +45,17 @@ export const NationalTeamSummaryProvider = ({ children }: Props) => {
   const { getCache, saveCache, isCacheComplete } =
     useNationalTeamSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as NationalTeamTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as NationalTeamTab;
+      setSelectedTab(tab);
+
+      if (loadedNationalTeamId) {
+        saveCache(loadedNationalTeamId, { selectedTab: tab });
+      }
+    },
+    [loadedNationalTeamId, saveCache],
+  );
 
   const { matches, readMatches, setMatches } = useMatchPanel();
   const { players, readPlayers, setPlayers } = usePlayerPanel();
@@ -126,14 +132,18 @@ export const NationalTeamSummaryProvider = ({ children }: Props) => {
       if (isStale()) return;
 
       const result = await readDatas(id);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result });
+      saveCache(id, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
+      if (isStale()) return;
       setLoadedNationalTeamId(id);
     },
-    [selected?._id, readItem, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   const activateId = useCallback(
@@ -144,6 +154,7 @@ export const NationalTeamSummaryProvider = ({ children }: Props) => {
         return;
       }
 
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
       const cached = getCache(id);
 
       if (cached && isCacheComplete(id)) {
@@ -153,7 +164,6 @@ export const NationalTeamSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
         setLoadedNationalTeamId(id);
         return;

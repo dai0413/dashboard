@@ -2,6 +2,7 @@ import type { MatchSummaryCache } from "../types";
 import { useSummaryCache } from "../../../../utils/summary/useSummaryCache";
 
 const MATCH_CACHE_KEYS = [
+  "selectedTab",
   "startingMember",
   "homeSubMember",
   "awaySubMember",

@@ -59,11 +59,17 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
 
   const { getCache, saveCache, isCacheComplete } = useClubTeamSummaryCache();
 
-  const handleSelectedTab = (
-    value: string | number | Date | undefined,
-  ): void => {
-    setSelectedTab(value as ClubTeamTab);
-  };
+  const handleSelectedTab = useCallback(
+    (value: string | number | Date | undefined) => {
+      const tab = value as ClubTeamTab;
+      setSelectedTab(tab);
+
+      if (loadedClubTeamId) {
+        saveCache(loadedClubTeamId, { selectedTab: tab });
+      }
+    },
+    [loadedClubTeamId, saveCache],
+  );
 
   const { players, readPlayers, setPlayers } = usePlayerPanel();
   const { futurein, readFutureins, setFuturein } = useFutureInPanel();
@@ -402,14 +408,18 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
       if (isStale()) return;
 
       const result = await readDatas(id);
+      const selectedTab = getCache(id)?.selectedTab ?? DEFAULT_TAB;
+      const cache = {
+        ...result,
+        selectedTab,
+      };
 
-      // 取得できたデータは正しいのでキャッシュには残す
-      saveCache(id, { ...result });
+      saveCache(id, cache);
 
-      if (isStale()) return; // 状態への反映だけやめる
+      if (isStale()) return;
       setLoadedClubTeamId(id);
     },
-    [selected?._id, readItem, readDatas, saveCache],
+    [selected?._id, readItem, readDatas, saveCache, getCache],
   );
 
   // season選択で読み込む
@@ -448,6 +458,7 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
         return;
       }
 
+      setSelectedTab(getCache(id)?.selectedTab ?? DEFAULT_TAB);
       const cached = getCache(id);
 
       if (cached && isCacheComplete(id)) {
@@ -457,7 +468,6 @@ export const ClubTeamSummaryProvider = ({ children }: Props) => {
 
         if (latestIdRef.current !== id) return;
 
-        setSelectedTab(DEFAULT_TAB);
         restoreCache(cached);
         setLoadedClubTeamId(id);
         return;
