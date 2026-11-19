@@ -147,9 +147,7 @@ const SeriesMatrix = ({
         const appearances = matches
           .sort((a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0))
           .map((match) => {
-            const playerAppearance = appearanceMap.get(
-              `${player.player._id}-${match._id}`,
-            );
+            const playerAppearance = appearanceMap.get(`${player.player._id}`);
 
             const appearance = playerAppearance?.get(match._id);
 
