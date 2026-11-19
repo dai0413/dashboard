@@ -32,10 +32,18 @@ import {
 } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/utils";
 import { MatrixPlayer } from "../../../../../components/dataView/DataViewContent/DataView/Matrix/type";
 import { PlayerPlot } from "../types";
+import { fullNationalPeriods } from "../../../../../constants/period";
 
 type SeriesWithCompetition = NationalMatchSeries & {
   competitionIds: string[];
 };
+
+const defaultDate = fullNationalPeriods.sort(
+  (a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime(),
+)[0];
+const defaultFilterCondition: FilterableFieldDefinition[] =
+  dateQuickFilterItems.items.find((period) => period.key === defaultDate.key)
+    ?.filterCondition || [];
 
 export const usePlayerPlotPanel = () => {
   const [nationalCallUp, setNationalCallUp] = useState<NationalCallup[]>([]);
@@ -63,6 +71,10 @@ export const usePlayerPlotPanel = () => {
 
   const [filteredNationalMatchSeries, setfilteredNationalMatchSeries] =
     useState<NationalMatchSeries[]>([]);
+
+  const [selectedDateKey, setSelectedDateKey] = useState<string>(
+    defaultDate.key,
+  );
 
   type ResetParams = {
     nationalCallUp?: boolean;
@@ -103,67 +115,37 @@ export const usePlayerPlotPanel = () => {
       sortConditions?: SortableFieldDefinition[],
     ): Promise<PlayerPlot | null> => {
       setIsLoading(true);
-      const readParams: Record<string, any> = {
-        getAll: true,
-        team: teamId,
+
+      const filters =
+        filterConditions && filterConditions.length > 0
+          ? filterConditions
+          : defaultFilterCondition;
+
+      const getDateFilterValue = (key: string): Date | null => {
+        const value = filters.find((condition) => condition.key === key)
+          ?.value?.[0];
+
+        if (value === undefined || typeof value === "boolean") {
+          return null;
+        }
+
+        return new Date(value);
       };
 
-      let startBaseDate: Date | undefined;
-      let endBaseDate: Date | undefined;
+      const startBaseDate =
+        getDateFilterValue("joined_at") ?? new Date(defaultDate.startDate);
 
-      filterConditions?.forEach((filterCondition) => {
-        if (filterCondition.key === "joined_at" && filterCondition.value) {
-          const value = filterCondition.value[0];
-
-          if (typeof value !== "boolean") {
-            startBaseDate = new Date(value);
-          }
-        }
-
-        if (filterCondition.key === "left_at" && filterCondition.value) {
-          const value = filterCondition.value[0];
-
-          if (typeof value !== "boolean") {
-            endBaseDate = new Date(value);
-          }
-        }
-      });
-
-      if (!startBaseDate || !endBaseDate) {
-        handleReset({
-          nationalCallUp: true,
-          nationalMatchSeries: true,
-          playerAppearance: true,
-          playerStatistics: true,
-          formationCounts: true,
-          competitions: true,
-          selectedCompetitions: true,
-          filteredNationalMatchSeries: true,
-        });
-        const newItems: PlayerPlot = {
-          isLoading: false,
-          competitions: [],
-          selectedCompetitions: [],
-          formationCounts: [],
-          selectedFormation: "",
-          playerStatistics: [],
-          playerAppearance: [],
-          nationalCallUp: [],
-          startBaseDate: undefined,
-          endBaseDate: undefined,
-        };
-
-        return newItems;
-      }
+      const endBaseDate =
+        getDateFilterValue("left_at") ?? new Date(defaultDate.endDate);
 
       setStartBaseDate(startBaseDate);
       setEndBaseDate(endBaseDate);
 
-      if (filterConditions && filterConditions.length > 0) {
-        readParams.filters = JSON.stringify(
-          normalizeFiltersForApi(filterConditions),
-        );
-      }
+      const readParams: Record<string, any> = {
+        getAll: true,
+        team: teamId,
+        filters: JSON.stringify(normalizeFiltersForApi(filters)),
+      };
 
       if (sortConditions && sortConditions.length > 0) {
         readParams.sorts = JSON.stringify(sortConditions);
@@ -515,8 +497,27 @@ export const usePlayerPlotPanel = () => {
       ],
     };
 
-    return [dateQuickFilterItems, competitionFilter, formationFilter];
-  }, [competitions, selectedCompetitions, formationCounts, selectedFormation]);
+    const converted: QuickFilterData = {
+      ...dateQuickFilterItems,
+      selectedKeys: [selectedDateKey],
+      items: dateQuickFilterItems.items.map((item) => {
+        return {
+          ...item,
+          onClick: () => {
+            setSelectedDateKey(item.key);
+          },
+        };
+      }),
+    };
+
+    return [converted, competitionFilter, formationFilter];
+  }, [
+    selectedDateKey,
+    competitions,
+    selectedCompetitions,
+    formationCounts,
+    selectedFormation,
+  ]);
 
   const { groupedPlayers, defaultOpenPositions, topHeaderText } =
     useMemo(() => {

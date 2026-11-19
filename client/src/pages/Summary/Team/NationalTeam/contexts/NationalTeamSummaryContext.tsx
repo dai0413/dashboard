@@ -264,7 +264,11 @@ export const NationalTeamSummaryProvider = ({ children }: Props) => {
           reloadAndCache(
             "formationPlot",
             (filter, sort) =>
-              formationPlotPanel.reloadFun(filter, sort, loadedNationalTeamId!),
+              formationPlotPanel.readFormationPlot(
+                loadedNationalTeamId!,
+                filter,
+                sort,
+              ),
             filterConditions,
             sortConditions,
           ),

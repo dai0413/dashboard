@@ -88,8 +88,10 @@ export type PlayerPlot = {
 export type FormationPlot = {
   isLoading: boolean;
 
-  groupedPlayers: GroupedPlayers[];
-  quickFilterDatas: QuickFilterData[];
+  formationCounts: FormationCounts[];
+  selectedFormation: string;
+  playerStatistics: PlayerStatistic[];
+  selectedDateKey: string;
 };
 
 export type NationalTeamSummaryCache = {
